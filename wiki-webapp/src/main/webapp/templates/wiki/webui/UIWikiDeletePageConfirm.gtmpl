@@ -1,0 +1,44 @@
+<%
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl ;
+import org.exoplatform.wiki.commons.Utils ;
+
+	PageImpl page = uicomponent.getCurrentPage() ;
+%>
+
+<div class="UIWikiDeletePageConfirm">	
+	<%
+		if(page == null) {
+			%>
+				<div>This page with id '<%=uicomponent.getCurrentPageId()%>' does not exist</div>
+			<%
+		}else {
+		%>
+			<div>
+				<h2><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfoHeader").replace("{0}", "<span>" + page.getTitle() + "</span>"); %></h2>
+				<p><strong><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo1"); %></strong> <br/><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo2"); %> </p>				
+				<ul>
+					<li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo3"); %></li>
+					<li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo4"); %></li>
+					<li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5").replace("{0}", "<strong>" + uicomponent.getWiki() + ": " + page.getParentPage().getTitle() + "</strong>."); %></li>
+				</ul>
+			</div>		
+		<%
+		}
+	%>
+	
+	<div class="UIAction">
+      <a href="<%=uicomponent.url("OK")%>" class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiDeletePageConfirm.action.OK"); %></a>
+       <a href="<%=uicomponent.url("Cancel")%>" class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiDeletePageConfirm.action.Cancel"); %></a>
+    </div>
+  
+  <!-- 
+  <h2>Deleting page <span>"TestDemo"</span></h2>
+	<p><strong>Are you sure you want to send this page to the trash?</strong> <br/>Please note: </p>
+	<ul>
+		<li>Removing a page moves it into the trash can. You can speak to your space administrator to have it recovered</li>
+		<li>The links to this page will be broken when this page is removed</li>
+		<li>This page is a child page of page classic: Wiki Home</li>
+	</ul>	
+   -->
+   
+</div>

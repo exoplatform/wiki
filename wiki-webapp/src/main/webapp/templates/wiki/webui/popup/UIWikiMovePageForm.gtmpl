@@ -1,0 +1,34 @@
+<div class="UIWikiMovePageForm">
+ 
+ <%
+ 	  uiform.begin(); 	 
+ %>  
+ <%
+ 	  uiform.renderChild(uiform.PAGENAME_INFO);
+ %>
+
+<div class="SideBarContent">
+ 	<div class="BarContent">
+ 		<%=_ctx.appRes("UITreeExplorer.label.Destination")%>
+ 	</div>
+	<div class="SideContent">
+ 		<%
+ 	  	uiform.renderChild(uiform.UITREE);
+ 		%> 		
+  </div>
+</div>
+
+  <%
+ 	  uiform.renderChild(uiform.LOCATION_CONTAINER);
+ %> 
+
+ <div class="UIAction">
+  <% 			
+ 				String closeLink=  uiform.event("Close");
+				%>
+      <a href="javascript:void(0);" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')"  class="ActionButton LightBlueStyle"><%=_ctx.appRes("UIWikiMovePageForm.action.Move")%></a>
+      
+       <a href="javascript:void(0);" onclick="$closeLink"  class="ActionButton LightBlueStyle"><%=_ctx.appRes("UIWikiMovePageForm.action.Cancel")%></a>
+    </div>
+<% uiform.end(); %>
+</div>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+  xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+
+  <component>
+   <type>org.exoplatform.upload.UploadService</type>
+     <init-params>
+       <value-param>
+        <name>upload.limit.size</name>
+        <description>Maximum size of the file to upload in MB</description>
+        <value>20</value>
+      </value-param>
+    </init-params>  
+  </component>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>      
+    <component-plugin> 
+      <name>add.wiki.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Node types configuration file</description>
+          <value>war:/conf/wikidemo/wiki/upgrade-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <remove-configuration>org.mortbay.cometd.continuation.AbstractBayeux</remove-configuration>
+  <remove-configuration>org.exoplatform.ws.frameworks.cometd.ContinuationService</remove-configuration>
+  <remove-configuration>org.exoplatform.ws.frameworks.cometd.transport.ContinuationServiceDelegate</remove-configuration>
+  <remove-configuration>org.exoplatform.commons.upgrade.UpgradeProductService</remove-configuration>
+</configuration>  

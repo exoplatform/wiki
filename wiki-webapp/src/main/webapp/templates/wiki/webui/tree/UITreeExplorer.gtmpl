@@ -1,0 +1,34 @@
+<%
+  import java.net.URLEncoder; 
+  import java.util.List;
+  import java.util.ArrayList;  
+  
+  import org.exoplatform.wiki.tree.SpaceTreeNode;
+  import org.exoplatform.portal.config.model.PortalConfig;  
+  import org.exoplatform.wiki.webui.UIWikiPortlet;
+  import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
+%>
+<% 
+ def rcontext = _ctx.getRequestContext();
+ String initParam = uicomponent.initParam;
+ String initURL = uicomponent.initURL;
+ String childrenURL = uicomponent.childrenURL;
+ String actionClassName = uicomponent.SELECT_NODE;
+ boolean isEvent = uicomponent.getEventComponent().getType().equals(EVENTTYPE.EVENT);
+ String action = uicomponent.event(uicomponent.SELECT_NODE); 
+ if (!isEvent){
+   action = uicomponent.url(uicomponent.SELECT_NODE);
+ } 
+ rcontext.getJavascriptManager().importJavascript('eXo.wiki.UITreeExplorer', '/wiki/javascript/') ;
+ if (initParam!=null)
+ 	rcontext.getJavascriptManager().addJavascript("eXo.wiki.UITreeExplorer.init('" + uicomponent.id  +"','"+ initParam + "',true);"); 
+%>
+	 <div class="UITreeExplorer" id="$uicomponent.id">	 
+		 <div>
+		   <div class="NodeGroup">
+    	       <a href="$action" class="SelectNode" style="display:none" ></a>
+    	       <input class="InitURL" type="hidden" title="hidden" value="$initURL" />
+    	       <input class="ChildrenURL" type="hidden" title="hidden" value="$childrenURL" />
+		   </div>
+		 </div>
+</div>

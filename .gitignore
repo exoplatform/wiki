@@ -4,3 +4,17 @@
 *.jar
 *.war
 *.ear
+# Others #
+.settings
+.project
+.classpath
+.idea
+*.iml
+*.ipr
+*.iws
+temp
+bin
+target
+.svn
+pom.xml~
+

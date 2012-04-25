@@ -1,0 +1,308 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!--
+
+    Copyright (C) 2009 eXo Platform SAS.
+
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 2.1 of
+    the License, or (at your option) any later version.
+
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<configuration
+   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+   
+  <component>
+    <key>org.exoplatform.wiki.mow.core.api.MOWService</key>
+    <type>org.exoplatform.wiki.mow.core.api.MOWService</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.wiki.service.WikiService</key>
+    <type>org.exoplatform.wiki.service.impl.WikiServiceImpl</type>
+    <init-params>
+      <values-param>
+        <name>xwiki/2.0</name>
+        <value>jar:/wikisyntax/help/xWiki2.0_Short.txt</value>
+        <value>jar:/wikisyntax/help/xWiki2.0_Full.txt</value>
+      </values-param>
+      <properties-param>
+        <name>preferences</name>
+        <property name="defaultSyntax" value="xwiki/2.0"/>              
+      </properties-param> 
+    </init-params>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.wiki.service.WikiRestService</key>
+    <type>org.exoplatform.wiki.service.impl.WikiRestServiceImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.wiki.service.image.ResizeImageService</key>
+    <type>org.exoplatform.wiki.service.image.impl.ResizeImageServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.wiki.service.DataStorage</key>
+    <type>org.exoplatform.wiki.service.impl.JCRDataStorage</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.wiki.resolver.PageResolver</key>
+    <type>org.exoplatform.wiki.resolver.PageResolver</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.wiki.rendering.RenderingService</key>
+    <type>org.exoplatform.wiki.rendering.impl.RenderingServiceImpl</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.wiki.service.diff.DiffService</key>
+    <type>org.exoplatform.wiki.service.diff.DiffService</type>
+  </component>
+  
+  <component>
+    <type>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</type>
+  </component>
+  
+  <component>
+    <key>org.exoplatform.wiki.service.webdav.WebDavService</key>
+    <type>org.exoplatform.wiki.service.webdav.WebDavServiceImpl</type>
+    <init-params>
+      <value-param>
+        <name>auto-mix-lockable</name>
+        <value>false</value>
+      </value-param>
+      <value-param>
+        <name>def-folder-node-type</name>
+        <value>wiki:page</value>
+      </value-param>
+      <value-param>
+        <name>def-file-node-type</name>
+        <value>wiki:attachment</value>
+      </value-param>
+      <value-param>
+        <name>def-file-mimetype</name>
+        <value>text/plain</value>
+      </value-param>
+      <value-param>
+        <name>update-policy</name>
+        <value>create-version</value>
+      </value-param>
+    </init-params>
+  </component>
+  
+  <!-- Only used for debugging and tracing -->
+  <!--component>
+    <key>org.exoplatform.services.log.LogConfigurationInitializer</key>
+    <type>org.exoplatform.services.log.LogConfigurationInitializer</type>
+    <init-params>
+      <value-param>
+        <name>configurator</name>
+        <value>org.exoplatform.services.log.impl.Log4JConfigurator</value>
+      </value-param>
+      <properties-param>
+        <name>properties</name>
+        <description>Log4J properties</description>
+        <property name="log4j.rootLogger" value="DEBUG, stdout, file"/>
+
+        <property name="log4j.appender.stdout" value="org.apache.log4j.ConsoleAppender"/>
+        <property name="log4j.appender.stdout.threshold" value="INFO"/>
+
+        <property name="log4j.appender.stdout.layout" value="org.apache.log4j.PatternLayout"/>
+        <property name="log4j.appender.stdout.layout.ConversionPattern"
+          value="%d{dd.MM.yyyy HH:mm:ss} *%-5p* [%t] %c{1}: %m (%F, line %L) %n"/>
+
+        <property name="log4j.appender.file" value="org.apache.log4j.FileAppender"/>
+        <property name="log4j.appender.file.File" value="gatein_developing.log"/>
+
+        <property name="log4j.appender.file.layout" value="org.apache.log4j.PatternLayout"/>
+        <property name="log4j.appender.file.layout.ConversionPattern"
+          value="%d{dd.MM.yyyy HH:mm:ss} *%-5p* [%t] %c{1}: %m (%F, line %L) %n"/>
+
+        <property name="log4j.category.org.exoplatform.wiki.resolver.PageResolver" value="TRACE"/>
+        
+        <property name="log4j.category.org.chromattic.core.api.ChromatticSessionImpl" value="TRACE"/>
+        <property name="log4j.category.jcr.JDBCStorageConnection" value="DEBUG"/>
+        <property name="log4j.category.jcr.NodeImpl" value="DEBUG"/>
+
+        <property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/>
+        <property name="log4j.category.database.DBSchemaCreator" value="DEBUG"/>
+        <property name="log4j.category.jcr.WorkspaceDataReplicator" value="DEBUG"/>
+
+        <property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/>
+        <property name="log4j.category.jcr.WorkspacePersistentDataManager" value="DEBUG"/>
+        <property name="log4j.category.jcr.SessionDataManager" value="DEBUG"/>
+
+      </properties-param>
+    </init-params>
+  </component-->
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.listener.ListenerService</target-component>
+    <component-plugin>
+      <name>org.exoplatform.web.GenericHttpListener.sessionCreated</name>
+      <set-method>addListener</set-method>
+      <type>org.exoplatform.wiki.service.impl.SessionCreatedListener</type>
+      <description>description</description>
+    </component-plugin>
+    <component-plugin>
+      <name>org.exoplatform.web.GenericHttpListener.sessionDestroyed</name>
+      <set-method>addListener</set-method>
+      <type>org.exoplatform.wiki.service.impl.SessionDestroyedListener</type>
+      <description>description</description>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
+    <component-plugin>
+      <name>add.namespaces</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
+      <init-params>
+        <properties-param>
+          <name>namespaces</name>
+          <property name="wiki" value="http://exoplatform.org/wiki/1.0/"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.nodeType</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
+      <init-params>
+        <values-param>
+          <name>autoCreatedInNewRepository</name>
+          <description>Node types configuration file</description>
+          <value>jar:/conf/portal/wiki-nodetypes.xml</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
+    <component-plugin>
+      <name>chromattic</name>
+      <set-method>addLifeCycle</set-method>
+      <type>org.exoplatform.wiki.service.impl.WikiChromatticLifeCycle</type>
+      <init-params>
+        <value-param>
+          <name>domain-name</name>
+          <value>wiki</value>
+        </value-param>
+        <value-param>
+          <name>workspace-name</name>
+          <value>wiki</value>
+        </value-param>
+        <value-param profiles="all,default,minimal">
+          <name>workspace-name</name>
+          <value>collaboration</value>
+        </value-param>
+        <values-param>
+          <name>entities</name>
+          <value>org.exoplatform.wiki.mow.core.api.WikiStoreImpl</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.PortalWiki</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.PortalWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWiki</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.UserWiki</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.ParagraphImpl</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.MarkupImpl</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.WikiLink</value>
+          <value>org.chromattic.ext.ntdef.NTFile</value>
+          <value>org.chromattic.ext.ntdef.NTResource</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionHistory</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionLabels</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.AnnotationImpl</value>
+        </values-param>
+        <!--<properties-param>
+          <name>options</name>
+          <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
+          <property name="org.chromattic.api.Option.root_node.create" value="true"/>
+        </properties-param>
+      --></init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</target-component>
+    <component-plugin>
+      <name>Last Update Action</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
+      <description>add actions plugin</description>
+      <init-params>
+        <object-param>
+          <name>actions</name>
+          <object type="org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin$ActionsConfig">
+            <field  name="actions">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                    <field  name="eventTypes"><string>addNode,changeProperty</string></field>
+                    <field  name="nodeTypes"><string>wiki:page,wiki:attachment</string></field>
+                    <field  name="actionClassName"><string>org.exoplatform.wiki.service.jcrext.UpdateWikiPageAction</string></field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>Page Listeners</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
+      <description>add actions plugin</description>
+      <init-params>
+        <object-param>
+          <name>actions</name>
+          <object type="org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin$ActionsConfig">
+            <field  name="actions">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                    <field  name="eventTypes"><string>checkin</string></field>
+                    <field  name="nodeTypes"><string>wiki:page</string></field>
+                    <field  name="actionClassName"><string>org.exoplatform.wiki.service.jcrext.WikiPageJcrListener</string></field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.wiki.resolver.PageResolver</target-component>
+    <component-plugin>
+      <name>urlresolver</name>
+      <set-method>setResolverPlugin</set-method>
+      <type>org.exoplatform.wiki.resolver.URLResolver</type>      
+    </component-plugin>    
+  </external-component-plugins>
+  
+</configuration>

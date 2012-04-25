@@ -1,0 +1,45 @@
+<%
+	import org.exoplatform.wiki.commons.Utils;
+
+  def rcontext = _ctx.getRequestContext() ;
+  String searchLabel=_ctx.appRes("UIWikiSearchBox.label.Search");
+  String wikiNodeURI = Utils.getCurrentWikiNodeUri();
+  String restUrl= uicomponent.getContextSearchURL();
+  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiSearchBox', '/wiki/javascript/') ;
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
+%>
+<div class="UIWikiSearchBox">
+  <% uiform.begin() %>
+    <div class="SearchForm">
+      <a class="AdvancedSearch" title="<%=_ctx.appRes("UIWikiPortlet.label.Advanced-Search")%>" onclick="<%=uicomponent.event("AdvancedSearch");%>"></a>
+      <input name="restURL" type="hidden" title="hidden" value="$restUrl" />
+      <div class="Input">
+		<div class="SearchIcon">
+        <%
+          uiform.renderChild(uiform.FIELD_SEARCHVALUE) ;
+        %>
+		</div>	
+      </div>
+    </div>
+  <%uiform.end()%>
+  <div class="SearchPopup">
+		<div class="SearchPopupTL">
+			<div class="SearchPopupTR">
+				<div class="SearchPopupTC"><span></span></div>
+	  	</div>
+		</div>
+		<div class="SearchPopupML">
+			<div class="SearchPopupMR">
+				<div class="SearchPopupMC">
+					<div class="SubBlock"><span></span></div>
+				</div>
+			</div>
+		</div>	
+		<div class="SearchPopupBL">
+			<div class="SearchPopupBR">
+				<div class="SearchPopupBC"><span></span></div>
+		  </div>
+		</div>
+	</div>
+ 
+</div>

@@ -1,0 +1,22 @@
+h1. Overview {anchor:id=KSref.PollPortlet.Overview}
+
+|| Portlet name || War name || Description ||
+| PollPortlet | poll.war | The Poll portlet which is the application for users to vote any ideas, or activities. |
+
+h1. Portlet.xml {anchor:id=KSref.PollPortlet.PollPortletxml}
+* See the _portlet.xml_ file in the project following this path: _poll/WEB-INF/portlet.xml_. 
+
+{code:xml}
+<portlet-preferences>
+  <preference>
+    <name>pollIdShow</name>
+    <value></value> <!-- PollId -->
+    <read-only>false</read-only>
+  </preference>
+</portlet-preferences>
+{code}
+ 
+h1. Portlet Preferences {anchor:id=KSref.PollPortlet.PollPortletPreferences}
+
+|| Preference name || Possible value || Default value || Description ||
+| *pollIdShow* | {{string}} | {{empty}} | The Id of poll which is displayed in the Polls portlet. |

@@ -1,0 +1,78 @@
+.UIWikiPortlet .UIWikiUpperArea {
+  border: none;
+  margin: 0px;
+  padding: 0px;
+}
+
+.UIWikiPortlet .UIWikiUpperArea .UIWikiApplicationControlArea {
+  margin: 0px;
+  padding: 5px 8px 0;
+  border-color:#e1e1e1;
+  border-style:none none solid;
+  border-width:medium medium 1px;
+}
+
+.UIWikiPortlet .UIWikiUpperArea .UIWikiApplicationControlArea .UIWikiBreadCrumb {
+  border: none;
+  padding: 0px;
+}
+
+.UIWikiPortlet .UIWikiBreadCrumb .ActionLabel{
+  color: #707070;
+}
+
+.UIWikiPortlet .UIWikiBreadCrumb .BreadcumbsInfoBar{
+	height: auto;	
+	white-space: normal;
+	float:left;
+}
+
+.UIWikiPortlet .UIWikiBreadCrumb a.Selected {
+	font-weight:normal;
+}
+
+.UIWikiPortlet .UIWikiBreadCrumb a {
+	color:#707070;
+}
+
+.UIWikiPortlet .UIWikiBreadCrumb .RightBlackGridArrowIcon {
+	float: left;
+	margin: 2px 0 0;
+	background: url("background/BreadcumPopupBG.png") no-repeat center center;
+	height: 22px;
+	width: 16px;
+}
+
+.UIWikiPortlet .UIWikiBreadCrumb .BreadcumbsInfoBar span{
+	float:left;
+}
+
+.UIWikiPortlet .BreadcumPopup{
+	position: absolute;
+	display: none;
+	background: #E8E8E8;
+	border: 1px solid #D8D8D8;
+	border-radius: 3px;
+}
+
+.UIWikiPortlet .BreadcumPopup .MenuItem {
+	height:28px;
+	line-height:28px;
+	float: left;
+}
+
+.UIWikiPortlet .BreadcumPopup .MenuItem a {
+	padding-right:25px;
+	color:#3E3E3E;
+	display:block;
+	padding:0 5px 0 15px;
+	white-space:nowrap;
+}
+
+.UIWikiPortlet .BreadcumPopup .MenuItem .MarginLeftDiv {
+  margin-left: 15px;
+}
+
+.UIWikiPortlet .BreadcumPopup .MarginLeftDiv .MenuIcon {
+	background:url("background/BreadcumPopupBG.png") no-repeat left center;
+}

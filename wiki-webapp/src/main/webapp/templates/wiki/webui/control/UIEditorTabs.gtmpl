@@ -1,0 +1,3 @@
+<div id="$uicomponent.id" class="UIEditorTabs ClearFix" >
+	<% uicomponent.renderChildren(); %>
+</div>

@@ -1,0 +1,67 @@
+<%
+  import org.exoplatform.wiki.mow.api.Page;
+  import org.exoplatform.container.PortalContainer;
+  import org.exoplatform.web.application.JavascriptManager;
+  
+  def rcontext = _ctx.getRequestContext() ;
+    
+  String viewLink = uicomponent.event(uicomponent.VIEW_PAGE_ACTION);
+  String actionId = uicomponent.WIKI_PORTLET_ACTION_PREFIX + uicomponent.VIEW_PAGE_ACTION;
+  String restContextName = PortalContainer.getInstance().getRestContextName();
+  
+  String changeModeLink= uicomponent.event(uicomponent.CHANGE_MODE_ACTION);
+  String changeModeLinkId = uicomponent.WIKI_PORTLET_ACTION_PREFIX + uicomponent.CHANGE_MODE_ACTION; 
+  JavascriptManager jsmanager = rcontext.getJavascriptManager();
+  jsmanager.importJavascript('eXo.wiki.UIWikiPortlet', '/wiki/javascript/') ;
+  jsmanager.importJavascript('eXo.wiki.UIWikiAjaxRequest', '/wiki/javascript/') ;
+  jsmanager.importJavascript('eXo.wiki.layout.WikiLayout', '/wiki/javascript/');
+  jsmanager.addJavascript("eXo.wiki.WikiLayout.init('" + uicomponent.id + "') ;") ; 
+  jsmanager.addJavascript("eXo.wiki.UIWikiAjaxRequest.init('" + uicomponent.WIKI_PORTLET_ACTION_PREFIX + "', '" + uicomponent.VIEW_PAGE_ACTION + "');");  
+  jsmanager.addJavascript("eXo.wiki.UIWikiPortlet.init('"+uicomponent.id+ "', '" + changeModeLinkId + "');");
+  jsmanager.addJavascript("eXo.wiki.UIWikiPortlet.keepSessionAlive(" + uicomponent.isKeepSessionAlive() + ");");
+%>
+<script type="text/javascript"> 
+  if(!eXo.env.rest){
+    eXo.env.rest = {};
+  }
+  eXo.env.rest.context = '$restContextName';
+</script>
+<% if(!rcontext.useAjax()) { %>
+<!-- This script must to put here to ensure xwe.onScriptLoad is alway called. -->
+<script type="text/javascript" src="/wiki/javascript/eXo/wiki/UIWikiWysiwygLoader.js"></script>
+<!-- This script must to put here to avoid impact submit plugin -->
+<script type="text/javascript" src="/wiki/javascript/prototype/prototype.js"></script>
+<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/initsc.js"></script>
+<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Core.js"></script>
+<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Foundation.js"></script>
+<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Containers.js"></script>
+<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Grids.js"></script>
+<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Forms.js"></script>
+<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_DataBinding.js"></script>
+<script type="text/javascript" src="/wiki/javascript/xwiki/xwiki.js"></script>
+<script type="text/javascript" defer src="/wiki/javascript/xwiki/xwikiexplorer/xwikiexplorer.js"></script>
+<% } %>
+
+<style type="text/css">
+.wiki-body {
+  overflow: hidden;
+}
+</style>
+
+<!--  -->
+<div class="UIWikiPortlet" id="$uicomponent.id">
+  <div class="ParentMaskLayer">
+    <div id="KSMaskLayer" class="KSMaskLayer"><span></span></div>
+  </div>
+  <% Page page = _ctx.getRequestContext().getAttribute("wikiPage");%>
+  <%
+    List children = uicomponent.getChildren() ;
+    for(component in children) {
+      if(component.isRendered()){
+        uicomponent.renderChild(component) ;
+      }
+    }
+  %> 
+  <a onclick="$viewLink" id="$actionId" style="display:none;">&nbsp;</a>
+  <a href="$changeModeLink" id="$changeModeLinkId" style="display:none;">&nbsp;</a>
+</div>

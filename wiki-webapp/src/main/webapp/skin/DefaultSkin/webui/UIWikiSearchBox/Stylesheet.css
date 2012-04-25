@@ -1,0 +1,98 @@
+
+.UIWikiPortlet .UIWikiUpperArea .UIWikiApplicationControlArea .UIWikiSearchBox {
+  float: right;
+  width: 185px;
+  margin-bottom: 4px;
+}
+
+.UIWikiPortlet .UIWikiUpperArea .UIWikiApplicationControlArea .UIWikiSearchBox .AdvancedSearch {
+  background: url('icons/16x16/FindIcon.gif') no-repeat ;
+  height: 16px;
+  width: 16px;
+  float: right;
+  cursor: pointer;
+  margin: 3px 0px 0px 2px;
+  display: none;
+}
+
+.UIWikiPortlet .UIWikiUpperArea .UIWikiApplicationControlArea .UIWikiSearchBox .Input {
+  margin: 2px 0px 0px 10px;
+  background: url('background/SearchBG.gif') repeat-x;
+  border-radius: 12px;
+  padding: 0px 10px;
+  border: 1px solid #ececec;
+}
+
+.UIWikiPortlet .UIWikiUpperArea .UIWikiApplicationControlArea .UIWikiSearchBox .Input .SearchIcon{
+	background: url('background/SearchIcon.png') no-repeat right;
+	padding-right: 20px;
+	width: auto;
+	height: 22px;
+}
+
+.UIWikiPortlet .UIWikiUpperArea .UIWikiApplicationControlArea .UIWikiSearchBox  .Input input{
+	border: none;
+	margin-top:2px;
+	padding:0px;
+	background: none;
+	width: 135px;
+	font-size: 10pt;
+}
+
+
+.UIWikiPortlet .SearchPopup{
+	width: 172px;
+	position: absolute;
+	right: 10px;
+	display: none;
+	background: #ebebeb;
+	z-index: 2;
+	border:1px solid #dbdbdb;
+	border-bottom:none;
+}
+
+.UIWikiPortlet .SearchPopup .MenuItem {
+	height:28px;
+	line-height:28px;	
+	display:block;
+	padding:0 9px;
+	white-space:nowrap;
+	border-bottom: 1px solid #dbdbdb;
+}
+
+.UIWikiPortlet .SearchPopup .MenuResult {
+	height:28px;
+	line-height:28px;	
+	display:block;
+	padding:0 9px;
+	white-space:nowrap;
+	background: #dbdbdb;
+	font-style: italic;
+}
+
+.UIWikiPortlet .SearchPopup .MenuItem  a{	
+	color:#555555;   
+}
+
+.UIWikiPortlet .SearchPopup .MenuItem .ItemIcon {
+	padding-left: 24px;
+}
+
+.UIWikiPortlet .SearchPopup .MenuItem .MenuText {	
+}
+
+.UIWikiPortlet .SearchPopup  .TextItem {	
+  background: url("background/UIWikiSearchBG.png") no-repeat 12px -118px;	
+}
+
+.UIWikiPortlet .SearchPopup  .TextItem:hover {	
+  background: #ffffff url("background/UIWikiSearchBG.png") no-repeat 12px -118px;	
+}
+
+.UIWikiPortlet .SearchPopup .MenuItem a:hover {	
+  text-decoration:none;
+}
+
+.UIWikiPortlet .SearchPopup .ItemOver {
+	background: #ffffff url("background/UIWikiSearchBG.png") no-repeat 12px -118px;	
+}

@@ -1,0 +1,50 @@
+@CHARSET "UTF-8";
+
+.ConfirmBox {
+  display: none;
+  width: 350px;
+  height: auto;
+  background: #b3b3b3;
+  color: black;
+  position: relative;
+  padding: 3px;
+}
+
+.ConfirmBox div{
+  background: white;
+  padding: 12px 0px;
+}
+
+.ConfirmBox div div{
+  background: none;
+  padding: 0px;
+}
+
+.ConfirmBox .ConfirmBar {
+  background-color: #e1e1e1;
+  line-height: 21px;
+  height: 23px;
+  padding: 3px 7px 0px 7px;  
+}
+
+.ConfirmBox .ConfirmTitle {
+  font-size: 14px;
+  font-weight: bold;
+  text-align: left;
+  float: left;
+  color:#165fb3;
+}
+
+.ConfirmBox .ConfirmMessage {
+  padding: 2px 0px 10px 0px;
+  font-size: 12px;
+}
+
+.ConfirmBox  .CloseButton {
+  background: url("/wiki/skin/DefaultSkin/webui/background/CloseIcon.gif") no-repeat right top;
+  float: right;
+  height: 16px;
+  margin: 2px 2px 0 0;
+  width: 16px;
+  cursor: pointer;
+}

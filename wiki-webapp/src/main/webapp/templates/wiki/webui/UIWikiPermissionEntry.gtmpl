@@ -1,0 +1,27 @@
+<%
+  import org.exoplatform.wiki.service.PermissionEntry;
+  import org.exoplatform.wiki.service.Permission;
+  
+  PermissionEntry permissionEntry = uicomponent.getPermissionEntry();
+  String id = permissionEntry.getId();
+  String fullName = uicomponent.getEntryFullName();
+  Permission[] permissions = permissionEntry.getPermissions();
+  def uiPermissionForm = uicomponent.getParent().getParent();
+  def deleteLink = uiPermissionForm.event(uiPermissionForm.DELETE_ENTRY, id);
+%>
+<td>
+  <div title="$fullName">$fullName</div>
+  <div title="$id" class="Id">($id)</div>
+</td>
+<%
+  for(permission in permissions){
+    checkboxField = uicomponent.getChildById(permission.getPermissionType().toString() + id) ;
+    %>
+    <td class="center"><% uicomponent.renderChild(checkboxField); %></td>
+<%  }
+%>
+<td>
+  <div class="ActionContainer">
+    <img class="DeleteUserIcon" src="/eXoResources/skin/sharedImages/Blank.gif" title="<%= _ctx.appRes("UIPermissionEntry.title.DeletePermission"); %>" alt="<%= _ctx.appRes("UIPermissionEntry.title.DeletePermission"); %>" onclick="$deleteLink"/>
+  </div>
+</td>

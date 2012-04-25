@@ -1,0 +1,41 @@
+<%
+	/**
+	 * Created by The eXo Platform SARL
+	 * Author : Pham Dung Ha
+	 *          ha.pham@exoplatform.com
+	 * March 13, 2006
+	 * version: $Id$
+	 */
+%>
+<%
+  component = uicomponent.getUIComponent();
+  String maskId = uicomponent.getId() ;
+  def rcontext = _ctx.getRequestContext() ;
+	rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiMaskWorkspace', '/wiki/javascript/');	
+	rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiPagePreview', '/wiki/javascript/');	
+	
+	int width = uicomponent.getWindowWidth();
+	int height = uicomponent.getWindowHeight();
+	boolean isShow = uicomponent.isShow();
+	String id = uicomponent.getId();
+	
+	String init = "eXo.wiki.UIWikiMaskWorkspace.init('"+id+"', "+isShow+", "+width+", "+height+");";
+	String initHeight = "eXo.wiki.UIWikiPagePreview.init('"+id+"');";
+	String resize = "eXo.wiki.UIWikiMaskWorkspace.resetPosition('"+id+"');";
+	rcontext.getJavascriptManager().addCustomizedOnLoadScript(init) ;
+	rcontext.getJavascriptManager().addCustomizedOnLoadScript(initHeight) ;
+	rcontext.getJavascriptManager().addOnResizeJavascript("eXo.wiki.UIWikiMaskWorkspace.resetPosition") ;
+%>
+<div class="UIWikiMaskWorkspace" id="$maskId" style="display: none;">
+	<div class="ClearFix">
+	<% String action = "";
+	   if(component != null){
+		 action = component.getActions()[0];
+		 action = component.event(action);
+	   } 
+	%>
+		<a href="$action" class="CloseButton"><span></span></a>
+		<div class="PopupTitle"><%=_ctx.appRes("UIEditorTabs.action.PreviewPage")%></div>
+	</div>
+	<%uicomponent.renderChildren();%>
+</div>

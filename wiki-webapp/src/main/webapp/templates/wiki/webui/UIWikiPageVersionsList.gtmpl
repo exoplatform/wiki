@@ -1,0 +1,99 @@
+<%
+  import java.util.List;
+  import java.util.ArrayList;
+  import java.util.Locale;
+  import java.text.DateFormat;
+  import org.exoplatform.portal.webui.util.Util;
+  import org.exoplatform.wiki.mow.api.WikiNodeType;
+  import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+  import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
+  import org.exoplatform.wiki.webui.UIWikiPortlet;
+  import org.exoplatform.wiki.commons.Utils;
+%>
+<%
+	def rcontext = _ctx.getRequestContext() ;
+	rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiPageVersionsList', '/wiki/javascript/') ;
+	rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPageVersionsList.init(\""+uicomponent.id+"\");");
+  
+  Locale currentLocale = Util.getPortalRequestContext().getLocale();
+  List<NTVersion> versionsList = uicomponent.getVersionsList();
+  if(versionsList == null){
+    versionsList = new ArrayList<NTVersion>();
+  }
+  
+  String compareAction = uicomponent.COMPARE_ACTION;
+  
+  String anchor = "#" + compareAction;
+  String compareActionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + compareAction;
+  String compareActionLink = uicomponent.event(compareAction);
+%>
+<div class="UIWikiPageVersionsList UIAttachmentUploadContainer">
+ <% uiform.begin(); %>
+  <div class="HistoryLabel"><%= _ctx.appRes("UIWikiPageVersionsList.label.HistoryLabel"); %></div>
+	<div class="UIAction TextAlignLeft" >
+    <a href="javascript:void(0);" class="ActionButton LightBlueStyle RefreshModeTarget"><%= _ctx.appRes("UIWikiPageVersionsList.label.CompareSelected"); %></a>
+    <a onclick="$compareActionLink" id="$compareActionId" style="display:none;"></a> 
+  </div>
+    <table cellspacing="0" borderspacing="0" class="UIFormGrid">
+      <thead >
+        <tr>
+          <th style="width:30px"></th>
+          <th style="width: 15%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Revision"); %></th>
+          <th style="width: 20%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Date"); %></th>
+          <th style="width: 15%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Author"); %></th>
+          <th style="width: 35%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Summary"); %></th>
+          <th style="width: 10%; border-right: 1px solid #d7d7d7;"><%= _ctx.appRes("UIWikiPageVersionsList.label.Action"); %></th>
+        </tr>
+      </thead>
+      <tbody>
+      <%
+          int index = 0;
+          String rowClass;
+          boolean isCurrentVersion = true;
+          DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
+          for(version in versionsList){
+            index++;
+            if(index%2 == 1){
+              rowClass = "EvenRow";
+            }else{
+              rowClass = "OddRow";
+            }
+            if(index != 1){
+              isCurrentVersion = false;
+            }
+            NTFrozenNode frozenNode = version.getNTFrozenNode();
+            String versionNumber = version.getName();
+            String vertionId = uicomponent.VERSION_NAME_PREFIX + "_" + versionNumber;
+            String versionLabel = "v. " + versionNumber;
+            if(isCurrentVersion){
+              versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " (v. " + versionNumber + ")";
+            }
+            String author = Utils.getFullName(frozenNode.getAuthor());
+            String comment = frozenNode.getComment();
+            String viewLink = uicomponent.event(uicomponent.VIEW_REVISION, versionNumber);
+            String viewLinkId=  UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.VIEW_REVISION + "_" + versionNumber;
+        %>
+        <tr class="$rowClass">
+          <td>
+            <%
+              uicomponent.renderField(vertionId);
+            %>
+          </td>
+          <td class="Tit">
+            <label for="<%=versionNumber%>">
+	          	<a onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#<%=uicomponent.VIEW_REVISION%>_<%=versionNumber%>')" title="<%= _ctx.appRes("UIWikiPageVersionsList.label.ViewRevision"); %>" ><%= versionLabel %></a>
+	          	<a id="$viewLinkId" onclick="$viewLink" style="display:none"></a>
+          	</label>  
+          </td>
+          <td><%=df.format(frozenNode.getUpdatedDate())%></td>
+          <td><%=author%></td>
+          <td><%=((comment != null) ? comment : "")%></td>
+          <td class="Tit" style="border-right: 1px solid #d7d7d7;">
+          	<% uicomponent.renderRestoreRevisionActions(versionNumber); %>
+          </td>
+        </tr>
+        <%}%>
+      </tbody>
+    </table>
+ <% uiform.end();%>
+</div>

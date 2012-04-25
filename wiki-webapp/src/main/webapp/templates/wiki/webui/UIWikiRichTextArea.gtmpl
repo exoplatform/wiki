@@ -1,0 +1,18 @@
+<%
+  import org.exoplatform.wiki.service.WikiPageParams;
+  
+  def rcontext = _ctx.getRequestContext() ;
+  String restUrlToViewCurrentPage = uicomponent.getRestUrlToViewCurrentPage();
+  WikiPageParams wikiPageParams = uicomponent.getCurrentWikiPageParams();
+  String wikiType = wikiPageParams.getType();
+  String wikiOwner = wikiPageParams.getOwner();
+  String pageId = wikiPageParams.getPageId();
+  String selectedSyntax = uicomponent.getSyntax();
+  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiRichTextArea', '/wiki/javascript/') ;
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
+  
+%>
+<div class="UIWikiRichTextEditor">
+  <% uicomponent.renderChild(uicomponent.RICHTEXT_AREA_INPUT); %>
+</div>
+

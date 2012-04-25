@@ -1,0 +1,15 @@
+<%
+  def rcontext = _ctx.getRequestContext() ;
+  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIDropdownMenu', '/wiki/javascript/') ;
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIDropdownMenu.init(\""+uicomponent.id+"\");"); 
+%>
+<div id="$uicomponent.id" class="BrowseActionComponent HoverLink MoreLink Icon">
+    <%= _ctx.appRes("UIWikiToolBar.action.Browse") %>
+        <div class="HoverMenu BrowseMenu">
+			<% uicomponent.renderChildren(); %>
+        </div>
+</div>
+
+
+
+

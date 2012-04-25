@@ -1,0 +1,27 @@
+<%
+  def rcontext = _ctx.getRequestContext() ;
+  String inputId = uicomponent.TEXT;
+  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiAdvanceSearchForm', '/wiki/javascript/') ;
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiAdvanceSearchForm.init(\"" + inputId + "\");");
+%>
+
+<div class="UIWikiAdvanceSearchForm">
+	<% uiform.begin() %>
+		<div class="ClearFix">
+			<div class="SearchInfo">
+				<%uiform.renderChild("text")%>
+				<label><%=_ctx.appRes("UIWikiAdvanceSearchForm.label.wiki")%></label><%uiform.renderChild(uicomponent.WIKIS)%>
+			</div>
+			<div class="Button"> 			
+		    <% for(action in uicomponent.getActions()) { 
+		    	 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action); 
+		       String link = uicomponent.event(action) ;
+		    %>
+		    		<div class="SearchAction" onclick="$link" >	      	  	
+		          <a href="javascript:void(0);">$actionLabel</a>
+		        </div>
+		    <%}%>	     
+			</div>
+		</div>
+	<% uiform.end() %>
+</div>

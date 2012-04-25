@@ -1,0 +1,34 @@
+
+<% 
+import org.exoplatform.wiki.commons.Utils;
+ %>
+
+<%
+  def rcontext = _ctx.getRequestContext();
+  String titleId = uicomponent.getEditableFieldId();
+  String parentId = uicomponent.getParent().getId();
+  String inputId=  uicomponent.FIELD_TITLEINPUT;
+  
+  String showInputAction= uicomponent.event(uicomponent.CHANGE_TITLEMODE,'true'); 
+  String hideInputAction= uicomponent.event(uicomponent.CHANGE_TITLEMODE,'false');   
+  String submitAction= uicomponent.url(uicomponent.SAVE);  
+  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIFieldEditableForm', '/wiki/javascript/') ;
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIFieldEditableForm.init('"+ uicomponent.id + "', '" +parentId + "', '" +titleId +"', '" + inputId +"');"); 
+	%>
+
+<div class="UIFieldEditableForm">
+<% uiform.begin();%>
+ <%	List children = uicomponent.getChildren() ;
+    for(component in children) {
+      if(component.isRendered()){
+        uicomponent.renderChild(component.getClass()) ;
+      }
+    }
+	%>
+  <div class="LinkContainer">
+    <a onclick="$showInputAction" class="ShowInput" style="display:none;">&nbsp;</a>
+    <a onclick="$submitAction" class="SubmitLink" style="display:none;">&nbsp;</a>
+    <a onclick="$hideInputAction" class="HideInput" style="display:none;">&nbsp;</a>
+  </div>
+<% uiform.end();%>
+</div>

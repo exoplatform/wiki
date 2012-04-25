@@ -1,0 +1,16 @@
+<% String fieldName; %>
+<div class="UIForm $uicomponent.id">
+	<%uiform.begin()%>
+		<%
+		uiform.renderChildren();
+		%>
+			<div class="UIAction">
+      <% for(action in uicomponent.getActions()) { 
+									 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+									 String link = uicomponent.event(action);
+							%>
+      <a href="javascript:void(0);" onclick="$link" class="ActionButton LightBlueStyle">$actionLabel</a>
+      <%}%>		
+    </div>
+	<%uiform.end()%>
+</div>

@@ -1,0 +1,27 @@
+<% 
+ import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
+ %>
+<% 
+  def currentWikiPage = uicomponent.getCurrentPage();
+  _ctx.put("currentWikiPage", currentWikiPage);
+ %>
+
+<div class="UIWikiPageInfo" id="$uicomponent.id">
+  <table class="UIWikiPageInfoLayoutTable">
+    <tr class="UIWikiPageInfoLayoutRow">
+        <td class="UIWikiPageInfoLayoutCell">
+          <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoSummary.gtmpl"); %>
+          <% uicomponent.renderChild(UIRelatedPagesContainer.class); %>
+          
+          <% 
+            // _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoOutLink.gtmpl"); 
+          %>
+          
+        </td>
+        <td class="UIWikiPageInfoLayoutCell">
+          <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoHierarchy.gtmpl"); %>
+          <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoChanges.gtmpl"); %>
+        </td>
+    </tr>
+  </table>
+</div>

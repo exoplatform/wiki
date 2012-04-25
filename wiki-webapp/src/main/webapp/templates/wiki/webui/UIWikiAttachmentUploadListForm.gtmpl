@@ -1,0 +1,54 @@
+<%
+  import java.util.Locale;
+  import java.text.DateFormat;
+  import org.exoplatform.portal.webui.util.Util;
+  import java.net.URLEncoder;
+  import org.exoplatform.wiki.commons.Utils;
+  
+  Locale currentLocale = Util.getPortalRequestContext().getLocale();
+%>
+<div class="UIAttachmentUploadListForm">
+  <% uiform.begin(); %>
+    <div class="AttachmentTit"><%= _ctx.appRes("UIAttachmentUploadListForm.label.AttachmentTitle"); %></div>
+    <table cellspacing="1" cellpadding="0" border="0" class="UIFormGrid" style="*width:98%">
+      <thead>
+        <tr>
+          <th><%= _ctx.appRes("UIAttachmentUploadListForm.label.File"); %></th>
+          <th style="width: 30%"><%= _ctx.appRes("UIAttachmentUploadListForm.label.Creator"); %></th>
+          <th style="width: 150px;"><%= _ctx.appRes("UIAttachmentUploadListForm.label.LastUpdate"); %></th>
+          <th style="width:120px;"></th>
+        </tr>
+      </thead>
+      <tbody>
+    <%
+      attachments = uicomponent.getAttachmentsList();
+      int index = 0;
+      String rowClass;
+      DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
+      String creator;
+      String downloadLink;
+      
+      for(attachment in attachments){
+        index++;
+        if(index%2 == 1){
+          rowClass = "EvenRow";
+        } else {
+          rowClass = "OddRow";
+        }         
+        creator = Utils.getFullName(attachment.getCreator());
+        downloadLink = attachment.getDownloadURL();
+    %>
+        <tr class="$rowClass">
+          <td class="Tit">
+          	<a title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.DownloadAttachment"); %>" href="$downloadLink" onclick="window.open(this.href); return false;"><%= attachment.getFullTitle() %></a>
+          </td>
+          <td><%= creator %></td>
+          <td><%= df.format(attachment.getUpdatedDate().getTime())%></td>
+          <td><% uicomponent.renderActions(attachment.getName()); %> </td>
+        </tr>
+    <%}%>
+    
+      </tbody>
+    </table>
+  <% uiform.end();%>
+</div>

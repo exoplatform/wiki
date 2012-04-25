@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<page-set>
+  <page>
+    <name>homepage</name>
+    <title>Home Page</title>
+	<access-permissions>Everyone</access-permissions>
+	<edit-permission>*:/platform/administrators</edit-permission>
+    <portlet-application>
+      <portlet>
+        <application-ref>web</application-ref>
+        <portlet-ref>HomePagePortlet</portlet-ref>
+        <preferences>
+          <preference>
+            <name>template</name>
+            <value>system:/templates/home.gtmpl</value>
+            <read-only>false</read-only>
+          </preference>
+        </preferences>
+      </portlet>
+      <title>Home Page portlet</title>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>false</show-info-bar>
+      <show-application-state>false</show-application-state>
+      <show-application-mode>false</show-application-mode>
+    </portlet-application>
+  </page>  
+  <page>
+    <name>wiki</name>
+    <title>Wiki</title>
+    <access-permissions>Everyone</access-permissions>
+    <edit-permission>*:/platform/administrators</edit-permission>
+    <portlet-application>
+      <portlet>
+        <application-ref>wiki</application-ref>
+        <portlet-ref>WikiPortlet</portlet-ref>
+      </portlet>
+      <title>Wiki Portlet</title>
+      <access-permissions>Everyone</access-permissions>
+      <show-info-bar>false</show-info-bar>
+      <show-application-state>false</show-application-state>
+      <show-application-mode>false</show-application-mode>
+    </portlet-application>
+  </page>
+</page-set>
