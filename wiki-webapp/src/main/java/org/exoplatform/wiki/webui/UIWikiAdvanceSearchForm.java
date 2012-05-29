@@ -56,10 +56,11 @@ import org.exoplatform.wiki.utils.Utils;
       @EventConfig(listeners = UIWikiAdvanceSearchForm.SearchActionListener.class)            
     }
 )
-public class UIWikiAdvanceSearchForm extends UIForm {
-  public static final String TEXT  = "text";
 
-  public static final String WIKIS = "wikis";
+public class UIWikiAdvanceSearchForm extends UIForm {
+  final static String TEXT  = "text".intern();
+
+  final static String WIKIS = "wikis".intern();
   
   public UIWikiAdvanceSearchForm() throws Exception {
     addChild(new UIFormStringInput(TEXT, TEXT, null));
@@ -144,7 +145,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
       if (arrayParams.length >= 1) {
         wikiType = arrayParams[0];
         if (arrayParams.length >= 2)
-          wikiOwner = StringUtils.replace(path, wikiType + org.exoplatform.wiki.commons.Utils.SLASH, org.exoplatform.wiki.commons.Utils.EMPTY_STR);
+          wikiOwner = StringUtils.replace(path, wikiType + org.exoplatform.wiki.commons.Utils.SLASH, StringUtils.EMPTY);
       }
     }
     WikiSearchData data = new WikiSearchData(text, null, null, wikiType, wikiOwner);

@@ -93,8 +93,6 @@ public class Utils {
   
   public static final String SLASH = "/";
   
-  public static final String EMPTY_STR = "";
-  
   public static String getCurrentRequestURL() throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     HttpServletRequest request = portalRequestContext.getRequest();

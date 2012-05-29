@@ -51,11 +51,6 @@
   </component>
   
   <component>
-    <key>org.exoplatform.wiki.service.image.ResizeImageService</key>
-    <type>org.exoplatform.wiki.service.image.impl.ResizeImageServiceImpl</type>
-  </component>
-
-  <component>
     <key>org.exoplatform.wiki.service.DataStorage</key>
     <type>org.exoplatform.wiki.service.impl.JCRDataStorage</type>
   </component>
@@ -304,5 +299,7 @@
       <type>org.exoplatform.wiki.resolver.URLResolver</type>      
     </component-plugin>    
   </external-component-plugins>
+  
+  <import>jar:/conf/portal/wiki/cache-configuration.xml</import>
   
 </configuration>

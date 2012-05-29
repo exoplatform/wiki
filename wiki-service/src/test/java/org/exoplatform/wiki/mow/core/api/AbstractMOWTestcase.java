@@ -53,7 +53,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
 
   protected static StandaloneContainer  container;
 
-  protected final static String         KNOWLEDGE_WIKI           = "wiki".intern();
+  protected final static String         WIKI_WS           = "wiki".intern();
 
   protected static Node                 root_                  = null;
 
@@ -101,7 +101,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
     try {
       repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
       // Initialize datas
-      Session session = repositoryService.getCurrentRepository().getSystemSession(KNOWLEDGE_WIKI);
+      Session session = repositoryService.getCurrentRepository().getSystemSession(WIKI_WS);
       root_ = session.getRootNode();
       // Remove old data before to starting test case.
       StringBuffer stringBuffer = new StringBuffer();

@@ -19,11 +19,9 @@ package org.exoplatform.wiki.template.plugin;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
-import org.exoplatform.management.annotations.Managed;
-import org.exoplatform.management.annotations.ManagedDescription;
-import org.exoplatform.wiki.utils.ManagedPlugin;
 
 /**
  * Created by The eXo Platform SAS
@@ -31,9 +29,7 @@ import org.exoplatform.wiki.utils.ManagedPlugin;
  *          tu.duy@exoplatform.com
  * Jul 4, 2011  
  */
-@Managed
-@ManagedDescription("Plugin that allows to initialize default data for the template page")
-public class WikiTemplatePagePlugin extends ManagedPlugin {
+public class WikiTemplatePagePlugin extends BaseComponentPlugin {
   List<String> sourcePaths = new ArrayList<String>();
 
   @SuppressWarnings("unchecked")
@@ -42,8 +38,6 @@ public class WikiTemplatePagePlugin extends ManagedPlugin {
     sourcePaths.addAll(vlsParam.getValues());
   }
 
-  @Managed
-  @ManagedDescription("get all source path import default data template.")
   public List<String> getSourcePaths() {
     return this.sourcePaths;
   }

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.wiki</groupId>
     <artifactId>wiki</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>4.0-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-extension</artifactId>
   <packaging>pom</packaging>
