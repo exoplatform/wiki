@@ -36,7 +36,7 @@
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
     <org.chromattic.version>1.1.2</org.chromattic.version>
     <!--commons dependencies -->
-    <org.exoplatform.commons.version>1.1.8-SNAPSHOT</org.exoplatform.commons.version>    
+    <org.exoplatform.commons.version>4.0.0.Alpha1-SNAPSHOT</org.exoplatform.commons.version>    
     <!-- 3rd parties -->
     <org.codehaus.swizzle.version>1.6.1</org.codehaus.swizzle.version>
     <com.xpn.xwiki.platform.plugins.version>1.0</com.xpn.xwiki.platform.plugins.version>
