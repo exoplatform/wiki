@@ -3,7 +3,7 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.exoplatform.wiki</groupId>
-    <artifactId>wiki</artifactId>
+    <artifactId>wiki-parent</artifactId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-upgrade</artifactId>

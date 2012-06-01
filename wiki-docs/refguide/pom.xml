@@ -3,16 +3,16 @@
 
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.ks</groupId>
-    <artifactId>exo.ks.docs</artifactId>
-    <version>2.2.10-SNAPSHOT</version>
+    <groupId>org.exoplatform.wiki</groupId>
+    <artifactId>wiki-docs</artifactId>
+    <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
   
-  <artifactId>exo.ks.docs.refguide</artifactId>
+  <artifactId>wiki-docs-refguide</artifactId>
   <packaging>jar</packaging>
 
 
-  <name>eXo Knowledge reference guide</name>
+  <name>eXo Wiki reference guide</name>
 
   <properties>
     <wikbook.version>0.9.37</wikbook.version>
