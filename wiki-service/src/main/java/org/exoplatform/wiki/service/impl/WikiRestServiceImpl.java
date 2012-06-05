@@ -52,9 +52,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.MimeTypeResolver;
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
@@ -723,12 +723,13 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
    * "confluence/1.0" will be replaced to "confluenceSLASH1DOT0"
    *  
    * @param syntaxId The id of syntax to show in help page
+   * @param portalUrl The current portal url
    * @return The response that contains help page
    */
   @GET
   @Path("/help/{syntaxId}")
   @Produces(MediaType.TEXT_HTML)
-  public Response getHelpSyntaxPage(@PathParam("syntaxId") String syntaxId) {
+  public Response getHelpSyntaxPage(@PathParam("syntaxId") String syntaxId, @QueryParam("portalUrl") String portalUrl) {
     CacheControl cacheControl = new CacheControl();
     
     syntaxId = syntaxId.replace(Utils.SLASH, "/").replace(Utils.DOT, ".");
@@ -739,9 +740,21 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       }
       Page fullHelpPage = (Page) page.getChildPages().values().iterator().next();
       
+      // Build wiki context
+      if (!StringUtils.isEmpty(portalUrl)) {
+        RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
+            .getComponentInstanceOfType(RenderingService.class);
+        Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
+        if (ec.getContext() == null) {
+          ec.setContext(new ExecutionContext());
+        }
+        WikiContext wikiContext = new WikiContext();
+        wikiContext.setPortalURL(portalUrl);
+        wikiContext.setType(PortalConfig.PORTAL_TYPE);
+        ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
+      }
+      
       // Get help page body
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      RenderingService renderingService = (RenderingService) container.getComponentInstanceOfType(RenderingService.class);
       String body = renderingService.render(fullHelpPage.getContent().getText(), fullHelpPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
       
       // Create javascript to load css

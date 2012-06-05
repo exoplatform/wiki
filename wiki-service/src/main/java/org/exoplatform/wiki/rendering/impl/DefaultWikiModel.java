@@ -21,6 +21,7 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
@@ -137,6 +138,9 @@ public class DefaultWikiModel implements WikiModel {
         if (att != null) {
           sb.append(URLEncoder.encode(att.getName(), "UTF-8"));
         }
+      } else {
+        // If can not find the resource then return url empty
+        return StringUtils.EMPTY;
       }
     } catch (Exception e) {
       if (LOG.isDebugEnabled()) {
