@@ -39,7 +39,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
  * May 25, 2012  
  */
 public class WikiPermissionRepairPlugin extends UpgradeProductPlugin {
-  private static final Log Log = ExoLogger.getLogger(WikiPermissionRepairPlugin.class);
+  private static final Log LOG = ExoLogger.getLogger(WikiPermissionRepairPlugin.class);
 
   public WikiPermissionRepairPlugin(InitParams initParams) {
     super(initParams);
@@ -47,13 +47,13 @@ public class WikiPermissionRepairPlugin extends UpgradeProductPlugin {
 
   @Override
   public void processUpgrade(String oldVersion, String newVersion) {
-    Log.info("\n\nStart check and fix null entry permission of attachments...\n");
+    LOG.info("\n\nStart check and fix null entry permission of attachments...\n");
     try {
       fixPermissionEntryNull();
     } catch (Exception e) {
-      Log.warn("[WikiPermissionRepairPlugin] Exception when fix null entry permission of attachments for wiki:", e);
+      LOG.warn("[WikiPermissionRepairPlugin] Exception when fix null entry permission of attachments for wiki:", e);
     }
-    Log.info("\n\nFinish check and fix null entry permission of attachments...\n");
+    LOG.info("\n\nFinish check and fix null entry permission of attachments...\n");
   }
 
   @Override
@@ -67,7 +67,7 @@ public class WikiPermissionRepairPlugin extends UpgradeProductPlugin {
     ChromatticSession session = mowService.getSession();
     QueryResult<AttachmentImpl> attachmentIterator = session.createQueryBuilder(AttachmentImpl.class).where("jcr:path LIKE '/%' AND not(fn:name()='content')").get().objects();
     
-    Log.info("\nTotal attachments found: {}\n", attachmentIterator.size());
+    LOG.info("\nTotal attachments found: {}\n", attachmentIterator.size());
     int fixedAttachment = 0;
     while (attachmentIterator.hasNext()) {
       AttachmentImpl attachment = attachmentIterator.next();
@@ -82,9 +82,9 @@ public class WikiPermissionRepairPlugin extends UpgradeProductPlugin {
         }
         attachment.setPermission(permissions);
         fixedAttachment++;
-        Log.info("\nFixed attachment: {}/{}\n", fixedAttachment, attachmentIterator.size());
+        LOG.info("\nFixed attachment: {}/{}\n", fixedAttachment, attachmentIterator.size());
       } catch (Exception e) {
-        Log.warn(String.format("Can not repair the permission for attachment %s", attachment.getName()), e);
+        LOG.warn(String.format("Can not repair the permission for attachment %s", attachment.getName()), e);
       }
     }
     RequestLifeCycle.end();
