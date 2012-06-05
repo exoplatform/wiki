@@ -36,7 +36,6 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.portal.UIPortal;
@@ -148,7 +147,10 @@ public class Utils {
       sb.append(org.exoplatform.wiki.utils.Utils.validateWikiOwner(params.getType(), params.getOwner()));
       sb.append("/");
     }
-    sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
+    
+    if (params.getPageId() != null) {
+      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
+    }
     return sb.toString();
   }
   
@@ -262,8 +264,15 @@ public class Utils {
     } else {
       wikiContext.setPageId(params.getPageId());
     }
+    wikiContext.setBaseUrl(getBaseUrl());
 
     return wikiContext;
+  }
+  
+  public static String getBaseUrl() throws Exception {
+    WikiPageParams params = getCurrentWikiPageParams();
+    params.setPageId(null);
+    return getURLFromParams(params);
   }
   
   public static String getCurrentWikiNodeUri() throws Exception {    

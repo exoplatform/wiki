@@ -184,7 +184,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
                      .append("    <a class=\"SelectNode\" style=\"display:none\" href=\"http://localhost:8080/portal/classic/\" ></a>")
                      .append("    <div class=\"NodeGroup\">")
                      .append("      <script type=\"text/javascript\">")
-                     .append("        function initTree(){eXo.wiki.UITreeExplorer.init(\"PageTree123\",\"?path=portal/classic/rootPage&excerpt=false&depth=1\",false );}")
+                     .append("        function initTree(){eXo.wiki.UITreeExplorer.init(\"PageTree123\",\"?path=portal/classic/rootPage&excerpt=false&depth=1\",false, true,\"null\");}")
                      .append("        var isInIFrame = (window.location != window.parent.location) ? true : false;")
                      .append("        if (isInIFrame) {")
                      .append("          if (window.attachEvent) {window.attachEvent('onload', initTree);}")
@@ -196,6 +196,10 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
                      .append("    </div>")
                      .append("  </div>")
                      .append("</div>");
+    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + renderingService.render("{{pagetree /}}",
+        Syntax.XWIKI_2_0.toIdString(),
+        Syntax.XHTML_1_0.toIdString(),
+        false));
     assertEquals(xwikiExpectedHtml.toString(), renderingService.render("{{pagetree /}}",
                                                                        Syntax.XWIKI_2_0.toIdString(),
                                                                        Syntax.XHTML_1_0.toIdString(),
