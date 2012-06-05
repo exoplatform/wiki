@@ -196,10 +196,6 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
                      .append("    </div>")
                      .append("  </div>")
                      .append("</div>");
-    System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + renderingService.render("{{pagetree /}}",
-        Syntax.XWIKI_2_0.toIdString(),
-        Syntax.XHTML_1_0.toIdString(),
-        false));
     assertEquals(xwikiExpectedHtml.toString(), renderingService.render("{{pagetree /}}",
                                                                        Syntax.XWIKI_2_0.toIdString(),
                                                                        Syntax.XHTML_1_0.toIdString(),
