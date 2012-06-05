@@ -150,11 +150,9 @@ public class SaveTemplateActionComponent extends UIComponent {
           template.getContent().setText(markup);
           template.setSyntax(syntaxId);
           template.setNonePermission();
-          event.getRequestContext()
-               .getUIApplication()
-               .addMessage(new ApplicationMessage("SaveTemplateAction.msg.Create-template-successfully",
-                                                  msgArg,
-                                                  ApplicationMessage.INFO));
+          ApplicationMessage message = new ApplicationMessage("SaveTemplateAction.msg.Create-template-successfully", msgArg, ApplicationMessage.INFO);
+          message.setArgsLocalized(false);
+          event.getRequestContext().getUIApplication().addMessage(message);
         }
       } catch (Exception e) {
         log.error("An exception happens when saving the page with title:" + title, e);
