@@ -684,6 +684,10 @@ table.UIFormGrid div.Id {
 	width: auto;
 }
 
+.UIWikiPagePreview .UIWikiPortlet .WikiContent table {
+	width: auto;
+}
+
 .UIWikiPagePreview th {
 	border-right: 1px solid #dddddd;
 	background: #f5f5f5;
