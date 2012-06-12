@@ -7,7 +7,7 @@
     <version>7.1</version>
   </parent>
   <groupId>org.exoplatform.wiki</groupId>
-  <artifactId>wiki-parent</artifactId>
+  <artifactId>wiki</artifactId>
   <version>4.0.0.Alpha1-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>eXo Wiki</name>
