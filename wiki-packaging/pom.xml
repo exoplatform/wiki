@@ -19,7 +19,6 @@
   </dependencies>
 
   <modules>    
-    <module>wiki-packaging-assembly</module>
     <module>wiki-packaging-ear</module>
     <module>wiki-packaging-module</module>
     <module>wiki-packaging-product</module>

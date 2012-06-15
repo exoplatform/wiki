@@ -19,7 +19,6 @@ package org.exoplatform.wiki.service.impl;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
@@ -37,17 +36,18 @@ public class SessionCreatedListener extends Listener<PortalContainer, HttpSessio
 
   @Override
   public void onEvent(Event<PortalContainer, HttpSessionEvent> event) throws Exception {
-    if (LOG.isTraceEnabled()) {
-      LOG.trace("Adding the key: " + event.getData().getSession().getId());
+    if (LOG.isInfoEnabled()) {
+      LOG.info("Adding the key: " + event.getData().getSession().getId());
     }
     try {
-      SessionManager sessionManager = (SessionManager) RootContainer.getComponent(SessionManager.class);
+      SessionManager sessionManager = 
+          (SessionManager) event.getSource().getComponentInstanceOfType(SessionManager.class);
       sessionManager.addSessionContainer(event.getData().getSession().getId(), event.getSource().getName());
     } catch (Exception e) {
-      LOG.warn("Can't add the key: " + event.getData().getSession().getId(), e);
+      LOG.error("Can't add the key: " + event.getData().getSession().getId(), e);
     }
-    if (LOG.isTraceEnabled()) {
-      LOG.trace("Added the key: " + event.getData().getSession().getId());
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Added the key: " + event.getData().getSession().getId());
     }
   }
 }

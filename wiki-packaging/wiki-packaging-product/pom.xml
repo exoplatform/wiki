@@ -6,11 +6,11 @@
     <artifactId>wiki-packaging</artifactId>
     <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
-  <artifactId>portal.packaging.product</artifactId>
+  <artifactId>wiki.packaging.product</artifactId>
   <packaging>pom</packaging>
   <name>eXo Wiki Portal Packaging Product</name>
   <properties>
-    <exobuild.name>portal</exobuild.name>
+    <exobuild.name>wiki</exobuild.name>
     <exobuild.type>product</exobuild.type>
   </properties>
   <!-- Attach .js to the pom -->

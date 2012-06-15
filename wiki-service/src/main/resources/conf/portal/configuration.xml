@@ -25,6 +25,11 @@
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
    
   <component>
+    <key>org.exoplatform.wiki.service.impl.SessionManager</key>
+    <type>org.exoplatform.wiki.service.impl.SessionManager</type>
+  </component>   
+  
+  <component>
     <key>org.exoplatform.wiki.mow.core.api.MOWService</key>
     <type>org.exoplatform.wiki.mow.core.api.MOWService</type>
   </component>
@@ -300,6 +305,6 @@
     </component-plugin>    
   </external-component-plugins>
   
-  <import>jar:/conf/portal/wiki/cache-configuration.xml</import>
+  <import>jar:/conf/portal/cache-configuration.xml</import>
   
 </configuration>

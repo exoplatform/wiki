@@ -15,25 +15,25 @@ function getModule(params) {
 
   module.commons = {};
   module.commons.extension = 
-    new Project("org.exoplatform.commons", "exo.platform.commons.extension.webapp", "war", commonsVersion).
-      addDependency(new Project("org.exoplatform.commons", "exo.platform.commons.webui", "jar", commonsVersion));
-  module.commons.extension.deployName = "commons-extension";
+    new Project("org.exoplatform.commons", "commons-extension-webapp", "war", commonsVersion).
+      addDependency(new Project("org.exoplatform.commons", "commons-component-common", "jar", commonsVersion)).
+      addDependency(new Project("org.exoplatform.commons", "commons-webui-component", "jar", commonsVersion));
+  module.commons.extension.deployName = "wiki-commons-extension";
     
-  module.webuiExt = new Project("org.exoplatform.commons", "exo.platform.commons.webui.ext", "jar", commonsVersion);
+  module.webuiExt = new Project("org.exoplatform.commons", "commons-webui-ext", "jar", commonsVersion);
 
-  
   // Wiki
   module.rendering = new Project("org.exoplatform.wiki", "wiki-renderer", "jar", module.version).
                             addDependency(new Project("org.exoplatform.wiki", "wiki-macros-iframe", "jar", module.version));
   
-  //module.upgrade = new Project("org.exoplatform.commons", "exo.platform.commons.component.upgrade", "jar", commonsVersion).
-    //addDependency(new Project("org.exoplatform.commons", "exo.platform.commons.component.product", "jar", commonsVersion));
+  module.upgrade = new Project("org.exoplatform.commons", "commons-component-upgrade", "jar", commonsVersion).
+    addDependency(new Project("org.exoplatform.commons", "commons-component-product", "jar", commonsVersion));
   
   //WIKI
   module.wiki = 
     new Project("org.exoplatform.wiki", "wiki-webapp", "war", module.version).
     addDependency(new Project("org.exoplatform.wiki", "wiki-service", "jar",  module.version)).
-    //addDependency(new Project("org.exoplatform.wiki", "wiki-upgrade", "jar",  module.version)).
+    addDependency(new Project("org.exoplatform.wiki", "wiki-upgrade", "jar",  module.version)).
     addDependency(new Project("com.google.gwt", "gwt-servlet", "jar",  "${gwt.version}")).
     addDependency(new Project("com.google.gwt", "gwt-user", "jar",  "${gwt.version}")).
     addDependency(new Project("javax.inject", "javax.inject", "jar",  "${javax.inject.version}")).
@@ -80,11 +80,7 @@ function getModule(params) {
   module.server.tomcat = {}
   module.server.tomcat.patch =
     new Project("org.exoplatform.wiki", "wiki-server-tomcat-patch", "jar", module.version);
-	
-  module.server.jboss = {}
-  module.server.jboss.patchear =
-    new Project("org.exoplatform.wiki", "wiki-server-jboss-ear", "jar", module.version);
-   
+ 
   // Wiki demo 
   module.demo = {};
   // demo portal
@@ -93,8 +89,7 @@ function getModule(params) {
     addDependency(new Project("org.exoplatform.wiki", "wiki-injector", "jar", module.version)).
     addDependency(new Project("org.exoplatform.wiki", "wiki-demo-config", "jar", module.version));
   module.demo.portal.deployName = "wikidemo";
-	
-	   
+
   // demo rest endpoint	   
   module.demo.rest =
     new Project("org.exoplatform.wiki", "wiki-demo-rest", "war", module.version).
