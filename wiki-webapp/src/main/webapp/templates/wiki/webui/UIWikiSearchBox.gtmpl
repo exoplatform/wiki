@@ -7,6 +7,7 @@
   String restUrl= uicomponent.getContextSearchURL();
   rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiSearchBox', '/wiki/javascript/') ;
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
 %>
 <div class="UIWikiSearchBox">
   <% uiform.begin() %>
