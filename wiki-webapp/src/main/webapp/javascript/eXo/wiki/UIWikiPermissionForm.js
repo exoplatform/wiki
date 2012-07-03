@@ -96,7 +96,7 @@ UIWikiPermissionForm.prototype.untickCheckBoxes = function(id) {
     }
   }
   for ( var i = 0; i < unticklist.length; i++) {
-    var element = eXo.core.DOMUtil.findDescendantById(this.form, unticklist[i]);
+    var element = gj(this.form).find('#' + unticklist[i])[0];
     if (element && element.nodeType === 1) {
       // check for element
       if (element.tagName === "INPUT" && element.type === "checkbox") {
@@ -121,7 +121,7 @@ UIWikiPermissionForm.prototype.tickCheckBoxes = function(id) {
     }
   }
   for ( var i = 0; i < ticklist.length; i++) {
-    var element = eXo.core.DOMUtil.findDescendantById(this.form, ticklist[i]);
+    var element = gj(this.form).find('#' + ticklist[i])[0];
     if (element && element.nodeType === 1) {
       // check for element
       if (element.tagName === "INPUT" && element.type === "checkbox") {

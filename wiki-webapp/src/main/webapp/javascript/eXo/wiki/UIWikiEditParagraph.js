@@ -23,10 +23,10 @@ function UIWikiEditParagraph() {
 UIWikiEditParagraph.prototype.init = function(pageContentAreaId, editActionId) {
   var pageContentArea = document.getElementById(pageContentAreaId);
   var editAction = document.getElementById(editActionId);
-  var sections = eXo.core.DOMUtil.findDescendantsByClass(pageContentArea, 'span', 'EditSection');
+  var sections =  gj(pageContentArea).find('span.EditSection');
   for ( var index = 0; index < sections.length; index++) {
-    var editLink = eXo.core.DOMUtil.findDescendantsByTagName(sections[index], 'a')[0];
-    var linkLabel = eXo.core.DOMUtil.findDescendantsByTagName(editLink, 'span')[0];
+    var editLink =  gj(sections[index]).find('a')[0];
+    var linkLabel =  gj(editLink).find('span')[0];
     editLink.onclick = (function(sectionIndex) {
       return function() {
         eXo.wiki.UIWikiAjaxRequest.makeNewHash('#EditPage&section=' + sectionIndex);

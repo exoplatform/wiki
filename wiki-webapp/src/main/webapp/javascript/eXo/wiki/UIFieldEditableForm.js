@@ -27,27 +27,27 @@ UIFieldEditableForm.prototype.init = function(componentId, parentId, titleId,
     inputId) {
   var me = eXo.wiki.UIFieldEditableForm;
   me.parentComponent = document.getElementById(parentId);
-  me.component = eXo.core.DOMUtil.findDescendantById(me.parentComponent, componentId);
-  var titleControl = eXo.core.DOMUtil.findDescendantById(me.parentComponent, titleId);
+  me.component = gj(me.parentComponent).find('#'+ componentId)[0];
+  var titleControl = gj(me.parentComponent).find('#'+ titleId)[0];
   if (titleControl) {
     me.fieldValue = titleControl.firstChild.data;
   }
   
-  me.divTag = eXo.core.DOMUtil.findFirstChildByClass(me.component, "div", "LinkContainer");
-  me.inputControl = eXo.core.DOMUtil.findDescendantById(me.component, inputId);
-  me.showInputLink = eXo.core.DOMUtil.findFirstChildByClass(me.divTag, "a", "ShowInput");
-  me.submitLink = eXo.core.DOMUtil.findFirstChildByClass(me.divTag, "a", "SubmitLink");
-  eXo.core.Browser.eventListener(document, 'click', me.onClick);
+  me.divTag = gj(me.component).find('div.LinkContainer')[0];
+  me.inputControl = gj(me.component).find('#'+inputId)[0];
+  me.showInputLink = gj(me.divTag).find('a.ShowInput')[0];
+  me.submitLink = gj(me.divTag).find('a.SubmitLink')[0];
+  gj(document).click(me.onClick);
 
-  if (titleControl) {   
-    eXo.core.Browser.eventListener(titleControl, 'click', me.onClickToChangeTitle);
+  if (titleControl) {
+    gj(titleControl).click(me.onClickToChangeTitle);
   }
   if (me.inputControl) {
     me.inputControl.form.onsubmit = function() {
       return false;
     };
-    me.inputControl.focus();   
-    eXo.core.Browser.eventListener(me.inputControl, 'keyup', me.pressHandler);
+    me.inputControl.focus();
+    gj(me.inputControl).keyup(me.pressHandler);
   }
 };
 
@@ -62,8 +62,7 @@ UIFieldEditableForm.prototype.onClick = function(evt) {
   var evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (me.inputControl && target != me.inputControl && target != me.component) {
-    var hideInputLink = eXo.core.DOMUtil.findFirstDescendantByClass(
-        me.divTag, "a", "HideInput");
+    var hideInputLink = gj(me.divTag).find('a.HideInput')[0];
     hideInputLink.onclick();
   }
 };
@@ -71,7 +70,7 @@ UIFieldEditableForm.prototype.onClick = function(evt) {
 UIFieldEditableForm.prototype.pressHandler = function(evt) {
   var me = eXo.wiki.UIFieldEditableForm;
   evt = window.event || evt;
-  var keyNum = eXo.core.Keyboard.getKeynum(evt);
+  var keyNum = eXo.wiki.UIWikiPortlet.getKeynum(evt);
   if (evt.altKey || evt.ctrlKey || evt.shiftKey)
     return;
   switch (keyNum) {
@@ -100,8 +99,7 @@ UIFieldEditableForm.prototype.enterHandler = function(evt) {
     if (me.submitLink || me.submitLink.onclick)
       me.submitLink.onclick();
   } else {
-    var hideInputLink = eXo.core.DOMUtil.findFirstDescendantByClass(
-        me.divTag, "a", "HideInput");
+    var hideInputLink = gj(me.divTag).find('a.HideInput')[0];
     hideInputLink.onclick();
   }
 };

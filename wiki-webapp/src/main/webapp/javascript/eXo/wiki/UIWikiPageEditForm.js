@@ -22,8 +22,8 @@ function UIWikiPageEditForm() {
 
 UIWikiPageEditForm.prototype.editPageContent = function(pageEditFormId) {  
   var pageEditForm = document.getElementById(pageEditFormId);
-  var titleContainer = eXo.core.DOMUtil.findFirstDescendantByClass(pageEditForm, 'div', 'UIWikiPageTitleControlForm_PageEditForm');
-  var titleInput = eXo.core.DOMUtil.findDescendantsByTagName(titleContainer, 'input')[0];
+  var titleContainer = gj(pageEditForm).find('div.UIWikiPageTitleControlForm_PageEditForm')[0];
+  var titleInput = gj(titleContainer).find('input')[0];
 
   eXo.wiki.UIWikiPageEditForm.changed = false;
 
@@ -32,9 +32,9 @@ UIWikiPageEditForm.prototype.editPageContent = function(pageEditFormId) {
     titleInput.onchange = null;
   }
   
-  var textAreaContainer = eXo.core.DOMUtil.findFirstDescendantByClass(pageEditForm, 'div', 'UIWikiPageContentInputContainer');
+  var textAreaContainer = gj(pageEditForm).find('div.UIWikiPageContentInputContainer')[0];
   if (textAreaContainer != null) {
-    var textArea = eXo.core.DOMUtil.findDescendantsByTagName(textAreaContainer, 'textarea')[0];    
+    var textArea = gj(textAreaContainer).find('textarea')[0];
     textArea.onchange = function() {
       eXo.wiki.UIWikiPageEditForm.changed = true;
       textArea.onchange = null;

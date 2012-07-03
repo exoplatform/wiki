@@ -21,7 +21,6 @@
  * @author Lai Trung Hieu
  */
 
-eXo.require("eXo.core.Keyboard");
 
 function UIWikiSearchBox() {
   this.restURL = null;
@@ -33,6 +32,7 @@ function UIWikiSearchBox() {
 };
 
 UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLabel, wikiNodeURI) {
+
   this.wikiNodeURI = wikiNodeURI;
   var uiComponent = document.getElementById(componentId);
   var restInput = uiComponent["restURL"];
@@ -64,7 +64,7 @@ UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLa
 UIWikiSearchBox.prototype.pressHandler = function(evt, textbox) {
   var me = eXo.wiki.UIWikiSearchBox;
   evt = window.event || evt;
-  var keyNum = eXo.core.Keyboard.getKeynum(evt);
+  var keyNum = eXo.wiki.UIWikiPortlet.getKeynum(evt);
   if (evt.altKey || evt.ctrlKey || evt.shiftKey)
     return;
   switch (keyNum) {
@@ -130,30 +130,30 @@ UIWikiSearchBox.prototype.arrowUpHandler = function() {
   var me = eXo.wiki.UIWikiSearchBox;
   if (!me.currentItem) {
     me.currentItem = this.menu.lastChild;
-    eXo.core.DOMUtil.addClass(me.currentItem, "ItemOver");
+    gj(me.currentItem).hover();
     return;
   }
-  eXo.core.DOMUtil.replaceClass(me.currentItem, "ItemOver", "");
+  gj(me.currentItem).removeClass('ItemOver');
   if (me.currentItem.previousSibling)
     me.currentItem = me.currentItem.previousSibling;
   else
     me.currentItem = this.menu.lastChild;
-  eXo.core.DOMUtil.addClass(me.currentItem, "ItemOver");
+  gj(me.currentItem).addClass('ItemOver');
 };
 
 UIWikiSearchBox.prototype.arrowDownHandler = function() {
   var me = eXo.wiki.UIWikiSearchBox;
   if (!me.currentItem) {
     me.currentItem = this.menu.firstChild;
-    eXo.core.DOMUtil.addClass(me.currentItem, "ItemOver");
+    gj(me.currentItem).addClass('ItemOver');
     return;
   }
-  eXo.core.DOMUtil.replaceClass(me.currentItem, "ItemOver", "");
+  gj(me.currentItem).removeClass('ItemOver');
   if (me.currentItem.nextSibling)
     me.currentItem = me.currentItem.nextSibling;
   else
     me.currentItem = this.menu.firstChild;
-  eXo.core.DOMUtil.addClass(me.currentItem, "ItemOver");
+  gj(me.currentItem).addClass('ItemOver');
 };
 
 UIWikiSearchBox.prototype.typeHandler = function(textbox) {
@@ -162,18 +162,16 @@ UIWikiSearchBox.prototype.typeHandler = function(textbox) {
     eXo.wiki.UIWikiSearchBox.hideMenu();
     return;
   }
-  var url = this.restURL + keyword;
-  this.makeRequest(url, this.typeCallback);
-  
+  var url = this.restURL + keyword;  
   // Create loading
   var me = eXo.wiki.UIWikiSearchBox;
-  var searchBox = eXo.core.DOMUtil.findAncestorByClass(this.input, "UIWikiSearchBox");
-  this.searchPopup = eXo.core.DOMUtil.findFirstDescendantByClass(searchBox, "div", "SearchPopup");
+  var searchBox = gj(this.input).closest(".UIWikiSearchBox")[0];
+  this.searchPopup = gj(searchBox).find("div.SearchPopup")[0];
   this.searchPopup.style.display = "block";
   this.searchPopup.onmouseup = function(evt) {
     this.style.display = "none";
   }
-  this.menu = eXo.core.DOMUtil.findFirstDescendantByClass(this.searchPopup, "div", "SubBlock");
+  this.menu = gj(this.searchPopup).find("div.SubBlock")[0];
   this.menu.innerHTML = "";
 
   var textNode = document.createTextNode('');
@@ -189,35 +187,27 @@ UIWikiSearchBox.prototype.typeHandler = function(textbox) {
   searchItemNode.appendChild(searchText);  
   this.menu.insertBefore(searchItemNode, textNode);
   me.shortenWord(linkNode, searchText); 
+
+  this.makeRequest(url, this.typeCallback);
   this.menu.removeChild(this.menu.lastChild);
 };
 
 UIWikiSearchBox.prototype.makeRequest = function(url, callback) {
   var me = eXo.wiki.UIWikiSearchBox;
-  this.xhr = eXo.core.Browser.createHttpRequest();
-  this.xhr.open('GET', url, true);
-  this.xhr.setRequestHeader("Cache-Control", "max-age=86400");
-  this.xhr.onreadystatechange = function() {
-    if (me.xhr.readyState == 4 && me.xhr.status == 200) {
-      if (callback)
-        callback(me.xhr.responseText);
-    }
-  }
-  me.xhr.send(null);
+  gj.get(url,{},function(data) {
+    callback(data);
+  });  
 };
 
 UIWikiSearchBox.prototype.typeCallback = function(data) {
   if (!data)
     return;
-  eval("var data = " + data.trim());
-  if (typeof (data) != "object")
-    return;
   eXo.wiki.UIWikiSearchBox.renderMenu(data);
 };
 
 UIWikiSearchBox.prototype.doAdvanceSearch = function() {
-  var action = eXo.core.DOMUtil.findAncestorByClass(this.input, "SearchForm");
-  action = eXo.core.DOMUtil.findFirstChildByClass(action, "a", "AdvancedSearch");
+  var action = gj(this.input).closest('.SearchForm')[0];
+  action = gj(action).find('a.AdvancedSearch')[0];
   eXo.wiki.UIWikiAjaxRequest.makeNewHash('#AdvancedSearch');
   action.onclick();
 }
@@ -228,8 +218,8 @@ UIWikiSearchBox.prototype.doAdvanceSearch = function() {
 
 UIWikiSearchBox.prototype.renderMenu = function(data) {
   var me = eXo.wiki.UIWikiSearchBox;
-  var searchBox = eXo.core.DOMUtil.findAncestorByClass(this.input, "UIWikiSearchBox");
-  this.searchPopup = eXo.core.DOMUtil.findFirstDescendantByClass(searchBox, "div", "SearchPopup");
+  var searchBox = gj(this.input).closest('.UIWikiSearchBox');
+  this.searchPopup = gj(searchBox).find('div.SearchPopup')[0];
   this.searchPopup.style.display = "block";
   this.searchPopup.onmouseup = function(evt) {
     this.style.display = "none";
@@ -237,7 +227,7 @@ UIWikiSearchBox.prototype.renderMenu = function(data) {
     if (evt.stopPropagation())
       evt.stopPropagation();
   }
-  this.menu = eXo.core.DOMUtil.findFirstDescendantByClass(this.searchPopup, "div", "SubBlock");
+  this.menu = gj(this.searchPopup).find('div.SubBlock')[0];
   var resultLength = data.jsonList.length;
   this.menu.innerHTML = "";
 

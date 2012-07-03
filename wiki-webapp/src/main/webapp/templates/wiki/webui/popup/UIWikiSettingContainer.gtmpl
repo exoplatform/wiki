@@ -3,7 +3,6 @@
   
   def rcontext = _ctx.getRequestContext();
   JavascriptManager jsmanager = rcontext.getJavascriptManager();
-  jsmanager.importJavascript('eXo.wiki.UIWikiSettingContainer', '/wiki/javascript/') ;
   jsmanager.addJavascript("eXo.wiki.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
 %>
 

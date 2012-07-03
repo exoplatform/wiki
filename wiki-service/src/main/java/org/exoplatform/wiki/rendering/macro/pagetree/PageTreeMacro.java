@@ -134,11 +134,10 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
     StringBuilder treeSb = new StringBuilder();
     StringBuilder initSb = new StringBuilder();
     TreeNode node = TreeUtils.getTreeNode(params);
-    WikiContext wikiContext = getWikiContext();   
-    String treeID = "PageTree"+ wikiContext.getPageTreeId();
+    WikiContext wikiContext = getWikiContext();
     String treeRestURI = wikiContext.getTreeRestURI();
     String redirectURI = wikiContext.getRedirectURI();
-    String baseUrl = wikiContext.getBaseUrl();
+    String baseURL = wikiContext.getBaseUrl();
     
     initSb.append("?")
           .append(TreeNode.PATH)
@@ -152,34 +151,18 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
           .append(TreeNode.DEPTH)
           .append("=")
           .append(startDepth);
-    treeSb.append("<div class=\"UITreeExplorer\" id =\"").append(treeID).append("\">")
+    treeSb.append("<div class=\"UITreeExplorer PageTreeMacro\">")
           .append("  <div>")
           .append("    <input class=\"ChildrenURL\" title=\"hidden\" type=\"hidden\" value=\"").append(treeRestURI).append("\" />")
+          .append("    <input class=\"InitParams\" title=\"hidden\" type=\"hidden\" value=\"").append(initSb.toString()).append("\" />")
+          .append("    <input class=\"BaseURL\" title=\"hidden\" type=\"hidden\" value=\"").append(baseURL).append("\" />")
           .append("    <a class=\"SelectNode\" style=\"display:none\" href=\"").append(redirectURI).append("\" ></a>")
-          .append(buildHierachyNode(treeID, initSb.toString(), baseUrl))                
           .append("  </div>")
           .append("</div>");
     RawBlock testRaw = new RawBlock(treeSb.toString(), XHTML_SYNTAX);
     return testRaw;
-  }  
-
-  public String buildHierachyNode(String treeId, String initParam, String baseUrl) throws Exception {
-    StringBuilder sb = new StringBuilder();
-    sb.append("    <div class=\"NodeGroup\">")
-      .append("      <script type=\"text/javascript\">")
-      .append("        function initTree(){eXo.wiki.UITreeExplorer.init(\"" + treeId + "\",\"" + initParam + "\",false, true,\"" + baseUrl + "\");}")
-      .append("        var isInIFrame = (window.location != window.parent.location) ? true : false;")
-      .append("        if (isInIFrame) {")
-      .append("          if (window.attachEvent) {window.attachEvent('onload', initTree);}")
-      .append("          else if (window.addEventListener) {window.addEventListener('load', initTree, false);}")
-      .append("            else {document.addEventListener('load', initTree, false);}")      
-      .append("        }")
-      .append("        else { eXo.core.Browser.addOnLoadCallback(\"init" + treeId + "\",initTree);}")
-      .append("      </script>");
-    sb.append("    </div>");
-    return sb.toString();
   }
- 
+
   private WikiContext getWikiContext() {
     ExecutionContext ec = execution.getContext();
     if (ec != null) {

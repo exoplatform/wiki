@@ -1,6 +1,5 @@
 <%
-  def rcontext = _ctx.getRequestContext() ;
-  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIDropdownMenu', '/wiki/javascript/') ;
+  def rcontext = _ctx.getRequestContext() ;  
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIDropdownMenu.init(\""+uicomponent.id+"\");"); 
 %>
 <div id="$uicomponent.id" class="BrowseActionComponent HoverLink MoreLink Icon">

@@ -21,7 +21,6 @@
  * @author Lai Trung Hieu
  */
 
-eXo.require("eXo.core.Keyboard");
 
 function UIWikiTemplateForm() {
 };
@@ -29,7 +28,7 @@ function UIWikiTemplateForm() {
 UIWikiTemplateForm.prototype.init = function(componentid, inputId) {
   var me = eXo.wiki.UIWikiTemplateForm;
   me.component = document.getElementById(componentid);
-	var input = eXo.core.DOMUtil.findDescendantById(me.component, inputId);
+  var input = gj(me.component).find('#'+inputId)[0];
   input.setAttribute('autocomplete', 'off');
   input.onkeyup = function(evt) {
     evt = window.event || evt;
@@ -43,7 +42,7 @@ UIWikiTemplateForm.prototype.init = function(componentid, inputId) {
 UIWikiTemplateForm.prototype.pressHandler = function(evt, textbox) {
   var me = eXo.wiki.UIWikiTemplateForm;
   evt = window.event || evt;
-  var keyNum = eXo.core.Keyboard.getKeynum(evt);
+  var keyNum = eXo.wiki.UIWikiPortlet.getKeynum(evt);
   if (evt.altKey || evt.ctrlKey || evt.shiftKey)
     return;
   switch (keyNum) {
@@ -89,7 +88,7 @@ UIWikiTemplateForm.prototype.typeHandler = function(textbox) {
 UIWikiTemplateForm.prototype.doAdvanceSearch = function() {
 	var me = eXo.wiki.UIWikiTemplateForm;
 	if (me.component) {
-  	var action = eXo.core.DOMUtil.findFirstDescendantByClass(me.component, "a", "SearchButton");
+  	var action = gj(me.component).find('a.SearchButton')[0];
   	action.onclick();
   }
 }

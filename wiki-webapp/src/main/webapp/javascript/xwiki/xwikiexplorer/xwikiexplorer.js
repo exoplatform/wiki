@@ -18,6 +18,8 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
+window.onload=function(){
+
 if (typeof XWiki == "undefined") {
     alert("ERROR: xwikiexplorer.js depends on xwiki.js");
 }
@@ -1108,3 +1110,4 @@ isc.XWETreeGrid.addMethods({
         return this.getSelectedRecord().isNewAttachment;
     }
 });
+}

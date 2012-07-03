@@ -60,7 +60,7 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
     SessionManager sessionManager;
     String sessionId = getThreadLocalRequest().getSession(false).getId();
     try {
-      sessionManager = (SessionManager) RootContainer.getComponent(SessionManager.class);
+      sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
       portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(sessionId));
     } catch (Exception e) {
       return RPC.encodeResponseForFailure(null, e);

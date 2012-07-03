@@ -1,7 +1,8 @@
 <%
   def rcontext = _ctx.getRequestContext() ;  
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.makeRenderingErrorsExpandable('"+uicomponent.id+ "');");
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.decorateSpecialLink('"+uicomponent.id+ "');");
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.decorateSpecialLink('"+uicomponent.id+ "');");    
+  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.initMacros();");
   String msg = _ctx.appRes("UIWikiContentDisplay.msg.invalid-characters-in-link");
   msg = msg.replace("{0}",uicomponent.INVALID_CHARACTERS);  
 %>

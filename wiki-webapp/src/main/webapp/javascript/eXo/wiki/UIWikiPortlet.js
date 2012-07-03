@@ -36,21 +36,14 @@ UIWikiPortlet.prototype.init = function(portletId, linkId) {
     me.changeMode(event);
   };*/
 
-  /*if (document.attachEvent)
-    me.wikiportlet.attachEvent("onmouseup", me.onMouseUp);
-  else
-    me.wikiportlet.onmouseup = function(event) {
-      me.onMouseUp(event);
-    };
-  me.wikiportlet.onkeyup = function(event) {
-    me.onKeyUp(event);
-  };*/
+  gj(me.wikiportlet).mouseup(me.onMouseUp);
+  /*gj(me.wikiportlet).keyup(me.onKeyUp);*/
 }
 
 UIWikiPortlet.prototype.changeWindowTite = function(elm) {
   if(elm) {
-    var breadCrumb = eXo.core.DOMUtil.findFirstDescendantByClass(elm, 'div', 'UIWikiBreadCrumb');
-    var selected = eXo.core.DOMUtil.findFirstDescendantByClass(breadCrumb, 'a', 'Selected');
+    var breadCrumb = gj(elm).find('div.UIWikiBreadCrumb')[0];
+    var selected = gj(breadCrumb).find('a.Selected')[0];
     if(selected) {
       top.document.title = selected.innerHTML;
     }
@@ -63,17 +56,17 @@ UIWikiPortlet.prototype.onMouseUp = function(evt) {
   var target = evt.target || evt.srcElement;
   if (evt.button == 2)
     return;
-  var searchPopup = eXo.core.DOMUtil.findFirstDescendantByClass(me.wikiportlet, "div", "SearchPopup");
+  var searchPopup = gj(me.wikiportlet).find('div.SearchPopup')[0];
   if (searchPopup)
     searchPopup.style.display = 'none';
   var breadCrumbPopup = eXo.wiki.UIWikiPortlet.getBreadcrumbPopup();
   if (breadCrumbPopup) {
     breadCrumbPopup.style.display = 'none';
   }
-  if (target.tagName == "A" || (target.tagName == "INPUT" && target.type == "button") || target.tagName == "SELECT"
+  /*if (target.tagName == "A" || (target.tagName == "INPUT" && target.type == "button") || target.tagName == "SELECT"
       || target.tagName == "DIV" && target.className.indexOf("RefreshModeTarget") > 0) {
     eXo.wiki.UIWikiPortlet.changeMode(evt);
-  }
+  }*/
 }
 
 UIWikiPortlet.prototype.onKeyUp = function(evt) {
@@ -122,11 +115,10 @@ UIWikiPortlet.prototype.showPopup = function(elevent, e) {
   if (!e)
     e = window.event;
   e.cancelBubble = true;
-  var parend = eXo.core.DOMUtil.findAncestorByTagName(elevent, "div");
-  var popup = eXo.core.DOMUtil.findFirstDescendantByClass(parend, "div", "UIPopupCategory");
+  var parent = gj(elevent).closest('div');
+  var popup = gj(parent).find('div.UIPopupCategory')[0];
   if (popup.style.display === "none") {
     popup.style.display = "block";
-    eXo.core.DOMUtil.listHideElements(popup);
   } else {
     popup.style.display = "none";
   }
@@ -143,19 +135,20 @@ UIWikiPortlet.prototype.cancel = function(evt) {
 UIWikiPortlet.prototype.renderBreadcrumbs = function(uicomponentid, isLink) {
   var me = eXo.wiki.UIWikiPortlet;
   var component = document.getElementById(uicomponentid);
-  var DOMUtil = eXo.core.DOMUtil;
-  var breadcrumb = DOMUtil.findFirstDescendantByClass(component, 'div', 'BreadcumbsInfoBar');
-  var breadcrumbPopup = DOMUtil.findFirstDescendantByClass(component, 'div', 'SubBlock');
-  // breadcrumbPopup = DOMUtil.findFirstDescendantByClass(breadcrumbPopup, 'div', 'SubBlock');
-  var itemArray = DOMUtil.findDescendantsByTagName(breadcrumb, "a");
+  var breadcrumb = gj(component).find('div.BreadcumbsInfoBar')[0];
+  var breadcrumbPopup = gj(component).find('div.SubBlock')[0];
+  var itemArray = gj(breadcrumb).find('a');
   var shortenFractor = 3 / 4;
-  itemArray.shift();
-  var ancestorItem = itemArray.shift();
-  var lastItem = itemArray.pop();
+  itemArray.splice(0,1);
+  var ancestorItem = itemArray.get(0);
+  itemArray.splice(0,1);
+  var lastItem = itemArray.get(itemArray.length-1);
+  itemArray.splice(itemArray.length-1,1);
   if (lastItem == undefined){
     return;
   }
-  var parentLastItem = itemArray.pop();
+  var parentLastItem = itemArray.get(itemArray.length-1);
+  itemArray.splice(itemArray.length-1,1);
   if(parentLastItem == undefined) {
     return;
   }
@@ -165,19 +158,19 @@ UIWikiPortlet.prototype.renderBreadcrumbs = function(uicomponentid, isLink) {
   while (breadcrumb.offsetWidth > shortenFractor * breadcrumb.parentNode.offsetWidth) {
     if (itemArray.length > 0) {
       var arrayLength = itemArray.length;
-      var item = itemArray.pop();
+      var item = itemArray.splice(itemArray.length-1,1)[0];
       popupItems.push(item);
       if (firstTime) {
         firstTime = false;
-        var newItem = item.cloneNode(true);
+        var newItem = gj(item).clone()[0];
         newItem.innerHTML = ' ... ';
         if (isLink) {
           newItem.href = '#';
-          eXo.core.Browser.eventListener(newItem, 'mouseover', me.showBreadcrumbPopup);
+          gj(newItem).mouseover(me.showBreadcrumbPopup);
         }
         breadcrumb.replaceChild(newItem, item);
       } else {
-        var leftBlock = DOMUtil.findPreviousElementByTagName(item, 'div');
+        var leftBlock = gj(item).prev('div')[0];
         breadcrumb.removeChild(leftBlock);
         breadcrumb.removeChild(item);
       }
@@ -238,7 +231,7 @@ UIWikiPortlet.prototype.shortenUntil = function(item, condition) {
 
 UIWikiPortlet.prototype.getBreadcrumbPopup = function() {
   var breadcrumb = document.getElementById("UIWikiBreadCrumb");
-  var breadcrumbPopup = eXo.core.DOMUtil.findFirstDescendantByClass(breadcrumb, 'div', 'BreadcumPopup');
+  var breadcrumbPopup = gj(breadcrumb).find('div.BreadcumPopup')[0];
   return breadcrumbPopup;
 };
 
@@ -247,7 +240,7 @@ UIWikiPortlet.prototype.showBreadcrumbPopup = function(evt) {
   var ellipsis = evt.target || evt.srcElement;
   var isRTL = eXo.core.I18n.isRT();
   var offsetLeft = eXo.core.Browser.findPosX(ellipsis, isRTL) - 20;
-  var offsetTop = eXo.core.Browser.findPosY(ellipsis) + 20;
+  var offsetTop = gj(ellipsis).offset().top + 20;
   breadcrumbPopup.style.zIndex= '100';
   breadcrumbPopup.style.display = 'block';
   breadcrumbPopup.style.left = offsetLeft + 'px';
@@ -256,8 +249,8 @@ UIWikiPortlet.prototype.showBreadcrumbPopup = function(evt) {
 
 
 UIWikiPortlet.prototype.highlightEditSection = function (header, highlight) {
-  var sectionContainer = eXo.core.DOMUtil.findAncestorByClass(header, 'section-container');
-  var section = eXo.core.DOMUtil.findFirstDescendantByClass(header, 'span', 'EditSection');
+  var sectionContainer = gj(header).closest('.section-container')[0];
+  var section = gj(header).find('span.EditSection')[0];
   if (highlight == true) {
     section.style.display = 'block';
     sectionContainer.style.backgroundColor = '#F7F7F7';
@@ -286,20 +279,19 @@ UIWikiPortlet.prototype.urlHistory = function (uicomponentId) {
 
 UIWikiPortlet.prototype.makeRenderingErrorsExpandable = function (uicomponentId) {
   var uicomponent = document.getElementById(uicomponentId);
-  var DOMUtil = eXo.core.DOMUtil;
   if(uicomponent) {
-    var renderingErrors = DOMUtil.findDescendantsByClass(uicomponent,"span","xwikirenderingerror" );
+    var renderingErrors = gj(uicomponent).find('span.xwikirenderingerror');
     for (i=0;i<renderingErrors.length;i++) {
     var renderingError = renderingErrors[i];
     var descriptionError = renderingError.nextSibling;
-    if (descriptionError.innerHTML !== "" && DOMUtil.hasClass(descriptionError,"xwikirenderingerrordescription")) {
+    if (descriptionError.innerHTML !== "" && gj(descriptionError).hasClass('xwikirenderingerrordescription')) {
       renderingError.style.cursor="pointer";
       renderingError.onclick = function(event){
-        if(!DOMUtil.hasClass(this.nextSibling,"hidden")) {
+        if(!gj(this.nextSibling).hasClass("hidden")) {
           this.nextSibling.className += ' ' + "hidden";
         }
         else {
-          DOMUtil.removeClass(this.nextSibling, "hidden");
+          gj(this.nextSibling).removeClass("hidden");
           }
         };
       }
@@ -308,16 +300,14 @@ UIWikiPortlet.prototype.makeRenderingErrorsExpandable = function (uicomponentId)
 };
 
 UIWikiPortlet.prototype.decorateSpecialLink = function(uicomponentId) {
-  var DOMUtil = eXo.core.DOMUtil;
   var uicomponent = document.getElementById(uicomponentId);
-  var invalidChars = DOMUtil.findFirstDescendantByClass(uicomponent, "div",
-      "InvalidChars");
+  var invalidChars = gj(uicomponent).find('div.InvalidChars');
   var invalidCharsMsg = invalidChars.innerText;
   if (!invalidCharsMsg || typeof(invalidCharsMsg) == "undefined") {
     invalidCharsMsg = invalidChars.textContent;
   }
   if (uicomponent) {
-    var linkSpans = DOMUtil.findDescendantsByClass(uicomponent, "span", "wikicreatelink");
+    var linkSpans = gj(uicomponent).find('span.wikicreatelink');
     for (i = 0; i < linkSpans.length; i++) {
       var linkSpan = linkSpans[i];
       var pageLink = linkSpan.childNodes[0];
@@ -339,7 +329,26 @@ UIWikiPortlet.prototype.keepSessionAlive = function(isKeepSessionAlive) {
     eXo.session.initialized = false;
     eXo.session.openUrl = null;
   }
-}
+};
+
+UIWikiPortlet.prototype.initMacros = function() {
+  eXo.wiki.UIRelated.initMacros();
+  eXo.wiki.UITreeExplorer.initMacros();
+};
+
+UIWikiPortlet.prototype.getKeynum = function(event) {
+  var keynum = false ;
+  if(window.event) { /* IE */
+    keynum = window.event.keyCode;
+    event = window.event ;
+  } else if(event.which) { /* Netscape/Firefox/Opera */
+    keynum = event.which ;
+  }
+  if(keynum == 0) {
+    keynum = event.keyCode ;
+  }
+  return keynum ;
+};
 
 eXo.wiki.UIWikiPortlet = new UIWikiPortlet();
 

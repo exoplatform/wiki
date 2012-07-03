@@ -178,22 +178,12 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     wikiContext.setPageId("rootPage");
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     StringBuilder xwikiExpectedHtml = new StringBuilder();
-    xwikiExpectedHtml.append("<div class=\"UITreeExplorer\" id =\"PageTree123\">")
+    xwikiExpectedHtml.append("<div class=\"UITreeExplorer PageTreeMacro\">")
                      .append("  <div>")
                      .append("    <input class=\"ChildrenURL\" title=\"hidden\" type=\"hidden\" value=\"/wiki/tree/children/\" />")
+                     .append("    <input class=\"InitParams\" title=\"hidden\" type=\"hidden\" value=\"?path=portal/classic/rootPage&excerpt=false&depth=1\" />")
+                     .append("    <input class=\"BaseURL\" title=\"hidden\" type=\"hidden\" value=\"http://localhost:8080/portal/classic/wiki\" />")
                      .append("    <a class=\"SelectNode\" style=\"display:none\" href=\"http://localhost:8080/portal/classic/\" ></a>")
-                     .append("    <div class=\"NodeGroup\">")
-                     .append("      <script type=\"text/javascript\">")
-                     .append("        function initTree(){eXo.wiki.UITreeExplorer.init(\"PageTree123\",\"?path=portal/classic/rootPage&excerpt=false&depth=1\",false, true,\"null\");}")
-                     .append("        var isInIFrame = (window.location != window.parent.location) ? true : false;")
-                     .append("        if (isInIFrame) {")
-                     .append("          if (window.attachEvent) {window.attachEvent('onload', initTree);}")
-                     .append("          else if (window.addEventListener) {window.addEventListener('load', initTree, false);}")
-                     .append("            else {document.addEventListener('load', initTree, false);}")
-                     .append("        }")
-                     .append("        else { eXo.core.Browser.addOnLoadCallback(\"initPageTree123\",initTree);}")
-                     .append("      </script>")
-                     .append("    </div>")
                      .append("  </div>")
                      .append("</div>");
     assertEquals(xwikiExpectedHtml.toString(), renderingService.render("{{pagetree /}}",
@@ -254,10 +244,10 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     wikiContext.setTreeRestURI("/wiki/tree/children/");
     wikiContext.setRedirectURI("http://localhost:8080/portal/classic/");
     wikiContext.setPortletURI("wiki");
+    wikiContext.setBaseUrl("http://localhost:8080/portal/classic/wiki");
     wikiContext.setType("portal");
     wikiContext.setOwner("classic");
     wikiContext.setPageId("WikiHome");
-    wikiContext.setPageTreeId("123");
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
   }
   

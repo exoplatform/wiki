@@ -45,12 +45,10 @@ UIWikiSavePage.prototype.disableButton = function(parent, action) {
   if (isNeedToSynchronize == false) {
     return;
   }
-  
-  var DOMUtil = eXo.core.DOMUtil;
   for (i = 0; i < this.disableClass.length; i++) {
-    var buttons = DOMUtil.findDescendantsByClass(parent, "a", this.disableClass[i]);
+    var buttons = gj(parent).find('a.'+this.disableClass[i])[0];
     for (k = 0; k < buttons.length; k++) {
-      DOMUtil.addClass(buttons[k], "DisableButton");
+      gj(buttons[k]).addClass("DisableButton");
       buttons[k].href = "javascript:void(0);";
       buttons[k].onclick = "return false;";
     }

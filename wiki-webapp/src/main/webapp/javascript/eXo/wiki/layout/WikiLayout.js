@@ -19,8 +19,7 @@
 if (!eXo.wiki) {
   eXo.wiki = {};
 };
-
-eXo.require("eXo.core.Browser"); 
+ 
 
 function WikiLayout() {
   this.posX = 0;
@@ -54,18 +53,17 @@ WikiLayout.prototype.init = function(prtId) {
   
   try{
     if(prtId.length > 0) this.portletId = prtId;
-    var isIE = (eXo.core.Browser.getBrowserType() == "ie") ? true : false;
+    var isIE = (gj.browser.msie != undefined)
     var idPortal = (isIE) ? 'UIWorkingWorkspace' : 'UIPortalApplication';
     this.portal = document.getElementById(idPortal);
     var portlet = document.getElementById(this.portletId);
-    var DOMUtil = eXo.core.DOMUtil;
-    var wikiLayout = DOMUtil.findFirstDescendantByClass(portlet, "div", "UIWikiMiddleArea");
-    this.layoutContainer = DOMUtil.findFirstDescendantByClass(wikiLayout, "div", "WikiLayout");
-    this.spliter = DOMUtil.findFirstDescendantByClass(this.layoutContainer, "div", "Spliter");
-    this.verticalLine = DOMUtil.findFirstDescendantByClass(this.layoutContainer, "div", "VerticalLine");
+    var wikiLayout = gj(portlet).find('div.UIWikiMiddleArea')[0];
+    this.layoutContainer = gj(wikiLayout).find('div.WikiLayout')[0];
+    this.spliter = gj(this.layoutContainer).find('div.Spliter')[0];
+    this.verticalLine = gj(this.layoutContainer).find('div.VerticalLine')[0];
     if (this.spliter) {
-      this.leftArea = DOMUtil.findPreviousElementByTagName(this.spliter, "div");
-      this.rightArea = DOMUtil.findNextElementByTagName(this.spliter, "div");
+      this.leftArea = gj(this.spliter).prev('div')[0];
+      this.rightArea = gj(this.spliter).next('div')[0];
       var leftWidth = eXo.core.Browser.getCookie("leftWidth");
       if (this.leftArea && this.rightArea && (leftWidth != null) && (leftWidth != "") && (leftWidth * 1 > 0)) {
         this.leftArea.style.width = leftWidth + 'px';
@@ -106,7 +104,7 @@ WikiLayout.prototype.processeWithHeight = function() {
 
 WikiLayout.prototype.setWithLayOut = function() {
   var WikiLayout = eXo.wiki.WikiLayout;
-  var maxWith = WikiLayout.layoutContainer.offsetWidth;
+  var maxWith = gj(WikiLayout.layoutContainer).width();
   var lWith = 0;
   if (WikiLayout.leftArea && WikiLayout.spliter) {
     lWith = WikiLayout.leftArea.offsetWidth + WikiLayout.spliter.offsetWidth;
@@ -121,14 +119,14 @@ WikiLayout.prototype.setHeightLayOut = function() {
   var layout = eXo.wiki.WikiLayout.layoutContainer;
   var hdef = document.documentElement.clientHeight - layout.offsetTop;
   var hct = hdef * 1;
-  layout.style.height = hdef + "px";
+  gj(layout).css('height', hdef + 'px');
   var delta = WikiLayout.heightDelta();
   if(delta > hdef) {
     WikiLayout.setClassBody(WikiLayout.bodyClass);
   }
   while ((delta = WikiLayout.heightDelta()) > 0 && hdef > delta) {
     hct = hdef - delta;
-    layout.style.height = (hct + "px");
+    gj(layout).css('height', hct + "px");
     hdef = hdef - 2;
   }
   
@@ -138,7 +136,7 @@ WikiLayout.prototype.setHeightLayOut = function() {
   } else if (WikiLayout.verticalLine) {
     WikiLayout.verticalLine.style.height = hct + "px";
   }
-
+  
   if (WikiLayout.rightArea) {
     WikiLayout.rightArea.style.height = hct + "px";
   }
@@ -148,12 +146,11 @@ WikiLayout.prototype.setHeightLayOut = function() {
 
 WikiLayout.prototype.setHeightRightContent = function() {
   var WikiLayout = eXo.wiki.WikiLayout;
-  var DOMUtil = eXo.core.DOMUtil;
   if(!WikiLayout.layoutContainer) WikiLayout.init('');
-  var pageArea = DOMUtil.findFirstDescendantByClass(WikiLayout.rightArea, "div", "UIWikiPageArea");
+  var pageArea =  gj(WikiLayout.rightArea).find('div.UIWikiPageArea')[0];
   if(pageArea) {
-    var bottomArea = DOMUtil.findFirstDescendantByClass(WikiLayout.rightArea, "div", "UIWikiBottomArea");
-    var pageContainer = DOMUtil.findFirstDescendantByClass(WikiLayout.rightArea, "div", "UIWikiPageContainer");
+    var bottomArea = gj(WikiLayout.rightArea).find('div.UIWikiBottomArea')[0];
+    var pageContainer = gj(WikiLayout.rightArea).find('div.UIWikiPageContainer')[0];
     if(bottomArea) {
       var pageAreaHeight = (WikiLayout.rightArea.offsetHeight - bottomArea.offsetHeight - WikiLayout.bottomPadding);
       if ((pageAreaHeight > pageArea.offsetHeight) && (pageAreaHeight > WikiLayout.min_height)) {
@@ -171,7 +168,8 @@ WikiLayout.prototype.exeRowSplit = function(e) {
   var WikiLayout = eXo.wiki.WikiLayout;
   WikiLayout.posX = _e.clientX;
   WikiLayout.posY = _e.clientY;
-  if (WikiLayout.leftArea && WikiLayout.rightArea && WikiLayout.leftArea.style.display != "none"
+  if (WikiLayout.leftArea && WikiLayout.rightArea
+      && WikiLayout.leftArea.style.display != "none"
       && WikiLayout.rightArea.style.display != "none") {
     WikiLayout.adjustHorizon();
   }
@@ -200,13 +198,13 @@ WikiLayout.prototype.adjustWidth = function(evt) {
 
 WikiLayout.prototype.clear = function() {
  if(eXo.wiki.WikiLayout.leftArea) {
-  eXo.core.Browser.setCookie("leftWidth", eXo.wiki.WikiLayout.leftArea.offsetWidth, 1);
-  document.onmousemove = null;
+   eXo.core.Browser.setCookie("leftWidth", eXo.wiki.WikiLayout.leftArea.offsetWidth, 1);
+   document.onmousemove = null;
  }
 };
 
 WikiLayout.prototype.heightDelta = function() {
-  return this.portal.offsetHeight - document.documentElement.clientHeight;
+  return gj(this.portal).height() - document.documentElement.clientHeight;
 };
 
 eXo.wiki.WikiLayout = new WikiLayout();

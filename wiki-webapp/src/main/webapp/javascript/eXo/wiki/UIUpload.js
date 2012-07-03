@@ -17,8 +17,7 @@
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
 
-if(!eXo.wiki) eXo.wiki = {};
-eXo.require("eXo.core.Browser"); 
+if(!eXo.wiki) eXo.wiki = {}; 
 
 function UIUpload() {
   this.listUpload = new Array();
@@ -112,10 +111,10 @@ UIUpload.prototype.createUploadEntryForFF = function(idoc, uploadId, isAutoUploa
 
 UIUpload.prototype.getUploadContent = function(uploadId, uploadAction, isAutoUpload) {
   var container = parent.document.getElementById(uploadId);
-  var uploadIframe = eXo.core.DOMUtil.findDescendantById(container, uploadId + "UploadIframe");
+  var uploadIframe = gj(container).find('#'+uploadId+ 'UploadIframe')[0];
   var uploadText = uploadIframe.title;
   var delta = 6;
-  if (eXo.core.Browser.getBrowserType() == "ie") delta = 9;
+  if (gj.browser.msie !=undefined) delta = 9;
   var size = String(uploadText).length;
   if (size < 21) {
     size = 1;
@@ -177,21 +176,21 @@ UIUpload.prototype.refeshProgress = function(elementId) {
     var container = parent.document.getElementById(elementId);
     if (response.upload[id].status == "failed") {
       this.abortUpload(id);
-      var message = eXo.core.DOMUtil.findFirstChildByClass(container, "div", "LimitMessage").innerHTML ;
+      var message = gj(container).find('div.LimitMessage')[0].innerHTML;
       alert(message.replace("{0}", response.upload[id].size)) ;
 //      alert(response.upload[id].message);
       continue;
     }
     var element = document.getElementById(id+"ProgressIframe");
     var percent  =   response.upload[id].percent;
-    var progressBarMiddle = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "ProgressBarMiddle") ;
-    var blueProgressBar = eXo.core.DOMUtil.findFirstChildByClass(progressBarMiddle, "div", "BlueProgressBar") ;
-    var progressBarLabel = eXo.core.DOMUtil.findFirstChildByClass(blueProgressBar, "div", "ProgressBarLabel") ;
+    var progressBarMiddle = gj(container).find('div.ProgressBarMiddle')[0];
+    var blueProgressBar = gj(progressBarMiddle).find('div.BlueProgressBar')[0];
+    var progressBarLabel = gj(blueProgressBar).find('div.ProgressBarLabel')[0];
     blueProgressBar.style.width = percent + "%" ;
     progressBarLabel.innerHTML = percent + "%" ;
     
     if(percent == 100) {
-      var postUploadActionNode = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "PostUploadAction") ;
+      var postUploadActionNode = gj(container).find('div.PostUploadAction')[0];
       if(postUploadActionNode) {
         eXo.wiki.UIUpload.listUpload.remove(elementId);
         postUploadActionNode.onclick();
@@ -219,16 +218,16 @@ UIUpload.prototype.showUploaded = function(id, fileName) {
   var element = document.getElementById(id+"ProgressIframe");
   element.innerHTML =  "<span></span>";
   
-  var uploadIframe = eXo.core.DOMUtil.findDescendantById(container, id+"UploadIframe");
+  var uploadIframe = gj(container).find('#'+id+'UploadIframe')[0];
   uploadIframe.style.display = "none";
-  var progressIframe = eXo.core.DOMUtil.findDescendantById(container, id+"ProgressIframe");
+  var progressIframe = gj(container).find('#'+id+'ProgressIframe')[0];
   progressIframe.style.display = "none";
     
-  var selectFileFrame = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "SelectFileFrame") ;
+  var selectFileFrame = gj(container).find('div.SelectFileFrame')[0];
   // selectFileFrame.style.display = "block" ;
-  var fileNameLabel = eXo.core.DOMUtil.findFirstDescendantByClass(selectFileFrame, "div", "FileNameLabel") ;
+  var fileNameLabel = gj(selectFileFrame).find('div.FileNameLabel')[0];
   if(fileName != null) fileNameLabel.innerHTML += " " + fileName;
-  var progressBarFrame = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "ProgressBarFrame") ;
+  var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
   progressBarFrame.style.display = "none" ;
   var tmp = element.parentNode;
   var temp = tmp.parentNode;
@@ -245,25 +244,20 @@ UIUpload.prototype.abortUpload = function(id) {
   var url = eXo.env.server.context + "/upload?" ;
   url += "uploadId=" +id+"&action=abort" ;
 //  var url = eXo.env.server.context + "/upload?uploadId=" +id+"&action=abort" ;
-  var request =  eXo.core.Browser.createHttpRequest();
-  request.open('GET', url, false);
-  request.setRequestHeader("Cache-Control", "max-age=86400");
-  request.send(null);
+  gj.get(url);
   
   var container = parent.document.getElementById(id);
-  var uploadIframe =  eXo.core.DOMUtil.findDescendantById(container, id+"UploadIframe");
+  var uploadIframe = gj(container).find('#'+id+'UploadIframe')[0];
   uploadIframe.style.display = "block";
   eXo.wiki.UIUpload.createUploadEntry(id, UIUpload.isAutoUpload);
-  var progressIframe = eXo.core.DOMUtil.findDescendantById(container, id+"ProgressIframe");
+  var progressIframe = gj(container).find('#'+id+"ProgressIframe")[0];
   progressIframe.style.display = "none";
 
   var tmp = progressIframe.parentNode;
   var temp = tmp.parentNode;
-//  var child = eXo.core.DOMUtil.getChildrenByTagName(temp,"label");
-//  child[0].style.visibility =  "visible" ;
-  var progressBarFrame = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "ProgressBarFrame") ;
+  var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
   progressBarFrame.style.display = "none" ;
-  var selectFileFrame = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "SelectFileFrame") ;
+  var selectFileFrame = gj(container).find('div.SelectFileFrame')[0];
   selectFileFrame.style.display = "none" ;
    
   var  input = parent.document.getElementById('input' + id);
@@ -277,23 +271,19 @@ UIUpload.prototype.deleteUpload = function(id) {
   var url = eXo.env.server.context + "/upload?";
   url += "uploadId=" +id+"&action=delete" ;
 //  var url = eXo.env.server.context + "/upload?uploadId=" +id+"&action=delete" ;
-  var request =  eXo.core.Browser.createHttpRequest();
-  request.open('GET', url, false);
-  request.setRequestHeader("Cache-Control", "max-age=86400");
-  request.send(null);
-  var DOMUtil = eXo.core.DOMUtil;
+  gj.get(url);  
   var container = parent.document.getElementById(id);
-  var uploadIframe =  DOMUtil.findDescendantById(container, id+"UploadIframe");
+  var uploadIframe =  gj(container).find('#'+id+'UploadIframe')[0];
   uploadIframe.style.display = "block";
   eXo.wiki.UIUpload.createUploadEntry(id, UIUpload.isAutoUpload);
-  var progressIframe = DOMUtil.findDescendantById(container, id+"ProgressIframe");
+  var progressIframe = gj(container).find('#'+id+'ProgressIframe')[0];
   progressIframe.style.display = "none";
 
   var tmp = progressIframe.parentNode;
   var temp = tmp.parentNode;
-  var progressBarFrame = DOMUtil.findFirstDescendantByClass(container, "div", "ProgressBarFrame") ;
+  var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
   progressBarFrame.style.display = "none" ;
-  var selectFileFrame = DOMUtil.findFirstDescendantByClass(container, "div", "SelectFileFrame") ;
+  var selectFileFrame = gj(container).find('div.SelectFileFrame')[0];
   selectFileFrame.style.display = "none" ;
    
   var  input = parent.document.getElementById('input' + id);
@@ -306,14 +296,13 @@ UIUpload.prototype.deleteUpload = function(id) {
  * @param {String} id
  */
 UIUpload.prototype.upload = function(clickEle, id) {
-  var DOMUtil = eXo.core.DOMUtil;  
   var container = parent.document.getElementById(id);  
   var uploadFrame = parent.document.getElementById(id+"uploadFrame");
   var form = uploadFrame.contentWindow.document.getElementById(id);
 
-  var file  = DOMUtil.findDescendantById(form, "WikiUploadFile");
+  var file  = gj(form).find('#WikiUploadFile')[0];
   if(file.value == null || file.value == '') return;  
-  var infoUploaded = eXo.core.DOMUtil.findFirstDescendantByClass(container, "div", "FileNameLabel") ;
+  var infoUploaded = gj(container).find('div.FileNameLabel')[0];
   var temp = file.value;
 
   if (temp.indexOf('/') != -1) {
@@ -326,20 +315,20 @@ UIUpload.prototype.upload = function(clickEle, id) {
   
   infoUploaded.innerHTML = temp ;
 
-  var progressBarFrame = DOMUtil.findFirstDescendantByClass(container, "div", "ProgressBarFrame") ;
+  var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
   progressBarFrame.style.display = "block" ;  
-  var progressBarMiddle = DOMUtil.findFirstDescendantByClass(container, "div", "ProgressBarMiddle") ;
-  var blueProgressBar = DOMUtil.findFirstChildByClass(progressBarMiddle, "div", "BlueProgressBar") ;
-  var progressBarLabel = DOMUtil.findFirstChildByClass(blueProgressBar, "div", "ProgressBarLabel") ;
+  var progressBarMiddle = gj(container).find('div.ProgressBarMiddle')[0];
+  var blueProgressBar = gj(progressBarMiddle).find('div.BlueProgressBar')[0];
+  var progressBarLabel = gj(blueProgressBar).find('div.ProgressBarLabel')[0];
   blueProgressBar.style.width = "0%" ;
   progressBarLabel.innerHTML = "0%" ;
   
   var  input = parent.document.getElementById('input' + id);
   input.value = "true";
   
-  var uploadIframe = DOMUtil.findDescendantById(container, id+"UploadIframe");
+  var uploadIframe = gj(container).find('#'+id+'UploadIframe')[0];
   uploadIframe.style.display = "none";
-  var progressIframe = DOMUtil.findDescendantById(container, id+"ProgressIframe");
+  var progressIframe = gj(container).find('#'+id+'ProgressIframe')[0];
   progressIframe.style.display = "none";
 
   var tmp = progressIframe.parentNode;

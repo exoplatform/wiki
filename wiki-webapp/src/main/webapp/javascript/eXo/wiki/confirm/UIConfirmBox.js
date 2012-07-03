@@ -34,27 +34,24 @@ UIConfirmBox.prototype.render = function(uicomponentId, titleMessage, message,
   var submitAction = document.getElementById(uicomponentId);
   
   me.confirmBox = document.createElement('div');
-  eXo.core.DOMUtil.addClass(me.confirmBox, 'ConfirmBox');
-  me.confirmBox.setAttribute('align', 'center');
+  gj(me.confirmBox).addClass('ConfirmBox').attr('align', 'center');
 
   var confirmBar = document.createElement('div');
-  eXo.core.DOMUtil.addClass(confirmBar, 'ConfirmBar');
+  gj(confirmBar).addClass('ConfirmBar');
 
   var confirmTitle = document.createElement('div');
-  eXo.core.DOMUtil.addClass(confirmTitle, 'ConfirmTitle');
+  gj(confirmTitle).addClass('ConfirmTitle');
   confirmTitle.appendChild(document.createTextNode(titleMessage));
   confirmBar.appendChild(confirmTitle);
 
   var closeButton = document.createElement('a');
-  eXo.core.DOMUtil.addClass(closeButton, 'CloseButton');
-  closeButton.setAttribute('href',
-      'javascript:eXo.wiki.UIConfirmBox.closeConfirm()');
+  gj(closeButton).addClass('CloseButton').attr("href", "javascript:eXo.wiki.UIConfirmBox.closeConfirm()");
   confirmBar.appendChild(closeButton);
   me.confirmBox.appendChild(confirmBar);
 
   var container = document.createElement('div');
   var divMessage = document.createElement('div');
-  eXo.core.DOMUtil.addClass(divMessage, 'ConfirmMessage');
+  gj(divMessage).addClass('ConfirmMessage')
   divMessage.appendChild(document.createTextNode(message));
   container.appendChild(divMessage);
   if (submitAction && submitLabel) {
@@ -75,7 +72,7 @@ UIConfirmBox.prototype.createInput = function(container, action, message) {
   input.setAttribute('value', message);
   input.setAttribute('type', 'button');
 
-  eXo.core.Browser.eventListener(input, 'click', function(event) {
+  gj(input).click(function(event) {
     if (action && action.href){
         window.location = action.href;
       }
@@ -91,7 +88,7 @@ UIConfirmBox.prototype.closeConfirm = function() {
     this.maskLayer = null;
   }
   if (me.confirmBox) {
-    eXo.core.DOMUtil.removeElement(me.confirmBox);
+    gj(me.confirmBox).remove();
     me.confirmBox = null;
   }
 };

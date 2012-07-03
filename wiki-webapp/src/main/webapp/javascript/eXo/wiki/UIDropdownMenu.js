@@ -31,7 +31,7 @@ UIDropdownMenu.prototype.init = function(componentid){
 UIDropdownMenu.prototype.hover = function(event){
 	var ev = window.event || event ;
   var evType = String(ev.type);
-  var menu = eXo.core.DOMUtil.findFirstDescendantByClass(this, "div","HoverMenu");
+  var menu =  gj(this).find('div.HoverMenu')[0];
   if (evType == "mouseover" || evType == "onfocus"){
     menu.style.display="block";
   } else{

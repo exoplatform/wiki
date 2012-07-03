@@ -76,11 +76,9 @@ UIWikiAdvanceSearchForm.prototype.captureKey = function(e) {
 };
 
 UIWikiAdvanceSearchForm.prototype.enterHandler = function(evt, textbox) {
-
-  var uiform = eXo.core.DOMUtil.findAncestorByClass(textbox,
-      "UIWikiAdvanceSearchForm");
-  var list = eXo.core.DOMUtil.findDescendantsByClass(uiform, "div",
-      "SearchAction");
+;
+  var uiform = gj(textbox).find('.UIWikiAdvanceSearchForm')[0];
+  var list = gj(uiform).find('div.SearchAction')[0];
   list[0].onclick();
 
 };

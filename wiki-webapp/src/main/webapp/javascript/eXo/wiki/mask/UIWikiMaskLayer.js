@@ -52,10 +52,11 @@ UIWikiMaskLayer.prototype.createTransparentMask = function() {
 	Browser.addOnScrollCallback("5439383", eXo.wiki.UIWikiMaskLayer.setPosition) ;
 							
 	ajaxLoading.style.display = "none";
-	Browser.setOpacity(maskLayer,0);
-	maskLayer.style.backgroundColor = "white";
-	maskLayer.style.cursor = "wait";
-	
+	gj(maskLayer).css({
+    opacity : 0,
+    backgroundColor : 'white',
+    cursor : 'wait'
+  });	
 	return maskLayer;
 };
 
@@ -65,8 +66,10 @@ UIWikiMaskLayer.prototype.createTransparentMask = function() {
 UIWikiMaskLayer.prototype.showAjaxLoading = function(mask){
 	var ajaxLoading = document.getElementById("AjaxLoadingMask");
 	ajaxLoading.style.display = "block";
-	eXo.core.Browser.setOpacity(mask,30);
-	mask.style.backgroundColor = "black";	
+	gj(mask).css({
+    opacity : 0.3,
+    backgroundColor : 'black'
+  });
 }
  
 /**
@@ -128,15 +131,17 @@ UIWikiMaskLayer.prototype.createMask = function(blockContainerId, object, opacit
 		maskLayer.className = "MaskLayer" ;
 		maskLayer.id = "MaskLayer" ;
 		maskLayer.maxZIndex = 4; //3 ;
-		maskLayer.style.width = Browser.getBrowserWidth() + "px";
-		maskLayer.style.height = Browser.getBrowserHeight() + "px";
+		maskLayer.style.width = gj(document).width() + "px";
+		maskLayer.style.height = gj(document).height() + "px";
 		maskLayer.style.top = "0px" ;
 		maskLayer.style.left = "0px" ;
 		maskLayer.style.zIndex = maskLayer.maxZIndex ;
 
-		if(opacity) {
-	    	Browser.setOpacity(maskLayer, opacity) ;
-		}
+    if (opacity) {
+      gj(maskLayer).css({
+        opacity : opacity
+      });
+    }
 																		
 		if(object != null){
 			if(object.nextSibling) {
@@ -177,7 +182,6 @@ UIWikiMaskLayer.prototype.createMask = function(blockContainerId, object, opacit
 //TODO: Temporary use
 UIWikiMaskLayer.prototype.createMaskForFrame = function(blockContainerId, object, opacity) {
 	try {
-		var Browser = eXo.core.Browser ;
 		if(typeof(blockContainerId) == "string") blockContainerId = document.getElementById(blockContainerId) ;
 		var blockContainer = blockContainerId ;
 		var maskLayer = document.createElement("div") ;
@@ -186,12 +190,14 @@ UIWikiMaskLayer.prototype.createMaskForFrame = function(blockContainerId, object
 		maskLayer.id = object.id + "MaskLayer" ;
 		maskLayer.maxZIndex = 3 ;
 		maskLayer.style.width = blockContainer.offsetWidth + "px"  ;
-		maskLayer.style.height =  blockContainer.offsetHeight + eXo.core.Browser.findPosY(blockContainer) + "px"  ;
+		maskLayer.style.height =  blockContainer.offsetHeight + eXo.core.Browser.findPosYInContainer(blockContainer,document) + "px"  ;
 		maskLayer.style.top = "0px" ;
 		maskLayer.style.left = "0px" ;
 		maskLayer.style.zIndex = maskLayer.maxZIndex ;
 		if(opacity) {
-	    Browser.setOpacity(maskLayer, opacity) ;
+		  gj(maskLayer).css({
+        opacity : opacity
+      });
 		}
 		
 		if(object != null){
@@ -243,7 +249,6 @@ UIWikiMaskLayer.prototype.doScroll = function() {
  */
 UIWikiMaskLayer.prototype.setPosition = function() {
 	var UIWikiMaskLayer = eXo.wiki.UIWikiMaskLayer ;
-	var Browser = eXo.core.Browser ;
 	var object = UIWikiMaskLayer.object ;
 	var blockContainer = UIWikiMaskLayer.blockContainer ;
 	var position = UIWikiMaskLayer.position ;
@@ -264,13 +269,13 @@ UIWikiMaskLayer.prototype.setPosition = function() {
 		return ;
 	} else if (position == "BOTTOM-LEFT") {
 	  left = 0 ;
-	  top = Browser.getBrowserHeight() - object.offsetHeight + topPos ;
+	  top = gj(document).height() - object.offsetHeight + topPos ;
 	} else if (position == "BOTTOM-RIGHT") {
 	  left = blockContainer.offsetWidth - object.offsetWidth ;
-	  top = Browser.getBrowserHeight() - object.offsetHeight + topPos ;
+	  top = gj(document).height() - object.offsetHeight + topPos ;
 	} else {
 	  left = (blockContainer.offsetWidth - object.offsetWidth) / 2 ;
-	  top = (Browser.getBrowserHeight() - object.offsetHeight) / 2 +  topPos ;
+	  top = (gj(document).height() - object.offsetHeight) / 2 +  topPos ;
 	}
 	
 	object.style.left = left + "px" ;
@@ -318,8 +323,8 @@ UIWikiMaskLayer.prototype.enablePageDesktop = function(enabled) {
 UIWikiMaskLayer.prototype.resizeMaskLayer = function() {
 	var maskLayer = document.getElementById("MaskLayer");
 	if (maskLayer) {
-		maskLayer.style.width = eXo.core.Browser.getBrowserWidth() + "px";
-		maskLayer.style.height = eXo.core.Browser.getBrowserHeight() + "px";
+		maskLayer.style.width = gj(document).width() + "px";
+		maskLayer.style.height = gj(document).height() + "px";
 	}
 };
 

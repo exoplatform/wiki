@@ -1,51 +1,64 @@
+function UIRelated() {
+};
 
-function UIRelated() {};
-
-UIRelated.prototype.init = function (componentid) {
-	var DOMUtil = eXo.core.DOMUtil;
+UIRelated.prototype.initMacros = function() {
 	var me = eXo.wiki.UIRelated;
-	var relatedBlock = document.getElementById(componentid);
-	var infoElement = DOMUtil.findFirstDescendantByClass(relatedBlock, "input", "info");
-	var restUrl = infoElement.getAttribute("restUrl");
-	var redirectTempl = infoElement.getAttribute("redirectUrl");
-	var request =  eXo.core.Browser.createHttpRequest();
-	request.open('GET', restUrl, false);
-	request.setRequestHeader("Cache-Control", "max-age=86400") ;
-	request.send(null);
-	var dataList = eXo.core.JSON.parse(request.responseText);
-	relatedList = dataList.jsonList;
-	var docFrag = me.initRelatedDOM(relatedList, redirectTempl);
-	relatedBlock.appendChild(docFrag);
-};
-
-
-UIRelated.prototype.initRelatedDOM = function (dataList, redirectUrl) {
-	var docFrag = document.createDocumentFragment();
-	for (var i = 0; i < relatedList.length; i++) {
-		var relatedItem = relatedList[i];
-		var nodeGroupDiv = document.createElement("div");
-		nodeGroupDiv.className = "NodeGroup";
-		var nodeDiv = document.createElement("div");
-		nodeGroupDiv.className = "Page TreeNodeType Node";		
-		
-		var labelDiv = document.createElement("div");
-		labelDiv.className = "NodeLabel";
-		var a = document.createElement("a");
-		if (redirectUrl && relatedItem.identity != null) {
-			var relatedLink = redirectUrl + "&objectId=" + encodeURIComponent(relatedItem.identity);
-			a.href = relatedLink;
+	var relatedBlocks = gj(".RelatedMacro");
+	var editForm = document.getElementById('UIWikiPageEditForm');
+	if (editForm != null) {
+		var ifm = gj(editForm).find('iframe.gwt-RichTextArea')[0];
+		if (ifm != null) {
+		var innerDoc = ifm.contentDocument || ifm.contentWindow.document;
+		relatedBlocks = gj.merge(relatedBlocks, gj(innerDoc).find(
+				".RelatedMacro"));
 		}
-		if (relatedItem.title) { 
-			a.setAttribute("title", relatedItem.title);
-			a.appendChild(document.createTextNode(relatedItem.title));
-		}
-		labelDiv.appendChild(a);
-		nodeDiv.appendChild(labelDiv);
-		nodeGroupDiv.appendChild(nodeDiv);
-		docFrag.appendChild(nodeGroupDiv);
 	}
-	return docFrag;
+	for ( var i = 0; i < relatedBlocks.length; i++) {
+		var relatedBlock = relatedBlocks[i];
+		var infoElement = gj(relatedBlock).find('input.info')[0];
+		var restUrl = infoElement.getAttribute("restUrl");
+		var redirectTempl = infoElement.getAttribute("redirectUrl");
+		gj.ajax({
+			async : false,
+			url : restUrl,
+			type : 'GET',
+			data : '',
+			success : function(data) {
+				var docFrag = me.initRelatedDOM(data.jsonList, redirectTempl);
+				relatedBlock.appendChild(docFrag);
+			}
+		});
+
+	}
 };
 
+UIRelated.prototype.initRelatedDOM = function(relatedList, redirectUrl) {
+  var docFrag = document.createDocumentFragment();
+  for ( var i = 0; i < relatedList.length; i++) {
+    var relatedItem = relatedList[i];
+    var nodeGroupDiv = document.createElement("div");
+    nodeGroupDiv.className = "NodeGroup";
+    var nodeDiv = document.createElement("div");
+    nodeGroupDiv.className = "Page TreeNodeType Node";
+
+    var labelDiv = document.createElement("div");
+    labelDiv.className = "NodeLabel";
+    var a = document.createElement("a");
+    if (redirectUrl && relatedItem.identity != null) {
+      var relatedLink = redirectUrl + "&objectId="
+          + encodeURIComponent(relatedItem.identity);
+      a.href = relatedLink;
+    }
+    if (relatedItem.title) {
+      a.setAttribute("title", relatedItem.title);
+      a.appendChild(document.createTextNode(relatedItem.title));
+    }
+    labelDiv.appendChild(a);
+    nodeDiv.appendChild(labelDiv);
+    nodeGroupDiv.appendChild(nodeDiv);
+    docFrag.appendChild(nodeGroupDiv);
+  }
+  return docFrag;
+};
 
 eXo.wiki.UIRelated = new UIRelated();

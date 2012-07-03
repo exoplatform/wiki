@@ -6,7 +6,6 @@ import java.util.List;
 
 import javax.inject.Inject;
 
-import org.exoplatform.services.jcr.util.IdGenerator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.service.WikiContext;
@@ -71,13 +70,9 @@ public class RelatedMacro extends AbstractMacro<RelatedPagesMacroParameters>{
       .append(TreeNode.PATH)
       .append("=")
       .append(pathParam);
-    
-    String treeID = "RelatedPages"+ IdGenerator.generate();
-    treeBuilder.append("<div class=\"UITreeExplorer\" id =\"").append(treeID).append("\">")
-      .append("   <input class='info' title=\"hidden\" type='hidden' restUrl='").append(restUri.toString()).append("' redirectUrl='").append(redirectURI).append("' />")   
-      .append("   <script> eXo.wiki.UIRelated.init(\"" + treeID  +"\"); </script>")
+    treeBuilder.append("<div class=\"UITreeExplorer RelatedMacro\">")
+      .append("   <input class='info' title=\"hidden\" type='hidden' restUrl='").append(restUri.toString()).append("' redirectUrl='").append(redirectURI).append("' />")
       .append("</div>");
-    
     return treeBuilder.toString();
   }
   

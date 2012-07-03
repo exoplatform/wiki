@@ -25,18 +25,15 @@
  if (!isEvent){
    action = uicomponent.url(uicomponent.SELECT_NODE);
  } 
- rcontext.getJavascriptManager().importJavascript('eXo.wiki.UITreeExplorer', '/wiki/javascript/') ;
  if (initParam!=null) {
  	rcontext.getJavascriptManager()
  	  .addJavascript("eXo.wiki.UITreeExplorer.init('" + uicomponent.id  +"','"+ initParam + "',true," + isRenderLink + ",'" + baseLink + "');");
  } 
 %>
-	 <div class="UITreeExplorer" id="$uicomponent.id">	 
-		 <div>
-		   <div class="NodeGroup">
-    	       <a href="$action" class="SelectNode" style="display:none" ></a>
-    	       <input class="InitURL" type="hidden" title="hidden" value="$initURL" />
-    	       <input class="ChildrenURL" type="hidden" title="hidden" value="$childrenURL" />
-		   </div>
-		 </div>
+	 <div class="UITreeExplorer" id="$uicomponent.id">
+	   <div>
+         <a href="$action" class="SelectNode" style="display:none" ></a>
+         <input class="InitURL" type="hidden" title="hidden" value="$initURL" />
+         <input class="ChildrenURL" type="hidden" title="hidden" value="$childrenURL" />		   
+	  </div>
 </div>

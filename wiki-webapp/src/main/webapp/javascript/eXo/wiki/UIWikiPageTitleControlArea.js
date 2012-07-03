@@ -22,7 +22,7 @@ function UIWikiPageTitleControlArea() {
 
 UIWikiPageTitleControlArea.prototype.init = function(componentId, inputId, untitledLabel, isAddMode) {
   var component = document.getElementById(componentId);
-  var input = eXo.core.DOMUtil.findDescendantById(component, inputId);
+  var input = gj(component).find('#' + inputId)[0];
   if (input) {
     input.form.onsubmit = function() {
       return false;

@@ -1,6 +1,5 @@
 <%  
-  def rcontext = _ctx.getRequestContext() ;
-  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiPageEditForm', '/wiki/javascript/') ;
+  def rcontext = _ctx.getRequestContext() ;  
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPageEditForm.editPageContent('" + uicomponent.id + "');");
 %>
 <div class="UIWikiPageEditForm">

@@ -33,7 +33,7 @@ UIWikiAjaxRequest.prototype.init = function(actionPrefix, defaultAction) {
   if (this.actionPrefix && this.defaultAction) {
     this.autoCheckAnchorId = window.setInterval(this.autoCheckAnchor, this.DEFAULT_TIMEOUT_CHECK);
     this.addEventListener(window, 'unload', this.destroyAll, false);
-    if (eXo.core.Browser.ie) {
+    if (gj.browser.msie != undefined) {
       this.createIEHistoryFrame();
     }
   }
@@ -123,7 +123,7 @@ UIWikiAjaxRequest.prototype.onFrameLoaded = function(hash) {
 
 
 UIWikiAjaxRequest.prototype.makeNewHash = function(hash) {
-  if (eXo.core.Browser.ie) {
+  if (gj.browser.msie != undefined) {
     var doc = document.getElementById("rshHistoryFrame").contentWindow.document;
     doc.open("javascript:'<html></html>'");
     doc.write("<html><head></head><body onload=\"parent.eXo.wiki.UIWikiAjaxRequest.onFrameLoaded('" + hash + "');\"></body></html>");

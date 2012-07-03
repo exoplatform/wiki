@@ -55,8 +55,6 @@ public class WikiContext extends WikiPageParams implements Cloneable, Serializab
   
   private String             redirectURI;
   
-  private String             pageTreeId;
-  
   private String             syntax           = Syntax.XWIKI_2_0.toIdString();
   
   private String             restURI;
@@ -103,14 +101,6 @@ public class WikiContext extends WikiPageParams implements Cloneable, Serializab
     this.redirectURI = redirectURI;
   }
 
-  public String getPageTreeId() {
-    return pageTreeId;
-  }
-
-  public void setPageTreeId(String pageTreeId) {
-    this.pageTreeId = pageTreeId;
-  }
-
   /**
    * @return the restURI
    */
@@ -148,7 +138,6 @@ public class WikiContext extends WikiPageParams implements Cloneable, Serializab
     obj.setOwner(this.getOwner());
     obj.setPageId(this.getPageId());
     obj.setPageTitle(this.getPageTitle());
-    obj.setPageTreeId(this.getPageTreeId());
     obj.setParameters(this.getParameters());
     obj.setPortalURL(this.getPortalURL());
     obj.setPortletURI(this.getPortletURI());

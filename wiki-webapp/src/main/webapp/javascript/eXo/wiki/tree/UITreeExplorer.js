@@ -5,33 +5,47 @@ if(eXo.wiki.UITreeExplorer ==  null) {
 
 function UITreeExplorer() {};
 
-UITreeExplorer.prototype.init = function( componentid, initParam, isFullRender, isRenderLink, baseLink ) {
+UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, isRenderLink, baseLink) {
   var me = eXo.wiki.UITreeExplorer;
   var component = document.getElementById(componentid);
-  if (component == null) {
-    var editForm = document.getElementById('UIWikiPageEditForm');
-    var ifm = eXo.core.DOMUtil.findFirstDescendantByClass(editForm, 'iframe', 'gwt-RichTextArea');
-    // Store current iframe element
-    me.innerDoc = ifm.contentDocument || ifm.contentWindow.document;
-
-    component = me.innerDoc.getElementById(componentid);
-  }
-  
   this.isRenderLink = isRenderLink;
   this.baseLink = baseLink;
-  var initURL = eXo.core.DOMUtil.findFirstDescendantByClass(component, "input", "InitURL");
-  var initNode = eXo.core.DOMUtil.findFirstDescendantByClass(component, "div", "NodeGroup");
+  var initNode = gj(component).find('input')[0];
   initParam = me.cleanParam(initParam);
   me.render(initParam, initNode, isFullRender);
 };
 
+UITreeExplorer.prototype.initMacros = function() {
+  var me = eXo.wiki.UITreeExplorer;
+  var pageTreeBlocks = gj(".PageTreeMacro");
+  var editForm = document.getElementById('UIWikiPageEditForm');
+  if (editForm != null) {
+    var ifm = gj(editForm).find('iframe.gwt-RichTextArea')[0];
+    if (ifm != null) {
+      me.innerDoc = ifm.contentDocument || ifm.contentWindow.document;
+      pageTreeBlocks = gj.merge(pageTreeBlocks, gj(me.innerDoc).find(".PageTreeMacro"));
+    }
+  }
+  for ( var i = 0; i < pageTreeBlocks.length; i++) {
+    var pageTreeBlock = pageTreeBlocks[i];
+    var initNode = gj(pageTreeBlock).find('input')[0];
+    this.baseLink = gj(pageTreeBlock).find('input.BaseURL')[0].value;
+    var initParam = gj(pageTreeBlock).find('input.InitParams')[0].value;
+    initParam = me.cleanParam(initParam);
+    this.isRenderLink = true;
+    me.render(initParam, initNode, false);
+  }
+};
+
 UITreeExplorer.prototype.collapseExpand = function(element) {
   var node = element.parentNode;
-  var subGroup = eXo.core.DOMUtil.findFirstChildByClass(node, "div", "NodeGroup");
+  var subGroup = gj(node).find('div.NodeGroup')[0];
   if (element.className == "EmptyIcon")
     return true;
-  if (!subGroup)
+  if (!subGroup) {
+    element.className = "CollapseIcon";
     return false;
+  }
   if (subGroup.style.display == "none") {
     if (element.className == "ExpandIcon")
       element.className = "CollapseIcon";
@@ -46,24 +60,22 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
 
 UITreeExplorer.prototype.onNodeClick = function(node, absPath) {
   var me = eXo.wiki.UITreeExplorer;
-  var selectableObj = eXo.core.DOMUtil.findDescendantsByTagName(node, "a");
+  var selectableObj = gj(node).find('a');
   if (selectableObj.length > 0) {
-    var component = eXo.core.DOMUtil.findAncestorByClass(node,"UITreeExplorer");
-    var selectedNode = eXo.core.DOMUtil.findFirstDescendantByClass(component, "div", "Hover");
-    if (selectedNode)    
-    eXo.core.DOMUtil.removeClass(selectedNode, "Hover");
-    if (!eXo.core.DOMUtil.hasClass(node, "Hover"))
-      eXo.core.DOMUtil.addClass(node, "Hover");
+    var component = gj(node).closest(".UITreeExplorer");
+    var selectedNode = gj(component).find('div.Hover')[0];
+    if (selectedNode)
+      gj(selectedNode).removeClass("Hover");
+    if (!gj(node).hasClass("Hover"))
+      gj(node).addClass("Hover");
     me.selectNode(node, absPath);
   }
 };
 
 UITreeExplorer.prototype.selectNode = function(node, nodePath) {
   var me = eXo.wiki.UITreeExplorer;
-  var component = eXo.core.DOMUtil.findAncestorByClass(node, "UITreeExplorer");
-  var root =  eXo.core.DOMUtil.findAncestorByClass(node, "UITreeExplorer");
-  var link = eXo.core.DOMUtil.findFirstDescendantByClass(component, "a",
-      "SelectNode");
+  var component = gj(node).closest(".UITreeExplorer");
+  var link = gj(component).find('a.SelectNode')[0];
 
   var endParamIndex = link.href.lastIndexOf("')");
   var param = "&objectId";
@@ -89,16 +101,13 @@ UITreeExplorer.prototype.selectNode = function(node, nodePath) {
 UITreeExplorer.prototype.render = function(param, element, isFullRender) {
   var me = eXo.wiki.UITreeExplorer;
   var node = element.parentNode;
-  var component = eXo.core.DOMUtil.findAncestorByClass(node, "UITreeExplorer");
-  var url =  eXo.core.DOMUtil.findFirstDescendantByClass(component, "input", "ChildrenURL").value;
-  if (isFullRender){
-    url =  eXo.core.DOMUtil.findFirstDescendantByClass(component, "input", "InitURL").value;
+  var component = gj(node).closest(".UITreeExplorer");
+  var url = gj(component).find('input.ChildrenURL')[0].value;
+  if (isFullRender) {
+    url = gj(component).find('input.InitURL')[0].value;
   }
-  var http = eXo.wiki.UITreeExplorer.getHTTPObject();  
   var restURL = url + param;
 
-  http.open("GET", restURL, true); 
-  
   var childBlock = document.createElement("div");
   if (me.innerDoc) {
     childBlock = me.innerDoc.createElement("div");
@@ -107,35 +116,20 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
   childBlock.className = "NodeGroup";
   childBlock.innerHTML = me.loading;
   node.appendChild(childBlock);
-  
-  http.onreadystatechange = function() {
-    if (http.readyState == 4) {
-      me.renderTreeNodes(childBlock, http.responseText);      
+
+  gj.ajax({
+    async : false,
+    url : restURL,
+    type : 'GET',
+    data : '',
+    success : function(data) {
+      me.renderTreeNodes(childBlock, data);
     }
-  }
-  
-  http.send("");
-  element.className = "CollapseIcon";
+  });
 };
 
-UITreeExplorer.prototype.getHTTPObject = function() {
-  if (typeof XMLHttpRequest != 'undefined') {
-    return new XMLHttpRequest();
-  }
-  try {
-    return new ActiveXObject("Msxml2.XMLHTTP");
-  } catch (e) {
-    try {
-      return new ActiveXObject("Microsoft.XMLHTTP");
-    } catch (e) {
-    }
-  }
-  return false;
-};
-
-UITreeExplorer.prototype.renderTreeNodes = function(node, responseText) {
+UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
   var me = eXo.wiki.UITreeExplorer;
-  var dataList = JSON.parse(responseText);
   var resultLength = dataList.jsonList.length;
 
   var str = "";
@@ -188,7 +182,7 @@ UITreeExplorer.prototype.buildNode = function(data) {
   childNode += " <div  class=\"" + lastNodeClass + " Node\" >";
   childNode += "   <div class=\""+iconType+"Icon\" id=\"" + path + "\" onclick=\"event.cancelBubble=true;  if(eXo.wiki.UITreeExplorer.collapseExpand(this)) return;  eXo.wiki.UITreeExplorer.render('"+ param + "', this)\">";
   if (me.isRenderLink) {
-    childNode += "    <div id=\"iconTreeExplorer\" class=\""+ nodeTypeCSS +" TreeNodeType Node "+ hoverClass +" \">";
+    childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ nodeTypeCSS +" TreeNodeType Node "+ hoverClass +" \">";
   } else {
     childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +" TreeNodeType Node "+ hoverClass +" \">";
   }  

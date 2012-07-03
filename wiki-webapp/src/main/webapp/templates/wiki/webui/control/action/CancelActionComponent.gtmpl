@@ -4,8 +4,7 @@
   String titleMessage = _ctx.appRes("UIConfirmBox.label.Confirmation");
   String exitMessage = _ctx.appRes("UIConfirmBox.label.ConfirmExit");
   String okLabel = _ctx.appRes("UIConfirmBox.label.Ok");
-  String cancelLink = uicomponent.isNewMode() ? uicomponent.getCurrentPageURL() : "javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');";
-  rcontext.getJavascriptManager().importJavascript("eXo.wiki.UIConfirmBox", "/wiki/javascript/") ;
+  String cancelLink = uicomponent.isNewMode() ? uicomponent.getCurrentPageURL() : "javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');";  
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIConfirmBox.init();");
  %>
 <a id="$uicomponent.id" href="$cancelLink" onclick="return eXo.wiki.UIWikiPageEditForm.cancel('$uicomponent.id','$titleMessage','$exitMessage', 'Delete Icon','$okLabel','$cancelLabel');" 

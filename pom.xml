@@ -31,10 +31,10 @@
     <org.exoplatform.core.version>2.4.8-GA-SNAPSHOT</org.exoplatform.core.version>
     <org.exoplatform.ws.version>2.2.8-GA-SNAPSHOT</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.8-GA-SNAPSHOT</org.exoplatform.jcr.version>
-    <org.exoplatform.portal.version>3.2.5-PLF-SNAPSHOT</org.exoplatform.portal.version>
+    <org.exoplatform.portal.version>3.3.0-GA</org.exoplatform.portal.version>
     <exo.tool.framework.junit.version>1.2.0</exo.tool.framework.junit.version>
     <org.exoplatform.exopackage.version>1.1.4</org.exoplatform.exopackage.version>
-    <org.chromattic.version>1.1.2</org.chromattic.version>
+    <org.chromattic.version>1.1.4</org.chromattic.version>
     <!--commons dependencies -->
     <org.exoplatform.commons.version>4.0.0.Alpha1-SNAPSHOT</org.exoplatform.commons.version>    
     <!-- 3rd parties -->
@@ -96,10 +96,12 @@
     <xml-apis.version>1.3.04</xml-apis.version>
     <commons-logging.version>1.0.4</commons-logging.version>
     <commons-lang.version>2.6</commons-lang.version>
-    <org.gatein.pc.version>2.3.0-GA</org.gatein.pc.version>
-    <org.gatein.shindig.version>2.0.2</org.gatein.shindig.version>
-    <org.gatein.wsrp.version>2.1.0-GA</org.gatein.wsrp.version>
-    <org.gatein.wci.version>2.1.0-GA</org.gatein.wci.version>
+    <org.gatein.pc.version>2.3.2-GA</org.gatein.pc.version>
+    <org.gatein.shindig.version>2.0.2-CP01</org.gatein.shindig.version>
+    <org.gatein.wsrp.version>2.2.0-Beta02</org.gatein.wsrp.version>
+    <org.gatein.wci.version>2.2.0-Beta01</org.gatein.wci.version>
+ <org.gatein.mop.version>1.1.1-GA</org.gatein.mop.version>
+<org.picketlink.idm.version>1.3.1.GA</org.picketlink.idm.version>
     <org.reflext.version>1.1.0</org.reflext.version>
     <xerces.version>2.9.1</xerces.version>
     <org.hsqldb.version>2.0.0</org.hsqldb.version>

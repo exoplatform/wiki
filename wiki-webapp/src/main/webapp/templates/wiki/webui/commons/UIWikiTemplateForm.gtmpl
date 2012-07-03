@@ -1,7 +1,6 @@
 <%
  def rcontext = _ctx.getRequestContext(); 
  String inputId = uiform.TEMPLATE_SEARCHBOX;
- rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiTemplateForm', '/wiki/javascript/') ;
  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "');");
  %>
 

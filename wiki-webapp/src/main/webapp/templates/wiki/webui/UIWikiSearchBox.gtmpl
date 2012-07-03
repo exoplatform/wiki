@@ -4,8 +4,7 @@
   def rcontext = _ctx.getRequestContext() ;
   String searchLabel=_ctx.appRes("UIWikiSearchBox.label.Search");
   String wikiNodeURI = Utils.getCurrentWikiNodeUri();
-  String restUrl= uicomponent.getContextSearchURL();
-  rcontext.getJavascriptManager().importJavascript('eXo.wiki.UIWikiSearchBox', '/wiki/javascript/') ;
+  String restUrl= uicomponent.getContextSearchURL();  
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
 %>

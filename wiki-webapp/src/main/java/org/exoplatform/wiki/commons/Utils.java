@@ -33,7 +33,6 @@ import javax.servlet.http.HttpSession;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.mop.SiteKey;
@@ -42,7 +41,6 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
-import org.exoplatform.services.jcr.util.IdGenerator;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
@@ -204,7 +202,8 @@ public class Utils {
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
-    SessionManager sessionManager = (SessionManager) RootContainer.getComponent(SessionManager.class);
+    SessionManager sessionManager = (SessionManager) ExoContainerContext.getCurrentContainer()
+                                                                        .getComponentInstanceOfType(SessionManager.class);
     sessionManager.addSessionContext(session.getId(), Utils.createWikiContext(wikiPortlet));
   }
 
@@ -242,7 +241,6 @@ public class Utils {
     WikiContext wikiContext = new WikiContext();
     wikiContext.setPortalURL(portalURL);
     wikiContext.setTreeRestURI(treeRestURL);
-    wikiContext.setPageTreeId(IdGenerator.generate());
     wikiContext.setRestURI(getCurrentRestURL());
     wikiContext.setRedirectURI(wikiPortlet.getRedirectURL());
     wikiContext.setPortletURI(pageNodeSelected);

@@ -1,29 +1,18 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
-<!--
+<!-- Copyright (C) 2010 eXo Platform SAS. This is free software; you can 
+  redistribute it and/or modify it under the terms of the GNU Lesser General 
+  Public License as published by the Free Software Foundation; either version 
+  2.1 of the License, or (at your option) any later version. This software 
+  is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; 
+  without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR 
+  PURPOSE. See the GNU Lesser General Public License for more details. You 
+  should have received a copy of the GNU Lesser General Public License along 
+  with this software; if not, write to the Free Software Foundation, Inc., 
+  51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF site: 
+  http://www.fsf.org. -->
 
-    Copyright (C) 2010 eXo Platform SAS.
-    
-    This is free software; you can redistribute it and/or modify it
-    under the terms of the GNU Lesser General Public License as
-    published by the Free Software Foundation; either version 2.1 of
-    the License, or (at your option) any later version.
-    
-    This software is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-    Lesser General Public License for more details.
-    
-    You should have received a copy of the GNU Lesser General Public
-    License along with this software; if not, write to the Free
-    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
-    02110-1301 USA, or see the FSF site: http://www.fsf.org.
-
--->
-
-<gatein-resources
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_2 http://www.gatein.org/xml/ns/gatein_resources_1_2"
-  xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_2">
+<gatein-resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_2_1 http://www.gatein.org/xml/ns/gatein_resources_1_2_1"
+   xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_2_1">
 
   <portal-skin>
     <skin-name>Default</skin-name>
@@ -40,163 +29,175 @@
     <css-priority>1</css-priority>
   </portlet-skin>
   
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiPortlet</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiPortlet.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiEditParagraph</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiEditParagraph.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiSearchBox</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiSearchBox.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiAdvanceSearchForm</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiAdvanceSearchForm.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIForm</js-module>
-      <js-path>/javascript/eXo/wiki/UIForm.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIUpload</js-module>
-      <js-path>/javascript/eXo/wiki/UIUpload.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiPagePreview</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiPagePreview.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiSavePage</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiSavePage.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiAjaxRequest</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiAjaxRequest.js</js-path>
-    </param>
-  </javascript>
-  	
-	 <javascript>
-    <param>
-      <js-module>eXo.wiki.UIDropdownMenu</js-module>
-      <js-path>/javascript/eXo/wiki/UIDropdownMenu.js</js-path>
-    </param>
-  </javascript>
- 
-  <!-- js for browse Tree  -->
-    <javascript>
-    <param>
-      <js-module>eXo.wiki.UITreeExplorer</js-module>
-      <js-path>/javascript/eXo/wiki/tree/UITreeExplorer.js</js-path>
-    </param>
-  </javascript>
-  
-  <!-- js for Mask -->
-   <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiMaskLayer</js-module>
-      <js-path>/javascript/eXo/wiki/mask/UIWikiMaskLayer.js</js-path>
-    </param>
-  </javascript>
- 
-    <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiMaskWorkspace</js-module>
-      <js-path>/javascript/eXo/wiki/mask/UIWikiMaskWorkspace.js</js-path>
-    </param>
-  </javascript>  
-  
-   <javascript>
-    <param>
-      <js-module>eXo.wikiUIWikiPageVersionsList</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiPageVersionsList.js</js-path>
-    </param>
-  </javascript>
-  
-   <javascript>
-    <param>
-      <js-module>eXo.wiki.UIFieldEditableForm</js-module>
-      <js-path>/javascript/eXo/wiki/UIFieldEditableForm.js</js-path>
-    </param>
-  </javascript>
-  
-   <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiPageTitleControlArea</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiPageTitleControlArea.js</js-path>
-    </param>
-  </javascript>
-  
-  <!-- js for Confirm -->
-   <javascript>
-    <param>
-      <js-module>eXo.wiki.UIConfirmBox</js-module>
-      <js-path>/javascript/eXo/wiki/confirm/UIConfirmBox.js</js-path>
-    </param>
-  </javascript>
+  <!-- Javascripts used in View Mode -->
+  <portlet>
+    <name>WikiPortlet</name>
+    <module>
+      <script>
+        <name>eXo.wiki.UIWikiPortlet</name>
+        <path>/javascript/eXo/wiki/UIWikiPortlet.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiAjaxRequest</name>
+        <path>/javascript/eXo/wiki/UIWikiAjaxRequest.js</path>
+      </script>
+      <script>
+        <name>eXo.wikiUIWikiPageVersionsList</name>
+        <path>/javascript/eXo/wiki/UIWikiPageVersionsList.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiEditParagraph</name>
+        <path>/javascript/eXo/wiki/UIWikiEditParagraph.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiSearchBox</name>
+        <path>/javascript/eXo/wiki/UIWikiSearchBox.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiAdvanceSearchForm</name>
+        <path>/javascript/eXo/wiki/UIWikiAdvanceSearchForm.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UITreeExplorer</name>
+        <path>/javascript/eXo/wiki/tree/UITreeExplorer.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.WikiLayout</name>
+        <path>/javascript/eXo/wiki/layout/WikiLayout.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIUpload</name>
+        <path>/javascript/eXo/wiki/UIUpload.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIFieldEditableForm</name>
+        <path>/javascript/eXo/wiki/UIFieldEditableForm.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIRelated</name>
+        <path>/javascript/eXo/wiki/related/UIRelated.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiPageTitleControlArea</name>
+        <path>/javascript/eXo/wiki/UIWikiPageTitleControlArea.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIDropdownMenu</name>
+        <path>/javascript/eXo/wiki/UIDropdownMenu.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiSettingContainer</name>
+        <path>/javascript/eXo/wiki/UIWikiSettingContainer.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiTemplateForm</name>
+        <path>/javascript/eXo/wiki/UIWikiTemplateForm.js</path>
+      </script>
+      <!-- To do an improve to move to wiki-edit script -->
+      <script>
+        <name>eXo.wiki.UIWikiPagePreview</name>
+        <path>/javascript/eXo/wiki/UIWikiPagePreview.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiMaskLayer</name>
+        <path>/javascript/eXo/wiki/mask/UIWikiMaskLayer.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIWikiMaskWorkspace</name>
+        <path>/javascript/eXo/wiki/mask/UIWikiMaskWorkspace.js</path>
+      </script>
+      <script>
+        <name>eXo.wiki.UIForm</name>
+        <path>/javascript/eXo/wiki/UIForm.js</path>
+      </script>
+      <depends>
+        <module>xwiki-base</module>
+      </depends>
+      <depends>
+        <module>webui</module>
+      </depends>
+      <depends>
+        <module>webui-ext</module>
+      </depends>
+    </module>
+  </portlet>
 
-	 <!-- js for Spliter -->
-   <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiTemplateForm</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiTemplateForm.js</js-path>
-    </param>
-  </javascript>
-   
-   <!-- js for Spliter -->
-   <javascript>
-    <param>
-      <js-module>eXo.wiki.UIRelated</js-module>
-      <js-path>/javascript/eXo/wiki/related/UIRelated.js</js-path>
-    </param>
-  </javascript>
+  <!-- Javascripts used in Edit Mode -->
+  <module>
+    <name>wiki-edit</name>
+    <script>
+      <name>eXo.wiki.UIWikiPageEditForm</name>
+      <path>/javascript/eXo/wiki/UIWikiPageEditForm.js</path>
+    </script>
+    <script>
+      <name>eXo.wiki.UIConfirmBox</name>
+      <path>/javascript/eXo/wiki/confirm/UIConfirmBox.js</path>
+    </script>
+    <script>
+      <name>eXo.wiki.UIWikiSavePage</name>
+      <path>/javascript/eXo/wiki/UIWikiSavePage.js</path>
+    </script>    
+    <script>
+        <name>eXo.wiki.UIWikiRichTextArea</name>
+        <path>/javascript/eXo/wiki/UIWikiRichTextArea.js</path>
+    </script>
+      <script>
+        <name>xwiki-explorer</name>
+        <path>/javascript/xwiki/xwikiexplorer/xwikiexplorer.js</path>
+      </script>
+    <depends>
+        <module>xwiki-base</module>
+    </depends>
+    <depends>
+      <module>webui</module>
+    </depends>
+  </module>
   
-  <!-- js for Edit page -->
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiPageEditForm</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiPageEditForm.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiRichTextArea</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiRichTextArea.js</js-path>
-    </param>
-  </javascript>
-  
-  <javascript>
-    <param>
-      <js-module>eXo.wiki.UIWikiPermissionForm</js-module>
-      <js-path>/javascript/eXo/wiki/UIWikiPermissionForm.js</js-path>
-    </param>
-  </javascript>
+  <module>
+    <name>xwiki-base</name>    
+    <script>
+        <name>eXo.wiki.UIWikiWysiwygLoader</name>
+        <path>/javascript/eXo/wiki/UIWikiWysiwygLoader.js</path>
+    </script>
+    <script>
+      <name>prototype</name>
+      <path>/javascript/prototype/prototype.js</path>
+    </script>
+     <script>
+      <name>initsc</name>
+      <path>/resources/js/xwiki/wysiwyg/xwe/sc/initsc.js</path>
+    </script>
+     <script>
+      <name>ISC_Core</name>
+      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Core.js</path>
+    </script>
+     <script>
+      <name>ISC_Foundation</name>
+      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Foundation.js</path>
+    </script>
+     <script>
+      <name>ISC_Containers</name>
+      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Containers.js</path>
+    </script>
+     <script>
+      <name>ISC_Grids</name>
+      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Grids.js</path>
+    </script>
+     <script>
+      <name>ISC_Forms</name>
+      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Forms.js</path>
+    </script>
+     <script>
+      <name>ISC_DataBinding</name>
+      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_DataBinding.js</path>
+    </script>
+    <script>
+      <name>xwiki</name>
+      <path>/javascript/xwiki/xwiki.js</path>
+    </script>
+    <depends>
+        <module>base</module>
+    </depends>
+  </module>
+
 </gatein-resources>

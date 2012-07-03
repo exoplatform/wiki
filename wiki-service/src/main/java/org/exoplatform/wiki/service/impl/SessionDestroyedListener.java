@@ -38,13 +38,14 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
   private static Log LOG = ExoLogger.getLogger("SessionDestroyedListener");
 
   @Override
-  public void onEvent(Event<PortalContainer, HttpSessionEvent> event) throws Exception {
+  public void onEvent(Event<PortalContainer, HttpSessionEvent> event) throws Exception {    
+    PortalContainer container = event.getSource();
     String sessionId = event.getData().getSession().getId();
     if (LOG.isTraceEnabled()) {
       LOG.trace("Removing the key: " + sessionId);
     }
     try {
-      SessionManager sessionManager = (SessionManager) RootContainer.getComponent(SessionManager.class);
+      SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
       sessionManager.removeSessionContainer(sessionId);
     } catch (Exception e) {
       LOG.warn("Can't remove the key: " + sessionId, e);
@@ -52,8 +53,6 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
     if (LOG.isTraceEnabled()) {
       LOG.trace("Removed the key: " + sessionId);
     }
-    
-    PortalContainer container = event.getSource();
     if (container.isStarted()) {
       WikiService wikiService = (WikiService) container.getComponentInstanceOfType(WikiService.class);
       RequestLifeCycle.begin(PortalContainer.getInstance());

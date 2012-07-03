@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="$xwiki.encoding"?>
+<?xml version="1.0" encoding="UTF-8"?>
  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
   <head>
@@ -23,6 +23,16 @@
             return element.fireEvent('on' + eventType, event);
           }
       }
+	  
+	  if (window.attachEvent) {
+	    window.attachEvent('onload', eXo.wiki.UIWikiPortlet.initMacros);
+	  }
+      else if (window.addEventListener) {
+	    window.addEventListener('load', eXo.wiki.UIWikiPortlet.initMacros, false);
+	  }
+      else {
+	    document.addEventListener('load', eXo.wiki.UIWikiPortlet.initMacros, false);
+	  }
       
       /**
        * We fire the load event on the rich text area as soon as the DOM is ready. We don't rely on the DOMContentLoaded event

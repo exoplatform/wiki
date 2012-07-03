@@ -105,5 +105,5 @@
 }
 
 .UIWikiPortlet .SearchPopup .ItemOver {
-	background: #ffffff url("background/UIWikiSearchBG.png") no-repeat 12px -118px;	
+	background-color: #ffffff;
 }
