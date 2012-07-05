@@ -18,6 +18,8 @@ UIRelated.prototype.initMacros = function() {
 		var infoElement = gj(relatedBlock).find('input.info')[0];
 		var restUrl = infoElement.getAttribute("restUrl");
 		var redirectTempl = infoElement.getAttribute("redirectUrl");
+    if (gj(relatedBlock).find("div.TreeNodeType").length > 0)
+      return;
 		gj.ajax({
 			async : false,
 			url : restUrl,
@@ -37,7 +39,6 @@ UIRelated.prototype.initRelatedDOM = function(relatedList, redirectUrl) {
   for ( var i = 0; i < relatedList.length; i++) {
     var relatedItem = relatedList[i];
     var nodeGroupDiv = document.createElement("div");
-    nodeGroupDiv.className = "NodeGroup";
     var nodeDiv = document.createElement("div");
     nodeGroupDiv.className = "Page TreeNodeType Node";
 

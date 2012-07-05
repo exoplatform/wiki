@@ -3,6 +3,9 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.web.application.JavascriptManager;
 PageImpl currentPage = (PageImpl) org.exoplatform.wiki.commons.Utils.getCurrentWikiPage();
 def relatedPages = currentPage.getRelatedPages();
+
+def rcontext = _ctx.getRequestContext();
+rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIRelated.initMacros();");
 %>
 
 <div id="$uicomponent.id" class="Related">

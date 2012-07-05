@@ -33,6 +33,8 @@ UITreeExplorer.prototype.initMacros = function() {
     var initParam = gj(pageTreeBlock).find('input.InitParams')[0].value;
     initParam = me.cleanParam(initParam);
     this.isRenderLink = true;
+    if (gj(pageTreeBlock).find("div.NodeGroup").length > 0)
+      return;
     me.render(initParam, initNode, false);
   }
 };
