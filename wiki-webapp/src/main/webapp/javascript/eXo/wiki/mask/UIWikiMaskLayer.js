@@ -22,29 +22,7 @@
  */
 function UIWikiMaskLayer() {
 } ;
-/**
- * Creates a transparent mask with "wait" cursor type
- */
- /*
-UIWikiMaskLayer.prototype.createTransparentMask = function() {
-	var mask = document.getElementById("TransparentMaskLayer");
-	if (!mask) {
-		mask = document.createElement("div");
-		mask.id = "TransparentMaskLayer";
-		mask.style.top = "0px" ;
-		mask.style.left = "0px" ;
-		eXo.core.Browser.setOpacity(mask, 0);
-		mask.style.backgroundColor = "white";
-		mask.style.zIndex = "2" ;
-		mask.style.position = "absolute";
-		mask.style.cursor = "wait";
-		mask.style.display = "block";
-		document.getElementsByTagName("body")[0].appendChild(mask);
-	}
-	mask.style.width = "100%" ;
-	mask.style.height = "100%" ;
-};
-*/
+
 UIWikiMaskLayer.prototype.createTransparentMask = function() {
 	var Browser = eXo.core.Browser ;
 	var ajaxLoading = document.getElementById("AjaxLoadingMask") ;
@@ -190,7 +168,7 @@ UIWikiMaskLayer.prototype.createMaskForFrame = function(blockContainerId, object
 		maskLayer.id = object.id + "MaskLayer" ;
 		maskLayer.maxZIndex = 3 ;
 		maskLayer.style.width = blockContainer.offsetWidth + "px"  ;
-		maskLayer.style.height =  blockContainer.offsetHeight + eXo.core.Browser.findPosYInContainer(blockContainer,document) + "px"  ;
+		maskLayer.style.height =  blockContainer.offsetHeight + gj(blockContainer).offset().top + "px"  ;
 		maskLayer.style.top = "0px" ;
 		maskLayer.style.left = "0px" ;
 		maskLayer.style.zIndex = maskLayer.maxZIndex ;

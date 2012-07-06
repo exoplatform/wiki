@@ -9,9 +9,8 @@
   String pageId = wikiPageParams.getPageId();
   String selectedSyntax = uicomponent.getSyntax();  
   rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
-  
+  rcontext.getJavascriptManager().addJavascript("eXo.loadJS(['/wiki/javascript/xwiki/xwikiexplorer/xwikiexplorer.js',]);");
 %>
 <div class="UIWikiRichTextEditor">
   <% uicomponent.renderChild(uicomponent.RICHTEXT_AREA_INPUT); %>
 </div>
-

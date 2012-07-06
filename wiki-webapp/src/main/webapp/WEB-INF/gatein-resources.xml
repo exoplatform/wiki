@@ -109,9 +109,13 @@
       <script>
         <name>eXo.wiki.UIForm</name>
         <path>/javascript/eXo/wiki/UIForm.js</path>
+      </script>      
+      <script>
+        <name>eXo.wiki.UIWikiRichTextArea</name>
+        <path>/javascript/eXo/wiki/UIWikiRichTextArea.js</path>
       </script>
       <depends>
-        <module>xwiki-base</module>
+        <module>base</module>
       </depends>
       <depends>
         <module>webui</module>
@@ -136,67 +140,12 @@
     <script>
       <name>eXo.wiki.UIWikiSavePage</name>
       <path>/javascript/eXo/wiki/UIWikiSavePage.js</path>
-    </script>    
-    <script>
-        <name>eXo.wiki.UIWikiRichTextArea</name>
-        <path>/javascript/eXo/wiki/UIWikiRichTextArea.js</path>
-    </script>
-      <script>
-        <name>xwiki-explorer</name>
-        <path>/javascript/xwiki/xwikiexplorer/xwikiexplorer.js</path>
-      </script>
-    <depends>
-        <module>xwiki-base</module>
-    </depends>
-    <depends>
-      <module>webui</module>
-    </depends>
-  </module>
-  
-  <module>
-    <name>xwiki-base</name>    
-    <script>
-        <name>eXo.wiki.UIWikiWysiwygLoader</name>
-        <path>/javascript/eXo/wiki/UIWikiWysiwygLoader.js</path>
-    </script>
-    <script>
-      <name>prototype</name>
-      <path>/javascript/prototype/prototype.js</path>
-    </script>
-     <script>
-      <name>initsc</name>
-      <path>/resources/js/xwiki/wysiwyg/xwe/sc/initsc.js</path>
-    </script>
-     <script>
-      <name>ISC_Core</name>
-      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Core.js</path>
-    </script>
-     <script>
-      <name>ISC_Foundation</name>
-      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Foundation.js</path>
-    </script>
-     <script>
-      <name>ISC_Containers</name>
-      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Containers.js</path>
-    </script>
-     <script>
-      <name>ISC_Grids</name>
-      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Grids.js</path>
-    </script>
-     <script>
-      <name>ISC_Forms</name>
-      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Forms.js</path>
-    </script>
-     <script>
-      <name>ISC_DataBinding</name>
-      <path>/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_DataBinding.js</path>
-    </script>
-    <script>
-      <name>xwiki</name>
-      <path>/javascript/xwiki/xwiki.js</path>
     </script>
     <depends>
         <module>base</module>
+    </depends>
+    <depends>
+      <module>webui</module>
     </depends>
   </module>
 
