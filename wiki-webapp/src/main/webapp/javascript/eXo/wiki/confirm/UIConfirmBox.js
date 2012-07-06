@@ -32,53 +32,49 @@ UIConfirmBox.prototype.render = function(uicomponentId, titleMessage, message,
   
   var me = eXo.wiki.UIConfirmBox;
   var submitAction = document.getElementById(uicomponentId);
-  
-  me.confirmBox = document.createElement('div');
-  gj(me.confirmBox).addClass('ConfirmBox').attr('align', 'center');
+  me.confirmBox = gj('<div/>', {
+    'class' : 'ConfirmBox',
+    align : 'center'
+  }).append(gj('<div/>', {
+    'class' : 'ConfirmBar'
+  }).append(gj('<div/>', {
+    'class' : 'ConfirmTitle',
+    text : titleMessage
+  }), gj('<a/>', {
+    'class' : 'CloseButton',
+    href : 'javascript:eXo.wiki.UIConfirmBox.closeConfirm()'
+  })));
 
-  var confirmBar = document.createElement('div');
-  gj(confirmBar).addClass('ConfirmBar');
+  var container = gj('<div/>').append(gj('<div/>', {
+    'class' : 'ConfirmMessage',
+    text : message
+  }))
 
-  var confirmTitle = document.createElement('div');
-  gj(confirmTitle).addClass('ConfirmTitle');
-  confirmTitle.appendChild(document.createTextNode(titleMessage));
-  confirmBar.appendChild(confirmTitle);
-
-  var closeButton = document.createElement('a');
-  gj(closeButton).addClass('CloseButton').attr("href", "javascript:eXo.wiki.UIConfirmBox.closeConfirm()");
-  confirmBar.appendChild(closeButton);
-  me.confirmBox.appendChild(confirmBar);
-
-  var container = document.createElement('div');
-  var divMessage = document.createElement('div');
-  gj(divMessage).addClass('ConfirmMessage')
-  divMessage.appendChild(document.createTextNode(message));
-  container.appendChild(divMessage);
   if (submitAction && submitLabel) {
     me.createInput(container, submitAction, submitLabel);
   }
   if (cancelLabel) {
     me.createInput(container, null, cancelLabel);
   }
-  me.confirmBox.appendChild(container);
-  submitAction.appendChild(me.confirmBox);
+  gj(submitAction).append(gj(me.confirmBox).append(container));
   this.maskLayer = eXo.core.UIMaskLayer.createMask("UIPortalApplication",
-      me.confirmBox, 30);
+      me.confirmBox[0], 30);
   return false;
 };
 
 UIConfirmBox.prototype.createInput = function(container, action, message) {
-  var input = document.createElement('input');
-  input.setAttribute('value', message);
-  input.setAttribute('type', 'button');
-
-  gj(input).click(function(event) {
-    if (action && action.href){
-        window.location = action.href;
-      }
-      eXo.wiki.UIConfirmBox.closeConfirm();
-  });
-  container.appendChild(input);
+ gj(container).append(gj('<input/>', {
+   value: message,
+   type: 'button',
+   click: function(event) {
+     if (action && action.href){
+       window.location = action.href;
+     }
+     eXo.wiki.UIConfirmBox.closeConfirm();
+    }
+   }
+  )
+ )
 };
 
 UIConfirmBox.prototype.closeConfirm = function() {
@@ -97,7 +93,7 @@ UIConfirmBox.prototype.resetPosition = function() {
   var me = eXo.wiki.UIConfirmBox;
   var confirmbox = me.confirmBox;
 
-  if (confirmbox && (confirmbox.style.display == "block")) {
+  if (confirmbox && (gj(confirmbox).css('display') == "block")) {
     try {
       eXo.core.UIMaskLayer.blockContainer = document
           .getElementById("UIPortalApplication");

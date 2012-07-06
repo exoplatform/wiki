@@ -1,7 +1,7 @@
 <%
  def rcontext = _ctx.getRequestContext(); 
  String inputId = uiform.TEMPLATE_SEARCHBOX;
- rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "');");
+ rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
  %>
 
 <div class="UIForm UIWikiTemplateForm">

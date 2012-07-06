@@ -1296,7 +1296,6 @@ document.observe('xwiki:dom:loading', function() {
     }
     return url;
   };
-  XWiki.currentDocument = new XWiki.Document();
 });
 
 /**
@@ -1335,60 +1334,6 @@ document.observe('xwiki:dom:loaded', function() {
  * </ul>
  */
 document.observe('xwiki:dom:loaded', function() {
-    var suggestionsMapping = {
-        "documents" : {
-            script: XWiki.Document.getRestSearchURL("scope=name&number=10&media=json&"),
-            varname: "q",
-            icon: "$xwiki.getSkinFile('icons/silk/page_white_text.gif')",
-            noresults: "Document not found",
-            json: true,
-            resultsParameter : "searchResults",
-            resultId : "id",
-            resultValue : "pageFullName",
-            resultInfo : "pageFullName"
-        },
-        "spaces" : {
-            script: XWiki.Document.getRestSearchURL("scope=spaces&number=10&media=json&"),
-            varname: "q",
-            icon: "$xwiki.getSkinFile('icons/silk/folder.gif')",
-            noresults: "Space not found",
-            json: true,
-            resultsParameter : "searchResults",
-            resultId : "id",
-            resultValue : "space",
-            resultInfo : "space"
-        },
-        "users" : {
-            script: XWiki.currentDocument.getURL('get', 'xpage=uorgsuggest&classname=XWiki.XWikiUsers&wiki=local&uorg=user&'),
-            varname: "input",
-            icon: "$xwiki.getSkinFile('icons/silk/user.gif')",
-            noresults: "User not found"
-        },
-        "groups" : {
-            script: XWiki.currentDocument.getURL('get', 'xpage=uorgsuggest&classname=XWiki.XWikiGroups&wiki=local&uorg=group&'),
-            varname: "input",
-            icon: "$xwiki.getSkinFile('icons/silk/group.gif')",
-            noresults: "Group not found"
-        }
-    };
-    if (typeof(XWiki.widgets.Suggest) != "undefined") {
-      var keys = Object.keys(suggestionsMapping);
-      for (var i=0;i<keys.length;i++) {
-        var selector = 'input.suggest' + keys[i].capitalize();
-        $$(selector).each(function(item) {
-          if (!item.hasClassName('initialized')) {
-            var options = {
-              timeout : 30000,
-              parentContainer : item.up()
-            };
-            Object.extend(options, suggestionsMapping[keys[i]]);
-            // Create the Suggest.
-            var suggest = new XWiki.widgets.Suggest(item, options);
-            item.addClassName('initialized');
-          }
-        });
-      }
-    }
 });
 
 /**
@@ -1398,15 +1343,6 @@ document.observe('xwiki:dom:loaded', function() {
  * To activate this behavior on an input elements, add the "suggested" classname to it.
  */
 document.observe('xwiki:dom:loaded', function() {
-  if (typeof(XWiki.widgets.Suggest) != "undefined") {
-    $$(".suggested").each(function(item) {
-      item.setAttribute("autocomplete", "off");
-      if (typeof item.onfocus === "function") {
-        item.onfocus();
-        item.removeAttribute("onfocus");
-      }
-    });
-  }
 });
 
 /*
@@ -1634,4 +1570,3 @@ document.observe('xwiki:wysiwyg:loaded', function() {
     doc.getElementsByTagName("head")[0].appendChild(css);
   }
 });
-
