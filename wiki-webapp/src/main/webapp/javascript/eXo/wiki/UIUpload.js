@@ -34,11 +34,10 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isAutoUpload) {
   url += "action=progress&uploadId="+uploadId ;
   var responseText = ajaxAsyncGetRequest(url, false);
   
-  var response;
-   try{
-    eval("response = "+responseText);
-  }catch(err){
-    return;  
+  try {        
+    var response = eval("response = " + responseText);
+  } catch (err) {
+    return;
   }
   UIUpload.isAutoUpload = isAutoUpload;
   if(response.upload[uploadId] == undefined || response.upload[uploadId].percent == undefined) {
@@ -54,7 +53,7 @@ UIUpload.prototype.createUploadEntry = function(uploadId, isAutoUpload) {
   var me = eXo.wiki.UIUpload;
   var iframe = document.getElementById(uploadId+'uploadFrame');
   var idoc = iframe.contentWindow.document ;
-  if (eXo.core.Browser.gecko) {
+  if (gj.browser.mozilla) {
     me.createUploadEntryForFF(idoc, uploadId, isAutoUpload);
     return;
   }
@@ -96,17 +95,14 @@ UIUpload.prototype.createUploadEntryForFF = function(idoc, uploadId, isAutoUploa
   var script = document.createElement('script');
   script.type = "text/javascript";
   script.text = "var eXo = parent.eXo";
-  idoc.head = idoc.head || idoc.getElementsByTagName('head')[0];
-  idoc.head.appendChild(script);
+  gj(idoc.head).appendChild(script);
 
-  var style = document.createElement('style');
-  style.type = "text/css"; 
-  var styleText = this.getStyleSheetContent();
-  var cssText = document.createTextNode(styleText);
-  style.appendChild(cssText);
-  idoc.head.appendChild(style);
+  gj(idoc.head).append( gj('<style/>', {
+  'type': 'text/css',
+  text : this.getStyleSheetContent()
+}));
   
-  idoc.body.innerHTML= this.getUploadContent(uploadId, uploadAction, isAutoUpload);
+  gj(idoc.body).html(this.getUploadContent(uploadId, uploadAction, isAutoUpload));
 }
 
 UIUpload.prototype.getUploadContent = function(uploadId, uploadAction, isAutoUpload) {
@@ -165,11 +161,10 @@ UIUpload.prototype.refeshProgress = function(elementId) {
     setTimeout("eXo.wiki.UIUpload.refeshProgress('" + elementId + "');", 1000); 
   }
     
-  var response;
-  try {
-    eval("response = "+responseText);
-  }catch(err) {
-    return;  
+  try {        
+    var response = eval("response = " + responseText);
+  } catch (err) {
+    return;
   }
   
   for(id in response.upload) {
@@ -186,8 +181,8 @@ UIUpload.prototype.refeshProgress = function(elementId) {
     var progressBarMiddle = gj(container).find('div.ProgressBarMiddle')[0];
     var blueProgressBar = gj(progressBarMiddle).find('div.BlueProgressBar')[0];
     var progressBarLabel = gj(blueProgressBar).find('div.ProgressBarLabel')[0];
-    blueProgressBar.style.width = percent + "%" ;
-    progressBarLabel.innerHTML = percent + "%" ;
+    gj(blueProgressBar).width(percent + "%");
+    gj(progressBarLabel).html(percent + "%");
     
     if(percent == 100) {
       var postUploadActionNode = gj(container).find('div.PostUploadAction')[0];
@@ -201,10 +196,8 @@ UIUpload.prototype.refeshProgress = function(elementId) {
   }
   
   if(eXo.wiki.UIUpload.listUpload.length < 1) return;
-
   if (element){
-    element.innerHTML = "Uploaded "+ percent + "% " +
-                        "<span onclick='parent.eXo.wiki.UIUpload.abortUpload("+id+")'>Abort</span>";
+    gj(element).html("Uploaded "+ percent + "% " + "<span onclick='parent.eXo.wiki.UIUpload.abortUpload("+id+")'>Abort</span>");
   }
 };
 /**
@@ -216,24 +209,24 @@ UIUpload.prototype.showUploaded = function(id, fileName) {
   eXo.wiki.UIUpload.listUpload.remove(id);
   var container = parent.document.getElementById(id);
   var element = document.getElementById(id+"ProgressIframe");
-  element.innerHTML =  "<span></span>";
+  gj(element).html("<span></span>");
   
   var uploadIframe = gj(container).find('#'+id+'UploadIframe')[0];
-  uploadIframe.style.display = "none";
+  gj(uploadIframe).hide();
   var progressIframe = gj(container).find('#'+id+'ProgressIframe')[0];
-  progressIframe.style.display = "none";
+  gj(progressIframe).hide();
     
   var selectFileFrame = gj(container).find('div.SelectFileFrame')[0];
   // selectFileFrame.style.display = "block" ;
   var fileNameLabel = gj(selectFileFrame).find('div.FileNameLabel')[0];
-  if(fileName != null) fileNameLabel.innerHTML += " " + fileName;
+  if(fileName != null) gj(fileNameLabel).append(" " + fileName);
   var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
-  progressBarFrame.style.display = "none" ;
+  gj(progressBarFrame).hide();
   var tmp = element.parentNode;
   var temp = tmp.parentNode;
   //TODO: dang.tung - always return true even we reload browser
   var  input = parent.document.getElementById('input' + id);
-  input.value = "true" ;  
+  gj(input).val("true");  
 };
 /**
  * Abort upload process
@@ -248,20 +241,20 @@ UIUpload.prototype.abortUpload = function(id) {
   
   var container = parent.document.getElementById(id);
   var uploadIframe = gj(container).find('#'+id+'UploadIframe')[0];
-  uploadIframe.style.display = "block";
+  gj(uploadIframe).show();
   eXo.wiki.UIUpload.createUploadEntry(id, UIUpload.isAutoUpload);
   var progressIframe = gj(container).find('#'+id+"ProgressIframe")[0];
-  progressIframe.style.display = "none";
+  gj(progressIframe).hide();
 
   var tmp = progressIframe.parentNode;
   var temp = tmp.parentNode;
   var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
-  progressBarFrame.style.display = "none" ;
+  gj(progressBarFrame).hide();
   var selectFileFrame = gj(container).find('div.SelectFileFrame')[0];
-  selectFileFrame.style.display = "none" ;
+  gj(selectFileFrame).hide();
    
   var  input = parent.document.getElementById('input' + id);
-  input.value = "false";
+  gj(input).val("false");
 };
 /**
  * Delete uploaded file
@@ -274,20 +267,20 @@ UIUpload.prototype.deleteUpload = function(id) {
   gj.get(url);  
   var container = parent.document.getElementById(id);
   var uploadIframe =  gj(container).find('#'+id+'UploadIframe')[0];
-  uploadIframe.style.display = "block";
+  gj(uploadIframe).show();
   eXo.wiki.UIUpload.createUploadEntry(id, UIUpload.isAutoUpload);
   var progressIframe = gj(container).find('#'+id+'ProgressIframe')[0];
-  progressIframe.style.display = "none";
+  gj(progressIframe).hide();
 
   var tmp = progressIframe.parentNode;
   var temp = tmp.parentNode;
   var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
-  progressBarFrame.style.display = "none" ;
+  gj(progressBarFrame).hide();
   var selectFileFrame = gj(container).find('div.SelectFileFrame')[0];
-  selectFileFrame.style.display = "none" ;
+  gj(selectFileFrame).hide();
    
   var  input = parent.document.getElementById('input' + id);
-  input.value = "false";
+  gj(input).val('false');
 } ;
 
 /**
@@ -312,24 +305,23 @@ UIUpload.prototype.upload = function(clickEle, id) {
   if (temp.indexOf('\\') != -1) {
     temp = temp.substr((temp.lastIndexOf('\\') + 1), temp.length - 1) ;
   }
-  
-  infoUploaded.innerHTML = temp ;
+  gj(infoUploaded).html(temp);
 
   var progressBarFrame = gj(container).find('div.ProgressBarFrame')[0];
-  progressBarFrame.style.display = "block" ;  
+  gj(progressBarFrame).show();  
   var progressBarMiddle = gj(container).find('div.ProgressBarMiddle')[0];
   var blueProgressBar = gj(progressBarMiddle).find('div.BlueProgressBar')[0];
   var progressBarLabel = gj(blueProgressBar).find('div.ProgressBarLabel')[0];
-  blueProgressBar.style.width = "0%" ;
-  progressBarLabel.innerHTML = "0%" ;
+  gj(blueProgressBar).width("0%");
+  gj(progressBarLabel).html("0%");
   
   var  input = parent.document.getElementById('input' + id);
-  input.value = "true";
+  gj(input).val("true");
   
   var uploadIframe = gj(container).find('#'+id+'UploadIframe')[0];
-  uploadIframe.style.display = "none";
+  gj(uploadIframe).hide();
   var progressIframe = gj(container).find('#'+id+'ProgressIframe')[0];
-  progressIframe.style.display = "none";
+  gj(progressIframe).hide();
 
   var tmp = progressIframe.parentNode;
   var temp = tmp.parentNode;
