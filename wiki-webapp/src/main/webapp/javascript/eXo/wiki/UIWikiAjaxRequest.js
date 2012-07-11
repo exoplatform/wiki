@@ -32,7 +32,7 @@ UIWikiAjaxRequest.prototype.init = function(actionPrefix, defaultAction) {
   this.isEnableCheck = true;
   if (this.actionPrefix && this.defaultAction) {
     this.autoCheckAnchorId = window.setInterval(this.autoCheckAnchor, this.DEFAULT_TIMEOUT_CHECK);
-    this.addEventListener(window, 'unload', this.destroyAll, false);
+    gj(window).unload(this.destroyAll);
     if (gj.browser.msie != undefined) {
       this.createIEHistoryFrame();
     }
@@ -148,25 +148,6 @@ UIWikiAjaxRequest.prototype.stopAutoCheckAnchor = function() {
   if (this.autoCheckAnchorId) {
     window.clearInterval(this.autoCheckAnchorId);
     this.autoCheckAnchorId = false;
-  }
-};
-
-/**
- * Use to add event listener to a html element can used for almost browsers.
- * 
- * @param {Element} node html DOM node
- * @param {String} eventType type of event will be add.
- * @param {Function} handler function use to handle event.
- * @param {Boolean} allowBubble allow event bubble or not.
- */
-UIWikiAjaxRequest.prototype.addEventListener = function(node, eventType, handler, allowBubble) {
-  if ((!node || !node.nodeName) && node != window) {
-    throw (new Error('Can not add event listener for null or not DOM Element object'));
-  }
-  if (node.addEventListener) {
-    node.addEventListener(eventType, handler, allowBubble);
-  } else {
-    node.attachEvent('on' + eventType, handler, allowBubble);
   }
 };
 

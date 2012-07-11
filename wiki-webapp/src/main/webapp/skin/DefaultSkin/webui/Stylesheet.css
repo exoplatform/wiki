@@ -459,6 +459,14 @@ table.UIFormGrid div.Id {
 	padding: 2px 0px;
 }
 
+.UIWikiPageContentArea .section-container {
+	padding: 2px 0px;
+}
+
+.UIWikiPageContentArea .EditSectionHover {
+	background-color: #F7F7F7;
+}
+
 .UIWikiPageContentArea .DecorationVersion {
 	background: #eeeeee;
 	border-radius: 3px;

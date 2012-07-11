@@ -57,9 +57,9 @@ UIWikiPermissionForm.prototype.delegateFormClick = function(evt) {
   if (target.nodeType === 1 && target.tagName === "INPUT"
       && target.type === "checkbox") {
     if (target.checked) {
-      eXo.wiki.UIWikiPermissionForm.tickCheckBoxes(target.id);
+      eXo.wiki.UIWikiPermissionForm.tickCheckBoxes(target.name);
     } else if (!target.checked) {
-      eXo.wiki.UIWikiPermissionForm.untickCheckBoxes(target.id);
+      eXo.wiki.UIWikiPermissionForm.untickCheckBoxes(target.name);
     }
   }
 };
@@ -71,9 +71,9 @@ UIWikiPermissionForm.prototype.addChangeHandlers = function(form) {
       if (!element.onchange) {
         element.onchange = function() {
           if (this.checked) {
-            eXo.wiki.UIWikiPermissionForm.tickCheckBoxes(this.id);
+            eXo.wiki.UIWikiPermissionForm.tickCheckBoxes(this.name);
           } else if (!this.checked) {
-            eXo.wiki.UIWikiPermissionForm.untickCheckBoxes(this.id);
+            eXo.wiki.UIWikiPermissionForm.untickCheckBoxes(this.name);
           }
         }
       }
@@ -96,7 +96,7 @@ UIWikiPermissionForm.prototype.untickCheckBoxes = function(id) {
     }
   }
   for ( var i = 0; i < unticklist.length; i++) {
-    var element = gj(this.form).find('#' + unticklist[i])[0];
+    var element = gj(this.form).find('input[name=' + unticklist[i]+']')[0];
     if (element && element.nodeType === 1) {
       // check for element
       if (element.tagName === "INPUT" && element.type === "checkbox") {
@@ -121,7 +121,7 @@ UIWikiPermissionForm.prototype.tickCheckBoxes = function(id) {
     }
   }
   for ( var i = 0; i < ticklist.length; i++) {
-    var element = gj(this.form).find('#' + ticklist[i])[0];
+    var element = gj(this.form).find('input[name=' + ticklist[i]+']')[0];
     if (element && element.nodeType === 1) {
       // check for element
       if (element.tagName === "INPUT" && element.type === "checkbox") {

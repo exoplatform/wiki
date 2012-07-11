@@ -95,7 +95,7 @@ UIUpload.prototype.createUploadEntryForFF = function(idoc, uploadId, isAutoUploa
   var script = document.createElement('script');
   script.type = "text/javascript";
   script.text = "var eXo = parent.eXo";
-  gj(idoc.head).appendChild(script);
+  idoc.head.appendChild(script);
 
   gj(idoc.head).append( gj('<style/>', {
   'type': 'text/css',

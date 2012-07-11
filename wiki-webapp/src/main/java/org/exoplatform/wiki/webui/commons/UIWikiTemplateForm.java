@@ -129,7 +129,7 @@ public class UIWikiTemplateForm extends UIForm{
         LazyPageList<TemplateBean> lazylist = new LazyPageList<TemplateBean>(new WikiTemplateListAccess(listBean), ITEMS_PER_PAGE);
         form.grid.getUIPageIterator().setPageList(lazylist);
       }
-      event.getRequestContext().addUIComponentToUpdateByAjax(form);
+      event.getRequestContext().addUIComponentToUpdateByAjax(form.grid);
     }
   }
 }

@@ -24,13 +24,7 @@ UIWikiPageTitleControlArea.prototype.init = function(componentId, inputId, untit
   var component = document.getElementById(componentId);
   var input = gj(component).find('#' + inputId)[0];
   if (input) {
-    input.form.onsubmit = function() {
-      return false;
-    };
-    input.onfocus = function(evt) {
-      if (this.value == untitledLabel && isAddMode)
-        this.value = "";
-    };
+    eXo.wiki.UIWikiPortlet.decorateInput(input, untitledLabel, isAddMode);
   }
 };
 

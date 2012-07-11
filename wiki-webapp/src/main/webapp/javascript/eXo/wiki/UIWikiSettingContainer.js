@@ -35,11 +35,11 @@ UIWikiSettingContainer.prototype.init = function(id) {
 };
 
 UIWikiSettingContainer.prototype.setHeightLayOut = function() {
-  var hdef = document.documentElement.clientHeight;
+  var hdef = gj(document).height();
   hdef = (hdef > 200) ? hdef : 200;
   
   if (this.spliter) {
-    this.spliter.style.height = hdef + "px";
+    gj(this.spliter).height(hdef + "px");
   }
 };
 

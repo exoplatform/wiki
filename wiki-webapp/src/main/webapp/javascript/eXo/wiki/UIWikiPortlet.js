@@ -24,11 +24,17 @@ if (!eXo.wiki)
 function UIWikiPortlet() {
 };
 
+gj(document).ready(function(){
+    var breadCrumb = gj('div.UIWikiBreadCrumb')[0];
+    var selected = gj(breadCrumb).find('a.Selected')[0];
+    if(selected) {
+      gj('title').html(gj(selected).text());
+    }
+});
 
 UIWikiPortlet.prototype.init = function(portletId, linkId) {
   var me = eXo.wiki.UIWikiPortlet;
   me.wikiportlet = document.getElementById(portletId);
-  me.changeWindowTite(me.wikiportlet);
   me.changeModeLink = document.getElementById(linkId);
 
   // window.onload = function(event) {me.changeMode(event);};
@@ -40,16 +46,6 @@ UIWikiPortlet.prototype.init = function(portletId, linkId) {
   /*gj(me.wikiportlet).keyup(me.onKeyUp);*/
 }
 
-UIWikiPortlet.prototype.changeWindowTite = function(elm) {
-  if(elm) {
-    var breadCrumb = gj(elm).find('div.UIWikiBreadCrumb')[0];
-    var selected = gj(breadCrumb).find('a.Selected')[0];
-    if(selected) {
-      top.document.title = selected.innerHTML;
-    }
-  }
-};
-
 UIWikiPortlet.prototype.onMouseUp = function(evt) {
   var me = eXo.wiki.UIWikiPortlet;
   var evt = evt || window.event;
@@ -58,10 +54,10 @@ UIWikiPortlet.prototype.onMouseUp = function(evt) {
     return;
   var searchPopup = gj(me.wikiportlet).find('div.SearchPopup')[0];
   if (searchPopup)
-    searchPopup.style.display = 'none';
+    gj(searchPopup).hide();
   var breadCrumbPopup = eXo.wiki.UIWikiPortlet.getBreadcrumbPopup();
   if (breadCrumbPopup) {
-    breadCrumbPopup.style.display = 'none';
+    gj(breadCrumbPopup).hide();
   }
   /*if (target.tagName == "A" || (target.tagName == "INPUT" && target.type == "button") || target.tagName == "SELECT"
       || target.tagName == "DIV" && target.className.indexOf("RefreshModeTarget") > 0) {
@@ -110,17 +106,17 @@ UIWikiPortlet.prototype.showPopup = function(elevent, e) {
   for ( var t = 0; t < strs.length; t++) {
     var elm = document.getElementById(strs[t]);
     if (elm)
-      elm.onclick = eXo.wiki.UIWikiPortlet.cancel;
+      gj(elm).click(eXo.wiki.UIWikiPortlet.cancel);
   }
   if (!e)
     e = window.event;
   e.cancelBubble = true;
   var parent = gj(elevent).closest('div');
   var popup = gj(parent).find('div.UIPopupCategory')[0];
-  if (popup.style.display === "none") {
-    popup.style.display = "block";
+  if (gj(popup).css('display') == 'none') {
+    gj(popup).show();
   } else {
-    popup.style.display = "none";
+    gj(popup).hide();
   }
 };
 
@@ -154,7 +150,7 @@ UIWikiPortlet.prototype.renderBreadcrumbs = function(uicomponentid, isLink) {
   }
   var popupItems = new Array();
   var firstTime = true;
-  var content = String(lastItem.innerHTML);
+  var content = gj(lastItem).html();
   while (breadcrumb.offsetWidth > shortenFractor * breadcrumb.parentNode.offsetWidth) {
     if (itemArray.length > 0) {
       var arrayLength = itemArray.length;
@@ -163,24 +159,24 @@ UIWikiPortlet.prototype.renderBreadcrumbs = function(uicomponentid, isLink) {
       if (firstTime) {
         firstTime = false;
         var newItem = gj(item).clone()[0];
-        newItem.innerHTML = ' ... ';
+        gj(newItem).html(' ... ');
         if (isLink) {
-          newItem.href = '#';
+          gj(newItem).attr('href','#');
           gj(newItem).mouseover(me.showBreadcrumbPopup);
         }
-        breadcrumb.replaceChild(newItem, item);
+        gj(item).replaceWith(newItem);
       } else {
         var leftBlock = gj(item).prev('div')[0];
-        breadcrumb.removeChild(leftBlock);
-        breadcrumb.removeChild(item);
+        gj(leftBlock).remove();
+        gj(item).remove();
       }
     } else {
       break;
     }
   }
 
-  if (content.length != lastItem.innerHTML.length) {
-    lastItem.innerHTML = '<span title="' + content + '">' + lastItem.innerHTML + '...' + '</span>';
+  if (content.length != gj(lastItem).html().length) {
+    gj(lastItem).html('<span title="' + content + '">' + gj(lastItem).html() + '...' + '</span>');
   }
   me.createPopup(popupItems, isLink, breadcrumbPopup);
 };
@@ -189,26 +185,27 @@ UIWikiPortlet.prototype.createPopup = function(popupItems, isLink, breadcrumbPop
   if (isLink) {
     var popupItemDepth = -1;
     for (var index = popupItems.length - 1; index >= 0; index--) {
-      popupItems[index].className = 'ItemIcon MenuIcon';
+      gj(popupItems[index]).attr('class','ItemIcon MenuIcon');
       popupItemDepth++;
-      var menuItem = document.createElement('div');
-      menuItem.className = 'MenuItem';
+      var menuItem = gj('<div/>', {
+        'class': 'MenuItem'
+      });
       var previousDiv = menuItem;
       for (var i = 0; i < popupItemDepth; i++) {
-        var marginLeftDiv = document.createElement('div');
-        marginLeftDiv.className = 'MarginLeftDiv';
-        previousDiv.appendChild(marginLeftDiv);
+        var marginLeftDiv = gj('<div/>', {
+          'class': 'MarginLeftDiv'
+        });
+        gj(previousDiv).append(marginLeftDiv);
         previousDiv = marginLeftDiv;
         if (i == popupItemDepth - 1) {
-          previousDiv.appendChild(popupItems[index]);
+          gj(previousDiv).append(popupItems[index]);
         }
       }
       if (popupItemDepth == 0) {
-        menuItem.appendChild(popupItems[index]);
+        gj(menuItem).append(popupItems[index]);
       }
-      breadcrumbPopup.appendChild(menuItem);
-    }
-    
+      gj(breadcrumbPopup).append(menuItem);
+    }    
   }
 };
 
@@ -217,15 +214,15 @@ UIWikiPortlet.prototype.createPopup = function(popupItems, isLink, breadcrumbPop
  */
 UIWikiPortlet.prototype.shortenUntil = function(item, condition) {
   var isShortent = false;
-  while (!condition() && item.innerHTML.length > 3) {
-    item.innerHTML = item.innerHTML.substring(0, item.innerHTML.length - 1);
+  while (!condition() && gj(item).html().length > 3) {
+    gj(item).html(gj(item).html().substring(0, gj(item).html().length - 1));
     isShortent = true;
   }
   if (isShortent) {
-    if(item.innerHTML.length > 6) {
-      item.innerHTML = item.innerHTML.substring(0, item.innerHTML.length - 3);
+    if(gj(item).html().length > 6) {
+      gj(item).html(gj(item).html().substring(0, gj(item).html().length - 3));
     }
-    item.innerHTML = item.innerHTML + ' ... ';
+    gj(item).html(gj(item).html() + ' ... ');
   }
 };
 
@@ -241,24 +238,12 @@ UIWikiPortlet.prototype.showBreadcrumbPopup = function(evt) {
   var isRTL = eXo.core.I18n.isRT();
   var offsetLeft = eXo.core.Browser.findPosX(ellipsis, isRTL) - 20;
   var offsetTop = gj(ellipsis).offset().top + 20;
-  breadcrumbPopup.style.zIndex= '100';
-  breadcrumbPopup.style.display = 'block';
-  breadcrumbPopup.style.left = offsetLeft + 'px';
-  breadcrumbPopup.style.top = offsetTop + 'px';
-};
-
-
-UIWikiPortlet.prototype.highlightEditSection = function (header, highlight) {
-  var sectionContainer = gj(header).closest('.section-container')[0];
-  var section = gj(header).find('span.EditSection')[0];
-  if (highlight == true) {
-    section.style.display = 'block';
-    sectionContainer.style.backgroundColor = '#F7F7F7';
-  }
-  else {
-    section.style.display = 'none';
-    sectionContainer.style.backgroundColor = '';
-  }
+  gj(breadcrumbPopup).css({
+    'z-index': '100',
+    left: offsetLeft + 'px',
+    top: offsetTop + 'px'
+  })
+  gj(breadcrumbPopup).show();
 };
 
 UIWikiPortlet.prototype.createURLHistory = function (uicomponentId, isShow) {
@@ -280,20 +265,15 @@ UIWikiPortlet.prototype.urlHistory = function (uicomponentId) {
 UIWikiPortlet.prototype.makeRenderingErrorsExpandable = function (uicomponentId) {
   var uicomponent = document.getElementById(uicomponentId);
   if(uicomponent) {
-    var renderingErrors = gj(uicomponent).find('span.xwikirenderingerror');
+    var renderingErrors = gj(uicomponent).find('div.xwikirenderingerror');
     for (i=0;i<renderingErrors.length;i++) {
     var renderingError = renderingErrors[i];
     var descriptionError = renderingError.nextSibling;
-    if (descriptionError.innerHTML !== "" && gj(descriptionError).hasClass('xwikirenderingerrordescription')) {
-      renderingError.style.cursor="pointer";
-      renderingError.onclick = function(event){
-        if(!gj(this.nextSibling).hasClass("hidden")) {
-          this.nextSibling.className += ' ' + "hidden";
-        }
-        else {
-          gj(this.nextSibling).removeClass("hidden");
-          }
-        };
+    if (gj(descriptionError).html() !== "" && gj(descriptionError).hasClass('xwikirenderingerrordescription')) {
+      gj(renderingError).css('cursor','pointer');
+      gj(renderingError).click(function(){
+        gj(this.nextSibling).toggleClass('hidden');
+        });
       }
     }
   }
@@ -301,21 +281,18 @@ UIWikiPortlet.prototype.makeRenderingErrorsExpandable = function (uicomponentId)
 
 UIWikiPortlet.prototype.decorateSpecialLink = function(uicomponentId) {
   var uicomponent = document.getElementById(uicomponentId);
-  var invalidChars = gj(uicomponent).find('div.InvalidChars');
-  var invalidCharsMsg = invalidChars.innerText;
-  if (!invalidCharsMsg || typeof(invalidCharsMsg) == "undefined") {
-    invalidCharsMsg = invalidChars.textContent;
-  }
+  var invalidChars = gj(uicomponent).find('div.InvalidChars')[0];
+  var invalidCharsMsg = gj(invalidChars).text();  
   if (uicomponent) {
     var linkSpans = gj(uicomponent).find('span.wikicreatelink');
     for (i = 0; i < linkSpans.length; i++) {
       var linkSpan = linkSpans[i];
       var pageLink = linkSpan.childNodes[0];
-      if (typeof(pageLink) != "undefined" && pageLink.href == "javascript:void(0);") {
-        pageLink.onclick = function(event) {
+      if (typeof(pageLink) != "undefined" && gj(pageLink).attr('href') == "javascript:void(0);") {
+        gj(pageLink).click(function(event) {
             alert(invalidCharsMsg);
             return;
-        };
+        });
       }
     }
   }
@@ -334,6 +311,25 @@ UIWikiPortlet.prototype.keepSessionAlive = function(isKeepSessionAlive) {
 UIWikiPortlet.prototype.initMacros = function() {
   eXo.wiki.UIRelated.initMacros();
   eXo.wiki.UITreeExplorer.initMacros();
+};
+
+UIWikiPortlet.prototype.decorateInput = function(input, defaultValue, defaultCondition) {
+  if (gj(input).val() == defaultValue && defaultCondition )
+    gj(input).css('color', '#9A9A9A');
+  input.form.onsubmit = function() {
+    return false;
+  };
+  gj(input).focus(function() {
+    if (gj(this).val() == defaultValue && defaultCondition)
+      gj(this).val('');
+    gj(this).css('color', 'black');
+  });
+  gj(input).blur(function() {
+    if (gj(this).val() == '') {
+      gj(this).val(defaultValue);
+      gj(this).css('color', '#9A9A9A');
+    }
+  });
 };
 
 UIWikiPortlet.prototype.getKeynum = function(event) {

@@ -42,21 +42,14 @@ UITreeExplorer.prototype.initMacros = function() {
 UITreeExplorer.prototype.collapseExpand = function(element) {
   var node = element.parentNode;
   var subGroup = gj(node).find('div.NodeGroup')[0];
-  if (element.className == "EmptyIcon")
+  if (gj(element).hasClass('EmptyIcon'))
     return true;
   if (!subGroup) {
-    element.className = "CollapseIcon";
+    gj(element).addClass('CollapseIcon');
     return false;
   }
-  if (subGroup.style.display == "none") {
-    if (element.className == "ExpandIcon")
-      element.className = "CollapseIcon";
-    subGroup.style.display = "block";
-  } else {
-    if (element.className == "CollapseIcon")
-      element.className = "ExpandIcon";
-    subGroup.style.display = "none";
-  }
+  gj(subGroup).toggle();
+  gj(element).toggleClass('ExpandIcon','CollapseIcon');
   return true;
 };
 
@@ -115,10 +108,9 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
     childBlock = me.innerDoc.createElement("div");
     me.innerDoc = null;
   }
-  childBlock.className = "NodeGroup";
-  childBlock.innerHTML = me.loading;
-  node.appendChild(childBlock);
-
+  gj(childBlock).addClass('NodeGroup');
+  gj(childBlock).html(me.loading);
+  gj(node).append(childBlock);
   gj.ajax({
     async : false,
     url : restURL,
@@ -138,7 +130,7 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
   for ( var i = 0; i < resultLength; i++) {
     str += me.buildNode(dataList.jsonList[i]);
   }
-  node.innerHTML = str;
+  gj(node).html(str);
 }
 
 UITreeExplorer.prototype.buildHierachyNode = function(data){

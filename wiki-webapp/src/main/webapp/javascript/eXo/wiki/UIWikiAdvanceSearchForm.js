@@ -23,10 +23,10 @@ function UIWikiAdvanceSearchForm(){
 UIWikiAdvanceSearchForm.prototype.init = function(inputId) {
 
   var input = document.getElementById(inputId);
-  input.onkeyup = function(evt) {
+  gj(input).keyup(function(evt) {
     evt = window.event || evt;
     eXo.wiki.UIWikiAdvanceSearchForm.pressHandler(evt, this);
-  }
+  });  
   input.form.onsubmit = function() {
     return false;
   }  
@@ -34,7 +34,7 @@ UIWikiAdvanceSearchForm.prototype.init = function(inputId) {
 
 UIWikiAdvanceSearchForm.prototype.pressHandler = function(evt, textbox){
   var me = eXo.wiki.UIWikiAdvanceSearchForm;
-  var keyNum = me.captureKey(evt);
+  var keyNum = eXo.wiki.UIWikiPortlet.getKeynum(evt);
   evt = window.event || evt ;
   if (evt.altKey || evt.ctrlKey || evt.shiftKey)
     return ;
@@ -58,28 +58,10 @@ UIWikiAdvanceSearchForm.prototype.pressHandler = function(evt, textbox){
   return; 
 };
 
-/**
- * Capture key is pressed by users
- * @param {Object} data
- */
-UIWikiAdvanceSearchForm.prototype.captureKey = function(e) {
-  var code;
-  if (!e) {
-    var e = window.event;
-  }
-  if (e.keyCode) {
-    code = e.keyCode;
-  } else if (e.which) {
-    code = e.which;
-  }
-  return code;
-};
-
 UIWikiAdvanceSearchForm.prototype.enterHandler = function(evt, textbox) {
 ;
-  var uiform = gj(textbox).find('.UIWikiAdvanceSearchForm')[0];
-  var list = gj(uiform).find('div.SearchAction')[0];
-  list[0].onclick();
+  var uiform = gj(textbox).closest('.UIWikiAdvanceSearchForm')[0];
+  gj(uiform).find('div.SearchAction')[0].onclick();
 
 };
 

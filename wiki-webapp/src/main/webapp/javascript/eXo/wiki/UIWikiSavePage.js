@@ -46,11 +46,11 @@ UIWikiSavePage.prototype.disableButton = function(parent, action) {
     return;
   }
   for (i = 0; i < this.disableClass.length; i++) {
-    var buttons = gj(parent).find('a.'+this.disableClass[i])[0];
+    var buttons = gj(parent).find('a.'+this.disableClass[i]);
     for (k = 0; k < buttons.length; k++) {
       gj(buttons[k]).addClass("DisableButton");
-      buttons[k].href = "javascript:void(0);";
-      buttons[k].onclick = "return false;";
+      gj(buttons[k]).attr('href','javascript:void(0);');
+      gj(buttons[k]).click("return false;");
     }
   }
 }

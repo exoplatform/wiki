@@ -25,7 +25,7 @@ UIWikiPagePreview.prototype.init = function(maskId){
   if(maskWorkpace){
     var pagePreview = gj(maskWorkpace).find('div.UIWikiPagePreview')[0];
     if(pagePreview){
-      pagePreview.style.height = (gj(document).height() - 42) + "px";
+      gj(pagePreview).height((gj(document).height() - 42) + "px");
       eXo.portal.UIMaskWorkspace.resetPositionEvt();
     }
   }
