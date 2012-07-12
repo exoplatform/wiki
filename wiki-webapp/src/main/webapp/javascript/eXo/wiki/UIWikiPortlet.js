@@ -28,7 +28,7 @@ gj(document).ready(function(){
     var breadCrumb = gj('div.UIWikiBreadCrumb')[0];
     var selected = gj(breadCrumb).find('a.Selected')[0];
     if(selected) {
-      gj('title').html(gj(selected).text());
+      document.title = gj(selected).text();
     }
 });
 
