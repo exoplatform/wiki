@@ -68,7 +68,7 @@ WikiLayout.prototype.init = function(prtId) {
       if (this.leftArea && this.rightArea && (leftWidth != null) && (leftWidth != "") && (leftWidth * 1 > 0)) {
         gj(this.leftArea).width(leftWidth + 'px');
       }
-      this.spliter.onmousedown = eXo.wiki.WikiLayout.exeRowSplit;
+      gj(this.spliter).mousedown(eXo.wiki.WikiLayout.exeRowSplit);
     }
     if(this.layoutContainer) {
       this.processeWithHeight();
@@ -81,12 +81,12 @@ WikiLayout.prototype.init = function(prtId) {
 
 WikiLayout.prototype.setClassBody = function(clazz) {
   if(this.myBody && this.myHtml) {
-    if(String(clazz) != this.bodyClass) {
-      this.myBody.className = (clazz + " " + this.bodyClass);
-      this.myHtml.className = clazz;
+    if (String(clazz) != this.bodyClass) {
+      gj(this.myBody).attr('class', clazz + " " + this.bodyClass);
+      gj(this.myHtml).attr('class', clazz);
     } else {
-      this.myBody.className = clazz;
-      this.myHtml.className = "";
+      gj(this.myBody).attr('class', clazz);
+      gj(this.myHtml).attr('class', '');
     }
   }
 };
@@ -191,7 +191,6 @@ WikiLayout.prototype.adjustWidth = function(evt) {
   if (rightWidth <= 0 || leftWidth <= 0) {
     return;
   }
-  
   gj(WikiLayout.leftArea).width(leftWidth + "px");
   gj(WikiLayout.rightArea).width(rightWidth + "px");
 };
@@ -199,7 +198,7 @@ WikiLayout.prototype.adjustWidth = function(evt) {
 WikiLayout.prototype.clear = function() {
  if(eXo.wiki.WikiLayout.leftArea) {
    eXo.core.Browser.setCookie("leftWidth", eXo.wiki.WikiLayout.leftArea.offsetWidth, 1);
-   document.onmousemove = null;
+   gj(document).off('mousemove');
  }
 };
 
