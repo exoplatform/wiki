@@ -208,7 +208,7 @@
             <field name="workspaces">
               <collection type="java.util.ArrayList">
                 <value>
-                  <string>wiki</string>
+                  <string>collaboration</string>
                 </value>
               </collection>
             </field>

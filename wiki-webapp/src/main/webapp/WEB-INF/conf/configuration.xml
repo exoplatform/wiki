@@ -386,12 +386,7 @@
           <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
             <field name="workspaces">
               <collection type="java.util.ArrayList">
-                <value><string>wiki</string></value> 
-              </collection>
-            </field>
-            <field name="workspaces" profiles="all,default,minimal">
-              <collection type="java.util.ArrayList">
-                <value><string>collaboration</string></value> 
+                <value><string>${gatein.jcr.workspace.default}</string></value>
               </collection>
             </field>
             <field  name="jcrPaths">

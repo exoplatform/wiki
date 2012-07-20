@@ -53,7 +53,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
 
   protected static StandaloneContainer  container;
 
-  protected final static String         WIKI_WS           = "wiki".intern();
+  protected final static String         WIKI_WS           = "collaboration".intern();
 
   protected static Node                 root_                  = null;
 

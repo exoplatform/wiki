@@ -34,9 +34,9 @@
               <property name="swap-directory" value="target/temp/swap/wiki" />
             </properties>
             <value-storages>
-              <value-storage id="wiki" class="org.exoplatform.services.jcr.impl.storage.value.fs.TreeFileValueStorage">
+              <value-storage id="${gatein.jcr.workspace.default}" class="org.exoplatform.services.jcr.impl.storage.value.fs.TreeFileValueStorage">
                 <properties>
-                  <property name="path" value="target/temp/values/wiki" />
+                  <property name="path" value="target/temp/values/${gatein.jcr.workspace.default}" />
                 </properties>
                 <filters>
                   <filter property-type="Binary" />

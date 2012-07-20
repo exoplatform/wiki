@@ -202,7 +202,7 @@
           <object type="org.exoplatform.services.jcr.ext.hierarchy.impl.HierarchyConfig">
             <field name="workspaces">
               <collection type="java.util.ArrayList">
-                <value><string>wiki</string></value> 
+                <value><string>collaboration</string></value> 
               </collection>
             </field>
             <field  name="jcrPaths">

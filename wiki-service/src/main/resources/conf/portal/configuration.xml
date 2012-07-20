@@ -208,10 +208,6 @@
         </value-param>
         <value-param>
           <name>workspace-name</name>
-          <value>wiki</value>
-        </value-param>
-        <value-param profiles="all,default,minimal">
-          <name>workspace-name</name>
           <value>collaboration</value>
         </value-param>
         <values-param>

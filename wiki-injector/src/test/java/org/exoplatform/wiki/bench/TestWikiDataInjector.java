@@ -48,7 +48,7 @@ public class TestWikiDataInjector extends TestCase {
 
   private static StandaloneContainer container;
 
-  private final static String        WIKI_WS = "wiki".intern();
+  private final static String        WIKI_WS = "collaboration".intern();
 
   private WikiDataInjector           injector;
   
