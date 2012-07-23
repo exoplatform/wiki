@@ -52,10 +52,10 @@
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</target-component>
     <component-plugin>
-      <name>Last Update Action</name>
+      <name>Update rendering cache when page is add or content change</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
-      <description>add actions plugin</description>
+      <description>Update rendering cache when page is add or content change</description>
       <init-params>
         <object-param>
           <name>actions</name>
@@ -76,10 +76,10 @@
       </init-params>
     </component-plugin>
     <component-plugin>
-      <name>Last Update Action</name>
+      <name>Update rendering cache when page is removed</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
-      <description>add actions plugin</description>
+      <description>Update rendering cache when page is removed</description>
       <init-params>
         <object-param>
           <name>actions</name>
@@ -100,10 +100,10 @@
       </init-params>
     </component-plugin>
     <component-plugin>
-      <name>Last Update Action</name>
+      <name>Update rendering cache when page is renamed or moved</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
-      <description>add actions plugin</description>
+      <description>Update rendering cache when page is renamed or moved</description>
       <init-params>
         <object-param>
           <name>actions</name>
