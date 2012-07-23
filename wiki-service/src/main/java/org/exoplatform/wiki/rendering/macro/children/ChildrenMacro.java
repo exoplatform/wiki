@@ -29,6 +29,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.builder.ReferenceBuilder;
+import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.rendering.macro.ExcerptUtils;
 import org.exoplatform.wiki.service.WikiContext;
@@ -118,6 +119,11 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
     Block root;
     try {
       root = generateTree(params, descendant, childrenNum, depth, context);
+      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
+                                                                                                       .getComponentInstanceOfType(PageRenderingCacheService.class);
+      WikiContext wikiContext = getWikiContext();
+      renderingCacheService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
+                                        new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
       return Collections.singletonList(root);
     } catch (Exception e) {
       log.debug("Failed to ", e);
@@ -187,5 +193,14 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
       throw new MacroExecutionException(String.format("Failed to find reference builder for syntax %s", context.getSyntax()
                                                                                                                .toIdString()), e);
     }
+  }
+  
+  private WikiContext getWikiContext() {
+    ExecutionContext ec = execution.getContext();
+    WikiContext wikiContext = null;
+    if (ec != null) {
+      wikiContext = (WikiContext) ec.getProperty(WikiContext.WIKICONTEXT);
+    }
+    return wikiContext;
   }
 }
