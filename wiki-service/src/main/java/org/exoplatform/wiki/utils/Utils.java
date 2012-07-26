@@ -257,15 +257,7 @@ public class Utils {
   } 
   
   public static boolean isDescendantPage(PageImpl page, PageImpl parentPage) throws Exception {
-    Iterator<PageImpl> iter = parentPage.getChildPages().values().iterator();
-    while (iter.hasNext()) {
-      PageImpl childpage = (PageImpl) iter.next();
-      if (childpage.equals(page))
-        return true;
-      if (isDescendantPage(page, childpage))
-        return true;
-    }
-    return false;
+    return page.getPath().startsWith(parentPage.getPath());
   }
 
   public static Object getObject(String path, String type) throws Exception {
