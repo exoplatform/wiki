@@ -16,7 +16,10 @@
  */
 package org.exoplatform.wiki.upgrade;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.query.QueryResult;
@@ -29,31 +32,30 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 
 /**
  * Created by The eXo Platform SAS
  * Author : phongth
  *          phongth@exoplatform.com
- * May 25, 2012  
+ * Aug 14, 2012  
  */
-public class WikiPermissionRepairPlugin extends UpgradeProductPlugin {
-  private static final Log LOG = ExoLogger.getLogger(WikiPermissionRepairPlugin.class);
+public class WikiGroupPermissionRepairPlugin extends UpgradeProductPlugin {
+  private static final Log LOG = ExoLogger.getLogger(WikiGroupPermissionRepairPlugin.class);
 
-  public WikiPermissionRepairPlugin(InitParams initParams) {
+  public WikiGroupPermissionRepairPlugin(InitParams initParams) {
     super(initParams);
   }
 
   @Override
   public void processUpgrade(String oldVersion, String newVersion) {
-    LOG.info("\n\nStart check and fix null entry permission of attachments...\n");
+    LOG.info("\n\nStart check and fix group permission of wiki pages...\n");
     try {
-      fixPermissionEntryNull();
+      fixGroupPermissionOfWikiPages();
     } catch (Exception e) {
-      LOG.warn("[WikiPermissionRepairPlugin] Exception when fix null entry permission of attachments for wiki:", e);
+      LOG.warn("Exception when fix  group permission of wiki pages:", e);
     }
-    LOG.info("\n\nFinish check and fix null entry permission of attachments...\n");
+    LOG.info("\n\nFinish check and fix group permission of wiki pages...\n");
   }
 
   @Override
@@ -61,30 +63,46 @@ public class WikiPermissionRepairPlugin extends UpgradeProductPlugin {
     return VersionComparator.isBefore(previousVersion, newVersion);
   }
   
-  public void fixPermissionEntryNull() {
+  private void fixGroupPermissionOfWikiPages() {
     RequestLifeCycle.begin(PortalContainer.getInstance());
     MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MOWService.class);
     ChromatticSession session = mowService.getSession();
-    QueryResult<AttachmentImpl> attachmentIterator = session.createQueryBuilder(AttachmentImpl.class).where("jcr:path LIKE '/%' AND not(fn:name()='content')").get().objects();
     
-    LOG.info("\nTotal attachments found: {}\n", attachmentIterator.size());
-    int fixedAttachment = 0;
-    while (attachmentIterator.hasNext()) {
-      AttachmentImpl attachment = attachmentIterator.next();
+    // Select all the wiki pages
+    QueryResult<PageImpl> pageIterator = session.createQueryBuilder(PageImpl.class).where("jcr:path LIKE '/%'").get().objects();
+    
+    LOG.info("\nTotal pages found: {}\n", pageIterator.size());
+    int checkedPage = 0;
+    int fixedPage = 0;
+    while (pageIterator.hasNext()) {
+      PageImpl page = pageIterator.next();
       try {
-        PageImpl parent = attachment.getParentPage();
-        if (parent == null) {
-          continue;
+        HashMap<String, String[]> permissions = page.getPermission();
+        boolean isEditedPermission = false;
+        
+        Set<String> permissionsKey = permissions.keySet();
+        List<String> permissionKeyList = new ArrayList<String>(permissionsKey);
+        
+        for (String id : permissionKeyList) {
+          if ((id.indexOf('/') > -1) && (id.indexOf(':') == -1)) {
+            String newId = "*:" + id;
+            String[] value = permissions.get(id);
+            permissions.remove(id);
+            permissions.put(newId, value);
+            LOG.info("\nRepaired: {} to {}\n", id, newId);
+            isEditedPermission = true;
+          }
         }
-        HashMap<String, String[]> permissions = attachment.getParentPage().getPermission();
-        if (attachment.getCreator() != null) {
-          permissions.put(attachment.getCreator(), org.exoplatform.services.jcr.access.PermissionType.ALL);
+        
+        if (isEditedPermission) {
+          page.setPermission(permissions);
+          fixedPage++;
+          LOG.info("\nFixed pages: {}\n", fixedPage);
         }
-        attachment.setPermission(permissions);
-        fixedAttachment++;
-        LOG.info("\nFixed attachment: {}/{}\n", fixedAttachment, attachmentIterator.size());
+        checkedPage++;
+        LOG.info("\nChecked pages: {}/{}\n", checkedPage, pageIterator.size());
       } catch (Exception e) {
-        LOG.warn(String.format("Can not repair the permission for attachment %s", attachment.getName()), e);
+        LOG.warn(String.format("Can not repair the permission for page %s", page.getName()), e);
       }
     }
     RequestLifeCycle.end();

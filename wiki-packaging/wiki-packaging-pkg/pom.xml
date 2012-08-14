@@ -753,12 +753,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-upgrade</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>    
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-server-tomcat-patch</artifactId>
       <version>${project.version}</version>
       <type>jar</type>
