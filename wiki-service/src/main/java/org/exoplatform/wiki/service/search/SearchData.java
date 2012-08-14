@@ -49,7 +49,9 @@ public class SearchData {
 
   public String jcrQueryPath;
   
-  public int limit = 0;
+  private long offset = 0;
+    
+  public int limit = Integer.MAX_VALUE;
   
   public static final String ALL_PATH    = "%/";
 
@@ -157,5 +159,13 @@ public class SearchData {
 
   public String getStatement() {
     return null;
+  }
+  
+  public long getOffset() {
+    return offset;
+  }
+
+  public void setOffset(long offset) {
+    this.offset = offset;
   }
 }
