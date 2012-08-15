@@ -613,9 +613,6 @@
             <field name="target">
               <object type="org.exoplatform.services.deployment.DeploymentDescriptor$Target">
                 <field name="workspace">
-                  <string>wiki</string>
-                </field>
-                <field name="workspace" profiles="all,default,minimal">
                   <string>collaboration</string>
                 </field>
                 <field name="nodePath">
@@ -650,9 +647,6 @@
             <field name="target">
               <object type="org.exoplatform.services.deployment.DeploymentDescriptor$Target">
                 <field name="workspace">
-                  <string>wiki</string>
-                </field>
-                <field name="workspace" profiles="all,default,minimal">
                   <string>collaboration</string>
                 </field>
                 <field name="nodePath">
