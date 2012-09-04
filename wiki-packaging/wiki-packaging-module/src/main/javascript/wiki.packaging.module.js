@@ -66,6 +66,9 @@ function getModule(params) {
     addDependency(new Project("org.wikimodel", "org.wikimodel.wem", "jar",  "${org.wikimodel.version}")).
     addDependency(new Project("org.suigeneris", "jrcs.diff", "jar",  "${org.suigeneris.version}")).
     addDependency(new Project("org.suigeneris", "jrcs.rcs", "jar",  "${org.suigeneris.version}")).
+    addDependency(new Project("com.lowagie", "itext", "jar",  "${itext.version}")).
+    addDependency(new Project("org.xhtmlrenderer", "flying-saucer-core", "jar",  "${flying-saucer-core.version}")).
+    addDependency(new Project("org.xhtmlrenderer", "flying-saucer-pdf", "jar",  "${flying-saucer-pdf.version}")).
     addDependency(new Project("ecs", "ecs", "jar",  "${ecs.version}"));
   module.wiki.deployName = "wiki";
 

@@ -1,0 +1,228 @@
+h1, h2, h3, h4, h5, h6 {
+	font-weight:bold;
+	line-height:normal;
+	padding:0;
+	color: #000;
+}
+
+p,h1,h2,h3,h4,h5,h6 {
+  	margin: 10px 0;
+}
+
+h1 {
+	margin-top: 32px;
+	margin-bottom: 8px;
+	font-size: 18px;
+}
+
+h2 {
+	margin-top: 32px;
+	margin-bottom: 8px;
+	font-size: 16px;
+}
+
+h3 {
+	margin-top: 32px;
+	margin-bottom: 8px;
+	font-size: 14px;
+}
+
+hr {
+	border-color: #CCCCCC;
+	border-style: solid;
+	border-width: 1px 0 0;
+	clear: both;
+	height: 0;
+}
+
+.blockquote {
+	background: #FAFAF6;
+	border-left: 2px solid #DDDDCC;
+	display: block;
+	margin: 0.3ex 1em;
+	padding: 0.3ex 1em;
+	quotes: none;
+}
+
+a span {
+	cursor: pointer;
+        color: #006DAF;
+}
+a:hover {
+	text-decoration: none;
+	color: #006DAF;
+}
+
+.box {
+ 	border: 1px solid #DDDDDD;
+	margin: 16px 0;
+	display: block;
+	padding: 8px;
+}
+
+.notemessage,.tipmessage,.errormessage,.warningmessage,.infomessage,.plainmessage {
+	background: #F5F5F5 none no-repeat scroll 6px 8px;
+	color: #555555;
+	padding: 8px 28px;
+	text-align: justify;
+}
+
+
+.notemessage {
+	background-image: url("wiki/skin/DefaultSkin/webui/background/exclamation.gif");
+	color: #336699;
+}
+
+.tipmessage {
+  	background-image: url("/wiki/skin/DefaultSkin/webui/background/check.gif");
+	color: #336699;
+}
+
+.infomessage {
+	background-image: url("/wiki/skin/DefaultSkin/webui/background/information.gif");
+	color: #336699;
+}
+
+.warningmessage {
+	background-image: url("/wiki/skin/DefaultSkin/webui/background/error.gif");
+	color: #D5A13D;
+}
+
+.errormessage {
+	background-image: url("/wiki/skin/DefaultSkin/webui/background/error.gif");
+	color: #E14726;
+}
+
+.panel {
+	border-radius: 5px;
+	background-color: #F0F0F0;
+	border: 1px solid #BBBBBB;
+	color: black;
+	margin: 0 0 10px;
+	overflow: hidden;
+	padding: 0;
+}
+
+.panel .panelHeader {
+	border-radius: 5px 5px 0 0;
+	border-bottom-color: #F0F0F0;
+	color: #333333;
+	font-weight: bold;
+	line-height: 1em;
+	margin-bottom: 0;
+	padding: 10px 10px 5px;
+	text-align: left;
+}
+
+.panel .panelContent {
+	color: #333333;
+	margin: 10px 0;
+	padding: 0 10px;
+	text-align: left;
+}
+
+.code {
+	background-color: #F1F7FF;
+	overflow: auto;
+}
+
+.code pre {
+	font-family: courier, courier new, monospace;
+}
+
+.xwikirenderingerror {
+  background: #EFEFEF url("/wiki/skin/DefaultSkin/webui/background/error.gif") no-repeat 8px 50%;
+  border: 1px dotted #D6E1E7;
+  color: #e14726;
+  display: block;
+  padding: 2px 28px;
+}
+
+.xwikirenderingerrordescription {
+  border: 1px dotted #D6E1E7;
+  border-width: 0 1px 1px;
+  clear: both;
+  display: block;
+  font-size: 90%;
+  margin: 0 0 4px;
+  overflow: auto;
+  padding: 4px 28px;
+}
+
+.hidden{
+	display: none;
+}
+
+span.Excerpt p {
+	display: inline;
+	color: #555555;
+}
+
+table {
+	table-layout: fixed;
+	border-spacing: 0;
+	border: 1px solid #dddddd;
+	border-right: none;
+	width: auto;
+}
+
+th {
+	border-right: 1px solid #dddddd;
+	background: #f5f5f5;
+	text-align: center;
+	padding: 5px;
+}
+
+td {
+	border-right: 1px solid #dddddd;
+	border-top: 1px solid #dddddd;
+	padding: 5px;
+}
+
+.wikiexternallink .wikimodel-freestanding {
+	margin: 0 6px 0 0;
+	width: 18px;
+	height: 18px;
+}
+
+
+.section-container {
+	padding: 2px 0px;
+}
+
+.section-container {
+	padding: 2px 0px;
+}
+
+ul {
+	margin: 10px 18px;
+	padding: 0px;
+}
+
+ul li {
+	list-style: disc;
+}
+
+ul li a {
+	text-decoration: none;
+	color: #006DAF;
+}
+
+ol {
+	margin: 10px 18px;
+	padding: 0px;
+}
+
+ol li {
+	list-style: decimal;
+}
+
+ol, ul, li {
+	font-size:10pt;
+	line-height:13pt;
+}
+
+div, table, tr, td, img, form, input, p {
+	font-family: Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}

@@ -230,6 +230,22 @@
       <version>${hibernate-validator.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.lowagie</groupId>
+      <artifactId>itext</artifactId>
+      <version>${itext.version}</version>
+      <type>jar</type>
+    </dependency>
+    <dependency>
+	<groupId>org.xhtmlrenderer</groupId>
+	<artifactId>flying-saucer-core</artifactId>
+	<version>${flying-saucer-core.version}</version>
+    </dependency>
+    <dependency>
+	<groupId>org.xhtmlrenderer</groupId>
+	<artifactId>flying-saucer-pdf</artifactId>
+	<version>${flying-saucer-pdf.version}</version>
+    </dependency>
   </dependencies>
 
   <build>

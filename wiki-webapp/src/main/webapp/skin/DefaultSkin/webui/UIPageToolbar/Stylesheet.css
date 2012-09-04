@@ -7,7 +7,6 @@
 	float:right;
 	padding: 6px 8px 6px 25px;
 	margin: 0px;
-	text-transform:capitalize;
 	text-decoration: none;
 	color: black;
 }
@@ -77,7 +76,9 @@
 	background:url("/wiki/skin/DefaultSkin/webui/background/UIPageToolBarIcon.png") no-repeat left -333px;
 }
 
-
+.UIWikiPageControlArea .UIPageToolBar .ExportAsPDF {
+	background:url("/wiki/skin/DefaultSkin/webui/background/Export_As_Pdf.png") no-repeat 3px center;
+}
 /**************For edit form***********************/
 
 .UIWikiPageEditForm .UIPageToolBar{
@@ -95,7 +96,6 @@
 	float: left;
   padding: 0px 10px 0px 30px;
 	margin: 0px;
-	text-transform:capitalize;
 	color: black;
 	line-height: 18px;
 }
