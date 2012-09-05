@@ -66,7 +66,7 @@
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-legacy-component</artifactId>
+      <artifactId>xwiki-commons-text</artifactId>
       <version>${org.xwiki.platform.version}</version>
     </dependency>
     <dependency>
@@ -88,11 +88,28 @@
         </exclusion>
       </exclusions>
     </dependency>
+    
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xwiki2</artifactId>
+      <artifactId>xwiki-rendering-syntax-confluence</artifactId>
       <version>${org.xwiki.platform.version}</version>
     </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-plain</artifactId>
+      <version>${org.xwiki.platform.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-xwiki20</artifactId>
+      <version>${org.xwiki.platform.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-xwiki21</artifactId>
+      <version>${org.xwiki.platform.version}</version>
+    </dependency>    
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-syntax-xhtml</artifactId>
@@ -160,6 +177,11 @@
       <version>${org.xwiki.platform.version}</version>
     </dependency>
     <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-macro-jira</artifactId>
+      <version>${org.xwiki.platform.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-macros-iframe</artifactId>
       <version>${project.version}</version>
@@ -203,6 +225,12 @@
       <version>${org.slf4j.version}</version>
       <scope>provided</scope>
     </dependency>    
+    <dependency>
+      <groupId>org.jdom</groupId>
+      <artifactId>jdom2</artifactId>
+      <version>${org.jdom.version}</version>
+      <scope>provided</scope>
+    </dependency>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
