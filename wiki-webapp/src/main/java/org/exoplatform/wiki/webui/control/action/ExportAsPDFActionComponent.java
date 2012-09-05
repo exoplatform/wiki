@@ -39,6 +39,8 @@ import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xwiki.rendering.syntax.Syntax;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
 
 @ComponentConfig (
@@ -50,7 +52,7 @@ import org.xwiki.rendering.syntax.Syntax;
 
 public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
   public static final String ACTION  = "ExportAsPDF";
-  
+  private static final Log LOG  = ExoLogger.getLogger(ExportAsPDFActionComponent.class.getName());
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] {
       new IsViewModeFilter(), new AdminPagesPermissionFilter() });
   
@@ -71,45 +73,36 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
   
   public static class ExportAsPDFActionListener extends MoreContainerActionListener<ExportAsPDFActionComponent> {
     protected void processEvent(Event<ExportAsPDFActionComponent> event) throws Exception {    	
-    	Utils.setUpWikiContext(event.getSource().getAncestorOfType(UIWikiPortlet.class));
-    	RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
+      Utils.setUpWikiContext(event.getSource().getAncestorOfType(UIWikiPortlet.class));
+      RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
           .getComponentInstanceOfType(RenderingService.class);  
     	
-    	PageImpl currentPage = (PageImpl) Utils.getCurrentWikiPage();
-    	PortletRequestContext portletRequestContext = RequestContext.getCurrentInstance();
+      PageImpl currentPage = (PageImpl) Utils.getCurrentWikiPage();
+      PortletRequestContext portletRequestContext = RequestContext.getCurrentInstance();
       PortletRequest portletRequest = portletRequestContext.getRequest();
       
       String baseURI = portletRequest.getScheme() + "://" + portletRequest.getServerName() + ":"
           + String.format("%s", portletRequest.getServerPort());
       String cssURI = baseURI + "/wiki/skin/DefaultSkin/webui/PDFStylesheet.css";
       String css = "<head><style type=\"text/css\"> " + readFile(cssURI) + " </style></head>";
-    	String title = currentPage.getTitle();
-    	//Have to add non-real image to fix problem relate to loading macro's icons
-    	String content = "<h1>" + title +"</h1><hr />" + renderingService.render("[[image:wiki.png]]" + currentPage.getContent().getText(), currentPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);    	
-    	content = "<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>";
-    	    	
-    	File pdfFile = File.createTempFile(title, ".pdf");
-    	OutputStream os = new FileOutputStream(pdfFile);     	
-    	ITextRenderer renderer = new ITextRenderer();
-    	renderer.setDocumentFromString(content);
-    	renderer.layout();
-    	renderer.createPDF(os);
-    	os.close();    	
-    	    	
-    	DownloadService dservice = (DownloadService) ExoContainerContext.getCurrentContainer()
-          .getComponentInstanceOfType(DownloadService.class);
-    	InputStreamDownloadResource dresource = new InputStreamDownloadResource(
+      String title = currentPage.getTitle();
+      String content = "<h1>" + title +"</h1><hr />" + renderingService.render("[[image:wiki.png]]"
+        + currentPage.getContent().getText(), currentPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
+      content = "<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
+      File pdfFile = createPDFFile(title, content);
+      DownloadService dservice = (DownloadService) ExoContainerContext.getCurrentContainer()
+        .getComponentInstanceOfType(DownloadService.class);
+      InputStreamDownloadResource dresource = new InputStreamDownloadResource(
 					new BufferedInputStream(new FileInputStream(pdfFile)), "application/pdf, application/x-pdf, application/acrobat, " +
 							"applications/vnd.pdf, text/pdf, text/x-pdf");
-    	dresource.setDownloadName(title + ".pdf") ;
-    	String downloadLink = dservice.getDownloadLink(dservice.addDownloadResource(dresource)) ;
-      event.getRequestContext().getJavascriptManager().addCustomizedOnLoadScript(
-          "ajaxRedirect('" + downloadLink + "');");      
+      dresource.setDownloadName(title + ".pdf") ;
+      String downloadLink = dservice.getDownloadLink(dservice.addDownloadResource(dresource)) ;
+      event.getRequestContext().getJavascriptManager().addCustomizedOnLoadScript("ajaxRedirect('" + downloadLink + "');");
       super.processEvent(event);      
     }
     
     @SuppressWarnings("deprecation")
-		private String readFile(String path) throws IOException {      
+	private String readFile(String path) throws IOException {
       StringBuilder stringBuilder = new StringBuilder();
       URL url = new URL(path);
       BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
@@ -118,6 +111,26 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       	stringBuilder.append(inputLine + "\n");
       in.close();
       return stringBuilder.toString();
-    }   
+    }
+
+    private File createPDFFile(String title, String content) throws IOException {
+      File pdfFile = null;
+      OutputStream os = null;
+      try {
+        pdfFile = File.createTempFile(title, ".pdf");
+        os = new FileOutputStream(pdfFile);
+        ITextRenderer renderer = new ITextRenderer();
+        renderer.setDocumentFromString(content);
+        renderer.layout();
+        renderer.createPDF(os);
+      } catch (Exception e) {
+        if (LOG.isErrorEnabled()) {
+          LOG.error("Have unexpected exception while converting to PDF", e);
+        }
+      } finally {
+          os.close();
+      }
+      return pdfFile;
+    }
   }
 }
