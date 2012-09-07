@@ -8,6 +8,14 @@
 	padding-top: 15px;
 }
 
+.UIWikiPageEditForm .UIEditUpper .RightWrap {
+  float: right;
+}
+
+.UIWikiPageEditForm .UIEditUpper .RightWrap .UISubmitToolBar {
+  float: none;
+}
+
 .UIWikiPageEditForm .UISubmitToolBar .Delete {
 	background: none;
 	border: none;
