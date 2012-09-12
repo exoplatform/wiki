@@ -1405,7 +1405,18 @@ table.UIFormGrid div.Id {
 	margin-right: 270px;
 }
 
-/******************************************************** UIWikiPageEditForm *************************************************************/
+/******************************************************** UIWikiPageEditForm *************************************************************/ 
+.UIWikiPageEditForm .UIEditUpper {
+  height: 51px;
+}
+
+.UIWikiPageEditForm .UIEditUpper .checkbox {
+  width: auto;
+  vertical-align: bottom;
+  margin-top: 11px;
+  margin-bottom: 1px;
+}
+
 .UIWikiPageEditForm .UIWikiPageTitleControlForm_PageEditForm {
 	background: #f8f8f8;
 	border: 1px solid #dcdcdc;
@@ -1480,6 +1491,12 @@ table.UIFormGrid div.Id {
 	border-radius: 5px;
 	padding: 6px;
 	font-size: 14px;
+}
+
+.UIWikiPageEditForm .CommentInput .checkbox {
+  width: auto;
+  vertical-align: middle;
+  margin-top: auto;
 }
 
 /* Wiki help */
