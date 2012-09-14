@@ -23,7 +23,7 @@ function UIWikiAdvanceSearchForm(){
 UIWikiAdvanceSearchForm.prototype.init = function(inputId) {
 
   var input = document.getElementById(inputId);
-  gj(input).keyup(function(evt) {
+  $(input).keyup(function(evt) {
     evt = window.event || evt;
     eXo.wiki.UIWikiAdvanceSearchForm.pressHandler(evt, this);
   });  
@@ -60,8 +60,8 @@ UIWikiAdvanceSearchForm.prototype.pressHandler = function(evt, textbox){
 
 UIWikiAdvanceSearchForm.prototype.enterHandler = function(evt, textbox) {
 ;
-  var uiform = gj(textbox).closest('.UIWikiAdvanceSearchForm')[0];
-  gj(uiform).find('div.SearchAction')[0].onclick();
+  var uiform = $(textbox).closest('.UIWikiAdvanceSearchForm')[0];
+  $(uiform).find('div.SearchAction')[0].onclick();
 
 };
 
@@ -78,3 +78,4 @@ UIWikiAdvanceSearchForm.prototype.typeHandler = function(evt,textbox){
 };
 
 eXo.wiki.UIWikiAdvanceSearchForm = new UIWikiAdvanceSearchForm();
+_module.UIWikiAdvanceSearchForm = eXo.wiki.UIWikiAdvanceSearchForm;

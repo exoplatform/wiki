@@ -69,3 +69,4 @@ UIWikiMaskWorkspace.prototype.resetPosition = function() {
 } ;
 
 eXo.wiki.UIWikiMaskWorkspace = new UIWikiMaskWorkspace() ;
+_module.UIWikiMaskWorkspace = eXo.wiki.UIWikiMaskWorkspace;

@@ -22,21 +22,22 @@ function UIDropdownMenu(){
 
 UIDropdownMenu.prototype.init = function(componentid){
   var component = document.getElementById(String(componentid));
-  gj(component).mouseover(eXo.wiki.UIDropdownMenu.hover);
-  gj(component).mouseout(eXo.wiki.UIDropdownMenu.hover);
-  gj(component).focus(eXo.wiki.UIDropdownMenu.hover);
-  gj(component).blur(eXo.wiki.UIDropdownMenu.hover);
+  $(component).mouseover(eXo.wiki.UIDropdownMenu.hover);
+  $(component).mouseout(eXo.wiki.UIDropdownMenu.hover);
+  $(component).focus(eXo.wiki.UIDropdownMenu.hover);
+  $(component).blur(eXo.wiki.UIDropdownMenu.hover);
 };
 
 UIDropdownMenu.prototype.hover = function(event){
 	var ev = window.event || event ;
   var evType = String(ev.type);
-  var menu = gj(this).find('div.HoverMenu')[0];
+  var menu = $(this).find('div.HoverMenu')[0];
   if (evType == "mouseover" || evType == "onfocus"){
-    gj(menu).show();
+    $(menu).show();
   } else{
-    gj(menu).hide();
+    $(menu).hide();
   }  
 };
 
 eXo.wiki.UIDropdownMenu = new UIDropdownMenu();
+_module.UIDropdownMenu = eXo.wiki.UIDropdownMenu;

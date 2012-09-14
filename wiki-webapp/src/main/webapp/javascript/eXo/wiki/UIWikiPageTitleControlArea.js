@@ -22,10 +22,11 @@ function UIWikiPageTitleControlArea() {
 
 UIWikiPageTitleControlArea.prototype.init = function(componentId, inputId, untitledLabel, isAddMode) {
   var component = document.getElementById(componentId);
-  var input = gj(component).find('#' + inputId)[0];
+  var input = $(component).find('#' + inputId)[0];
   if (input) {
     eXo.wiki.UIWikiPortlet.decorateInput(input, untitledLabel, isAddMode);
   }
 };
 
 eXo.wiki.UIWikiPageTitleControlArea = new UIWikiPageTitleControlArea();
+_module.UIWikiPageTitleControlArea = eXo.wiki.UIWikiPageTitleControlArea;

@@ -1,11 +1,14 @@
 <%
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.web.application.JavascriptManager;
-PageImpl currentPage = (PageImpl) org.exoplatform.wiki.commons.Utils.getCurrentWikiPage();
-def relatedPages = currentPage.getRelatedPages();
+  import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+  import org.exoplatform.web.application.JavascriptManager;
+  PageImpl currentPage = (PageImpl) org.exoplatform.wiki.commons.Utils.getCurrentWikiPage();
+  def relatedPages = currentPage.getRelatedPages();
 
-def rcontext = _ctx.getRequestContext();
-rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIRelated.initMacros();");
+  def rcontext = _ctx.getRequestContext();
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIRelated.initMacros();");
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIRelated.initMacros();");
 %>
 
 <div id="$uicomponent.id" class="Related">

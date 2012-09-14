@@ -1,6 +1,9 @@
 <%
   def rcontext = _ctx.getRequestContext() ;  
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIDropdownMenu.init(\""+uicomponent.id+"\");"); 
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIDropdownMenu.init(\""+uicomponent.id+"\");");
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIDropdownMenu.init(\""+uicomponent.id+"\");");
 %>
 <div id="$uicomponent.id" class="BrowseActionComponent HoverLink MoreLink Icon">
     <%= _ctx.appRes("UIWikiToolBar.action.Browse") %>

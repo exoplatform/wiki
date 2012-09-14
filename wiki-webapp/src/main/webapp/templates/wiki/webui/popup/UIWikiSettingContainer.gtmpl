@@ -2,8 +2,11 @@
   import org.exoplatform.web.application.JavascriptManager;
   
   def rcontext = _ctx.getRequestContext();
-  JavascriptManager jsmanager = rcontext.getJavascriptManager();
-  jsmanager.addJavascript("eXo.wiki.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
+  JavascriptManager jsManager = rcontext.getJavascriptManager();
+  def requireJs = jsManager.getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
+  //jsmanager.addJavascript("eXo.wiki.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
 %>
 
 <style>

@@ -10,30 +10,30 @@ UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, i
   var component = document.getElementById(componentid);
   this.isRenderLink = isRenderLink;
   this.baseLink = baseLink;
-  var initNode = gj(component).find('input')[0];
+  var initNode = $(component).find('input')[0];
   initParam = me.cleanParam(initParam);
   me.render(initParam, initNode, isFullRender);
 };
 
 UITreeExplorer.prototype.initMacros = function() {
   var me = eXo.wiki.UITreeExplorer;
-  var pageTreeBlocks = gj(".PageTreeMacro");
+  var pageTreeBlocks = $(".PageTreeMacro");
   var editForm = document.getElementById('UIWikiPageEditForm');
   if (editForm != null) {
-    var ifm = gj(editForm).find('iframe.gwt-RichTextArea')[0];
+    var ifm = $(editForm).find('iframe.gwt-RichTextArea')[0];
     if (ifm != null) {
       me.innerDoc = ifm.contentDocument || ifm.contentWindow.document;
-      pageTreeBlocks = gj.merge(pageTreeBlocks, gj(me.innerDoc).find(".PageTreeMacro"));
+      pageTreeBlocks = $.merge(pageTreeBlocks, $(me.innerDoc).find(".PageTreeMacro"));
     }
   }
   for ( var i = 0; i < pageTreeBlocks.length; i++) {
     var pageTreeBlock = pageTreeBlocks[i];
-    var initNode = gj(pageTreeBlock).find('input')[0];
-    this.baseLink = gj(pageTreeBlock).find('input.BaseURL')[0].value;
-    var initParam = gj(pageTreeBlock).find('input.InitParams')[0].value;
+    var initNode = $(pageTreeBlock).find('input')[0];
+    this.baseLink = $(pageTreeBlock).find('input.BaseURL')[0].value;
+    var initParam = $(pageTreeBlock).find('input.InitParams')[0].value;
     initParam = me.cleanParam(initParam);
     this.isRenderLink = true;
-    if (gj(pageTreeBlock).find("div.NodeGroup").length > 0)
+    if ($(pageTreeBlock).find("div.NodeGroup").length > 0)
       return;
     me.render(initParam, initNode, false);
   }
@@ -41,36 +41,36 @@ UITreeExplorer.prototype.initMacros = function() {
 
 UITreeExplorer.prototype.collapseExpand = function(element) {
   var node = element.parentNode;
-  var subGroup = gj(node).find('div.NodeGroup')[0];
-  if (gj(element).hasClass('EmptyIcon'))
+  var subGroup = $(node).find('div.NodeGroup')[0];
+  if ($(element).hasClass('EmptyIcon'))
     return true;
   if (!subGroup) {
-    gj(element).addClass('CollapseIcon');
+    $(element).addClass('CollapseIcon');
     return false;
   }
-  gj(subGroup).toggle();
-  gj(element).toggleClass('ExpandIcon','CollapseIcon');
+  $(subGroup).toggle();
+  $(element).toggleClass('ExpandIcon','CollapseIcon');
   return true;
 };
 
 UITreeExplorer.prototype.onNodeClick = function(node, absPath) {
   var me = eXo.wiki.UITreeExplorer;
-  var selectableObj = gj(node).find('a');
+  var selectableObj = $(node).find('a');
   if (selectableObj.length > 0) {
-    var component = gj(node).closest(".UITreeExplorer");
-    var selectedNode = gj(component).find('div.Hover')[0];
+    var component = $(node).closest(".UITreeExplorer");
+    var selectedNode = $(component).find('div.Hover')[0];
     if (selectedNode)
-      gj(selectedNode).removeClass("Hover");
-    if (!gj(node).hasClass("Hover"))
-      gj(node).addClass("Hover");
+      $(selectedNode).removeClass("Hover");
+    if (!$(node).hasClass("Hover"))
+      $(node).addClass("Hover");
     me.selectNode(node, absPath);
   }
 };
 
 UITreeExplorer.prototype.selectNode = function(node, nodePath) {
   var me = eXo.wiki.UITreeExplorer;
-  var component = gj(node).closest(".UITreeExplorer");
-  var link = gj(component).find('a.SelectNode')[0];
+  var component = $(node).closest(".UITreeExplorer");
+  var link = $(component).find('a.SelectNode')[0];
 
   var endParamIndex = link.href.lastIndexOf("')");
   var param = "&objectId";
@@ -96,10 +96,10 @@ UITreeExplorer.prototype.selectNode = function(node, nodePath) {
 UITreeExplorer.prototype.render = function(param, element, isFullRender) {
   var me = eXo.wiki.UITreeExplorer;
   var node = element.parentNode;
-  var component = gj(node).closest(".UITreeExplorer");
-  var url = gj(component).find('input.ChildrenURL')[0].value;
+  var component = $(node).closest(".UITreeExplorer");
+  var url = $(component).find('input.ChildrenURL')[0].value;
   if (isFullRender) {
-    url = gj(component).find('input.InitURL')[0].value;
+    url = $(component).find('input.InitURL')[0].value;
   }
   var restURL = url + param;
 
@@ -108,10 +108,10 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
     childBlock = me.innerDoc.createElement("div");
     me.innerDoc = null;
   }
-  gj(childBlock).addClass('NodeGroup');
-  gj(childBlock).html(me.loading);
-  gj(node).append(childBlock);
-  gj.ajax({
+  $(childBlock).addClass('NodeGroup');
+  $(childBlock).html(me.loading);
+  $(node).append(childBlock);
+  $.ajax({
     async : false,
     url : restURL,
     type : 'GET',
@@ -130,7 +130,7 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
   for ( var i = 0; i < resultLength; i++) {
     str += me.buildNode(dataList.jsonList[i]);
   }
-  gj(node).html(str);
+  $(node).html(str);
 }
 
 UITreeExplorer.prototype.buildHierachyNode = function(data){
@@ -214,3 +214,4 @@ UITreeExplorer.prototype.cleanParam = function(data){
 }
 
 eXo.wiki.UITreeExplorer = new UITreeExplorer();
+_module.UITreeExplorer = eXo.wiki.UITreeExplorer;

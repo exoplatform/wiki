@@ -4,9 +4,14 @@
   def rcontext = _ctx.getRequestContext() ;
   String searchLabel=_ctx.appRes("UIWikiSearchBox.label.Search");
   String wikiNodeURI = Utils.getCurrentWikiNodeUri();
-  String restUrl= uicomponent.getContextSearchURL();  
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
+  String restUrl= uicomponent.getContextSearchURL();
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
+  
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
+  requireJs.addScripts("wikiView.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
 %>
 <div class="UIWikiSearchBox">
   <% uiform.begin() %>

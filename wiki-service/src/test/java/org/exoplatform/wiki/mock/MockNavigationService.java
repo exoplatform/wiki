@@ -16,7 +16,10 @@
  */
 package org.exoplatform.wiki.mock;
 
+import java.util.List;
+
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.navigation.NavigationContext;
 import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.navigation.NavigationServiceException;
@@ -100,5 +103,12 @@ public class MockNavigationService implements NavigationService {
                                                                                                               NavigationServiceException {
 
   }
+
+	@Override
+	public List<NavigationContext> loadNavigations(SiteType type)
+			throws NullPointerException, NavigationServiceException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

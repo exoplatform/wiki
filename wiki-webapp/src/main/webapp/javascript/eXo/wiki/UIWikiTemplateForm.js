@@ -28,9 +28,9 @@ function UIWikiTemplateForm() {
 UIWikiTemplateForm.prototype.init = function(componentid, inputId, defaultText) {
   var me = eXo.wiki.UIWikiTemplateForm;
   me.component = document.getElementById(componentid);
-  var input = gj(me.component).find('#' + inputId)[0];
-  gj(input).attr('autocomplete', 'off');
-  gj(input).keyup(function(evt) {
+  var input = $(me.component).find('#' + inputId)[0];
+  $(input).attr('autocomplete', 'off');
+  $(input).keyup(function(evt) {
     evt = window.event || evt;
     eXo.wiki.UIWikiTemplateForm.pressHandler(evt, this);
   });
@@ -89,9 +89,10 @@ UIWikiTemplateForm.prototype.typeHandler = function(textbox) {
 UIWikiTemplateForm.prototype.doAdvanceSearch = function() {
   var me = eXo.wiki.UIWikiTemplateForm;
   if (me.component) {
-    var action = gj(me.component).find('a.SearchButton')[0];
+    var action = $(me.component).find('a.SearchButton')[0];
     action.onclick();
   }
 }
 
 eXo.wiki.UIWikiTemplateForm = new UIWikiTemplateForm();
+_module.UIWikiTemplateForm = eXo.wiki.UIWikiTemplateForm;

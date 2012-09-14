@@ -1,8 +1,15 @@
 <%
   def rcontext = _ctx.getRequestContext() ;  
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.makeRenderingErrorsExpandable('"+uicomponent.id+ "');");
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.decorateSpecialLink('"+uicomponent.id+ "');");    
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.initMacros();");
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.makeRenderingErrorsExpandable('"+uicomponent.id+ "');");
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.decorateSpecialLink('"+uicomponent.id+ "');");    
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.initMacros();");
+  
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiPortlet.makeRenderingErrorsExpandable('"+uicomponent.id+ "');");
+  requireJs.addScripts("wikiView.UIWikiPortlet.decorateSpecialLink('"+uicomponent.id+ "');");
+  requireJs.addScripts("wikiView.UIWikiPortlet.initMacros();");
+  
   String msg = _ctx.appRes("UIWikiContentDisplay.msg.invalid-characters-in-link");
   msg = msg.replace("{0}",uicomponent.INVALID_CHARACTERS);  
 %>

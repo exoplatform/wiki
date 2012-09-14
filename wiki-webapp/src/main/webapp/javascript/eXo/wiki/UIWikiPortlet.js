@@ -24,11 +24,11 @@ if (!eXo.wiki)
 function UIWikiPortlet() {
 };
 
-gj(document).ready(function(){
-    var breadCrumb = gj('div.UIWikiBreadCrumb')[0];
-    var selected = gj(breadCrumb).find('a.Selected')[0];
+$(document).ready(function(){
+    var breadCrumb = $('div.UIWikiBreadCrumb')[0];
+    var selected = $(breadCrumb).find('a.Selected')[0];
     if(selected) {
-      document.title = gj(selected).text();
+      document.title = $(selected).text();
     }
 });
 
@@ -42,8 +42,8 @@ UIWikiPortlet.prototype.init = function(portletId, linkId) {
     me.changeMode(event);
   };*/
 
-  gj(me.wikiportlet).mouseup(me.onMouseUp);
-  /*gj(me.wikiportlet).keyup(me.onKeyUp);*/
+  $(me.wikiportlet).mouseup(me.onMouseUp);
+  /*$(me.wikiportlet).keyup(me.onKeyUp);*/
 }
 
 UIWikiPortlet.prototype.onMouseUp = function(evt) {
@@ -52,12 +52,12 @@ UIWikiPortlet.prototype.onMouseUp = function(evt) {
   var target = evt.target || evt.srcElement;
   if (evt.button == 2)
     return;
-  var searchPopup = gj(me.wikiportlet).find('div.SearchPopup')[0];
+  var searchPopup = $(me.wikiportlet).find('div.SearchPopup')[0];
   if (searchPopup)
-    gj(searchPopup).hide();
+    $(searchPopup).hide();
   var breadCrumbPopup = eXo.wiki.UIWikiPortlet.getBreadcrumbPopup();
   if (breadCrumbPopup) {
-    gj(breadCrumbPopup).hide();
+    $(breadCrumbPopup).hide();
   }
   /*if (target.tagName == "A" || (target.tagName == "INPUT" && target.type == "button") || target.tagName == "SELECT"
       || target.tagName == "DIV" && target.className.indexOf("RefreshModeTarget") > 0) {
@@ -106,17 +106,17 @@ UIWikiPortlet.prototype.showPopup = function(elevent, e) {
   for ( var t = 0; t < strs.length; t++) {
     var elm = document.getElementById(strs[t]);
     if (elm)
-      gj(elm).click(eXo.wiki.UIWikiPortlet.cancel);
+      $(elm).click(eXo.wiki.UIWikiPortlet.cancel);
   }
   if (!e)
     e = window.event;
   e.cancelBubble = true;
-  var parent = gj(elevent).closest('div');
-  var popup = gj(parent).find('div.UIPopupCategory')[0];
-  if (gj(popup).css('display') == 'none') {
-    gj(popup).show();
+  var parent = $(elevent).closest('div');
+  var popup = $(parent).find('div.UIPopupCategory')[0];
+  if ($(popup).css('display') == 'none') {
+    $(popup).show();
   } else {
-    gj(popup).hide();
+    $(popup).hide();
   }
 };
 
@@ -131,9 +131,9 @@ UIWikiPortlet.prototype.cancel = function(evt) {
 UIWikiPortlet.prototype.renderBreadcrumbs = function(uicomponentid, isLink) {
   var me = eXo.wiki.UIWikiPortlet;
   var component = document.getElementById(uicomponentid);
-  var breadcrumb = gj(component).find('div.BreadcumbsInfoBar')[0];
-  var breadcrumbPopup = gj(component).find('div.SubBlock')[0];
-  var itemArray = gj(breadcrumb).find('a');
+  var breadcrumb = $(component).find('div.BreadcumbsInfoBar')[0];
+  var breadcrumbPopup = $(component).find('div.SubBlock')[0];
+  var itemArray = $(breadcrumb).find('a');
   var shortenFractor = 3 / 4;
   itemArray.splice(0,1);
   var ancestorItem = itemArray.get(0);
@@ -150,7 +150,7 @@ UIWikiPortlet.prototype.renderBreadcrumbs = function(uicomponentid, isLink) {
   }
   var popupItems = new Array();
   var firstTime = true;
-  var content = gj(lastItem).html();
+  var content = $(lastItem).html();
   while (breadcrumb.offsetWidth > shortenFractor * breadcrumb.parentNode.offsetWidth) {
     if (itemArray.length > 0) {
       var arrayLength = itemArray.length;
@@ -158,25 +158,25 @@ UIWikiPortlet.prototype.renderBreadcrumbs = function(uicomponentid, isLink) {
       popupItems.push(item);
       if (firstTime) {
         firstTime = false;
-        var newItem = gj(item).clone()[0];
-        gj(newItem).html(' ... ');
+        var newItem = $(item).clone()[0];
+        $(newItem).html(' ... ');
         if (isLink) {
-          gj(newItem).attr('href','#');
-          gj(newItem).mouseover(me.showBreadcrumbPopup);
+          $(newItem).attr('href','#');
+          $(newItem).mouseover(me.showBreadcrumbPopup);
         }
-        gj(item).replaceWith(newItem);
+        $(item).replaceWith(newItem);
       } else {
-        var leftBlock = gj(item).prev('div')[0];
-        gj(leftBlock).remove();
-        gj(item).remove();
+        var leftBlock = $(item).prev('div')[0];
+        $(leftBlock).remove();
+        $(item).remove();
       }
     } else {
       break;
     }
   }
 
-  if (content.length != gj(lastItem).html().length) {
-    gj(lastItem).html('<span title="' + content + '">' + gj(lastItem).html() + '...' + '</span>');
+  if (content.length != $(lastItem).html().length) {
+    $(lastItem).html('<span title="' + content + '">' + $(lastItem).html() + '...' + '</span>');
   }
   me.createPopup(popupItems, isLink, breadcrumbPopup);
 };
@@ -185,26 +185,26 @@ UIWikiPortlet.prototype.createPopup = function(popupItems, isLink, breadcrumbPop
   if (isLink) {
     var popupItemDepth = -1;
     for (var index = popupItems.length - 1; index >= 0; index--) {
-      gj(popupItems[index]).attr('class','ItemIcon MenuIcon');
+      $(popupItems[index]).attr('class','ItemIcon MenuIcon');
       popupItemDepth++;
-      var menuItem = gj('<div/>', {
+      var menuItem = $('<div/>', {
         'class': 'MenuItem'
       });
       var previousDiv = menuItem;
       for (var i = 0; i < popupItemDepth; i++) {
-        var marginLeftDiv = gj('<div/>', {
+        var marginLeftDiv = $('<div/>', {
           'class': 'MarginLeftDiv'
         });
-        gj(previousDiv).append(marginLeftDiv);
+        $(previousDiv).append(marginLeftDiv);
         previousDiv = marginLeftDiv;
         if (i == popupItemDepth - 1) {
-          gj(previousDiv).append(popupItems[index]);
+          $(previousDiv).append(popupItems[index]);
         }
       }
       if (popupItemDepth == 0) {
-        gj(menuItem).append(popupItems[index]);
+        $(menuItem).append(popupItems[index]);
       }
-      gj(breadcrumbPopup).append(menuItem);
+      $(breadcrumbPopup).append(menuItem);
     }    
   }
 };
@@ -214,21 +214,21 @@ UIWikiPortlet.prototype.createPopup = function(popupItems, isLink, breadcrumbPop
  */
 UIWikiPortlet.prototype.shortenUntil = function(item, condition) {
   var isShortent = false;
-  while (!condition() && gj(item).html().length > 3) {
-    gj(item).html(gj(item).html().substring(0, gj(item).html().length - 1));
+  while (!condition() && $(item).html().length > 3) {
+    $(item).html($(item).html().substring(0, $(item).html().length - 1));
     isShortent = true;
   }
   if (isShortent) {
-    if(gj(item).html().length > 6) {
-      gj(item).html(gj(item).html().substring(0, gj(item).html().length - 3));
+    if($(item).html().length > 6) {
+      $(item).html($(item).html().substring(0, $(item).html().length - 3));
     }
-    gj(item).html(gj(item).html() + ' ... ');
+    $(item).html($(item).html() + ' ... ');
   }
 };
 
 UIWikiPortlet.prototype.getBreadcrumbPopup = function() {
   var breadcrumb = document.getElementById("UIWikiBreadCrumb");
-  var breadcrumbPopup = gj(breadcrumb).find('div.BreadcumPopup')[0];
+  var breadcrumbPopup = $(breadcrumb).find('div.BreadcumPopup')[0];
   return breadcrumbPopup;
 };
 
@@ -237,13 +237,13 @@ UIWikiPortlet.prototype.showBreadcrumbPopup = function(evt) {
   var ellipsis = evt.target || evt.srcElement;
   var isRTL = eXo.core.I18n.isRT();
   var offsetLeft = eXo.core.Browser.findPosX(ellipsis, isRTL) - 20;
-  var offsetTop = gj(ellipsis).offset().top + 20;
-  gj(breadcrumbPopup).css({
+  var offsetTop = $(ellipsis).offset().top + 20;
+  $(breadcrumbPopup).css({
     'z-index': '100',
     left: offsetLeft + 'px',
     top: offsetTop + 'px'
   })
-  gj(breadcrumbPopup).show();
+  $(breadcrumbPopup).show();
 };
 
 UIWikiPortlet.prototype.createURLHistory = function (uicomponentId, isShow) {
@@ -265,14 +265,14 @@ UIWikiPortlet.prototype.urlHistory = function (uicomponentId) {
 UIWikiPortlet.prototype.makeRenderingErrorsExpandable = function (uicomponentId) {
   var uicomponent = document.getElementById(uicomponentId);
   if(uicomponent) {
-    var renderingErrors = gj(uicomponent).find('div.xwikirenderingerror');
+    var renderingErrors = $(uicomponent).find('div.xwikirenderingerror');
     for (i=0;i<renderingErrors.length;i++) {
     var renderingError = renderingErrors[i];
     var descriptionError = renderingError.nextSibling;
-    if (gj(descriptionError).html() !== "" && gj(descriptionError).hasClass('xwikirenderingerrordescription')) {
-      gj(renderingError).css('cursor','pointer');
-      gj(renderingError).click(function(){
-        gj(this.nextSibling).toggleClass('hidden');
+    if ($(descriptionError).html() !== "" && $(descriptionError).hasClass('xwikirenderingerrordescription')) {
+      $(renderingError).css('cursor','pointer');
+      $(renderingError).click(function(){
+        $(this.nextSibling).toggleClass('hidden');
         });
       }
     }
@@ -281,15 +281,15 @@ UIWikiPortlet.prototype.makeRenderingErrorsExpandable = function (uicomponentId)
 
 UIWikiPortlet.prototype.decorateSpecialLink = function(uicomponentId) {
   var uicomponent = document.getElementById(uicomponentId);
-  var invalidChars = gj(uicomponent).find('div.InvalidChars')[0];
-  var invalidCharsMsg = gj(invalidChars).text();  
+  var invalidChars = $(uicomponent).find('div.InvalidChars')[0];
+  var invalidCharsMsg = $(invalidChars).text();  
   if (uicomponent) {
-    var linkSpans = gj(uicomponent).find('span.wikicreatelink');
+    var linkSpans = $(uicomponent).find('span.wikicreatelink');
     for (i = 0; i < linkSpans.length; i++) {
       var linkSpan = linkSpans[i];
       var pageLink = linkSpan.childNodes[0];
-      if (typeof(pageLink) != "undefined" && gj(pageLink).attr('href') == "javascript:void(0);") {
-        gj(pageLink).click(function(event) {
+      if (typeof(pageLink) != "undefined" && $(pageLink).attr('href') == "javascript:void(0);") {
+        $(pageLink).click(function(event) {
             alert(invalidCharsMsg);
             return;
         });
@@ -314,20 +314,20 @@ UIWikiPortlet.prototype.initMacros = function() {
 };
 
 UIWikiPortlet.prototype.decorateInput = function(input, defaultValue, defaultCondition) {
-  if (gj(input).val() == defaultValue && defaultCondition )
-    gj(input).css('color', '#9A9A9A');
+  if ($(input).val() == defaultValue && defaultCondition )
+    $(input).css('color', '#9A9A9A');
   input.form.onsubmit = function() {
     return false;
   };
-  gj(input).focus(function() {
-    if (gj(this).val() == defaultValue && defaultCondition)
-      gj(this).val('');
-    gj(this).css('color', 'black');
+  $(input).focus(function() {
+    if ($(this).val() == defaultValue && defaultCondition)
+      $(this).val('');
+    $(this).css('color', 'black');
   });
-  gj(input).blur(function() {
-    if (gj(this).val() == '') {
-      gj(this).val(defaultValue);
-      gj(this).css('color', '#9A9A9A');
+  $(input).blur(function() {
+    if ($(this).val() == '') {
+      $(this).val(defaultValue);
+      $(this).css('color', '#9A9A9A');
     }
   });
 };
@@ -345,8 +345,13 @@ UIWikiPortlet.prototype.getKeynum = function(event) {
   }
   return keynum ;
 };
+UIWikiPortlet.prototype.ajaxRedirect = function(url) {
+  url =	url.replace(/&amp;/g, "&") ;
+  window.location.href = url ;
+}
 
 eXo.wiki.UIWikiPortlet = new UIWikiPortlet();
+_module.UIWikiPortlet = eXo.wiki.UIWikiPortlet;
 
 /** ******************* Other functions ***************** */
 

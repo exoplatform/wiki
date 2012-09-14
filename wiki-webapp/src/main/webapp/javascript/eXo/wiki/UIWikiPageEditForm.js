@@ -26,21 +26,21 @@ function UIWikiPageEditForm() {
 
 UIWikiPageEditForm.prototype.editPageContent = function(pageEditFormId) {
   var pageEditForm = document.getElementById(pageEditFormId);
-  var titleContainer = gj(pageEditForm).find('div.UIWikiPageTitleControlForm_PageEditForm')[0];
-  var titleInput = gj(titleContainer).find('input')[0];
+  var titleContainer = $(pageEditForm).find('div.UIWikiPageTitleControlForm_PageEditForm')[0];
+  var titleInput = $(titleContainer).find('input')[0];
   eXo.wiki.UIWikiPageEditForm.changed = false;
 
-  gj(titleInput).change(function() {
+  $(titleInput).change(function() {
     eXo.wiki.UIWikiPageEditForm.changed = true;
-    gj(titleInput).change(null);
+    $(titleInput).change(null);
   });
 
-  var textAreaContainer = gj(pageEditForm).find('div.UIWikiPageContentInputContainer')[0];
+  var textAreaContainer = $(pageEditForm).find('div.UIWikiPageContentInputContainer')[0];
   if (textAreaContainer != null) {
-    var textArea = gj(textAreaContainer).find('textarea')[0];
-    gj(textArea).change(function() {
+    var textArea = $(textAreaContainer).find('textarea')[0];
+    $(textArea).change(function() {
       eXo.wiki.UIWikiPageEditForm.changed = true;
-      gj(textArea).change(null);
+      $(textArea).change(null);
     });
   } else {
     eXo.wiki.UIWikiPageEditForm.changed = true;
@@ -56,3 +56,4 @@ UIWikiPageEditForm.prototype.cancel = function(uicomponentId, titleMessage, mess
 };
 
 eXo.wiki.UIWikiPageEditForm = new UIWikiPageEditForm();
+_module.UIWikiPageEditForm = eXo.wiki.UIWikiPageEditForm;

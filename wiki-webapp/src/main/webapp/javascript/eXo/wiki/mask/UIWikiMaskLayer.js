@@ -30,7 +30,7 @@ UIWikiMaskLayer.prototype.createTransparentMask = function() {
 	Browser.addOnScrollCallback("5439383", eXo.wiki.UIWikiMaskLayer.setPosition) ;
 							
 	ajaxLoading.style.display = "none";
-	gj(maskLayer).css({
+	$(maskLayer).css({
     opacity : 0,
     backgroundColor : 'white',
     cursor : 'wait'
@@ -44,7 +44,7 @@ UIWikiMaskLayer.prototype.createTransparentMask = function() {
 UIWikiMaskLayer.prototype.showAjaxLoading = function(mask){
 	var ajaxLoading = document.getElementById("AjaxLoadingMask");
 	ajaxLoading.style.display = "block";
-	gj(mask).css({
+	$(mask).css({
     opacity : 0.3,
     backgroundColor : 'black'
   });
@@ -109,14 +109,14 @@ UIWikiMaskLayer.prototype.createMask = function(blockContainerId, object, opacit
 		maskLayer.className = "MaskLayer" ;
 		maskLayer.id = "MaskLayer" ;
 		maskLayer.maxZIndex = 4; //3 ;
-		maskLayer.style.width = gj(document).width() + "px";
-		maskLayer.style.height = gj(document).height() + "px";
+		maskLayer.style.width = $(document).width() + "px";
+		maskLayer.style.height = $(document).height() + "px";
 		maskLayer.style.top = "0px" ;
 		maskLayer.style.left = "0px" ;
 		maskLayer.style.zIndex = maskLayer.maxZIndex ;
 
     if (opacity) {
-      gj(maskLayer).css({
+      $(maskLayer).css({
         opacity : opacity
       });
     }
@@ -168,12 +168,12 @@ UIWikiMaskLayer.prototype.createMaskForFrame = function(blockContainerId, object
 		maskLayer.id = object.id + "MaskLayer" ;
 		maskLayer.maxZIndex = 3 ;
 		maskLayer.style.width = blockContainer.offsetWidth + "px"  ;
-		maskLayer.style.height =  blockContainer.offsetHeight + gj(blockContainer).offset().top + "px"  ;
+		maskLayer.style.height =  blockContainer.offsetHeight + $(blockContainer).offset().top + "px"  ;
 		maskLayer.style.top = "0px" ;
 		maskLayer.style.left = "0px" ;
 		maskLayer.style.zIndex = maskLayer.maxZIndex ;
 		if(opacity) {
-		  gj(maskLayer).css({
+		  $(maskLayer).css({
         opacity : opacity
       });
 		}
@@ -247,13 +247,13 @@ UIWikiMaskLayer.prototype.setPosition = function() {
 		return ;
 	} else if (position == "BOTTOM-LEFT") {
 	  left = 0 ;
-	  top = gj(document).height() - object.offsetHeight + topPos ;
+	  top = $(document).height() - object.offsetHeight + topPos ;
 	} else if (position == "BOTTOM-RIGHT") {
 	  left = blockContainer.offsetWidth - object.offsetWidth ;
-	  top = gj(document).height() - object.offsetHeight + topPos ;
+	  top = $(document).height() - object.offsetHeight + topPos ;
 	} else {
 	  left = (blockContainer.offsetWidth - object.offsetWidth) / 2 ;
-	  top = (gj(document).height() - object.offsetHeight) / 2 +  topPos ;
+	  top = ($(document).height() - object.offsetHeight) / 2 +  topPos ;
 	}
 	
 	object.style.left = left + "px" ;
@@ -301,9 +301,10 @@ UIWikiMaskLayer.prototype.enablePageDesktop = function(enabled) {
 UIWikiMaskLayer.prototype.resizeMaskLayer = function() {
 	var maskLayer = document.getElementById("MaskLayer");
 	if (maskLayer) {
-		maskLayer.style.width = gj(document).width() + "px";
-		maskLayer.style.height = gj(document).height() + "px";
+		maskLayer.style.width = $(document).width() + "px";
+		maskLayer.style.height = $(document).height() + "px";
 	}
 };
 
 eXo.wiki.UIWikiMaskLayer = new UIWikiMaskLayer() ;
+_module.UIWikiMaskLayer = eXo.wiki.UIWikiMaskLayer;

@@ -73,3 +73,4 @@ UIWikiRichTextArea.prototype.createWysiwygEditor = function() {
 };
 
 eXo.wiki.UIWikiRichTextArea = new UIWikiRichTextArea();
+_module.UIWikiRichTextArea = eXo.wiki.UIWikiRichTextArea;

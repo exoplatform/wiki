@@ -8,8 +8,12 @@
   String wikiOwner = wikiPageParams.getOwner();
   String pageId = wikiPageParams.getPageId();
   String selectedSyntax = uicomponent.getSyntax();  
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
-  rcontext.getJavascriptManager().addJavascript("eXo.loadJS(['/wiki/javascript/xwiki/xwikiexplorer/xwikiexplorer.js',]);");
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
+  //rcontext.getJavascriptManager().addJavascript("eXo.loadJS(['/wiki/javascript/xwiki/xwikiexplorer/xwikiexplorer.js',]);");
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
+  requireJs.require("SHARED/xwikiexplorer", "xwikiexplorer");
 %>
 <div class="UIWikiRichTextEditor">
   <% uicomponent.renderChild(uicomponent.RICHTEXT_AREA_INPUT); %>

@@ -45,6 +45,7 @@ import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.xwiki.rendering.syntax.Syntax;
 
 
+@SuppressWarnings("deprecation")
 public class TestWikiService extends AbstractMOWTestcase {
   private WikiService wService ; 
   public void setUp() throws Exception{

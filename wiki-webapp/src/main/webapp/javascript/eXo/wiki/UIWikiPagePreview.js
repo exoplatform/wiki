@@ -23,12 +23,13 @@ function UIWikiPagePreview(){
 UIWikiPagePreview.prototype.init = function(maskId){
   var maskWorkpace = document.getElementById(maskId);
   if(maskWorkpace){
-    var pagePreview = gj(maskWorkpace).find('div.UIWikiPagePreview')[0];
+    var pagePreview = $(maskWorkpace).find('div.UIWikiPagePreview')[0];
     if(pagePreview){
-      gj(pagePreview).height((gj(document).height() - 42) + "px");
+      $(pagePreview).height(($(document).height() - 42) + "px");
       eXo.portal.UIMaskWorkspace.resetPositionEvt();
     }
   }
 };
 
 eXo.wiki.UIWikiPagePreview = new UIWikiPagePreview();
+_module.UIWikiPagePreview = eXo.wiki.UIWikiPagePreview;

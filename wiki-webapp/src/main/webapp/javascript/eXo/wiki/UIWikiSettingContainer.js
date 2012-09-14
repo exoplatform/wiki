@@ -29,18 +29,19 @@ window.onresize = function() {
 
 UIWikiSettingContainer.prototype.init = function(id) {
   var uicomponent = document.getElementById(id);
-  this.spliter = gj(uicomponent).find('div.Spliter')[0];
+  this.spliter = $(uicomponent).find('div.Spliter')[0];
   
   eXo.wiki.UIWikiSettingContainer.setHeightLayOut();
 };
 
 UIWikiSettingContainer.prototype.setHeightLayOut = function() {
-  var hdef = gj(document).height();
+  var hdef = $(document).height();
   hdef = (hdef > 200) ? hdef : 200;
   
   if (this.spliter) {
-    gj(this.spliter).height(hdef + "px");
+    $(this.spliter).height(hdef + "px");
   }
 };
 
 eXo.wiki.UIWikiSettingContainer = new UIWikiSettingContainer();
+_module.UIWikiSettingContainer = eXo.wiki.UIWikiSettingContainer;

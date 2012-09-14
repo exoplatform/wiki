@@ -3,24 +3,24 @@ function UIRelated() {
 
 UIRelated.prototype.initMacros = function() {
   var me = eXo.wiki.UIRelated;
-  var relatedBlocks = gj(".RelatedMacro");
+  var relatedBlocks = $(".RelatedMacro");
   var editForm = document.getElementById('UIWikiPageEditForm');
   if (editForm != null) {
-    var ifm = gj(editForm).find('iframe.gwt-RichTextArea')[0];
+    var ifm = $(editForm).find('iframe.gwt-RichTextArea')[0];
     if (ifm != null) {
     var innerDoc = ifm.contentDocument || ifm.contentWindow.document;
-    relatedBlocks = gj.merge(relatedBlocks, gj(innerDoc).find(
+    relatedBlocks = $.merge(relatedBlocks, $(innerDoc).find(
         ".RelatedMacro"));
     }
   }
   for ( var i = 0; i < relatedBlocks.length; i++) {
     var relatedBlock = relatedBlocks[i];
-    var infoElement = gj(relatedBlock).find('input.info')[0];
+    var infoElement = $(relatedBlock).find('input.info')[0];
     var restUrl = infoElement.getAttribute("restUrl");
     var redirectTempl = infoElement.getAttribute("redirectUrl");
-    if (gj(relatedBlock).find("div.TreeNodeType").length > 0)
+    if ($(relatedBlock).find("div.TreeNodeType").length > 0)
       return;
-    gj.ajax({
+    $.ajax({
       async : false,
       url : restUrl,
       type : 'GET',
@@ -28,12 +28,12 @@ UIRelated.prototype.initMacros = function() {
       success : function(data) {
         for ( var i = 0; i < data.jsonList.length; i++) {
           var relatedItem = data.jsonList[i];
-          gj(relatedBlock).append(gj('<div/>', {
+          $(relatedBlock).append($('<div/>', {
             'class' : 'Page TreeNodeType Node'
-            }).append(gj('<div/>')
-               .append(gj('<div/>', {
+            }).append($('<div/>')
+               .append($('<div/>', {
                  'class' : 'NodeLabel'
-               }).append( gj('<a/>', {
+               }).append( $('<a/>', {
                   title : relatedItem.title,
                   href : redirectTempl + "&objectId=" + encodeURIComponent(relatedItem.identity),
                   text: relatedItem.title
@@ -49,3 +49,4 @@ UIRelated.prototype.initMacros = function() {
 };
 
 eXo.wiki.UIRelated = new UIRelated();
+_module.UIRelated = eXo.wiki.UIRelated;

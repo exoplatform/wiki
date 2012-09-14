@@ -5,7 +5,10 @@
   String exitMessage = _ctx.appRes("UIConfirmBox.label.ConfirmExit");
   String okLabel = _ctx.appRes("UIConfirmBox.label.Ok");
   String cancelLink = uicomponent.isNewMode() ? uicomponent.getCurrentPageURL() : "javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');";  
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIConfirmBox.init();");
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIConfirmBox.init();");
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-edit", "wikiEdit");
+  requireJs.addScripts("wikiEdit.UIConfirmBox.init();");  
  %>
 <a id="$uicomponent.id" href="$cancelLink" onclick="return eXo.wiki.UIWikiPageEditForm.cancel('$uicomponent.id','$titleMessage','$exitMessage', 'Delete Icon','$okLabel','$cancelLabel');" 
     class="Delete ActionButton LightBlueStyle" title="<%=_ctx.appRes("UISubmitToolBar.action.Cancel");%>">

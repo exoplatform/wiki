@@ -26,6 +26,7 @@ import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.portal.application.PortletPreferences;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.Query;
+import org.exoplatform.portal.config.model.Application;
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
@@ -146,7 +147,6 @@ public class MockDataStorage implements DataStorage,Startable {
   /* (non-Javadoc)
    * @see org.exoplatform.portal.config.DataStorage#save(org.exoplatform.portal.application.PortletPreferences)
    */
-  @Override
   public void save(PortletPreferences portletPreferences) throws Exception {
 
   }
@@ -178,7 +178,6 @@ public class MockDataStorage implements DataStorage,Startable {
   /* (non-Javadoc)
    * @see org.exoplatform.portal.config.DataStorage#getPortletPreferences(java.lang.String)
    */
-  @Override
   public PortletPreferences getPortletPreferences(String windowID) throws Exception {
     return null;
   }
@@ -304,5 +303,18 @@ public class MockDataStorage implements DataStorage,Startable {
     // TODO Auto-generated method stub
     
   }
+
+	@Override
+	public String[] getSiteInfo(String applicationStorageId) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S> Application<S> getApplicationModel(String applicationStorageId)
+			throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }

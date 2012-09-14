@@ -46,13 +46,14 @@ UIWikiSavePage.prototype.disableButton = function(parent, action) {
     return;
   }
   for (i = 0; i < this.disableClass.length; i++) {
-    var buttons = gj(parent).find('a.'+this.disableClass[i]);
+    var buttons = $(parent).find('a.'+this.disableClass[i]);
     for (k = 0; k < buttons.length; k++) {
-      gj(buttons[k]).addClass("DisableButton");
-      gj(buttons[k]).attr('href','javascript:void(0);');
-      gj(buttons[k]).click("return false;");
+      $(buttons[k]).addClass("DisableButton");
+      $(buttons[k]).attr('href','javascript:void(0);');
+      $(buttons[k]).click("return false;");
     }
   }
 }
 
 eXo.wiki.UIWikiSavePage = new UIWikiSavePage();
+_module.UIWikiSavePage = eXo.wiki.UIWikiSavePage;

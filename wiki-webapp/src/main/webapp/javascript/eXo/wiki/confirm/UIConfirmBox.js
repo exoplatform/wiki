@@ -32,20 +32,20 @@ UIConfirmBox.prototype.render = function(uicomponentId, titleMessage, message,
   
   var me = eXo.wiki.UIConfirmBox;
   var submitAction = document.getElementById(uicomponentId);
-  me.confirmBox = gj('<div/>', {
+  me.confirmBox = $('<div/>', {
     'class' : 'ConfirmBox',
     align : 'center'
-  }).append(gj('<div/>', {
+  }).append($('<div/>', {
     'class' : 'ConfirmBar'
-  }).append(gj('<div/>', {
+  }).append($('<div/>', {
     'class' : 'ConfirmTitle',
     text : titleMessage
-  }), gj('<a/>', {
+  }), $('<a/>', {
     'class' : 'CloseButton',
     href : 'javascript:eXo.wiki.UIConfirmBox.closeConfirm()'
   })));
 
-  var container = gj('<div/>').append(gj('<div/>', {
+  var container = $('<div/>').append($('<div/>', {
     'class' : 'ConfirmMessage',
     text : message
   }))
@@ -56,14 +56,14 @@ UIConfirmBox.prototype.render = function(uicomponentId, titleMessage, message,
   if (cancelLabel) {
     me.createInput(container, null, cancelLabel);
   }
-  gj(submitAction).append(gj(me.confirmBox).append(container));
+  $(submitAction).append($(me.confirmBox).append(container));
   this.maskLayer = eXo.core.UIMaskLayer.createMask("UIPortalApplication",
       me.confirmBox[0], 30);
   return false;
 };
 
 UIConfirmBox.prototype.createInput = function(container, action, message) {
- gj(container).append(gj('<input/>', {
+ $(container).append($('<input/>', {
    value: message,
    type: 'button',
    click: function(event) {
@@ -84,7 +84,7 @@ UIConfirmBox.prototype.closeConfirm = function() {
     this.maskLayer = null;
   }
   if (me.confirmBox) {
-    gj(me.confirmBox).remove();
+    $(me.confirmBox).remove();
     me.confirmBox = null;
   }
 };
@@ -93,7 +93,7 @@ UIConfirmBox.prototype.resetPosition = function() {
   var me = eXo.wiki.UIConfirmBox;
   var confirmbox = me.confirmBox;
 
-  if (confirmbox && (gj(confirmbox).css('display') == "block")) {
+  if (confirmbox && ($(confirmbox).css('display') == "block")) {
     try {
       eXo.core.UIMaskLayer.blockContainer = document
           .getElementById("UIPortalApplication");
@@ -105,3 +105,4 @@ UIConfirmBox.prototype.resetPosition = function() {
 };
 
 eXo.wiki.UIConfirmBox = new UIConfirmBox();
+_module.UIConfirmBox = eXo.wiki.UIConfirmBox;

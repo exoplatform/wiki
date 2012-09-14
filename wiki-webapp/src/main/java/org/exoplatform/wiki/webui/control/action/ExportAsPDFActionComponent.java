@@ -22,6 +22,7 @@ import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -97,7 +98,10 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
 							"applications/vnd.pdf, text/pdf, text/x-pdf");
       dresource.setDownloadName(title + ".pdf") ;
       String downloadLink = dservice.getDownloadLink(dservice.addDownloadResource(dresource)) ;
-      event.getRequestContext().getJavascriptManager().addCustomizedOnLoadScript("ajaxRedirect('" + downloadLink + "');");
+      
+      RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();      
+      requireJS.require("SHARED/wiki-view", "wikiView").addScripts("wikiView.UIWikiPortlet.ajaxRedirect('" + downloadLink + "');");
+      //event.getRequestContext().getJavascriptManager().addCustomizedOnLoadScript("ajaxRedirect('" + downloadLink + "');");
       super.processEvent(event);      
     }
     

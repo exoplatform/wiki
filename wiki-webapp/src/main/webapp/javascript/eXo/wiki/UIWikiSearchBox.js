@@ -37,8 +37,8 @@ UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLa
   var uiComponent = document.getElementById(componentId);
   var restInput = uiComponent["restURL"];
   this.input = uiComponent[searchInputName];
-  gj(this.input).attr('autocomplete', 'off');
-  gj(this.input).val(searchLabel);  
+  $(this.input).attr('autocomplete', 'off');
+  $(this.input).val(searchLabel);  
   this.restURL = restInput.value;
   this.input.onkeyup = function(evt) {
     evt = window.event || evt;
@@ -95,12 +95,12 @@ UIWikiSearchBox.prototype.pressHandler = function(evt, textbox) {
 UIWikiSearchBox.prototype.enterHandler = function(evt) {
   var me = eXo.wiki.UIWikiSearchBox;
   if (me.currentItem) {
-    var link = gj(me.currentItem).find('a.ItemIcon')[0];
+    var link = $(me.currentItem).find('a.ItemIcon')[0];
     if (link.href) {
       evt.cancelBubble = true;
       if (evt.stopPropagation)
         evt.stopPropagation();
-      gj(this.searchPopup).hide();
+      $(this.searchPopup).hide();
       window.location = link.href;
     }
   } else {
@@ -119,30 +119,30 @@ UIWikiSearchBox.prototype.arrowUpHandler = function() {
   var me = eXo.wiki.UIWikiSearchBox;
   if (!me.currentItem) {
     me.currentItem = this.menu.lastChild;
-    gj(me.currentItem).hover();
+    $(me.currentItem).hover();
     return;
   }
-  gj(me.currentItem).removeClass('ItemOver');
+  $(me.currentItem).removeClass('ItemOver');
   if (me.currentItem.previousSibling)
     me.currentItem = me.currentItem.previousSibling;
   else
     me.currentItem = this.menu.lastChild;
-  gj(me.currentItem).addClass('ItemOver');
+  $(me.currentItem).addClass('ItemOver');
 };
 
 UIWikiSearchBox.prototype.arrowDownHandler = function() {
   var me = eXo.wiki.UIWikiSearchBox;
   if (!me.currentItem) {
     me.currentItem = this.menu.firstChild;
-    gj(me.currentItem).addClass('ItemOver');
+    $(me.currentItem).addClass('ItemOver');
     return;
   }
-  gj(me.currentItem).removeClass('ItemOver');
+  $(me.currentItem).removeClass('ItemOver');
   if (me.currentItem.nextSibling)
     me.currentItem = me.currentItem.nextSibling;
   else
     me.currentItem = this.menu.firstChild;
-  gj(me.currentItem).addClass('ItemOver');
+  $(me.currentItem).addClass('ItemOver');
 };
 
 UIWikiSearchBox.prototype.typeHandler = function(textbox) {
@@ -154,34 +154,34 @@ UIWikiSearchBox.prototype.typeHandler = function(textbox) {
   var url = this.restURL + keyword;  
   // Create loading
   var me = eXo.wiki.UIWikiSearchBox;
-  var searchBox = gj(this.input).closest(".UIWikiSearchBox")[0];
-  this.searchPopup = gj(searchBox).find("div.SearchPopup")[0];
-  gj(this.searchPopup).show();
-  gj(this.searchPopup).mouseup(function(evt) {
-    gj(this.style).hide();
+  var searchBox = $(this.input).closest(".UIWikiSearchBox")[0];
+  this.searchPopup = $(searchBox).find("div.SearchPopup")[0];
+  $(this.searchPopup).show();
+  $(this.searchPopup).mouseup(function(evt) {
+    $(this.style).hide();
   });
-  this.menu = gj(this.searchPopup).find("div.SubBlock")[0];
-  gj(this.menu).html('');
+  this.menu = $(this.searchPopup).find("div.SubBlock")[0];
+  $(this.menu).html('');
   var textNode = document.createTextNode('');
-  gj(this.menu).append(textNode);
-  var searchItemNode = gj('<div/>', {
+  $(this.menu).append(textNode);
+  var searchItemNode = $('<div/>', {
     'class': 'MenuItem Horizon'
-  }).append(gj('<div/>', {
+  }).append($('<div/>', {
     'class': 'MenuText'
-  }).append(gj('<a/>', {
+  }).append($('<a/>', {
       'class': 'ItemIcon MenuIcon',
       'text' : me.loading
      }
     )
    )
   )
-  gj(searchItemNode).insertBefore(textNode);
+  $(searchItemNode).insertBefore(textNode);
   this.makeRequest(url, this.typeCallback);
 };
 
 UIWikiSearchBox.prototype.makeRequest = function(url, callback) {
   var me = eXo.wiki.UIWikiSearchBox;
-  gj.get(url,{},function(data) {
+  $.get(url,{},function(data) {
     callback(data);
   });  
 };
@@ -193,8 +193,8 @@ UIWikiSearchBox.prototype.typeCallback = function(data) {
 };
 
 UIWikiSearchBox.prototype.doAdvanceSearch = function() {
-  var action = gj(this.input).closest('.SearchForm')[0];
-  action = gj(action).find('a.AdvancedSearch')[0];
+  var action = $(this.input).closest('.SearchForm')[0];
+  action = $(action).find('a.AdvancedSearch')[0];
   eXo.wiki.UIWikiAjaxRequest.makeNewHash('#AdvancedSearch');
   action.onclick();
 }
@@ -205,76 +205,76 @@ UIWikiSearchBox.prototype.doAdvanceSearch = function() {
 
 UIWikiSearchBox.prototype.renderMenu = function(data) {
   var me = eXo.wiki.UIWikiSearchBox;
-  var searchBox = gj(this.input).closest('.UIWikiSearchBox');
-  this.searchPopup = gj(searchBox).find('div.SearchPopup')[0];
-  gj(this.searchPopup).show();
-  gj(this.searchPopup).mouseup(function(evt) {
-    gj(this).hide();
+  var searchBox = $(this.input).closest('.UIWikiSearchBox');
+  this.searchPopup = $(searchBox).find('div.SearchPopup')[0];
+  $(this.searchPopup).show();
+  $(this.searchPopup).mouseup(function(evt) {
+    $(this).hide();
     evt.cancelBubble = true;
     if (evt.stopPropagation())
       evt.stopPropagation();
   })
-  this.menu = gj(this.searchPopup).find('div.SubBlock')[0];
-  gj(this.menu).html('');
+  this.menu = $(this.searchPopup).find('div.SubBlock')[0];
+  $(this.menu).html('');
   var textNode = document.createTextNode('');
-  gj(this.menu).append(textNode);
+  $(this.menu).append(textNode);
 
-  var searchItemNode = gj('<div/>',{
+  var searchItemNode = $('<div/>',{
     'class': 'MenuItem Horizon'
   });
-  var searchText = gj('<div/>', {
+  var searchText = $('<div/>', {
     'class': 'MenuText'
   });
-  var linkNode = gj('<a/>', {
+  var linkNode = $('<a/>', {
     'class': 'ItemIcon MenuIcon SearchIcon',
     'href' : 'javascript:eXo.wiki.UIWikiSearchBox.doAdvanceSearch();',
     'text' : "Seach for \'" + this.input.value + "\'",
     'title': "Seach for \'" + this.input.value + "\'"
    });
-  gj(searchItemNode).append(gj(searchText).append(linkNode));
-  gj(searchItemNode).insertBefore(textNode);
+  $(searchItemNode).append($(searchText).append(linkNode));
+  $(searchItemNode).insertBefore(textNode);
   me.shortenWord(linkNode[0], searchText[0]); 
   var resultLength = data.jsonList.length;
   for ( var i = 0; i < resultLength; i++) {
     var itemNode = this.buildChild(data.jsonList[i]);
-    gj(itemNode).insertBefore(searchItemNode);
+    $(itemNode).insertBefore(searchItemNode);
     // Check if title is outside of the container
-    var linkContainer = gj(itemNode).find(':first')[0];
-    var link = gj(linkContainer).find(':first')[0];
+    var linkContainer = $(itemNode).find(':first')[0];
+    var link = $(linkContainer).find(':first')[0];
     var keyword = this.input.value.trim();    
-    var origin =  gj(link).html();    
+    var origin =  $(link).html();    
     var shorten =  me.shortenWord(link, linkContainer);
     if (origin!= shorten && keyword.length >= shorten.length-3)
-      gj(link).html(me.doHighLight(shorten, shorten.substring(0,shorten.length-3)));
+      $(link).html(me.doHighLight(shorten, shorten.substring(0,shorten.length-3)));
     else
-      gj(link).html(me.doHighLight(shorten, keyword));
+      $(link).html(me.doHighLight(shorten, keyword));
   }  
-  gj(this.menu.lastChild).remove();
+  $(this.menu.lastChild).remove();
 };
 
 UIWikiSearchBox.prototype.buildChild = function(dataObject) {
-  var menuItemNode = gj('<div/>');
-  gj(menuItemNode).attr('class','MenuItem TextItem ' + dataObject.fileType);
+  var menuItemNode = $('<div/>');
+  $(menuItemNode).attr('class','MenuItem TextItem ' + dataObject.fileType);
   if (this.searchType != dataObject.type) {
-    gj(menuItemNode).addClass('Horizon');
+    $(menuItemNode).addClass('Horizon');
   }  
   this.searchType = dataObject.type;
-  var searchText = gj('<div/>',{
+  var searchText = $('<div/>',{
     'class' : 'MenuText'
   });
-  var linkNode = gj('<a/>', {
+  var linkNode = $('<a/>', {
     'class' : 'ItemIcon MenuIcon'
   });
   if (dataObject.type == "wiki:attachment") {
-    gj(linkNode).attr('href', dataObject.uri);
+    $(linkNode).attr('href', dataObject.uri);
   } else {
-    gj(linkNode).attr('href', this.wikiNodeURI + dataObject.uri);
+    $(linkNode).attr('href', this.wikiNodeURI + dataObject.uri);
   }
   var keyword = this.input.value.trim();
   var labelResult = dataObject.fullTitle;
-  gj(linkNode).attr('title', labelResult);
-  gj(linkNode).html(labelResult);
-  gj(menuItemNode).append(gj(searchText).append(linkNode));
+  $(linkNode).attr('title', labelResult);
+  $(linkNode).html(labelResult);
+  $(menuItemNode).append($(searchText).append(linkNode));
   return menuItemNode;
 };
 
@@ -292,7 +292,7 @@ UIWikiSearchBox.prototype.createKeyword = function(str) {
 
 UIWikiSearchBox.prototype.hideMenu = function() {
   if (this.searchPopup)
-    gj(this.searchPopup).hide();
+    $(this.searchPopup).hide();
 };
 
 UIWikiSearchBox.prototype.doHighLight = function(text, keyword) {
@@ -305,13 +305,14 @@ UIWikiSearchBox.prototype.shortenWord = function(source, container) {
   var isCut = false;
   while (source.offsetWidth > container.offsetWidth) {
     isCut = true;
-    var size = gj(source).html().length;
-    gj(source).html(gj(source).html().substring(0, size - 1));
+    var size = $(source).html().length;
+    $(source).html($(source).html().substring(0, size - 1));
   }
   if (isCut) {    
-    gj(source).html(gj(source).html().substring(0, gj(source).html().length - 4) + "...");
+    $(source).html($(source).html().substring(0, $(source).html().length - 4) + "...");
   }
-  return gj(source).html();
+  return $(source).html();
 };
 
 eXo.wiki.UIWikiSearchBox = new UIWikiSearchBox();
+_module.UIWikiSearchBox = eXo.wiki.UIWikiSearchBox;

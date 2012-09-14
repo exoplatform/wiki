@@ -23,44 +23,45 @@ function UIWikiEditParagraph() {
 UIWikiEditParagraph.prototype.init = function(pageContentAreaId, editActionId) {
   var pageContentArea = document.getElementById(pageContentAreaId);
   var editAction = document.getElementById(editActionId);
-  var sections =  gj(pageContentArea).find('span.EditSection');
+  var sections =  $(pageContentArea).find('span.EditSection');
   for ( var index = 0; index < sections.length; index++) {
-    var editLink =  gj(sections[index]).find('a')[0];
-    var linkLabel =  gj(editLink).find('span')[0];
-    gj(editLink).click((function(sectionIndex) {
+    var editLink =  $(sections[index]).find('a')[0];
+    var linkLabel =  $(editLink).find('span')[0];
+    $(editLink).click((function(sectionIndex) {
       return function() {
         eXo.wiki.UIWikiAjaxRequest.makeNewHash('#EditPage&section=' + sectionIndex);
       };
     })(index + 1));
-    gj(editLink).attr('href', 'javascript:void(0);');
-    gj(linkLabel).html('');
+    $(editLink).attr('href', 'javascript:void(0);');
+    $(linkLabel).html('');
     
     var headerContainer = sections[index].parentNode;
-    var sectionContainer = gj(headerContainer).closest('.section-container')[0];
-    gj(sectionContainer).mouseover(function(event) {
+    var sectionContainer = $(headerContainer).closest('.section-container')[0];
+    $(sectionContainer).mouseover(function(event) {
       eXo.wiki.UIWikiEditParagraph.highlightEditSection(this,event);
     });
-    gj(sectionContainer).mouseout(function(event) {
+    $(sectionContainer).mouseout(function(event) {
       eXo.wiki.UIWikiEditParagraph.highlightEditSection(this,event);
     });
-    gj(sectionContainer).focus(function(event) {
+    $(sectionContainer).focus(function(event) {
       eXo.wiki.UIWikiEditParagraph.highlightEditSection(this,event);
     });
-    gj(sectionContainer).blur(function(event) {
+    $(sectionContainer).blur(function(event) {
       eXo.wiki.UIWikiEditParagraph.highlightEditSection(this,event);
     });
   }
 };
 
 UIWikiEditParagraph.prototype.highlightEditSection = function (container,event) {
-  if (gj.browser.msie) {
+  if ($.browser.msie) {
     event.cancelBubble = true;
   } else {
     event.stopPropagation();
   }
-  var section = gj(container).find('span.EditSection')[0];
-  gj(section).toggle();
-  gj(container).toggleClass("EditSectionHover");
+  var section = $(container).find('span.EditSection')[0];
+  $(section).toggle();
+  $(container).toggleClass("EditSectionHover");
 };
 
 eXo.wiki.UIWikiEditParagraph = new UIWikiEditParagraph();
+_module.UIWikiEditParagraph = eXo.wiki.UIWikiEditParagraph;

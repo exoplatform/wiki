@@ -67,6 +67,7 @@ function getModule(params) {
     addDependency(new Project("org.xwiki.rendering", "xwiki-rendering-wikimodel", "jar",  "${org.xwiki.platform.version}")).
     addDependency(new Project("org.xwiki.platform", "xwiki-platform-model", "jar",  "${org.xwiki.platform.version}")).
     addDependency(new Project("org.xwiki.platform", "xwiki-platform-wysiwyg-client", "jar",  "${org.xwiki.platform.version}")).
+    addDependency(new Project("org.gatein.web", "redirect", "jar",  "${org.exoplatform.portal.version}")).
     addDependency(new Project("org.jdom", "jdom2", "jar",  "${org.jdom.version}")).
     addDependency(new Project("org.suigeneris", "jrcs.diff", "jar",  "${org.suigeneris.version}")).
     addDependency(new Project("org.suigeneris", "jrcs.rcs", "jar",  "${org.suigeneris.version}")).
@@ -99,8 +100,13 @@ function getModule(params) {
   // demo rest endpoint	   
   module.demo.rest =
     new Project("org.exoplatform.wiki", "wiki-demo-rest", "war", module.version).
-    addDependency(ws.frameworks.servlet);
+    addDependency(ws.frameworks.servlet); 
   module.demo.rest.deployName = "rest-wikidemo"; 
-   
+
+  // GateIn Portal Redirect Portlet
+  module.redirect = {};
+  module.redirect.portlet = 
+    new Project("org.gatein.portal.portlet", "redirect", "war", "${org.exoplatform.portal.version}");
+  module.redirect.portlet.deployName = "redirect-portlet"; 
   return module;
 }

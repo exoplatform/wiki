@@ -46,3 +46,4 @@ UIForm.prototype.submitPageEvent = function(formId, action, params) {
 } ;
 
 eXo.wiki.UIForm = new UIForm();
+_module.UIForm = eXo.wiki.UIForm;

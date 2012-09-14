@@ -3,7 +3,11 @@
   
   def rcontext = _ctx.getRequestContext() ;
   List breadCumbs = uicomponent.getBreadCumbs();
-  rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.renderBreadcrumbs(\"" + uicomponent.id + "\","+ uicomponent.isLink +");"); 
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPortlet.renderBreadcrumbs(\"" + uicomponent.id + "\","+ uicomponent.isLink +");");
+  
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView"); 
+  requireJs.addScripts("wikiView.UIWikiPortlet.renderBreadcrumbs(\"" + uicomponent.id + "\","+ uicomponent.isLink +");");
 %>
 <div class="UIWikiBreadCrumb UIBreadcumbs" id="$uicomponent.id">
    <div class="BreadcumbsInfoBar ClearFix">  

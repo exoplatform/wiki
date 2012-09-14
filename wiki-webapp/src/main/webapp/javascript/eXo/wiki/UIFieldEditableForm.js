@@ -27,27 +27,27 @@ UIFieldEditableForm.prototype.init = function(componentId, parentId, titleId,
     inputId) {
   var me = eXo.wiki.UIFieldEditableForm;
   me.parentComponent = document.getElementById(parentId);
-  me.component = gj(me.parentComponent).find('#'+ componentId)[0];
-  var titleControl = gj(me.parentComponent).find('#'+ titleId)[0];
+  me.component = $(me.parentComponent).find('#'+ componentId)[0];
+  var titleControl = $(me.parentComponent).find('#'+ titleId)[0];
   if (titleControl) {
     me.fieldValue = titleControl.firstChild.data;
   }
   
-  me.divTag = gj(me.component).find('div.LinkContainer')[0];
-  me.inputControl = gj(me.component).find('#'+inputId)[0];
-  me.showInputLink = gj(me.divTag).find('a.ShowInput')[0];
-  me.submitLink = gj(me.divTag).find('a.SubmitLink')[0];
-  gj(document).click(me.onClick);
+  me.divTag = $(me.component).find('div.LinkContainer')[0];
+  me.inputControl = $(me.component).find('#'+inputId)[0];
+  me.showInputLink = $(me.divTag).find('a.ShowInput')[0];
+  me.submitLink = $(me.divTag).find('a.SubmitLink')[0];
+  $(document).click(me.onClick);
 
   if (titleControl) {
-    gj(titleControl).click(me.onClickToChangeTitle);
+    $(titleControl).click(me.onClickToChangeTitle);
   }
   if (me.inputControl) {
     me.inputControl.form.onsubmit = function() {
       return false;
     };
     me.inputControl.focus();
-    gj(me.inputControl).keyup(me.pressHandler);
+    $(me.inputControl).keyup(me.pressHandler);
   }
 };
 
@@ -62,7 +62,7 @@ UIFieldEditableForm.prototype.onClick = function(evt) {
   var evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (me.inputControl && target != me.inputControl && target != me.component) {
-    var hideInputLink = gj(me.divTag).find('a.HideInput')[0];
+    var hideInputLink = $(me.divTag).find('a.HideInput')[0];
     hideInputLink.onclick();
   }
 };
@@ -99,9 +99,10 @@ UIFieldEditableForm.prototype.enterHandler = function(evt) {
     if (me.submitLink || me.submitLink.onclick)
       me.submitLink.onclick();
   } else {
-    var hideInputLink = gj(me.divTag).find('a.HideInput')[0];
+    var hideInputLink = $(me.divTag).find('a.HideInput')[0];
     hideInputLink.onclick();
   }
 };
 
 eXo.wiki.UIFieldEditableForm = new UIFieldEditableForm();
+_module.UIFieldEditableForm = eXo.wiki.UIFieldEditableForm;
