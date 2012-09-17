@@ -41,6 +41,7 @@ import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WatchedMixin;
 import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
@@ -128,6 +129,8 @@ public class WatchPageActionComponent extends UIComponent {
     @Override
     protected void processEvent(Event<WatchPageActionComponent> event) throws Exception {
       boolean isWatched = event.getSource().detectWatched(true);
+      UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
+      event.getRequestContext().addUIComponentToUpdateByAjax(wikiPortlet);
       if (isWatched) {
         event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("WatchPageAction.msg.Stop-watching",
                                                                                        null,
