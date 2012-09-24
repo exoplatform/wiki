@@ -19,6 +19,7 @@ package org.exoplatform.wiki.webui;
 import java.util.Arrays;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -26,6 +27,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.webui.control.UIEditorTabs;
 import org.exoplatform.wiki.webui.control.UISubmitToolBar;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
@@ -40,7 +42,7 @@ import org.exoplatform.wiki.webui.core.UIWikiForm;
   lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiPageEditForm.gtmpl",
   events = {
-      @EventConfig(listeners = UIWikiPageEditForm.CloseActionListener.class)      
+      @EventConfig(listeners = UIWikiPageEditForm.CloseActionListener.class)
   }  
 )
 public class UIWikiPageEditForm extends UIWikiForm {
@@ -50,6 +52,10 @@ public class UIWikiPageEditForm extends UIWikiForm {
   public static final String FIELD_CONTENT             = "Markup";
 
   public static final String FIELD_COMMENT             = "Comment";
+  
+  public static final String FIELD_PUBLISH_ACTIVITY_UPPER    = "PublishActivityUpper";
+  
+  public static final String FIELD_PUBLISH_ACTIVITY_BOTTOM    = "PublishActivityBottom";
   
   public static final String TITLE_CONTROL             = "UIWikiPageTitleControlForm_PageEditForm";
 
@@ -78,6 +84,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
         WikiMode.EDITTEMPLATE, WikiMode.ADDTEMPLATE });
     addChild(UIWikiPageTitleControlArea.class, null, TITLE_CONTROL).toInputMode();
     addChild(UISubmitToolBar.class, null, SUBMIT_TOOLBAR_UPPER);
+    addUIFormInput(new UICheckBoxInput(FIELD_PUBLISH_ACTIVITY_UPPER, FIELD_PUBLISH_ACTIVITY_UPPER, false));
     addChild(UIWikiTemplateDescriptionContainer.class, null, FIELD_TEMPLATEDESCTIPTION);
     addChild(UIEditorTabs.class, null, EDITOR_TABS);
     addChild(UISubmitToolBar.class, null, SUBMIT_TOOLBAR_BOTTOM);
@@ -88,6 +95,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     addUIFormInput(markupInput);
     UIFormStringInput commentInput = new UIFormStringInput(FIELD_COMMENT, FIELD_COMMENT, "");
     addUIFormInput(commentInput);
+    addUIFormInput(new UICheckBoxInput(FIELD_PUBLISH_ACTIVITY_BOTTOM, FIELD_PUBLISH_ACTIVITY_BOTTOM, false));
   }
   
   public void setTitle(String title){ this.title = title ;}
@@ -113,6 +121,35 @@ public class UIWikiPageEditForm extends UIWikiForm {
     return getChild(UIWikiSidePanelArea.class).isRendered();
   }
   
+  public void synPublishActivityStatus(boolean isChecked) {
+    UICheckBoxInput publishActivityUpperCheckBox = 
+        this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
+    UICheckBoxInput publishActivityBottomCheckBox = 
+        this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_BOTTOM);
+    publishActivityUpperCheckBox.setChecked(isChecked);
+    publishActivityBottomCheckBox.setChecked(isChecked);
+  }
+
+  private void checkRenderOfPublishActivityCheckBoxes() {
+    UICheckBoxInput publishActivityUpperCheckBox = 
+        this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
+    UICheckBoxInput publishActivityBottomCheckBox = 
+        this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_BOTTOM);
+    if (WikiMode.EDITPAGE == this.getCurrentMode()) {
+      publishActivityUpperCheckBox.setRendered(true);
+      publishActivityBottomCheckBox.setRendered(true);
+    } else {
+      publishActivityUpperCheckBox.setRendered(false);
+      publishActivityBottomCheckBox.setRendered(false);
+    }
+  }
+  
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    this.checkRenderOfPublishActivityCheckBoxes();
+    super.processRender(context);
+  }
+
   static public class CloseActionListener extends EventListener<UIWikiPageEditForm> {
     @Override
     public void execute(Event<UIWikiPageEditForm> event) throws Exception {

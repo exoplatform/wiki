@@ -36,6 +36,7 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
+import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
@@ -62,7 +63,7 @@ import org.xwiki.rendering.syntax.Syntax;
  * Created by The eXo Platform SAS
  * Author : viet nguyen
  *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
+ * Apr 26, 2010
  */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/SavePageActionComponent.gtmpl",
@@ -72,30 +73,30 @@ import org.xwiki.rendering.syntax.Syntax;
 )
 public class SavePageActionComponent extends UIComponent {
 
-  public static final String                   ACTION   = "SavePage";  
-  
+  public static final String                   ACTION   = "SavePage";
+
   private static final Log log = ExoLogger.getLogger("wiki:SavePageActionComponent");
-  
+
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] {
       new IsEditAddModeFilter(), new IsEditAddPageModeFilter() });
 
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
-  }  
+  }
 
   protected boolean isNewMode() {
     return (WikiMode.ADDPAGE.equals(getAncestorOfType(UIWikiPortlet.class).getWikiMode()));
   }
-  
+
   protected String getPageTitleInputId() {
     return UIWikiPageTitleControlArea.FIELD_TITLEINPUT;
   }
-  
+
   protected String getActionLink() throws Exception {
     return Utils.createFormActionLink(this, ACTION, ACTION);
-  }  
-  
+  }
+
   public static class SavePageActionListener extends
                                             UISubmitToolBarActionListener<SavePageActionComponent> {
     @Override
@@ -107,7 +108,7 @@ public class SavePageActionComponent extends UIComponent {
       UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
       UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
       UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class)
-                                                 .getUIStringInput();      
+                                                 .getUIStringInput();
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
       String syntaxId = Utils.getDefaultSyntax();
@@ -146,11 +147,11 @@ public class SavePageActionComponent extends UIComponent {
       }
       String markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
       markup = markup.trim();
-      
-      
+
+
       String newPageId = TitleResolver.getId(title, false);
       if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        // as wiki home page has fixed name (never edited anymore), every title changing is accepted. 
+        // as wiki home page has fixed name (never edited anymore), every title changing is accepted.
         ;
       } else if (newPageId.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
         // if page title is not changed in editing phase, do not need to check its existence.
@@ -166,7 +167,7 @@ public class SavePageActionComponent extends UIComponent {
         Utils.redirect(pageParams, wikiPortlet.getWikiMode());
         return;
       }
-      
+
       try {
         if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
           if (wikiPortlet.getEditMode() == EditMode.SECTION) {
@@ -184,16 +185,18 @@ public class SavePageActionComponent extends UIComponent {
                                    newPageId,
                                    title);
           }
-          Object minorAtt = event.getRequestContext().getAttribute(MinorEditActionComponent.ACTION);
-          if (minorAtt != null) {
-            ((PageImpl) page).setMinorEdit(Boolean.parseBoolean(minorAtt.toString()));
-          }
+
+          // Check if publish activity on activity stream
+          UICheckBoxInput publishActivityCheckBox =
+              wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
+          ((PageImpl) page).setMinorEdit(!publishActivityCheckBox.isChecked());
+          pageEditForm.synPublishActivityStatus(false);
 
           page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
           page.setSyntax(syntaxId);
           pageTitleControlForm.getUIFormInputInfo().setValue(title);
           pageParams.setPageId(page.getName());
-          ((PageImpl) page).setURL(Utils.getURLFromParams(pageParams));          
+          ((PageImpl) page).setURL(Utils.getURLFromParams(pageParams));
           page.getContent().setText(markup);
 
           if (!pageEditForm.getTitle().equals(title)) {
@@ -220,7 +223,7 @@ public class SavePageActionComponent extends UIComponent {
           subPage.setSyntax(syntaxId);
           ((PageImpl) subPage).getAttachments().addAll(attachs);
           ((PageImpl) subPage).checkin();
-          ((PageImpl) subPage).checkout();         
+          ((PageImpl) subPage).checkout();
           ((PageImpl) draftPage).remove();
           return;
         }

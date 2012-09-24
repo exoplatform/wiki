@@ -55,5 +55,18 @@ UIWikiPageEditForm.prototype.cancel = function(uicomponentId, titleMessage, mess
   return true;
 };
 
+UIWikiPageEditForm.prototype.synPublishActivityCheckboxesStatus = function(checkBoxName1, checkBoxName2) {
+  var checkBox1 = document.getElementsByName(checkBoxName1)[0];
+  var checkBox2 = document.getElementsByName(checkBoxName2)[0];
+  
+  $(checkBox1).click(function() {
+    $(checkBox2).attr("checked", !$(checkBox2).attr("checked"));
+  });
+  
+  $(checkBox2).click(function() {
+    $(checkBox1).attr("checked", !$(checkBox1).attr("checked"));
+  });
+};
+
 eXo.wiki.UIWikiPageEditForm = new UIWikiPageEditForm();
 _module.UIWikiPageEditForm = eXo.wiki.UIWikiPageEditForm;
