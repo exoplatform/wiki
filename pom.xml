@@ -144,6 +144,8 @@
     <version.buildnumber.plugin>1.1</version.buildnumber.plugin>
     <!-- maven-release-plugin -->
     <arguments>-Prelease,java-api-compat,pkg-tomcat,arc-tomcat -Dgatein.working.dir=target</arguments>
+    <!--Override version of assembly-plugin 2.1 with missing feature and 2.2 has perf problem -->
+    <version.assembly.plugin>2.3</version.assembly.plugin>
   </properties>
   <dependencyManagement>
     <!-- TODO : import dependencyManagement of platform, instead of redefining those properties -->
