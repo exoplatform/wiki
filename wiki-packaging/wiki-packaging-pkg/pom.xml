@@ -795,12 +795,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-macros-jira</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
       <version>${project.version}</version>
       <type>jar</type>

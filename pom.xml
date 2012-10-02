@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform</groupId>
     <artifactId>exo.parent</artifactId>
-    <version>7.1</version>
+    <version>8.1</version>
   </parent>
   <groupId>org.exoplatform.wiki</groupId>
   <artifactId>wiki</artifactId>
@@ -342,7 +342,7 @@
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
         <version>${org.testng.version}</version>
-        <classifier>jdk15</classifier>
+        <classifier>jdk16</classifier>
 		<scope>test</scope>
       </dependency>
       <dependency>
@@ -396,7 +396,7 @@
                 <configuration>
                   <signature>
                     <groupId>org.jvnet.animal-sniffer</groupId>
-                    <artifactId>java1.5</artifactId>
+                    <artifactId>java1.6</artifactId>
                     <version>1.0</version>
                   </signature>
                 </configuration>
