@@ -62,6 +62,7 @@ function getModule(params) {
     addDependency(new Project("org.xwiki.rendering", "xwiki-rendering-transformation-icon", "jar",  "${org.xwiki.platform.version}")).
     addDependency(new Project("org.xwiki.rendering", "xwiki-rendering-macro-toc", "jar",  "${org.xwiki.platform.version}")).
     addDependency(new Project("org.xwiki.rendering", "xwiki-rendering-macro-box", "jar",  "${org.xwiki.platform.version}")).
+    addDependency(new Project("org.xwiki.rendering", "xwiki-rendering-macro-jira", "jar",  "${org.xwiki.platform.version}")).
     addDependency(new Project("org.xwiki.rendering", "xwiki-rendering-macro-message", "jar",  "${org.xwiki.platform.version}")).
     addDependency(new Project("org.xwiki.platform", "xwiki-platform-rendering-macro-code", "jar",  "${org.xwiki.platform.version}")).
     addDependency(new Project("org.xwiki.rendering", "xwiki-rendering-wikimodel", "jar",  "${org.xwiki.platform.version}")).

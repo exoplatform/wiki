@@ -177,11 +177,6 @@
       <version>${org.xwiki.platform.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-jira</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-    </dependency>
-    <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-macros-iframe</artifactId>
       <version>${project.version}</version>
