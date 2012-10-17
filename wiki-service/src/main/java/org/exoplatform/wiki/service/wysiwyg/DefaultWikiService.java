@@ -134,13 +134,15 @@ public class DefaultWikiService implements WikiService {
                                                      wikiContext.getType(),
                                                      wikiContext.getOwner());
       PageList<SearchResult> results = wservice.search(data);
-      List<DocumentReference> documentReferences = prepareDocumentReferenceList(results);
-      List<WikiPage> wikiPages = getWikiPages(documentReferences);
       List<String> pagesNames = new ArrayList<String>();
-      for (WikiPage page : wikiPages) {
-        String pageName = page.getTitle();
-        if (!pagesNames.contains(pageName)) {
-          pagesNames.add(pageName);
+      if(results != null) {
+        List<DocumentReference> documentReferences = prepareDocumentReferenceList(results);
+        List<WikiPage> wikiPages = getWikiPages(documentReferences);
+        for (WikiPage page : wikiPages) {
+          String pageName = page.getTitle();
+          if (!pagesNames.contains(pageName)) {
+            pagesNames.add(pageName);
+          }
         }
       }
       return pagesNames;
