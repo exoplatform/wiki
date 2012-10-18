@@ -4,7 +4,7 @@
   import org.exoplatform.web.application.JavascriptManager;
   
   def rcontext = _ctx.getRequestContext() ;
-    
+  def userName = rcontext.getRemoteUser();
   String viewLink = uicomponent.event(uicomponent.VIEW_PAGE_ACTION);
   String actionId = uicomponent.WIKI_PORTLET_ACTION_PREFIX + uicomponent.VIEW_PAGE_ACTION;
   String restContextName = PortalContainer.getInstance().getRestContextName();
@@ -22,13 +22,8 @@
     //jsManager.loadScriptResource("wiki-edit");
     requireJs.require("SHARED/wiki-edit", "wikiEdit");
   }  
-  //jsManager.addJavascript("eXo.wiki.WikiLayout.init('" + uicomponent.id + "') ;") ; 
-  //jsManager.addJavascript("eXo.wiki.UIWikiAjaxRequest.init('" + uicomponent.WIKI_PORTLET_ACTION_PREFIX + "', '" + uicomponent.VIEW_PAGE_ACTION + "');");  
-  //jsManager.addJavascript("eXo.wiki.UIWikiPortlet.init('"+uicomponent.id+ "', '" + changeModeLinkId + "');");
-  //jsManager.addJavascript("eXo.wiki.UIWikiPortlet.keepSessionAlive(" + uicomponent.isKeepSessionAlive() + ");");
-  //jsManager.addJavascript("eXo.wiki.UITreeExplorer.loading ='" + _ctx.appRes("UITreeExplorer.label.loading") +"' ;");
   
-  requireJs.addScripts("wikiView.WikiLayout.init('" + uicomponent.id + "') ;");
+  requireJs.addScripts("wikiView.WikiLayout.init('" + uicomponent.id + "', '" + userName + "') ;") ; 
   requireJs.addScripts("wikiView.UIWikiAjaxRequest.init('" + uicomponent.WIKI_PORTLET_ACTION_PREFIX + "', '" + uicomponent.VIEW_PAGE_ACTION + "');");
   requireJs.addScripts("wikiView.UIWikiPortlet.init('"+uicomponent.id+ "', '" + changeModeLinkId + "');");
   requireJs.addScripts("wikiView.UIWikiPortlet.keepSessionAlive(" + uicomponent.isKeepSessionAlive() + ");");
