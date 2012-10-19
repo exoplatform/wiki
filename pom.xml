@@ -13,7 +13,7 @@
   <packaging>pom</packaging>
   <name>eXo Wiki</name>
   <description>eXo wiki</description>
-  <url>https://github.com/hieulai/wiki</url>
+  <url>https://github.com/exoplatform/wiki</url>
   <scm>
    <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
    <developerConnection>scm:git:git@github.com:exoplatform/wiki.git</developerConnection>
