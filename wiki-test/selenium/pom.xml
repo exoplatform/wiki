@@ -225,6 +225,7 @@
 		<plugin>
 			<groupId>org.apache.maven.plugins</groupId>
 			<artifactId>maven-surefire-report-plugin</artifactId>
+      <version>${version.surefire.plugin}</version>
 			<configuration>
 				<skip>false</skip>
 				<outputName>SeleniumReport-${maven.build.timestamp}</outputName>
