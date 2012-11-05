@@ -135,12 +135,6 @@
     <flying-saucer-core.version>9.0.1</flying-saucer-core.version>
     <flying-saucer-pdf.version>9.0.1</flying-saucer-pdf.version>
     <!-- End wiki properties -->
-  
-    <!-- ************** -->
-    <!-- Build settings -->
-    <!-- ************** -->
-    <!-- maven-release-plugin -->
-    <arguments>-Ppkg-tomcat,arc-tomcat -Dgatein.working.dir=target</arguments>
   </properties>
   <dependencyManagement>
     <!-- TODO : import dependencyManagement of platform, instead of redefining those properties -->

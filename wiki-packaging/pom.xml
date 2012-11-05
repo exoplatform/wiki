@@ -9,19 +9,8 @@
   <artifactId>wiki-packaging</artifactId>
   <packaging>pom</packaging>
   <name>eXo Wiki Packaging</name>   
-  <dependencies>
-    <dependency>
-      <groupId>org.wikimodel</groupId>
-      <artifactId>org.wikimodel.wem</artifactId>
-      <version>${org.wikimodel.version}</version>
-      <type>jar</type>
-    </dependency>
-  </dependencies>
 
   <modules>    
     <module>wiki-packaging-ear</module>
-    <module>wiki-packaging-module</module>
-    <module>wiki-packaging-product</module>
-    <module>wiki-packaging-pkg</module>
   </modules>
 </project>
