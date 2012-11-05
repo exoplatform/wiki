@@ -139,7 +139,6 @@
     <flying-saucer-core.version>9.0.1</flying-saucer-core.version>
     <flying-saucer-pdf.version>9.0.1</flying-saucer-pdf.version>
     <!-- End wiki properties -->
-    <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
     <!-- gwt-maven-plugin version must be enforced to use the same as gwt deps -->
