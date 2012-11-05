@@ -4,13 +4,12 @@
   <parent>
     <groupId>org.exoplatform.wiki</groupId>
     <artifactId>wiki-server-jboss</artifactId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-server-jboss-ear</artifactId>
   <packaging>jar</packaging>
   <name>eXo Wiki Jboss Server Ear</name>
   <description>eXo Jboss Server</description>
-  <url>http://www.exoplatform.org</url>
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>

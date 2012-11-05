@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.wiki</groupId>
     <artifactId>wiki</artifactId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-docs</artifactId>
   <packaging>pom</packaging>
@@ -13,7 +13,6 @@
     <wikbook.source>${project.build.directory}/wikbook-src</wikbook.source>
     <wikbook.resources>${project.basedir}/src/main/resources</wikbook.resources>
     <wikbook.target>${project.build.directory}/wikbook</wikbook.target>
-    <wikbook.version>0.9.26</wikbook.version>
   </properties>
   
   <modules>

@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.wiki</groupId>
     <artifactId>wiki-packaging</artifactId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-packaging-pkg</artifactId>
   <packaging>pom</packaging>
@@ -496,12 +496,6 @@
       <artifactId>jaxb-impl</artifactId>
       <version>${com.sun.xml.bind.version}</version>
     </dependency>
-    <dependency>
-      <groupId>org.jvnet.jaxb2.maven2</groupId>
-      <artifactId>maven-jaxb2-plugin</artifactId>
-      <version>${org.jvnet.jaxb2.maven2.version}</version>
-    </dependency>
-
     <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
