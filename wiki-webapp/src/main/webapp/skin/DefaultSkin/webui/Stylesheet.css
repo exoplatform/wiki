@@ -1978,3 +1978,68 @@ table.UIFormGrid div.Id {
   }
 }
 
+
+/************** Resize Column******************/
+.UIWikiPortlet .ResizeSideBar {
+	border-right: 1px solid #FFFFFF;
+	cursor: col-resize;
+	float: left;
+	position: relative;
+	width: 15px;
+	background: none;
+}
+.UIWikiPortlet .ResizeSideBar:hover {
+	border-right: 1px solid #c7c7c7;
+}
+
+.UIWikiPortlet .ResizeSideBar .ResizeButton {
+	background: url("background/ResizeButton.gif") repeat-x left top;
+	cursor: pointer;
+	height: 24px;
+	width: 16px;
+	position: absolute;
+	top: 12px;
+	right: -1px;
+	display: none;
+	border-radius: 3px 0px 0px 3px;
+	border: 1px solid #c7c7c7;
+}
+
+.UIWikiPortlet .ResizeSideBar:hover .ResizeButton {
+	display: block;
+}
+
+.UIWikiPortlet .ResizeSideBar .ResizeButton span {
+	display: block;
+	background: url("background/LeftArrow.png") no-repeat center top;
+	width: 16px;
+	height: 24px;
+}
+
+.UIWikiPortlet .ResizeSideBar .ResizeButton:hover span {
+	background: url("background/LeftArrow.png") no-repeat center -26px;
+}
+
+.UIWikiPortlet .ResizeSideBar .ShowLeftContent {
+	background: url("background/ResizeButton.gif") repeat-x left top;
+	border-radius: 0px 3px 3px 0px;
+	top: 12px;
+	left: 0px;
+	right: auto;
+}
+
+.UIWikiPortlet .ResizeNoneBorder:hover {
+	border-right: 1px solid #FFFFFF;
+	cursor: default;
+}
+
+.UIWikiPortlet .ResizeSideBar .ShowLeftContent span {
+	background: url("background/RightArrow.png") no-repeat center top;
+}
+
+.UIWikiPortlet .ResizeSideBar .ShowLeftContent:hover span {
+	background: url("background/RightArrow.png") no-repeat center -26px;
+}
+
+
+
