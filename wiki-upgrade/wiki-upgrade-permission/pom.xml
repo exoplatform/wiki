@@ -4,7 +4,7 @@
   <parent>
     <groupId>org.exoplatform.wiki</groupId>
     <artifactId>wiki-upgrade</artifactId>
-    <version>4.0.0.Alpha1-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-upgrade-permission</artifactId>
   <name>eXo Wiki Upgrade group permission</name>
