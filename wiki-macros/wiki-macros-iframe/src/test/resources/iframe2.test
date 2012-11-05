@@ -1,6 +1,5 @@
 .runTransformations
 .#-----------------------------------------------------
-.input|confluence/1.0
 .# Test the macro in standalone mode
 .#-----------------------------------------------------
 {iframe:src=http://www.google.com?hl=1|width=10px}
