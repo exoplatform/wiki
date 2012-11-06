@@ -38,6 +38,10 @@
 %>
 <div class="UIWikiPageEditForm">
 <% uiform.begin();%>
+
+
+<!--
+<<<<<<< HEAD
   <div class="UIEditUpper ClearFix">
     <% uiform.renderChild(uiform.TITLE_CONTROL); %>
     <div class="UIWikiPageEditForm_MessageArea" style="float:left"></div>
@@ -65,6 +69,8 @@
       <%= message %>
     <% } %>
   </div>
+-->
+
 
   <div class="UIWikiPageContainer ClearFix">
   <%
@@ -74,7 +80,48 @@
     if(uicomponent.isSidePanelRendered() && uiform.getUIFormTextAreaInput(uiform.FIELD_CONTENT).isRendered()){
       textAreaInput.setColumns(92);
   %>
-    <div class="UIColsLeftsEditForm">
+	<div class="UIColsLeftsEditForm">
+	  <div class="UIEditUpper">
+		<%
+		  uiform.renderChild(uiform.TITLE_CONTROL);
+		%>
+		
+	  </div>
+	  <%
+	   uiform.renderChild(uiform.FIELD_TEMPLATEDESCTIPTION);  
+	  %>
+	  <div class="ActionContainer clearfix">
+<!--		  <%
+		   uiform.renderChild(uiform.EDITOR_TABS);
+		  %>
+-->
+		<div class="btn-toolbar">
+			<div class="btn-group UIEditorTabs pull-left clearfix" id="UIEditorTabs">
+				<a class="btn RichText" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','RichText','&amp;subComponentId=UIEditorTabs_RichText_&amp;objectId=RichText')">Rich Text</a>
+				<a class="btn PreviewPage" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','PreviewPage','&amp;subComponentId=UIEditorTabs_PreviewPage_&amp;objectId=PreviewPage')">Preview</a>
+				<a class="btn Help" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','Help','&amp;subComponentId=UIEditorTabs_Help_&amp;objectId=Help')">Help</a>
+			</div>
+		</div>
+	
+	
+		  <div class="DraftTime pull-left">Draft saved at 19:45</div>
+		<div class="RightWrap pull-right clearfix">
+			<%
+			  uiform.renderChild(uiform.SUBMIT_TOOLBAR_UPPER);
+			  if(uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_UPPER).isRendered()) {
+			%>
+			<div class="control-group pull-right">
+				<label class="checkbox">
+					<input type="checkbox"> Publish Activity
+				</label>
+			</div>
+<!--
+				<label class="PublishActivityCheckBoxTitle FR" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_UPPER%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_UPPER);%><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></label>
+-->
+			<%}
+			%>
+		</div>
+	  </div>
       <div class="UIWikiPageContentInputContainer UIWikiPageContentMarginRight">
         <% uiform.renderField(uiform.FIELD_CONTENT); %>
       </div>
@@ -87,7 +134,23 @@
     </div>
   <%} %>
   <% uiform.renderChild(uiform.RICHTEXT_AREA);%>
-    <div class="CommentInput">
+  
+    <div class="form-horizontal clearfix">
+		<div class="control-group pull-left">
+			<label class="control-label" for="inputEmail">Comment:</label>
+			<div class="controls">
+				<input class="input-xxlarge" type="text" id="inputEmail" placeholder="Comment">
+			</div>
+		</div>
+		<div class="control-group pull-left">
+			<label class="checkbox">
+				<input type="checkbox"> Publish Activity
+			</label>
+		</div>
+    </div>
+  
+  
+<!--    <div class="CommentInput ClearFix">
   <% if(uiform.getChildById(uiform.FIELD_COMMENT).isRendered()) { %>
       <label class="CommentTitle" for="<%=uiform.FIELD_COMMENT%>"><%= _ctx.appRes("UIWikiPageEditForm.label.CommentTitle"); %></label>
   <%
@@ -95,11 +158,13 @@
      }
      if(uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM).isRendered()) {
   %>
-       <label class="PublishActivityCheckBoxTitle" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></label>
-  <% }
+       <label class="PublishActivityCheckBoxTitle FL" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></label>
+  
+    </div>
+-->
+ <% }
     uiform.renderChild(uiform.SUBMIT_TOOLBAR_BOTTOM);  
    %>
-    </div>
   </div>
 <% uiform.end();%>
 </div>

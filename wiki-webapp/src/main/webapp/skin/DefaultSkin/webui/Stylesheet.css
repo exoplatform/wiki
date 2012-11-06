@@ -455,6 +455,7 @@ table.UIFormGrid div.Id {
 }
 
 .UIWikiPortlet .UIRightContainerArea {
+	background: url('background/RightContainerBG.png') repeat;
 	overflow: auto;
 	padding: 0px;
 	width: 70%;
@@ -1577,7 +1578,7 @@ table.UIFormGrid div.Id {
 }
 
 .UIWikiPageArea .UIWikiPageEditForm .UIColsLeftsEditForm {
-	margin-right: 280px;
+	margin-right: 290px;
 	padding: 0px;
 	margin-bottom: 15px;
 }
@@ -1588,7 +1589,7 @@ table.UIFormGrid div.Id {
 
 /******************************************************** UIWikiPageEditForm *************************************************************/ 
 .UIWikiPageEditForm .UIEditUpper {
-  height: 51px;
+  height: 43px;
 }
 
 .UIWikiPageEditForm .UIEditUpper .checkbox {
@@ -1599,22 +1600,22 @@ table.UIFormGrid div.Id {
 }
 
 .UIWikiPageEditForm .UIWikiPageTitleControlForm_PageEditForm {
-	background: #f8f8f8;
-	border: 1px solid #dcdcdc;
+	background: #f0f0f0;
+	border: 1px solid #c7c7c7;
 	border-radius: 5px;
-	width: 50%;
-	float:left;
 	padding: 6px 0 6px 6px;
 	margin-top: 15px;
+	height: 28px;
 }
 
 .UIWikiPageEditForm .UIWikiPageTitleControlForm_PageEditForm #TitleInput {
-	background: #f8f8f8;
+	background: #f0f0f0;
 	border: none;
 	font-size: 18px;
 	line-height: 20px;
 	height: 20px;
-	width: 99%;
+	width: 98%;
+	box-shadow: none;
 }
 
 .UIWikiPageEditForm .UIWikiPageContentInputContainer,
@@ -1622,13 +1623,19 @@ table.UIFormGrid div.Id {
   margin-bottom: 15px;
 }
 
+
+.UIWikiPageEditForm .CommentInput input{
+  float: left;
+  margin: 0px 6px 0px 18px;
+}
+
 .UIWikiPageEditForm .UIForm .UIWikiPageContentInputContainer textarea {
-	background: #f8f8f8;
+	background: #ffffff;
 	border: 1px solid #dcdcdc;
 	border-radius: 5px;
 	height: auto;
 	padding: 6px;
-	width: 96%;
+	width: 98%;
 	overflow: auto;
 	font-size: 10pt;
 }
@@ -1667,7 +1674,7 @@ table.UIFormGrid div.Id {
 
 .UIWikiPageEditForm .CommentInput input {
 	width: 50%;
-	background: #f8f8f8;
+	background: #ffffff;
 	border: 1px solid #dcdcdc;
 	border-radius: 5px;
 	padding: 6px;
@@ -1687,8 +1694,6 @@ table.UIFormGrid div.Id {
 	line-height: 16px;
 	width: 270px;
 	float: right;
-	border: 1px solid #dcdcdc;
-	border-top: none;
 	border-radius: 5px 5px 0 0;
 }
 
@@ -1714,18 +1719,26 @@ table.UIFormGrid div.Id {
 	width: 20px;
 }
 
+.UIWikiSidePanelArea .CloseButton:hover{
+	background: url('background/UIPageToolBarIcon.png') no-repeat right -555px;
+	margin: 6px 6px 0 0;
+}
+
 .UIWikiSidePanelArea .BarTit {
-	background: url('background/TitBarBG.png') repeat-x left top;
+	background: #f0f0f0;
 	border-radius: 5px 5px 0 0;
-	border-top: 1px solid #DCDCDC;
+	border: 1px solid #c7c7c7;
 	font-weight: bold;
 	color: #555555;
-	line-height: 29px;
-	padding-left: 7px;
+	line-height: 33px;
+	padding-left: 15px;
 }
 
 .UIWikiSidePanelArea .Content {
 	padding: 12px 8px;
+	background: white;
+	border: 1px solid #c7c7c7;
+	border-top: none;
 }
 
 .UIWikiSidePanelArea .Content p {

@@ -9,26 +9,11 @@
 }
 
 .UIWikiPageEditForm .UIEditUpper .RightWrap {
-  float: right;
+
 }
 
 .UIWikiPageEditForm .UIEditUpper .RightWrap .UISubmitToolBar {
   float: none;
-}
-
-.UIWikiPageEditForm .UISubmitToolBar .Delete {
-	background: none;
-	border: none;
-	color: #1a5db3;
-}
-
-.UIWikiPageEditForm .UISubmitToolBar .Delete:hover {
-	border: none;
-	text-decoration: underline;
-}
-
-.UIWikiPageEditForm .UISubmitToolBar .SavePage {
-	margin-right: 10px;
 }
 
 .UIWikiPageEditForm .UISubmitToolBar .DisableButton {
@@ -39,3 +24,20 @@
     cursor: wait;
     color: black;
 }
+
+.UIWikiPageEditForm .UIWikiPageContainer .form-horizontal .control-group .control-label {
+    width: 72px;
+}
+
+.UIWikiPageEditForm .UIWikiPageContainer .form-horizontal .control-group .controls {
+    margin-left: 80px;
+}
+
+.UIWikiPageEditForm .UIWikiPageContainer .form-horizontal .control-group .checkbox {
+    margin: 5px 0 0 10px;
+}
+
+.UIWikiPageEditForm .UIWikiPageContainer .RightWrap .checkbox {
+    margin: 12px 11px 0 0;
+}
+
