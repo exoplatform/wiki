@@ -383,7 +383,6 @@
     <module>wiki-migrate</module>
     <module>wiki-service</module>
     <module>wiki-webapp</module>
-    <module>wiki-docs</module>
     <module>wiki-extension</module>
     <module>wiki-demo</module>
     <module>wiki-server</module>
