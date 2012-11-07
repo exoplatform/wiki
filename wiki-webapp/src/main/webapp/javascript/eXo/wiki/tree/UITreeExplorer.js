@@ -35,7 +35,7 @@ UITreeExplorer.prototype.initMacros = function() {
     var initParam = $(pageTreeBlock).find('input.InitParams')[0].value;
     initParam = me.cleanParam(initParam);
     this.isRenderLink = true;
-    if ($(pageTreeBlock).find("div.NodeGroup").length > 0)
+    if ($(pageTreeBlock).find("ul.NodeGroup").length > 0)
       return;
     me.render(initParam, initNode, false);
   }
@@ -43,7 +43,7 @@ UITreeExplorer.prototype.initMacros = function() {
 
 UITreeExplorer.prototype.collapseExpand = function(element) {
   var node = element.parentNode;
-  var subGroup = $(node).find('div.NodeGroup')[0];
+  var subGroup = $(node).find('ul.NodeGroup')[0];
   if ($(element).hasClass('EmptyIcon'))
     return true;
   if (!subGroup) {
@@ -60,11 +60,11 @@ UITreeExplorer.prototype.onNodeClick = function(node, absPath) {
   var selectableObj = $(node).find('a');
   if (selectableObj.length > 0) {
     var component = $(node).closest(".UITreeExplorer");
-    var selectedNode = $(component).find('div.Hover')[0];
+    var selectedNode = $(component).find('div.Selected')[0];
     if (selectedNode)
-      $(selectedNode).removeClass("Hover");
-    if (!$(node).hasClass("Hover"))
-      $(node).addClass("Hover");
+      $(selectedNode).removeClass("Selected");
+    if (!$(node).hasClass("Selected"))
+      $(node).addClass("Selected");
     me.selectNode(node, absPath);
   }
 };
@@ -105,9 +105,9 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
   }
   var restURL = url + param;
 
-  var childBlock = document.createElement("div");
+  var childBlock = document.createElement("ul");
   if (me.innerDoc) {
-    childBlock = me.innerDoc.createElement("div");
+    childBlock = me.innerDoc.createElement("ul");
     me.innerDoc = null;
   }
   $(childBlock).addClass('NodeGroup');
@@ -138,11 +138,11 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
 UITreeExplorer.prototype.buildHierachyNode = function(data){
   var me = eXo.wiki.UITreeExplorer; 
   var children = data.children; 
-  var childBlock = "<div class=\"NodeGroup\">";
+  var childBlock = "<ul class=\"NodeGroup\">";
   for ( var i = 0; i < children.length; i++) {   
     childBlock += me.buildNode(children[i]);
   }
-  childBlock += "</div>";
+  childBlock += "</ul>";
   return childBlock
 }
 
@@ -172,17 +172,16 @@ UITreeExplorer.prototype.buildNode = function(data) {
     iconType = "Empty";
   }
   if (data.selected == true){
-    hoverClass = "Hover";
+    hoverClass = "Selected";
   }
   var childNode = "";
-  childNode += " <div  class=\"" + lastNodeClass + " Node\" >";
+  childNode += " <li  class=\"" + lastNodeClass + " Node\" >";
   childNode += "   <div class=\""+iconType+"Icon\" id=\"" + path + "\" onclick=\"event.cancelBubble=true;  if(eXo.wiki.UITreeExplorer.collapseExpand(this)) return;  eXo.wiki.UITreeExplorer.render('"+ param + "', this)\">";
   if (me.isRenderLink) {
     childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ nodeTypeCSS +" TreeNodeType Node "+ hoverClass +" \">";
   } else {
     childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +" TreeNodeType Node "+ hoverClass +" \">";
   }  
-  childNode += "      <div class='NodeLabel'>";
   
   if (data.selectable == true) {
     if (me.isRenderLink) {
@@ -197,19 +196,18 @@ UITreeExplorer.prototype.buildNode = function(data) {
     nodeName = me.retrictedLabel;
     childNode += "         <span style=\"cursor:auto\" title=\"" + me.restrictedTitle + "\"><em>" + nodeName + "</em></span>";
   }
+  
   if (excerptData != null) {
     childNode += excerptData;
   }
-  childNode += "      </div>";
   childNode += "    </div>";
   childNode += "  </div>";
   if (data.children.length > 0) {
     childNode += me.buildHierachyNode(data);
   }
-  childNode += " </div>"; 
+  childNode += " </li>"; 
   return childNode;
 }
-
 
 UITreeExplorer.prototype.cleanParam = function(data){
   return data.replace(/&amp;/g, "&");
