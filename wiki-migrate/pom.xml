@@ -10,7 +10,6 @@
   <packaging>pom</packaging>
   <name>eXo Wiki Migrattion</name>
   <modules>
-    <module>wiki-migrate-crawler</module>
     <module>wiki-migrate-jenkins</module>
     <module>wiki-migrate-loader</module>
   </modules>

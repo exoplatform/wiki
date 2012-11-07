@@ -15,38 +15,30 @@
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-service</artifactId>
-      <version>${project.version}</version>
-      <type>jar</type>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-renderer</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-webapp</artifactId>
-      <version>${project.version}</version>
       <type>war</type>
+      <scope>runtime</scope>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-service</artifactId>
+      <type>jar</type>
+      <scope>runtime</scope>
+    </dependency>    
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <version>${gwt.version}</version>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
-      <version>${gwt.version}</version>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-wysiwyg-client</artifactId>
-      <version>${org.xwiki.platform.version}</version>
-      <scope>provided</scope>
+      <scope>runtime</scope>
       <exclusions>
         <exclusion>
           <groupId>org.xwiki.platform</groupId>
@@ -78,12 +70,7 @@
               <artifactId>wiki-webapp</artifactId>
               <contextRoot>wiki</contextRoot>
               <bundleFileName>wiki.war</bundleFileName>
-            </webModule>
-            <jarModule>
-              <groupId>org.exoplatform.wiki</groupId>
-              <artifactId>wiki-service</artifactId>
-              <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
+            </webModule>            
             <jarModule>
               <groupId>org.exoplatform.wiki</groupId>
               <artifactId>wiki-renderer</artifactId>
@@ -103,12 +90,7 @@
               <groupId>org.xwiki.platform</groupId>
               <artifactId>xwiki-platform-wysiwyg-client</artifactId>
               <includeInApplicationXml>true</includeInApplicationXml>
-            </jarModule>
-            <jarModule>
-              <groupId>org.slf4j</groupId>
-              <artifactId>slf4j-api</artifactId>
-              <excluded>true</excluded>
-            </jarModule>
+            </jarModule>            
             <jarModule>
               <groupId>javax.jcr</groupId>
               <artifactId>jcr</artifactId>

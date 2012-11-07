@@ -15,15 +15,7 @@
     <wiki.source.pwd />
     <wiki.target.pwd />
   </properties>
-
-  <dependencies>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-migrate-crawler</artifactId>
-      <version>${project.version}</version>
-    </dependency>
-  </dependencies>
-
+  
   <build>
     <plugins>
       <plugin>

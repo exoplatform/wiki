@@ -9,15 +9,7 @@
   <artifactId>wiki-server-tomcat-patch</artifactId>
   <packaging>jar</packaging>
   <name>eXo Wiki Tomcat Server Patch</name>
-  <description>eXo Tomcat Server</description>
-  <dependencies>
-    <dependency>
-      <groupId>org.exoplatform.portal</groupId>
-      <artifactId>exo.portal.server.tomcat.patch</artifactId>
-      <version>${org.exoplatform.portal.version}</version>
-      <type>jar</type>
-    </dependency>
-  </dependencies>
+  <description>eXo Tomcat Server</description>  
   <build>
     <resources>
       <resource>
@@ -43,7 +35,6 @@
                 <artifactItem>
                   <groupId>org.exoplatform.portal</groupId>
                   <artifactId>exo.portal.server.tomcat.patch</artifactId>
-                  <version>${org.exoplatform.portal.version}</version>
                   <type>jar</type>
                 </artifactItem>
               </artifactItems>
