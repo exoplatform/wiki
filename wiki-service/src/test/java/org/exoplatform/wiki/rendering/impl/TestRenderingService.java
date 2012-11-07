@@ -54,6 +54,11 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     WikiHome wikiHomePage = wiki.getWikiHome();
     
     PageImpl wikipage = wikiHomePage.getWikiPage("CreateWikiPage-001");
+    if(wikipage == null) {
+      wikipage = wiki.createWikiPage();
+      wikipage.setName("CreateWikiPage-001");
+      wikiHomePage.addWikiPage(wikipage);
+    }
     wikipage.createAttachment("eXoWikiHome.png", Resource.createPlainText("logo")) ;
     
     Execution ec = renderingService.getExecution();
@@ -103,7 +108,13 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
+    
     PageImpl wikipage = wikiHomePage.getWikiPage("CreateWikiPage-001");
+    if(wikipage == null) {
+      wikipage = wiki.createWikiPage();
+      wikipage.setName("CreateWikiPage-001");
+      wikiHomePage.addWikiPage(wikipage);
+    }
     wikipage.createAttachment("space in name.png", Resource.createPlainText("logo")) ;
         
     Execution ec = renderingService.getExecution();
