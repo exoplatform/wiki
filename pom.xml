@@ -124,7 +124,6 @@
     <gwt.version>2.4.0</gwt.version>
     <smartgwt.version>2.5</smartgwt.version>
     <net.sourceforge.htmlcleaner.version>2.2</net.sourceforge.htmlcleaner.version>
-    <!--dependencies which Code Macro depends on -->
     <jython-standalone.version>2.5.2-xwiki</jython-standalone.version>
     <pygments.version>1.4-xwiki</pygments.version>
     <org.jdom.version>2.0.2</org.jdom.version>
@@ -144,11 +143,7 @@
   <dependencyManagement>
     <!-- TODO : import dependencyManagement of platform, instead of redefining those properties -->
     <dependencies>
-      <dependency>
-        <groupId>javax.jcr</groupId>
-        <artifactId>jcr</artifactId>
-        <version>${javax.jcr.api.version}</version>
-      </dependency>
+      <!--Chromatic dependencies-->
       <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.common</artifactId>
@@ -179,6 +174,40 @@
         <artifactId>chromattic.api</artifactId>
         <version>${org.chromattic.version}</version>
       </dependency>
+      
+      <!--XWiki Dependencies-->
+      <dependency>
+        <groupId>org.xwiki.platform</groupId>
+        <artifactId>xwiki-platform-wysiwyg-client</artifactId>
+        <version>${org.xwiki.platform.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xwiki.platform</groupId>
+        <artifactId>xwiki-platform-model</artifactId>
+        <version>${org.xwiki.platform.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.xwiki.platform</groupId>
+      	<artifactId>xwiki-platform-rendering-macro-code</artifactId>
+      	<version>${org.xwiki.platform.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xwiki.platform</groupId>
+        <artifactId>xwiki-platform-gwt-dom</artifactId>
+        <version>${org.xwiki.platform.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xwiki.platform</groupId>
+        <artifactId>xwiki-platform-gwt-user</artifactId>
+        <version>${org.xwiki.platform.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.xwiki.platform</groupId>
+        <artifactId>xwiki-platform-wysiwyg-plugin-api</artifactId>
+        <version>${org.xwiki.platform.version}</version>
+      </dependency>
+
+      <!--XWiki Commons Dependencies-->
       <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-component-api</artifactId>
@@ -199,7 +228,6 @@
       	<artifactId>xwiki-commons-configuration-api</artifactId>
       	<version>${org.xwiki.platform.version}</version>      
       </dependency>
-
       <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-context</artifactId>
@@ -214,7 +242,9 @@
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-xml</artifactId>
       	<version>${org.xwiki.platform.version}</version>      
-      </dependency>      
+      </dependency>  
+
+      <!--XWiki Rendering Dependencies-->
       <dependency>
       	<groupId>org.xwiki.rendering</groupId>
       	<artifactId>xwiki-commons-configuration-api</artifactId>
@@ -269,66 +299,73 @@
       	<groupId>org.xwiki.rendering</groupId>
       	<artifactId>xwiki-rendering-macro-message</artifactId>
       	<version>${org.xwiki.platform.version}</version>      	
-      </dependency>      
-      <dependency>
-        <groupId>org.wikimodel</groupId>
-        <artifactId>org.wikimodel.wem</artifactId>
-        <version>${org.wikimodel.version}</version>       
       </dependency>
       <dependency>
-        <groupId>org.suigeneris</groupId>
-        <artifactId>jrcs.diff</artifactId>
-        <version>${org.suigeneris.version}</version>
+      	<groupId>org.xwiki.rendering</groupId>
+      	<artifactId>xwiki-rendering-transformation-macro</artifactId>
+      	<version>${org.xwiki.platform.version}</version>      	
       </dependency>
       <dependency>
-        <groupId>org.suigeneris</groupId>
-        <artifactId>jrcs.rcs</artifactId>
-        <version>${org.suigeneris.version}</version>
+      	<groupId>org.xwiki.rendering</groupId>
+      	<artifactId>xwiki-rendering-wikimodel</artifactId>
+      	<version>${org.xwiki.platform.version}</version>
+      </dependency>
+      <dependency>
+      	<groupId>org.xwiki.rendering</groupId>
+      	<artifactId>xwiki-rendering-api</artifactId>
+      	<version>${org.xwiki.platform.version}</version>      	
+      </dependency>
+      <dependency>
+        <groupId>org.xwiki.rendering</groupId>
+        <artifactId>xwiki-rendering-test</artifactId>
+        <version>${org.xwiki.platform.version}</version>
+      </dependency>
+
+      <!--Kernel Dependencies-->
+      <dependency>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.container</artifactId>
+        <version>${org.exoplatform.kernel.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.commons</artifactId>
+        <version>${org.exoplatform.kernel.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.component.common</artifactId>
+        <version>${org.exoplatform.kernel.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.component.command</artifactId>
+        <version>${org.exoplatform.kernel.version}</version>
       </dependency> 
       <dependency>
-        <groupId>ecs</groupId>
-        <artifactId>ecs</artifactId>
-        <version>${ecs.version}</version>
+        <groupId>org.exoplatform.kernel</groupId>
+        <artifactId>exo.kernel.component.cache</artifactId>
+        <version>${org.exoplatform.kernel.version}</version>
       </dependency>
-
-
+      
+      <!--JCR Dependencies-->
       <dependency>
-        <groupId>javax.validation</groupId>
-        <artifactId>validation-api</artifactId>
-        <version>${javax.validation.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.javassist</groupId>
-        <artifactId>javassist</artifactId> 
-        <version>${org.javassist.version}</version>
+        <groupId>org.exoplatform.jcr</groupId>
+        <artifactId>exo.jcr.component.core</artifactId>
+        <version>${org.exoplatform.jcr.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-log4j12</artifactId>
-        <version>${org.slf4j.version}</version>
-      </dependency>
+        <groupId>org.exoplatform.jcr</groupId>
+        <artifactId>exo.jcr.component.webdav</artifactId>
+        <version>${org.exoplatform.jcr.version}</version>
+      </dependency>      
       <dependency>
-        <groupId>dom4j</groupId>
-        <artifactId>dom4j</artifactId> 
-        <version>${dom4j.version}</version>
+        <groupId>org.exoplatform.jcr</groupId>
+        <artifactId>exo.jcr.component.ext</artifactId>
+        <version>${org.exoplatform.jcr.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-validator</artifactId>
-        <version>${hibernate-validator.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.lowagie</groupId>
-        <artifactId>itext</artifactId>
-        <version>${itext.version}</version>
-      </dependency>
-      <dependency>
-	<groupId>org.xhtmlrenderer</groupId>
-	<artifactId>flying-saucer-core</artifactId>
-        <version>${flying-saucer-pdf.version}</version>
-      </dependency>
-
-
+      
+      <!--Wiki Dependencies-->
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-macros-iframe</artifactId>
@@ -345,91 +382,13 @@
         <version>${project.version}</version>
         <type>war</type>
       </dependency>
-      <dependency>
-      	<groupId>org.xwiki.rendering</groupId>
-      	<artifactId>xwiki-rendering-transformation-macro</artifactId>
-      	<version>${org.xwiki.platform.version}</version>      	
+       <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-renderer</artifactId>
+        <version>${project.version}</version>
       </dependency>
-      <dependency>
-      	<groupId>org.xwiki.rendering</groupId>
-      	<artifactId>xwiki-rendering-wikimodel</artifactId>
-      	<version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.xwiki.platform</groupId>
-      	<artifactId>xwiki-platform-rendering-macro-code</artifactId>
-      	<version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-      	<groupId>org.xwiki.rendering</groupId>
-      	<artifactId>xwiki-rendering-api</artifactId>
-      	<version>${org.xwiki.platform.version}</version>      	
-      </dependency>
-      <dependency>
-        <groupId>org.xwiki.rendering</groupId>
-        <artifactId>xwiki-rendering-test</artifactId>
-        <version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.container</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.commons</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gatein.common</groupId>
-        <artifactId>common-logging</artifactId>
-        <version>${org.gatein.common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.component.common</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.component.command</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.jcr</groupId>
-        <artifactId>exo.jcr.component.core</artifactId>
-        <version>${org.exoplatform.jcr.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.jcr</groupId>
-        <artifactId>exo.jcr.component.webdav</artifactId>
-        <version>${org.exoplatform.jcr.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.component.cache</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.jcr</groupId>
-        <artifactId>exo.jcr.component.ext</artifactId>
-        <version>${org.exoplatform.jcr.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.rest.core</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.rest.ext</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.frameworks.json</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
+      
+      <!--Core Dependencies-->
       <dependency>
         <groupId>org.exoplatform.core</groupId>
         <artifactId>exo.core.component.organization.api</artifactId>
@@ -445,13 +404,30 @@
         <artifactId>exo.core.component.organization.jdbc</artifactId>
         <version>${org.exoplatform.core.version}</version>
       </dependency>
-
-
       <dependency>
         <groupId>org.exoplatform.core</groupId>
         <artifactId>exo.core.component.security.core</artifactId>
         <version>${org.exoplatform.core.version}</version>
       </dependency>
+      
+      <!--WS Dependencies-->
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.rest.core</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.rest.ext</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.frameworks.json</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+      </dependency>
+      
+      <!--Portal Dependencies-->
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.portal</artifactId>
@@ -531,13 +507,112 @@
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.test.jcr</artifactId>
         <version>${org.exoplatform.portal.version}</version>
-      </dependency> 
-      <!-- GateIn Redirect --> 	
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.portal</groupId>
+        <artifactId>exo.portal.component.web.server</artifactId>
+        <version>${org.exoplatform.portal.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.gatein.web</groupId>
  	<artifactId>redirect</artifactId>
  	<version>${org.exoplatform.portal.version}</version>
-      </dependency>        
+      </dependency>
+
+      <!--Commons Dependencies-->
+      <dependency>
+        <groupId>commons-collections</groupId>
+        <artifactId>commons-collections</artifactId>
+        <version>${commons-collections.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-testing</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-webui-ext</artifactId>
+        <version>${org.exoplatform.commons.version}</version> 
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-component-upgrade</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.commons</groupId>
+        <artifactId>commons-component-common</artifactId>
+        <version>${org.exoplatform.commons.version}</version>
+      </dependency>
+      
+      <!--3rd Dependencies-->
+      <dependency>
+        <groupId>org.wikimodel</groupId>
+        <artifactId>org.wikimodel.wem</artifactId>
+        <version>${org.wikimodel.version}</version>       
+      </dependency>
+      <dependency>
+        <groupId>org.suigeneris</groupId>
+        <artifactId>jrcs.diff</artifactId>
+        <version>${org.suigeneris.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.suigeneris</groupId>
+        <artifactId>jrcs.rcs</artifactId>
+        <version>${org.suigeneris.version}</version>
+      </dependency> 
+      <dependency>
+        <groupId>ecs</groupId>
+        <artifactId>ecs</artifactId>
+        <version>${ecs.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.jcr</groupId>
+        <artifactId>jcr</artifactId>
+        <version>${javax.jcr.api.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.validation</groupId>
+        <artifactId>validation-api</artifactId>
+        <version>${javax.validation.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.javassist</groupId>
+        <artifactId>javassist</artifactId> 
+        <version>${org.javassist.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <version>${org.slf4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>dom4j</groupId>
+        <artifactId>dom4j</artifactId> 
+        <version>${dom4j.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-validator</artifactId>
+        <version>${hibernate-validator.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.lowagie</groupId>
+        <artifactId>itext</artifactId>
+        <version>${itext.version}</version>
+      </dependency>
+      <dependency>
+	<groupId>org.xhtmlrenderer</groupId>
+	<artifactId>flying-saucer-core</artifactId>
+        <version>${flying-saucer-pdf.version}</version>
+      </dependency>      
+      <dependency>
+        <groupId>org.gatein.common</groupId>
+        <artifactId>common-logging</artifactId>
+        <version>${org.gatein.common.version}</version>
+      </dependency> 
       <dependency>
         <groupId>org.exoplatform.tool</groupId>
         <artifactId>exo.tool.framework.junit</artifactId>
@@ -639,16 +714,6 @@
         <version>${gwt.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.xwiki.platform</groupId>
-        <artifactId>xwiki-platform-wysiwyg-client</artifactId>
-        <version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.xwiki.platform</groupId>
-        <artifactId>xwiki-platform-model</artifactId>
-        <version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.smartgwt</groupId>
         <artifactId>smartgwt</artifactId>
         <version>${smartgwt.version}</version>
@@ -657,21 +722,6 @@
         <groupId>commons-chain</groupId>
         <artifactId>commons-chain</artifactId>
         <version>${commons-chain.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.xwiki.platform</groupId>
-        <artifactId>xwiki-platform-gwt-dom</artifactId>
-        <version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.xwiki.platform</groupId>
-        <artifactId>xwiki-platform-gwt-user</artifactId>
-        <version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.xwiki.platform</groupId>
-        <artifactId>xwiki-platform-wysiwyg-plugin-api</artifactId>
-        <version>${org.xwiki.platform.version}</version>
       </dependency>
       <dependency>
         <groupId>xpp3</groupId>
@@ -688,36 +738,6 @@
         <artifactId>testng</artifactId>
         <version>${org.testng.version}</version>
         <classifier>jdk16</classifier>
-      </dependency>
-      <dependency>
-        <groupId>commons-collections</groupId>
-        <artifactId>commons-collections</artifactId>
-        <version>${commons-collections.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons-testing</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.web.server</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons-webui-ext</artifactId>
-        <version>${org.exoplatform.commons.version}</version> 
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons-component-upgrade</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons-component-common</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
       </dependency>
       <dependency>
         <groupId>net.sourceforge.nekohtml</groupId>
@@ -740,11 +760,6 @@
         <version>${javax.inject.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-renderer</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.xhtmlrenderer</groupId>
         <artifactId>flying-saucer-pdf</artifactId>
         <version>${flying-saucer-pdf.version}</version>
@@ -756,7 +771,6 @@
     </dependency>
     </dependencies>
   </dependencyManagement>
-
   
   <modules>
     <module>wiki-injector</module>
