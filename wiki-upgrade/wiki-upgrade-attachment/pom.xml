@@ -30,18 +30,20 @@
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
+    </dependency>    
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.api</artifactId>
+    </dependency>
+
+    <!--This dependencies is used for main classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
+    <dependency>
+      <groupId>org.chromattic</groupId>
+      <artifactId>chromattic.ext</artifactId>
     </dependency>
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.api</artifactId>
-    </dependency>     
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.ext</artifactId>
     </dependency>
   </dependencies>
   <build>

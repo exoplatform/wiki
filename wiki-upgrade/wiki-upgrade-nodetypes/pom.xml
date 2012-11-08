@@ -26,14 +26,15 @@
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-upgrade</artifactId>
-    </dependency>    
-    <dependency>
-      <groupId>javax.jcr</groupId>
-      <artifactId>jcr</artifactId>
-    </dependency>    
+    </dependency>   
+    <!--This dependencies is used for main classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.ext</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.jcr</groupId>
+      <artifactId>jcr</artifactId>
     </dependency>
   </dependencies>
   <build>

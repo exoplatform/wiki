@@ -13,11 +13,7 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.kernel</groupId>
-      <artifactId>exo.kernel.container</artifactId>
-    </dependency>    
+    </dependency>        
     <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
@@ -53,12 +49,7 @@
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-xml</artifactId>      
-    </dependency>
-
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-model</artifactId> 
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-context</artifactId> 
@@ -82,12 +73,7 @@
           <artifactId>xwiki-commons-component-observation</artifactId>
         </exclusion>
       </exclusions> 
-    </dependency>
-    
-    <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-text</artifactId> 
-    </dependency>
+    </dependency>    
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-syntax-wikimodel</artifactId> 
@@ -119,15 +105,7 @@
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-syntax-xwiki20</artifactId> 
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xwiki21</artifactId> 
     </dependency>    
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xhtml</artifactId> 
-    </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-api</artifactId> 
@@ -149,18 +127,48 @@
           <artifactId>jdom</artifactId>
         </exclusion>
       </exclusions>
+    </dependency>    
+    <!-- Macros -->    
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-transformation-icon</artifactId> 
+    </dependency>    
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-macro-message</artifactId> 
+    </dependency>    
+    <!-- Code macro depends on -->    
+    <dependency>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.wikimodel</groupId>
-      <artifactId>org.wikimodel.wem</artifactId> 
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <scope>test</scope>    
+    </dependency>  
+    
+    <!--This dependencies is used for main and test classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-rendering-macro-code</artifactId> 	
       <exclusions>
         <exclusion>
-          <groupId>net.java.dev.javacc</groupId>
-          <artifactId>javacc</artifactId>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Macros -->
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-macros-iframe</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-macro-box</artifactId>      
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-macro-toc</artifactId> 
@@ -172,41 +180,34 @@
       </exclusions>      
     </dependency>
     <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-transformation-icon</artifactId> 
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-box</artifactId>      
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-message</artifactId> 
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-macros-iframe</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-rendering-macro-code</artifactId> 	
+      <groupId>org.wikimodel</groupId>
+      <artifactId>org.wikimodel.wem</artifactId> 
       <exclusions>
         <exclusion>
-          <groupId>commons-io</groupId>
-          <artifactId>commons-io</artifactId>
+          <groupId>net.java.dev.javacc</groupId>
+          <artifactId>javacc</artifactId>
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- Code macro depends on -->    
     <dependency>
-      <groupId>commons-lang</groupId>
-      <artifactId>commons-lang</artifactId>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-xhtml</artifactId> 
     </dependency>
     <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>    
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-xwiki21</artifactId> 
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-text</artifactId> 
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-model</artifactId> 
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+    </dependency>  
   </dependencies>
 </project>

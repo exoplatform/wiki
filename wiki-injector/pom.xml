@@ -59,8 +59,7 @@
       <scope>test</scope>
     </dependency>
     
-    <!-- Runtime Dependencies -->
-    <!-- This an issue about mvn dependency:analyze saying that missing but scope runtime raises error so keep it on compile -->   
+   <!--This dependencies is used for main and test classes compilation but is erroneously reported as useless by mvn dependency:analyze-->   
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
