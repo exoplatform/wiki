@@ -59,9 +59,12 @@ public class TestWikiPage extends AbstractMOWTestcase {
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
     
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName("CreateWikiPage-001");
-    wikiHomePage.addWikiPage(wikipage);
+    PageImpl wikipage = wikiHomePage.getWikiPage("CreateWikiPage-001");
+    if(wikipage == null) {
+      wikipage = wiki.createWikiPage();
+      wikipage.setName("CreateWikiPage-001");
+      wikiHomePage.addWikiPage(wikipage);
+    }
     
     assertNotNull(wikiHomePage.getWikiPage("CreateWikiPage-001")) ;
     
