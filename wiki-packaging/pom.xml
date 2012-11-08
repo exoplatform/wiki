@@ -10,7 +10,6 @@
   <packaging>pom</packaging>
   <name>eXo Wiki Packaging</name>   
 
-  <modules>    
-    <module>wiki-packaging-ear</module>
+  <modules>
   </modules>
 </project>

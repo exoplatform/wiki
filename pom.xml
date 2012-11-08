@@ -777,7 +777,6 @@
     <module>wiki-renderer</module>
     <module>wiki-macros</module>
     <module>wiki-upgrade</module>
-    <module>wiki-migrate</module>
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-extension</module>
