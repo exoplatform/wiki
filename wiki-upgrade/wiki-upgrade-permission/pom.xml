@@ -14,7 +14,6 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>org.exoplatform.kernel</groupId>
@@ -23,27 +22,22 @@
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-upgrade</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <scope>compile</scope>
     </dependency>    
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.ext</artifactId>
-      <scope>compile</scope>
     </dependency>
   </dependencies>
   <build>

@@ -22,37 +22,31 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
       <artifactId>exo.jcr.component.core</artifactId>
-      <scope>compile</scope>
     </dependency>    
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.ext</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
-      <scope>compile</scope>
+
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-common</artifactId>
-      <scope>compile</scope>
     </dependency>     
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
@@ -70,7 +64,6 @@
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
-      <scope>compile</scope>
     </dependency> 
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
@@ -81,6 +74,11 @@
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-wysiwyg-client</artifactId>
       <scope>runtime</scope>
+    </dependency>
+    <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-log4j12</artifactId>
+        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.hsqldb</groupId>

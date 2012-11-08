@@ -13,37 +13,30 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <scope>compile</scope>
     </dependency>    
     <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
-        <scope>compile</scope>
     </dependency>
     <dependency>
       	<groupId>org.xwiki.rendering</groupId>
       	<artifactId>xwiki-rendering-wikimodel</artifactId>
-        <scope>compile</scope>      	
     </dependency>
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-configuration-api</artifactId>
-        <scope>compile</scope>      	
      </dependency>
     <dependency>
         <groupId>picocontainer</groupId>
         <artifactId>picocontainer</artifactId>
-        <scope>compile</scope>
     </dependency>
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-xml</artifactId>
-	<scope>compile</scope>      
     </dependency>
     <dependency>
         <groupId>xml-apis</groupId>
@@ -51,29 +44,24 @@
     </dependency>
     <dependency>
       	<groupId>org.xwiki.rendering</groupId>
-      	<artifactId>xwiki-rendering-transformation-macro</artifactId>
-	<scope>compile</scope>      	
+      	<artifactId>xwiki-rendering-transformation-macro</artifactId>	
     </dependency>
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-properties</artifactId>
-	<scope>compile</scope>      
     </dependency>
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
-      	<artifactId>xwiki-commons-xml</artifactId>
-        <scope>compile</scope>      
+      	<artifactId>xwiki-commons-xml</artifactId>      
     </dependency>
 
     <dependency>
       <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-model</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-platform-model</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-context</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-commons-context</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
@@ -83,8 +71,7 @@
           <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
         </exclusion>
-      </exclusions>
-      <scope>compile</scope> 
+      </exclusions> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
@@ -94,19 +81,16 @@
           <groupId>org.xwiki.commons</groupId>
           <artifactId>xwiki-commons-component-observation</artifactId>
         </exclusion>
-      </exclusions>
-      <scope>compile</scope> 
+      </exclusions> 
     </dependency>
     
     <dependency>
       <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-text</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-commons-text</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-wikimodel</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-syntax-wikimodel</artifactId> 
       <exclusions>
         <exclusion>
           <groupId>org.apache.ant</groupId>
@@ -125,34 +109,28 @@
     
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-confluence</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-syntax-confluence</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-plain</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-syntax-plain</artifactId> 
     </dependency>
 
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xwiki20</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-syntax-xwiki20</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xwiki21</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-syntax-xwiki21</artifactId> 
     </dependency>    
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xhtml</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-syntax-xhtml</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-api</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-api</artifactId> 
       <exclusions>
         <exclusion>
           <groupId>org.apache.ant</groupId>
@@ -174,8 +152,7 @@
     </dependency>
     <dependency>
       <groupId>org.wikimodel</groupId>
-      <artifactId>org.wikimodel.wem</artifactId>
-      <scope>compile</scope> 
+      <artifactId>org.wikimodel.wem</artifactId> 
       <exclusions>
         <exclusion>
           <groupId>net.java.dev.javacc</groupId>
@@ -186,8 +163,7 @@
     <!-- Macros -->
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-toc</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-macro-toc</artifactId> 
       <exclusions>
         <exclusion>
           <groupId>commons-beanutils</groupId>
@@ -197,8 +173,7 @@
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-transformation-icon</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-transformation-icon</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
@@ -207,8 +182,7 @@
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-message</artifactId>
-      <scope>compile</scope> 
+      <artifactId>xwiki-rendering-macro-message</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
@@ -217,8 +191,7 @@
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-rendering-macro-code</artifactId>
-      <scope>compile</scope> 	
+      <artifactId>xwiki-platform-rendering-macro-code</artifactId> 	
       <exclusions>
         <exclusion>
           <groupId>commons-io</groupId>
@@ -230,12 +203,10 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
-      <scope>compile</scope>
     </dependency>    
   </dependencies>
 </project>

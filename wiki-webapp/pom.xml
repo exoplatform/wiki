@@ -19,12 +19,10 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.component.portal</artifactId>
-      <scope>compile</scope>
       <exclusions>
         <exclusion>
           <groupId>pull-parser</groupId>
@@ -35,17 +33,15 @@
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.eXo</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-simple</artifactId>
-        <scope>compile</scope>
+        <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -55,49 +51,36 @@
     <dependency>
         <groupId>com.smartgwt</groupId>
         <artifactId>smartgwt</artifactId>
-        <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-gwt-dom</artifactId>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-        <groupId>org.xwiki.platform</groupId>
-        <artifactId>xwiki-platform-wysiwyg-client</artifactId>
-        <scope>compile</scope>
-      </dependency>
+    </dependency>    
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-wysiwyg-client</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-wysiwyg-plugin-api</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-gwt-user</artifactId>
-      <scope>compile</scope>
     </dependency>
 
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.core</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-webui-ext</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-context</artifactId>
-        <scope>compile</scope>      
     </dependency>
     <dependency>
         <groupId>org.gatein.common</groupId>
@@ -106,12 +89,10 @@
     <dependency>
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.common</artifactId>
-        <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.web.server</artifactId>
-        <scope>compile</scope>
     </dependency>
     <dependency>
         <groupId>org.xhtmlrenderer</groupId>
@@ -164,12 +145,10 @@
     <dependency>
         <groupId>commons-lang</groupId>
         <artifactId>commons-lang</artifactId>
-        <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
-      <scope>compile</scope>
       <exclusions>
         <exclusion>
           <groupId>pull-parser</groupId>
@@ -182,12 +161,10 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
-      <scope>compile</scope>
     </dependency>   
     
     <!-- GWT libraries -->    

@@ -12,12 +12,10 @@
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-properties</artifactId>
-	<scope>compile</scope>  
     </dependency>
     <dependency>
       	<groupId>org.xwiki.commons</groupId>
       	<artifactId>xwiki-commons-component-api</artifactId>
-        <scope>compile</scope>      
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
@@ -40,19 +38,16 @@
           <artifactId>jdom</artifactId>
         </exclusion>
       </exclusions>
-      <scope>compile</scope>
     </dependency>    
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-transformation-macro</artifactId>
-      <scope>compile</scope>  
+      <artifactId>xwiki-rendering-transformation-macro</artifactId>  
     </dependency>
     <!-- Runtime dependencies -->
     <!-- This an issue about mvn dependency:analyze saying that missing but scope runtime raises error so keep it on provided -->
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-      <scope>compile</scope>
     </dependency>    
     <!-- Testing dependencies -->
     <dependency>
