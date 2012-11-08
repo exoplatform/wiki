@@ -32,6 +32,8 @@
 
 @import url('UIEditorTabs/Stylesheet.css');
 
+@import url('icons/Stylesheet.css');
+
 .TextAlignLeft{
 	text-align: left;
 }
@@ -2053,29 +2055,4 @@ table.UIFormGrid div.Id {
 
 .UIWikiPortlet .ResizeSideBar .ShowLeftContent:hover span {
 	background: url("background/RightArrow.png") no-repeat center -26px;
-}
-
-
-/*icon*/
-
-[class^="icon-"], [class*=" icon-"] {
-	width: 16px;
-	line-height: 16px;
-	height: 16px;
-	background-image: url('icons/icon-wiki.png');
-}
-
-.icon-EditPage {
-	background-position: -24px -24px;
-}
-
-.icon-attachment {
-	background-position: 0px 0px;
-}
-.icon-pencil-underline {
-	background-position: -24px 0px;
-}
-
-.icon-arrow-down {
-	background-position: -66px 6px;
 }
