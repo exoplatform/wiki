@@ -31,10 +31,6 @@
         <artifactId>picocontainer</artifactId>
     </dependency>
     <dependency>
-      	<groupId>org.xwiki.commons</groupId>
-      	<artifactId>xwiki-commons-xml</artifactId>
-    </dependency>
-    <dependency>
         <groupId>xml-apis</groupId>
         <artifactId>xml-apis</artifactId>
     </dependency>
@@ -141,11 +137,7 @@
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-api</artifactId>
-    </dependency>
+    </dependency>    
     <!--This dependencies is used for main and test classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
     <dependency>
       <groupId>org.xwiki.platform</groupId>
