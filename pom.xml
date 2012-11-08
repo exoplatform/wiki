@@ -782,6 +782,5 @@
     <module>wiki-extension</module>
     <module>wiki-demo</module>
     <module>wiki-server</module>
-    <module>wiki-packaging</module>
   </modules>
 </project>
