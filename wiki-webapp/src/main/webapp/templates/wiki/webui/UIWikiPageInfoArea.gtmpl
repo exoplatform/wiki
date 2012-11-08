@@ -24,8 +24,8 @@
   
   String addedByLabel = _ctx.appRes("UIWikiPageInfoArea.label.AddedBy").replace("{0}", "<a class=\"Link\" href=\"\">" + creator + "</a>").replace("{1}", createdDate);
   String lastModifiedByLabel = _ctx.appRes("UIWikiPageInfoArea.label.LastModifiedBy").replace("{0}", "<a class=\"Link\" href=\"\">" + author + "</a>").replace("{1}", updatedDate);
-  String totalAttachmentsLabel = _ctx.appRes("UIWikiPageInfoArea.label.TotalAttachments");
-  
+
+  String totalAttachmentsLabel = "&nbsp;&nbsp;<i class='icon-attachment'></i><strong>" + attachmentsTotal + "</strong>";
   String restrictLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.restrict-link");
   String publicLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.public-link");
   
@@ -37,6 +37,8 @@
     pageInfoCss = "PageLock";
   }
   %>
+<!--
+<<<<<<< HEAD
 <div id="$uicomponent.id" class="$uicomponent.id">
   <div class="TxtFeed">${addedByLabel}&nbsp;-&nbsp;$lastModifiedByLabel</div>
   <div class="TxtFeed">
@@ -53,4 +55,14 @@
     <strong>$attachmentsTotal</strong>&nbsp;<a class="Link" href="$togglelink"><%=totalAttachmentsLabel%></a>&nbsp;-&nbsp;
     <strong>$versionsTotal</strong>&nbsp;<a class="Link" href="<%=uicomponent.event(uicomponent.SHOW_REVISION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.TotalRevisions")%></a>
   </div>
+-->
+
+<div class="UIWikiPageInfoArea">
+	<div class="TxtFeed">
+	  ${addedByLabel}&nbsp;-&nbsp;$lastModifiedByLabel
+	  <% if (versionsTotal>1) { %>
+	  <a class="Link" href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('$viewChangeAnchor');"><%= "(" + _ctx.appRes("UIWikiPageInfoArea.label.ViewChange") + ")"; %></a>
+	  <a onclick="<%=uicomponent.event(uicomponent.COMPARE_REVISION);%>" id="$viewChangeActionId" style="display:none;">&nbsp;</a>
+	  <% }%>
+	<%= totalAttachmentsLabel %>&nbsp;-&nbsp;&nbsp;<i class="icon-pencil-underline"></i><strong>$versionsTotal</strong><a class="Link" href="<%=uicomponent.event(uicomponent.SHOW_REVISION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.TotalRevisions")%></a></div>
 </div>

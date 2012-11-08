@@ -5,8 +5,8 @@
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIDropdownMenu.init(\""+uicomponent.id+"\");");
 %>
-<div class="MoreExtensionContainer HoverLink MoreLink Icon" id ="$uicomponent.id">
-    <%= _ctx.appRes("UIPageToolBar.label.More"); %>
+<div class="MoreExtensionContainer Icon" id ="$uicomponent.id">
+    <%= _ctx.appRes("UIPageToolBar.label.More"); %><i class="icon-arrow-down"></i>
     <div class="HoverMenu MoreMenu">
         <ul>
             <%

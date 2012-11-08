@@ -35,9 +35,7 @@ import org.exoplatform.wiki.webui.core.UIWikiContainer;
 )
 public class UIWikiBottomArea extends UIWikiContainer {
   public UIWikiBottomArea() throws Exception {
-    
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.EDITPAGE, WikiMode.ADDPAGE });    
-    addChild(UIWikiPageInfoArea.class, null, null);
     addChild(UIAttachmentContainer.class, null, null).setRendered(false);
     addChild(UIWikiPageVersionsList.class, null, "UIWikiPageVersionsList2").setRendered(false);
   }

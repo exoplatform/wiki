@@ -217,13 +217,13 @@ span.Excerpt p {
 	border: none;
 	color: #333333;
 	background-color: #FFFFFF;
-	font-family: Arial, Helvetica, sans-serif;
+	font-family: 'HelveticaNeue',Arial,sans-serif;
 	font-size: 10pt;
 }
 
 .UIWikiPortlet div,.UIWikiPortlet table,.UIWikiPortlet tr,.UIWikiPortlet td,.UIWikiPortlet img,.UIWikiPortlet form,.UIWikiPortlet input {
-	font-family: Arial, Helvetica, sans-serif;
-	font-size: 12px;
+	font-family: 'HelveticaNeue',Arial,sans-serif;
+	font-size: 13px;
 }
 
 .UIWikiPortlet .UIForm .HorizontalLayout input,.UIWikiPortlet .UIUserSelector .UIAddressSearchForm input,.UIWikiPortlet .UIUserSelector .UIAddressSearchForm select {
@@ -429,14 +429,15 @@ table.UIFormGrid div.Id {
 	float: left;
 	font-size: 24px;
 	font-weight: bold;
-	color: #333;
+	color: #2f5e92;	
 	width: 50%;
-	line-height: 28px;
+	line-height: 18px;
+	text-shadow: 1px 1px 2px #EBECEC;
 }
 
 .UIWikiPortlet .UIWikiPageControlArea {
-	border-bottom: 1px solid #C7C7C7;
-	padding-top: 10px;
+	border-bottom: 1px dotted #c7c7c7;
+	padding: 14px 0 14px 0;
 }
 
 .UIWikiPortlet .WikiLayout {
@@ -1226,12 +1227,11 @@ table.UIFormGrid div.Id {
 }
 
 .UIWikiPageInfoArea {
-	border-top: 1px solid #e2e2e2;
-	padding-top: 5px;
+	clear: both;
 }
 
 .UIWikiPageInfoArea .TxtFeed {
-	text-align: right;
+	color:#aaaaaa;
 }
 
 .UIWikiPortlet .UIWikiPageInfoArea .ActionLink {
@@ -1240,8 +1240,10 @@ table.UIFormGrid div.Id {
 
 .UIWikiPageInfoArea .TxtFeed .Link {
 	background: none;
-	color: #165fb3;
+	color: #356499;
+	text-decoration: none;
 }
+
 
 /* File Attachment */
 .UIAttachmentUploadListForm .UIFormGrid td a {
@@ -1953,7 +1955,7 @@ table.UIFormGrid div.Id {
 }
 
 .UIWikiPortlet .TitleInfo {
-  padding: 0px 7px 0px 7px;
+  padding: 0px 7px 0px 0px;
 }
 
 .UIWikiPortlet .TitleInfo:HOVER {
@@ -1990,7 +1992,6 @@ table.UIFormGrid div.Id {
     position: static !important;
   }
 }
-
 
 /************** Resize Column******************/
 .UIWikiPortlet .ResizeSideBar {
@@ -2055,4 +2056,26 @@ table.UIFormGrid div.Id {
 }
 
 
+/*icon*/
 
+[class^="icon-"], [class*=" icon-"] {
+	width: 16px;
+	line-height: 16px;
+	height: 16px;
+	background-image: url('icons/icon-wiki.png');
+}
+
+.icon-EditPage {
+	background-position: -24px -24px;
+}
+
+.icon-attachment {
+	background-position: 0px 0px;
+}
+.icon-pencil-underline {
+	background-position: -24px 0px;
+}
+
+.icon-arrow-down {
+	background-position: -66px 6px;
+}
