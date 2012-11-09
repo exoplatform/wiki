@@ -780,7 +780,5 @@
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-extension</module>
-    <module>wiki-demo</module>
-    <module>wiki-server</module>
   </modules>
 </project>
