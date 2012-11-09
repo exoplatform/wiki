@@ -283,6 +283,54 @@
       <artifactId>exo.core.component.database</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-rendering-macro-code</artifactId> 	
+      <exclusions>
+        <exclusion>
+          <groupId>commons-io</groupId>
+          <artifactId>commons-io</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-macro-toc</artifactId> 
+      <exclusions>
+        <exclusion>
+          <groupId>commons-beanutils</groupId>
+          <artifactId>commons-beanutils</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>    
+    </dependency>
+    <dependency>
+      <groupId>org.wikimodel</groupId>
+      <artifactId>org.wikimodel.wem</artifactId> 
+      <exclusions>
+        <exclusion>
+          <groupId>net.java.dev.javacc</groupId>
+          <artifactId>javacc</artifactId>
+        </exclusion>
+      </exclusions>
+      <scope>test</scope>
+    </dependency>   
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-text</artifactId> 
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-xhtml</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-xwiki21</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
