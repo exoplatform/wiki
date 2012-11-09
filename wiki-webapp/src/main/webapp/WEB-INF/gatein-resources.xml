@@ -27,6 +27,15 @@
     <skin-name>Default</skin-name>
     <css-path>/skin/DefaultSkin/webui/Stylesheet.css</css-path>
     <css-priority>1</css-priority>
+  </portlet-skin>
+  
+  <!-- Order should be modified to let wiki.css the first one -->
+  <portlet-skin>
+    <application-name>wiki</application-name>
+    <portlet-name>WikiPortlet</portlet-name>
+    <skin-name>Default</skin-name>
+    <css-path>/skin/DefaultSkin/webui/wiki.css</css-path>
+    <css-priority>2</css-priority>
   </portlet-skin>  
   
   <portlet>

@@ -267,6 +267,26 @@
           </execution>
         </executions>
       </plugin>
+	  <!-- Plugin to create css from less File to be able to build the skin -->
+	  <plugin>
+        <groupId>org.lesscss</groupId>
+        <artifactId>lesscss-maven-plugin</artifactId>
+        <version>1.3.0</version>
+        <configuration>
+          <outputDirectory>${project.build.directory}/${project.build.finalName}/skin</outputDirectory>
+          <compress>false</compress>
+          <includes>
+            <include>wiki.less</include>
+          </includes>
+        </configuration>
+        <executions>
+          <execution>
+            <goals>
+        	  <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
 
