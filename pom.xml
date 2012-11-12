@@ -139,6 +139,8 @@
     <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
+    <!-- gwt-maven-plugin version must be enforced to use the same as gwt deps -->
+    <version.gwt.plugin>2.4.0</version.gwt.plugin>
     <!-- maven-release-plugin -->
     <arguments>-Ppkg-tomcat,arc-tomcat -Dgatein.working.dir=target</arguments>
   </properties>
