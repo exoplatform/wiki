@@ -58,6 +58,12 @@
 	background: #e1e1e1;
 }
 
+.UIWikiPortlet .UIWikiMovePageForm .NotificationArea {
+  padding: 5px 5px 5px 10px;
+  margin-left:auto;
+  margin-right:auto;
+}
+
 .UIWikiPortlet .UIWikiMovePageForm table {
 	border: none;
 	margin: 0px;

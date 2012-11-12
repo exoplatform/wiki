@@ -13,7 +13,12 @@
    <div class="BreadcumbsInfoBar ClearFix">  
    <% if(breadCumbs!=null && breadCumbs.size() > 0) {
         String note = "LeftBlock"; %>
-        <a class="$note" style="text-transform:capitalize;"><%= uicomponent.getWikiType(); %> : <%= uicomponent.getWikiName(); %> </a>
+        <% if (uicomponent.isAllowChooseSpace()) {
+          uicomponent.renderChild(uicomponent.SPACE_SWITCHER);
+        } else { %>
+          <a class="$note" style="text-transform:capitalize;"><%= uicomponent.getWikiType(); %> : <%= uicomponent.getWikiName(); %> </a>
+        <% } %>
+        
         <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
      <% for(i in 0 .. breadCumbs.size()-1) {
           breadcumbData = breadCumbs.get(i);

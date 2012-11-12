@@ -6,6 +6,13 @@
  <%
  	  uiform.renderChild(uiform.PAGENAME_INFO);
  %>
+ 
+<div class="SpaceSwitcher ClearFix">
+  <div class="FL"><%=_ctx.appRes("UIWikiMovePageForm.label.select-the-destination")%></div>
+  <% uiform.renderChild(uiform.SPACE_SWITCHER);%>
+</div>
+
+<div class="NotificationArea"><%=uiform.createDuplicatedPageNotification(); %></div>
 
 <div class="SideBarContent">
  	<div class="BarContent">

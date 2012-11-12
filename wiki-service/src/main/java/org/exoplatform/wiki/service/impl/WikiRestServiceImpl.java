@@ -794,4 +794,19 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }
+  
+  @GET
+  @Path("/spaces/mySpaces/")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response searchAccessibleSpaces(@QueryParam("keyword") String keyword) {
+    try {
+      List<SpaceBean> spaceBeans = wikiService.searchSpaces(keyword);
+      return Response.ok(new BeanToJsons(spaceBeans), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+    } catch (Exception ex) {
+      if (log.isWarnEnabled()) {
+        log.warn("An exception happens when searchAccessibleSpaces", ex);
+      }
+      return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
+    }
+  }
 }

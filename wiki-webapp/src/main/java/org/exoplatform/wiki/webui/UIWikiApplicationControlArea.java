@@ -40,7 +40,8 @@ public class UIWikiApplicationControlArea extends UIContainer {
   public UIWikiApplicationControlArea() throws Exception{
     addChild(UIWikiSearchBox.class, null, null);
     addChild(UIWikiToolBar.class, null, null);
-    addChild(UIWikiBreadCrumb.class, null, null);
+    UIWikiBreadCrumb uiWikiBreadCrumb = addChild(UIWikiBreadCrumb.class, null, null);
+    uiWikiBreadCrumb.setAllowChooseSpace(true);
   }
 
   @Override
@@ -53,6 +54,9 @@ public class UIWikiApplicationControlArea extends UIContainer {
     wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(),
                                                           params.getOwner(),
                                                           params.getPageId()));
+    
+    UIWikiSpaceSwitcher uiWikiSpaceSwitcher = wikiBreadCrumb.getChildById(UIWikiBreadCrumb.SPACE_SWITCHER);
+    uiWikiSpaceSwitcher.setCurrentSpace(Utils.getCurrentWiki());
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);
   }

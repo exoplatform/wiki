@@ -128,6 +128,10 @@
         <name>eXo.wiki.UIWikiRichTextArea</name>
         <path>/javascript/eXo/wiki/UIWikiRichTextArea.js</path>
     </script>
+    <script>
+        <name>eXo.wiki.UIWikiSpaceSwitcher</name>
+        <path>/javascript/eXo/wiki/UIWikiSpaceSwitcher.js</path>
+    </script>
     
     <depends>
         <module>base</module>

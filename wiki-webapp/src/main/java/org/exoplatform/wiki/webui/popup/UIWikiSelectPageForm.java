@@ -15,6 +15,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -24,9 +26,10 @@ import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.webui.UIWikiEmptyAjaxBlock;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
+import org.exoplatform.wiki.webui.UIWikiSpaceSwitcher;
 import org.exoplatform.wiki.webui.tree.EventUIComponent;
-import org.exoplatform.wiki.webui.tree.UITreeExplorer;
 import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
+import org.exoplatform.wiki.webui.tree.UITreeExplorer;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
@@ -34,7 +37,8 @@ import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
     events = {
         @EventConfig(listeners = UIWikiSelectPageForm.SetCurrentPageActionListener.class),
         @EventConfig(listeners = UIWikiSelectPageForm.SelectPageActionListener.class),
-        @EventConfig(listeners = UIWikiSelectPageForm.CancelActionListener.class)
+        @EventConfig(listeners = UIWikiSelectPageForm.CancelActionListener.class),
+        @EventConfig(listeners = UIWikiSelectPageForm.SwitchSpaceActionListener.class)
     }
 )
 public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
@@ -46,6 +50,10 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
   
   public static final String UI_TREE_ID = "UIPageTree";
   
+  private static final String SWITCH_SPACE_ACTION = "SwitchSpace";
+  
+  private static final String SPACE_SWITCHER = "UIWikiSpaceSwitcher_UIWikiSelectPageForm";
+  
   public UIWikiSelectPageForm() throws Exception {
     setId(FORM_ID);
     UITreeExplorer uiTree = addChild(UITreeExplorer.class, null, UI_TREE_ID);
@@ -56,8 +64,14 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     initURLSb.append("/wiki/tree/").append(TREETYPE.ALL.toString());
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
     childrenURLSb.append("/wiki/tree/").append(TREETYPE.CHILDREN.toString());
-    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(), eventComponent, false);
+    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(Utils.getCurrentWikiPagePath()), eventComponent, false);
+    
+    // Init space switcher
+    UIWikiSpaceSwitcher uiWikiSpaceSwitcher = addChild(UIWikiSpaceSwitcher.class, null, SPACE_SWITCHER);
+    EventUIComponent eventComponent1 = new EventUIComponent(FORM_ID, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
+    uiWikiSpaceSwitcher.init(eventComponent1);
   }
+  
   /**
    * list of ui component needed to updated when form is submitted.
    */
@@ -71,9 +85,8 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     updatedComponents.remove(component);
   }
   
-  private String getInitParam() throws Exception {
+  private String getInitParam(String currentPath) throws Exception {
     StringBuilder sb = new StringBuilder();
-    String currentPath = Utils.getCurrentWikiPagePath();
     sb.append("?")
       .append(TreeNode.PATH)
       .append("=")
@@ -87,15 +100,10 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
   
   @Override
   public void activate() throws Exception {
-    
   }
-  
-  
   
   @Override
   public void deActivate() throws Exception {
-
-    
   }
   
   static public class SetCurrentPageActionListener extends EventListener<UIWikiSelectPageForm> {
@@ -148,4 +156,22 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     }
   }
   
+  public static class SwitchSpaceActionListener extends EventListener<UIWikiSelectPageForm> {
+    public void execute(Event<UIWikiSelectPageForm> event) throws Exception {
+      String wikiId = event.getRequestContext().getRequestParameter(UIWikiSpaceSwitcher.SPACE_ID_PARAMETER);
+      UIWikiSelectPageForm uiWikiSelectPageForm = event.getSource();
+      UIWikiSpaceSwitcher uiWikiSpaceSwitcher = uiWikiSelectPageForm.getChildById(SPACE_SWITCHER);
+      
+      Wiki wiki = uiWikiSpaceSwitcher.getWikiById(wikiId);
+      Page wikiHome = wiki.getWikiHome();
+      WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName());
+      uiWikiSpaceSwitcher.setCurrentSpace(wiki);
+      
+      // Change the init page of tree
+      UITreeExplorer uiTree = uiWikiSelectPageForm.getChildById(UI_TREE_ID);
+      uiTree.setInitParam(uiWikiSelectPageForm.getInitParam(TreeUtils.getPathFromPageParams(params)));
+      
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiSelectPageForm.getParent());
+    }
+  }
 }

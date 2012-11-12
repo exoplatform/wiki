@@ -46,6 +46,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIComponent;
@@ -114,7 +115,7 @@ public class Utils {
     params.setParameters(paramsMap);
     return params;
   }
-
+  
   public static Page getCurrentWikiPage() throws Exception {
     String requestURL = Utils.getCurrentRequestURL();
     PageResolver pageResolver = (PageResolver) PortalContainer.getComponent(PageResolver.class);
@@ -296,9 +297,9 @@ public class Utils {
                                   WikiPageParams pageParams,
                                   WikiMode mode,
                                   Map<String, String[]> params) throws Exception {
-    String redirectLink = Utils.createURLWithMode(pageParams, mode, params);
-    event.getRequestContext().getJavascriptManager().addCustomizedOnLoadScript("ajaxRedirect('"
-        + redirectLink + "');");
+    String url = createURLWithMode(pageParams, mode, params);
+    RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
+    requireJS.require("SHARED/wiki-view", "wikiView").addScripts("wikiView.UIWikiPortlet.ajaxRedirect('" + url + "');");
   }
   
   public static String createURLWithMode(WikiPageParams pageParams,
