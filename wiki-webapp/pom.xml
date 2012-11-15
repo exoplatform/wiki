@@ -2,13 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.wiki</groupId>
     <artifactId>wiki</artifactId>
+    <groupId>org.exoplatform.wiki</groupId>
     <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-webapp</artifactId>
-  <name>eXo Wiki Webapp</name>
   <packaging>war</packaging>
+  <name>eXo Wiki Webapp</name>
   <properties>
     <gwt.style>DETAILED</gwt.style>
     <gwt.output.directory>${project.build.directory}/${project.build.finalName}/resources/js/xwiki/wysiwyg</gwt.output.directory>
@@ -25,8 +25,8 @@
       <artifactId>exo.portal.component.portal</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>pull-parser</groupId>
           <artifactId>pull-parser</artifactId>
+          <groupId>pull-parser</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -37,16 +37,12 @@
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
-    </dependency>    
+    </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-dev</artifactId>
       <scope>test</scope>
-    </dependency>    
-    
-
-    
-
+    </dependency>
     <dependency>
       <groupId>org.exoplatform.portal</groupId>
       <artifactId>exo.portal.webui.core</artifactId>
@@ -56,99 +52,95 @@
       <artifactId>commons-webui-ext</artifactId>
     </dependency>
     <dependency>
-      	<groupId>org.xwiki.commons</groupId>
-      	<artifactId>xwiki-commons-context</artifactId>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-context</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.gatein.common</groupId>
-        <artifactId>common-logging</artifactId>
+      <groupId>org.gatein.common</groupId>
+      <artifactId>common-logging</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.common</artifactId>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.common</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.web.server</artifactId>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web.server</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.xhtmlrenderer</groupId>
-        <artifactId>flying-saucer-pdf</artifactId>
+      <groupId>org.xhtmlrenderer</groupId>
+      <artifactId>flying-saucer-pdf</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.web.controller</artifactId>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web.controller</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.core</groupId>
-        <artifactId>exo.core.component.organization.api</artifactId>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.organization.api</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.core</groupId>
-        <artifactId>exo.core.component.security.core</artifactId>
+      <groupId>org.exoplatform.core</groupId>
+      <artifactId>exo.core.component.security.core</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.webui.portlet</artifactId>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portlet</artifactId>
     </dependency>
     <dependency>
-        <groupId>javax.portlet</groupId>
-        <artifactId>portlet-api</artifactId>
+      <groupId>javax.portlet</groupId>
+      <artifactId>portlet-api</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.web.resources</artifactId>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.component.web.resources</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.commons</artifactId>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.commons</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.jcr</groupId>
-        <artifactId>exo.jcr.component.core</artifactId>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.core</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.webui.framework</artifactId>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.framework</artifactId>
     </dependency>
     <dependency>
-      	<groupId>org.xwiki.rendering</groupId>
-      	<artifactId>xwiki-rendering-api</artifactId>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-api</artifactId>
     </dependency>
     <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-renderer</artifactId>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-renderer</artifactId>
     </dependency>
-    
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>pull-parser</groupId>
           <artifactId>pull-parser</artifactId>
+          <groupId>pull-parser</groupId>
         </exclusion>
       </exclusions>
     </dependency>
-
     <!-- GWT core dependencies -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
-    </dependency> 
-    
-    <!-- GWT libraries -->            
+    </dependency>
+    <!-- GWT libraries -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-     <dependency>
+    <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
-
     <!--This dependencies is used for main and test classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -160,8 +152,8 @@
       <artifactId>gwt-user</artifactId>
     </dependency>
     <dependency>
-        <groupId>commons-lang</groupId>
-        <artifactId>commons-lang</artifactId>
+      <groupId>commons-lang</groupId>
+      <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
@@ -170,15 +162,15 @@
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-gwt-dom</artifactId>
-    </dependency>    
-    <dependency>
-        <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-simple</artifactId>
-        <scope>test</scope>
     </dependency>
     <dependency>
-        <groupId>com.smartgwt</groupId>
-        <artifactId>smartgwt</artifactId>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.smartgwt</groupId>
+      <artifactId>smartgwt</artifactId>
     </dependency>
     <dependency>
       <groupId>org.xwiki.platform</groupId>
@@ -189,13 +181,19 @@
       <artifactId>xwiki-platform-gwt-user</artifactId>
     </dependency>
   </dependencies>
-
   <build>
     <finalName>wiki</finalName>
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>gwt-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+        </executions>
         <configuration>
           <module>${xwe.module}</module>
           <webappDirectory>${gwt.output.directory}</webappDirectory>
@@ -205,13 +203,6 @@
           <soyc>false</soyc>
           <extraJvmArgs>-Xmx1024m -Xss1024k -Djava.awt.headless=true</extraJvmArgs>
         </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>compile</goal>
-            </goals>
-          </execution>
-        </executions>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -255,15 +246,10 @@
           <packagingExcludes>**/gwt-unitCache/**</packagingExcludes>
         </configuration>
       </plugin>
-
       <plugin>
         <!-- JavaScript and CSS files compression and concatenation -->
         <groupId>net.sf.alchim</groupId>
         <artifactId>yuicompressor-maven-plugin</artifactId>
-        <configuration>
-          <!-- Overwrite the resource files with the minimized version. -->
-          <nosuffix>true</nosuffix>
-        </configuration>
         <executions>
           <execution>
             <id>aggregate-css</id>
@@ -307,10 +293,13 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <!-- Overwrite the resource files with the minimized version. -->
+          <nosuffix>true</nosuffix>
+        </configuration>
       </plugin>
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>exo-release</id>
@@ -334,5 +323,4 @@
       </properties>
     </profile>
   </profiles>
-	
 </project>

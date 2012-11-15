@@ -2,8 +2,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
-    <groupId>org.exoplatform.wiki</groupId>
     <artifactId>wiki</artifactId>
+    <groupId>org.exoplatform.wiki</groupId>
     <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-renderer</artifactId>
@@ -13,130 +13,128 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
-    </dependency>        
-    <dependency>
-        <groupId>javax.inject</groupId>
-        <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
-      	<groupId>org.xwiki.rendering</groupId>
-      	<artifactId>xwiki-rendering-wikimodel</artifactId>
+      <groupId>javax.inject</groupId>
+      <artifactId>javax.inject</artifactId>
     </dependency>
     <dependency>
-      	<groupId>org.xwiki.commons</groupId>
-      	<artifactId>xwiki-commons-configuration-api</artifactId>
-     </dependency>
-    <dependency>
-        <groupId>picocontainer</groupId>
-        <artifactId>picocontainer</artifactId>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-wikimodel</artifactId>
     </dependency>
-    <dependency>
-        <groupId>xml-apis</groupId>
-        <artifactId>xml-apis</artifactId>
-    </dependency>
-    <dependency>
-      	<groupId>org.xwiki.rendering</groupId>
-      	<artifactId>xwiki-rendering-transformation-macro</artifactId>	
-    </dependency>
-    <dependency>
-      	<groupId>org.xwiki.commons</groupId>
-      	<artifactId>xwiki-commons-properties</artifactId>
-    </dependency>
-    <dependency>
-      	<groupId>org.xwiki.commons</groupId>
-      	<artifactId>xwiki-commons-xml</artifactId>      
-    </dependency>    
     <dependency>
       <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-context</artifactId> 
+      <artifactId>xwiki-commons-configuration-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>picocontainer</groupId>
+      <artifactId>picocontainer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>xml-apis</groupId>
+      <artifactId>xml-apis</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-transformation-macro</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-properties</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-xml</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-context</artifactId>
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-component-api</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.slf4j</groupId>
           <artifactId>slf4j-api</artifactId>
+          <groupId>org.slf4j</groupId>
         </exclusion>
-      </exclusions> 
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-component-default</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.xwiki.commons</groupId>
           <artifactId>xwiki-commons-component-observation</artifactId>
-        </exclusion>
-      </exclusions> 
-    </dependency>    
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-wikimodel</artifactId> 
-      <exclusions>
-        <exclusion>
-          <groupId>org.apache.ant</groupId>
-          <artifactId>ant</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>xerces</groupId>
-          <artifactId>xercesImpl</artifactId>
-        </exclusion>
-        <exclusion>
-          <groupId>org.jdom</groupId>
-          <artifactId>jdom</artifactId>
+          <groupId>org.xwiki.commons</groupId>
         </exclusion>
       </exclusions>
     </dependency>
-    
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-confluence</artifactId> 
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-plain</artifactId> 
-    </dependency>
-
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xwiki20</artifactId> 
-    </dependency>    
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-api</artifactId> 
+      <artifactId>xwiki-rendering-syntax-wikimodel</artifactId>
       <exclusions>
         <exclusion>
-          <groupId>org.apache.ant</groupId>
           <artifactId>ant</artifactId>
+          <groupId>org.apache.ant</groupId>
         </exclusion>
         <exclusion>
-          <groupId>dom4j</groupId>
+          <artifactId>xercesImpl</artifactId>
+          <groupId>xerces</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>jdom</artifactId>
+          <groupId>org.jdom</groupId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-confluence</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-plain</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-xwiki20</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-api</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>ant</artifactId>
+          <groupId>org.apache.ant</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>dom4j</artifactId>
+          <groupId>dom4j</groupId>
         </exclusion>
         <exclusion>
-          <groupId>xerces</groupId>
           <artifactId>xercesImpl</artifactId>
+          <groupId>xerces</groupId>
         </exclusion>
         <exclusion>
-          <groupId>org.jdom</groupId>
           <artifactId>jdom</artifactId>
+          <groupId>org.jdom</groupId>
         </exclusion>
       </exclusions>
-    </dependency>    
-    <!-- Macros -->    
+    </dependency>
+    <!-- Macros -->
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-transformation-icon</artifactId> 
-    </dependency>    
+      <artifactId>xwiki-rendering-transformation-icon</artifactId>
+    </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-message</artifactId> 
-    </dependency>    
-    <!-- Code macro depends on -->    
+      <artifactId>xwiki-rendering-macro-message</artifactId>
+    </dependency>
+    <!-- Code macro depends on -->
     <dependency>
       <groupId>commons-lang</groupId>
       <artifactId>commons-lang</artifactId>
-    </dependency>         
+    </dependency>
   </dependencies>
 </project>
