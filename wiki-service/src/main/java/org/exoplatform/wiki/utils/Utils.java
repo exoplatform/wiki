@@ -1,7 +1,12 @@
 package org.exoplatform.wiki.utils;
 
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Properties;
+import java.util.Stack;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
@@ -209,6 +214,61 @@ public class Utils {
     return domainUrl.toString();
   }
   
+  /**
+   * Get the permalink of current wiki page <br>
+   * 
+   * <ul>With the current page param:</ul>
+   *   <li>type = "group"</li>
+   *   <li>owner = "spaces/test_space"</li>
+   *   <li>pageId = "test_page"</li>
+   * <br>
+   *  
+   * <ul>The permalink will be: </ul>
+   * <li>http://int.exoplatform.org/portal/intranet/wiki/group/spaces/test_space/test_page</li>
+   * <br>
+   * 
+   * @return The permalink of current wiki page
+   * @throws Exception
+   */
+  public static String getPermanlink(WikiPageParams params) throws Exception {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    
+    // get wiki webapp name
+    String wikiWebappUri = wikiService.getWikiWebappUri();
+    
+    // Create permalink
+    StringBuilder sb = new StringBuilder(wikiWebappUri);
+    sb.append("/");
+    
+    if (!params.getType().equalsIgnoreCase(WikiType.PORTAL.toString())) {
+      sb.append(params.getType().toLowerCase());
+      sb.append("/");
+      sb.append(org.exoplatform.wiki.utils.Utils.validateWikiOwner(params.getType(), params.getOwner()));
+      sb.append("/");
+    }
+    
+    if (params.getPageId() != null) {
+      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
+    }
+    
+    return getDomainUrl() + fillPortalName(sb.toString());
+  }
+  
+  private static String getDomainUrl() {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    StringBuilder domainUrl = new StringBuilder();
+    domainUrl.append(portalRequestContext.getRequest().getScheme());
+    domainUrl.append("://");
+    
+    domainUrl.append(portalRequestContext.getRequest().getLocalName());
+    int port = portalRequestContext.getRequest().getLocalPort();
+    if (port != 80) {
+      domainUrl.append(":");
+      domainUrl.append(port);
+    }
+    return domainUrl.toString();
+  }
+  
   private static String fillPortalName(String url) {
     RequestContext ctx = RequestContext.getCurrentInstance();
     NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
@@ -230,7 +290,6 @@ public class Utils {
     return logByPage;
   }
    
-
   //The path should get from NodeHierarchyCreator 
   public static String getPortalWikisPath() {    
     String path = "/exo:applications/" 

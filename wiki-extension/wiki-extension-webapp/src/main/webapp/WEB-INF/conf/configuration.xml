@@ -7,6 +7,8 @@
   <import>war:/wiki-extension/jcr/jcr-configuration.xml</import> 
 
   <!-- Wiki data storage tree -->
-  <import>war:/wiki-extension/jcr/storage-configuration.xml</import>  
+  <import>war:/wiki-extension/jcr/storage-configuration.xml</import>
   
+  <!-- Wiki component congfig -->
+  <import>war:/wiki-extension/component-configuration.xml</import>
 </configuration>

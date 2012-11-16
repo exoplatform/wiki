@@ -103,6 +103,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   private static final String          DEFAULT_WIKI_NAME    = "wiki";
 
   final static private int             CIRCULAR_RENAME_FLAG   = 1000;
+  
+  private static final String          DEFAULT_WIKI_NAME    = "wiki";
 
   private static final long            DEFAULT_SAVE_DRAFT_SEQUENCE_TIME = 30000;
 
@@ -113,6 +115,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   private Iterator<ValuesParam> syntaxHelpParams;
 
   private PropertiesParam           preferencesParams;
+  
+  private String wikiWebappUri;
   
   private List<ComponentPlugin> plugins_ = new ArrayList<ComponentPlugin>();
   
@@ -1301,6 +1305,25 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public boolean isSpaceMember(String spaceId, String userId) {
+    try {
+      // Get space service
+      Class<?> spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      
+      // Get space by Id
+      Class<?> spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByPrettyName", String.class).invoke(spaceService, spaceId);
+      
+      // Check if user is the member of space or not
+      Boolean bool = Boolean.valueOf(String.valueOf(spaceServiceClass.getDeclaredMethod("isMember", spaceClass, String.class).invoke(spaceService, space, userId)));
+      return bool.booleanValue();
+    } catch (Exception e) {
+      log.debug("Can not check if user is space member", e);
+      return false;
+    }
+  }
+  
+  private void removeDraftPages() {
     try {
       // Get space service
       Class<?> spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");

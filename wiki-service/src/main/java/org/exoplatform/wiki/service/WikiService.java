@@ -230,9 +230,9 @@ public interface WikiService {
   public DraftPage getLastestDraft() throws Exception;
 
   /**
-   * Get the uri of wiki webapp
+   * Get the wiki webapp uri
    * 
-   * @return The uri of wiki webapp
+   * @return wiki webapp uri
    */
   public String getWikiWebappUri();
   
@@ -244,7 +244,7 @@ public interface WikiService {
    * @return true if that user is a member; otherwise, false
    */
   public boolean isSpaceMember(String spaceId, String userId);
-  
+
   /**
    * Check if the space is hidden or not
    * 
