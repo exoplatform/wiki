@@ -611,8 +611,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     pageSummary.setSpace(doc.getWiki().getOwner());
     pageSummary.setName(doc.getName());
     pageSummary.setTitle(doc.getTitle());
-    pageSummary.setXwikiRelativeUrl("http://localhost:8080/ksdemo/rest-ksdemo/wiki/portal/spaces/classic/pages/WikiHome");
-    pageSummary.setXwikiAbsoluteUrl("http://localhost:8080/ksdemo/rest-ksdemo/wiki/portal/spaces/classic/pages/WikiHome");
     pageSummary.setTranslations(objectFactory.createTranslations());
     pageSummary.setSyntax(doc.getSyntax());
 
