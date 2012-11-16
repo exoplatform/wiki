@@ -130,5 +130,19 @@ public interface WikiService {
 
   public boolean removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
 
-
+  /**
+   * Get the wiki webapp uri
+   * 
+   * @return wiki webapp uri
+   */
+  public String getWikiWebappUri();
+  
+  /**
+   * Checks whether a user is a space's member or not.
+   *
+   * @param spaceId  the existing space id
+   * @param userId the remote user id
+   * @return true if that user is a member; otherwise, false
+   */
+  public boolean isSpaceMember(String spaceId, String userId);
 }

@@ -16,6 +16,7 @@ import java.util.Map.Entry;
 import java.util.Queue;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.utils.ObjectPageList;
@@ -93,6 +94,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   final static private String          DEFAULT_SYNTAX       = "defaultSyntax";
 
   final static private int             CIRCULAR_RENAME_FLAG   = 1000;
+  
+  private static final String          DEFAULT_WIKI_NAME    = "wiki";
 
   private ConfigurationManager  configManager;
 
@@ -101,6 +104,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   private Iterator<ValuesParam> syntaxHelpParams;
 
   private PropertiesParam           preferencesParams;
+  
+  private String wikiWebappUri;
   
   private List<ComponentPlugin> plugins_ = new ArrayList<ComponentPlugin>();
   
@@ -116,6 +121,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (initParams != null) {
       syntaxHelpParams = initParams.getValuesParamIterator();
       preferencesParams = initParams.getPropertiesParam(PREFERENCES);
+    }
+    
+    wikiWebappUri = System.getProperty("wiki.permalink.appuri");
+    if (StringUtils.isEmpty(wikiWebappUri)) {
+      wikiWebappUri = DEFAULT_WIKI_NAME;
     }
   }
   
@@ -1164,6 +1174,31 @@ public class WikiServiceImpl implements WikiService, Startable {
     PageImpl orginary = (PageImpl) getPageById(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
     PageImpl related = (PageImpl) getPageById(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
     return orginary.removeRelatedPage(related) != null;
+  }
+  
+  @Override
+  public String getWikiWebappUri() {
+    return wikiWebappUri;
+  }
+  
+  @Override
+  public boolean isSpaceMember(String spaceId, String userId) {
+    try {
+      // Get space service
+      Class<?> spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      
+      // Get space by Id
+      Class<?> spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByPrettyName", String.class).invoke(spaceService, spaceId);
+      
+      // Check if user is the member of space or not
+      Boolean bool = Boolean.valueOf(String.valueOf(spaceServiceClass.getDeclaredMethod("isMember", spaceClass, String.class).invoke(spaceService, space, userId)));
+      return bool.booleanValue();
+    } catch (Exception e) {
+      log.debug("Can not check if user is space member", e);
+      return false;
+    }
   }
   
   private void removeDraftPages() {
