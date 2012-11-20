@@ -203,18 +203,20 @@
       <artifactId>mockito-all</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--This dependencies is used for main and test classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
     <dependency>
       <groupId>org.xhtmlrenderer</groupId>
       <artifactId>flying-saucer-core</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.xhtmlrenderer</groupId>
       <artifactId>flying-saucer-pdf</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.lowagie</groupId>
       <artifactId>itext</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.hibernate</groupId>
@@ -244,11 +246,13 @@
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>net.sourceforge.cssparser</groupId>
       <artifactId>cssparser</artifactId>
       <version>${cssparser.version}</version>
+      <scope>runtime</scope>
       <exclusions>
         <exclusion>
           <artifactId>sac</artifactId>
@@ -259,14 +263,17 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.suigeneris</groupId>
       <artifactId>jrcs.rcs</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>xpp3</groupId>
       <artifactId>xpp3</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.google.gwt</groupId>
@@ -276,6 +283,7 @@
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.organization.jdbc</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.core</groupId>

@@ -12,12 +12,10 @@
     <dependency>
       <groupId>org.exoplatform.core</groupId>
       <artifactId>exo.core.component.security.core</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>javax.jcr</groupId>
       <artifactId>jcr</artifactId>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
@@ -57,10 +55,10 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
-    <!--This dependencies is used for main and test classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.core</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.jcr</groupId>
