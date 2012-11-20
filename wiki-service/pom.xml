@@ -251,7 +251,6 @@
     <dependency>
       <groupId>net.sourceforge.cssparser</groupId>
       <artifactId>cssparser</artifactId>
-      <version>${cssparser.version}</version>
       <scope>runtime</scope>
       <exclusions>
         <exclusion>
