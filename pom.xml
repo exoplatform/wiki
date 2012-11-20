@@ -156,11 +156,6 @@
     <!-- TODO : import dependencyManagement of platform, instead of redefining those properties -->
     <dependencies>
       <dependency>
-        <groupId>caja</groupId>
-        <artifactId>json_simple</artifactId>
-        <version>${caja.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.gwt</groupId>
         <artifactId>gwt-dev</artifactId>
         <version>${gwt.version}</version>
@@ -190,21 +185,10 @@
         <artifactId>commons-chain</artifactId>
         <version>${commons-chain.version}</version>
       </dependency>
-      <!--Commons Dependencies-->
-      <dependency>
-        <groupId>commons-collections</groupId>
-        <artifactId>commons-collections</artifactId>
-        <version>${commons-collections.version}</version>
-      </dependency>
       <dependency>
         <groupId>commons-fileupload</groupId>
         <artifactId>commons-fileupload</artifactId>
         <version>${commons-fileupload.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>commons-httpclient</groupId>
-        <artifactId>commons-httpclient</artifactId>
-        <version>${commons-httpclient.version}</version>
       </dependency>
       <dependency>
         <groupId>commons-io</groupId>
@@ -277,11 +261,6 @@
         <version>${junit-dep.version}</version>
       </dependency>
       <dependency>
-        <groupId>net.sourceforge.nekohtml</groupId>
-        <artifactId>nekohtml</artifactId>
-        <version>${nekohtml.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.chromattic</groupId>
         <artifactId>chromattic.api</artifactId>
         <version>${org.chromattic.version}</version>
@@ -315,11 +294,6 @@
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
         <artifactId>commons-component-common</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons-testing</artifactId>
         <version>${org.exoplatform.commons.version}</version>
       </dependency>
       <dependency>
@@ -403,26 +377,6 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.resources</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.scripting</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.test.core</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.component.test.jcr</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.web.controller</artifactId>
         <version>${org.exoplatform.portal.version}</version>
       </dependency>
@@ -434,21 +388,6 @@
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.component.web.server</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.server.jboss.patch</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.server.jboss.patch-ear</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.portal</groupId>
-        <artifactId>exo.portal.server.tomcat.patch</artifactId>
         <version>${org.exoplatform.portal.version}</version>
       </dependency>
       <dependency>
@@ -475,11 +414,6 @@
         <groupId>org.exoplatform.portal</groupId>
         <artifactId>exo.portal.webui.portlet</artifactId>
         <version>${org.exoplatform.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.tool</groupId>
-        <artifactId>exo.tool.framework.junit</artifactId>
-        <version>${exo.tool.framework.junit.version}</version>
       </dependency>
       <!--Wiki Dependencies-->
       <dependency>
@@ -515,19 +449,9 @@
         <version>${org.exoplatform.ws.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.rest.ext</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.gatein.common</groupId>
         <artifactId>common-logging</artifactId>
         <version>${org.gatein.common.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.gatein.web</groupId>
-        <artifactId>redirect</artifactId>
-        <version>${org.exoplatform.portal.version}</version>
       </dependency>
       <dependency>
         <groupId>org.hibernate</groupId>
@@ -551,11 +475,6 @@
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>
-        <artifactId>slf4j-api</artifactId>
-        <version>${org.slf4j.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.slf4j</groupId>
         <artifactId>slf4j-log4j12</artifactId>
         <version>${org.slf4j.version}</version>
       </dependency>
@@ -574,13 +493,6 @@
         <artifactId>jrcs.rcs</artifactId>
         <version>${org.suigeneris.version}</version>
       </dependency>
-      <dependency>
-        <groupId>org.testng</groupId>
-        <artifactId>testng</artifactId>
-        <version>${org.testng.version}</version>
-        <classifier>jdk16</classifier>
-      </dependency>
-      <!--3rd Dependencies-->
       <dependency>
         <groupId>org.wikimodel</groupId>
         <artifactId>org.wikimodel.wem</artifactId>
@@ -666,17 +578,7 @@
       <!--XWiki Rendering Dependencies-->
       <dependency>
         <groupId>org.xwiki.rendering</groupId>
-        <artifactId>xwiki-commons-configuration-api</artifactId>
-        <version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.xwiki.rendering</groupId>
         <artifactId>xwiki-rendering-api</artifactId>
-        <version>${org.xwiki.platform.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.xwiki.rendering</groupId>
-        <artifactId>xwiki-rendering-macro-box</artifactId>
         <version>${org.xwiki.platform.version}</version>
       </dependency>
       <dependency>
@@ -743,16 +645,6 @@
         <groupId>picocontainer</groupId>
         <artifactId>picocontainer</artifactId>
         <version>${picocontainer.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>quartz</groupId>
-        <artifactId>quartz</artifactId>
-        <version>${quartz.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>rome</groupId>
-        <artifactId>rome</artifactId>
-        <version>${rome.version}</version>
       </dependency>
       <dependency>
         <groupId>xml-apis</groupId>
