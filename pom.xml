@@ -186,6 +186,23 @@
       <!-- Our own project modules -->
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-extension-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-extension-webapp</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-injector</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-macros-iframe</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -204,6 +221,12 @@
         <artifactId>wiki-webapp</artifactId>
         <version>${project.version}</version>
         <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-webapp</artifactId>
+        <version>${project.version}</version>
+        <classifier>classes</classifier>
       </dependency>
       <!-- To be replaced by an import of WS parent POM -->
       <dependency>
