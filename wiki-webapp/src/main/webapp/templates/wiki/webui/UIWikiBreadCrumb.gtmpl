@@ -10,7 +10,12 @@
   requireJs.addScripts("wikiView.UIWikiPortlet.renderBreadcrumbs(\"" + uicomponent.id + "\","+ uicomponent.isLink +");");
 %>
 <div class="UIWikiBreadCrumb UIBreadcumbs" id="$uicomponent.id">
-   <div class="BreadcumbsInfoBar ClearFix">  
+	<ul class="breadcrumb">
+	    <li><a href="#">Home</a> <span class="RightBlackGridArrowIcon">&nbsp;</span></li>
+	    <li><a href="#">wiki</a> <span class="RightBlackGridArrowIcon">&nbsp;</span></li>
+	    <li class="active">Data</li>
+	</ul>
+   <!--<div class="BreadcumbsInfoBar ClearFix">  
    <% if(breadCumbs!=null && breadCumbs.size() > 0) {
         String note = "LeftBlock"; %>
         <a class="$note" style="text-transform:capitalize;">
@@ -46,7 +51,7 @@
          <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
          <span class="ActionLabel" >$label</span>
    <% } %>
-  </div>
+  </div>-->
 
   <div class="BreadcumPopup">
     <div class="SubBlock"></div>
