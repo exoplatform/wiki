@@ -36,15 +36,15 @@
     <a href="javascript:void(0);" class="ActionButton LightBlueStyle RefreshModeTarget"><%= _ctx.appRes("UIWikiPageVersionsList.label.CompareSelected"); %></a>
     <a onclick="$compareActionLink" id="$compareActionId" style="display:none;"></a> 
   </div>
-    <table cellspacing="0" borderspacing="0" class="UIFormGrid">
+    <table cellspacing="0" borderspacing="0" class="uiFormGrid uiGrid table table-hover table-striped">
       <thead >
         <tr>
-          <th style="width:30px"></th>
-          <th style="width: 15%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Revision"); %></th>
-          <th style="width: 20%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Date"); %></th>
-          <th style="width: 15%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Author"); %></th>
-          <th style="width: 35%"><%= _ctx.appRes("UIWikiPageVersionsList.label.Summary"); %></th>
-          <th style="width: 10%; border-right: 1px solid #d7d7d7;"><%= _ctx.appRes("UIWikiPageVersionsList.label.Action"); %></th>
+          <th ></th>
+          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Revision"); %></th>
+          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Date"); %></th>
+          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Author"); %></th>
+          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Summary"); %></th>
+          <th class="center"><%= _ctx.appRes("UIWikiPageVersionsList.label.Action"); %></th>
         </tr>
       </thead>
       <tbody>
@@ -81,7 +81,7 @@
               uicomponent.renderField(vertionId);
             %>
           </td>
-          <td class="Tit">
+          <td >
             <label for="<%=versionNumber%>">
 	          	<a onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#<%=uicomponent.VIEW_REVISION%>_<%=versionNumber%>')" title="<%= _ctx.appRes("UIWikiPageVersionsList.label.ViewRevision"); %>" ><%= versionLabel %></a>
 	          	<a id="$viewLinkId" onclick="$viewLink" style="display:none"></a>
@@ -90,8 +90,8 @@
           <td><%=df.format(frozenNode.getUpdatedDate())%></td>
           <td><%=author%></td>
           <td><%=((comment != null) ? comment : "")%></td>
-          <td class="Tit" style="border-right: 1px solid #d7d7d7;">
-          	<% uicomponent.renderRestoreRevisionActions(versionNumber); %>
+          <td>
+          	<div class="ActionContainer"><% uicomponent.renderRestoreRevisionActions(versionNumber); %></div>
           </td>
         </tr>
         <%}%>

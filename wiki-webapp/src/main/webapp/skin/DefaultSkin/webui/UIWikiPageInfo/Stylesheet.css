@@ -11,7 +11,7 @@
 	margin: 10px;
 }
 
-.UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemTitle {
+.UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemsle {
 	padding: 8px 15px;
 	font-weight: bold;
 	color: #515151;
@@ -35,20 +35,6 @@
 .UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemBody .EvenClass {
 }
 
-.UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemBody td {
-	background: #f7f7f7;
-	border-bottom: 1px solid #FFFFFF;
-    border-right: 1px solid #FFFFFF;
-    color: #545454;
-    line-height: 30px;
-	padding: 0px 15px;
-}
-
-.UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemBody .label {
-	background: #f4f4f4;
-	font-weight: bold;
-}
-
 .UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemBody .Name {
 	color: #4175b2;
 }
@@ -57,9 +43,6 @@
 	color: #4175b2;
 }
 
-.UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemBody .Time {
-	background: #f9f9f9;
-}
 
 .UIWikiPortlet .UIWikiPageInfo .UIPageInfoItem .UIPageInfoItemBody .tableview th {
 	background: #f4f4f4;
@@ -113,10 +96,6 @@
 	color: #666666;
 	padding: 10px 15px;
 	display: block;
-}
-
-.UIWikiPortlet .UIWikiPageInfo .UIPageInfoRelatedPage .UIPageInfoItemBody td {
-	background: none;
 }
 
 .UIWikiPortlet .UIWikiPageInfo .UIPageInfoRelatedPage .UIPageInfoItemBody .ActionContainer a:hover {

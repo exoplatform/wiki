@@ -10,13 +10,13 @@
 <div class="UIAttachmentUploadListForm">
   <% uiform.begin(); %>
     <div class="AttachmentTit"><%= _ctx.appRes("UIAttachmentUploadListForm.label.AttachmentTitle"); %></div>
-    <table cellspacing="1" cellpadding="0" border="0" class="UIFormGrid" style="*width:98%">
+    <table cellspacing="1" cellpadding="0" border="0" class="uiGrid table table-hover table-striped">
       <thead>
         <tr>
           <th><%= _ctx.appRes("UIAttachmentUploadListForm.label.File"); %></th>
-          <th style="width: 30%"><%= _ctx.appRes("UIAttachmentUploadListForm.label.Creator"); %></th>
-          <th style="width: 150px;"><%= _ctx.appRes("UIAttachmentUploadListForm.label.LastUpdate"); %></th>
-          <th style="width:120px;"></th>
+          <th><%= _ctx.appRes("UIAttachmentUploadListForm.label.Creator"); %></th>
+          <th><%= _ctx.appRes("UIAttachmentUploadListForm.label.LastUpdate"); %></th>
+          <th></th>
         </tr>
       </thead>
       <tbody>

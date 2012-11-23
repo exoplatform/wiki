@@ -15,12 +15,11 @@
 <div class="UIPageInfoItem UIPageInfoChanges">
   <div class="UIPageInfoItemTitle"><%= _ctx.appRes("UIWikiPageInfo.label.recent-changes")%></div>
   <div class="UIPageInfoItemBody">
-    <table class="tableview" width="100%" cellspacing="0" cellpadding="0">
+    <table class=" uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
       <thead>
         <tr>
-          <th style="width: 40%"><%= _ctx.appRes("UIWikiPageInfo.label.time")%></th>
-          <th style="width: 30%"><%= _ctx.appRes("UIWikiPageInfo.label.editor")%></th>
-          <th style="width: 30%">&nbsp;</th>
+          <th ><%= _ctx.appRes("UIWikiPageInfo.label.time")%></th>
+          <th ><%= _ctx.appRes("UIWikiPageInfo.label.editor")%></th>
         </tr>
       </thead>
       <tbody>
@@ -42,19 +41,18 @@
         def updatedDate = df.format(frozenNode.getUpdatedDate());
         def author = Utils.getFullName(frozenNode.getAuthor());
         if (isOddRow) {
-          rowClass = "OddClass";
+          rowClass = "EvenRow";
         } else {
-          rowClass = "EvenClass";
+          rowClass = "OddRow";
         }
         isOddRow = !isOddRow;
         %>
         <tr class="$rowClass">
-          <td style="width: 40%">
+          <td>
             <a href="#ViewRevision_<%=versionNumber%>" title="$versionLabel" >$versionLabel</a>
             <a style="display: none;" id="$viewLinkId" onclick="<%=uicomponent.event("ViewRevision", versionNumber)%>">&nbsp;</a>
           </td>
-          <td colspan="2" class="Editor">$author</td>
-          <!-- td style="width: 30%"><a href="$viewLinkId"><%= _ctx.appRes("UIWikiPageInfo.label.view-change")%></a></td -->
+          <td  class="Editor">$author</td>
         </tr>
       <% } %>
       </tbody>

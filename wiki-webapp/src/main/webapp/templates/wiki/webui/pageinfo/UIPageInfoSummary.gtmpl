@@ -19,38 +19,39 @@
 <div class="UIPageInfoItem UIPageInfoSummary">
   <div class="UIPageInfoItemTitle"><%= _ctx.appRes("UIWikiPageInfo.label.summary")%></div>
   <div class="UIPageInfoItemBody">
-    <table class="tableview" width="100%" cellspacing="0" cellpadding="0">
-      <tbody>
-        <tr class="OddClass">
-          <td class="label" width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.title")%></td>
-          <td>$title</td>
-		  <td class="Time"><span></span></td>
-        </tr>
-        
-        <tr class="EvenClass">
-          <td class="label" width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.author")%></td>
+    <table class=" uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+		<thead>
+			<tr >
+				<th  ><%= _ctx.appRes("UIWikiPageInfo.label.title")%></th>
+				<th>$title</th>
+			  <th class="Time"><span></span></th>
+			</tr>
+		</thead>
+	  <tbody>         
+        <tr class="EvenRow">
+          <td  ><%= _ctx.appRes("UIWikiPageInfo.label.author")%></td>
           <td class="Name">$author</td>
           <td class="Time">$createdDate</td>
         </tr>
         
         <tr class="OddClass">
-          <td class="label" width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.last-changed-by")%></td>
+          <td ><%= _ctx.appRes("UIWikiPageInfo.label.last-changed-by")%></td>
           <td class="Name">$editor</td>
           <td class="Time">$updateDate</td>
         </tr>
         
         <!-- tr class="EvenClass">
-          <td class="label" width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.link")%></td>
+          <td  width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.link")%></td>
           <td colspan="2"><a href="" >http:</a></td>
         </tr -->
         
         <!-- tr class="OddClass">
-          <td class="label" width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.export-as")%></td>
+          <td  width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.export-as")%></td>
           <td colspan="2"><a href="$wordlink"><%= _ctx.appRes("UIWikiPageInfo.label.word")%></a>&nbsp;|&nbsp;<a href="$pdflink"><%= _ctx.appRes("UIWikiPageInfo.label.pdf")%></a></td>
         </tr -->
         
         <!-- tr class="EvenClass">
-        <td class="label" width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.operations")%></td>
+        <td  width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.operations")%></td>
         <td colspan="2"><a href="$copylink" ><%= _ctx.appRes("UIWikiPageInfo.label.copy")%></a>&nbsp;|&nbsp;<a href="$movelink" ><%= _ctx.appRes("UIWikiPageInfo.label.move")%></a></td>
       </tr -->
         
