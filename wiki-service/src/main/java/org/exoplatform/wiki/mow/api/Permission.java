@@ -21,6 +21,7 @@ import java.util.HashMap;
 import javax.jcr.Node;
 
 import org.chromattic.api.ChromatticSession;
+import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.service.PermissionType;
 
@@ -52,6 +53,8 @@ public abstract class Permission {
   public abstract HashMap<String, String[]> getPermission(String path) throws Exception;
   
   public abstract boolean hasPermission(PermissionType permissionType, String path) throws Exception;
+  
+  public abstract boolean hasPermission(PermissionType permissionType, String path, Identity user) throws Exception;
   
   public abstract void setPermission(HashMap<String, String[]> permissions, String path) throws Exception;
 }

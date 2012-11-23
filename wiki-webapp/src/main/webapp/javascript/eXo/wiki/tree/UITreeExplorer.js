@@ -5,11 +5,13 @@ if(eXo.wiki.UITreeExplorer ==  null) {
 
 function UITreeExplorer() {};
 
-UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, isRenderLink, baseLink) {
+UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, restrictedTitle) {
   var me = eXo.wiki.UITreeExplorer;
   var component = document.getElementById(componentid);
   this.isRenderLink = isRenderLink;
   this.baseLink = baseLink;
+  me.retrictedLabel = retrictedLabel;
+  me.restrictedTitle = restrictedTitle;
   var initNode = $(component).find('input')[0];
   initParam = me.cleanParam(initParam);
   me.render(initParam, initNode, isFullRender);
@@ -191,9 +193,9 @@ UITreeExplorer.prototype.buildNode = function(data) {
     } else {
       childNode += "        <a title=\"" + nodeName + "\">" + nodeName + "</a>";
     }
-  }
-  else{
-    childNode += "         <span style=\"cursor:auto\" title=\""+nodeName+"\">"+nodeName+"</span>";
+  } else {
+    nodeName = me.retrictedLabel;
+    childNode += "         <span style=\"cursor:auto\" title=\"" + me.restrictedTitle + "\"><em>" + nodeName + "</em></span>";
   }
   if (excerptData != null) {
     childNode += excerptData;

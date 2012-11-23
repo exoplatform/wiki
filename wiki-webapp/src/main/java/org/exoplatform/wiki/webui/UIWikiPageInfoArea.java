@@ -25,6 +25,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
+import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -32,6 +33,7 @@ import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
@@ -45,6 +47,7 @@ import org.exoplatform.wiki.webui.core.UIWikiContainer;
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiPageInfoArea.gtmpl",
   events = {
+    @EventConfig(listeners = UIWikiPageInfoArea.PermalinkActionListener.class),
     @EventConfig(listeners = UIWikiPageInfoArea.CompareRevisionActionListener.class),
     @EventConfig(listeners = UIWikiPageInfoArea.ShowRevisionActionListener.class),
     @EventConfig(listeners = UIWikiPageInfoArea.ToggleAttachmentsActionListener.class)
@@ -59,7 +62,9 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
   public static String SHOW_REVISION = "ShowRevision";
   
   public static String COMPARE_REVISION = "CompareRevision";
-
+  
+  public static final String PERMALINK_ACTION = "Permalink";
+  
   public UIWikiPageInfoArea() {
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW });
   }
@@ -72,6 +77,20 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
       log.warn("An error happened when getting current wiki page", e);
     }
     return currentPage;
+  }
+  
+  protected boolean isCurrentPagePublic() throws Exception {
+    return Utils.isCurrentPagePublic();
+  }
+  
+  public static class PermalinkActionListener extends EventListener<UIWikiPageInfoArea> {
+    @Override
+    public void execute(Event<UIWikiPageInfoArea> event) throws Exception {
+      UIWikiPortlet uiWikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
+      UIPopupContainer uiPopupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);
+      uiPopupContainer.activate(UIWikiPermalinkForm.class, 800);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
+    }
   }
 
   public static class ToggleAttachmentsActionListener extends EventListener<UIWikiPageInfoArea> {
@@ -110,8 +129,7 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
     }
   }
 
-  public static class CompareRevisionActionListener
-                                                   extends
+  public static class CompareRevisionActionListener extends
                                                    org.exoplatform.wiki.webui.control.action.CompareRevisionActionListener {
     public void execute(Event<UIComponent> event) throws Exception {
       ArrayList<NTVersion> lstVersion = new ArrayList<NTVersion>((Utils.getCurrentPageRevisions()));

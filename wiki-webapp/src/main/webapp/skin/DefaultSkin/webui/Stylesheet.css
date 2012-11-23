@@ -310,6 +310,46 @@ table.UIFormGrid div.Id {
 	vertical-align:top;
 }
 
+.UIWikiPortlet .PageLock {
+  background: url("/wiki/skin/DefaultSkin/webui/background/lock.png") no-repeat left top;
+  padding: 2px 0px 0px 20px;
+  margin: 20px 0 10px 0;
+  height:16px;
+}
+
+.UIWikiPortlet .PageUnlock {
+  background: url("/wiki/skin/DefaultSkin/webui/background/unlock.png") no-repeat left top;
+  padding: 2px 0px 0px 20px;
+  margin: 20px 0 10px 0;
+  height:16px;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm {
+  background: white;
+  padding: 15px;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .PermalinkIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/Permalink.png") no-repeat left center;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .PermalinkText {
+  border: 1px solid #DBDFE6;
+  color: #9A9A9A;
+  height: 20px;
+  padding: 0 4px;
+  width: 97%;
+  resize: none;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .PublicButton, .RestricButton {
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .ManagerPermissionButton {
+}
+
 .UIWikiPortlet .UIWikiPermissionOwner .UIFormGrid td {
 	border:none;
 }
@@ -1120,6 +1160,10 @@ table.UIFormGrid div.Id {
 
 .UIWikiPageInfoArea .TxtFeed {
 	text-align: right;
+}
+
+.UIWikiPortlet .UIWikiPageInfoArea .ActionLink {
+  color: #165FB3;
 }
 
 .UIWikiPageInfoArea .TxtFeed .Link {

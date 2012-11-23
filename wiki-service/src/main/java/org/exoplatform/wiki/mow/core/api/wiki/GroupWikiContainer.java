@@ -37,7 +37,7 @@ import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
  */
 @PrimaryType(name = WikiNodeType.GROUP_WIKI_CONTAINER)
 public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
-
+  
   @OneToOne
   @MappedBy(WikiNodeType.Definition.GROUP_WIKI_CONTAINER_NAME)
   public abstract WikiStoreImpl getMultiWiki();
@@ -76,6 +76,7 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
     gwiki.setOwner(wikiOwner);
     gwiki.setGroupWikis(this);
     gwiki.getPreferences();
+    initDefaultPermisisonForWiki(gwiki);
     session.save();
     return gwiki;
   }

@@ -18,6 +18,8 @@ package org.exoplatform.wiki.mow.api;
 
 import java.util.Collection;
 
+import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
+
 /**
  * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
  *         Lamarque</a>
@@ -49,4 +51,11 @@ public interface WikiStore {
    */
   void addWiki(WikiType wikiType, String name);
 
+  /** 
+   * get wiki container
+   * 
+   * @param wikiType The wiki type
+   * @return Wiki container
+   */
+  public  <W extends Wiki>WikiContainer<W> getWikiContainer(WikiType wikiType);
 }
