@@ -106,18 +106,19 @@
 	
 		  <div class="DraftTime pull-left">Draft saved at 19:45</div>
 		<div class="RightWrap pull-right clearfix">
+		  
 			<%
 			  uiform.renderChild(uiform.SUBMIT_TOOLBAR_UPPER);
 			  if(uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_UPPER).isRendered()) {
 			%>
-			<div class="control-group pull-right">
-				<label class="checkbox">
-					<input type="checkbox"> Publish Activity
-				</label>
-			</div>
-<!--
-				<label class="PublishActivityCheckBoxTitle FR" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_UPPER%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_UPPER);%><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></label>
--->
+			
+				<!--label class="uiCheckbox" style="border: 1px solid red">
+					<input type="checkbox" /> 
+					<span>Publish Activity</span>
+				</label-->
+
+				<label class="uiCheckbox pull-right" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_UPPER%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_UPPER);%><span><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></span></label>
+
 			<%}
 			%>
 		</div>
@@ -136,21 +137,20 @@
   <% uiform.renderChild(uiform.RICHTEXT_AREA);%>
   
     <div class="form-horizontal clearfix">
-		<div class="control-group pull-left">
-			<label class="control-label" for="inputEmail">Comment:</label>
-			<div class="controls">
-				<input class="input-xxlarge" type="text" id="inputEmail" placeholder="Comment">
+			<div class="control-group pull-left">
+				<label class="control-label" for="inputEmail">Comment:</label>
+				<div class="controls">
+					<input class="input-xxlarge" type="text" id="inputEmail" placeholder="Comment">
+				</div>
 			</div>
-		</div>
-		<div class="control-group pull-left">
-			<label class="checkbox">
-				<input type="checkbox"> Publish Activity
-			</label>
-		</div>
+			<!--label class="uiCheckbox" style="border: 1px solid red">
+				<input type="checkbox" /> 
+				<span>Publish Activity</span>
+			</label-->
     </div>
   
   
-<!--    <div class="CommentInput ClearFix">
+   <div class="CommentInput ClearFix">
   <% if(uiform.getChildById(uiform.FIELD_COMMENT).isRendered()) { %>
       <label class="CommentTitle" for="<%=uiform.FIELD_COMMENT%>"><%= _ctx.appRes("UIWikiPageEditForm.label.CommentTitle"); %></label>
   <%
@@ -158,10 +158,10 @@
      }
      if(uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM).isRendered()) {
   %>
-       <label class="PublishActivityCheckBoxTitle FL" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></label>
+       <label class="uiCheckbox pull-left" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%><span><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></span></label>
   
     </div>
--->
+
  <% }
     uiform.renderChild(uiform.SUBMIT_TOOLBAR_BOTTOM);  
    %>

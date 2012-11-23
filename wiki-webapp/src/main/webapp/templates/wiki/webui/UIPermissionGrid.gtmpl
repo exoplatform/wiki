@@ -38,7 +38,7 @@
         rowClass = "OddRow";
       }
       %>
-      <tr class="$rowClass"><% uicomponent.renderChild(component); %></tr>
+      <tr class="$rowClass"><label class="uiCheckbox"><% uicomponent.renderChild(component); %></lable></tr>
    <% }
   }
 %>
