@@ -1,14 +1,10 @@
-.rounded-corners (@radius: 5px) {
-  -webkit-border-radius: @radius;
-  -moz-border-radius: @radius;
-  -ms-border-radius: @radius;
-  -o-border-radius: @radius;
-  border-radius: @radius;
-}
+// CSS Reset
+@import "reset.less";
 
-#header {
-  .rounded-corners;
-}
-#footer {
-  .rounded-corners(10px);
-}
+// Core variables and mixins
+@import "variables.less"; // Modify this for custom colors, font-sizes, etc
+@import "mixins.less";
+
+@import "Notifications/Style.less";
+
+
