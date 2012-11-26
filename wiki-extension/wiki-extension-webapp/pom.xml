@@ -9,9 +9,6 @@
   <artifactId>wiki-extension-webapp</artifactId>
   <packaging>war</packaging>
   <name>eXo Wiki Extension configuration war</name>
-  <build>
-    <finalName>gatein-wiki-${project.version}</finalName>
-  </build>
   <dependencies>
     <!--Dependencies for all classes declared in web.xml files-->
     <dependency>
@@ -30,4 +27,7 @@
       <scope>runtime</scope>
     </dependency>
   </dependencies>
+  <build>
+    <finalName>gatein-wiki-${project.version}</finalName>
+  </build>
 </project>
