@@ -12,4 +12,22 @@
   <build>
     <finalName>gatein-wiki-${project.version}</finalName>
   </build>
+  <dependencies>
+    <!--Dependencies for all classes declared in web.xml files-->
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-wci</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
 </project>

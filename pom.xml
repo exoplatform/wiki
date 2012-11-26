@@ -45,6 +45,7 @@
     <org.exoplatform.portal.version>3.4.0.Final</org.exoplatform.portal.version>
     <org.exoplatform.commons.version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</org.exoplatform.commons.version>
     <org.gatein.common.version>2.0.4-GA</org.gatein.common.version>
+    <org.gatein.wci.version>2.3.0.Beta02</org.gatein.wci.version>
     <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
@@ -244,6 +245,11 @@
         <groupId>org.gatein.common</groupId>
         <artifactId>common-logging</artifactId>
         <version>${org.gatein.common.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.gatein.wci</groupId>
+        <artifactId>wci-wci</artifactId>
+        <version>${org.gatein.wci.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

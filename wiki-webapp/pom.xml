@@ -196,6 +196,12 @@
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-gwt-user</artifactId>
     </dependency>
+    <!--Dependencies for all classes declared in web.xml files-->
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-wci</artifactId>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
   <build>
     <finalName>wiki</finalName>
