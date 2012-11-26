@@ -1,0 +1,40 @@
+<%
+  String permalink = uiform.getPermanlink();
+  boolean isCurrentPagePublic = uiform.isCurrentPagePublic();
+  boolean canModifyPagePermission = uiform.canModifyPagePermission();
+  boolean canPublicAndRetrictPage = uiform.canPublicAndRetrictPage();
+  
+  String pageInfoNotify = "";
+  String pageInfoCss = "";
+  if (isCurrentPagePublic) {
+    pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.public-page");
+    pageInfoCss = "PageUnlock";
+  } else {
+    pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.restrict-page");
+    pageInfoCss = "PageLock";
+  }
+  
+  def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiPermalinkForm.init('" + uicomponent.id + "');");  
+%>
+<div class="UIForm $uicomponent.id">
+  <%uiform.begin()%>
+  <div class="PermalinkIcon"><%=_ctx.appRes("UIWikiPermalinkForm.label.link-to-share");%></div>
+  <div><input class="PermalinkText" type="text" onclick="this.focus();this.select()" readonly="readonly" value="$permalink"/></div>
+  <div class="$pageInfoCss">$pageInfoNotify</div>
+  <div class="UIAction">
+    <%if (canPublicAndRetrictPage) {%>
+      <%if (isCurrentPagePublic) {%>
+        <a onclick="<%=uicomponent.event(uiform.RESTRICT_ACTION);%>" class="ActionButton LightBlueStyle RestricButton"><%=_ctx.appRes('UIWikiPermalinkForm.action.Restrict')%></a>
+      <%} else { %>
+        <a onclick="<%=uicomponent.event(uiform.MAKE_PUBLIC_ACTION);%>" class="ActionButton LightBlueStyle PublicButton"><%=_ctx.appRes('UIWikiPermalinkForm.action.MakePublic')%></a>
+      <%}%>
+    <%}%>
+    
+    <%if (canModifyPagePermission) {%>
+      <a onclick="<%=uicomponent.event(uiform.MANAGE_PERMISSION_ACTION);%>" class="ActionButton LightBlueStyle ManagerPermissionButton"><%=_ctx.appRes('UIWikiPermalinkForm.action.ManagePermission')%></a>
+    <%}%>
+    </div>
+  <%uiform.end();%>
+</div>

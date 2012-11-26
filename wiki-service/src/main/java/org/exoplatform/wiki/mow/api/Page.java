@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.service.PermissionType;
 
 /**
@@ -85,9 +86,20 @@ public interface Page {
    */
   Collection<? extends Attachment> getAttachments() throws Exception;
   
-  boolean hasPermission(PermissionType permissionType) throws Exception; 
+  boolean hasPermission(PermissionType permissionType) throws Exception;
   
   /**
+   * Check if user has permisison on page or not
+   * 
+   * @param permissionType The type of permisison to check {@link PermissionType}}
+   * @param user The user to check
+   * @return User has permisison on page or not
+   * @throws Exception
+   */
+  boolean hasPermission(PermissionType permissionType, Identity user) throws Exception;
+  
+  /**
+   * Get map of permission of page
    * 
    * @return
    * @throws Exception
@@ -95,6 +107,7 @@ public interface Page {
   HashMap<String, String[]> getPermission() throws Exception;
   
   /**
+   * Set permission to page
    * 
    * @param permissions
    * @throws Exception
