@@ -133,6 +133,7 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
     str += me.buildNode(dataList.jsonList[i]);
   }
   $(node).html(str);
+  $("*[rel='tooltip']").tooltip();
 }
 
 UITreeExplorer.prototype.buildHierachyNode = function(data){
