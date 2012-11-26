@@ -83,7 +83,7 @@
           </td>
           <td >
             <label for="<%=versionNumber%>">
-	          	<a onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#<%=uicomponent.VIEW_REVISION%>_<%=versionNumber%>')" title="<%= _ctx.appRes("UIWikiPageVersionsList.label.ViewRevision"); %>" ><%= versionLabel %></a>
+	          	<a onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#<%=uicomponent.VIEW_REVISION%>_<%=versionNumber%>')" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageVersionsList.label.ViewRevision"); %>" ><%= versionLabel %></a>
 	          	<a id="$viewLinkId" onclick="$viewLink" style="display:none"></a>
           	</label>  
           </td>

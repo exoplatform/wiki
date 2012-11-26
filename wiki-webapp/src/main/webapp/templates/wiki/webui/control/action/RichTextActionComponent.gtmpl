@@ -7,4 +7,4 @@ import org.exoplatform.webui.form.UIForm;
   String actionLabel = uicomponent.label; 
   String labelName = _ctx.appRes(uicomponent.getParent().getName() +".action." + actionLabel);
  %>
-<a onclick="$actionLink" class="$actionLabel Icon" title="$labelName">$labelName</a>
+<a onclick="$actionLink" class="$actionLabel Icon"  rel="tooltip" data-placement="bottom" title="$labelName">$labelName</a>

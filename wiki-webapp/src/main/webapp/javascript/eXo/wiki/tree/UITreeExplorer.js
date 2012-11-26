@@ -188,9 +188,9 @@ UITreeExplorer.prototype.buildNode = function(data) {
       var index = path.lastIndexOf("%2F"); // Find the index of character "/"
       var pageId = path.substring(index + 3);
       var link = me.baseLink + pageId;
-      childNode += "        <a title=\"" + nodeName + "\" href=\"" + link + "\">" + nodeName + "</a>";
+      childNode += "        <a rel=\"tooltip\" data-placement=\"bottom\" title=\"" + nodeName + "\" href=\"" + link + "\">" + nodeName + "</a>";
     } else {
-      childNode += "        <a title=\"" + nodeName + "\">" + nodeName + "</a>";
+      childNode += "        <a rel=\"tooltip\" data-placement=\"bottom\" title=\"" + nodeName + "\">" + nodeName + "</a>";
     }
   } else {
     nodeName = me.retrictedLabel;

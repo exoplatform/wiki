@@ -12,7 +12,7 @@
   <span class="label"><%= _ctx.appRes("UIWikiPageInfo.label.parent-page")%></span>
   <div class="content">
     <div class="NodeLabel">
-      <a href="$parentLink" title="$parentTitle" style="margin-left:15px;">$parentTitle</a>
+      <a href="$parentLink" rel="tooltip" data-placement="bottom" title="$parentTitle" style="margin-left:15px;">$parentTitle</a>
     </div>
   </div>
   <% } %>

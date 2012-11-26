@@ -39,7 +39,7 @@
 	 <div class="UITreeExplorer" id="$uicomponent.id">
 	   <div>
          <a href="$action" class="SelectNode" style="display:none" ></a>
-         <input class="InitURL" type="hidden" title="hidden" value="$initURL" />
-         <input class="ChildrenURL" type="hidden" title="hidden" value="$childrenURL" />		   
+         <input class="InitURL" type="hidden" rel="tooltip" data-placement="bottom" title="hidden" value="$initURL" />
+         <input class="ChildrenURL" type="hidden" rel="tooltip" data-placement="bottom" title="hidden" value="$childrenURL" />		   
 	  </div>
 </div>

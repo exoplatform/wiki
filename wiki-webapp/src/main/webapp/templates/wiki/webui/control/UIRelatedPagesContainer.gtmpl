@@ -53,7 +53,7 @@
 	          </td>
             <% if(uicomponent.isHasExtension()) {%>
 	          <td>
-	            <div class="ActionContainer"><a href="$rmAction" class="ActionIcon" title="Delete Page"><i class="uiIconDelete"></i></a></div>
+	            <div class="ActionContainer"><a href="$rmAction" class="ActionIcon"  rel="tooltip" data-placement="bottom" title="Delete Page"><i class="uiIconDelete"></i></a></div>
 	          </td>
             <% }%>
 	        </tr>
