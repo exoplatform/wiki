@@ -49,7 +49,7 @@ import org.exoplatform.wiki.webui.control.listener.UIPageToolBarActionListener;
  * Apr 26, 2010  
  */
 @ComponentConfig(
-  template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
+  template = "app:/templates/wiki/webui/control/action/EditPageActionComponent.gtmpl",
   events = {
     @EventConfig(listeners = EditPageActionComponent.EditPageActionListener.class)
   }
