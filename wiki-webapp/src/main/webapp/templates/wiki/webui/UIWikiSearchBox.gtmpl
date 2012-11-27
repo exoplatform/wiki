@@ -13,38 +13,23 @@
   requireJs.addScripts("wikiView.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
   requireJs.addScripts("wikiView.UIWikiSearchBox.searchMsg ='" + searchForLabel +"' ;");
 %>
-<div class="UIWikiSearchBox">
+<div class="uiSearchInput pull-right">
   <% uiform.begin() %>
-    <div class="SearchForm">
-      <a class="AdvancedSearch"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIWikiPortlet.label.Advanced-Search")%>" onclick="<%=uicomponent.event("AdvancedSearch");%>"></a>
-      <input name="restURL" type="hidden"  rel="tooltip" data-placement="bottom" title="hidden" value="$restUrl" />
-      <div class="Input">
-		<div class="SearchIcon">
-        <%
-          uiform.renderChild(uiform.FIELD_SEARCHVALUE) ;
-        %>
-		</div>	
-      </div>
-    </div>
+    
+	  <a class="AdvancedSearch"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIWikiPortlet.label.Advanced-Search")%>" onclick="<%=uicomponent.event("AdvancedSearch");%>"></a>
+	  <input name="restURL" type="hidden"  rel="tooltip" data-placement="bottom" title="hidden" value="$restUrl" />
+    	
+    <%
+      uiform.renderChild(uiform.FIELD_SEARCHVALUE) ;
+    %>
+		
   <%uiform.end()%>
-  <div class="SearchPopup">
-		<div class="SearchPopupTL">
-			<div class="SearchPopupTR">
-				<div class="SearchPopupTC"><span></span></div>
-	  	</div>
-		</div>
-		<div class="SearchPopupML">
-			<div class="SearchPopupMR">
-				<div class="SearchPopupMC">
-					<div class="SubBlock"><span></span></div>
-				</div>
-			</div>
-		</div>	
-		<div class="SearchPopupBL">
-			<div class="SearchPopupBR">
-				<div class="SearchPopupBC"><span></span></div>
-		  </div>
-		</div>
-	</div>
+ 
+	<ul class="dropdown-menu">
+		<li><a href="#"><b>Mobile</b> Team</a></li>
+		<li><a href="#"><b>Mobile</b> & Designs</a></li>
+		<li><a href="#">Social <b>Mobile</b></a></li>
+		<li><a href="#">There are 2 <b>Mobile</b> apps ...</a></li>
+	</ul> 
  
 </div>

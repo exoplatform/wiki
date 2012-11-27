@@ -1,3 +1,4 @@
+<!--
 <%
    import org.exoplatform.webui.core.UIComponent;
    import org.exoplatform.webui.form.UIForm;
@@ -130,7 +131,8 @@
          }
       %>
       </tbody>
-   </table> <!--End UIGrid-->
+   </table> 
+   
 <%
    if (uicomponent.getUIPageIterator().getAvailablePage() > 1)
    {
@@ -138,3 +140,43 @@
    }
 %>
 </div>
+-->
+
+<table id="UIWikiTemplateGrid" cellspacing="0" class="uiGrid table table-hover table-striped">
+		
+	<tr>
+		<th></th>
+ 		<th>Template Title</th>
+ 		<th>Description</th>
+ 		<th class="center">Action</th> 
+	</tr>
+	
+	<tr class="EvenRow">
+		<td>
+			<div class="uiRadio">
+				<input type="radio" name="" value=""/>
+				<span></span>
+			</div>
+		</td>
+		<td><div title="Two-Column Layout" class="Text">Two-Column Layout</div></td>
+		<td><div title="Global" class="Text">Global</div></td>
+		<td class="center">
+			<a title="Preview" class="actionIcon" data-placement="bottom" rel="tooltip" href="#"><i class="uiIconPreview"></i></a>
+ 		</td>
+	</tr>
+	
+	<tr class="OddRow">
+		<td>
+			<div class="uiRadio">
+				<input type="radio" name="" value=""/>
+				<span></span>
+			</div>
+		</td>
+		<td><div title="Three-Column Layout" class="Text">Three-Column Layout</div></td>
+		<td><div title="Global" class="Text">Global</div></td>
+	 	<td class="center">
+			<a title="Preview" class="actionIcon" data-placement="bottom" rel="tooltip" href="#"><i class="uiIconPreview"></i></a>
+		</td>
+	</tr>
+	
+</table> 	 
