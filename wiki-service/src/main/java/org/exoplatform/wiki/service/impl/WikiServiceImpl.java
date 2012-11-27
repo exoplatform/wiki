@@ -103,8 +103,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   private static final String          DEFAULT_WIKI_NAME    = "wiki";
 
   final static private int             CIRCULAR_RENAME_FLAG   = 1000;
-  
-  private static final String          DEFAULT_WIKI_NAME    = "wiki";
 
   private static final long            DEFAULT_SAVE_DRAFT_SEQUENCE_TIME = 30000;
 
@@ -115,8 +113,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   private Iterator<ValuesParam> syntaxHelpParams;
 
   private PropertiesParam           preferencesParams;
-  
-  private String wikiWebappUri;
   
   private List<ComponentPlugin> plugins_ = new ArrayList<ComponentPlugin>();
   
