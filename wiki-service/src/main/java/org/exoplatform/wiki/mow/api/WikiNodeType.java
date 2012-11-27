@@ -50,6 +50,8 @@ public interface WikiNodeType {
 
   public final static String WIKI_ATTACHMENT         = "wiki:attachment";
 
+  public final static String WIKI_DRAFT_PAGE         = "exo:draftPage";
+
   public final static String WIKI_ATTACHMENT_CONTENT = "nt:resource";
 
   public final static String WIKI_PAGE_CONTENT       = "wiki:content";
@@ -184,5 +186,12 @@ public interface WikiNodeType {
 
     public final static String TARGET_PAGE                = "targetPage";
 
+    public final static String DRAFT_PAGES                = "draftPages";
+    
+    public final static String DRAFT_TARGET_PAGE          = "exo:targetPage";
+    
+    public final static String DRAFT_TARGET_REVISION      = "exo:targetRevision";
+    
+    public final static String DRAFT_IS_NEW_PAGE          = "exo:isNewPage";
   }
 }

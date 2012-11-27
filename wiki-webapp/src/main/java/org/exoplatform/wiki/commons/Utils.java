@@ -419,6 +419,8 @@ public class Utils {
       return "EditTemplate";
     case SPACESETTING:
       return "SpaceSetting";
+    case MYDRAFTS:
+      return "MyDrafts";
     default:
       return "";
     }
@@ -433,18 +435,6 @@ public class Utils {
   
   public static boolean hasPermission(String[] permissions) throws Exception {
     UserACL userACL = Util.getUIPortalApplication().getApplicationComponent(UserACL.class);
-    /*// If an user is the super user or in the administration group or has the
-    // create portal permission then he has all permissions
-    if (userACL.hasCreatePortalPermission()) {
-      return true;
-    }
-    String expAdminGroup = userACL.getAdminGroups();
-    if (expAdminGroup != null) {
-      expAdminGroup = expAdminGroup.startsWith("/") ? expAdminGroup : "/" + expAdminGroup;
-      if (userACL.isUserInGroup(expAdminGroup)) {
-        return true;
-      }
-    }*/
     WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
     List<PermissionEntry> permissionEntries = wikiService.getWikiPermission(pageParams.getType(), pageParams.getOwner());
@@ -514,17 +504,7 @@ public class Utils {
   }
   
   public static List<NTVersion> getCurrentPageRevisions() throws Exception {
-    PageImpl wikipage = (PageImpl) getCurrentWikiPage();
-    Iterator<NTVersion> iter = wikipage.getVersionableMixin().getVersionHistory().iterator();
-    List<NTVersion> versionsList = new ArrayList<NTVersion>();
-    while (iter.hasNext()) {
-      NTVersion version = iter.next();
-      if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {
-        versionsList.add(version);
-      }
-    }
-    Collections.sort(versionsList, new VersionNameComparatorDesc());
-    return versionsList;
+    return org.exoplatform.wiki.utils.Utils.getCurrentPageRevisions((PageImpl) getCurrentWikiPage());
   }
   
   public static int getLimitUploadSize() {

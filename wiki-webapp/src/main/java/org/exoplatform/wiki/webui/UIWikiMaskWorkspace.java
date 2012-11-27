@@ -38,10 +38,11 @@ import org.exoplatform.webui.event.Event.Phase;
 public class UIWikiMaskWorkspace extends UIMaskWorkspace {
   public List<WikiMode> accept_Modes;
   
+  private String popupTitle;
  
   public UIWikiMaskWorkspace() {
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.EDITPAGE, WikiMode.ADDPAGE,
-        WikiMode.ADDTEMPLATE, WikiMode.EDITTEMPLATE });
+        WikiMode.ADDTEMPLATE, WikiMode.EDITTEMPLATE, WikiMode.MYDRAFTS });
   }
 
   public void processRender(WebuiRequestContext context) throws Exception {
@@ -49,6 +50,14 @@ public class UIWikiMaskWorkspace extends UIMaskWorkspace {
     WikiMode currentMode = getCurrentMode();    
     if (currentMode != null && accept_Modes.contains(currentMode))
       super.processRender(context);
+  }
+
+  public String getPopupTitle() {
+    return popupTitle;
+  }
+
+  public void setPopupTitle(String popupTitle) {
+    this.popupTitle = popupTitle;
   }
 
   public WikiMode getCurrentMode() {

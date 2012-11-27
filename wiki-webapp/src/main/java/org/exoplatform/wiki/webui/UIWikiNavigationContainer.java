@@ -44,7 +44,7 @@ public class UIWikiNavigationContainer extends UIWikiForm {
   public UIWikiNavigationContainer() throws Exception {
     super();    
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.DELETEPAGE, WikiMode.VIEWREVISION, WikiMode.SHOWHISTORY,
-        WikiMode.ADVANCEDSEARCH, WikiMode.PAGEINFO, WikiMode.COMPAREREVISION });
+        WikiMode.ADVANCEDSEARCH, WikiMode.PAGEINFO, WikiMode.COMPAREREVISION, WikiMode.MYDRAFTS });
     UITreeExplorer uiTree = addChild(UITreeExplorer.class, null, null);
     StringBuilder initURLSb = new StringBuilder(Utils.getCurrentRestURL());
     initURLSb.append("/wiki/tree/").append(TREETYPE.ALL.toString());

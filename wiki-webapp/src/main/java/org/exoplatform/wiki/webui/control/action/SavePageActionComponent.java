@@ -19,10 +19,10 @@ package org.exoplatform.wiki.webui.control.action;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -38,6 +38,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
@@ -46,6 +47,7 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.impl.WikiPageHistory;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.exoplatform.wiki.webui.EditMode;
 import org.exoplatform.wiki.webui.UIWikiPageControlArea;
@@ -107,14 +109,15 @@ public class SavePageActionComponent extends UIComponent {
       UIWikiPageTitleControlArea pageTitleControlForm = wikiPortlet.findComponentById(UIWikiPageControlArea.TITLE_CONTROL);
       UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
       UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
-      UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class)
-                                                 .getUIStringInput();
+      UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
       String syntaxId = Utils.getDefaultSyntax();
       RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
       Page page = Utils.getCurrentWikiPage();
       Utils.setUpWikiContext(wikiPortlet);
+      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+
       try {
         WikiNameValidator.validate(titleInput.getValue());
       } catch (IllegalNameException ex) {
@@ -147,7 +150,6 @@ public class SavePageActionComponent extends UIComponent {
       }
       String markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
       markup = markup.trim();
-
 
       String newPageId = TitleResolver.getId(title, false);
       if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
@@ -189,55 +191,77 @@ public class SavePageActionComponent extends UIComponent {
           // Check if publish activity on activity stream
           UICheckBoxInput publishActivityCheckBox =
               wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
-          ((PageImpl) page).setMinorEdit(!publishActivityCheckBox.isChecked());
+          page.setMinorEdit(!publishActivityCheckBox.isChecked());
           pageEditForm.synPublishActivityStatus(false);
 
-          page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
-          page.setSyntax(syntaxId);
-          pageTitleControlForm.getUIFormInputInfo().setValue(title);
-          pageParams.setPageId(page.getName());
-          ((PageImpl) page).setURL(Utils.getURLFromParams(pageParams));
-          page.getContent().setText(markup);
-
-          if (!pageEditForm.getTitle().equals(title)) {
-            page.setTitle(title);
-            ((PageImpl) page).checkin();
-            ((PageImpl) page).checkout();
-            pageParams.setPageId(newPageId);
-          } else {
-            ((PageImpl) page).checkin();
-            ((PageImpl) page).checkout();
-          }
-        } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-          String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-          Page draftPage = wikiService.getExsitedOrNewDraftPageById(null, null, sessionId);
-          Collection<AttachmentImpl> attachs = ((PageImpl) draftPage).getAttachments();
-
-          Page subPage = wikiService.createPage(pageParams.getType(),
-                                                pageParams.getOwner(),
-                                                title,
-                                                page.getName());
+          synchronized (page.getJCRPageNode().getUUID()) {
+            page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
+            page.setSyntax(syntaxId);
+            pageTitleControlForm.getUIFormInputInfo().setValue(title);
+            pageParams.setPageId(page.getName());
+            page.setURL(Utils.getURLFromParams(pageParams));
+            page.getContent().setText(markup);
+ 
+            if (!pageEditForm.getTitle().equals(title)) {
+              page.setTitle(title);
+              ((PageImpl) page).checkin();
+              ((PageImpl) page).checkout();
+              pageParams.setPageId(newPageId);
+            } else {
+              ((PageImpl) page).checkin();
+              ((PageImpl) page).checkout();
+            }
+            
+            if (!"__anonim".equals(currentUser)) {
+              wikiService.removeDraft(pageParams);
+            }
+           }
+         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
+          Page draftPage = Utils.getCurrentNewDraftWikiPage();
+          Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
+          Page subPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
           pageParams.setPageId(newPageId);
-          ((PageImpl) subPage).setURL(Utils.getURLFromParams(pageParams));
+          subPage.setURL(Utils.getURLFromParams(pageParams));
           subPage.getContent().setText(markup);
           subPage.setSyntax(syntaxId);
           ((PageImpl) subPage).getAttachments().addAll(attachs);
           ((PageImpl) subPage).checkin();
           ((PageImpl) subPage).checkout();
-          ((PageImpl) draftPage).remove();
-          return;
+          draftPage.remove();
+
+          // remove the draft for new page
+          Page parentPage = subPage.getParentPage();
+          DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
+          if (contentDraftPage == null) {
+            Map<String, WikiPageHistory> pageLogs = org.exoplatform.wiki.utils.Utils.getLogOfPage(parentPage.getName());
+            WikiPageHistory log = pageLogs.get(currentUser);
+            if ((log != null) && log.isNewPage()) {
+              wikiService.removeDraft(log.getDraftName());
+            }
+          } else {
+            contentDraftPage.remove();
+          }
         }
       } catch (Exception e) {
         log.error("An exception happens when saving the page with title:" + title, e);
-        event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIPageToolBar.msg.Exception",
-                                                                                       null,
-                                                                                       ApplicationMessage.ERROR));
+        event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIPageToolBar.msg.Exception", null, ApplicationMessage.ERROR));
       } finally {
         wikiPortlet.changeMode(WikiMode.VIEW);
         Utils.redirect(pageParams, WikiMode.VIEW);
-        super.processEvent(event);
       }
     }
-  }
 
+    private DraftPage findTheMatchDraft(String pageTitle, Page parentPage) throws Exception {
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+      String parentUUID = parentPage.getJCRPageNode().getUUID();
+      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      List<DraftPage> draftPages = wikiService.getDrafts(currentUser);
+      for (DraftPage draftPage : draftPages) {
+        if (draftPage.getTitle().equals(pageTitle) && draftPage.getTargetPage().equals(parentUUID)) {
+          return draftPage;
+        }
+      } 
+      return null;
+    }
+  }
 }

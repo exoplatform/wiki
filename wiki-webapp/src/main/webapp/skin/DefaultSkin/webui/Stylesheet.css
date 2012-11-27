@@ -354,6 +354,75 @@ table.UIFormGrid div.Id {
 	border:none;
 }
 
+.UIWikiPortlet .UIWikiDraftGrid {
+  padding: 15px 15px 15px 15px;
+  overflow:hidden;
+}
+
+.UIWikiPortlet .UIWikiMyDraftsForm .header {
+  padding: 15px 15px 5px 15px;
+  font-size: 18pt;
+}
+
+.UIWikiPortlet .UIWikiMyDraftsForm .introduce {
+  padding: 5px 15px 5px 15px;
+}
+
+.UIWikiPortlet .UIWikiDraftGrid td {
+  overflow:hidden;
+}
+
+.UIWikiPortlet .UIFormGrid th:hover img {
+  display:block;
+}
+
+.UIWikiPortlet .UIWikiDraftGrid .fieldName {
+  max-width:100px;
+}
+
+.UIWikiPortlet .UIWikiDraftGrid .breadcrum {
+  max-width:200px;
+}
+
+.UIWikiPortlet .DeleteDraftIcon {
+  width: 16px;
+  height: 16px;
+  background: url('/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/DustBin.gif') no-repeat;
+  margin: auto;
+ }
+ 
+.UIWikiPortlet .ViewDraftChangeIcon {
+  width: 16px;
+  height: 16px;
+  background: url("/wiki/skin/DefaultSkin/webui/background/viewChange.png") no-repeat;
+  margin: auto;
+ }
+ 
+.UIWikiPortlet .ActiveSortDraftASCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/Active_SortASC.png") no-repeat;
+}
+
+.UIWikiPortlet .ActiveSortDraftDESCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/Active_SortDESC.png") no-repeat;
+}
+
+.UIWikiPortlet .SortDraftASCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/SortASC.png") no-repeat;
+}
+
+.UIWikiPortlet .SortDraftDESCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/SortDESC.png") no-repeat;
+}
+
+.UIWikiPortlet .SortDraftIcon {
+  width: 16px;
+  height: 16px;
+  float: right;
+  padding-right: 2px;
+  margin-top: 5px;
+  cursor: pointer;
+}
+
 .UIWikiPortlet .UIWikiPageTitleControlForm_PageControlArea {
 	float: left;
 	font-size: 24px;

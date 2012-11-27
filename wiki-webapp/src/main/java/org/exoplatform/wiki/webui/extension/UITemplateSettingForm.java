@@ -153,8 +153,6 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
       titleInput.setEditable(true);
       commentInput.setRendered(false);
       markupInput.setValue("");
-      String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-      wservice.createDraftNewPage(sessionId);
       markupInput.setRendered(true);
       pageEditForm.getChild(UIWikiRichTextArea.class).setRendered(false);
       pageEditForm.getChild(UIWikiSidePanelArea.class).setRendered(true);

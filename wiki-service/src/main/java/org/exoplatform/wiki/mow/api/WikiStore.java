@@ -18,6 +18,8 @@ package org.exoplatform.wiki.mow.api;
 
 import java.util.Collection;
 
+import org.chromattic.api.ChromatticSession;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 
 /**
@@ -58,4 +60,31 @@ public interface WikiStore {
    * @return Wiki container
    */
   public  <W extends Wiki>WikiContainer<W> getWikiContainer(WikiType wikiType);
+  
+  /** 
+   * get the container that store draft for new page
+   * 
+   */
+  public PageImpl getDraftNewPagesContainer();
+  
+  /**
+   * Create new wiki page
+   * 
+   * @return new wiki page
+   */
+  public abstract PageImpl createPage();
+  
+  /**
+   * Set session to wiki store
+   * 
+   * @param chromatticSession
+   */
+  public void setSession(ChromatticSession chromatticSession);
+
+  /**
+   * get Chromattic session
+   * 
+   * @return Chromattic session
+   */
+  public ChromatticSession getSession();
 }
