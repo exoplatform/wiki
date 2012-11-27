@@ -1,3 +1,11 @@
-<div id="$uicomponent.id" class="UIPageToolBar ClearFix" >
-	<% uicomponent.renderChildren(); %>
+<div id="$uicomponent.id" class="UIPageToolBar ClearFix navbar" >
+	<ul class="nav">
+	<%
+	  List children = uicomponent.getChildren() ;
+	  for(component in children) { %>
+	    <li>
+	      <% uicomponent.renderChild(component) ; %>
+	    </li>
+	<% } %>
+	</ul>
 </div>

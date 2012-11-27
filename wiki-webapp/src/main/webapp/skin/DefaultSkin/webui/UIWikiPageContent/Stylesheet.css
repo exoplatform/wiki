@@ -153,11 +153,3 @@ body.mceContentBody table.confluenceTable {
   padding-left:0;
 }
 
-.UIWikiPageContentArea a:link, .UIWikiPageContentArea a:visited, .UIWikiPageContentArea a:active {
-  text-decoration:underline;
-  color:#006DAF;
-}
-
-.UIWikiPageContentArea .wikicreatelink a {
-  color:maroon;
-}

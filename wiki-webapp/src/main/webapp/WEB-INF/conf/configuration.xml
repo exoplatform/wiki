@@ -40,7 +40,7 @@
           <name>EditPage</name>
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.wiki.webui.control.UIPageToolBar</string></field>
-            <field name="rank"><int>300</int></field>
+            <field name="rank"><int>50</int></field>
             <field name="name"><string>EditPage</string></field>
             <field name="component"><string>org.exoplatform.wiki.webui.control.action.EditPageActionComponent</string></field>
           </object>
@@ -50,7 +50,7 @@
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.wiki.webui.control.UIPageToolBar</string></field>
             <field name="name"><string>Add</string></field>
-            <field name="rank"><int>200</int></field>
+            <field name="rank"><int>100</int></field>
             <field name="component"><string>org.exoplatform.wiki.webui.control.AddExtensionContainer</string></field>
           </object>
         </object-param>
@@ -139,7 +139,7 @@
           <name>More</name>
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.wiki.webui.control.UIPageToolBar</string></field>
-            <field name="rank"><int>50</int></field>
+            <field name="rank"><int>200</int></field>
             <field name="name"><string>More</string></field>
             <field name="component"><string>org.exoplatform.wiki.webui.control.MoreExtensionContainer</string></field>
           </object>

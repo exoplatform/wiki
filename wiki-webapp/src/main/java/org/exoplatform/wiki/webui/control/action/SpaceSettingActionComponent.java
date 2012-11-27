@@ -37,7 +37,7 @@ import org.exoplatform.wiki.webui.control.listener.BrowseContainerActionListener
  * July 27, 2011  
  */
 @ComponentConfig(
-  template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",                
+  template = "app:/templates/wiki/webui/control/action/SpaceSettingActionComponent.gtmpl",                
   events = {
     @EventConfig(listeners = SpaceSettingActionComponent.SpaceSettingActionListener.class) 
   }
