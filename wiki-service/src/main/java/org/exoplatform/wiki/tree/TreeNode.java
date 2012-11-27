@@ -37,6 +37,8 @@ public class TreeNode {
   protected String           name;
 
   protected String           path;
+  
+  protected boolean          isRetricted     = false;
 
   protected boolean          hasChild;
 
@@ -47,8 +49,13 @@ public class TreeNode {
   final static public String STACK_PARAMS    = "stackParams";
   
   final static public String PATH            = "path";
+  
+  public static final String SELECTED_PAGE   = "selectedPage";
 
+  /** The current path that's used in move page */
   final static public String CURRENT_PATH    = "page";
+  
+  public static final String CURRENT_PAGE    = "currentPage";
   
   public static final String SHOW_EXCERPT    = "excerpt";
 
@@ -115,7 +122,15 @@ public class TreeNode {
   public String getPath() {
     return path;
   }
-    
+  
+  public boolean isRetricted() {
+    return isRetricted;
+  }
+
+  public void setRetricted(boolean isRetricted) {
+    this.isRetricted = isRetricted;
+  }
+
   @Override
   public int hashCode() {
     final int prime = 31;
@@ -185,9 +200,7 @@ public class TreeNode {
   }
   
   private void pushChildren(HashMap<String, Object> context) throws Exception {
-
-    Stack<WikiPageParams> paramsStk = (Stack<WikiPageParams>) context.get(this.STACK_PARAMS);
-
+    Stack<WikiPageParams> paramsStk = (Stack<WikiPageParams>) context.get(STACK_PARAMS);
     if (paramsStk == null) {
       pushChild(context);
     } else {
@@ -196,7 +209,7 @@ public class TreeNode {
       } else {
         WikiPageParams params = new WikiPageParams();
         params = paramsStk.pop();
-        context.put(this.STACK_PARAMS, paramsStk);
+        context.put(STACK_PARAMS, paramsStk);
         if (this instanceof RootTreeNode) {
           SpaceTreeNode spaceNode = new SpaceTreeNode(params.getType());
           pushChild(spaceNode, context);
@@ -221,14 +234,12 @@ public class TreeNode {
     String depthCdt = (String) context.get(DEPTH);
     boolean showDes = (showDesCdt == null) ? true : showDesCdt;
 
-    int depth = (depthCdt == null || StringUtils.EMPTY.equals(depthCdt)) ? -1
-                                                                        : Integer.valueOf(depthCdt);
+    int depth = (depthCdt == null || StringUtils.EMPTY.equals(depthCdt)) ? -1 : Integer.valueOf(depthCdt);
     --depth;
     TreeNode temp = new TreeNode();
     if (showDes) {
       if (depth != 0) {
         context.put(DEPTH, String.valueOf(depth));
-
         for (int i = 0; i < children.size(); i++) {
           temp = children.get(i);
           if (child == null) {
@@ -237,7 +248,6 @@ public class TreeNode {
             temp.pushDescendants(context);
             return;
           }
-
         }
       }
     }

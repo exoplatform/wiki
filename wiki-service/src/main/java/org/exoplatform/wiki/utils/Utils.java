@@ -338,10 +338,8 @@ public class Utils {
   }
   
   public static Object getObjectFromParams(WikiPageParams param) throws Exception {
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer()
-                                                               .getComponentInstanceOfType(WikiService.class);
-    MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer()
-                                                            .getComponentInstanceOfType(MOWService.class);
+    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MOWService.class);
     WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
     String wikiType = param.getType();
     String wikiOwner = param.getOwner();
@@ -350,19 +348,17 @@ public class Utils {
     if (wikiOwner != null && wikiPageId != null) {
       if (!wikiPageId.equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
         // Object is a page
-        Page expandPage = (Page) wikiService.getPageById(wikiType, wikiOwner, wikiPageId);
+        Page expandPage = (Page) wikiService.getPageByRootPermission(wikiType, wikiOwner, wikiPageId);
         return expandPage;
       } else {
         // Object is a wiki home page
-        Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase()))
-                         .getWiki(wikiOwner, true);
+        Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase())).getWiki(wikiOwner, true);
         WikiHome wikiHome = (WikiHome) wiki.getWikiHome();
         return wikiHome;
       }
     } else if (wikiOwner != null) {
       // Object is a wiki
-      Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase()))
-                       .getWiki(wikiOwner, true);
+      Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase())).getWiki(wikiOwner, true);
       return wiki;
     } else if (wikiType != null) {
       // Object is a space

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2012 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.webui.control.action;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -26,41 +25,35 @@ import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
-import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.service.PermissionEntry;
-import org.exoplatform.wiki.webui.UIWikiPermissionForm;
-import org.exoplatform.wiki.webui.UIWikiPermissionForm.Scope;
+import org.exoplatform.wiki.webui.UIWikiPermalinkForm;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
+import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
-import org.exoplatform.wiki.webui.control.filter.OwnerPagesOrAdminSpacePermissionFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 
 /**
  * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Dec 29, 2010  
+ * Author : Tran Hung Phong
+ *          phongth@exoplatform.com
+ * Oct 04, 2012  
  */
 @ComponentConfig(
-  template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
-  events = {
-    @EventConfig(listeners = PagePermissionActionComponent.PagePermissionActionListener.class)
-  }
-)
-public class PagePermissionActionComponent extends AbstractEventActionComponent {
+    template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",                
+    events = {
+      @EventConfig(listeners = PermalinkActionComponent.PermalinkActionListener.class) 
+    }
+  )
+public class PermalinkActionComponent extends AbstractEventActionComponent {
+  public static final String ACTION = "Permalink";
   
-  public static final String                   ACTION  = "PagePermission";
-
-  private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] {
-      new IsViewModeFilter(), new OwnerPagesOrAdminSpacePermissionFilter() });
+  private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new IsUserFilter(), new IsViewModeFilter() });
 
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
-  }
+  } 
 
   @Override
   public String getActionName() {
@@ -71,19 +64,13 @@ public class PagePermissionActionComponent extends AbstractEventActionComponent 
   public boolean isAnchor() {
     return false;
   }
-
-  public static class PagePermissionActionListener extends MoreContainerActionListener<PagePermissionActionComponent> {
+  
+  public static class PermalinkActionListener extends MoreContainerActionListener<PermalinkActionComponent> {
     @Override
-    protected void processEvent(Event<PagePermissionActionComponent> event) throws Exception {
+    protected void processEvent(Event<PermalinkActionComponent> event) throws Exception {
       UIWikiPortlet uiWikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       UIPopupContainer uiPopupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);
-      UIWikiPermissionForm uiWikiPermissionForm = uiPopupContainer.createUIComponent(UIWikiPermissionForm.class, null, "UIWikiPagePermissionForm");
-      uiPopupContainer.activate(uiWikiPermissionForm, 800, 0);
-      uiWikiPermissionForm.setScope(Scope.PAGE);
-      PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
-      HashMap<String, String[]> permissionMap = page.getPermission();
-      List<PermissionEntry> permissionEntries = uiWikiPermissionForm.convertToPermissionEntryList(permissionMap);
-      uiWikiPermissionForm.setPermission(permissionEntries);
+      uiPopupContainer.activate(UIWikiPermalinkForm.class, 800);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
       super.processEvent(event);
     }

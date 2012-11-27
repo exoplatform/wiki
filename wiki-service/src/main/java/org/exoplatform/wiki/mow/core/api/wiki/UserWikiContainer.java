@@ -82,6 +82,7 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
     uwiki.setOwner(wikiOwner);
     uwiki.setUserWikis(this);
     uwiki.getPreferences();
+    initDefaultPermisisonForWiki(uwiki);
     session.save();
     return uwiki;
   }

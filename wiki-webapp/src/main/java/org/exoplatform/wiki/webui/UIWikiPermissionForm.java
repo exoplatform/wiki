@@ -20,6 +20,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.Map.Entry;
 
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
@@ -118,6 +120,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   public final static String SAVE = "Save";
   
   public final static String CLOSE = "Close";
+  
+  private PopupLevel popupLevel = PopupLevel.L1;
 
   public static enum Scope {
     WIKI, PAGE
@@ -172,6 +176,21 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     return scope;
   }
   
+  public PopupLevel getPopupLevel() {
+    return popupLevel;
+  }
+
+  public void setPopupLevel(PopupLevel popupLevel) {
+    this.popupLevel = popupLevel;
+  }
+  
+  public void cancelPopupAction() throws Exception {
+    UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
+    UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(getPopupLevel());
+    popupContainer.cancelPopupAction();
+    setPopupLevel(PopupLevel.L1);
+  }
+
   private void addPopupWindow() throws Exception {
     addChild(UIPopupWindow.class, USER_PERMISSION_POPUP_SELECTOR, createIdByScope(USER_PERMISSION_POPUP_SELECTOR));
     addChild(UIPopupWindow.class, null, createIdByScope(PERMISSION_POPUP_SELECTOR));
@@ -205,7 +224,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     uiPopup.setShow(true);
     uiPopup.setWindowSize(550, 0);
   }
-  
 
   public void setScope(Scope scope) throws Exception {
     this.scope = scope;
@@ -227,6 +245,41 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     this.permissionEntries = permissionEntries;
     UIPermissionGrid permissionGrid = getChild(UIPermissionGrid.class);
     permissionGrid.setPermissionEntries(this.permissionEntries);
+  }
+  
+  public List<PermissionEntry> convertToPermissionEntryList(HashMap<String, String[]> permissions) {
+    List<PermissionEntry> permissionEntries = new ArrayList<PermissionEntry>();
+    Set<Entry<String, String[]>> entries = permissions.entrySet();
+    for (Entry<String, String[]> entry : entries) {
+      PermissionEntry permissionEntry = new PermissionEntry();
+      String key = entry.getKey();
+      IDType idType = IDType.USER;
+      if (key.indexOf(":") > 0) {
+        idType = IDType.MEMBERSHIP;
+      } else if (key.indexOf("/") == 0) {
+        idType = IDType.GROUP;
+      }
+      permissionEntry.setIdType(idType);
+      permissionEntry.setId(key);
+      Permission[] perms = new Permission[2];
+      perms[0] = new Permission();
+      perms[0].setPermissionType(PermissionType.VIEWPAGE);
+      perms[1] = new Permission();
+      perms[1].setPermissionType(PermissionType.EDITPAGE);
+      for (String action : entry.getValue()) {
+        if (org.exoplatform.services.jcr.access.PermissionType.READ.equals(action)) {
+          perms[0].setAllowed(true);
+        } else if (org.exoplatform.services.jcr.access.PermissionType.ADD_NODE.equals(action)
+            || org.exoplatform.services.jcr.access.PermissionType.REMOVE.equals(action)
+            || org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY.equals(action)) {
+          perms[1].setAllowed(true);
+        }
+      }
+      permissionEntry.setPermissions(perms);
+
+      permissionEntries.add(permissionEntry);
+    }
+    return permissionEntries;
   }
 
   @Override
@@ -501,7 +554,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     public void execute(Event<UIWikiPermissionForm> event) throws Exception {
       UIWikiPermissionForm uiWikiPermissionForm = event.getSource();
       Scope scope = uiWikiPermissionForm.getScope();
-      UIWikiPortlet wikiPortlet = uiWikiPermissionForm.getAncestorOfType(UIWikiPortlet.class);
       uiWikiPermissionForm.processPostAction();
       if (Scope.WIKI.equals(scope)) {
         WikiService wikiService = uiWikiPermissionForm.getApplicationComponent(WikiService.class);
@@ -521,8 +573,19 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
         page.setPermission(permissionMap);
         page.setOverridePermission(true);
         
-        UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
-        popupContainer.cancelPopupAction();
+        // Update page info area
+        UIWikiPortlet uiWikiPortlet = uiWikiPermissionForm.getAncestorOfType(UIWikiPortlet.class);
+        if (page.hasPermission(PermissionType.VIEWPAGE)) {
+          UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
+          UIWikiPageControlArea uiWikiPageControlArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageControlArea.class);
+          event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPageControlArea);
+          event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPageInfoArea);
+          uiWikiPermissionForm.cancelPopupAction();
+        } else {
+          uiWikiPortlet.changeMode(WikiMode.PAGE_NOT_FOUND);
+          event.getRequestContext().getJavascriptManager().addCustomizedOnLoadScript("eXo.wiki.UIWikiPageNotFound.hidePopup();");
+          Utils.ajaxRedirect(event, Utils.getCurrentWikiPageParams(), WikiMode.PAGE_NOT_FOUND, null);
+        }
       }
     }
   }
@@ -531,8 +594,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     @Override
     public void execute(Event<UIWikiPermissionForm> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
-      UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
-      popupContainer.cancelPopupAction();
+      UIWikiPermissionForm uiWikiPermissionForm = wikiPortlet.findFirstComponentOfType(UIWikiPermissionForm.class);
+      uiWikiPermissionForm.cancelPopupAction();
     }
   }
 }

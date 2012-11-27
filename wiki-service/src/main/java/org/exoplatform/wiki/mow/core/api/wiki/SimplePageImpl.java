@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
+import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.PermissionType;
@@ -159,6 +160,11 @@ public class SimplePageImpl implements Page {
   public boolean hasPermission(PermissionType permissionType) throws Exception {
     return hasPermission;
   }
+  
+  @Override
+  public boolean hasPermission(PermissionType permissionType, Identity user) throws Exception {
+    return hasPermission;
+  }
 
   @Override
   public void setComment(String comment) {
@@ -187,6 +193,4 @@ public class SimplePageImpl implements Page {
   public String getURL() {
     return this.url;
   }
-
-  
 }

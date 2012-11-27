@@ -17,7 +17,9 @@
         </div>
       <% } %>
       
-      <div class="Spliter"><span></span></div>
+      <div class="ResizeSideBar">
+        <div class="ResizeButton"><span></span></div>
+      </div>
       
       <div class="UIRightContainerArea">
         <% uicomponent.renderChild(UIWikiPageContainer.class); %>

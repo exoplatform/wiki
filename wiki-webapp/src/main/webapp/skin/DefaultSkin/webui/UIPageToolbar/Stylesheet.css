@@ -43,6 +43,10 @@
   background: url("/wiki/skin/DefaultSkin/webui/background/UIPageToolBarIcon.png") no-repeat left -515px;
 }
 
+.UIWikiPageControlArea .UIPageToolBar .Permalink{
+  background: url("/wiki/skin/DefaultSkin/webui/background/Permalink.png") no-repeat 5px 5px;
+}
+
 .UIWikiPageControlArea .UIPageToolBar .AddExtensionContainer.MoreLink {
   position:relative;
   padding: 6px 22px 6px 10px;
