@@ -38,7 +38,7 @@ import org.exoplatform.wiki.webui.control.listener.BrowseContainerActionListener
  * Sep 07, 2012  
  */
 @ComponentConfig(
-    template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",                
+    template = "app:/templates/wiki/webui/control/action/MyDraftsActionComponent.gtmpl",                
     events = {
       @EventConfig(listeners = MyDraftsActionComponent.MyDraftsActionListener.class) 
     }
