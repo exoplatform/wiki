@@ -161,7 +161,7 @@
 		<td><div title="Two-Column Layout" class="Text">Two-Column Layout</div></td>
 		<td><div title="Global" class="Text">Global</div></td>
 		<td class="center">
-			<a title="Preview" class="actionIcon" data-placement="bottom" rel="tooltip" href="#"><i class="uiIconPreview"></i></a>
+			<a title="Preview" class="uiIconPreview" data-placement="bottom" rel="tooltip" href="#"><i class="uiIconPreview"></i></a>
  		</td>
 	</tr>
 	
@@ -175,7 +175,7 @@
 		<td><div title="Three-Column Layout" class="Text">Three-Column Layout</div></td>
 		<td><div title="Global" class="Text">Global</div></td>
 	 	<td class="center">
-			<a title="Preview" class="actionIcon" data-placement="bottom" rel="tooltip" href="#"><i class="uiIconPreview"></i></a>
+			<a title="Preview" class="uiIconPreview" data-placement="bottom" rel="tooltip" href="#"><i class="uiIconPreview"></i></a>
 		</td>
 	</tr>
 	
