@@ -21,6 +21,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.commons.utils.PageList;
@@ -44,9 +45,15 @@ import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 import org.xwiki.rendering.syntax.Syntax;
 
 
+// TODO :
+// * Fix tests to not have to specify the order of execution like this
+// * The order of tests execution changed in Junit 4.11 (https://github.com/KentBeck/junit/blob/master/doc/ReleaseNotes4.11.md)
+@FixMethodOrder(MethodSorters.JVM)
 @SuppressWarnings("deprecation")
 public class TestWikiService extends AbstractMOWTestcase {
   private WikiService wService ; 
