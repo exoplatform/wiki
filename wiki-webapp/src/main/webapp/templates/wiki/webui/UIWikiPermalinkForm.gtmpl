@@ -8,32 +8,32 @@
   String pageInfoCss = "";
   if (isCurrentPagePublic) {
     pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.public-page");
-    pageInfoCss = "PageUnlock";
+    pageInfoCss = "uiUnlock";
   } else {
     pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.restrict-page");
-    pageInfoCss = "PageLock";
+    pageInfoCss = "uiLock";
   }
   
   def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIWikiPermalinkForm.init('" + uicomponent.id + "');");  
 %>
-<div class="UIForm $uicomponent.id">
+<div class="$uicomponent.id">
   <%uiform.begin()%>
-  <div class="PermalinkIcon"><%=_ctx.appRes("UIWikiPermalinkForm.label.link-to-share");%></div>
-  <div><input class="PermalinkText" type="text" onclick="this.focus();this.select()" readonly="readonly" value="$permalink"/></div>
-  <div class="$pageInfoCss">$pageInfoNotify</div>
-  <div class="UIAction">
+  <div class="permalLinkShare"><i class="uiIconPermalink"></i>&nbsp;&nbsp;<%=_ctx.appRes("UIWikiPermalinkForm.label.link-to-share");%></div>
+  <div class="permalinkWapperInput"><input class="input-xxxlarge" type="text" onclick="this.focus();this.select()" readonly="readonly" value="$permalink"/></div>
+  <div class="permalinkNotify"><i class="$pageInfoCss"></i>&nbsp;&nbsp;$pageInfoNotify</div>
+    <div class="uiAction">
     <%if (canPublicAndRetrictPage) {%>
       <%if (isCurrentPagePublic) {%>
-        <a onclick="<%=uicomponent.event(uiform.RESTRICT_ACTION);%>" class="ActionButton LightBlueStyle RestricButton"><%=_ctx.appRes('UIWikiPermalinkForm.action.Restrict')%></a>
+        <button onclick="<%=uicomponent.event(uiform.RESTRICT_ACTION);%>" class="btn btn-primary"><%=_ctx.appRes('UIWikiPermalinkForm.action.Restrict')%></button>
       <%} else { %>
-        <a onclick="<%=uicomponent.event(uiform.MAKE_PUBLIC_ACTION);%>" class="ActionButton LightBlueStyle PublicButton"><%=_ctx.appRes('UIWikiPermalinkForm.action.MakePublic')%></a>
+        <button onclick="<%=uicomponent.event(uiform.MAKE_PUBLIC_ACTION);%>" class="btn btn-primary"><%=_ctx.appRes('UIWikiPermalinkForm.action.MakePublic')%></button>
       <%}%>
     <%}%>
     
     <%if (canModifyPagePermission) {%>
-      <a onclick="<%=uicomponent.event(uiform.MANAGE_PERMISSION_ACTION);%>" class="ActionButton LightBlueStyle ManagerPermissionButton"><%=_ctx.appRes('UIWikiPermalinkForm.action.ManagePermission')%></a>
+      <button onclick="<%=uicomponent.event(uiform.MANAGE_PERMISSION_ACTION);%>" class="btn"><%=_ctx.appRes('UIWikiPermalinkForm.action.ManagePermission')%></button>
     <%}%>
     </div>
   <%uiform.end();%>
