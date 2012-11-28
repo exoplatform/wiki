@@ -5,19 +5,17 @@
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIDropdownMenu.init(\""+uicomponent.id+"\");");
 %>
-<div class="dropdown uiActionWithLabel uiDropdownWithIcon" id ="$uicomponent.id">
-    <div data-toggle="dropdown"><%= _ctx.appRes("UIPageToolBar.label.More"); %><i class="icon-arrow-down"></i></div>
-        <ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
-            <%
-            List children = uicomponent.getChildren() ;
-            for(component in children) {
-            if(component.isRendered()){ %>
-            <li>
-                <% uicomponent.renderChild(component.getClass()) ; %>
-            </li>
-            <%
-            }
-            } %>
-        </ul>
+<div class="dropdown uiActionWithLabel" data-toggle="dropdown"><%= _ctx.appRes("UIPageToolBar.label.More"); %><i class="icon-arrow-down"></i></div>
+<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+	<%
+	List children = uicomponent.getChildren() ;
+	for(component in children) {
+	if(component.isRendered()){ %>
+	<li>
+		<% uicomponent.renderChild(component.getClass()) ; %>
+	</li>
+	<%
+	}
+	} %>
+</ul>
    
-</div>

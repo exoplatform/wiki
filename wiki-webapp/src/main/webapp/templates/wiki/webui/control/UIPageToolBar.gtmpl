@@ -1,5 +1,5 @@
 <div id="$uicomponent.id" class="UIPageToolBar ClearFix navbar" >
-	<ul class="nav">
+	<ul class="nav pull-right uiDropdownWithIcon">
 	<%
 	  List children = uicomponent.getChildren() ;
 	  for(component in children) { %>
