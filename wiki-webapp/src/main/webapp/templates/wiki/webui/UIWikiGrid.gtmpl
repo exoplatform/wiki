@@ -142,7 +142,7 @@
 </div>
 -->
 
-<table id="UIWikiTemplateGrid" cellspacing="0" class="uiGrid table table-hover table-striped">
+<table id="UIWikiGrid" cellspacing="0" class="uiGrid table table-hover table-striped">
 		
 	<tr>
 		<th></th>
@@ -151,7 +151,7 @@
  		<th class="center">Action</th> 
 	</tr>
 	
-	<tr class="EvenRow">
+	<tr>
 		<td>
 			<div class="uiRadio">
 				<input type="radio" name="" value=""/>
@@ -165,7 +165,7 @@
  		</td>
 	</tr>
 	
-	<tr class="OddRow">
+	<tr>
 		<td>
 			<div class="uiRadio">
 				<input type="radio" name="" value=""/>
