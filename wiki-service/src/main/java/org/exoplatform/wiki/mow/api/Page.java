@@ -20,7 +20,11 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.jcr.Node;
+
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.PermissionType;
 
 /**
@@ -30,7 +34,19 @@ import org.exoplatform.wiki.service.PermissionType;
  */
 public interface Page {
 
+  /**
+   * Get jcr node name
+   * 
+   * @return jcr node name
+   */
   String getName();
+  
+  /**
+   * set jcr node name
+   * 
+   * @param name Nodename
+   */
+  void setName(String name);
   
   /**
    * Get the owner of the page
@@ -118,4 +134,74 @@ public interface Page {
    * get URL of page. The domain part of link can be fixed.
    */
   String getURL();
+  
+  /**
+   * Add a wiki page as child page
+   * 
+   * @param page 
+   */
+  void addWikiPage(Page page);
+  
+  /**
+   * Get JCR node of wiki page
+   * 
+   * @return JCR node of wiki page
+   * @throws Exception
+   */
+  Node getJCRPageNode() throws Exception;
+  
+  /**
+   * get Versionable Mixin
+   * 
+   * @return Versionable Mixin
+   */
+  VersionableMixin getVersionableMixin();
+  
+  /**
+   * Detroy wiki page
+   */
+  void remove();
+  
+  /**
+   * get Wiki of page
+   * 
+   * @return Wiki of page
+   */
+  Wiki getWiki();
+  
+  /**
+   * set alow page minor edit or not
+   * 
+   * @param isMinorEdit
+   */
+  void setMinorEdit(boolean isMinorEdit);
+  
+  /**
+   * set url
+   * 
+   * @param url
+   */
+  void setURL(String url);
+  
+  /**
+   * get the parent page
+   * 
+   * @return the parent page
+   */
+  PageImpl getParentPage();
+  
+  /**
+   * Add a public wiki page
+   * 
+   * @param page 
+   * @throws Exception
+   */
+  void addPublicPage(Page page) throws Exception;
+  
+  /**
+   * Reset page permisison
+   * 
+   * @throws Exception
+   */
+  void setNonePermission() throws Exception;
 }

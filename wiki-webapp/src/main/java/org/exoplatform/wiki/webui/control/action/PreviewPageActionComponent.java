@@ -114,8 +114,8 @@ public class PreviewPageActionComponent extends AbstractFormActionComponent {
       }
       uiMaskWS.setUIComponent(wikiPagePreview);
       uiMaskWS.setShow(true);
+      uiMaskWS.setPopupTitle(res.getString("UIEditorTabs.action.PreviewPage"));
       event.getRequestContext().addUIComponentToUpdateByAjax(uiMaskWS);
-      
       super.processEvent(event);
     }
   }

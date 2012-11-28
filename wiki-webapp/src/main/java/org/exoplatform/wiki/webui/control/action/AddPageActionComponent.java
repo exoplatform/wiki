@@ -20,8 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -96,9 +96,6 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
       titleInput.setEditable(true);
       markupInput.setValue("");
       commentInput.setRendered(false);
-      WikiService wikiService = wikiPortlet.getApplicationComponent(WikiService.class);
-      String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-      wikiService.createDraftNewPage(sessionId);
 
       String currentDefaultSyntaxt = Utils.getCurrentPreferences().getPreferencesSyntax().getDefaultSyntax();
       if (currentDefaultSyntaxt == null) {
@@ -110,6 +107,7 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
         titleInput.setEditable(false);
       }
 
+      pageEditForm.setInitDraftName(StringUtils.EMPTY);
       UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
       if (wikiRichTextArea.isRendered()) {
         Utils.feedDataForWYSIWYGEditor(pageEditForm, null);

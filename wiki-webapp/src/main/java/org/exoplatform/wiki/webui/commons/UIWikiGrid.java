@@ -26,12 +26,11 @@ import org.exoplatform.webui.core.UIGrid;
  *          hieu.lai@exoplatform.com
  * 9 Feb 2011  
  */
-@ComponentConfig(template = "app:/templates/wiki/webui/UIWikiTemplateGrid.gtmpl")
+@ComponentConfig(template = "app:/templates/wiki/webui/UIWikiGrid.gtmpl")
 @Serialized
-public class UIWikiTemplateGrid extends UIGrid {
+public class UIWikiGrid extends UIGrid {
 
-  public UIWikiTemplateGrid() throws Exception {
+  public UIWikiGrid() throws Exception {
     super();
   }
- 
 }

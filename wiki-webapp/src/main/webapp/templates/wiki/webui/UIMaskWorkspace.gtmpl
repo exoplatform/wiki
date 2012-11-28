@@ -39,7 +39,7 @@
 	   }
 	%>
 		<a href="$action" class="CloseButton"><span></span></a>
-		<div class="PopupTitle"><%=_ctx.appRes("UIEditorTabs.action.PreviewPage")%></div>
+		<div class="PopupTitle"><%=uicomponent.getPopupTitle();%></div>
 	</div>
 	<%uicomponent.renderChildren();%>
 </div>

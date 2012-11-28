@@ -20,9 +20,13 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
+import javax.jcr.Node;
+
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.service.PermissionType;
 
 /**
@@ -35,7 +39,6 @@ import org.exoplatform.wiki.service.PermissionType;
  * </p>  
  */
 public class SimplePageImpl implements Page {
-  
   private Collection<? extends Attachment> attachments;
   private String author;
   private String comment;
@@ -192,5 +195,58 @@ public class SimplePageImpl implements Page {
   @Override
   public String getURL() {
     return this.url;
+  }
+
+  @Override
+  public void addWikiPage(Page page) {
+  }
+
+  @Override
+  public Node getJCRPageNode() throws Exception {
+    return null;
+  }
+
+  @Override
+  public void setName(String name) {
+  }
+
+  @Override
+  public VersionableMixin getVersionableMixin() {
+    return null;
+  }
+
+  @Override
+  public void remove() {
+  }
+
+  @Override
+  public Wiki getWiki() {
+    return null;
+  }
+
+  @Override
+  public void setMinorEdit(boolean isMinorEdit) {
+  }
+
+  @Override
+  public void setURL(String url) {
+  }
+
+  @Override
+  public PageImpl getParentPage() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public void addPublicPage(Page page) throws Exception {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void setNonePermission() throws Exception {
+    // TODO Auto-generated method stub
+    
   }
 }

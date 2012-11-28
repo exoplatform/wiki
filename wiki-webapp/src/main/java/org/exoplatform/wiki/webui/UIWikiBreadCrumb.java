@@ -50,6 +50,10 @@ public class UIWikiBreadCrumb extends UIContainer {
 
   private boolean              isLink     = true;
 
+  private boolean              isShowWikiType = true;
+  
+  private boolean              isDisplayFullSpaceName = true;
+
   public List<BreadcrumbData> getBreadCumbs() {
     return breadCumbs;
   }
@@ -91,17 +95,38 @@ public class UIWikiBreadCrumb extends UIContainer {
   }
 
   public String getWikiType() throws Exception {
-    if (getPageParam() != null) {
-      return getPageParam().getType();
+    WikiPageParams params = getPageParam();
+    if (params != null) {
+      return params.getType();
     }
     return null;
   }
 
   public String getWikiName() throws Exception {
     if (getPageParam() != null) {
-      return getPageParam().getOwner();
+      String wikiName = getPageParam().getOwner();
+      if (!isDisplayFullSpaceName && wikiName.indexOf('/') > -1) {
+        wikiName = wikiName.substring(wikiName.lastIndexOf('/') + 1);
+      }
+      return wikiName;
     }
     return null;
+  }
+
+  public boolean isShowWikiType() {
+    return isShowWikiType;
+  }
+
+  public void setShowWikiType(boolean isShowWikiType) {
+    this.isShowWikiType = isShowWikiType;
+  }
+  
+  public boolean isDisplayFullSpaceName() {
+    return isDisplayFullSpaceName;
+  }
+
+  public void setDisplayFullSpaceName(boolean isDisplayFullSpaceName) {
+    this.isDisplayFullSpaceName = isDisplayFullSpaceName;
   }
 
   public String createActionLink(BreadcrumbData breadCumbData) throws Exception {  

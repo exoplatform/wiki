@@ -19,6 +19,7 @@ package org.exoplatform.wiki.webui.control.action;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -112,6 +113,7 @@ public class EditPageActionComponent extends AbstractEventActionComponent {
         Utils.feedDataForWYSIWYGEditor(pageEditForm, null);
       }      
       wikiPortlet.changeMode(WikiMode.EDITPAGE);
+      pageEditForm.setInitDraftName(StringUtils.EMPTY);
       super.processEvent(event);
     }
   }

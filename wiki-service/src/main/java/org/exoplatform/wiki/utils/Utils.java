@@ -1,17 +1,12 @@
 package org.exoplatform.wiki.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-import java.util.Stack;
+import java.util.*;
+
 
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -33,6 +28,7 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -52,6 +48,7 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
+import org.exoplatform.wiki.service.impl.WikiPageHistory;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.xwiki.rendering.syntax.Syntax;
 
@@ -73,7 +70,97 @@ public class Utils {
   public static final String VER_NAME = "verName";
 
   final private static String MIMETYPE_TEXTHTML = "text/html";
+
+  private static Map<String, Map<String, WikiPageHistory>> editPageLogs = new HashMap<String, Map<String, WikiPageHistory>>();
   
+  public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
+  
+  /**
+   * Get resource bundle from given resource file
+   *
+   * @param key key
+   * @param cl ClassLoader to load resource file
+   * @return The value of key in resource bundle
+   */
+  public static String getWikiResourceBundle(String key, ClassLoader cl) {
+    Locale locale = WebuiRequestContext.getCurrentInstance().getLocale();
+    ResourceBundle resourceBundle = ResourceBundle.getBundle(WIKI_RESOUCE_BUNDLE_NAME, locale,cl);
+    return resourceBundle.getString(key);
+  }
+  
+  /**
+   * Log the edit page action of user
+   * 
+   * @param pageParams The page that has been editing
+   * @param username The name of user that editing wiki page
+   * @param updateTime The time that this page is edited
+   * @param draftName The name of draft for this edit
+   * @param isNewPage Is the wiki page a draft or not
+   */
+  public static void logEditPageTime(WikiPageParams pageParams, String username, long updateTime, String draftName, boolean isNewPage) {
+    String pageId = pageParams.getPageId();
+    Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
+    if (logByPage == null) {
+      logByPage = new HashMap<String, WikiPageHistory>();
+      editPageLogs.put(pageId, logByPage);
+    } else {
+      WikiPageHistory logByUsername = logByPage.get(username);
+      if (logByUsername == null) {
+        logByUsername = new WikiPageHistory(pageParams, username, draftName, isNewPage);
+        logByPage.put(username, logByUsername);
+      }
+      logByUsername.setEditTime(updateTime);
+    }
+  }
+  
+  /**
+   * Get the list of user that're editing the wiki page
+   * 
+   * @param pageId The id of wiki page
+   * @return The list of user that're editing this wiki page 
+   */
+  public static List<String> getListOfUserEditingPage(String pageId) {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    List<String> edittingUsers = new ArrayList<String>();
+    List<String> outdateEdittingUser = new ArrayList<String>();
+    String currentUser = getCurrentUser();
+    
+    Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
+    if (logByPage != null) {
+      // Find all the user that editting this page
+      for (String username : logByPage.keySet()) {
+        WikiPageHistory log = logByPage.get(username);
+        if (System.currentTimeMillis() - log.getEditTime() < wikiService.getSaveDraftSequenceTime()) {
+          if (!username.equals(currentUser) && !log.isNewPage()) {
+            edittingUsers.add(username);
+          }
+        } else {
+          outdateEdittingUser.add(username);
+        }
+      }
+      
+      // Remove all outdate editting user
+      for (String username : outdateEdittingUser) {
+        logByPage.remove(username);
+      }
+    }
+    return edittingUsers;
+  }
+  
+  /**
+   * Get the editting log of wiki page
+   * 
+   * @param pageId The id of wiki page to get log
+   * @return The editting log of wiki pgae
+   */
+  public static Map<String, WikiPageHistory> getLogOfPage(String pageId) {
+    Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
+    if (logByPage == null) {
+      logByPage = new HashMap<String, WikiPageHistory>();
+    }
+    return logByPage;
+  }
+   
   //The path should get from NodeHierarchyCreator 
   public static String getPortalWikisPath() {    
     String path = "/exo:applications/" 
@@ -114,6 +201,19 @@ public class Utils {
     } else {
       throw new IllegalArgumentException(jcrPath + " is not jcr path of a group wiki page node!");
     }
+  }
+
+  public static List<NTVersion> getCurrentPageRevisions(Page wikipage) throws Exception {
+    Iterator<NTVersion> iter = wikipage.getVersionableMixin().getVersionHistory().iterator();
+    List<NTVersion> versionsList = new ArrayList<NTVersion>();
+    while (iter.hasNext()) {
+      NTVersion version = iter.next();
+      if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {
+        versionsList.add(version);
+      }
+    }
+    Collections.sort(versionsList, new VersionNameComparatorDesc());
+    return versionsList;
   }
   
   /**
@@ -266,6 +366,10 @@ public class Utils {
   public static Object getObject(String path, String type) throws Exception {
     WikiService wservice = (WikiService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     return wservice.findByPath(path, type) ;
+  }
+
+  public static NTVersion getLastRevisionOfPage(Page wikipage) throws Exception {
+    return getCurrentPageRevisions(wikipage).get(0);
   }
   
   public static Object getObjectFromParams(WikiPageParams param) throws Exception {

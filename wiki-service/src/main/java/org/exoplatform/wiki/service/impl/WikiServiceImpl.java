@@ -3,8 +3,10 @@ package org.exoplatform.wiki.service.impl;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
@@ -43,6 +45,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Model;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -52,6 +55,7 @@ import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.DraftPageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.GroupWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.HelpPage;
 import org.exoplatform.wiki.mow.core.api.wiki.LinkEntry;
@@ -90,6 +94,8 @@ import org.xwiki.rendering.syntax.Syntax;
 
 public class WikiServiceImpl implements WikiService, Startable {
 
+  private static final String UNTITLED_PREFIX = "Untitled_";
+
   final static private String          PREFERENCES          = "preferences";
 
   final static private String          DEFAULT_SYNTAX       = "defaultSyntax";
@@ -97,6 +103,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   private static final String          DEFAULT_WIKI_NAME    = "wiki";
 
   final static private int             CIRCULAR_RENAME_FLAG   = 1000;
+
+  private static final long            DEFAULT_SAVE_DRAFT_SEQUENCE_TIME = 30000;
   
   private ConfigurationManager  configManager;
 
@@ -111,12 +119,22 @@ public class WikiServiceImpl implements WikiService, Startable {
   private List<WikiTemplatePagePlugin> templatePagePlugins_ = new ArrayList<WikiTemplatePagePlugin>();
 
   private static final Log      log               = ExoLogger.getLogger(WikiServiceImpl.class);
+
+  private long                  autoSaveInterval;
   
   private String wikiWebappUri;
 
   public WikiServiceImpl(ConfigurationManager configManager,
                          JCRDataStorage jcrDataStorage,
                          InitParams initParams) {
+
+    String autoSaveIntervalProperty = System.getProperty("wiki.autosave.interval");
+    if ((autoSaveIntervalProperty == null) || autoSaveIntervalProperty.isEmpty()) {
+      autoSaveInterval = DEFAULT_SAVE_DRAFT_SEQUENCE_TIME;
+    } else {
+      autoSaveInterval = Long.parseLong(autoSaveIntervalProperty);
+    }
+
     this.configManager = configManager;
     this.jcrDataStorage = jcrDataStorage;
     if (initParams != null) {
@@ -187,19 +205,6 @@ public class WikiServiceImpl implements WikiService, Startable {
       permissions.put(conversationState.getIdentity().getUserId(), org.exoplatform.services.jcr.access.PermissionType.ALL);
       page.setPermission(permissions);
     }
-  }
-  
-  public void createDraftNewPage(String draftNewPageId) throws Exception {
-    Model model = getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    PageImpl draftNewPagesContainer = wStore.getDraftNewPagesContainer();
-    PageImpl oldDraftPage = draftNewPagesContainer.getChildPages().get(draftNewPageId);
-    if (oldDraftPage != null) {
-      oldDraftPage.remove();
-    }
-    PageImpl draftNewPage = wStore.createPage();
-    draftNewPage.setName(draftNewPageId);
-    draftNewPagesContainer.addPublicPage(draftNewPage);
   }
   
   public boolean isExisting(String wikiType, String wikiOwner, String pageId) throws Exception {
@@ -568,20 +573,57 @@ public class WikiServiceImpl implements WikiService, Startable {
     return getPageWithLinkEntry(newLinkEntry);
   }
   
+  @Override
   public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
-    Page existedPage = getPageById(wikiType, wikiOwner, pageId);
-    if (existedPage != null) {
-      return existedPage;
+     Page existedPage = getPageById(wikiType, wikiOwner, pageId);
+     if (existedPage != null) {
+       return existedPage;
+     }
+    
+    // if this is ANONIM then use draft in DraftNewPagesContainer 
+    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+      Model model = getModel();
+      WikiStore wStore = model.getWikiStore();
+      PageImpl draftNewPagesContainer = wStore.getDraftNewPagesContainer();
+      Page draftPage = draftNewPagesContainer.getChildPages().get(pageId);
+      if (draftPage == null) {
+        draftPage = wStore.createPage();
+        draftPage.setName(pageId);
+        draftNewPagesContainer.addPublicPage(draftPage);
+      }
+      
+      return draftPage;
     }
+    
+    // Get draft page
+    DraftPageImpl draftPage = (DraftPageImpl) getDraft(pageId);
+    if (draftPage != null) {
+      return draftPage;
+    }
+    
+    // Get draft page container
     Model model = getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    PageImpl draftNewPagesContainer = wStore.getDraftNewPagesContainer();
-    return draftNewPagesContainer.getChildPages().get(pageId);
+    UserWiki userWiki = (UserWiki) getWiki(PortalConfig.USER_TYPE, Utils.getCurrentUser(), model);
+    PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
+    
+    // Create new draft
+    draftPage = userWiki.createDraftPage();
+    draftPage.setName(pageId);
+    draftPagesContainer.addWikiPage(draftPage);
+    draftPage.setNewPage(true);
+    draftPage.setTargetPage(null);
+    draftPage.setTargetRevision("1");
+    return draftPage;
   }
   
   public Page getPageByUUID(String uuid) throws Exception {
-
-    return null;
+    if (uuid == null) {
+      return null;
+    }
+    
+    Model model = getModel();
+    WikiStore wStore = model.getWikiStore();
+    return jcrDataStorage.getWikiPageByUUID(wStore.getSession(), uuid);
   }
   
   @Override
@@ -763,6 +805,10 @@ public class WikiServiceImpl implements WikiService, Startable {
       return preferencesParams.getProperty(DEFAULT_SYNTAX);
     }
     return Syntax.XWIKI_2_0.toIdString();
+  }
+
+  public long getSaveDraftSequenceTime() {
+    return autoSaveInterval;
   }
   
   public WikiPageParams getWikiPageParams(BreadcrumbData data) {
@@ -1253,17 +1299,184 @@ public class WikiServiceImpl implements WikiService, Startable {
     return wikiWebappUri;
   }
   
-  private void removeDraftPages() {
-    try {
-      Model model = getModel();
-      WikiStoreImpl wikiStore = (WikiStoreImpl) model.getWikiStore();
-      PageImpl draftPages = wikiStore.getDraftNewPagesContainer();
-      draftPages.remove();
-    } catch (Exception e) {
-      log.warn("Can not remove draft pages ...");
+  @Override
+  public DraftPage createDraftForNewPage(WikiPageParams parentPageParam, long clientTime) throws Exception {
+    // Create suffix for draft name
+    String draftSuffix = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(clientTime));
+    
+    // Get targetPage
+    Page parentPage = getPageById(parentPageParam.getType(), parentPageParam.getOwner(), parentPageParam.getPageId());
+    String draftName = UNTITLED_PREFIX + draftSuffix;
+    
+    // Get draft page container
+    Model model = getModel();
+    UserWiki userWiki = (UserWiki) getWiki(PortalConfig.USER_TYPE, Utils.getCurrentUser(), model);
+    Page draftPagesContainer = userWiki.getDraftPagesContainer();
+    
+    // Create draft page
+    DraftPage draftPage = userWiki.createDraftPage();
+    draftPage.setName(draftName);
+    draftPagesContainer.addWikiPage(draftPage);
+    draftPage.setNewPage(true);
+    draftPage.setTargetPage(parentPage.getJCRPageNode().getUUID());
+    draftPage.setTargetRevision("1");
+    return draftPage;
+  }
+  
+  @Override
+  public DraftPage createDraftForExistPage(WikiPageParams param, String revision, long clientTime) throws Exception {
+    // Create suffix for draft name
+    String draftSuffix = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date(clientTime));
+    
+    // Get targetPage
+    Page targetPage = getPageById(param.getType(), param.getOwner(), param.getPageId());
+    String draftName = targetPage.getName() + "_" + draftSuffix;
+    
+    // Get draft page container
+    Model model = getModel();
+    UserWiki userWiki = (UserWiki) getWiki(PortalConfig.USER_TYPE, Utils.getCurrentUser(), model);
+    Page draftPagesContainer = userWiki.getDraftPagesContainer();
+    
+    // Create draft page
+    DraftPageImpl draftPage = userWiki.createDraftPage();
+    draftPage.setName(draftName);
+    draftPagesContainer.addWikiPage(draftPage);
+    draftPage.setNewPage(false);
+    draftPage.setTargetPage(targetPage.getJCRPageNode().getUUID());
+    if (StringUtils.isEmpty(revision)) {
+      draftPage.setTargetRevision(Utils.getLastRevisionOfPage(targetPage).getName());
+    } else {
+      draftPage.setTargetRevision(revision);
+    }
+    return draftPage;
+  }
+  
+  @Override
+  public DraftPage getDraft(WikiPageParams param) throws Exception {
+    if ((param.getPageId() == null) || (param.getOwner() == null) || (param.getType() == null)) {
+      return null;
+    }
+    
+    Page targetPage = getPageById(param.getType(), param.getOwner(), param.getPageId());
+    if ((param.getPageId() == null) || (targetPage == null)) {
+      return null;
+    }
+    return getDraftOfWikiPage(targetPage);
+  }
+  
+  public DraftPage getLastestDraft() throws Exception {
+    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+      return null;
+    }
+    
+    // Get all draft pages
+    Collection<PageImpl> childPages = getDraftContainerOfCurrentUser().getChildPages().values();
+    
+    // Find the lastest draft
+    DraftPageImpl lastestDraft = null;
+    for (PageImpl draft : childPages) {
+      DraftPageImpl draftPage = (DraftPageImpl) draft;
+      // Compare and get the lastest draft
+      if ((lastestDraft == null) || (lastestDraft.getUpdatedDate().getTime() < draftPage.getUpdatedDate().getTime())) {
+        lastestDraft = draftPage;
+      }
+    }
+    return lastestDraft;
+  }
+  
+  @Override
+  public DraftPage getDraft(String draftName) throws Exception {
+    if (draftName == null) {
+      return null;
+    }
+    
+    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+      return null;
+    }
+    
+    List<DraftPage> drafts = getDrafts(org.exoplatform.wiki.utils.Utils.getCurrentUser());
+    for (DraftPage draftPage : drafts) {
+      if (draftPage.getName().equals(draftName)) {
+        return draftPage;
+      }
+    }
+    return null;
+  }
+  
+  @Override
+  public void removeDraft(WikiPageParams param) throws Exception {
+    DraftPageImpl draftPage = (DraftPageImpl) getDraft(param);
+    if (draftPage != null) {
+      draftPage.remove();
     }
   }
   
+  @Override
+  public void removeDraft(String draftName) throws Exception {
+    DraftPage draftPage = getDraft(draftName);
+    if (draftPage != null) {
+      draftPage.remove();
+    }
+  }
+  
+  @Override
+  public List<DraftPage> getDrafts(String username) throws Exception {
+    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+      return null;
+    }
+    
+    // Get all draft of user
+    Collection<PageImpl> childPages = getDraftContainerOfCurrentUser().getChildPages().values();
+    
+    // Change collection to List
+    List<DraftPage> draftPages = new ArrayList<DraftPage>();
+    for (PageImpl pageImpl : childPages) {
+      draftPages.add((DraftPageImpl) pageImpl);
+    }
+    return draftPages;
+  }
+  
+  @Override
+  public Page getWikiPageByUUID(String uuid) throws Exception {
+    Model model = getModel();
+    WikiStore wStore = model.getWikiStore();
+    return jcrDataStorage.getWikiPageByUUID(wStore.getSession(), uuid);
+  }
+  
+  private DraftPage getDraftOfWikiPage(Page targetPage) throws Exception {
+    // If target page is null then return null
+    if (targetPage == null) {
+      return null;
+    }
+    
+    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+      return null;
+    }
+    
+    // Get all draft pages
+    Collection<PageImpl> childPages = getDraftContainerOfCurrentUser().getChildPages().values();
+    
+    // Find the lastest draft of target page 
+    DraftPageImpl lastestDraft = null;
+    for (PageImpl draft : childPages) {
+      DraftPageImpl draftPage = (DraftPageImpl) draft;
+      // If this draft is use for target page
+      if (draftPage.getTargetPage() != null && !draftPage.isNewPage() && draftPage.getTargetPage().equals(targetPage.getJCRPageNode().getUUID())) {
+        // Compare and get the lastest draft
+        if ((lastestDraft == null) || (lastestDraft.getUpdatedDate().getTime() < draftPage.getUpdatedDate().getTime())) {
+          lastestDraft = draftPage;
+        }
+      }
+    }
+    return lastestDraft;
+  }
+  
+  private PageImpl getDraftContainerOfCurrentUser() {
+    Model model = getModel();
+    UserWiki userWiki = (UserWiki) getWiki(PortalConfig.USER_TYPE, Utils.getCurrentUser(), model);
+    return userWiki.getDraftPagesContainer();
+  }
+ 
   private void removeHelpPages() {
     try {
       Model model = getModel();
@@ -1287,7 +1500,6 @@ public class WikiServiceImpl implements WikiService, Startable {
         log.warn("Can not init page templates ...");
       }
       addEmotionIcons();
-      removeDraftPages();
       removeHelpPages();
       try {
         getWikiHome(PortalConfig.GROUP_TYPE, "sandbox");
@@ -1303,7 +1515,5 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void stop() {
-    
   }
-  
 }

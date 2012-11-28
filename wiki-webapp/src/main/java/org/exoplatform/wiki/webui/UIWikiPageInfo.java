@@ -13,12 +13,11 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.commons.VersionNameComparatorDesc;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
 import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
 import org.exoplatform.wiki.webui.control.action.ShowHistoryActionListener;
 import org.exoplatform.wiki.webui.control.action.ViewRevisionActionListener;
@@ -46,8 +45,7 @@ public class UIWikiPageInfo extends UIWikiContainer {
   List<NTVersion> getVersionList(Page page) {
     List<NTVersion> versions = new ArrayList<NTVersion>();
     try {
-      PageImpl pageImpl = (PageImpl) page;
-      Iterator<NTVersion> iter = pageImpl.getVersionableMixin().getVersionHistory().iterator();
+      Iterator<NTVersion> iter = page.getVersionableMixin().getVersionHistory().iterator();
       while (iter.hasNext()) {
         NTVersion version = iter.next();
         if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {

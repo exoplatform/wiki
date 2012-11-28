@@ -120,7 +120,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     this.componentManager = componentManager;
   }
 
-  private Node getJCRPageNode() throws Exception {
+  public Node getJCRPageNode() throws Exception {
     return (Node) getChromatticSession().getJCRSession().getItem(getPath());
   }
   
@@ -203,7 +203,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   @Property(name = WikiNodeType.Definition.URL)
   public abstract String getURL();
   public abstract void setURL(String url);
-  
   
   @OneToOne(type = RelationshipType.EMBEDDED)
   @Owner
@@ -388,7 +387,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     for (int i = 0; i < pages.size(); i++) {
       PageImpl page = pages.get(i);
       if (page != null && page.hasPermission(PermissionType.VIEWPAGE)) {
-        result.put(page.getTitle(), page);
+        result.put(page.getName(), page);
       }
     }
     return result;
@@ -440,10 +439,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     setPermission(null);
   }
   
-  /*public void addWikiPage(PageImpl wikiPage) throws DuplicateNameException {
-    getChildPages().add(wikiPage);
-  }*/
-  protected void addPage(String pageName, PageImpl page) {
+  protected void addPage(String pageName, Page page) {
     if (pageName == null) {
       throw new NullPointerException();
     }
@@ -454,21 +450,20 @@ public abstract class PageImpl extends NTFolder implements Page {
     if (children.containsKey(pageName)) {
       throw new IllegalStateException();
     }
-    children.put(pageName, page);
+    children.put(pageName, (PageImpl) page);
   }
   
-  public void addWikiPage(PageImpl page) {
+  public void addWikiPage(Page page) {
     if (page == null) {
       throw new NullPointerException();
     }
     addPage(page.getName(), page);
   }
   
-  public void addPublicPage(PageImpl page) throws Exception {
+  public void addPublicPage(Page page) throws Exception {
     addWikiPage(page);
     page.setNonePermission();
   }
-  
   
   public PageImpl getWikiPage(String pageId) throws Exception{
     if(WikiNodeType.Definition.WIKI_HOME_NAME.equalsIgnoreCase(pageId)){

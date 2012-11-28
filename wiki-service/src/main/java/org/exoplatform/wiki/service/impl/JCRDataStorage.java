@@ -29,6 +29,7 @@ import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
@@ -68,6 +69,24 @@ public class JCRDataStorage implements DataStorage{
       }
     }
     return new ObjectPageList<SearchResult>(resultList, resultList.size());
+  }
+
+  public Page getWikiPageByUUID(ChromatticSession session, String uuid) throws Exception {
+    StringBuilder statement = new StringBuilder();
+    statement.append("SELECT path ");
+    statement.append("FROM ").append(WikiNodeType.WIKI_PAGE).append(" ");
+    statement.append("WHERE jcr:uuid = '").append(uuid).append("'");
+    
+    Query q = ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement.toString());
+    QueryResult result = q.execute();
+    RowIterator iter = result.getRows();
+    if (iter.hasNext()) {
+      Row row = iter.nextRow();
+      String path = row.getValue(WikiNodeType.Definition.PATH).getString();
+      Page page = (Page) Utils.getObject(path, WikiNodeType.WIKI_PAGE);
+      return page;
+    }
+    return null;
   }
   
   public void initDefaultTemplatePage(ChromatticSession crmSession, ConfigurationManager configurationManager, String path) {
