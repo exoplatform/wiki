@@ -13,7 +13,7 @@
 	for(component in children) {
 	  if(component.isRendered()){ %>
 		<li>
-			<% uicomponent.renderChildren(); %>
+			<% uicomponent.renderChild(component); %>
 		</li>
 	<%
 	  }
