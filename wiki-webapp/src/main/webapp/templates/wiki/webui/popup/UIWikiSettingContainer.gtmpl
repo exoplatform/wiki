@@ -9,12 +9,6 @@
   //jsmanager.addJavascript("eXo.wiki.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
 %>
 
-<style>
-.UIWikiPortlet .WikiLayout {
-  position: static;
-}
-</style>
-
 <div class="UIWikiSettingContainer" id="$uicomponent.id">
   <div class="SettingItems">
     <%
@@ -40,3 +34,24 @@
     %>
   </div>
 </div>
+
+<!--
+
+<div class="UIWikiSettingContainer" id="$uicomponent.id">
+	<div class="uiTabNormal uiTabInPage">
+		<ul class="nav nav-tabs" id="myTab">
+			<li class="active"><a data-toggle="tab" href="#tab1_2">Permission</a></li>
+			<li><a data-toggle="tab" href="#tab2_2">Template</a></li>
+		</ul>
+		<div class="tab-content" id="myTabContent">
+			<div id="tab1_2" class="tab-pane fade in active">
+				Permission
+			</div>
+			<div id="tab2_2" class="tab-pane fade">
+				Template
+			</div>
+		</div>					
+	</div>
+</div>
+
+-->

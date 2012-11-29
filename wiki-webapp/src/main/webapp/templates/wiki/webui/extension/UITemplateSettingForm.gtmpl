@@ -13,20 +13,23 @@
  requireJs.addScripts("wikiView.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
  %>
 
-<div class="UIForm UITemplateSettingForm UIWikiTemplateForm">
+<div class="uiTemplateSettingForm uiWikiTemplateForm">
 	<%uiform.begin();%>
-	<div class="TemplateControl ClearFix">		  		
-      <div class="TemplateActions" >
-        <a class="AddTemplate"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%>" onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor');"><%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%></a>
-        <a onclick="$addLink" id="$actionId" style="display:none;">&nbsp;</a>
-      </div>
-      <div class="TemplateSearchBox" >	
-        <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
-        <a class="SearchButton" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><label for="<%=uiform.TEMPLATE_SEARCHBOX%>"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UITemplateSettingForm.label.Search")%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></a> 
-      </div>
-  	</div>
-  	<div class="TemplateGrid">
-  	  <% uiform.renderChild(uiform.	TEMPLATE_GRID);	%>
-  	</div>				
+	<div class="templateControl clearfix" style="overflow: hidden">		  		
+      
+    <button class="pull-right btn"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%>" onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor');"><%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%></button>
+    <a onclick="$addLink" id="$actionId" style="display:none;">&nbsp;</a>
+     
+	  <div class="uiSearchInput">
+	    <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
+	  </div>
+  </div>
+  <div class="TemplateGrid">
+  	<% uiform.renderChild(uiform.	TEMPLATE_GRID);	%>
+  </div>				
+  <div class="uiAction">
+		<button class="btn">Select</button>
+		<button class="btn">Cancel</button>
+	</div>	
   <%uiform.end();%>
 </div>
