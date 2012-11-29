@@ -12,7 +12,7 @@
     <% } else { %>
   
       <% if(uicomponent.isNavigationRender()) { %>
-        <div class="UILeftContainerArea">
+        <div class="UILeftContainerArea wikiBox">
           <% uicomponent.renderChild(UIWikiNavigationContainer.class); %>       
         </div>
       <% } %>
@@ -21,7 +21,7 @@
         <div class="ResizeButton"><span></span></div>
       </div>
       
-      <div class="UIRightContainerArea">
+      <div class="UIRightContainerArea wikiBox">
         <% uicomponent.renderChild(UIWikiPageContainer.class); %>
       </div>
       

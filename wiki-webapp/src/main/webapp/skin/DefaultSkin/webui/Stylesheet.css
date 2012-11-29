@@ -960,10 +960,11 @@ table.UIFormGrid div.Id {
 	font-weight: bold;
 }
 
+/****
 .UIWikiPortlet .page {
 	background: url("/wiki/skin/DefaultSkin/webui/UIWikiSearchBox/background/UIWikiSearchBG.png") no-repeat scroll 0px -124px transparent;
 }
-
+****/
 .UIWikiPortlet .attach {
 	background: url("/wiki/skin/DefaultSkin/webui/UIWikiSearchBox/icons/16x16/AttachFileIcon.gif") no-repeat left top;
 }

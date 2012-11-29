@@ -1,5 +1,4 @@
-<div class="UIWikiNavigationContainer">
-<% 	  uiform.begin(); %>  
+<h5 class="titleWikiBox"></h5>
 <%
   List children = uicomponent.getChildren() ;
   for(component in children) {
@@ -8,5 +7,3 @@
     }
   }
 %>
-<% uiform.end(); %>
-</div>
