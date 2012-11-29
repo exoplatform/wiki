@@ -10,39 +10,43 @@
   requireJs.addScripts("wikiView.UIWikiPortlet.renderBreadcrumbs(\"" + uicomponent.id + "\","+ uicomponent.isLink +");");
 %>
 <div class="UIWikiBreadCrumb UIBreadcumbs" id="$uicomponent.id">
-	<ul class="breadcrumb">
-	    <li><a href="#">Home</a> <span class="RightBlackGridArrowIcon">&nbsp;</span></li>
-	    <li><a href="#">wiki</a> <span class="RightBlackGridArrowIcon">&nbsp;</span></li>
-	    <li class="active">Data</li>
-	</ul>
-   <!--<div class="BreadcumbsInfoBar ClearFix">  
+	
+   <ul class="breadcrumb">  
    <% if(breadCumbs!=null && breadCumbs.size() > 0) {
         String note = "LeftBlock"; %>
-        <a class="$note" style="text-transform:capitalize;">
-          <% if (uicomponent.isShowWikiType()) { %>
-            <%= uicomponent.getWikiType(); %> : 
-          <% } %>
-          <%= uicomponent.getWikiName(); %>
-        </a>
-        <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
+		<li>
+			<a>
+			  <% if (uicomponent.isShowWikiType()) { %>
+				<%= uicomponent.getWikiType(); %> : 
+			  <% } %>
+			  <%= uicomponent.getWikiName(); %>
+			</a>
+			<span class="RightBlackGridArrowIcon">&nbsp;</span>
+		</li>
      <% for(i in 0 .. breadCumbs.size()-1) {
+	   def liClass = i == breadCumbs.size()-1?"active":"";
+	   %>
+	   <li class="$liClass">
+	   <%
           breadcumbData = breadCumbs.get(i);
           String title = breadcumbData.getTitle();
           String actionLink = uicomponent.createActionLink(breadcumbData);
           if(uicomponent.isLink && i == breadCumbs.size()-1) note = "Selected";
      %>
        <% if (uicomponent.isLink) {%>
-             <a href="<%=(breadcumbData.getId() == null) ? "#" : actionLink%>" class="$note">$title</a>
+             <a href="<%=(breadcumbData.getId() == null) ? "#" : actionLink%>">$title</a>
        <% } else {%>
-         <a class="$note">$title</a>
+         <a>$title</a>
        <% } %>
          <%      
           if(i != breadCumbs.size()-1) {
          %>
-             <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
+             <span class="RightBlackGridArrowIcon">&nbsp;</span>
          <%
           }
-        }
+        } %>
+		</li>
+		<%
       }
       String actionLabel= uicomponent.getActionLabel();
       if(actionLabel!=null && !actionLabel.equals("")) {  
@@ -51,7 +55,7 @@
          <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
          <span class="ActionLabel" >$label</span>
    <% } %>
-  </div>-->
+  </ul>
 
   <div class="BreadcumPopup">
     <div class="SubBlock"></div>
