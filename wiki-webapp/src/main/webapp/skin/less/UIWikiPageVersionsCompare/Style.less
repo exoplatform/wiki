@@ -1,0 +1,57 @@
+@wikiPinkLighter:           #f7d9d8;
+@wikiGreenLighter:          #dbf5d1;
+
+// Pre & code
+//---------------------
+@wikiPreBorderColor:        #e1e1e1;
+@wikiPreBackgroundColor:    #f7f7f7;
+
+.uiWikiPageVersionsCompare .comparedForm {
+	border-bottom: 1px solid @wikiPreBorderColor;
+	padding-bottom: 23px;
+}
+
+.uiWikiPageVersionsCompare .comparedForm pre {
+	background-color: @wikiPreBackgroundColor;
+    border: 1px solid @wikiPreBorderColor;
+    border-radius: 1px;
+    display: block;
+    white-space: normal;
+    #font > #family > .sans-serif;
+    
+    > span {
+    	&.changeVersionInfo, {
+    		font-weight: bold;
+    	}
+    	
+    	&.admin, &.changes {
+    		font-weight: bold;
+    		color: @linkColor;
+    	}
+    	
+    	&.dateChange {
+    		display: block;
+    	}
+    	
+    	&.lineRemoved {
+    		background-color: @wikiPinkLighter;
+		    text-decoration: line-through;
+    	}
+    	
+    	&.lineAdded {
+    		background-color: @wikiGreenLighter;
+    	}
+    }
+}
+
+.comparedWith {
+	font-weight: bold;
+    padding: 30px 12px 0;
+}
+
+.uiWikiPageVersionsCompare .changedForm {
+	margin-top: 20px;
+	> button {
+		margin: 10px 0;
+	}
+}
