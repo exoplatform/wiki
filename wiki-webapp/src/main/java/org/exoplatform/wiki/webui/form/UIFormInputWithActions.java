@@ -66,8 +66,8 @@ public class UIFormInputWithActions extends UIFormInputSet {
     }
     UIForm uiForm = getAncestorOfType(UIForm.class);
     Writer w = context.getWriter();
-    w.write("<div id=\"" + getId() + "\" class=\"UIFormInputSet " + getId() + "\">");
-    w.write("<table class=\"UIFormGrid\">");
+    w.write("<div id=\"" + getId() + "\" class=\"uiFormInputSet " + getId() + "\">");
+    w.write("<table class=\"uiFormGrid\">");
     ResourceBundle res = context.getApplicationResourceBundle();
 
     for (UIComponent inputEntry : getChildren()) {
@@ -75,20 +75,21 @@ public class UIFormInputWithActions extends UIFormInputSet {
         String label;
         try {
           label = uiForm.getLabel(res, inputEntry.getId());
-          if (inputEntry instanceof UIFormInputBase)
-            ((UIFormInputBase) inputEntry).setLabel(label);
+          if (inputEntry instanceof UIFormInputBase) {
+        	  UIFormInputBase input = ((UIFormInputBase) inputEntry);
+        	  input.setLabel(label);
+        	  input.setHTMLAttribute("placeholder", label);
+          }
         } catch (MissingResourceException ex) {
           label = inputEntry.getId();
           LOG.error("\n " + uiForm.getId() + ".label." + inputEntry.getId() + " not found value");
         }
-        w.write("<tr>");
-        w.write("<td class=\"FieldLabel\">");
-        w.write(label);
-        w.write("</td>");
-        w.write("<td class=\"FieldComponent\">");
+        w.write("<tr>");        
+        w.write("<td class=\"fieldComponent\">");
         renderUIComponent(inputEntry);
         List<ActionData> actions = actionField.get(inputEntry.getName());
         if (actions != null) {
+        w.write("<span class=\"groupPermissionBox\">");    	
           for (ActionData action : actions) {
             String actionLabel;
             try {
@@ -103,23 +104,22 @@ public class UIFormInputWithActions extends UIFormInputSet {
             } else {
               actionLink = getParent().event(action.getActionListener());
             }
-
+            
             if (action.getActionType() == ActionData.TYPE_ICON) {
-              w.write("<img title=\"" + actionLabel + "\" onclick=\"" + actionLink + "\" "
-                  + "src=\"/eXoResources/skin/DefaultSkin/background/Blank.gif\" class=\"" + action.getCssIconClass()
-                  + "\" alt=\"\"/>");
+              w.write("<a class=\"actionIcon\" title=\"" + actionLabel + "\" onclick=\"" + actionLink + "\" data-placement=\"bottom\" rel=\"tooltip\" >" 
+                + "<i class=\"" + action.getCssIconClass() + "\"></i></a>");
               if (action.isShowLabel)
                 w.write(actionLabel);
             } else if (action.getActionType() == ActionData.TYPE_LINK) {
               w.write("<a title=\"" + actionLabel + "\" href=\"" + actionLink + "\">" + actionLabel + "</a>");
             } else if (action.getActionType() == ActionData.TYPE_BUTTON) {
-              w.write("<span class=\"UIAction\"><a class=\"ActionButton LightBlueStyle\" title=\"" + actionLabel + "\" href=\"" + actionLink + "\">" + actionLabel
-                  + "</a></span>");
+              w.write("&nbsp;&nbsp;<button class=\"btn\" title=\"" + actionLabel + "\" onclick=\"" + actionLink + "\">" + actionLabel + "</button>");
             }
             w.write("&nbsp;");
             if (action.isBreakLine())
               w.write("<br/>");
           }
+          w.write("</span>");
         }
         w.write("</td>");
         w.write("</tr>");

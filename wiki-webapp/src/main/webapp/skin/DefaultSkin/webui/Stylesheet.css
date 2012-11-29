@@ -32,7 +32,7 @@
 
 @import url('icons/Stylesheet.css');
 
-@import url('/wiki/skin/wiki.css');
+@import url('/wiki/skin/css/wiki.css');
 
 .TextAlignLeft{
 	text-align: left;

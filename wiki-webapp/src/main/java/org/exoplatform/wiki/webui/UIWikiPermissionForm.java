@@ -109,11 +109,11 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   
   public final static String OPEN_SELECT_MEMBERSHIP_FORM= "OpenSelectMembershipForm";
   
-  public final static String GROUP_ICON = "ActionIcon GroupIcon";
+  public final static String GROUP_ICON = "uiIconGroup";
   
-  public final static String USER_ICON = "ActionIcon UserIcon";
+  public final static String USER_ICON = "uiIconUser";
   
-  public final static String MEMBERSHIP_ICON = "ActionIcon MembershipIcon";
+  public final static String MEMBERSHIP_ICON = "uiIconMembership";
   
   public final static String ADD_ICON = "ActionIcon Add";
   
@@ -145,9 +145,9 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   public UIWikiPermissionForm() throws Exception {
     UIPermissionGrid permissionGrid = addChild(UIPermissionGrid.class, null, null);
     permissionGrid.setPermissionEntries(this.permissionEntries);
-    String [] actionNames = new String[]{OPEN_SELECT_USER_FORM, OPEN_SELECT_GROUP_FORM, 
-                                         OPEN_SELECT_MEMBERSHIP_FORM, ADD_ENTRY};
-    String [] actionIcons = new String[]{USER_ICON, GROUP_ICON, MEMBERSHIP_ICON, ADD_ICON};
+    String [] actionNames = new String[]{OPEN_SELECT_USER_FORM, OPEN_SELECT_MEMBERSHIP_FORM,
+                                         OPEN_SELECT_GROUP_FORM, ADD_ENTRY};
+    String [] actionIcons = new String[]{USER_ICON, MEMBERSHIP_ICON, GROUP_ICON, ADD_ICON};
     List<ActionData> actions = new ArrayList<ActionData>();
     ActionData action;
     for (int i = 0; i < actionNames.length; ++i) {

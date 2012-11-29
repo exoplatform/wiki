@@ -24,10 +24,8 @@
     <td class="center"><label class="uiCheckbox"><% uicomponent.renderChild(checkboxField); %><span></span></label></td>
 <%  }
 %>
-<td>
-  <div class="ActionContainer">
+<td class="center">
    <% if (!isImmutable) { %>
-		<a class="ActionIcon"  title="<%= _ctx.appRes("UIPermissionEntry.title.DeletePermission"); %>" onclick="$deleteLink" ><i class="uiIconDelete"></i></a>
+		<a class="actionIcon"  title="<%= _ctx.appRes("UIPermissionEntry.title.DeletePermission"); %>" onclick="$deleteLink" ><i class="uiIconDelete"></i></a>
    <% } %>
-  </div>
 </td>

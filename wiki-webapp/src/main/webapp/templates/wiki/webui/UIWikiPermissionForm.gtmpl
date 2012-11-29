@@ -9,10 +9,10 @@
   
   uicomponent.renderChild(uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)) ;
 %>
-<div class="UIForm $uicomponent.id">
+<div class="uiForm $uicomponent.id">
   <%uiform.begin()%>
-    <div class="HorizontalLayout">
-      <div class="FormContainer">
+    <div class="horizontalLayout">
+      <div class="formContainer">
         <%
           List children = uicomponent.getChildren() ;
           for(component in children) {
@@ -21,12 +21,12 @@
             }
           }
         %>
-        <div class="UIAction">
+        <div class="uiAction">
         <% for(action in uicomponent.getActions()) { 
                      String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
                      String link = uicomponent.event(action);
                 %>
-          <a onclick="$link" href="javascript:void(0);" class="ActionButton LightBlueStyle">$actionLabel</a>
+          <button onclick="$link" href="javascript:void(0);" class="btn">$actionLabel</button>
           <%}%>  
         </div>
        </div>
