@@ -21,10 +21,10 @@
 			  <% } %>
 			  <%= uicomponent.getWikiName(); %>
 			</a>
-			<span class="RightBlackGridArrowIcon">&nbsp;</span>
+			<i class="RightBlackGridArrowIcon">&nbsp;</i>
 		</li>
      <% for(i in 0 .. breadCumbs.size()-1) {
-	   def liClass = i == breadCumbs.size()-1?"active":"";
+	   def liClass = (i == breadCumbs.size()-1) && (uicomponent.getActionLabel()==null || "".equals(uicomponent.getActionLabel()))?"active":"";
 	   %>
 	   <li class="$liClass">
 	   <%
@@ -33,15 +33,15 @@
           String actionLink = uicomponent.createActionLink(breadcumbData);
           if(uicomponent.isLink && i == breadCumbs.size()-1) note = "Selected";
      %>
-       <% if (uicomponent.isLink) {%>
+       <% if (uicomponent.isLink && !"active".equals(liClass)) {%>
              <a href="<%=(breadcumbData.getId() == null) ? "#" : actionLink%>">$title</a>
        <% } else {%>
-         <a>$title</a>
+         <span>$title</span>
        <% } %>
          <%      
           if(i != breadCumbs.size()-1) {
          %>
-             <span class="RightBlackGridArrowIcon">&nbsp;</span>
+             <i class="RightBlackGridArrowIcon">&nbsp;</i>
          <%
           }
         } %>
@@ -52,8 +52,8 @@
       if(actionLabel!=null && !actionLabel.equals("")) {  
         String label= _ctx.appRes(actionLabel);        
    %>
-         <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
-         <span class="ActionLabel" >$label</span>
+         <li><i class="RightBlackGridArrowIcon"></i><span class="active" >$label</span></li>
+         
    <% } %>
   </ul>
 
