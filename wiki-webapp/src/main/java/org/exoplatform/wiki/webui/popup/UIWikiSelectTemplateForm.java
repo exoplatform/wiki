@@ -18,6 +18,8 @@ package org.exoplatform.wiki.webui.popup;
 
 import java.util.ResourceBundle;
 
+import org.exoplatform.portal.application.PortalRequestContext;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -32,6 +34,7 @@ import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.Template;
+import org.exoplatform.wiki.webui.UIWikiDeletePageConfirm;
 import org.exoplatform.wiki.webui.UIWikiMaskWorkspace;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
 import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
@@ -54,6 +57,7 @@ import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
     events = {
     @EventConfig(listeners = UIWikiSelectTemplateForm.AddPageWithTemplateActionListener.class),
     @EventConfig(listeners = UIWikiSelectTemplateForm.PreviewTemplateActionListener.class),
+    @EventConfig(listeners = UIWikiSelectTemplateForm.CancelActionListener.class),
     @EventConfig(listeners = UIWikiSelectTemplateForm.SearchTemplateActionListener.class) })
 public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPopupComponent {
  
@@ -61,8 +65,8 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
 
   // Note this action is change mode one
   public static final String    ACTION_ADD           = AddPageActionComponent.ACTION + WikiConstants.WITH + "Template";
-
   public static final String    ACTION_SEARCH        = "SearchTemplate";
+  public static final String    ACTION_CANCEL        = "Cancel";
 
   public static final String    SELECT_TEMPLATE_ITER = "SelectTemplateIter";
 
@@ -83,18 +87,23 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
-      String templateId = event.getRequestContext().getRequestParameter(OBJECTID);
-
-      titleInput.setReadOnly(false);
-      commentInput.setRendered(false);
-      Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(), templateId);     
-      titleInput.setValue(template.getTitle());
-      descriptionInput.setValue(template.getDescription());
-      pageEditForm.setTitle(template.getTitle());
-      markupInput.setValue(template.getContent().getText());
+      String templateId = null;
       UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
-      popupContainer.deActivate();
-      wikiPortlet.changeMode(WikiMode.ADDPAGE);
+      if(event.getRequestContext().getRequestParameterValues(OBJECTID) != null)
+        templateId = event.getRequestContext().getRequestParameterValues(OBJECTID)[0].toString();
+      if(templateId == null) {
+      	popupContainer.deActivate();      	
+      } else {
+	      titleInput.setReadOnly(false);
+	      commentInput.setRendered(false);
+	      Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(), templateId);     
+	      titleInput.setValue(template.getTitle());
+	      descriptionInput.setValue(template.getDescription());
+	      pageEditForm.setTitle(template.getTitle());
+	      markupInput.setValue(template.getContent().getText());      
+	      popupContainer.deActivate();
+	      wikiPortlet.changeMode(WikiMode.ADDPAGE);
+      }
     }
   }
   
@@ -120,6 +129,15 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       mask.setShow(true);
       mask.setPopupTitle(res.getString("UIEditorTabs.action.PreviewPage"));
       event.getRequestContext().addUIComponentToUpdateByAjax(mask);
+    }
+  }
+  
+  static public class CancelActionListener extends EventListener<UIWikiSelectTemplateForm> {
+    public void execute(Event<UIWikiSelectTemplateForm> event) throws Exception {
+    	UIWikiSelectTemplateForm form = event.getSource();
+      UIWikiPortlet wikiPortlet = form.getAncestorOfType(UIWikiPortlet.class);
+      UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
+      popupContainer.deActivate();
     }
   }
   
