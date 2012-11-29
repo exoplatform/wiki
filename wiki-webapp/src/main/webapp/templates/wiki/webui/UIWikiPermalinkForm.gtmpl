@@ -8,10 +8,10 @@
   String pageInfoCss = "";
   if (isCurrentPagePublic) {
     pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.public-page");
-    pageInfoCss = "uiUnlock";
+    pageInfoCss = "uiIconUnLock";
   } else {
     pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.restrict-page");
-    pageInfoCss = "uiLock";
+    pageInfoCss = "uiIconLock";
   }
   
   def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
