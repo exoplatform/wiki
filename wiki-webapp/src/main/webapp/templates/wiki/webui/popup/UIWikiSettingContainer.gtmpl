@@ -37,7 +37,7 @@
 
 <!--
 
-<div class="UIWikiSettingContainer" id="$uicomponent.id">
+<div class="uiWikiSettingContainer" id="$uicomponent.id">
 	<div class="uiTabNormal uiTabInPage">
 		<ul class="nav nav-tabs" id="myTab">
 			<li class="active"><a data-toggle="tab" href="#tab1_2">Permission</a></li>
