@@ -1,5 +1,5 @@
 <%
-	import org.exoplatform.wiki.commons.Utils;
+  import org.exoplatform.wiki.commons.Utils;
 
   def rcontext = _ctx.getRequestContext() ;
   String searchLabel=_ctx.appRes("UIWikiSearchBox.label.Search");
@@ -13,23 +13,12 @@
   requireJs.addScripts("wikiView.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
   requireJs.addScripts("wikiView.UIWikiSearchBox.searchMsg ='" + searchForLabel +"' ;");
 %>
-<div class="uiSearchInput pull-right">
+<div class="uiWikiSearchBox uiSearchInput pull-right">
   <% uiform.begin() %>
-    
-	  <a class="AdvancedSearch"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIWikiPortlet.label.Advanced-Search")%>" onclick="<%=uicomponent.event("AdvancedSearch");%>"></a>
-	  <input name="restURL" type="hidden"  rel="tooltip" data-placement="bottom" title="hidden" value="$restUrl" />
-    	
-    <%
-      uiform.renderChild(uiform.FIELD_SEARCHVALUE) ;
-    %>
-		
+	<a class="AdvancedSearch"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIWikiPortlet.label.Advanced-Search")%>" onclick="<%=uicomponent.event("AdvancedSearch");%>"></a>
+	<input name="restURL" type="hidden"  rel="tooltip" data-placement="bottom" title="hidden" value="$restUrl" />
+    <% uiform.renderChild(uiform.FIELD_SEARCHVALUE);%>
   <%uiform.end()%>
- 
-	<ul class="dropdown-menu">
-		<li><a href="#"><b>Mobile</b> Team</a></li>
-		<li><a href="#"><b>Mobile</b> & Designs</a></li>
-		<li><a href="#">Social <b>Mobile</b></a></li>
-		<li><a href="#">There are 2 <b>Mobile</b> apps ...</a></li>
-	</ul> 
- 
+  
+  <ul class="dropdown-menu"></ul> 
 </div>

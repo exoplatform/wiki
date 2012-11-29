@@ -1,4 +1,3 @@
-<!--
 <%
    import org.exoplatform.webui.core.UIComponent;
    import org.exoplatform.webui.form.UIForm;
@@ -19,119 +18,119 @@
    String name = uicomponent.getLabel();
    UIForm uiForm = uicomponent.getAncestorOfType(UIForm.class);
 %>
-<div id="$uicomponent.id">
-   <table class="uiGrid table table-hover table-striped" cellspacing="0">
-      <thead>
-      <tr>
-         <% if (name != null)
-         		{ for (field in beanFields)
-         			{ %>
-         				<th><%=_ctx.appRes(name + ".header." + field)%></th>
-         		<% }
-         			if (beanActions != null)
-         			{ %>
-         				<th><%=_ctx.appRes(name + ".header.action")%></th>
-         		<% }
-         		}
-         		if (name == null)
-         		{
-         			for (field in beanFields)
-         			{ %>
-         				<th><%=_ctx.appRes(uiParent.getName() + ".header." + field)%></th>
-         	 <% }
-         			if (beanActions != null && beanActions.length > 0)
-         			{ %>
-         				<th class="center"><%=_ctx.appRes(uiParent.getName() + ".header.action")%></th>
-         	 <% }
-         		} %>
-      </tr>
-      </thead>
-      <tbody>
-      <% if (uicomponent.getUIPageIterator().getAvailable() < 1)
-      { %>
-      <tr>
-      	 <td style="font-style:italic; color: #FF5604; text-align: center;" colspan="<%=colnum%>">
-            <%=_ctx.appRes("UIGrid.msg.empty")%>
-         </td>
-      </tr>
-      <% }
-      else
-      {
-         def rowClass = null;
-         boolean even = true;
-         for (bean in uicomponent.getBeans())
-         {
-            if (even) rowClass = "EvenRow";
-            else rowClass = "OddRow";
-            even = !even;
-      %>
-      <tr class="$rowClass">
-         <%
-               for (field in beanFields)
-               {
-			      def fieldValue = uicomponent.getFieldValue(bean, field);
-                  def cssClass = "";
-                  if(fieldValue != null) {
-                     def fieldClass = fieldValue.getClass();
-                     if(fieldClass == Integer.class)	cssClass = "number";
-                     else if(java.util.Date.class.isAssignableFrom(fieldClass)) {
-                        def dateFormat = new SimpleDateFormat("HH:mm:ss yyyy-MM-dd");
-                        cssClass = "Datetime";
-                        fieldValue = dateFormat.format(fieldValue);
-                  }
-                  else cssClass = "Text";
-                  } else {
-                     fieldValue = "";
-                  }
-                  String value = fieldValue.toString();
-                  println "<td><div class=\""+cssClass+"\" title='$fieldValue'>"+fieldValue+"</div></td>";
-               }
-               if (beanActions != null && beanActions.length > 0)
-               {
-         %>
-         <td>
-            <div class="ActionContainer">
-               <%
-                     def beanIdField = uicomponent.getBeanIdField();
-                     def beanId = uicomponent.getBeanIdFor(bean);
-                     for (action in beanActions)
-                     {
-                        if (action == null) continue;
-                        String title = _ctx.appRes(uiParent.getName() + ".action.title." + action);
-                        String actionLink = "";
-                        if (uiForm != null)
-                        {
-                           actionLink = uiForm.event(action, uiParent.getId(), beanId);
-                        }
-                        else
-                        {
-                           actionLink = uiParent.event(action, beanId);
-                        }
-                        String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + action;
-                        String anchor = "#" + action;
-               %>
-               <% 
-              
-                if (Utils.getModeFromAction(action)){
-                 %>
-               <a onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" class="${action}Icon" rel="tooltip" data-placement="bottom" title="$title">$title</a>               
-               <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
-               <% } else { %>
-               <a onclick="$actionLink" alt="$action" class="${action}Icon"  rel="tooltip" data-placement="bottom" title="$title">$title</a>
-               <% } 
-              } %>
-            </div>
-         </td>
-         <%
-               }
-         %>
-      </tr>
-      <%
-            }
-         }
-      %>
-      </tbody>
-   </table> 
+<table class="uiGrid table table-hover table-striped" cellspacing="0">
+  <thead>
+  <tr>
+     <th></th>
+     <% if (name != null)
+     		{ for (field in beanFields)
+     			{ %>
+     				<th><%=_ctx.appRes(name + ".header." + field)%></th>
+     		<% }
+     			if (beanActions != null)
+     			{ %>
+     				<th><%=_ctx.appRes(name + ".header.action")%></th>
+     		<% }
+     		}
+     		if (name == null)
+     		{
+     			for (field in beanFields)
+     			{ %>
+     				<th><%=_ctx.appRes(uiParent.getName() + ".header." + field)%></th>
+     	 <% }
+     			if (beanActions != null && beanActions.length > 0)
+     			{ %>
+     				<th class="center"><%=_ctx.appRes(uiParent.getName() + ".header.action")%></th>
+     	 <% }
+     		} %>
+  </tr>
+  </thead>
+  <tbody>
+  <% if (uicomponent.getUIPageIterator().getAvailable() < 1)
+  { %>
+  <tr>
+  	 <td style="font-style:italic; color: #FF5604; text-align: center;" colspan="<%=colnum%>">
+        <%=_ctx.appRes("UIGrid.msg.empty")%>
+     </td>
+  </tr>
+  <% }
+  else
+  {
+     def rowClass = null;
+     boolean even = true;
+     for (bean in uicomponent.getBeans())
+     {
+        if (even) rowClass = "EvenRow";
+        else rowClass = "OddRow";
+        even = !even;
+  %>
+  <tr class="$rowClass">
+     <%
+           for (field in beanFields)
+           {
+		      def fieldValue = uicomponent.getFieldValue(bean, field);
+              def cssClass = "";
+              if(fieldValue != null) {
+                 def fieldClass = fieldValue.getClass();
+                 if(fieldClass == Integer.class)	cssClass = "number";
+                 else if(java.util.Date.class.isAssignableFrom(fieldClass)) {
+                    def dateFormat = new SimpleDateFormat("HH:mm:ss yyyy-MM-dd");
+                    cssClass = "Datetime";
+                    fieldValue = dateFormat.format(fieldValue);
+              }
+              else cssClass = "Text";
+              } else {
+                 fieldValue = "";
+              }
+              String value = fieldValue.toString();
+              println "<td><div class=\""+cssClass+"\" title='$fieldValue'>"+fieldValue+"</div></td>";
+           }
+           if (beanActions != null && beanActions.length > 0)
+           {
+     %>
+     <td>
+        <div class="ActionContainer">
+           <%
+                 def beanIdField = uicomponent.getBeanIdField();
+                 def beanId = uicomponent.getBeanIdFor(bean);
+                 for (action in beanActions)
+                 {
+                    if (action == null) continue;
+                    String title = _ctx.appRes(uiParent.getName() + ".action.title." + action);
+                    String actionLink = "";
+                    if (uiForm != null)
+                    {
+                       actionLink = uiForm.event(action, uiParent.getId(), beanId);
+                    }
+                    else
+                    {
+                       actionLink = uiParent.event(action, beanId);
+                    }
+                    String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + action;
+                    String anchor = "#" + action;
+           %>
+           <% 
+          
+            if (Utils.getModeFromAction(action)){
+             %>
+           <a onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" class="${action}Icon" rel="tooltip" data-placement="bottom" title="$title">$title</a>               
+           <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
+           <% } else { %>
+           <a onclick="$actionLink" alt="$action" class="${action}Icon"  rel="tooltip" data-placement="bottom" title="$title">$title</a>
+           <% } 
+          } %>
+        </div>
+     </td>
+     <%
+           }
+     %>
+  </tr>
+  <%
+        }
+     }
+  %>
+  </tbody>
+</table> 
    
 <%
    if (uicomponent.getUIPageIterator().getAvailablePage() > 1)
@@ -139,11 +138,9 @@
       _ctx.renderUIComponent(uicomponent.getUIPageIterator());
    }
 %>
-</div>
--->
 
+<!--
 <table id="UIWikiGrid" cellspacing="0" class="uiGrid table table-hover table-striped">
-		
 	<tr>
 		<th></th>
  		<th>Template Title</th>
@@ -178,5 +175,5 @@
 			<a title="Preview" class="uiIconPreview" data-placement="bottom" rel="tooltip" href="#"><i class="uiIconPreview"></i></a>
 		</td>
 	</tr>
-	
-</table> 	 
+</table>
+ -->
