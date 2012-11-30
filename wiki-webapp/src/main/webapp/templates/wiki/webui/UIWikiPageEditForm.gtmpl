@@ -97,9 +97,9 @@
 -->
 		<div class="btn-toolbar">
 			<div class="btn-group uiEditorTabs pull-left clearfix" id="UIEditorTabs">
-				<a class="btn" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','RichText','&amp;subComponentId=UIEditorTabs_RichText_&amp;objectId=RichText')"><i class="uiIconRickText"></i>  Rich Text</a>
-				<a class="btn " href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','PreviewPage','&amp;subComponentId=UIEditorTabs_PreviewPage_&amp;objectId=PreviewPage')"><i class="uiIconWatchPage"></i>  Preview</a>
-				<a class="btn " href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','Help','&amp;subComponentId=UIEditorTabs_Help_&amp;objectId=Help')"><i class="uiIconHelp"></i>  Help</a>
+				<button class="btn" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','RichText','&amp;subComponentId=UIEditorTabs_RichText_&amp;objectId=RichText')"><i class="uiIconRickText"></i>  Rich Text</button>
+				<button class="btn " href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','PreviewPage','&amp;subComponentId=UIEditorTabs_PreviewPage_&amp;objectId=PreviewPage')"><i class="uiIconWatchPage"></i>  Preview</button>
+				<button class="btn " href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','Help','&amp;subComponentId=UIEditorTabs_Help_&amp;objectId=Help')"><i class="uiIconHelp"></i>  Help</button>
 			</div>
 		</div>
 	
