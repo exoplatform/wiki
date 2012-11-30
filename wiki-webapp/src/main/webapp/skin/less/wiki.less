@@ -28,6 +28,178 @@
 
 .uiWikiSearchBox .dropdown-menu {position: relative;}
 
+/***** wikiMainLayout *********/
+
+.uiWikiPortlet {
+	background: url('/wiki/skin/DefaultSkin/images/texture.jpg') repeat 0 0;
+}
+
+/************ WikiBox ****************/
+.wikiBox {
+	background: @white;
+	border: 1px solid @tableBorder;
+	.border-radius(5px);
+	.box-shadow(0px 1px 2px rgba(0, 0, 0, 0.08));
+	
+	h5.titleWikiBox {
+		.border-radius(5px 5px 0px 0px );
+		.box-shadow(0px 1px 2px rgba(13, 13, 13, 0.08));
+		background: #f0f0f0;
+		border-bottom: 1px solid @tableBorder;
+		margin: 0px;
+		line-height: 35px;
+		font-weight: bold;
+		color: #333333;
+		padding: 0px 10px;
+	}
+}
+
+/***** WikiLayout *******/
+.wikiBox {
+	h5.titleWikiBox {
+		a {color: #333333;}
+	}
+}
+
+.wikiLayout {
+	margin: 0;
+	position: relative;
+	padding: 0px 25px;
+}
+
+.uiLeftContainerArea {
+	width: 265px;
+	overflow: auto;
+	padding: 0px;
+	min-height: 250px;
+	float:left;
+}
+
+.uiRightContainerArea {
+	padding: 0px;
+	width: 70%;
+	min-height: 250px;
+	float:left;
+}
+
+.uiWikiMiddleArea .UIWikiNavigationContainer {
+	padding: 8px 2px 0 2px;
+	visibility: '';
+	overflow: visible;
+}
+
+.uiWikiMiddleArea .uiWikiPageContainer {
+	margin: 0;
+	overflow: visible;
+	position: relative;
+	
+	.UIWikiPageArea {
+		padding: 0px;
+	}
+}
+
+*+html .uiWikiMiddleArea .uiWikiPageContainer {
+	position: static;
+}
+
+/* uiWikiPageContentArea */
+
+.uiWikiPageContentArea {
+	padding: 0px 15px;
+	overflow: auto;
+}
+
+
+/* -- Begin Resize CSS function -- */
+
+.resizeBar {
+	float: left;
+	width: 30px;
+	
+	.resizeBarContent {
+		width: 15px;
+		cursor:col-resize;
+		position: relative;
+		
+		&:hover {
+			border-right: solid 1px #E1E1E1;
+				
+				.resizeButton {
+				display: block;
+			}
+		}
+	}
+
+	.resizeButton {
+		#gradient .vertical(@white, #f1f1f1);
+		.border-radius(3px 0px 0px 3px);
+		width: 10px;
+		height: 24px;
+		float:right;
+		margin : auto;
+		cursor : pointer;
+		border: 1px solid #E1E1E1;
+		border-right: none;
+		display: none;
+		margin-top: 7px;
+			
+			[class^="uiIcon"] {
+				margin-top: 6px;
+				width: 10px;
+			}
+	}
+
+	.resizeButton:hover{
+		background-color: #f3f3f3;
+	}
+	
+	.showLeftContent {
+		display: block;
+		border: 1px solid #E1E1E1;
+		.border-radius(0px 3px 3px 0px);
+		float: left;
+	}
+}
+
+.resizeBarDisplay {
+	.resizeBarContent {
+		border-right: solid 1px #E1E1E1;
+	}
+	.resizeButton {
+		display: block;
+	}
+}
+
+.resizeNoneBorder {
+	width: 25px;
+	&:hover {
+	cursor: default;
+	}
+	.resizeBarContent:hover {
+		border: none;
+		cursor: default;
+	}
+}
+
+.nonePaddingLeft {
+	padding-left: 0px;
+}
+
+.showLeftContent:hover {
+	background-color: #f3f3f3;
+}
+
+.uiWikiPortletNoSelect {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+/* -- End Resize CSS function -- */
+
 /*****UIWikiPermissionOwner*********/
 
 .groupPermissionBox {

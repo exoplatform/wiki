@@ -133,8 +133,8 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
     str += me.buildNode(dataList.jsonList[i]);
   }
   $(node).html(str);
+  if (this.isRenderLink) {
 	var wikiHome = $(node).find("div.wikihome");
-	
 	if (wikiHome) {
 	  var aElement = $(wikiHome).find("a:first")[0];
 	  var homeUL = $(wikiHome).parents("ul.nodeGroup:first")[0];
@@ -145,6 +145,7 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
 	  homeUL.remove();
 	  $(container).append(remain);
 	}
+  }
   $("*[rel='tooltip']").tooltip();
 }
 

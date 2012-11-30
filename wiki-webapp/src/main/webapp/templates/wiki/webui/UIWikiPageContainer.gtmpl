@@ -6,7 +6,7 @@
   requireJs.addScripts("wikiView.WikiLayout.setHeightRightContent() ;") ; 
 %>
 
-<div class="UIWikiPageContainer" id="$uicomponent.id">
+<div class="uiWikiPageContainer" id="$uicomponent.id">
 <%
   List children = uicomponent.getChildren() ;
   for(component in children) {

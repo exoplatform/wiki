@@ -3,8 +3,7 @@
   import org.exoplatform.wiki.webui.UIWikiPageContainer;
   import org.exoplatform.wiki.webui.UIWikiPageSettingContainer
 %>
-<div class="UIWikiMiddleArea" id="$uicomponent.id">
-  <div class="WikiLayout ClearFix">
+<div class="uiWikiMiddleArea wikiLayout ClearFix" id="$uicomponent.id">
     <% if(uicomponent.isPageSettingContainerRender()) { %>
     
       <% uicomponent.renderChild(UIWikiPageSettingContainer.class); %>       
@@ -12,19 +11,20 @@
     <% } else { %>
   
       <% if(uicomponent.isNavigationRender()) { %>
-        <div class="UILeftContainerArea wikiBox">
+        <div class="uiLeftContainerArea wikiBox">
           <% uicomponent.renderChild(UIWikiNavigationContainer.class); %>       
         </div>
       <% } %>
       
-      <div class="ResizeSideBar">
-        <div class="ResizeButton"><span></span></div>
+      <div class="resizeBar">
+				<div class="resizeBarContent">
+					<div class="resizeButton"><i class="uiIconMiniArrowLeft"></i></div>
+				</div>
       </div>
       
-      <div class="UIRightContainerArea wikiBox">
+      <div class="uiRightContainerArea">
         <% uicomponent.renderChild(UIWikiPageContainer.class); %>
       </div>
       
     <% } %>
-  </div>
 </div>

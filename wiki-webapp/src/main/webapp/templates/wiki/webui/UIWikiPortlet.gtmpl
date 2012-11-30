@@ -59,7 +59,7 @@
 </style>
 
 <!--  -->
-<div class="UIWikiPortlet" id="$uicomponent.id">
+<div class="uiWikiPortlet" id="$uicomponent.id">
   <div class="ParentMaskLayer">
     <div id="KSMaskLayer" class="KSMaskLayer"><span></span></div>
   </div>
