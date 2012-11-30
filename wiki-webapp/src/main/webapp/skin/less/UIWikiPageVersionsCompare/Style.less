@@ -8,27 +8,24 @@
 
 .uiWikiPageVersionsCompare .comparedForm {
 	border-bottom: 1px solid @wikiPreBorderColor;
-	padding-bottom: 23px;
+	padding-bottom: 20px;
 }
 
 .uiWikiPageVersionsCompare .comparedForm pre {
 	background-color: @wikiPreBackgroundColor;
     border: 1px solid @wikiPreBorderColor;
-    border-radius: 1px;
+    .border-radius(2px);
     display: block;
     white-space: normal;
     #font > #family > .sans-serif;
     
-    > span {
-    	&.changeVersionInfo, {
-    		font-weight: bold;
-    	}
-    	
-    	&.admin, &.changes {
-    		font-weight: bold;
+    > b {
+    	&.admin {
     		color: @linkColor;
     	}
-    	
+    }
+    
+    > span {	
     	&.dateChange {
     		display: block;
     	}
@@ -42,6 +39,10 @@
     		background-color: @wikiGreenLighter;
     	}
     }
+    
+    > a.changes {
+		color: @linkColor;
+	}
 }
 
 .comparedWith {
@@ -52,6 +53,31 @@
 .uiWikiPageVersionsCompare .changedForm {
 	margin-top: 20px;
 	> button {
-		margin: 10px 0;
+		margin: 0 0 10px;
+	}
+	
+	> .diff > .diffmodifiedline { 
+		> span {
+			&.diffaddword {
+				background-color: @wikiGreenLighter;
+			}
+			&.diffremoveword {
+				background-color: @wikiPinkLighter;
+			}
+		}
+		> pre {
+			border: none;
+			border-radius: 0;
+			margin: 0;
+			padding: 0;
+			white-space: normal;
+			&.diffaddword {
+				background-color: @wikiGreenLighter;
+			}
+			
+			&.diffremoveword {
+				background-color: @wikiPinkLighter;
+			}
+		}
 	}
 }

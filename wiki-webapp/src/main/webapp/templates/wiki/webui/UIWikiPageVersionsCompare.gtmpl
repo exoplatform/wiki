@@ -26,8 +26,7 @@
   Parameter[] parameters = new Parameter[2];
   if(!"1".equals(fromVersionName)){
     String previous = String.valueOf(Integer.valueOf(fromVersionName) - 1);
-    previousCompare = _ctx.appRes("UIWikiPageVersionsCompare.label.PreviousAndNextCompare").replace("{0}", 
-	previous + " to " + fromVersionName);
+    previousCompare = "<< " + _ctx.appRes("UIWikiPageVersionsCompare.label.PreviousAndNextCompare").replace("{0}", "<b>" + previous + "</b> to <b>" + fromVersionName + "</b>");
     parameters[0] = new Parameter(uicomponent.FROM_PARAM, previous);
     parameters[1] = new Parameter(uicomponent.TO_PARAM, fromVersionName);
     previousCompareLink = uicomponent.event(uicomponent.COMPARE_ACTION, null, parameters);
@@ -41,7 +40,7 @@
   String nextCompareLink = "";
   if(!toVersionName.equals(uicomponent.getCurrentVersionIndex())){
     String next = String.valueOf(Integer.valueOf(toVersionName) + 1);
-    nextCompare = _ctx.appRes("UIWikiPageVersionsCompare.label.PreviousAndNextCompare").replace("{0}", toVersionName + " to " + next);
+    nextCompare = _ctx.appRes("UIWikiPageVersionsCompare.label.PreviousAndNextCompare").replace("{0}", "<b>" + toVersionName + "</b> to <b>" + next + "</b>") + " >>";
     parameters[0] = new Parameter(uicomponent.FROM_PARAM, toVersionName);
     parameters[1] = new Parameter(uicomponent.TO_PARAM, next);
     nextCompareLink = uicomponent.event(uicomponent.COMPARE_ACTION, null, parameters);
@@ -50,11 +49,11 @@
   }
   
   String fromChangeVersionInfoLabel = _ctx.appRes("UIWikiPageVersionsCompare.label.ChangeVersionInfo");
-  fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{0}", fromVersionName +  "</span>");
-  fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{1}", "<span class=\"admin\">" + fromVersionAuthor + "</span>");
+  fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{0}", fromVersionName +  "</b>");
+  fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{1}", "<b class=\"admin\">" + fromVersionAuthor + "</b>");
   String toChangeVersionInfoLabel = _ctx.appRes("UIWikiPageVersionsCompare.label.ChangeVersionInfo");
-  toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{0}", toVersionName +  "</span>");
-  toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{1}", "<span class=\"admin\">" + toVersionAuthor + "</span>");
+  toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{0}", toVersionName +  "</b>");
+  toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{1}", "<b class=\"admin\">" + toVersionAuthor + "</b>");
   String wordAddedRemovedLabel = _ctx.appRes("UIWikiPageVersionsCompare.label.this-word-was-added-removed");
   wordAddedRemovedLabel = wordAddedRemovedLabel.replace("{0}", "</span><span class=\"lineRemoved\">");
   wordAddedRemovedLabel = wordAddedRemovedLabel.replace("{1}", "</span><span>");
@@ -64,25 +63,25 @@
 	<div class="comparedForm clearfix">
 		<h4>Compare Versions</h4>
 		<pre class="changeVersionForm pull-left">
-			<span class="changeVersionInfo"><%= fromChangeVersionInfoLabel %>
+			<b class="changeVersionInfo"><%= fromChangeVersionInfoLabel %>
 			<span class="dateChange"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.DateChange").replace("{0}", fromUpdatedDate); %>.</span>
-			<span class="changes" onclick="$previousCompareLink"><% if(!StringUtils.isEmpty(previousCompare)) {%><i class="uiIconPrevArrow"><%}%></i><%= previousCompare %></span>
+			<a class="changes" href="$previousCompareLink"><%= previousCompare %></a>
 		</pre>
 		<div class="comparedWith pull-left"> <%= _ctx.appRes("UIWikiPageVersionsCompare.label.ComparedWith"); %> </div>
 		<pre class="changeVersionForm pull-left">
-			<span class="changeVersionInfo"><%= toChangeVersionInfoLabel %>
+			<b class="changeVersionInfo"><%= toChangeVersionInfoLabel %>
 			<span class="dateChange"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.DateChange").replace("{0}", toUpdatedDate); %>.</span>
-			<span class="changes" onclick="$nextCompareLink"><%= nextCompare %><% if(!StringUtils.isEmpty(nextCompare)) {%><i class="uiIconNextArrow"></i><%}%></span>
+			<a class="changes" href="$nextCompareLink"><%= nextCompare %></a>
 		</pre>
 		<pre class="changeVersionForm pull-right">
-			<span class="changeVersionInfo"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Key"); %></span><br />
+			<b class="changeVersionInfo"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Key"); %></b><br />
 			<span class="lineRemoved"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.this-line-was-removed"); %></span><br />
 			<span><%= wordAddedRemovedLabel %><br />
 			<span class="lineAdded"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.this-line-was-added"); %></span>
 		</pre>
 	</div>
 	<div class="changedForm">
-		<strong><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Changes").replace("{0}",  String.valueOf(uicomponent.changes)); %></strong><br />
+		<h6><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Changes").replace("{0}",  String.valueOf(uicomponent.changes)); %></h6>
 		<button class="btn" onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$showHistory');"> <%= _ctx.appRes("UIWikiPageVersionsCompare.label.ViewPageHistory"); %></button><br />
 		<a style="display:none" id="$showHistoryLinkId" onclick="$showHistoryLink"></a>
 		<%= uicomponent.differencesAsHTML %>
