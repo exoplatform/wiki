@@ -39,7 +39,7 @@
 %>
 <div class="UIWikiPageInfoArea">
   <div class="TxtFeed">
-      <span class="label">V2</span>
+    <span class="label">&nbsp;V$versionsTotal &nbsp;</span>&nbsp;&nbsp;
 	  ${addedByLabel}&nbsp;-&nbsp;$lastModifiedByLabel
 	  <!-- View change -->
 	  <% if (versionsTotal>1) { %>
@@ -50,9 +50,9 @@
     &nbsp;-&nbsp;
 	  <!-- Restrict or public -->
 	  <% if (isCurrentPagePublic) { %>
-        <a title="$publicLinkTitle" alt="$publicLinkTitle" class="ActionLink $pageInfoCss" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Public")%></a>
+        <a rel="tooltip" data-placement="bottom" title="$publicLinkTitle" alt="$publicLinkTitle" class="ActionLink $pageInfoCss" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Public")%></a>
       <% } else { %>
-        <a title="$restrictLinkTitle" alt="$restrictLinkTitle" class="ActionLink $pageInfoCss" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
+        <a rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" alt="$restrictLinkTitle" class="ActionLink $pageInfoCss" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
       <% }%>
       &nbsp;-&nbsp;
 	  
