@@ -39,7 +39,7 @@ import org.exoplatform.wiki.webui.control.listener.UIEditorTabsActionListener;
  * Apr 26, 2010  
  */
 @ComponentConfig(
-  template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
+  template = "app:/templates/wiki/webui/control/action/HelpActionComponent.gtmpl",
   events = {
     @EventConfig(listeners = HelpActionComponent.HelpActionListener.class, phase = Phase.DECODE)
   }

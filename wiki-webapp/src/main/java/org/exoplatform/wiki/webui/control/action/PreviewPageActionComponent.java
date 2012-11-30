@@ -49,7 +49,7 @@ import org.xwiki.rendering.syntax.Syntax;
  * Apr 26, 2010  
  */
 @ComponentConfig(
-  template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",          
+  template = "app:/templates/wiki/webui/control/action/PreviewActionComponent.gtmpl",          
   events = {
     @EventConfig(listeners = PreviewPageActionComponent.PreviewPageActionListener.class, phase = Phase.DECODE)
   }
