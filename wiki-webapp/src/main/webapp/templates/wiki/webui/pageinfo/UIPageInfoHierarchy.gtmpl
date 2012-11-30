@@ -6,18 +6,23 @@
   def parentTitle = parentPage != null ? parentPage.getTitle() : "";
 %>
 
-<div class="UIPageInfoItem UIPageInfoHierarchy">
-<div class="UIPageInfoItemTitle"><%= _ctx.appRes("UIWikiPageInfo.label.hierarchy")%></div>
+<div class="uiPageInfoItem uiPageInfoHierarchy">
+	<h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.hierarchy")%></h6>
   <% if (parentPage != null) { %>
-  <span class="label"><%= _ctx.appRes("UIWikiPageInfo.label.parent-page")%></span>
-  <div class="content">
-    <div class="NodeLabel">
-      <a href="$parentLink" rel="tooltip" data-placement="bottom" title="$parentTitle" style="margin-left:15px;">$parentTitle</a>
-    </div>
-  </div>
-  <% } %>
-  <span class="label"><%= _ctx.appRes("UIWikiPageInfo.label.child-pages")%></span>
-  <div class="content">
-    ${uicomponent.renderHierarchy()}
-  </div>
+  <div class="pageInfoItemBody">
+	  <div><%= _ctx.appRes("UIWikiPageInfo.label.parent-page")%></div>
+	  <ul class="content">
+	    <li class="nodeLabel">
+	      <i class="uiIconArrowRight"></i>
+	      <a href="$parentLink" rel="tooltip" data-placement="bottom" title="$parentTitle">$parentTitle</a>
+	    </li>
+	  </ul>
+	  <% } %>
+	  <div><%= _ctx.appRes("UIWikiPageInfo.label.child-pages")%></div>
+	  <ul>
+	    <li class="nodeLabel">
+	    	<a href="javascrip:void(0);">${uicomponent.renderHierarchy()}</a>
+	     </li>
+	  </ul>
+	</div>
 </div>

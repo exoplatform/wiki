@@ -6,7 +6,7 @@
   _ctx.put("currentWikiPage", currentWikiPage);
  %>
 
-<div class="UIWikiPageInfo" id="$uicomponent.id">
+<div class="uiWikiPageInfo" id="$uicomponent.id">
   <table class="UIWikiPageInfoLayoutTable">
     <tr class="UIWikiPageInfoLayoutRow">
         <td class="UIWikiPageInfoLayoutCell">

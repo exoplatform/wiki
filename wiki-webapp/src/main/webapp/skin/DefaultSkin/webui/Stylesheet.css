@@ -73,11 +73,12 @@
 .UIWikiPortlet a span {
 	cursor: pointer;
 }
-
+/*
 .UIWikiPortlet a:hover {
 	cursor: pointer;
 	text-decoration: underline
 }
+*/
 
 .UIWikiPortlet .UIAction a {
 	text-decoration: none;

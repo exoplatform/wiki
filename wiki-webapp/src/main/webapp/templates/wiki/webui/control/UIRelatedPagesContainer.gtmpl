@@ -3,73 +3,64 @@
   import org.exoplatform.wiki.webui.control.action.AddRelatedPageActionComponent;
   import org.exoplatform.wiki.webui.control.action.RemoveRelatedPageActionComponent;
  %>
-<div class="UIPageInfoItem UIPageInfoRelatedPage">
-	<div class="UIPageInfoItemTitle"><%= _ctx.appRes("UIWikiPageInfo.label.related-pages") %></div>
-	  <div class="UIPageInfoItemBody">
+<div class="uiPageInfoItem uisPageInfoRelatedPage">
+	<h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.related-pages") %></h6>
 	    
-	    <%
-	      def currentWikiPage = uicomponent.getCurrentPage();
-	      def relatedPages = currentWikiPage.getRelatedPages(); 
-	    %>
-	    <table class=" uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
-	      <thead>
-	        <tr>
-	          <th ><%= _ctx.appRes("UIWikiPageInfo.label.wiki")%></th>
-	          <th ><%= _ctx.appRes("UIWikiPageInfo.label.related-pages")%></th>
-	          <% if (uicomponent.isHasExtension()) { %>
-            <th class="center"><%= _ctx.appRes("UIWikiPageInfo.label.actions")%></th>
-            <%  }%>
-	        </tr>
-	      </thead>
-	      <tbody>
-	      <%
-	       def breadcrumbComponent = uicomponent.breadcrumb;
-	       def rowClass = "OddRow";
-	       def isOddRow = true;
-	       relatedPages.each {rp ->
-	       def wikiParams = org.exoplatform.wiki.utils.Utils.getWikiPageParams(rp);
-	       def breadcrumbDatas = uicomponent.getBreadcrumbDatas(rp);
-	       
-	       breadcrumbComponent.setBreadCumbs(breadcrumbDatas);
-	       breadcrumbComponent.setId(breadcrumbComponent.getId()+ IdGenerator.generate());
-         def rmAction = null; 
-	       if (uicomponent.isHasExtension()) {
-         def rmComponent = uicomponent.getChild(RemoveRelatedPageActionComponent.class);
-	       rmAction = rmComponent.getRemovePageActionLink(wikiParams);
-         }
-	       if(isOddRow) {
-	         rowClass = "EvenRow";
-	       } else {
-	         rowClass = "OddRow";
-	       }
-	       isOddRow = !isOddRow;
-	       %>
-	        <tr class="$rowClass">
-	          <td>
-	            ${wikiParams.getType()}
-	          </td>
-	          <td>
-	           <% uicomponent.renderChild(breadcrumbComponent); %>
-	          </td>
-            <% if(uicomponent.isHasExtension()) {%>
-	          <td>
-	            <div class="ActionContainer"><a href="$rmAction" class="ActionIcon"  rel="tooltip" data-placement="bottom" title="Delete Page"><i class="uiIconDelete"></i></a></div>
-	          </td>
-            <% }%>
-	        </tr>
-	       <% } %>
-	       
-	       <% if (relatedPages.size() == 0) { %>
-	       	<tr class="OddClass">
-	          <td colspan="3"></td>
-	       	</tr>
-	       <% } %>
-	      </tbody>
-	    </table>
-	    <% if(uicomponent.isHasExtension()) {
-      uicomponent.renderChild(AddRelatedPageActionComponent.class);
-      }
-      %>
+	<%
+	  def currentWikiPage = uicomponent.getCurrentPage();
+	  def relatedPages = currentWikiPage.getRelatedPages(); 
+	%>
+	<table class="uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+	  <thead>
+	    <tr>
+	      <th ><%= _ctx.appRes("UIWikiPageInfo.label.wiki")%></th>
+	      <th ><%= _ctx.appRes("UIWikiPageInfo.label.related-pages")%></th>
+	      <% if (uicomponent.isHasExtension()) { %>
+	    <th class="center"><%= _ctx.appRes("UIWikiPageInfo.label.actions")%></th>
+	    <%  }%>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  <%
+	   def breadcrumbComponent = uicomponent.breadcrumb;
+	  
+	   relatedPages.each {rp ->
+	   def wikiParams = org.exoplatform.wiki.utils.Utils.getWikiPageParams(rp);
+	   def breadcrumbDatas = uicomponent.getBreadcrumbDatas(rp);
 	   
-	</div>
+	   breadcrumbComponent.setBreadCumbs(breadcrumbDatas);
+	   breadcrumbComponent.setId(breadcrumbComponent.getId()+ IdGenerator.generate());
+	 def rmAction = null; 
+	   if (uicomponent.isHasExtension()) {
+	 def rmComponent = uicomponent.getChild(RemoveRelatedPageActionComponent.class);
+	   rmAction = rmComponent.getRemovePageActionLink(wikiParams);
+	 }
+	   
+	   %>
+	    <tr>
+	      <td>
+	        ${wikiParams.getType()}
+	      </td>
+	      <td>
+	       <% uicomponent.renderChild(breadcrumbComponent); %>
+	      </td>
+	    <% if(uicomponent.isHasExtension()) {%>
+	      <td class="center">
+	        <a href="$rmAction" class="actionIcon" rel="tooltip" data-placement="bottom" title="Delete Page"><i class="uiIconDelete"></i></a></div>
+	      </td>
+	    <% }%>
+	    </tr>
+	   <% } %>
+	   
+	   <% if (relatedPages.size() == 0) { %>
+	   	<tr>
+	      <td colspan="3"></td>
+	   	</tr>
+	   <% } %>
+	  </tbody>
+	</table>
+	<% if(uicomponent.isHasExtension()) {
+	  uicomponent.renderChild(AddRelatedPageActionComponent.class);
+	  }
+	  %>
 </div>
