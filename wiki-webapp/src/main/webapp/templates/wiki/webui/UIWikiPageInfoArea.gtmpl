@@ -28,18 +28,11 @@
   String totalAttachmentsLabel = "<strong>" + attachmentsTotal + "</strong>";
   String restrictLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.restrict-link");
   String publicLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.public-link");
-  
-  String pageInfoCss = "";
   boolean isCurrentPagePublic = uicomponent.isCurrentPagePublic();
-  if (isCurrentPagePublic) {
-    pageInfoCss = "uiIconUnlock";
-  } else {
-    pageInfoCss = "uiIconLock";
-  }
 %>
 <div class="uiWikiPageInfoArea">
   <div class="txtFeed">
-    <span class="label">&nbsp;V$versionsTotal &nbsp;</span>&nbsp;&nbsp;
+    <span class="label">&nbsp;V$versionsTotal &nbsp;</span>&nbsp;
 	${addedByLabel}&nbsp;-&nbsp;$lastModifiedByLabel
 	<!-- View change -->
 	<% if (versionsTotal>1) { %>
@@ -50,14 +43,14 @@
     &nbsp;-&nbsp;
     <!-- Restrict or public -->
     <% if (isCurrentPagePublic) { %>
-      <a rel="tooltip" data-placement="bottom" title="$publicLinkTitle" alt="$publicLinkTitle" class="$pageInfoCss" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Public")%></a>
+      <i class='uiIconUnlock'></i><a rel="tooltip" data-placement="bottom" title="$publicLinkTitle" alt="$publicLinkTitle" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Public")%></a>
     <% } else { %>
-      <a rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" alt="$restrictLinkTitle" class="$pageInfoCss" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
+      <i class='uiIconLock'></i><a rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" alt="$restrictLinkTitle" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
     <% }%>
     &nbsp;-&nbsp;
 	  
-    <i class='uiIconAttach'></i><a href="$togglelink"><%= totalAttachmentsLabel %></a>  
+    <i class='uiIconAttach'></i>&nbsp;<a href="$togglelink"><%= totalAttachmentsLabel %></a>  
     &nbsp;-&nbsp;
-    <i class="uiIconRevision"></i><a href="<%=uicomponent.event(uicomponent.SHOW_REVISION);%>"><%=_ctx.appRes("UIWikiPageInfoArea.label.TotalRevisions")%></a>
+    <i class="uiIconRevision"></i>&nbsp;<a href="<%=uicomponent.event(uicomponent.SHOW_REVISION);%>"><%=_ctx.appRes("UIWikiPageInfoArea.label.TotalRevisions")%></a>
   </div>
 </div>
