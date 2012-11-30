@@ -82,6 +82,11 @@ public class UIWikiSettingContainer extends UIExtensionContainer implements UIPo
       if (extensions != null) {
         for (int i = 0; i < extensions.size(); i++) {
           UIComponent component = manager.addUIExtension(extensions.get(i), extContext, this);
+          try {
+            checkToUpdateData(component);
+          } catch (Exception e) {
+            log.warn("Can not get permission data", e);
+          }
           items.add(component.getId());
           if (activeItem == null) {
             setActiveItem(component.getId());
@@ -92,13 +97,12 @@ public class UIWikiSettingContainer extends UIExtensionContainer implements UIPo
     // To prevent active component from being hidden
     getChildById(activeItem).setRendered(true);
     super.processRender(context);
-  }
+  }  
   
-  private void checkToUpdateData() throws Exception {
-    if (activeItem == null) {
+  private void checkToUpdateData(UIComponent component) throws Exception {
+    if (component == null) {
       return;
-    }
-    UIComponent component = getChildById(activeItem);
+    }    
     if (component instanceof UIWikiPermissionForm) {
       UIWikiPermissionForm uiWikiPermissionForm = (UIWikiPermissionForm) component;
       uiWikiPermissionForm.setScope(Scope.WIKI);
@@ -120,12 +124,7 @@ public class UIWikiSettingContainer extends UIExtensionContainer implements UIPo
 
   public void setActiveItem(String activeItem) {
     if (StringUtils.isEmpty(this.activeItem) || !this.activeItem.equals(activeItem)) {
-      this.activeItem = activeItem;
-      try {
-        checkToUpdateData();
-      } catch (Exception e) {
-        log.warn("Can not get permission data", e);
-      }
+      this.activeItem = activeItem;      
     }
   }
 

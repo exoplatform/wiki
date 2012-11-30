@@ -6,52 +6,50 @@
   def requireJs = jsManager.getRequireJS();
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
-  //jsmanager.addJavascript("eXo.wiki.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
+  List<String> items  = uicomponent.getItems();
 %>
 
-<div class="UIWikiSettingContainer" id="$uicomponent.id">
-  <div class="SettingItems">
-    <%
-     List<String> items  = uicomponent.getItems();
-     for (int i=0;i< items.size();i++) {
-       String link = uicomponent.event( uicomponent.ACTION, items.get(i)) ;
-       String selectedClass ="";
-       if (items.get(i).equals(uicomponent.getActiveItem())){
-         selectedClass = "Selected";
-       }
-    %>
-       <div class="Item $selectedClass">
-         <a href="$link"><%= _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i)) %></a>
-       </div>  
-    <%} %>   
-  </div>
-  
-  <div class="VerticalLine"></div>
-  
-  <div class="Content"> 
-    <%
-    uicomponent.renderChild(uicomponent.getActiveItem());
-    %>
-  </div>
-</div>
-
-<!--
 
 <div class="uiWikiSettingContainer" id="$uicomponent.id">
-	<div class="uiTabNormal uiTabInPage">
+  	<div class="uiTabNormal uiTabInPage">
 		<ul class="nav nav-tabs" id="myTab">
-			<li class="active"><a data-toggle="tab" href="#tab1_2">Permission</a></li>
-			<li><a data-toggle="tab" href="#tab2_2">Template</a></li>
+                <%
+     			for (int i=0;i< items.size();i++) {
+       				String selectedClass ="";
+       				if (items.get(i).equals(uicomponent.getActiveItem())){
+         				selectedClass = "class=\"active\"";
+       				}
+                                String label = _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i));
+	 		%>
+	       			<li $selectedClass>
+					<a data-toggle="tab" href="#$label"><%= label %></a>
+		        	</li>
+			<%
+			}	
+    		%>		
 		</ul>
-		<div class="tab-content" id="myTabContent">
-			<div id="tab1_2" class="tab-pane fade in active">
-				Permission
-			</div>
-			<div id="tab2_2" class="tab-pane fade">
-				Template
-			</div>
+
+                
+		<div class="tab-content" id="myTabContent">			
+ 		<%
+			for (int i=0;i< items.size();i++) {
+				String link = uicomponent.event( uicomponent.ACTION, items.get(i)) ;                               
+       				String selectedClass ="";
+       				if (items.get(i).equals(uicomponent.getActiveItem())){
+         				selectedClass = " in active";
+       				}
+                                String label = _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i));
+			%>
+				<div id="$label" class="tab-pane fade$selectedClass"><div class="Content"> 
+					<%
+					  	uicomponent.renderChild(items.get(i));
+					%>
+				</div></div>
+			<%
+			}
+		%>	
+             			
+                        </div>
 		</div>					
 	</div>
 </div>
-
--->
