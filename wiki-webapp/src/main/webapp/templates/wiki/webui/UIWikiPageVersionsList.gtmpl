@@ -29,13 +29,13 @@
   String compareActionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + compareAction;
   String compareActionLink = uicomponent.event(compareAction);
 %>
-<div class="UIWikiPageVersionsList UIAttachmentUploadContainer">
+<div class="uiWikiPageVersionsList uiAttachmentUploadContainer">
  <% uiform.begin(); %>
-  <div class="HistoryLabel"><%= _ctx.appRes("UIWikiPageVersionsList.label.HistoryLabel"); %></div>
-	<div class="UIAction TextAlignLeft" >
-    <a href="javascript:void(0);" class="ActionButton LightBlueStyle RefreshModeTarget"><%= _ctx.appRes("UIWikiPageVersionsList.label.CompareSelected"); %></a>
-    <a onclick="$compareActionLink" id="$compareActionId" style="display:none;"></a> 
-  </div>
+  <div class="historyLabel"><strong><%= _ctx.appRes("UIWikiPageVersionsList.label.HistoryLabel"); %></strong></div>
+	<div class="compareSelect">
+		<button  class="btn btn-primary refreshModeTarget"><%= _ctx.appRes("UIWikiPageVersionsList.label.CompareSelected"); %></button>
+		<a onclick="$compareActionLink" id="$compareActionId" style="display:none;"></a>	
+	</div>
     <table cellspacing="0" borderspacing="0" class="uiFormGrid uiGrid table table-hover table-striped">
       <thead >
         <tr>
@@ -77,9 +77,11 @@
         %>
         <tr class="$rowClass">
           <td>
-            <%
+            <label class="uiCheckbox"><%
               uicomponent.renderField(vertionId);
             %>
+			<span></span>
+			</label>
           </td>
           <td >
             <label for="<%=versionNumber%>">
@@ -90,8 +92,8 @@
           <td><%=df.format(frozenNode.getUpdatedDate())%></td>
           <td><%=author%></td>
           <td><%=((comment != null) ? comment : "")%></td>
-          <td>
-          	<div class="ActionContainer"><% uicomponent.renderRestoreRevisionActions(versionNumber); %></div>
+          <td class="center">
+          	<% uicomponent.renderRestoreRevisionActions(versionNumber); %>
           </td>
         </tr>
         <%}%>
