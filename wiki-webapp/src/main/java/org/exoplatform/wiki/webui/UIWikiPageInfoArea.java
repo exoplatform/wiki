@@ -96,25 +96,26 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
   public static class ToggleAttachmentsActionListener extends EventListener<UIWikiPageInfoArea> {
     @Override
     public void execute(Event<UIWikiPageInfoArea> event) throws Exception {
-      UIWikiBottomArea wikiBottomArea = event.getSource().getAncestorOfType(UIWikiBottomArea.class);
-      UIAttachmentContainer attachform = wikiBottomArea.findFirstComponentOfType(UIAttachmentContainer.class);
+      UIWikiPortlet uiWikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
+      UIWikiBottomArea bottomArea = uiWikiPortlet.findFirstComponentOfType(UIWikiBottomArea.class);
+      UIAttachmentContainer attachform = bottomArea.findFirstComponentOfType(UIAttachmentContainer.class);
       if (attachform.isRendered()) {
         attachform.setRendered(false);
       } else {
         attachform.setRendered(true);
-        UIWikiPageVersionsList pageVersions = wikiBottomArea.findFirstComponentOfType(UIWikiPageVersionsList.class);
+        UIWikiPageVersionsList pageVersions = bottomArea.findFirstComponentOfType(UIWikiPageVersionsList.class);
         if (pageVersions.isRendered()) {
           pageVersions.setRendered(false);
         }
       }
-      event.getRequestContext().addUIComponentToUpdateByAjax(wikiBottomArea.getParent());
+      event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea.getParent());
     }
   }
 
   public static class ShowRevisionActionListener extends EventListener<UIWikiPageInfoArea> {
     public void execute(Event<UIWikiPageInfoArea> event) throws Exception {
-      UIWikiPageInfoArea infoArea = event.getSource();
-      UIWikiBottomArea bottomArea = infoArea.getParent();
+      UIWikiPortlet uiWikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
+      UIWikiBottomArea bottomArea = uiWikiPortlet.findFirstComponentOfType(UIWikiBottomArea.class);
       UIWikiPageVersionsList pageVersions = bottomArea.getChild(UIWikiPageVersionsList.class);
       if (pageVersions.isRendered()) {
         pageVersions.setRendered(false);
