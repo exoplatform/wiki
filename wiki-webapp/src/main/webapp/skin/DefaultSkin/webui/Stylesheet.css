@@ -616,26 +616,6 @@ table.UIFormGrid div.Id {
 	margin-top: -30px;
 }
 
-.UIWikiPageContentArea span.EditSection a {
-	background: url("/wiki/skin/DefaultSkin/webui/background/EditContentIcon.png") no-repeat scroll left top transparent;
-	line-height: 24px;
-	margin: 0 -40px 0 0;
-	display: inline-block;
-	visibility: visible;
-	text-decoration: none;
-	font-size: 12px;
-}
-
-.UIWikiPageContentArea .EditSection .wikiexternallink .wikimodel-freestanding {
-	margin: 0 6px 0 0;
-	width: 18px;
-	height: 18px;
-}
-
-.UIWikiPageContentArea span.EditSection a span {
-	visibility: hidden;
-}
-
 .UIWikiPageContentArea .section-container {
 	padding: 2px 0px;
 }
