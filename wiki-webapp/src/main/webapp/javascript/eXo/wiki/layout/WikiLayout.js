@@ -88,7 +88,12 @@ WikiLayout.prototype.init = function(prtId, _userName) {
     this.wikiLayout = $(portlet).find('div.uiWikiMiddleArea')[0];
     this.resizeBar = $(this.wikiLayout).find('div.resizeBar')[0];
     this.colapseLeftContainerButton = $(this.wikiLayout).find('div.resizeButton')[0];
-    var showLeftContainer = eXo.wiki.WikiLayout.getCookie(this.userName + "_ShowLeftContainer") == 'true'?'none':'block';
+    var showLeftContainer = eXo.wiki.WikiLayout.getCookie(this.userName + "_ShowLeftContainer");
+	if (showLeftContainer) {
+      showLeftContainer = showLeftContainer=='true'?'none':'block';
+	}else {
+      showLeftContainer = 'none';
+	}
     this.verticalLine = $(this.wikiLayout).find('div.VerticalLine')[0];
     if (this.resizeBar) {
       this.leftArea = $(this.resizeBar).prev('div')[0];
