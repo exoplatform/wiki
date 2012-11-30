@@ -36,13 +36,13 @@
   requireJs.addScripts("wikiEdit.UIWikiPageEditForm.setRestParam('" + wikiType + "', '" + wikiOwner + "', '" + pageId + "', '" + initDraftName + "');");
   requireJs.addScripts("wikiEdit.UIWikiPageEditForm.synPublishActivityCheckboxesStatus('" + uiform.FIELD_PUBLISH_ACTIVITY_UPPER + "','" + uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM + "');");
 %>
-<div class="UIWikiPageEditForm">
+<div class="uiWikiPageEditForm">
 <% uiform.begin();%>
 
 
 <!--
 <<<<<<< HEAD
-  <div class="UIEditUpper ClearFix">
+  <div class="UIEditUpper clearfix">
     <% uiform.renderChild(uiform.TITLE_CONTROL); %>
     <div class="UIWikiPageEditForm_MessageArea" style="float:left"></div>
     <div class="RightWrap">
@@ -58,13 +58,13 @@
   <%
    uiform.renderChild(uiform.FIELD_TEMPLATEDESCTIPTION);  
   %>
-  <div class="ClearFix ActionContainer">
+  <div class="clearfix actionContainer">
   <%
    uiform.renderChild(uiform.EDITOR_TABS);
   %>
   </div>
 
-  <div class="UIWikiNotificationContainer ClearFix">
+  <div class="UIWikiNotificationContainer clearfix">
     <% for(String message : notificationMessages) { %>
       <%= message %>
     <% } %>
@@ -72,7 +72,7 @@
 -->
 
 
-  <div class="UIWikiPageContainer ClearFix">
+  <div class="uiWikiPageContainer clearfix">
   <%
     uiform.renderChild(uiform.HELP_PANEL);
     textAreaInput = uiform.getUIFormTextAreaInput(uiform.FIELD_CONTENT)
@@ -80,8 +80,8 @@
     if(uicomponent.isSidePanelRendered() && uiform.getUIFormTextAreaInput(uiform.FIELD_CONTENT).isRendered()){
       textAreaInput.setColumns(92);
   %>
-	<div class="UIColsLeftsEditForm">
-	  <div class="UIEditUpper">
+	<div class="uiColsLeftsEditForm">
+	  <div class="uiEditUpper">
 		<%
 		  uiform.renderChild(uiform.TITLE_CONTROL);
 		%>
@@ -90,22 +90,22 @@
 	  <%
 	   uiform.renderChild(uiform.FIELD_TEMPLATEDESCTIPTION);  
 	  %>
-	  <div class="ActionContainer clearfix">
+	  <div class="actionContainer clearfix">
 <!--		  <%
 		   uiform.renderChild(uiform.EDITOR_TABS);
 		  %>
 -->
 		<div class="btn-toolbar">
-			<div class="btn-group UIEditorTabs pull-left clearfix" id="UIEditorTabs">
-				<a class="btn RichText" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','RichText','&amp;subComponentId=UIEditorTabs_RichText_&amp;objectId=RichText')">Rich Text</a>
-				<a class="btn PreviewPage" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','PreviewPage','&amp;subComponentId=UIEditorTabs_PreviewPage_&amp;objectId=PreviewPage')">Preview</a>
-				<a class="btn Help" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','Help','&amp;subComponentId=UIEditorTabs_Help_&amp;objectId=Help')">Help</a>
+			<div class="btn-group uiEditorTabs pull-left clearfix" id="UIEditorTabs">
+				<a class="btn" href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','RichText','&amp;subComponentId=UIEditorTabs_RichText_&amp;objectId=RichText')"><i class="uiIconRickText"></i>  Rich Text</a>
+				<a class="btn " href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','PreviewPage','&amp;subComponentId=UIEditorTabs_PreviewPage_&amp;objectId=PreviewPage')"><i class="uiIconWatchPage"></i>  Preview</a>
+				<a class="btn " href="javaScript:void(0)" onclick="javascript:eXo.webui.UIForm.submitEvent('41c460ee-13b5-4e2a-968c-9888fc06816f#UIWikiPageEditForm','Help','&amp;subComponentId=UIEditorTabs_Help_&amp;objectId=Help')"><i class="uiIconHelp"></i>  Help</a>
 			</div>
 		</div>
 	
 	
-		  <div class="DraftTime pull-left">Draft saved at 19:45</div>
-		<div class="RightWrap pull-right clearfix">
+		  <div class="pull-left">Draft saved at 19:45</div>
+		<div class="pull-right clearfix">
 		  
 			<%
 			  uiform.renderChild(uiform.SUBMIT_TOOLBAR_UPPER);
@@ -123,7 +123,7 @@
 			%>
 		</div>
 	  </div>
-      <div class="UIWikiPageContentInputContainer UIWikiPageContentMarginRight">
+      <div class="uiWikiPageContentInputContainer">
         <% uiform.renderField(uiform.FIELD_CONTENT); %>
       </div>
     </div>
@@ -136,28 +136,19 @@
   <%} %>
   <% uiform.renderChild(uiform.RICHTEXT_AREA);%>
   
-    <div class="form-horizontal clearfix">
-			<div class="control-group pull-left">
-				<label class="control-label" for="inputEmail">Comment:</label>
-				<div class="controls">
-					<input class="input-xxlarge" type="text" id="inputEmail" placeholder="Comment">
-				</div>
-			</div>
-			<!--label class="uiCheckbox" style="border: 1px solid red">
-				<input type="checkbox" /> 
-				<span>Publish Activity</span>
-			</label-->
-    </div>
-  
-  
-   <div class="CommentInput ClearFix">
+	
+   <div class="form-horizontal clearfix">
+	<div class="control-group pull-left">
   <% if(uiform.getChildById(uiform.FIELD_COMMENT).isRendered()) { %>
-      <label class="CommentTitle" for="<%=uiform.FIELD_COMMENT%>"><%= _ctx.appRes("UIWikiPageEditForm.label.CommentTitle"); %></label>
+      <label class="control-label" for="<%=uiform.FIELD_COMMENT%>"><%= _ctx.appRes("UIWikiPageEditForm.label.CommentTitle"); %></label>
+	  <div class="controls">
   <%
-      uiform.renderField(uiform.FIELD_COMMENT);
-     }
+       uiform.renderField(uiform.FIELD_COMMENT);
+     }%>
+	 </div>
+	 <%
      if(uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM).isRendered()) {
-  %>
+  %>	</div>
        <label class="uiCheckbox pull-left" for="<%=uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM%>"><%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%><span><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></span></label>
   
     </div>

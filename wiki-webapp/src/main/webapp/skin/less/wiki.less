@@ -3,16 +3,17 @@
 @import "UIWikiPermalinkForm/Style.less";
 @import "Notifications/Style.less";
 @import "UIWikiPageVersionsCompare/Style.less";
+@import "UIWikiPageEditForm/Style.less";
 
 /*******uiWikiHeader************/
-
+@wikiBackgroundColor: #f0f0f0;
 .uiWikiHeader{
 	margin-bottom: 14px;
 	padding: 9px;
 	border: 1px solid @tableBorder;
-	background: @headerWikiBg;
+	background: @wikiBackgroundColor;
 	.border-radius(4px);
-	.box-shadow (0px 1px 1px @headerWikiBg);
+	.box-shadow (0px 1px 1px @wikiBackgroundColor);
 	form{
 		margin: 0px;
 	}

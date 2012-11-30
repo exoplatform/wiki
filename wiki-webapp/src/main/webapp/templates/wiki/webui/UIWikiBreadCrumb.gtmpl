@@ -9,7 +9,7 @@
   requireJs.require("SHARED/wiki-view", "wikiView"); 
   requireJs.addScripts("wikiView.UIWikiPortlet.renderBreadcrumbs(\"" + uicomponent.id + "\","+ uicomponent.isLink +");");
 %>
-<div class="UIWikiBreadCrumb UIBreadcumbs" id="$uicomponent.id">
+<div class="uiWikiBreadCrumb" id="$uicomponent.id">
 	
    <ul class="breadcrumb">  
    <% if(breadCumbs!=null && breadCumbs.size() > 0) {
@@ -21,7 +21,7 @@
 			  <% } %>
 			  <%= uicomponent.getWikiName(); %>
 			</a>
-			<i class="RightBlackGridArrowIcon">&nbsp;</i>
+			<i class="uiIconNextArrow">&nbsp;</i>
 		</li>
      <% for(i in 0 .. breadCumbs.size()-1) {
 	   def liClass = (i == breadCumbs.size()-1) && (uicomponent.getActionLabel()==null || "".equals(uicomponent.getActionLabel()))?"active":"";
@@ -41,7 +41,7 @@
          <%      
           if(i != breadCumbs.size()-1) {
          %>
-             <i class="RightBlackGridArrowIcon">&nbsp;</i>
+             <i class="uiIconNextArrow">&nbsp;</i>
          <%
           }
         } %>
@@ -52,7 +52,7 @@
       if(actionLabel!=null && !actionLabel.equals("")) {  
         String label= _ctx.appRes(actionLabel);        
    %>
-         <li><i class="RightBlackGridArrowIcon"></i><span class="active" >$label</span></li>
+         <li><i class="uiIconNextArrow"></i><span class="active" >$label</span></li>
          
    <% } %>
   </ul>

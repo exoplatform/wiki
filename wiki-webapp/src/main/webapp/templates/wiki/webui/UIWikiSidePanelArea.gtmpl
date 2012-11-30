@@ -2,15 +2,15 @@
   import org.exoplatform.wiki.webui.UIWikiPageEditForm;  
 %>
 
-<div class="UIWikiSidePanelArea" id="$uicomponent.id">
-  <div class="BarTit ClearFix">
+<div class="uiWikiSidePanelArea" id="$uicomponent.id">
+  <div class="barTit">
   <% 
   	 String closeLink= uicomponent.getParent().event(UIWikiPageEditForm.CLOSE);
   %>
-    <a href="$closeLink" class="CloseButton"><span></span></a>
+    <a href="$closeLink" class="actionIcon pull-right"><i class="uiIconClose"></i></a>
     <%=_ctx.appRes("UIWikiSidePanelArea.label.Help-title");%>
   </div>
-  <div class="Content">
+  <div class="content">
   <% if (uicomponent.getHtmlOutput()!=null) {%>
   	<%=uicomponent.getHtmlOutput()%>
   	<br/>

@@ -1,0 +1,122 @@
+.uiWikiPageEditForm{
+	.actionContainer{
+		height: 48px;
+		.uiSubmitToolBar{
+			margin-left: 14px;
+			float: right;
+		}
+		.btn-group > .btn + .btn{
+			margin-left: -5px;
+		}
+	}
+	.uiEditorTabs{
+		background: linear-gradient(to bottom, @white, #E6E6E6) repeat scroll 0 0 transparent;
+		margin-right: 12px;
+		.btn{
+			font-size: 13px;
+		}
+
+		a:hover{
+			background-color: #F1F1F1;
+			.box-shadow (inset 0 10px 10px #EBEBEB);
+			text-decoration: none;
+		}
+	}
+	.uiEditUpper input{
+		height: 33px;
+		width: 100%;
+		box-sizing:border-box;
+		-moz-box-sizing:border-box; /* Firefox */
+		-webkit-box-sizing:border-box; /* Safari */
+		margin-bottom: 4px;
+		color: @grayDark;
+		font-size: 18px;
+	}
+	.uiWikiSidePanelArea{
+		.border-radius (5px 5px 0 0);
+		float: right;
+		line-height: 16px;
+		margin: 0 0 10px;
+		padding: 0;
+		width: 270px;
+		.barTit{
+			background: none repeat scroll 0 0 #F0F0F0;
+			border: 1px solid #C7C7C7;
+			.border-radius( 5px 5px 0 0);
+			color: @gray;
+			font-weight: bold;
+			line-height: 33px;
+			padding-left: 15px;
+		}
+		.content{
+			background: @white;
+			border: 1px solid #dedede;
+			border-top: none;
+			padding: 12px 8px;
+			
+			p{
+				margin-bottom: 0px;
+			}
+		}
+	}
+	.uiColsLeftsEditForm{
+		margin-bottom: 22px;
+		margin-right: 290px;
+		padding: 0;
+	}
+	.uiWikiPageContentInputContainer{
+		.commentInput{
+			margin-bottom:24px;
+		}
+		textarea{
+			background: @white;
+			border: 1px solid #dedede;
+			.border-radius( 5px 5px 5px 5px);
+			font-size: 10pt;
+			height: auto;
+			overflow: auto;
+			padding: 6px;
+			width: 100%;
+			box-sizing:border-box;
+			-moz-box-sizing:border-box; /* Firefox */
+			-webkit-box-sizing:border-box; /* Safari */
+		}
+	}
+	.uiWikiPageContainer{
+		.form-horizontal {
+			.control-group{
+				margin-bottom: 16px;
+				.control-label{
+					width: 72px;
+				}
+				.controls{
+					margin: 0px 16px 0px 80px;
+				}
+				.controls input{
+					width: 579px;
+				}
+			}
+			.uiCheckbox{
+				margin-top: 5px;
+			}
+		}
+	}
+	.CommentInput{
+		.CommentTitle{
+			color: #636363;
+			display: block;
+			line-height: 15px;
+			margin-top: 5px;
+			width: 60px;
+		}
+		input{
+			background: @white;
+			border: 1px solid #DCDCDC;
+			.border-radius( 5px 5px 5px 5px);
+			font-size: 14px;
+			padding: 6px;
+			width: 50%;
+			float: left;
+		}
+	}
+}
