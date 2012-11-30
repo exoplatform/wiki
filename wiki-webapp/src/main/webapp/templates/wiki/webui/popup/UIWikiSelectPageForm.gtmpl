@@ -1,14 +1,12 @@
 
 <% uiform.begin(); %>
-<div class="SideBarContent">
-  <div class="SideContent">
+<div class="popupContenRelated">
     <%
       uiform.renderChild(uiform.UI_TREE_ID);
     %>    
-  </div>
 </div>
-<div class="UIAction">
-  <a href="javascript:void(0);" onclick="<%= uicomponent.event("SelectPage") %>"  class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiSelectPageForm.action.Select")%></a>
-  <a href="javascript:void(0);" onclick="<%= uicomponent.event("Cancel") %>"  class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiSelectPageForm.action.Cancel")%></a>
+<div class="uiAction">
+  <button href="javascript:void(0);" onclick="<%= uicomponent.event("SelectPage") %>"  class="btn btn-primary"><%= _ctx.appRes("UIWikiSelectPageForm.action.Select")%></button>
+  <button href="javascript:void(0);" onclick="<%= uicomponent.event("Cancel") %>"  class="btn"><%= _ctx.appRes("UIWikiSelectPageForm.action.Cancel")%></button>
 </div>
 <% uiform.end(); %>
