@@ -36,10 +36,10 @@
   } else {
     pageInfoCss = "PageLock";
   }
-  %>
-
+%>
 <div class="UIWikiPageInfoArea">
   <div class="TxtFeed">
+      <span class="label">V2</span>
 	  ${addedByLabel}&nbsp;-&nbsp;$lastModifiedByLabel
 	  <!-- View change -->
 	  <% if (versionsTotal>1) { %>
