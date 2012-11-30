@@ -3,7 +3,7 @@
   import org.exoplatform.wiki.webui.control.action.AddRelatedPageActionComponent;
   import org.exoplatform.wiki.webui.control.action.RemoveRelatedPageActionComponent;
  %>
-<div class="uiPageInfoItem uisPageInfoRelatedPage">
+<div class="uiPageInfoItem uiPageInfoRelatedPage">
 	<h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.related-pages") %></h6>
 	    
 	<%

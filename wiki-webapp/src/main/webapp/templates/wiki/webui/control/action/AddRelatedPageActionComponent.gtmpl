@@ -1,4 +1,4 @@
 
-<div class="UIAction">
-      <a href="javascript:void(0);" onclick="<%= uicomponent.event(uicomponent.ACTION) %>" class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiPageInfo.label.add-relation") %></a>
-    </div>
+<div class="actionCenter">
+	<button onclick="<%= uicomponent.event(uicomponent.ACTION) %>" class="btn"><%= _ctx.appRes("UIWikiPageInfo.label.add-relation") %></button>
+</div>

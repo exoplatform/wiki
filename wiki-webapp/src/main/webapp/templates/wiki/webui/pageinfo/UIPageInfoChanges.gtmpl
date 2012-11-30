@@ -7,62 +7,55 @@
   def currentVersions = uicomponent.getVersionList(currentWikiPage);
   def rcontext = _ctx.getRequestContext() ;
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, rcontext.getLocale());
-  def rowClass = "OldClass";
-  def isOddRow = true;
+ 
   def showHistoryId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + "ShowHistory";
 %>
 
-<div class="UIPageInfoItem UIPageInfoChanges">
-  <div class="UIPageInfoItemTitle"><%= _ctx.appRes("UIWikiPageInfo.label.recent-changes")%></div>
-  <div class="UIPageInfoItemBody">
-    <table class=" uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
-      <thead>
-        <tr>
-          <th ><%= _ctx.appRes("UIWikiPageInfo.label.time")%></th>
-          <th ><%= _ctx.appRes("UIWikiPageInfo.label.editor")%></th>
-        </tr>
-      </thead>
-      <tbody>
-      <%
-       def isCurrentVersion = true;
-       currentVersions.each {version ->
-        
-        def frozenNode = version.getNTFrozenNode();
-        def versionLabel = version.getName();
-        def versionNumber= versionLabel;
-        if(isCurrentVersion){
-        	isCurrentVersion = false;
-          versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " (v. " + versionLabel + ")";
-        } else {
-          versionLabel = "v. " + versionLabel;
-        }
-        def viewLinkId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + "ViewRevision_"+versionNumber;
-        def viewLink = uicomponent.event("ViewRevision", version.getName());
-        def updatedDate = df.format(frozenNode.getUpdatedDate());
-        def author = Utils.getFullName(frozenNode.getAuthor());
-        if (isOddRow) {
-          rowClass = "EvenRow";
-        } else {
-          rowClass = "OddRow";
-        }
-        isOddRow = !isOddRow;
-        %>
-        <tr class="$rowClass">
-          <td>
-            <a href="#ViewRevision_<%=versionNumber%>"  rel="tooltip" data-placement="bottom" title="$versionLabel" >$versionLabel</a>
-            <a style="display: none;" id="$viewLinkId" onclick="<%=uicomponent.event("ViewRevision", versionNumber)%>">&nbsp;</a>
-          </td>
-          <td  class="Editor">$author</td>
-        </tr>
-      <% } %>
-      </tbody>
-    </table>
-    <% if (currentVersions.size() > 0) { %>
-      <div align="center" style="padding: 10px;">
-      	<a class="AddButton" href="#ShowHistory"  rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></a>
-      	<a style="display: none;" id="$showHistoryId" onclick="<%=uicomponent.event("ShowHistory")%>">&nbsp;</a>
-      </div>
-    <% } %>
+<div class="uiPageInfoItem uiPageInfoChanges">
+  <h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.recent-changes")%></h6>
+	<table class=" uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+	  <thead>
+	    <tr>
+	      <th ><%= _ctx.appRes("UIWikiPageInfo.label.time")%></th>
+	      <th ><%= _ctx.appRes("UIWikiPageInfo.label.editor")%></th>
+	    </tr>
+	  </thead>
+	  <tbody>
+	  <%
+	   def isCurrentVersion = true;
+	   currentVersions.each {version ->
+	    
+	    def frozenNode = version.getNTFrozenNode();
+	    def versionLabel = version.getName();
+	    def versionNumber= versionLabel;
+	    if(isCurrentVersion){
+	    	isCurrentVersion = false;
+	      versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " (v. " + versionLabel + ")";
+	    } else {
+	      versionLabel = "v. " + versionLabel;
+	    }
+	    def viewLinkId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + "ViewRevision_"+versionNumber;
+	    def viewLink = uicomponent.event("ViewRevision", version.getName());
+	    def updatedDate = df.format(frozenNode.getUpdatedDate());
+	    def author = Utils.getFullName(frozenNode.getAuthor());
+	    
+	    %>
+	    <tr>
+	      <td>
+	        <a href="#ViewRevision_<%=versionNumber%>"  rel="tooltip" data-placement="bottom" title="$versionLabel" >$versionLabel</a>
+	        <a style="display: none;" id="$viewLinkId" onclick="<%=uicomponent.event("ViewRevision", versionNumber)%>">&nbsp;</a>
+	      </td>
+	      <td  class="Editor">$author</td>
+	    </tr>
+	  <% } %>
+	  </tbody>
+	</table>
+<% if (currentVersions.size() > 0) { %>
+  <div class="uiAction">
+  	<button class="btn" href="#ShowHistory"  rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>
+  	<a style="display: none;" id="$showHistoryId" onclick="<%=uicomponent.event("ShowHistory")%>">&nbsp;</a>
   </div>
+<% } %>
+
 
 </div>
