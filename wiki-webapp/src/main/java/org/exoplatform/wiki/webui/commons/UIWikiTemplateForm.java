@@ -89,7 +89,7 @@ public class UIWikiTemplateForm extends UIForm{
     grid.getUIPageIterator().setId(TEMPLATE_ITER);
     grid.getUIPageIterator().setParent(this);
     wService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    grid.configure(TEMPLATE_ID, TEMPLATE_FIELD, null);
+    ((UIWikiGrid)grid.configure(TEMPLATE_ID, TEMPLATE_FIELD, null)).setUIGridMode(UIWikiGrid.TEMPLATE);
     initGrid();
   }
   

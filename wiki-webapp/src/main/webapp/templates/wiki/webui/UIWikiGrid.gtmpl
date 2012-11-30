@@ -5,6 +5,7 @@
    import java.text.SimpleDateFormat;
    import org.exoplatform.wiki.webui.UIWikiPortlet;
    import org.exoplatform.wiki.commons.Utils;
+   
 
    String[] beanFields = uicomponent.getBeanFields();
    String[] beanActions = uicomponent.getBeanActions();
@@ -19,8 +20,9 @@
    UIForm uiForm = uicomponent.getAncestorOfType(UIForm.class);
 %>
 
-<table id="$uicomponent.id" class="uiGrid table table-hover table-striped" cellspacing="0">		
-	
+<table id="$uicomponent.id" class="uiGrid table table-hover table-striped" cellspacing="0">
+  <!--Template for "Add from template"	-->
+	<%if(uicomponent.getUIGridMode() == null || uicomponent.getUIGridMode().equals(uicomponent.TEMPLATE)) {%>
         <tr>
          <th></th>
          <% if (name != null) { 
@@ -110,6 +112,95 @@
            <% } %>
            </tr>
          <% }
-         } %>	
+         } 
+       } else {%>
+       
+       
+       
+       
+       <!--Template for "Space setting"-->
+        <tr>         
+         <% if (name != null) { 
+           for (field in beanFields) { %>
+             <th><%=_ctx.appRes(name + ".header." + field)%></th>
+           <% }
+           if (beanActions != null) { %>
+             <th><%=_ctx.appRes(name + ".header.action")%></th>
+           <% }
+         }
+         if (name == null) {
+           for (field in beanFields) { %>
+             <th><%=_ctx.appRes(uiParent.getName() + ".header." + field)%></th>
+           <% }
+           if (beanActions != null && beanActions.length > 0) { %>
+             <th class="center"><%=_ctx.appRes(uiParent.getName() + ".header.action")%></th>
+           <% }
+         } %>
+        </tr>             
+        <% if (uicomponent.getUIPageIterator().getAvailable() < 1) { %>
+          <tr>
+      	    <td style="font-style:italic; color: #FF5604; text-align: center;" colspan="<%=colnum%>">
+              <%=_ctx.appRes("UIGrid.msg.empty")%>
+            </td>
+          </tr>
+        <% } else {
+          def rowClass = null;
+          boolean even = true;
+          for (bean in uicomponent.getBeans())
+          {
+            if (even) rowClass = "EvenRow";
+            else rowClass = "OddRow";
+            even = !even;
+        %>
+            <tr class="$rowClass">              
+            <%
+              for (field in beanFields) {
+                def fieldValue = uicomponent.getFieldValue(bean, field);
+                def cssClass = "";
+                if(fieldValue != null) {
+                  def fieldClass = fieldValue.getClass();
+                  if(fieldClass == Integer.class) cssClass = "number";
+                  else if(java.util.Date.class.isAssignableFrom(fieldClass)) {
+                    def dateFormat = new SimpleDateFormat("HH:mm:ss yyyy-MM-dd");
+                    cssClass = "Datetime";
+                    fieldValue = dateFormat.format(fieldValue);
+                  }
+                  else cssClass = "Text";
+                } else { fieldValue = "";}
+                String value = fieldValue.toString();
+                println "<td><div class=\""+cssClass+"\" title='$fieldValue'>"+fieldValue+"</div></td>";
+              }
+              if (beanActions != null && beanActions.length > 0) { %>
+                <td class="center">                  
+                  <%
+                     def beanIdField = uicomponent.getBeanIdField();
+                     def beanId = uicomponent.getBeanIdFor(bean);
+                     for (action in beanActions)
+                     {
+                       String title = _ctx.appRes(uiParent.getName() + ".action.title." + action);
+                       String actionLink = "";
+                       if (uiForm != null)
+                       {
+                         actionLink = uiForm.event(action, uiParent.getId(), beanId);
+                       }
+                       else
+                       {
+                          actionLink = uiParent.event(action, beanId);
+                       }
+                       String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + action;
+                       String anchor = "#" + action;
+                       %>
+                         
+                         <a onclick="$actionLink" alt="$action" class="${action}Icon"  rel="tooltip" 
+                         data-placement="bottom" title="$title"><i class="uiIcon$title"></i></a>
+                   <%} %>                 
+               </td>
+           <% } %>
+           </tr>
+         <% }
+         }        
+       
+       
+       }%>	
 	
 </table> 	 

@@ -29,7 +29,16 @@ import org.exoplatform.webui.core.UIGrid;
 @ComponentConfig(template = "app:/templates/wiki/webui/UIWikiGrid.gtmpl")
 @Serialized
 public class UIWikiGrid extends UIGrid {
-
+  private String grid_mode = "Template";
+  
+  public static final String    TEMPLATE        = "Template";
+  public static final String    SETTING         = "Setting";
+  public void setUIGridMode(String mode) {
+  	this.grid_mode = mode;
+  }
+  public String getUIGridMode() {
+  	return this.grid_mode;
+  }
   public UIWikiGrid() throws Exception {
     super();
   }

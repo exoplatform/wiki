@@ -44,6 +44,8 @@ import org.exoplatform.wiki.webui.UIWikiTemplateDescriptionContainer;
 import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.commons.UIWikiTemplateForm;
 import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
+import org.exoplatform.wiki.webui.commons.UIWikiGrid;
+
 
 /**
  * Created by The eXo Platform SAS
@@ -74,7 +76,7 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
   
   public UIWikiSelectTemplateForm() throws Exception {
     super();
-    grid.configure(TEMPLATE_ID, TEMPLATE_FIELD, USER_ACTION);
+    ((UIWikiGrid)grid.configure(TEMPLATE_ID, TEMPLATE_FIELD, USER_ACTION)).setUIGridMode(UIWikiGrid.TEMPLATE);
   }
   
   static public class AddPageWithTemplateActionListener extends EventListener<UIWikiSelectTemplateForm> {
