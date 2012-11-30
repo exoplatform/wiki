@@ -49,13 +49,13 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
   
   public static final String EXTENSION_TYPE = "org.exoplatform.wiki.webui.UIWikiPageTitleControlArea";
 
-  public static final String FIELD_TITLEINFO  = "TitleInfo";
+  public static final String FIELD_TITLEINFO  = "titleInfo";
 
-  public static final String FIELD_TITLEINPUT = "TitleInput";
+  public static final String FIELD_TITLEINPUT = "titleInput";
 
-  public static final String FIELD_EDITABLE   = "Editable";
+  public static final String FIELD_EDITABLE   = "editable";
 
-  public static final String CHANGE_TITLEMODE = "ChangeTitleMode";
+  public static final String CHANGE_TITLEMODE = "changeTitleMode";
 
   public UIWikiPageTitleControlArea() throws Exception {
     UIFormInputInfo titleInfo = new UIFormInputInfo(FIELD_TITLEINFO, FIELD_TITLEINFO, FIELD_TITLEINFO);

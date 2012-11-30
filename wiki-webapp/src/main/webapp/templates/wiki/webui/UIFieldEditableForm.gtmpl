@@ -19,7 +19,7 @@ import org.exoplatform.wiki.commons.Utils;
   
 	%>
 
-<div class="UIFieldEditableForm">
+<div class="uiFieldEditableForm">
 <% uiform.begin();%>
  <%	List children = uicomponent.getChildren() ;
     for(component in children) {
@@ -28,10 +28,10 @@ import org.exoplatform.wiki.commons.Utils;
       }
     }
 	%>
-  <div class="LinkContainer">
-    <a onclick="$showInputAction" class="ShowInput" style="display:none;">&nbsp;</a>
-    <a onclick="$submitAction" class="SubmitLink" style="display:none;">&nbsp;</a>
-    <a onclick="$hideInputAction" class="HideInput" style="display:none;">&nbsp;</a>
+  <div class="linkContainer">
+    <a onclick="$showInputAction" class="showInput" style="display:none;">&nbsp;</a>
+    <a onclick="$submitAction" class="submitLink" style="display:none;">&nbsp;</a>
+    <a onclick="$hideInputAction" class="hideInput" style="display:none;">&nbsp;</a>
   </div>
 <% uiform.end();%>
 </div>

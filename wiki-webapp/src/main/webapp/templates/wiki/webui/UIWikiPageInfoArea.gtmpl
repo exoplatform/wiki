@@ -32,7 +32,7 @@
 %>
 <div class="uiWikiPageInfoArea">
   <div class="txtFeed">
-    <span class="label">&nbsp;V$versionsTotal &nbsp;</span>&nbsp;
+    <span class="label">V$versionsTotal</span>&nbsp;
 	${addedByLabel}&nbsp;-&nbsp;$lastModifiedByLabel
 	<!-- View change -->
 	<% if (versionsTotal>1) { %>
@@ -47,8 +47,7 @@
     <% } else { %>
       <i class='uiIconLock'></i><a rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" alt="$restrictLinkTitle" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
     <% }%>
-    &nbsp;-&nbsp;
-	  
+    &nbsp;-&nbsp;	  
     <i class='uiIconAttach'></i>&nbsp;<a href="$togglelink"><%= totalAttachmentsLabel %></a>  
     &nbsp;-&nbsp;
     <i class="uiIconRevision"></i>&nbsp;<a href="<%=uicomponent.event(uicomponent.SHOW_REVISION);%>"><%=_ctx.appRes("UIWikiPageInfoArea.label.TotalRevisions")%></a>

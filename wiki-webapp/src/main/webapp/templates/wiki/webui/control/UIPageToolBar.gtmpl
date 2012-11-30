@@ -1,4 +1,4 @@
-<div id="$uicomponent.id" class="UIPageToolBar ClearFix navbar" >
+<div id="$uicomponent.id" class="uiPageToolBar pull-right navbar" >
 	<ul class="nav pull-right uiDropdownWithIcon">
 	<%
 	  List children = uicomponent.getChildren() ;
