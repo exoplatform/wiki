@@ -37,17 +37,32 @@
 	}
 }
 
-/*******uiWikiPageInfoArea************/
+/*******uiWikiPageControlArea************/
 
-.uiWikiPageInfoArea {
-	clear: both;
+.uiWikiPageControlArea {
+	border-bottom: 1px dotted @tableBorder;
+    padding: 15px 0;	
+	.uiWikiPageInfoArea {
+		clear: both;
+	}
 	.label {
-		background-color: #bebebe;
-		font-size: 10px;
+		background-color: #bebebe;		
 		padding: 0 4px;
+		a {
+			color: @white;
+			font-size: @baseFontSize - 3;
+			&:hover {text-decoration: none;}
+		}
 	}
 	[class^="uiIcon"] {
 		background-image: url("/eXoResources/skin/images/Icons/uiIconsLightGrey.png");
+	}
+	.titleInfo {
+		color: #2F5E92;
+		font-size: @baseFontSize + 11;
+		font-weight: @headingsFontWeight;
+		line-height: @baseLineHeight;
+		text-shadow: 1px 1px 2px @grayLighter;
 	}
 }
 

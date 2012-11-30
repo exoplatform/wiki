@@ -33,10 +33,10 @@ UIFieldEditableForm.prototype.init = function(componentId, parentId, titleId,
     me.fieldValue = titleControl.firstChild.data;
   }
   
-  me.divTag = $(me.component).find('div.LinkContainer')[0];
+  me.divTag = $(me.component).find('div.linkContainer')[0];
   me.inputControl = $(me.component).find('#'+inputId)[0];
-  me.showInputLink = $(me.divTag).find('a.ShowInput')[0];
-  me.submitLink = $(me.divTag).find('a.SubmitLink')[0];
+  me.showInputLink = $(me.divTag).find('a.showInput')[0];
+  me.submitLink = $(me.divTag).find('a.submitLink')[0];
   $(document).click(me.onClick);
 
   if (titleControl) {
@@ -62,7 +62,7 @@ UIFieldEditableForm.prototype.onClick = function(evt) {
   var evt = evt || window.event;
   var target = evt.target || evt.srcElement;
   if (me.inputControl && target != me.inputControl && target != me.component) {
-    var hideInputLink = $(me.divTag).find('a.HideInput')[0];
+    var hideInputLink = $(me.divTag).find('a.hideInput')[0];
     hideInputLink.onclick();
   }
 };
@@ -99,7 +99,7 @@ UIFieldEditableForm.prototype.enterHandler = function(evt) {
     if (me.submitLink || me.submitLink.onclick)
       me.submitLink.onclick();
   } else {
-    var hideInputLink = $(me.divTag).find('a.HideInput')[0];
+    var hideInputLink = $(me.divTag).find('a.hideInput')[0];
     hideInputLink.onclick();
   }
 };
