@@ -1,4 +1,4 @@
-<div class="ClearFix">
+<div class="hearContent clearfix">
 <%
   List children = uicomponent.getChildren() ;
   for(component in children) {
