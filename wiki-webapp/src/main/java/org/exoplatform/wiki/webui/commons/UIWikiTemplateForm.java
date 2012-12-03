@@ -85,7 +85,7 @@ public class UIWikiTemplateForm extends UIForm{
     addChild(new UIFormStringInput(TEMPLATE_SEARCHBOX,
                                    null,
                                    res.getString("UITemplateSettingForm.label.Search")));
-    grid = addChild(UIWikiTemplateGrid.class, null, TEMPLATE_GRID);
+    grid = addChild(UIWikiGrid.class, null, TEMPLATE_GRID);
     grid.getUIPageIterator().setId(TEMPLATE_ITER);
     grid.getUIPageIterator().setParent(this);
     wService = (WikiService) PortalContainer.getComponent(WikiService.class);

@@ -53,13 +53,13 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
     
-    PageImpl wikipage = wikiHomePage.getWikiPage("CreateWikiPage-001");
-    if(wikipage == null) {
-      wikipage = wiki.createWikiPage();
-      wikipage.setName("CreateWikiPage-001");
-      wikiHomePage.addWikiPage(wikipage);
-    }
-    wikipage.createAttachment("eXoWikiHome.png", Resource.createPlainText("logo")) ;
+    PageImpl wikipage = wiki.createWikiPage();    
+    wikipage.setName("CreateWikiPage-002");
+    wikiHomePage.addWikiPage(wikipage);
+    model.save();
+    
+    PageImpl wikipage1 = wikiHomePage.getWikiPage("CreateWikiPage-002");
+    wikipage1.createAttachment("eXoWikiHome.png", Resource.createPlainText("logo"));
     
     Execution ec = renderingService.getExecution();
     ec.setContext(new ExecutionContext());
@@ -68,14 +68,14 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     wikiContext.setPortletURI("wiki");
     wikiContext.setType("portal");
     wikiContext.setOwner("classic");
-    wikiContext.setPageId("CreateWikiPage-001");
+    wikiContext.setPageId("CreateWikiPage-002");
     
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     
-    String expectedHtml = "<p><span class=\"wikilink\"><a href=\"http://loclahost:8080/portal/classic/wiki/CreateWikiPage-001\">CreateWikiPage-001</a></span></p>";
-    assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-001>>CreateWikiPage-001]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-001>>classic.CreateWikiPage-001]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-001>>portal:classic.CreateWikiPage-001]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    String expectedHtml = "<p><span class=\"wikilink\"><a href=\"http://loclahost:8080/portal/classic/wiki/CreateWikiPage-002\">CreateWikiPage-002</a></span></p>";
+    assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-002>>CreateWikiPage-002]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-002>>classic.CreateWikiPage-002]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-002>>portal:classic.CreateWikiPage-002]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
   public void testRenderCreatePageLink() throws Exception {
@@ -109,13 +109,14 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
     
-    PageImpl wikipage = wikiHomePage.getWikiPage("CreateWikiPage-001");
-    if(wikipage == null) {
-      wikipage = wiki.createWikiPage();
-      wikipage.setName("CreateWikiPage-001");
-      wikiHomePage.addWikiPage(wikipage);
-    }
-    wikipage.createAttachment("space in name.png", Resource.createPlainText("logo")) ;
+    PageImpl wikipage = wiki.createWikiPage();    
+    wikipage.setName("CreateWikiPage-003");
+    wikiHomePage.addWikiPage(wikipage);
+    model.save();
+    
+    PageImpl wikipage1 = wikiHomePage.getWikiPage("CreateWikiPage-003");
+    wikipage1.createAttachment("space in name.png", Resource.createPlainText("logo"));
+    wikipage1.createAttachment("eXoWikiHome.png", Resource.createPlainText("logo"));
         
     Execution ec = renderingService.getExecution();
     ec.setContext(new ExecutionContext());
@@ -124,38 +125,38 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     wikiContext.setPortletURI("wiki");
     wikiContext.setType("portal");
     wikiContext.setOwner("classic");
-    wikiContext.setPageId("CreateWikiPage-001");
+    wikiContext.setPageId("CreateWikiPage-003");
     
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     
-    String expectedXwikiAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\">eXoWikiHome.png</a></span></p>";
-    assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:CreateWikiPage-001@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:classic.CreateWikiPage-001@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:portal:classic.CreateWikiPage-001@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    
-    String expectedConfluenceAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\"><span class=\"wikigeneratedlinkcontent\">eXoWikiHome.png</span></a></span></p>";
-    assertEquals(expectedConfluenceAttachmentHtml, renderingService.render("[^eXoWikiHome.png]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    String expectedConfluenceLabelAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\">eXoWikiHome.png</a></span></p>";
-    assertEquals(expectedConfluenceLabelAttachmentHtml, renderingService.render("[eXoWikiHome.png|^eXoWikiHome.png]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    
-    String expectedImageHtml = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\" alt=\"eXoWikiHome.png\"/></p>";    
-    assertEquals(expectedImageHtml, renderingService.render("[[image:eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    
-    String expectedImageHtmlPageName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\" alt=\"CreateWikiPage-001@eXoWikiHome.png\"/></p>";
-    assertEquals(expectedImageHtmlPageName, renderingService.render("[[image:CreateWikiPage-001@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    
-    String expectedImageHtmlWikiName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\" alt=\"classic.CreateWikiPage-001@eXoWikiHome.png\"/></p>";
-    assertEquals(expectedImageHtmlWikiName, renderingService.render("[[image:classic.CreateWikiPage-001@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    
-    String expectedImageHtmlSpaceName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\" alt=\"portal:classic.CreateWikiPage-001@eXoWikiHome.png\"/></p>";
-    assertEquals(expectedImageHtmlSpaceName, renderingService.render("[[image:portal:classic.CreateWikiPage-001@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    
-    String expectedFreeStandingImageHtml = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/eXoWikiHome.png\" class=\"wikimodel-freestanding\" alt=\"eXoWikiHome.png\"/></p>";
-    assertEquals(expectedFreeStandingImageHtml, renderingService.render("image:eXoWikiHome.png", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    
-    String expectedImageSpaceInName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-001/space_in_name.png\" alt=\"space in name.png\"/></p>";
-    assertEquals(expectedImageSpaceInName, renderingService.render("[[image:space in name.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    String expectedXwikiAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\">eXoWikiHome.png</a></span></p>";
+     assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:classic.CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:portal:classic.CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+     
+    String expectedConfluenceAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\"><span class=\"wikigeneratedlinkcontent\">eXoWikiHome.png</span></a></span></p>";
+     assertEquals(expectedConfluenceAttachmentHtml, renderingService.render("[^eXoWikiHome.png]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    String expectedConfluenceLabelAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\">eXoWikiHome.png</a></span></p>";
+     assertEquals(expectedConfluenceLabelAttachmentHtml, renderingService.render("[eXoWikiHome.png|^eXoWikiHome.png]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+     
+    String expectedImageHtml = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\" alt=\"eXoWikiHome.png\"/></p>";    
+     assertEquals(expectedImageHtml, renderingService.render("[[image:eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+     
+    String expectedImageHtmlPageName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\" alt=\"CreateWikiPage-003@eXoWikiHome.png\"/></p>";
+    assertEquals(expectedImageHtmlPageName, renderingService.render("[[image:CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+     
+    String expectedImageHtmlWikiName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\" alt=\"classic.CreateWikiPage-003@eXoWikiHome.png\"/></p>";
+    assertEquals(expectedImageHtmlWikiName, renderingService.render("[[image:classic.CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+     
+    String expectedImageHtmlSpaceName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\" alt=\"portal:classic.CreateWikiPage-003@eXoWikiHome.png\"/></p>";
+    assertEquals(expectedImageHtmlSpaceName, renderingService.render("[[image:portal:classic.CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+     
+    String expectedFreeStandingImageHtml = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\" class=\"wikimodel-freestanding\" alt=\"eXoWikiHome.png\"/></p>";
+     assertEquals(expectedFreeStandingImageHtml, renderingService.render("image:eXoWikiHome.png", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+     
+    String expectedImageSpaceInName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/space_in_name.png\" alt=\"space in name.png\"/></p>";
+     assertEquals(expectedImageSpaceInName, renderingService.render("[[image:space in name.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
   public void testGetContentOfSection() throws Exception {

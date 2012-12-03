@@ -17,8 +17,11 @@
 package org.exoplatform.wiki.mow.core.api.wiki;
 
 import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
@@ -35,6 +38,20 @@ public abstract class UserWiki extends WikiImpl {
   public WikiType getWikiType() {
     return WikiType.USER;
   }
+
+  @Override
+  public String getType() {
+    return PortalConfig.USER_TYPE;
+  }
+  
+  public PageImpl getDraftPagesContainer() {
+    PageImpl page = getDraftPagesContainerByChromattic();
+    if (page == null) {
+      page = createWikiPage();
+      setDraftPagesContainerByChromattic(page);
+    }
+    return page;
+  }
   
   @ManyToOne(type = RelationshipType.REFERENCE)
   @MappedBy(WikiNodeType.Definition.WIKI_CONTAINER_REFERENCE)
@@ -42,9 +59,12 @@ public abstract class UserWiki extends WikiImpl {
   
   public abstract void setUserWikis(UserWikiContainer userWikiContainer);
   
-  @Override
-  public String getType() {
-    return PortalConfig.USER_TYPE;
-  }
-  
+  @OneToOne
+  @Owner
+  @MappedBy(WikiNodeType.Definition.DRAFT_PAGES)
+  protected abstract PageImpl getDraftPagesContainerByChromattic();
+  protected abstract void setDraftPagesContainerByChromattic(PageImpl page);
+   
+  @Create
+  public abstract DraftPageImpl createDraftPage();
 }

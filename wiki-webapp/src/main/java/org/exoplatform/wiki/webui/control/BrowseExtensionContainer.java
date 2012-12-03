@@ -23,7 +23,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
-import org.exoplatform.wiki.webui.control.filter.AdminSpacePermissionFilter;
+import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 
 /**
  * Created by The eXo Platform SAS
@@ -40,7 +40,7 @@ public class BrowseExtensionContainer extends UIWikiExtensionContainer {
   
   public static final String EXTENSION_TYPE = "org.exoplatform.wiki.webui.control.BrowseExtensionContainer";
   
-  private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new AdminSpacePermissionFilter() });;
+  private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new IsUserFilter() });
 
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
@@ -51,5 +51,4 @@ public class BrowseExtensionContainer extends UIWikiExtensionContainer {
   public String getExtensionType() {
     return EXTENSION_TYPE;
   }
-  
 }
