@@ -191,7 +191,7 @@ WikiLayout.prototype.setHeightRightContent = function() {
   if(!WikiLayout.wikiLayout) WikiLayout.init('');
   var pageArea =  $(WikiLayout.rightArea).find('div.UIWikiPageArea')[0];
   if(pageArea) {
-    var bottomArea = $(WikiLayout.rightArea).find('div.UIWikiBottomArea')[0];
+    var bottomArea = $(WikiLayout.rightArea).find('div.uiWikiBottomArea')[0];
     var pageContainer = $(WikiLayout.rightArea).find('div.UIWikiPageContainer')[0];
     if(bottomArea) {
       var pageAreaHeight = (WikiLayout.rightArea.offsetHeight - bottomArea.offsetHeight - WikiLayout.bottomPadding);

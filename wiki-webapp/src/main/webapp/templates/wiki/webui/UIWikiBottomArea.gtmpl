@@ -1,4 +1,4 @@
-<div class="UIWikiBottomArea" id="$uicomponent.id">
+<div class="uiWikiBottomArea" id="$uicomponent.id">
 <%
   List children = uicomponent.getChildren() ;
   for(component in children) {

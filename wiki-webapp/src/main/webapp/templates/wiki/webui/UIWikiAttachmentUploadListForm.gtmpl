@@ -7,9 +7,9 @@
   
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
 %>
-<div class="UIAttachmentUploadListForm">
+<div class="uiAttachmentUploadListForm">
   <% uiform.begin(); %>
-    <div class="AttachmentTit"><%= _ctx.appRes("UIAttachmentUploadListForm.label.AttachmentTitle"); %></div>
+    <h6 class="attachmentTit"><%= _ctx.appRes("UIAttachmentUploadListForm.label.AttachmentTitle"); %></h6>
     <table cellspacing="1" cellpadding="0" border="0" class="uiGrid table table-hover table-striped">
       <thead>
         <tr>

@@ -36,29 +36,30 @@
 }
 
 /************ WikiBox ****************/
+
 .wikiBox {
 	background: @white;
 	border: 1px solid @tableBorder;
 	.border-radius(5px);
 	.box-shadow(0px 1px 2px rgba(0, 0, 0, 0.08));
-	
+	margin-bottom: 15px;
 	h5.titleWikiBox {
 		.border-radius(5px 5px 0px 0px );
 		.box-shadow(0px 1px 2px rgba(13, 13, 13, 0.08));
 		background: #f0f0f0;
 		border-bottom: 1px solid @tableBorder;
 		margin: 0px;
-		line-height: 35px;
-		font-weight: bold;
-		color: #333333;
-		padding: 0px 10px;
+		line-height: @baseLineHeight ;
+		font-weight: @headingsFontWeight;
+		color: @grayDark;
+		padding: 8px 10px;
 	}
 }
 
 /***** WikiLayout *******/
 .wikiBox {
 	h5.titleWikiBox {
-		a {color: #333333;}
+		a {color: @grayDark;}
 	}
 }
 
@@ -110,6 +111,10 @@
 	overflow: auto;
 }
 
+.UIAttachmentContainer  {
+	.wikiBox;
+	padding:15px;
+}
 
 /* -- Begin Resize CSS function -- */
 
@@ -134,8 +139,7 @@
 	.resizeButton {
 		#gradient .vertical(@white, #f1f1f1);
 		.border-radius(3px 0px 0px 3px);
-		width: 10px;
-		height: 24px;
+		.size(24px,10px);
 		float:right;
 		margin : auto;
 		cursor : pointer;
@@ -224,8 +228,14 @@
 	.titleInfo {
 		color: #2F5E92;
 		font-size: @baseFontSize + 11;
-		line-height: @baseLineHeight;
+		line-height: @baseLineHeight + 8;
 		text-shadow: 1px 1px 2px @grayLighter;
+	}
+	.uiPageToolBar {
+		width: 280px;
+	}
+	.uiWikiPageTitle {
+		margin-right: 300px;
 	}
 }
 
@@ -239,3 +249,4 @@
 .uiWikiBreadCrumb{
 	padding-top: 3px;
 }
+
