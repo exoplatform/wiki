@@ -37,13 +37,13 @@ UIWikiPortlet.prototype.init = function(portletId, linkId) {
   me.wikiportlet = document.getElementById(portletId);
   me.changeModeLink = document.getElementById(linkId);
 
-  // window.onload = function(event) {me.changeMode(event);};
-  /*window.onbeforeunload = function(event) {
+  window.onload = function(event) {me.changeMode(event);};
+  window.onbeforeunload = function(event) {
     me.changeMode(event);
-  };*/
+  };
 
   $(me.wikiportlet).mouseup(me.onMouseUp);
-  /*$(me.wikiportlet).keyup(me.onKeyUp);*/
+  $(me.wikiportlet).keyup(me.onKeyUp);
 }
 
 UIWikiPortlet.prototype.onMouseUp = function(evt) {

@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -38,9 +39,11 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
+import org.exoplatform.webui.core.UIPageIterator;
 
 /**
  * Created by The eXo Platform SAS
@@ -153,10 +156,13 @@ public class UIWikiAdvanceSearchForm extends UIForm {
 
     WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
     UIWikiAdvanceSearchResult uiSearchResults = getParent().findFirstComponentOfType(UIWikiAdvanceSearchResult.class);
-    uiSearchResults.setResults(wikiservice.search(data));
+    PageList<SearchResult> ret = wikiservice.search(data);
+    uiSearchResults.setResults(ret);
 
-    UIAdvancePageIterator uiAdvancePageIterator = getParent().findFirstComponentOfType(UIAdvancePageIterator.class);
-    uiAdvancePageIterator.setCurrentPage(pageIndex);
+    UIPageIterator uiAdvancePageIterator = getParent().findFirstComponentOfType(UIPageIterator.class);
+    if (ret != null) { 
+      uiAdvancePageIterator.setCurrentPage(pageIndex);
+    }
   }
 
   public String getKeyword() {

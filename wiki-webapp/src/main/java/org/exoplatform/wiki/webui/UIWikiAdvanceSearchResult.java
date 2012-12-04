@@ -18,14 +18,19 @@ package org.exoplatform.wiki.webui;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
@@ -40,21 +45,42 @@ import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
  *          viet.nguyen@exoplatform.com
  * May 14, 2010  
  */
-@ComponentConfig(lifecycle = Lifecycle.class, template = "app:/templates/wiki/webui/UIWikiAdvanceSearchResult.gtmpl")
+@ComponentConfig(lifecycle = Lifecycle.class, 
+                 template = "app:/templates/wiki/webui/UIWikiAdvanceSearchResult.gtmpl",
+                 events = {@EventConfig(listeners = UIWikiAdvanceSearchResult.ChangeMaxSizePageActionListener.class)})
 public class UIWikiAdvanceSearchResult extends UIContainer {
 
-  private PageList<SearchResult> results;
+  private UIPageIterator pageIterator_;
 
   public UIWikiAdvanceSearchResult() throws Exception {
-    addChild(UIAdvancePageIterator.class, null, "SearchResultPageIterator");
+    //addChild(UIAdvancePageIterator.class, null, "SearchResultPageIterator");
+    pageIterator_ = addChild(UIPageIterator.class, null, "SearchResultPageIterator");
   }
 
-  public PageList<SearchResult> getResults() {
-    return results;
+  public List<SearchResult> getResults() throws Exception {
+    //return results;
+    PageList pl = pageIterator_.getPageList();
+    if (pl == null) { return null; }
+    return pageIterator_.getCurrentPageData();
   }
   
   public void setResults(PageList<SearchResult> results) {
-    this.results = results;
+    pageIterator_.setPageList(results);
+    //pageIterator_.getPageList().setPageSize(5);
+  }
+  
+  public int getItemsPerPage() {
+    PageList pl = pageIterator_.getPageList();
+    if (pl == null) { return 0; }
+    return pl.getPageSize();
+  }
+  
+  public void setItemsPerPage(int value) throws Exception {
+    PageList pl = pageIterator_.getPageList();
+    if (pl != null) {
+      pl.setPageSize(value);
+      pl.getPage(pl.getCurrentPage());
+    }
   }
 
   public String getKeyword() {
@@ -116,6 +142,15 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
       sb.append(" ").append(st.nextElement());
     return sb.toString();
   }
-  
+
+  static public class ChangeMaxSizePageActionListener extends EventListener<UIWikiAdvanceSearchResult>{
+
+    public void execute(Event<UIWikiAdvanceSearchResult> event) throws Exception {
+      UIWikiAdvanceSearchResult uisearch = event.getSource();
+      int itemsPerPage = Integer.parseInt(event.getRequestContext().getRequestParameter(OBJECTID));
+      uisearch.setItemsPerPage(itemsPerPage);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uisearch);
+    }
+  }
 }
 

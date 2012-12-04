@@ -919,6 +919,12 @@ table.UIFormGrid div.Id {
 }
 
 /* Advance Search Result */
+.UIWikiAdvanceSearchResult {
+	height:400px;
+	overflow:auto;
+}
+
+/* Advance Search Result */
 .UIWikiAdvanceSearchResult .ResultInfo {
 	border-bottom: 2px solid #C2C2C2;
 	color: #363636;

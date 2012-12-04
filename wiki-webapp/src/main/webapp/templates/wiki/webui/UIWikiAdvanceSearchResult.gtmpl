@@ -6,20 +6,38 @@ import org.exoplatform.commons.utils.PageList ;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.commons.Utils ;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
+import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.wiki.service.WikiPageParams;
+import java.util.List;
 
-	PageList<SearchResult> results = uicomponent.getResults() ;	
-	if(results != null &&	results.getAll().size() > 0) {
-		String resultInfo = _ctx.appRes("UIWikiAdvanceSearchResult.label.ResultInfo");
-		resultInfo = resultInfo.replace("{0}", String.valueOf(results.getFrom()+1));
-		resultInfo = resultInfo.replace("{1}", results.getTo().toString());
-		resultInfo = resultInfo.replace("{2}", results.getAll().size().toString());
-		resultInfo = resultInfo.replace("{3}", "<strong>" + uicomponent.getKeyword() + "</strong>");
+	List<SearchResult> results = uicomponent.getResults() ;
+	PageList<SearchResult> pl = uicomponent.getChild(UIPageIterator.class).getPageList();
+	def int[] maxItemPerPageList = [5, 10, 15];
+  def maxPageSize = uicomponent.getItemsPerPage();
+	if(pl != null &&	pl.getAll().size() > 0) {
 %>		
 		<div class="UIWikiAdvanceSearchResult" id="$uicomponent.id">
-			<div class="ResultInfo"><%=resultInfo%></div>
+		  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%>
+			<div class="ResultInfo">
+			  <%=pl.getAll().size()%>&nbsp; 
+			  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsFor");%>&nbsp;
+			  <strong><%=uicomponent.getKeyword()%></strong>&nbsp;|&nbsp;
+			  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.Show");%>&nbsp;
+			  <!--dropdownlist-->
+			  <select class="selectbox" onchange="window.location.href=this.options[this.selectedIndex].value; return false;" id="PageSizeSelector">
+			  <% for (maxItemPerPage in maxItemPerPageList) {
+			    if (maxPageSize == maxItemPerPage) {
+			  %>
+			    <option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>" selected>$maxItemPerPage</option>
+			  <% } else { %>
+			    <option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>">$maxItemPerPage</option>
+			  <% } 
+			  } %>
+			  </select>
+			  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsOnPage");%>&nbsp;
+			</div>
 			<%
-				for(SearchResult result in results.getAll()) {
+				for(SearchResult result in results) {
 				    def page = uicomponent.getPage(result);
 					def wiki= uicomponent.getWiki(page);					
 				    WikiPageParams pageParams = new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName());				    
@@ -94,10 +112,10 @@ import org.exoplatform.wiki.service.WikiPageParams;
 				String prev = uicomponent.event("PrevPage") ;
 				String next = uicomponent.event("NextPage") ;
 			%>
-			<% uicomponent.renderChild(UIAdvancePageIterator.class) ; %>
+			<% uicomponent.renderChild(UIPageIterator.class) ; %>
 			
 	</div>	
 	
 	<%} else { %>
-		<div class="NoSearchResult"><%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %></div>
+		<div class="NoSearchResult">0&nbsp;<%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %>&nbsp;<strong><%=uicomponent.getKeyword()%></strong></div>
 	<%} %>
