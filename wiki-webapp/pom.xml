@@ -20,6 +20,7 @@
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
