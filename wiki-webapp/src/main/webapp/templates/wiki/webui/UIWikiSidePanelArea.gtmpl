@@ -7,7 +7,7 @@
   <% 
   	 String closeLink= uicomponent.getParent().event(UIWikiPageEditForm.CLOSE);
   %>
-    <a href="$closeLink" class="actionIcon pull-right"><i class="uiIconClose"></i></a>
+    <a href="$closeLink" class="uiIconClose pull-right">&nbsp;</a>
     <%=_ctx.appRes("UIWikiSidePanelArea.label.Help-title");%>
   </div>
   <div class="content">
