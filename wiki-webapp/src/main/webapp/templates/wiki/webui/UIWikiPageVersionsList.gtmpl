@@ -8,6 +8,7 @@
   import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
   import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
   import org.exoplatform.wiki.webui.UIWikiPortlet;
+  import org.exoplatform.wiki.webui.UIWikiBottomArea;
   import org.exoplatform.wiki.commons.Utils;
 %>
 <%
@@ -28,10 +29,11 @@
   String anchor = "#" + compareAction;
   String compareActionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + compareAction;
   String compareActionLink = uicomponent.event(compareAction);
+  def box = uicomponent.getParent() instanceof UIWikiBottomArea ? "wikiBox" : "";
 %>
-<div class="uiWikiPageVersionsList uiAttachmentUploadContainer">
+<div class="uiWikiPageVersionsList uiAttachmentUploadContainer ${box}">
  <% uiform.begin(); %>
-  <div class="historyLabel"><strong><%= _ctx.appRes("UIWikiPageVersionsList.label.HistoryLabel"); %></strong></div>
+  <h4 class="historyLabel"><%= _ctx.appRes("UIWikiPageVersionsList.label.HistoryLabel"); %></h4>
 	<div class="compareSelect">
 		<button  class="btn btn-primary refreshModeTarget"><%= _ctx.appRes("UIWikiPageVersionsList.label.CompareSelected"); %></button>
 		<a onclick="$compareActionLink" id="$compareActionId" style="display:none;"></a>	
