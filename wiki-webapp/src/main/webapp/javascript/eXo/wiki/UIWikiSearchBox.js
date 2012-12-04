@@ -205,7 +205,7 @@ UIWikiSearchBox.prototype.renderMenu = function(data) {
 
   var searchItemNode = $('<li/>');
   var linkNode = $('<a/>', {
-    'class': 'ItemIcon MenuIcon SearchIcon',
+    'class': '',
     'href' : 'javascript:eXo.wiki.UIWikiSearchBox.doAdvanceSearch();',
     'text' : eXo.wiki.UIWikiSearchBox.searchMsg + " \'" + me.input.value + "\'",
     'title': eXo.wiki.UIWikiSearchBox.searchMsg + " \'" + me.input.value + "\'"

@@ -20,5 +20,7 @@
     <% uiform.renderChild(uiform.FIELD_SEARCHVALUE);%>
   <%uiform.end()%>
   
-  <ul class="dropdown-menu"></ul> 
+  <ul class="dropdown-menu">
+  	<li></li>
+  </ul> 
 </div>
