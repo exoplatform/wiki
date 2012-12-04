@@ -13,7 +13,7 @@
 
 <div class="uiPageInfoItem uiPageInfoChanges">
   <h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.recent-changes")%></h6>
-	<table class=" uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+	<table class=" uiGrid table table-hover table-striped" >
 	  <thead>
 	    <tr>
 	      <th ><%= _ctx.appRes("UIWikiPageInfo.label.time")%></th>
@@ -45,15 +45,14 @@
 	        <a href="#ViewRevision_<%=versionNumber%>"  rel="tooltip" data-placement="bottom" title="$versionLabel" >$versionLabel</a>
 	        <a style="display: none;" id="$viewLinkId" onclick="<%=uicomponent.event("ViewRevision", versionNumber)%>">&nbsp;</a>
 	      </td>
-	      <td  class="Editor">$author</td>
+	      <td  class="editor">$author</td>
 	    </tr>
 	  <% } %>
 	  </tbody>
 	</table>
 <% if (currentVersions.size() > 0) { %>
   <div class="uiAction">
-  	<button class="btn" href="#ShowHistory"  rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>
-  	<a style="display: none;" id="$showHistoryId" onclick="<%=uicomponent.event("ShowHistory")%>">&nbsp;</a>
+  	<button class="btn" onclick="<%=uicomponent.event("ShowHistory")%>" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>
   </div>
 <% } %>
 
