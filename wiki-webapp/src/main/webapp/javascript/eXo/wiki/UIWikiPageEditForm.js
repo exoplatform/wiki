@@ -149,7 +149,7 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
 };
 
 UIWikiPageEditForm.prototype.onSaveDraftSuccess = function(data) {
-  var me = eXo.wiki.;
+  var me = eXo.wiki.UIWikiPageEditForm;
   if (data.draftName) {
     me.draftName = data.draftName;
     me.createRestParam();
