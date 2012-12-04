@@ -151,19 +151,21 @@
       <artifactId>xwiki-rendering-api</artifactId>
     </dependency>
     <!-- GWT core dependencies -->
+    <!-- Don't bundle gwt-servlet to avoid conflicts (javax.servlet, ...) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
+    <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <dependency>
