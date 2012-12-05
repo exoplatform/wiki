@@ -144,6 +144,9 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
 	  $(h5Container).append(aElement);
 	  homeUL.remove();
 	  $(container).append(remain);
+	  if (eXo.wiki.WikiLayout) {
+	    eXo.wiki.WikiLayout.processWithHeight();
+	  }
 	}
   }
   $("*[rel='tooltip']").tooltip();

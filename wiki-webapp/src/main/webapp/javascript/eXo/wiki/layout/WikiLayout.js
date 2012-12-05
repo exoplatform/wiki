@@ -171,6 +171,9 @@ WikiLayout.prototype.setHeightLayOut = function() {
   if (WikiLayout.leftArea && WikiLayout.resizeBar) {
     $(WikiLayout.leftArea).height(hct + "px");
 	var resideBarContent = $(WikiLayout.resizeBar).find("div.resizeBarContent:first")[0];
+	var titleHeader = $(WikiLayout.leftArea).find(".titleWikiBox:first")[0];
+	var treeExplorer = $(WikiLayout.leftArea).find("div.uiTreeExplorer:first")[0];
+	$(treeExplorer).css("height", hct - titleHeader.offsetHeight - 20 + "px"); //Padding top/bottom inside tree
 	if (resideBarContent) {
 	  $(resideBarContent).height(hct + "px");
 	}
