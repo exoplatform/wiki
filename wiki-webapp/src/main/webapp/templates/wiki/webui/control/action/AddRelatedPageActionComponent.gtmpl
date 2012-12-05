@@ -1,4 +1,4 @@
 
-<div class="actionCenter">
+<div class="uiAction">
 	<button onclick="<%= uicomponent.event(uicomponent.ACTION) %>" class="btn"><%= _ctx.appRes("UIWikiPageInfo.label.add-relation") %></button>
 </div>
