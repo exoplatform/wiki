@@ -18,7 +18,7 @@
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIWikiPermalinkForm.init('" + uicomponent.id + "');");  
 %>
-<div class="$uicomponent.id">
+<div id="$uicomponent.id" class="uiWikiPermalinkForm">
   <%uiform.begin()%>
   <div class="permalLinkShare"><i class="uiIconPermalink"></i>&nbsp;&nbsp;<%=_ctx.appRes("UIWikiPermalinkForm.label.link-to-share");%></div>
   <div class="permalinkWapperInput"><input class="input-xxxlarge" type="text" onclick="this.focus();this.select()" readonly="readonly" value="$permalink"/></div>

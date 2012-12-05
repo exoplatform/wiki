@@ -10,13 +10,13 @@
 <div class="uiAttachmentUploadListForm">
   <% uiform.begin(); %>
     <h6 class="attachmentTit"><%= _ctx.appRes("UIAttachmentUploadListForm.label.AttachmentTitle"); %></h6>
-    <table cellspacing="1" cellpadding="0" border="0" class="uiGrid table table-hover table-striped">
+    <table class="uiGrid table table-hover table-striped">
       <thead>
         <tr>
           <th><%= _ctx.appRes("UIAttachmentUploadListForm.label.File"); %></th>
           <th><%= _ctx.appRes("UIAttachmentUploadListForm.label.Creator"); %></th>
           <th><%= _ctx.appRes("UIAttachmentUploadListForm.label.LastUpdate"); %></th>
-          <th></th>
+          <th class="center"><%= _ctx.appRes("UIAttachmentUploadListForm.label.Action"); %></th>
         </tr>
       </thead>
       <tbody>
@@ -38,13 +38,13 @@
         creator = Utils.getFullName(attachment.getCreator());
         downloadLink = attachment.getDownloadURL();
     %>
-        <tr class="$rowClass">
-          <td class="Tit">
+        <tr>
+          <td>
           	<a rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.DownloadAttachment"); %>" href="$downloadLink" onclick="window.open(this.href); return false;"><%= attachment.getFullTitle() %></a>
           </td>
           <td><%= creator %></td>
           <td><%= df.format(attachment.getUpdatedDate().getTime())%></td>
-          <td><% uicomponent.renderActions(attachment.getName()); %> </td>
+          <td class="center"><% uicomponent.renderActions(attachment.getName()); %> </td>
         </tr>
     <%}%>
     
