@@ -1,9 +1,9 @@
-<div class="UIForm UIWikiMyDraftsForm">
+<div class="uiForm uiWikiMyDraftsForm wikiBox">
   <%uiform.begin();%>
-    <div class="header"><%=_ctx.appRes("UIWikiMyDraftsForm.title.my-draft")%></div>
-    <div class="introduce"><%=_ctx.appRes("UIWikiMyDraftsForm.msg.introduce")%></div>
+    <h4 class="titleInfo"><%=_ctx.appRes("UIWikiMyDraftsForm.title.my-draft")%></h4>
+    <p class="introduce"><%=_ctx.appRes("UIWikiMyDraftsForm.msg.introduce")%></p>
   
-    <div class="DraftGrid">
+    <div class="draftGrid">
       <% uiform.renderChild(uiform.DRAFT_GRID);	%>
 	</div>				
   <%uiform.end();%>

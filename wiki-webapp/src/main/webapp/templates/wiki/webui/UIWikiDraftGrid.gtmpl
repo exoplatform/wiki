@@ -27,8 +27,8 @@
    String sortField = uicomponent.getSortField();
    boolean isASC = !uicomponent.isASC();
 %>
-<div id="$uicomponent.id" class="$uicomponent.id">
-   <table class="UIFormGrid" cellspacing="0">
+<div id="$uicomponent.id" class="uiWikiDraftGrid">
+   <table class="uiGrid  table table-hover table-striped" >
       <thead>
       <tr>
         <% for (field in beanFields) {
@@ -40,26 +40,26 @@
           String sortActionLink = uiForm.event(uiParent.ACTION_SORT, uiParent.getId(), fileSortParam);
           String sortTitle = _ctx.appRes(uiParent.getName() + ".action.title." + uiParent.ACTION_SORT);
           
-          String clazz = "SortDraftIcon";
+          String clazz = "uiIconArrowUp";
           if (field.equals(sortField)) {
-            clazz = "SortDraftIcon ActiveSortDraftASCIcon";
+            clazz = "uiIconArrowDown";
             if ("DESC".equals(orderParam)) {
-              clazz = "SortDraftIcon ActiveSortDraftDESCIcon";
+              clazz = "uiIconArrowUp";
             }
           } else {
-            clazz = "SortDraftIcon SortDraftASCIcon";
+            clazz = "uiIconArrowDown";
             if ("DESC".equals(orderParam)) {
-              clazz = "SortDraftIcon SortDraftDESCIcon";
+              clazz = "uiIconArrowUp";
             }
           }
         %>
      	  <th>
-     	    <%=_ctx.appRes(name + ".header." + field)%>
-     	    <img src="/eXoResources/skin/sharedImages/Blank.gif" onclick="$sortActionLink" alt="$sortTitle" title="$sortTitle" class="$clazz"/>
+			<i onclick="$sortActionLink" class="$clazz pull-right"></i>
+     	    <%=_ctx.appRes(name + ".header." + field)%>     	    
      	  </th>
      	<% } %>
      	<% if (beanActions != null) { %>
-     	  <th><%=_ctx.appRes(name + ".header.action")%></th>
+     	  <th class="center"><%=_ctx.appRes(name + ".header.action")%></th>
      	<% } %>
       </tr>
       </thead>
@@ -68,8 +68,8 @@
       if (uicomponent.getUIPageIterator().getAvailable() < 1) {
       %>
         <tr>
-      	  <td style="font-style:italic; color: #FF5604; text-align: center;" colspan="<%=colnum%>">
-            <%=_ctx.appRes("UIGrid.msg.empty")%>
+      	  <td class="center " colspan="<%=colnum%>">
+            <i class="noticeEmpty"><%=_ctx.appRes("UIGrid.msg.empty")%></i>
           </td>
         </tr>
       <% } else {
@@ -80,7 +80,7 @@
           else rowClass = "OddRow";
           even = !even;
       %>
-      <tr class="$rowClass">
+      <tr >
          <%
            for (field in beanFields) {
 		      def fieldValue = uicomponent.getFieldValue(bean, field);
@@ -91,10 +91,10 @@
                    cssClass = "number";
                  } else if(java.util.Date.class.isAssignableFrom(fieldClass)) {
                     def dateFormat = new SimpleDateFormat("HH:mm:ss yyyy-MM-dd");
-                    cssClass = "Datetime";
+                    cssClass = "datetime";
                     fieldValue = dateFormat.format(fieldValue);
                  } else {
-                   cssClass = "Text";
+                   cssClass = "text";
                  }
               } else {
                  fieldValue = "";
@@ -108,7 +108,7 @@
                 String actionLink2 = uiForm.getActionLink(actionOfField, beanId);
                 println "<td class='fieldName'><div class=\"" + cssClass + "\">";
 				%>
-				  <a href="javaScript:void(0)" onclick="$actionLink2" alt="$title2" title="$title2">$fieldValue</a>
+				  <a data-placement="bottom" rel="tooltip" href="javaScript:void(0)" onclick="$actionLink2"  title="$title2">$fieldValue</a>
 				<%
 				println "</div></td>";
               } else {
@@ -126,8 +126,7 @@
            
            if (beanActions != null && beanActions.length > 0) {
          %>
-         <td>
-            <div class="ActionContainer">
+         <td class="center">
                <%
                  def beanIdField = uicomponent.getBeanIdField();
                  def beanId = uicomponent.getBeanIdFor(bean);
@@ -145,13 +144,11 @@
                %>
                
                <% if (Utils.getModeFromAction(action)){ %>
-                   <img src="/eXoResources/skin/sharedImages/Blank.gif" onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" title="$title" class="${action}Icon"/>
-                   <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
+			   <a onclick="$actionLink" data-placement="bottom" rel="tooltip" title="$title" class="actionIcon"><i class="uiIcon${action}"></i></a>
                <% } else { %>
-                  <img src="/eXoResources/skin/sharedImages/Blank.gif" onclick="$actionLink" alt="$title" title="$title" class="${action}Icon"/>
+			   <a onclick="$actionLink" data-placement="bottom" rel="tooltip" title="$title" class="actionIcon"><i class="uiIcon${action}"></i></a>
                <% } %>
               <% } %>
-            </div>
          </td>
          <%
                }

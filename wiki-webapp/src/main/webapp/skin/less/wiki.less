@@ -1,5 +1,3 @@
-@import "variables.less"; 
-@import "mixins.less";
 @import "wiki-variables.less"; 
 @import "wiki-mixins.less";
 @import "UIWikiPermalinkForm/Style.less";
@@ -229,6 +227,12 @@
 }
 
 /*******uiWikiPageControlArea************/
+.titleInfo {
+	.titleWiki;
+}
+h3.titleInfo {
+	.titleWiki(@linkColor,rgba(35,44,48,0.15),24px,@headingsFontWeight,@baseLineHeight + 8);	/*call titleInfo mixin from wiki-mixins*/
+}
 
 .uiWikiPageControlArea {
 	border-bottom: 1px dotted @tableBorder;
@@ -238,13 +242,7 @@
 	}	
 	[class^="uiIcon"] {
 		background-image: url("/eXoResources/skin/images/Icons/uiIconsLightGrey.png");
-	}
-	.titleInfo {
-		color: #2F5E92;
-		font-size: @baseFontSize + 11;
-		line-height: @baseLineHeight + 8;
-		text-shadow: 1px 1px 2px @grayLighter;
-	}
+	}	
 	.uiPageToolBar {
 		width: 280px;
 	}
@@ -260,7 +258,16 @@
 }
 
 /*******Breadcrumbs************/
+
 .uiWikiBreadCrumb{
 	padding-top: 3px;
 }
 
+/*uiWikiDraftGrid*/
+
+.uiWikiMyDraftsForm {
+	padding: 0 15px;
+	.introduce {
+		margin: 0 0 15px 0;
+	}
+}
