@@ -179,7 +179,7 @@ UIWikiSearchBox.prototype.typeCallback = function(data) {
 
 UIWikiSearchBox.prototype.doAdvanceSearch = function() {
   var me = eXo.wiki.UIWikiSearchBox;
-  var action = $(me.input).closest('.SearchForm')[0];
+  var action = $(me.input).closest('.uiWikiSearchBox')[0];
   action = $(action).find('a.AdvancedSearch')[0];
   eXo.wiki.UIWikiAjaxRequest.makeNewHash('#AdvancedSearch');
   action.onclick();
