@@ -7,9 +7,8 @@
   requireJs.addScripts("wikiView.UIWikiAdvanceSearchForm.init(\"" + inputId + "\");");
 %>
 
-<div class="UIWikiAdvanceSearchForm">
+<div class="uiWikiAdvanceSearchForm">
 	<% uiform.begin() %>
-		<div class="ClearFix">
 			<div class="SearchInfo">
 				<%uiform.renderChild("text")%>
 				<label><%=_ctx.appRes("UIWikiAdvanceSearchForm.label.wiki")%></label><%uiform.renderChild(uicomponent.WIKIS)%>
@@ -24,6 +23,5 @@
 		        </div>
 		    <%}%>	     
 			</div>
-		</div>
 	<% uiform.end() %>
 </div>

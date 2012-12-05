@@ -1,0 +1,45 @@
+.uiWikiAdvanceSearchResult {
+	h4 > span.line {
+		border-top: 1px solid gray;
+	    display: inline-block;
+	    vertical-align: middle;
+	    width: 83%;
+	}
+	
+	> .resultInfo { 
+		border-bottom: 1px dotted @grayLight;
+		padding: 17px 0;
+		
+		> .resultNumber {
+			font-size: 30px;
+			font-weight: bold;
+			color: @linkColor;
+		}
+		> .split {
+			border-left: 1px solid @grayLight;
+		    display: inline-block;
+		    height: 27px;
+		    margin: 0 20px;
+		    vertical-align: middle;
+		}
+		
+		> .uiDropdown {
+			.border-radius(3px);
+			border: 1px solid @dropdownBorder;
+			ul.dropdown-menu {
+				min-width: 50px;
+			}
+		}
+	}
+	
+	h6 > a {
+		color: @linkColor;
+	}
+	
+	a.txtMark, span.txtMark {
+		color: @grayLight;
+		font-size: 12px;
+		font-weight: normal;
+	}
+}
+

@@ -16,26 +16,29 @@ import java.util.List;
   def maxPageSize = uicomponent.getItemsPerPage();
 	if(pl != null &&	pl.getAll().size() > 0) {
 %>		
-		<div class="UIWikiAdvanceSearchResult" id="$uicomponent.id">
-		  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%>
-			<div class="ResultInfo">
-			  <%=pl.getAll().size()%>&nbsp; 
-			  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsFor");%>&nbsp;
-			  <strong><%=uicomponent.getKeyword()%></strong>&nbsp;|&nbsp;
-			  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.Show");%>&nbsp;
-			  <!--dropdownlist-->
-			  <select class="selectbox" onchange="window.location.href=this.options[this.selectedIndex].value; return false;" id="PageSizeSelector">
-			  <% for (maxItemPerPage in maxItemPerPageList) {
-			    if (maxPageSize == maxItemPerPage) {
-			  %>
-			    <option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>" selected>$maxItemPerPage</option>
-			  <% } else { %>
-			    <option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>">$maxItemPerPage</option>
-			  <% } 
-			  } %>
-			  </select>
-			  <%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsOnPage");%>&nbsp;
+		<div class="uiWikiAdvanceSearchResult" id="$uicomponent.id">
+			<h4><%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%> &nbsp;<span class="line"></span></h4>
+			<div class="resultInfo">
+				<span class="resultNumber"><%=pl.getAll().size()%></span>&nbsp; 
+				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsFor");%>&nbsp;
+				<strong><%=uicomponent.getKeyword()%></strong>&nbsp;<span class="split"></span>&nbsp;
+				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.Show");%>&nbsp;
+				
+				<!--dropdownlist-->
+				<div class="dropdown uiDropdown uiActionWithLabel">
+					<div data-toggle="dropdown">$maxPageSize<i class="uiIconMiniArrowDown"></i></div>
+					<ul aria-labelledby="dLabel" role="menu" class="dropdown-menu">
+						<% for (maxItemPerPage in maxItemPerPageList) {
+						%>
+						<li>
+							<a class="dropdown-toggle" data-toggle="dropdown" href="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>">$maxItemPerPage</a>
+						</li>
+						<% } %> 
+					</ul>
+				</div>
+				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsOnPage");%>&nbsp;
 			</div>
+			<ul>
 			<%
 				for(SearchResult result in results) {
 				    def page = uicomponent.getPage(result);
@@ -54,60 +57,67 @@ import java.util.List;
 					String pageOldTitle = uicomponent.getOldPageTitleInSearchResult(page, pageTitle);
 					if(WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType())) {										
 			%>						
-						<div class="BlockResultFeed">
-							<a class="page TxtTitle" href="$pageURI">
+						<li>
+							<h6><i class="uiIconFile"></i><a href="$pageURI">
 							<% if(pageOldTitle.length() > 0) { %>
-								<span class="TxtTitFeed"><%=pageOldTitle%></span>
-								<span class="TxtMark"> is renamed to </span>
+								<%=pageOldTitle%>
+								<span class="txtMark"> is renamed to </span>
 							<% } %>
-								<span class="TxtTitFeed"><%=pageTitle%></span>
-							</a>
+								<%=pageTitle%>
+							</a></h6>
 							<% if (result.getExcerpt()!=null){ %>				
-								<div class="TxtDetail"><%=result.getExcerpt()%></div>
+							<%=result.getExcerpt()%>
 							<% } %>
-							<div>
-							<strong>$wikiLabel: </strong><a class="TxtMark" href="$wikiURI">$space</a>
-							<br/>
-							$timeMsg
-						</div>
-				</div>
+							<p>
+								<strong>$wikiLabel: </strong><a class="txtMark" href="$wikiURI">$space</a>
+								<br />
+								<span class="txtMark">$timeMsg</span>
+							</p>
+							
+						</li>
 						<%	
 					} else if (WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())){
 						att = (AttachmentImpl) org.exoplatform.wiki.utils.Utils.getObject( result.getPath(), result.getType());						
 						String downloadlink = att.getDownloadURL();						
 						String extension = Utils.getExtension(att.getName()) ;
+						if (extension != null && !extension.equals("")) {
+							extension = new StringBuilder(extension.substring(0, 1)).toString().toUpperCase() + extension.substring(1);
+							
+						}
 						%>				 
-						<div class="BlockResultFeed">
-							<a class="TxtTitle attach $extension" href="$downloadlink"><span><%=att.getFullTitle()%></span></a>
+						<li>
+							<h6><i class="uiIcon$extension"></i><a href="$downloadlink"><%=att.getFullTitle()%></a></h6>
 							<% if (result.getExcerpt()!=null){ %>						
-							<div class="TxtDetail"><%=result.getExcerpt()%></div>
+							<%=result.getExcerpt()%>
 							<% } %>
-							<div>
-							<strong>$wikiLabel: </strong><a class="TxtMark" href="$wikiURI">$space</a> > <a class="TxtMark" href="$pageURI"><%=att.getParentPage().getTitle()%></a>&nbsp;
-							<%=uicomponent.getDateFormat(result.getUpdatedDate()); %>
-							</div>
-						</div>			
+							<p>
+								<strong>$wikiLabel: </strong><a class="txtMark" href="$wikiURI">$space</a>  <a class="txtMark" href="$pageURI"><%=att.getParentPage().getTitle()%></a>
+							<br />
+							<span class="txtMark"><%=uicomponent.getDateFormat(result.getUpdatedDate()); %></span>
+							</p>
+						</li>			
 						<%
 					} else if (WikiNodeType.WIKI_PAGE.equals(result.getType())) {
 						%>
-						<div class="BlockResultFeed">
-							<a class="page TxtTitle" href="$pageURI">
+						<li>
+							<h6><i class="uiIconFile"></i><a href="$pageURI">
 								<% if(pageOldTitle.length() > 0) { %>
-					<span class="TxtTitFeed"><%=pageOldTitle%></span>
-					<span class="TxtMark"> is renamed to </span>
-				<% } %>
-					<span class="TxtTitFeed"><%=pageTitle%></span>
-				</a>
-						<div>
-							<strong>$wikiLabel: </strong><a class="TxtMark" href="$wikiURI">$space</a>
-							<br/>
-							$timeMsg
-						</div>
-				</div>
+								<%=pageOldTitle%>
+								<span class="txtMark"> is renamed to </span>
+							<% } %>
+								<%=pageTitle%>
+							</a></h6>
+							<p>
+								<strong>$wikiLabel: </strong><a class="txtMark" href="$wikiURI">$space</a>
+								<br />
+								<span class="txtMark">$timeMsg</span>
+							</p>
+						</li>
 						<%
 					}		 
 				}
-			%>				 
+			%>	
+</ul>			
 			<%
 				String prev = uicomponent.event("PrevPage") ;
 				String next = uicomponent.event("NextPage") ;
@@ -117,5 +127,5 @@ import java.util.List;
 	</div>	
 	
 	<%} else { %>
-		<div class="NoSearchResult">0&nbsp;<%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %>&nbsp;<strong><%=uicomponent.getKeyword()%></strong></div>
+		<div class="noSearchResult">0&nbsp;<%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %>&nbsp;<strong><%=uicomponent.getKeyword()%></strong></div>
 	<%} %>
