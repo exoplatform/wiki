@@ -59,7 +59,7 @@
             else rowClass = "OddRow";
             even = !even;
         %>
-            <tr class="$rowClass">
+            <tr>
               <td>
 	              <div class="uiRadio">
 	                <input type="radio" name="objectId" value="<%=uicomponent.getBeanIdFor(bean)%>"/>
@@ -105,7 +105,7 @@
                        String anchor = "#" + action;
                        %>
                          
-                         <a onclick="$actionLink" alt="$action" class="${action}Icon"  rel="tooltip" 
+                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" 
                          data-placement="bottom" title="$title"><i class="uiIconPreview"></i></a>
                    <%} %>                 
                </td>
@@ -152,7 +152,7 @@
             else rowClass = "OddRow";
             even = !even;
         %>
-            <tr class="$rowClass">              
+            <tr >              
             <%
               for (field in beanFields) {
                 def fieldValue = uicomponent.getFieldValue(bean, field);
@@ -191,7 +191,7 @@
                        String anchor = "#" + action;
                        %>
                          
-                         <a onclick="$actionLink" alt="$action" class="${action}Icon"  rel="tooltip" 
+                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" 
                          data-placement="bottom" title="$title"><i class="uiIcon$title"></i></a>
                    <%} %>                 
                </td>
