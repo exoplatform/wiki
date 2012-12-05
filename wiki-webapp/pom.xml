@@ -16,6 +16,11 @@
     <xwe.module>org.xwiki.gwt.wysiwyg.WysiwygDev</xwe.module>
   </properties>
   <dependencies>
+    <!-- GWT core dependencies -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-servlet</artifactId>
+    </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>com.smartgwt</groupId>
@@ -149,11 +154,6 @@
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-api</artifactId>
-    </dependency>
-    <!-- GWT core dependencies -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
     </dependency>
     <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
     <dependency>
