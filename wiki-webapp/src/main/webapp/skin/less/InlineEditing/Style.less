@@ -1,4 +1,4 @@
-[class^="wikimodel-freestanding"]{
+.EditSection [class^="wikimodel-freestanding"]{
   display: inline-block;
   width: 16px;
   height: 16px;
@@ -7,8 +7,25 @@
   vertical-align: text-top;
   background-image: url("/eXoResources/skin/images/Icons/uiIconsDarkGrey.png");
   background-repeat: no-repeat;
-  margin-top: 1px;
+  margin-top: -28px;
   &:hover {
   	background-image: url("/eXoResources/skin/images/Icons/uiIconsBlue.png");
   }
 }
+
+.uiWikiPageContentArea{
+	span.EditSection{
+		display: none;
+	}
+	.EditSectionHover{
+		background-color: @tableBackgroundAccent;
+	    margin: 0 -15px;
+    	padding-left: 15px;
+    	padding-right: 15px;
+	}
+	.section-container{
+		padding-top: 5px;
+		padding-bottom: 5px;
+	}
+}
+
