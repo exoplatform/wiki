@@ -27,7 +27,7 @@
 		padding: 0;
 		width: 270px;
 		.barTit{
-			background: none repeat scroll 0 0 #F0F0F0;
+			background: @grayWhiteSmoke;
 			border: 1px solid #C7C7C7;
 			.border-radius( 5px 5px 0 0);
 			color: @gray;
@@ -62,9 +62,9 @@
 		textarea{
 			background: @white;
 			border: 1px solid #dedede;
-			.border-radius( 5px 5px 5px 5px);
+			.border-radius(@borderRadiusLarge);
 			font-size: 10pt;
-			height: auto;
+			height: 366px;
 			overflow: auto;
 			padding: 6px;
 			width: 100%;
@@ -103,7 +103,7 @@
 		input{
 			background: @white;
 			border: 1px solid #DCDCDC;
-			.border-radius( 5px 5px 5px 5px);
+			.border-radius(@borderRadiusLarge);
 			font-size: 14px;
 			padding: 6px;
 			width: 50%;

@@ -1,4 +1,4 @@
-<div class="grayLightBox" id="$uicomponent.id">
+<div class="WikiUpperArea" id="$uicomponent.id">
 <%
   List children = uicomponent.getChildren() ;
   for(component in children) {

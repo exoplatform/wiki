@@ -1,4 +1,4 @@
-<div class="hearContent grayLightBoxContent clearfix">
+<div class="uiGrayLightBox clearfix">
 <%
   List children = uicomponent.getChildren() ;
   for(component in children) {
