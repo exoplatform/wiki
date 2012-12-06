@@ -38,7 +38,12 @@
 <div class="uiWikiPageEditForm">
 <% uiform.begin();%>
   <% uiform.renderChild(uiform.HELP_PANEL);%>
-  <div class="uiColsLeftsEditForm"> 
+  <%
+    def isHelpPanelRendered = uicomponent.isSidePanelRendered();
+    String className = "";
+    if(isHelpPanelRendered) className = "class='uiColsLeftsEditForm'";
+  %>
+  <div $className> 
     <div class="uiEditUpper">
       <% uiform.renderChild(uiform.TITLE_CONTROL); %>
     </div>
@@ -75,7 +80,7 @@
     <%
       textAreaInput = uiform.getUIFormTextAreaInput(uiform.FIELD_CONTENT)
       textAreaInput.setRows(25);
-      if(uicomponent.isSidePanelRendered() && uiform.getUIFormTextAreaInput(uiform.FIELD_CONTENT).isRendered()) {
+      if(isHelpPanelRendered && uiform.getUIFormTextAreaInput(uiform.FIELD_CONTENT).isRendered()) {
         textAreaInput.setColumns(92);
     %>
         <div class="uiWikiPageContentInputContainer">
