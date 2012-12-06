@@ -6,7 +6,7 @@
   requireJs.addScripts("wikiView.UIDropdownMenu.init(\""+uicomponent.id+"\");");
 %>
 <div data-toggle="dropdown" class="dropdown uiActionWithLabel"><%= _ctx.appRes("UIPageToolBar.action.Add"); %><i class="uiIconMiniArrowDown"></i></div>
-<ul class="dropdown-menu" role="menu" aria-labelledby="dLabel">
+<ul class="dropdown-menu">
   <%
   List children = uicomponent.getChildren() ;
   for(component in children) {
