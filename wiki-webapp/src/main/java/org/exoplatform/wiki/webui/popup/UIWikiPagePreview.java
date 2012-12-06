@@ -60,6 +60,11 @@ public class UIWikiPagePreview extends UIContainer {
     return ACTIONS;
   }
 
+  public void setContent(String contentHTML) {
+    UIWikiContentDisplay contentDisplay = this.getChildById(PREVIEW_DISPLAY);
+    contentDisplay.setHtmlOutput(contentHTML);
+  }
+
   public void renderWikiMarkup(String markup, String syntaxId) throws Exception {
     UIWikiContentDisplay contentDisplay = this.getChildById(PREVIEW_DISPLAY);
     if (Syntax.XHTML_1_0.toIdString().equals(syntaxId)) {
@@ -87,5 +92,8 @@ public class UIWikiPagePreview extends UIContainer {
   public void setPageTitle(String title) {
     this.pageTitle = title;
   }
-  
+
+  public String getPageTitle() {
+    return pageTitle;
+  }
 }

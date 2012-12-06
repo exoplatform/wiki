@@ -22,6 +22,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.upload.UploadResource;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -59,6 +61,8 @@ public class UIWikiUploadAttachment extends UIWikiForm {
   public static int SIZE_LIMIT = -1;
   
   public static String FIELD_UPLOAD = UIWikiFormUploadInput.UPLOAD_ACTION;
+
+  private static final Log log = ExoLogger.getLogger(UIWikiUploadAttachment.class.getName());
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new EditPagesPermissionFilter() });
 
@@ -157,6 +161,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
           }
           att.setCreator(event.getRequestContext().getRemoteUser());
         } catch (Exception e) {
+          log.error("An exception happens when saving attach file:" + attachfile.getName(), e);
           event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIApplication.msg.unknown-error",
                                                                                          null,
                                                                                          ApplicationMessage.ERROR));

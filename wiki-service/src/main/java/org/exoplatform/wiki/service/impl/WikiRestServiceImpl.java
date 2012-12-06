@@ -26,6 +26,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Stack;
+import java.util.StringTokenizer;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -60,11 +61,13 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.DraftPageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
@@ -94,6 +97,7 @@ import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
 import org.exoplatform.wiki.tree.WikiTreeNode;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
@@ -112,6 +116,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   private final RenderingService renderingService;
 
   private static Log             log = ExoLogger.getLogger("wiki:WikiRestService");
+
+  private static final String DASH = "-";
 
   private final CacheControl     cc;
   
@@ -242,19 +248,24 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     try {
       List<JsonNodeData> responseData = new ArrayList<JsonNodeData>();
       HashMap<String, Object> context = new HashMap<String, Object>();
-      path = URLDecoder.decode(path, "utf-8");
+      
       if (currentPath != null){
         currentPath = URLDecoder.decode(currentPath, "utf-8");
         context.put(TreeNode.CURRENT_PATH, currentPath);
-      }   
-      context.put(TreeNode.SHOW_EXCERPT, showExcerpt);
-      WikiPageParams pageParam = TreeUtils.getPageParamsFromPath(path);
-      if (type.equalsIgnoreCase(TREETYPE.ALL.toString())) {
+        WikiPageParams currentPageParam = TreeUtils.getPageParamsFromPath(currentPath);
+        PageImpl currentPage = (PageImpl) wikiService.getPageById(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageId());
+        context.put(TreeNode.CURRENT_PAGE, currentPage);
+      }
       
-        PageImpl page = (PageImpl) wikiService.getPageById(pageParam.getType(),
-                                                           pageParam.getOwner(),
-                                                           pageParam.getPageId());
-        
+      // Put select page to context
+      path = URLDecoder.decode(path, "utf-8");
+      context.put(TreeNode.PATH, path);
+      WikiPageParams pageParam = TreeUtils.getPageParamsFromPath(path);
+      PageImpl page = (PageImpl) wikiService.getPageById(pageParam.getType(), pageParam.getOwner(), pageParam.getPageId());
+      context.put(TreeNode.SELECTED_PAGE, page);
+      
+      context.put(TreeNode.SHOW_EXCERPT, showExcerpt);
+      if (type.equalsIgnoreCase(TREETYPE.ALL.toString())) {
         Stack<WikiPageParams> stk = Utils.getStackParams(page);
         context.put(TreeNode.STACK_PARAMS, stk);
         responseData = getJsonTree(pageParam, context);
@@ -265,11 +276,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         context.put(TreeNode.DEPTH, depth);
         responseData = getJsonDescendants(pageParam, context);
       }
-      return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON)
-                     .cacheControl(cc)
-                     .build();
+      return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
-      log.error("Failed for get tree data by rest service.", e);
+      if (log.isErrorEnabled()) {
+        log.error("Failed for get tree data by rest service.", e);
+      }
       return Response.serverError().entity(e.getMessage()).cacheControl(cc).build();
     }
   }
@@ -586,7 +597,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
  
   private List<JsonNodeData> getJsonTree(WikiPageParams params,HashMap<String, Object> context) throws Exception {
     List<JsonNodeData> responseData = new ArrayList<JsonNodeData>();
-    String currentPath = (String) context.get(TreeNode.CURRENT_PATH);
     Wiki wiki = Utils.getWiki(params);
     WikiTreeNode wikiNode = new WikiTreeNode(wiki);
     wikiNode.pushDescendants(context);
@@ -611,8 +621,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     pageSummary.setSpace(doc.getWiki().getOwner());
     pageSummary.setName(doc.getName());
     pageSummary.setTitle(doc.getTitle());
-    pageSummary.setXwikiRelativeUrl("http://localhost:8080/ksdemo/rest-ksdemo/wiki/portal/spaces/classic/pages/WikiHome");
-    pageSummary.setXwikiAbsoluteUrl("http://localhost:8080/ksdemo/rest-ksdemo/wiki/portal/spaces/classic/pages/WikiHome");
     pageSummary.setTranslations(objectFactory.createTranslations());
     pageSummary.setSyntax(doc.getSyntax());
 
@@ -806,6 +814,126 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       if (log.isWarnEnabled()) {
         log.warn("An exception happens when searchAccessibleSpaces", ex);
       }
+      return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
+    }
+  }
+
+  /**
+   * Save draft title and content for a page specified by the given page params
+   * 
+   * @param wikiType type of wiki to save draft
+   * @param wikiOwner owner of wiki to save draft
+   * @param pageId name of page to save draft
+   * @param pageRevision the target revision of target page
+   * @param lastDraftName name of the draft page of last saved draft request
+   * @param isNewPage The draft for new page or not
+   * @param title draft title
+   * @param content draft content
+   * @param isMarkup content is markup or html. True if is markup.
+   * @return {@link Response} with status HTTPStatus.ACCEPTED if saving process is performed successfully
+   *                          with status HTTPStatus.INTERNAL_ERROR if there is any unknown error in the saving process
+   */                          
+  @POST
+  @Path("/saveDraft/")
+  public Response saveDraft(@QueryParam("wikiType") String wikiType,
+                            @QueryParam("wikiOwner") String wikiOwner,
+                            @QueryParam("pageId") String pageId,
+                            @QueryParam("pageRevision") String pageRevision,
+                            @QueryParam("lastDraftName") String lastDraftName,
+                            @QueryParam("isNewPage") boolean isNewPage,
+                            @QueryParam("clientTime") long clientTime,
+                            @FormParam("title") String title,
+                            @FormParam("content") String content,
+                            @FormParam("isMarkup") String isMarkup) {
+    try {
+      if ("__anonim".equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+        return Response.status(HTTPStatus.BAD_REQUEST).cacheControl(cc).build();
+      }
+      
+      WikiPageParams param = new WikiPageParams(wikiType, wikiOwner, pageId);
+      PageImpl pageImpl = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
+      if (StringUtils.isEmpty(pageId) || (pageImpl == null)) {
+        throw new IllegalArgumentException("Can not find the target page");
+      }
+      
+      DraftPage draftPage = null;
+      if (!isNewPage) {
+        draftPage = wikiService.getDraft(param);
+        if ((draftPage != null) && !draftPage.getName().equals(lastDraftName)) {
+          draftPage = null;
+        }
+      } else {
+        if (!StringUtils.isEmpty(lastDraftName)) {
+          draftPage = (DraftPageImpl) wikiService.getDraft(lastDraftName);
+        }
+      }
+      
+      // If draft page is not exist then create draft page
+      if (draftPage == null) {
+        // if create draft for exist page, we need synchronized when create draft 
+        if (!isNewPage) {
+          synchronized (pageImpl.getJCRPageNode().getUUID()) {
+            draftPage = (DraftPageImpl) wikiService.createDraftForExistPage(param, pageRevision, clientTime);
+          }
+        } else {
+          draftPage = (DraftPageImpl) wikiService.createDraftForNewPage(param, clientTime);
+        }
+      }
+      
+      // Convert conent to markup if need
+      if (StringUtils.isEmpty(isMarkup) || !isMarkup.toLowerCase().equals("true")) {
+        content = renderingService.render(content, Syntax.XHTML_1_0.toIdString(), wikiService.getDefaultWikiSyntaxId(), false);
+      }
+      
+      // Store page content and page title in draft
+      title = replaceSpecialCharacter(title);
+      if ("".equals(title)) {
+        draftPage.setTitle(draftPage.getName());
+      } else {
+        draftPage.setTitle(title);
+      }
+      draftPage.getContent().setText(content);
+      ((DraftPageImpl) draftPage).getChromatticSession().save();
+      
+      // Log the editting time for current user
+      Utils.logEditPageTime(param, Utils.getCurrentUser(), System.currentTimeMillis(), draftPage.getName(), isNewPage);
+      
+      // Notify to client that saved draft success
+      return Response.ok(new DraftData(draftPage.getName()), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+    } catch (Exception ex) {
+      
+      // Notify to client that save draft fail
+      log.warn(String.format("Failed to perform auto save wiki page %s:%s:%s", wikiType,wikiOwner,pageId), ex);
+      return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
+    }
+  }
+  
+  private String replaceSpecialCharacter(String s) {
+    StringTokenizer tokens = new StringTokenizer(WikiNameValidator.INVALID_CHARACTERS);
+    while (tokens.hasMoreTokens()) {
+      s = s.replace(tokens.nextToken(), DASH);
+    }
+    return s;
+  }
+  
+  /**
+   * Remove the draft
+   * 
+   * @param draftName The name of draft to remove
+   * @return Status.OK if remove draft success
+   *         HTTPStatus.INTERNAL_ERROR if there's error occur when remove draft
+   */
+  @GET
+  @Path("/removeDraft/")
+  public Response removeDraft(@QueryParam("draftName") String draftName) {
+    if (StringUtils.isEmpty(draftName)) {
+      return Response.status(HTTPStatus.BAD_REQUEST).cacheControl(cc).build();
+    }
+    
+    try {
+      wikiService.removeDraft(draftName);
+      return Response.ok().cacheControl(cc).build();
+    } catch (Exception e) {
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }

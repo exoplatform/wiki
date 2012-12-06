@@ -310,8 +310,117 @@ table.UIFormGrid div.Id {
 	vertical-align:top;
 }
 
+.UIWikiPortlet .PageLock {
+  background: url("/wiki/skin/DefaultSkin/webui/background/lock.png") no-repeat left top;
+  padding: 2px 0px 0px 20px;
+  margin: 20px 0 10px 0;
+  height:16px;
+}
+
+.UIWikiPortlet .PageUnlock {
+  background: url("/wiki/skin/DefaultSkin/webui/background/unlock.png") no-repeat left top;
+  padding: 2px 0px 0px 20px;
+  margin: 20px 0 10px 0;
+  height:16px;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm {
+  background: white;
+  padding: 15px;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .PermalinkIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/Permalink.png") no-repeat left center;
+  padding-left: 20px;
+  margin-bottom: 10px;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .PermalinkText {
+  border: 1px solid #DBDFE6;
+  color: #9A9A9A;
+  height: 20px;
+  padding: 0 4px;
+  width: 97%;
+  resize: none;
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .PublicButton, .RestricButton {
+}
+
+.UIWikiPortlet .UIWikiPermalinkForm .ManagerPermissionButton {
+}
+
 .UIWikiPortlet .UIWikiPermissionOwner .UIFormGrid td {
 	border:none;
+}
+
+.UIWikiPortlet .UIWikiDraftGrid {
+  padding: 15px 15px 15px 15px;
+  overflow:hidden;
+}
+
+.UIWikiPortlet .UIWikiMyDraftsForm .header {
+  padding: 15px 15px 5px 15px;
+  font-size: 18pt;
+}
+
+.UIWikiPortlet .UIWikiMyDraftsForm .introduce {
+  padding: 5px 15px 5px 15px;
+}
+
+.UIWikiPortlet .UIWikiDraftGrid td {
+  overflow:hidden;
+}
+
+.UIWikiPortlet .UIFormGrid th:hover img {
+  display:block;
+}
+
+.UIWikiPortlet .UIWikiDraftGrid .fieldName {
+  max-width:100px;
+}
+
+.UIWikiPortlet .UIWikiDraftGrid .breadcrum {
+  max-width:200px;
+}
+
+.UIWikiPortlet .DeleteDraftIcon {
+  width: 16px;
+  height: 16px;
+  background: url('/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/DustBin.gif') no-repeat;
+  margin: auto;
+ }
+ 
+.UIWikiPortlet .ViewDraftChangeIcon {
+  width: 16px;
+  height: 16px;
+  background: url("/wiki/skin/DefaultSkin/webui/background/viewChange.png") no-repeat;
+  margin: auto;
+ }
+ 
+.UIWikiPortlet .ActiveSortDraftASCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/Active_SortASC.png") no-repeat;
+}
+
+.UIWikiPortlet .ActiveSortDraftDESCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/Active_SortDESC.png") no-repeat;
+}
+
+.UIWikiPortlet .SortDraftASCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/SortASC.png") no-repeat;
+}
+
+.UIWikiPortlet .SortDraftDESCIcon {
+  background: url("/wiki/skin/DefaultSkin/webui/background/SortDESC.png") no-repeat;
+}
+
+.UIWikiPortlet .SortDraftIcon {
+  width: 16px;
+  height: 16px;
+  float: right;
+  padding-right: 2px;
+  margin-top: 5px;
+  cursor: pointer;
 }
 
 .UIWikiPortlet .UIWikiPageTitleControlForm_PageControlArea {
@@ -351,6 +460,8 @@ table.UIFormGrid div.Id {
 	float:left;
 }
 
+/*############################## -- Begin Resize CSS function -- ##############################*/
+
 .UIWikiPortlet .Spliter {
 	background: #e1e1e1;
 	width: 1px;
@@ -358,6 +469,70 @@ table.UIFormGrid div.Id {
 	padding: 0px;
 	float:left;
 }
+
+.UIWikiPortlet .ResizeSideBar{
+	float: left; /* orientation=lt */
+	float: right; /* orientation=rt */
+	width: 15px;
+	cursor:col-resize;
+	position: relative;
+  border-right: solid 1px #fff;
+}
+
+.UIWikiPortlet .ResizeSideBar:hover {
+  border-right: solid 1px #E1E1E1;
+}
+
+.UIWikiPortlet .ResizeButton{
+	background: url('/wiki/skin/DefaultSkin/webui/background/ResizeButtonExpanded.gif') no-repeat center center ;
+	width: 14px;
+	height: 26px;
+	float:right;
+	margin : auto;
+	cursor : pointer;
+	border: 1px solid #E1E1E1;
+	border-right: none;
+	display: none;
+	margin-top: 10px;
+}
+
+.UIWikiPortlet .ResizeSideBar:hover .ResizeButton {
+  display: block;
+}
+.UIWikiPortlet .ResizeSideBarDisplay {
+  border-right: solid 1px #E1E1E1;
+}
+.UIWikiPortlet .ResizeSideBarDisplay .ResizeButton {
+  display: block;
+}
+.UIWikiPortlet  .ResizeButton:hover{
+  background-color: #f3f3f3;
+}
+
+.UIWikiPortlet .ResizeSideBar .ShowLeftContent {
+  background: url('/wiki/skin/DefaultSkin/webui/background/ResizeButtonColapsed.gif') no-repeat center center;
+  display: block;
+  border: 1px solid #E1E1E1;
+}
+
+.UIWikiPortlet .ResizeNoneBorder:hover {
+  border-right: 1px solid #fff;
+  cursor: default;
+}
+
+.UIWikiPortlet .ShowLeftContent:hover {
+  background-color: #f3f3f3;
+}
+
+.UIWikiPortlet .UIWikiPortletNoSelect {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+/*############################## -- End Resize CSS function -- ##############################*/
 
 .UIWikiPortlet .VerticalLine {
 	background: #e1e1e1;
@@ -1054,6 +1229,10 @@ table.UIFormGrid div.Id {
 
 .UIWikiPageInfoArea .TxtFeed {
 	text-align: right;
+}
+
+.UIWikiPortlet .UIWikiPageInfoArea .ActionLink {
+  color: #165FB3;
 }
 
 .UIWikiPageInfoArea .TxtFeed .Link {

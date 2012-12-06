@@ -16,7 +16,9 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
-import org.exoplatform.portal.webui.util.Util;
+import java.util.ResourceBundle;
+
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
@@ -83,12 +85,9 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
       String templateId = event.getRequestContext().getRequestParameter(OBJECTID);
 
-      String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-      form.wService.createDraftNewPage(sessionId);
       titleInput.setReadOnly(false);
       commentInput.setRendered(false);
-      Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(),
-                                                        templateId);     
+      Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(), templateId);     
       titleInput.setValue(template.getTitle());
       descriptionInput.setValue(template.getDescription());
       pageEditForm.setTitle(template.getTitle());
@@ -102,6 +101,8 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
   static public class PreviewTemplateActionListener extends EventListener<UIWikiSelectTemplateForm> {
     public void execute(Event<UIWikiSelectTemplateForm> event) throws Exception {
       UIWikiSelectTemplateForm form = event.getSource();
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance() ;
+      ResourceBundle res = context.getApplicationResourceBundle() ;
       UIWikiPortlet wikiPortlet = form.getAncestorOfType(UIWikiPortlet.class);
       UIWikiMaskWorkspace mask = wikiPortlet.findFirstComponentOfType(UIWikiMaskWorkspace.class);
       UIWikiPagePreview wikiPagePreview = mask.createUIComponent(UIWikiPagePreview.class,
@@ -117,6 +118,7 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       if (pageTitle != null) wikiPagePreview.setPageTitle(pageTitle);
       mask.setUIComponent(wikiPagePreview);
       mask.setShow(true);
+      mask.setPopupTitle(res.getString("UIEditorTabs.action.PreviewPage"));
       event.getRequestContext().addUIComponentToUpdateByAjax(mask);
     }
   }

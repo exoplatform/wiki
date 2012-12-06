@@ -10,6 +10,16 @@
   <packaging>jar</packaging>
   <name>eXo Wiki Service</name>
   <dependencies>
+  
+  
+    <dependency>
+      <groupId>org.exoplatform.portal</groupId>
+      <artifactId>exo.portal.webui.framework</artifactId>
+      <version>${org.exoplatform.portal.version}</version>
+      <scope>provided</scope>
+    </dependency>
+  
+  
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.api</artifactId>
@@ -251,24 +261,20 @@
   <build>
     <plugins>
       <plugin>
-        <groupId>org.jvnet.jaxb2.maven2</groupId>
-        <artifactId>maven-jaxb2-plugin</artifactId>
-        <version>0.7.4</version>
-        <configuration>
-          <extension>true</extension>
-          <schemaDirectory>src/main/resources</schemaDirectory>
-          <generateDirectory>${basedir}/src/main/java</generateDirectory>
-          <generatePackage>org.exoplatform.wiki.service.rest.model</generatePackage>
-          <verbose>true</verbose>
-          <removeOldOutput>false</removeOldOutput>
-        </configuration>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>jaxb2-maven-plugin</artifactId>
         <executions>
           <execution>
+            <id>xjc</id>
             <goals>
-              <goal>generate</goal>
+              <goal>xjc</goal>
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <extension>true</extension>
+          <packageName>org.exoplatform.wiki.service.rest.model</packageName>
+        </configuration>
       </plugin>
     </plugins>
   </build>

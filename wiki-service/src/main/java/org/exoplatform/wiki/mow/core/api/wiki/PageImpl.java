@@ -52,6 +52,7 @@ import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.ext.ntdef.NTFolder;
 import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.Page;
@@ -119,11 +120,12 @@ public abstract class PageImpl extends NTFolder implements Page {
     this.componentManager = componentManager;
   }
 
-  private Node getJCRPageNode() throws Exception {
+  public Node getJCRPageNode() throws Exception {
     return (Node) getChromatticSession().getJCRSession().getItem(getPath());
   }
   
   @Name
+  @Override
   public abstract String getName();
   public abstract void setName(String name);
   
@@ -143,6 +145,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   @Create
   protected abstract AttachmentImpl createContent();
 
+  @Override
   public AttachmentImpl getContent() {
     AttachmentImpl content = getContentByChromattic();
     if (content == null) {
@@ -163,11 +166,13 @@ public abstract class PageImpl extends NTFolder implements Page {
   public abstract String getTitleByChromattic();
   public abstract void setTitleByChromattic(String title);
   
+  @Override
   public String getTitle() {
     String title = getTitleByChromattic();
     return (title != null) ? title : getName();
   }
   
+  @Override
   public void setTitle(String title) {
     setTitleByChromattic(title);
   }
@@ -198,7 +203,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   @Property(name = WikiNodeType.Definition.URL)
   public abstract String getURL();
   public abstract void setURL(String url);
-  
   
   @OneToOne(type = RelationshipType.EMBEDDED)
   @Owner
@@ -319,6 +323,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   @OneToMany
   public abstract Collection<AttachmentImpl> getAttachmentsByChromattic();
 
+  @Override
   public Collection<AttachmentImpl> getAttachments() {
     return getAttachmentsByChromattic();
   }
@@ -382,6 +387,24 @@ public abstract class PageImpl extends NTFolder implements Page {
     for (int i = 0; i < pages.size(); i++) {
       PageImpl page = pages.get(i);
       if (page != null && page.hasPermission(PermissionType.VIEWPAGE)) {
+        result.put(page.getName(), page);
+      }
+    }
+    return result;
+  }
+  
+  public Map<String, PageImpl> getChildrenByRootPermission() throws Exception {
+    TreeMap<String, PageImpl> result = new TreeMap<String, PageImpl>(new Comparator<String>() {
+      @Override
+      public int compare(String o1, String o2) {
+        return o1.toLowerCase().compareTo(o2.toLowerCase());
+      }
+    });
+    List<PageImpl> pages = new ArrayList<PageImpl>(getChildrenContainer().values());
+    
+    for (int i = 0; i < pages.size(); i++) {
+      PageImpl page = pages.get(i);
+      if (page != null) {
         result.put(page.getTitle(), page);
       }
     }
@@ -392,14 +415,22 @@ public abstract class PageImpl extends NTFolder implements Page {
   public abstract boolean getOverridePermission();
   public abstract void setOverridePermission(boolean isOverridePermission);
   
+  @Override
   public boolean hasPermission(PermissionType permissionType) throws Exception {
     return permission.hasPermission(permissionType, getPath());
   }
   
+  @Override
+  public boolean hasPermission(PermissionType permissionType, Identity user) throws Exception {
+    return permission.hasPermission(permissionType, getPath(), user);
+  }
+  
+  @Override
   public HashMap<String, String[]> getPermission() throws Exception {
     return permission.getPermission(getPath());
   }
-
+  
+  @Override
   public void setPermission(HashMap<String, String[]> permissions) throws Exception {
     permission.setPermission(permissions, getPath());
   }
@@ -408,10 +439,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     setPermission(null);
   }
   
-  /*public void addWikiPage(PageImpl wikiPage) throws DuplicateNameException {
-    getChildPages().add(wikiPage);
-  }*/
-  protected void addPage(String pageName, PageImpl page) {
+  protected void addPage(String pageName, Page page) {
     if (pageName == null) {
       throw new NullPointerException();
     }
@@ -422,21 +450,20 @@ public abstract class PageImpl extends NTFolder implements Page {
     if (children.containsKey(pageName)) {
       throw new IllegalStateException();
     }
-    children.put(pageName, page);
+    children.put(pageName, (PageImpl) page);
   }
   
-  public void addWikiPage(PageImpl page) {
+  public void addWikiPage(Page page) {
     if (page == null) {
       throw new NullPointerException();
     }
     addPage(page.getName(), page);
   }
   
-  public void addPublicPage(PageImpl page) throws Exception {
+  public void addPublicPage(Page page) throws Exception {
     addWikiPage(page);
     page.setNonePermission();
   }
-  
   
   public PageImpl getWikiPage(String pageId) throws Exception{
     if(WikiNodeType.Definition.WIKI_HOME_NAME.equalsIgnoreCase(pageId)){

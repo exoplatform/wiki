@@ -29,6 +29,7 @@ function UIWikiSearchBox() {
   this.searchType = "";
   this.menu = null;
   this.wikiNodeURI = null;
+  UIWikiSearchBox.searchMsg = "Search for";
 };
 
 UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLabel, wikiNodeURI) {
@@ -38,6 +39,7 @@ UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLa
   var restInput = uiComponent["restURL"];
   this.input = uiComponent[searchInputName];
   $(this.input).attr('autocomplete', 'off');
+  $(this.input).attr('title', searchLabel);
   $(this.input).val(searchLabel);  
   this.restURL = restInput.value;
   this.input.onkeyup = function(evt) {
@@ -228,8 +230,8 @@ UIWikiSearchBox.prototype.renderMenu = function(data) {
   var linkNode = $('<a/>', {
     'class': 'ItemIcon MenuIcon SearchIcon',
     'href' : 'javascript:eXo.wiki.UIWikiSearchBox.doAdvanceSearch();',
-    'text' : "Seach for \'" + this.input.value + "\'",
-    'title': "Seach for \'" + this.input.value + "\'"
+    'text' : eXo.wiki.UIWikiSearchBox.searchMsg + " \'" + this.input.value + "\'",
+    'title': eXo.wiki.UIWikiSearchBox.searchMsg + " \'" + this.input.value + "\'"
    });
   $(searchItemNode).append($(searchText).append(linkNode));
   $(searchItemNode).insertBefore(textNode);

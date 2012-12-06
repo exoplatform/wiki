@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.service;
 
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.access.PermissionType;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Model;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
@@ -613,4 +615,66 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNull(relatedPage);
   }
   
+  public void testDraftPage() throws Exception {
+    startSessionAs("mary");
+    
+    // Get wiki home
+    PageImpl wikiHome = (PageImpl) wService.getPageById(PortalConfig.PORTAL_TYPE, "classic", "WikiHome");
+    
+    // Test create draft for new page
+    DraftPage draftPage = wService.createDraftForNewPage(new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", "WikiHome"), new Date().getTime());
+    assertNotNull(draftPage);
+    String draftNameForNewPage = draftPage.getName();
+    assertTrue(draftPage.isNewPage());
+    assertEquals(wikiHome.getJCRPageNode().getUUID(), draftPage.getTargetPage());
+    assertEquals("1", draftPage.getTargetRevision());
+    
+    // Test get draft by draft name
+    DraftPage draftPage1 = wService.getDraft(draftNameForNewPage);
+    assertNotNull(draftPage1);
+    assertEquals(draftPage.isNewPage(), draftPage1.isNewPage());
+    assertEquals(draftPage.getTargetPage(), draftPage1.getTargetPage());
+    assertEquals(draftPage.getTargetRevision(), draftPage1.getTargetRevision());
+    
+    // Create a wiki page for test
+    PageImpl page = (PageImpl) wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "new page", "WikiHome");
+    page.checkin();
+    page.checkout();
+    page.getContent().setText("Page content");
+    page.checkin();
+    page.checkout();
+    
+    // Test create draft for exist wiki page
+    WikiPageParams param = new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", page.getName());
+    DraftPage draftPage2 = wService.createDraftForExistPage(param, null, new Date().getTime());
+    assertNotNull(draftPage2);
+    assertFalse(draftPage2.isNewPage());
+    assertEquals(page.getJCRPageNode().getUUID(), draftPage2.getTargetPage());
+    assertEquals("2", draftPage2.getTargetRevision());
+    
+    // Test get draft for exist wiki page
+    DraftPage draftPage3 = wService.getDraft(param);
+    assertNotNull(draftPage3);
+    assertFalse(draftPage3.isNewPage());
+    assertEquals(page.getJCRPageNode().getUUID(), draftPage3.getTargetPage());
+    assertEquals("2", draftPage3.getTargetRevision());
+    
+    // Test list draft by user
+    List<DraftPage> drafts = wService.getDrafts("mary");
+    assertNotNull(drafts);
+    assertEquals(2, drafts.size());
+    
+    // Test remove draft of wiki page
+    wService.removeDraft(param);
+    assertNull(wService.getDraft(param));
+    
+    // Test remove draft by draft name
+    wService.removeDraft(draftNameForNewPage);
+    assertNull(wService.getDraft(draftNameForNewPage));
+    
+    // Test list draft by user
+    drafts = wService.getDrafts("mary");
+    assertNotNull(drafts);
+    assertEquals(0, drafts.size());
+  }
 }

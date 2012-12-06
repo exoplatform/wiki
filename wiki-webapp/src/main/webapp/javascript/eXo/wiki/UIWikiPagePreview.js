@@ -21,6 +21,8 @@ function UIWikiPagePreview(){
 };
 
 UIWikiPagePreview.prototype.init = function(maskId){
+  var me = eXo.wiki.UIWikiPagePreview;
+  me.maskId = maskId;
   var maskWorkpace = document.getElementById(maskId);
   if(maskWorkpace){
     var pagePreview = $(maskWorkpace).find('div.UIWikiPagePreview')[0];
@@ -29,6 +31,23 @@ UIWikiPagePreview.prototype.init = function(maskId){
       eXo.portal.UIMaskWorkspace.resetPositionEvt();
     }
   }
+
+  $(window).keyup(function(event) {
+    if (event.keyCode == 27) {
+      var me = eXo.wiki.UIWikiPagePreview;
+      var maskWorkpace = document.getElementById(me.maskId);
+      if(maskWorkpace){
+        var pagePreview = $(maskWorkpace).find('div.UIWikiPagePreview')[0];
+        if(pagePreview){
+          var closeLink = $(maskWorkpace).find('a.CloseButton')[0];
+          $(window).keyup(null);
+          document.location = closeLink.href;
+        }
+      }
+      return false;
+    }
+    return true;
+  });
 };
 
 eXo.wiki.UIWikiPagePreview = new UIWikiPagePreview();

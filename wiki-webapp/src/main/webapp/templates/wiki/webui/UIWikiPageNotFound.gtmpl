@@ -5,6 +5,10 @@ import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.commons.DateTimeFomatter;
+
+  def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiPageNotFound.init();");  
 %>
 <div class="UIWikiPageNotFound">
 

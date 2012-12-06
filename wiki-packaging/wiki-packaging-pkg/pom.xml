@@ -497,12 +497,6 @@
       <version>${com.sun.xml.bind.version}</version>
     </dependency>
     <dependency>
-      <groupId>org.jvnet.jaxb2.maven2</groupId>
-      <artifactId>maven-jaxb2-plugin</artifactId>
-      <version>${org.jvnet.jaxb2.maven2.version}</version>
-    </dependency>
-
-    <dependency>
       <groupId>asm</groupId>
       <artifactId>asm</artifactId>
       <version>${asm.version}</version>

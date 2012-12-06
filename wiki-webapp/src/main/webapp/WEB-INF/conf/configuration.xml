@@ -54,7 +54,7 @@
             <field name="component"><string>org.exoplatform.wiki.webui.control.AddExtensionContainer</string></field>
           </object>
         </object-param>
-				 <object-param>
+        <object-param>
           <name>AddPage</name>
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.wiki.webui.control.AddExtensionContainer</string></field>
@@ -63,7 +63,7 @@
             <field name="component"><string>org.exoplatform.wiki.webui.control.action.AddPageActionComponent</string></field>
           </object>
         </object-param>
-				 <object-param>
+        <object-param>
           <name>AddPageFromTemplate</name>
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.wiki.webui.control.AddExtensionContainer</string></field>
@@ -90,7 +90,7 @@
             <field name="component"><string>org.exoplatform.wiki.webui.control.action.SavePageActionComponent</string></field>
           </object>
         </object-param>
-				 <object-param>
+        <object-param>
           <name>SaveTemplate</name>
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.wiki.webui.control.UISubmitToolBar</string></field>
@@ -190,6 +190,15 @@
 	         </object>
         </object-param>
         <object-param>
+          <name>Permalink</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.wiki.webui.control.MoreExtensionContainer</string></field>
+            <field name="rank"><int>20</int></field>
+            <field name="name"><string>Permalink</string></field>
+            <field name="component"><string>org.exoplatform.wiki.webui.control.action.PermalinkActionComponent</string></field>
+         </object>
+        </object-param>
+        <object-param>
           <name>Browse</name>
           <object type="org.exoplatform.webui.ext.UIExtension">
             <field name="type"><string>org.exoplatform.wiki.webui.control.UIWikiToolBar</string></field>
@@ -205,6 +214,15 @@
             <field name="rank"><int>300</int></field>
             <field name="name"><string>SpaceSetting</string></field>
             <field name="component"><string>org.exoplatform.wiki.webui.control.action.SpaceSettingActionComponent</string></field>
+          </object>
+        </object-param>
+       <object-param>
+          <name>MyDrafts</name>
+          <object type="org.exoplatform.webui.ext.UIExtension">
+            <field name="type"><string>org.exoplatform.wiki.webui.control.BrowseExtensionContainer</string></field>
+            <field name="rank"><int>200</int></field>
+            <field name="name"><string>MyDrafts</string></field>
+            <field name="component"><string>org.exoplatform.wiki.webui.control.action.MyDraftsActionComponent</string></field>
           </object>
         </object-param>
         <object-param>

@@ -54,5 +54,7 @@ public enum WikiMode {
 
   ADDTEMPLATE,
   
-  SPACESETTING
+  SPACESETTING,
+  
+  MYDRAFTS
 }

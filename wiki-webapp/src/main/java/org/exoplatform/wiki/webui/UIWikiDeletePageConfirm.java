@@ -91,6 +91,7 @@ public class UIWikiDeletePageConfirm extends UIWikiComponent {
       UIWikiDeletePageConfirm component = event.getSource() ;
       WikiService wService = (WikiService) PortalContainer.getComponent(WikiService.class);
       WikiPageParams params = Utils.getCurrentWikiPageParams() ;
+      wService.removeDraft(params);
       wService.deletePage(params.getType(), params.getOwner(), params.getPageId()) ;      
       
       component.getAncestorOfType(UIWikiPortlet.class).changeMode(WikiMode.VIEW) ;

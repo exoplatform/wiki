@@ -22,6 +22,7 @@ import java.util.Map;
 
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.ComponentPlugin;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
@@ -54,8 +55,6 @@ public interface WikiService {
 
   public void initDefaultTemplatePage(String path) ;
 
-  public void createDraftNewPage(String draftNewPageId) throws Exception;
-
   public boolean deletePage(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   public void deleteTemplatePage(String wikiType, String wikiOwner, String templateId) throws Exception;
@@ -71,6 +70,8 @@ public interface WikiService {
   public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws Exception;
 
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception;
+  
+  public Page getPageByRootPermission(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   public Page getRelatedPage(String wikiType, String wikiOwner, String pageId) throws Exception;
 
@@ -109,6 +110,13 @@ public interface WikiService {
 
   public String getDefaultWikiSyntaxId();
 
+  /**
+   * Get the draft save sequence time from config file
+   * 
+   * @return The save draft sequence time
+   */
+  public long getSaveDraftSequenceTime();
+
   public String getPageTitleOfAttachment(String path) throws Exception;
 
   public InputStream getAttachmentAsStream(String path) throws Exception;
@@ -125,6 +133,16 @@ public interface WikiService {
 
   public boolean isExisting(String wikiType, String wikiOwner, String pageId) throws Exception;
 
+  /**
+   * Get wiki default permission
+   * 
+   * @param wikiType The type of wiki
+   * @param wikiOwner The owner of wiki
+   * @return The permisison list for wiki
+   * @throws Exception
+   */
+  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws Exception;
+  
   /**
    * register a {@link PageWikiListener} 
    * @param listener
@@ -143,6 +161,87 @@ public interface WikiService {
   public List<Page> getRelatedPage(WikiPageParams pageParams) throws Exception;
 
   public boolean removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
+  
+  /**
+   * Create a draft page for a wiki page which is specified by the wiki page param
+   * 
+   * @param param wiki page param
+   * @param revision the target revision, null if it's the lastest revision
+   * @param clientTime The time of client when save draft
+   * @return draft page
+   * @throws Exception if create draft not success
+   */
+  public DraftPage createDraftForExistPage(WikiPageParams param, String revision, long clientTime) throws Exception;
+  
+  /**
+   * Create a draft page for a new wiki page which parent is specified by the wiki page param
+   * 
+   * @param param parent wiki page param
+   * @param clientTime The time of client when save draft
+   * @return draft page
+   * @throws Exception if create draft not success
+   */
+  public DraftPage createDraftForNewPage(WikiPageParams parentPageParam, long clientTime) throws Exception;
+  
+  /**
+   * Achieve a draft page for a wiki page which is specified by the wiki page param
+   * 
+   * @param param wiki page param
+   * @return draft page or null if draft page doesn't exist.
+   * @throws Exception
+   */
+  public DraftPage getDraft(WikiPageParams param) throws Exception;
+  
+  /**
+   * Get draft by draft name
+   * 
+   * @param draftName draft name
+   * @return draft page or null if draft page doesn't exist.
+   * @throws Exception
+   */
+   public DraftPage getDraft(String draftName) throws Exception;
+  
+  /**
+    * Remove a draft page for a wiki page which is specified by the wiki page param
+    * 
+    * @param param wiki page param
+    * @throws Exception
+    */
+  public void removeDraft(WikiPageParams param) throws Exception;
+  
+  /**
+   * Remove a draft page by draft name
+   * 
+   * @param draftName draft name
+   * @throws Exception
+   */
+  public void removeDraft(String draftName) throws Exception;
+  
+  /**
+   * Get collection of draft page belong to a user
+   * 
+   * @param username user name
+   * @return draft list of user
+   * @throws Exception
+   */
+  public List<DraftPage> getDrafts(String username) throws Exception;
+  
+  /**
+   * Get wiki page by page UUID
+   * 
+   * @param uuid of wiki page
+   * @return wiki page
+   * @throws Exception
+   */
+  public Page getWikiPageByUUID(String uuid) throws Exception;
+  
+  /**
+   * Get the draft that's created lastest
+   * 
+   * @return lastest draft
+   * @throws Exception
+   */
+  public DraftPage getLastestDraft() throws Exception;
 
   /**
    * Get user wiki, and if it did not create yet then create new one
@@ -178,4 +277,32 @@ public interface WikiService {
    * @return The wiki
    */
   public Wiki getWiki(String wikiType, String owner);
+  
+  /**
+   * Get the uri of wiki webapp
+   * 
+   * @return The uri of wiki webapp
+   */
+  public String getWikiWebappUri();
+  
+  /**
+   * Check if the current user has addmin permission on the space
+   * 
+   * @param wikiType The wiki type of the space
+   * @param owner The owner of the space
+   * @return current user has addmin permisison on the space or not
+   * @throws Exception
+   */
+  public boolean hasAdminSpacePermission(String wikiType, String owner) throws Exception;
+  
+  /**
+   * Check if the current user has addmin permission on the page
+   * 
+   * @param wikiType The wiki type of the space
+   * @param owner The owner of the space
+   * @return current user has addmin permisison on the page or not
+   * @throws Exception
+   */
+  public boolean hasAdminPagePermission(String wikiType, String owner) throws Exception;
+
 }
