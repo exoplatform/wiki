@@ -9,19 +9,15 @@
 
 <div class="uiWikiAdvanceSearchForm">
 	<% uiform.begin() %>
-			<div class="SearchInfo">
-				<%uiform.renderChild("text")%>
-				<label><%=_ctx.appRes("UIWikiAdvanceSearchForm.label.wiki")%></label><%uiform.renderChild(uicomponent.WIKIS)%>
-			</div>
-			<div class="Button"> 			
-		    <% for(action in uicomponent.getActions()) { 
-		    	 String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action); 
-		       String link = uicomponent.event(action) ;
+			<%uiform.renderChild("text")%>
+			<% for(action in uicomponent.getActions()) { 
+				String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action); 
+				String link = uicomponent.event(action) ;
 		    %>
-		    		<div class="SearchAction" onclick="$link" >	      	  	
-		          <a href="javascript:void(0);">$actionLabel</a>
-		        </div>
-		    <%}%>	     
-			</div>
+				<button class="btn btn-primary" type="button" onclick="$link">$actionLabel</button>
+		    <%}%>
+			<br />
+			<%uiform.renderChild(uicomponent.WIKIS)%>
+		    	     
 	<% uiform.end() %>
 </div>

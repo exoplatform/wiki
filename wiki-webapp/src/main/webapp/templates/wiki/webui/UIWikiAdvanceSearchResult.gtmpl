@@ -7,6 +7,7 @@ import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.commons.Utils ;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
 import org.exoplatform.webui.core.UIPageIterator;
+import org.exoplatform.wiki.webui.UIWikiAdvanceSearchForm;
 import org.exoplatform.wiki.service.WikiPageParams;
 import java.util.List;
 
@@ -19,23 +20,22 @@ import java.util.List;
 		<div class="uiWikiAdvanceSearchResult" id="$uicomponent.id">
 			<h4><%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%> &nbsp;<span class="line"></span></h4>
 			<div class="resultInfo">
-				<span class="resultNumber"><%=pl.getAll().size()%></span>&nbsp; 
+				<span class="resultNumber"><%=UIWikiAdvanceSearchForm.getNumberOfSearchResult()%></span>&nbsp; 
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsFor");%>&nbsp;
 				<strong><%=uicomponent.getKeyword()%></strong>&nbsp;<span class="split"></span>&nbsp;
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.Show");%>&nbsp;
 				
 				<!--dropdownlist-->
-				<div class="dropdown uiDropdown uiActionWithLabel">
-					<div data-toggle="dropdown">$maxPageSize<i class="uiIconMiniArrowDown"></i></div>
-					<ul aria-labelledby="dLabel" role="menu" class="dropdown-menu">
-						<% for (maxItemPerPage in maxItemPerPageList) {
-						%>
-						<li>
-							<a class="dropdown-toggle" data-toggle="dropdown" href="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>">$maxItemPerPage</a>
-						</li>
-						<% } %> 
-					</ul>
-				</div>
+			   <select class="selectbox" onchange="window.location.href=this.options[this.selectedIndex].value; return false;" id="PageSizeSelector">
+				<% for (maxItemPerPage in maxItemPerPageList) {
+					if (maxPageSize == maxItemPerPage) {
+				%>
+					<option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>" selected>$maxItemPerPage</option>
+				<% } else { %>
+					<option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>">$maxItemPerPage</option>
+				<% } 
+				} %>
+			   </select>
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsOnPage");%>&nbsp;
 			</div>
 			<ul>

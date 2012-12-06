@@ -1,13 +1,13 @@
 .uiWikiAdvanceSearchResult {
 	h4 > span.line {
-		border-top: 1px solid gray;
+		border-top: 1px solid @wikiBorder;
 	    display: inline-block;
 	    vertical-align: middle;
 	    width: 83%;
 	}
 	
 	> .resultInfo { 
-		border-bottom: 1px dotted @grayLight;
+		border-bottom: 1px dotted @wikiBorder;
 		padding: 17px 0;
 		
 		> .resultNumber {
@@ -16,19 +16,14 @@
 			color: @linkColor;
 		}
 		> .split {
-			border-left: 1px solid @grayLight;
+			border-left: 1px solid @wikiBorder;
 		    display: inline-block;
 		    height: 27px;
-		    margin: 0 20px;
+		    margin: 0 15px;
 		    vertical-align: middle;
 		}
-		
-		> .uiDropdown {
-			.border-radius(3px);
-			border: 1px solid @dropdownBorder;
-			ul.dropdown-menu {
-				min-width: 50px;
-			}
+		> .selectbox {
+			width: 45px;
 		}
 	}
 	
@@ -43,3 +38,13 @@
 	}
 }
 
+.uiWikiAdvanceSearchForm form {
+	input {
+		width: 370px;
+	}
+	button {
+		vertical-align: top;
+		margin-left: 5px;
+	}
+	
+}
