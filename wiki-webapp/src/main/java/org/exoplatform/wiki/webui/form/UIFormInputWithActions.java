@@ -66,7 +66,7 @@ public class UIFormInputWithActions extends UIFormInputSet {
     }
     UIForm uiForm = getAncestorOfType(UIForm.class);
     Writer w = context.getWriter();
-    w.write("<div id=\"" + getId() + "\" class=\"uiFormInputSet " + getId() + "\">");
+    w.write("<div id=\"" + getId() + "\" class=\"uiFormInputSet  " + getId() + "\">");
     w.write("<table class=\"uiFormGrid\">");
     ResourceBundle res = context.getApplicationResourceBundle();
 
@@ -85,7 +85,7 @@ public class UIFormInputWithActions extends UIFormInputSet {
           LOG.error("\n " + uiForm.getId() + ".label." + inputEntry.getId() + " not found value");
         }
         w.write("<tr>");        
-        w.write("<td class=\"fieldComponent\">");
+        w.write("<td class=\"fieldInput\">");
         renderUIComponent(inputEntry);
         List<ActionData> actions = actionField.get(inputEntry.getName());
         if (actions != null) {

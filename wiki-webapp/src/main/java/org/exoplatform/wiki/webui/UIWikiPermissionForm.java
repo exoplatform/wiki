@@ -95,7 +95,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   
   public final static String DELETE_ENTRY = "DeleteEntry";
   
-  public final static String WIKI_PERMISSION_OWNER = "UIWikiPermissionOwner";
+  public final static String WIKI_PERMISSION_OWNER = "uiWikiPermissionOwner";
   
   public final static String PERMISSION_OWNER = "PermissionOwner";
   
