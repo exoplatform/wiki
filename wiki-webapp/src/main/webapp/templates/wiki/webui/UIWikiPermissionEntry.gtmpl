@@ -21,7 +21,7 @@
      checkboxField.setDisabled(true);
     }
     %>
-    <td class="center"><label class="uiCheckbox"><% uicomponent.renderChild(checkboxField); %><span></span></label></td>
+    <td class="center"><% uicomponent.renderChild(checkboxField); %></td>
 <%  }
 %>
 <td class="center">

@@ -78,12 +78,10 @@
             String viewLinkId=  UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.VIEW_REVISION + "_" + versionNumber;
         %>
         <tr class="$rowClass">
-          <td>
-            <label class="uiCheckbox"><%
+          <td class="center">
+            <%
               uicomponent.renderField(vertionId);
             %>
-			<span></span>
-			</label>
           </td>
           <td >
             <label for="<%=versionNumber%>">

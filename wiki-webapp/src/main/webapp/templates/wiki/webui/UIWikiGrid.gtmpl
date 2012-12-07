@@ -60,7 +60,7 @@
             even = !even;
         %>
             <tr>
-              <td>
+              <td class="center">
 	              <div class="uiRadio">
 	                <input type="radio" name="objectId" value="<%=uicomponent.getBeanIdFor(bean)%>"/>
 	                <span></span>

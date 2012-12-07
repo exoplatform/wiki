@@ -12,7 +12,7 @@
 
 <div class="uiWikiTemplateForm">
   <%uiform.begin();%>
-    <div class="TemplateControl">
+    <div class="templateControl">
       <div class="uiSearchInput" >	
         <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
         <a style="display:none" class="TemplateSearchButton" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"></a>
