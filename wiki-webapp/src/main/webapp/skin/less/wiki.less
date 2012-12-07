@@ -120,71 +120,70 @@
 
 /* -- Begin Resize CSS function -- */
 
-.resizeBar {
-	float: left;
-	width: 30px;
-	
-	.resizeBarContent {
-		width: 15px;
-		cursor:col-resize;
-		position: relative;
+.uiWikiMiddleArea {
+	.resizeBar {
+		float: left;
+		width: 30px;
 		
-		&:hover {
-			border-right: solid 1px #E1E1E1;
-				
-				.resizeButton {
-				display: block;
+		.resizeBarContent {
+			width: 15px;
+			cursor:col-resize;
+			position: relative;
+			
+			&:hover {
+				border-right: solid 1px #E1E1E1;
+					
+					.resizeButton {
+					display: block;
+				}
 			}
+		}
+
+		.resizeButton {
+			#gradient .vertical(@white, #f1f1f1);
+			.border-radius(3px 0px 0px 3px);
+			.size(24px,10px);
+			float:right;
+			margin : auto;
+			cursor : pointer;
+			border: 1px solid #E1E1E1;
+			border-right: none;
+			display: none;
+			margin-top: 7px;
+				
+				[class^="uiIcon"] {
+					margin: 3px 0px 0px -2px;
+					width: 10px;
+				}
+		}
+		
+		.showLeftContent {
+			display: block;
+			border: 1px solid #E1E1E1;
+			.border-radius(0px 3px 3px 0px);
+			float: left;
 		}
 	}
 
-	.resizeButton {
-		#gradient .vertical(@white, #f1f1f1);
-		.border-radius(3px 0px 0px 3px);
-		.size(24px,10px);
-		float:right;
-		margin : auto;
-		cursor : pointer;
-		border: 1px solid #E1E1E1;
-		border-right: none;
-		display: none;
-		margin-top: 7px;
-			
-			[class^="uiIcon"] {
-				margin: 3px 0px 0px -2px;
-				width: 10px;
-			}
-	}
-
-	.resizeButton:hover{
-		background-color: #f3f3f3;
+	.resizeBarDisplay {
+		.resizeBarContent {
+			border-right: solid 1px #E1E1E1;
+		}
+		.resizeButton {
+			display: block;
+		}
 	}
 	
-	.showLeftContent {
-		display: block;
-		border: 1px solid #E1E1E1;
-		.border-radius(0px 3px 3px 0px);
-		float: left;
-	}
-}
-
-.resizeBarDisplay {
-	.resizeBarContent {
-		border-right: solid 1px #E1E1E1;
-	}
-	.resizeButton {
-		display: block;
-	}
-}
-
-.resizeNoneBorder {
-	width: 25px;
-	&:hover {
-	cursor: default;
-	}
-	.resizeBarContent:hover {
-		border: none;
+	.resizeNoneBorder {
+		width: 25px;
+		
+		&:hover {
 		cursor: default;
+		}
+		.resizeBarContent:hover {
+			border: none;
+			cursor: default;
+		}
 	}
 }
 
@@ -192,11 +191,7 @@
 	padding-left: 0px;
 }
 
-.showLeftContent:hover {
-	background-color: #f3f3f3;
-}
-
-.uiWikiPortletNoSelect {
+.uiWikiMiddleArea .uiWikiPortletNoSelect {
 	-webkit-touch-callout: none;
 	-webkit-user-select: none;
 	-khtml-user-select: none;
