@@ -218,6 +218,27 @@ UIWikiPageEditForm.prototype.cancel = function(uicomponentId, titleMessage, mess
   return true;
 };
 
+UIWikiPageEditForm.prototype.cancelSave = function(uicomponentId, titleMessage, message, submitClass, submitLabel, cancelLabel) {
+  var me = eXo.wiki.UIWikiPageEditForm;
+  me.callBackComponentId = uicomponentId;
+  
+  // if draft exist then show confirm that user want to keep draft or not
+  if ((me.draftName != null) && (me.draftName != '')) {
+    // Show the confirm box
+    var buttonLabelArray = [me.yesLabel, me.noLabel];
+    var callBackFunctionArray = [me.doCancelAction, me.onNotKeepDraftFunction];
+    eXo.wiki.UIConfirmBox.renderConfirmBox(uicomponentId, me.cancelDraftConfirmTitle, me.cancelDraftConfirmMessage, buttonLabelArray, callBackFunctionArray);
+    return false;
+  }
+  
+  // If there no draft then confirm that user have change, user want to cancel or not
+  if (me.firstChanged == true) {
+    eXo.wiki.UIConfirmBox.render(uicomponentId, titleMessage, message, submitClass, submitLabel, cancelLabel);
+    return false;
+  }
+  return true;
+};
+
 UIWikiPageEditForm.prototype.synPublishActivityCheckboxesStatus = function(checkBoxName1, checkBoxName2) {
   var checkBox1 = document.getElementsByName(checkBoxName1)[0];
   var checkBox2 = document.getElementsByName(checkBoxName2)[0];

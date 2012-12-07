@@ -5,8 +5,6 @@
   def requireJs = jsmanager.getRequireJS();
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIWikiPermissionForm.init('" + uicomponent.id + "') ;");  
-  //jsmanager.addJavascript("eXo.wiki.UIWikiPermissionForm.init('" + uicomponent.id + "') ;");
-  
   uicomponent.renderChild(uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)) ;
 %>
 <div class="uiForm $uicomponent.id">

@@ -24,8 +24,7 @@ function UIWikiPermalinkForm() {
 };
 
 UIWikiPermalinkForm.prototype.init = function(formId) {
-  var permalinkForm = document.getElementById(formId);
-  var permalinkText = $(permalinkForm).find('input.PermalinkText')[0];
+  var permalinkText = $("#PermalinkText");
   permalinkText.focus();
   permalinkText.select();
 };
