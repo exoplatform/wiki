@@ -37,9 +37,14 @@
         }         
         creator = Utils.getFullName(attachment.getCreator());
         downloadLink = attachment.getDownloadURL();
+        String extension = Utils.getExtension(attachment.getName()) ;
+        if (extension != null && !extension.equals("")) {
+          extension = new StringBuilder(extension.substring(0, 1)).toString().toUpperCase() + extension.substring(1);
+        }
     %>
         <tr>
           <td>
+            <i class="uiIcon$extension"></i>&nbsp;
           	<a rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.DownloadAttachment"); %>" href="$downloadLink" onclick="window.open(this.href); return false;"><%= attachment.getFullTitle() %></a>
           </td>
           <td><%= creator %></td>
