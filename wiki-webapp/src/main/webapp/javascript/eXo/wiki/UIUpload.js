@@ -82,14 +82,14 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode) {
   }; 
 
   UIUpload.prototype.createEntryUpload = function(id, isDynamicMode) {
-	var uploadText = "uploadfile";
+	var uploadText = "Upload New File";
     var div = document.getElementById('UploadInput' + id);
     var url = document.getElementById('RemoveInputUrl' + id).value;
     var label = document.getElementById('RemoveInputLabel').value;
     var inputHTML = "<input id='file" + id
         + "' class='file fileHidden' name='file' type='file' onkeypress='return false;'";
     inputHTML += "/>";
-    inputHTML += "<label for='file" + id + "' class='btn'>" + uploadText + "</label>";
+    inputHTML += "<label for='file" + id + "' class='btn btn-primary '>" + uploadText + "</label>";
     if (isDynamicMode) {
       inputHTML += "<a class='actionLabel' href='javascript:void(0)' onclick=\""
           + url + "\">" + label + "</a>";
@@ -177,7 +177,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode) {
       var percent = response.upload[id].percent;
       var bar = jCont.find(".bar").first();
       bar.css("width", percent + "%");
-      var label = bar.children(".label").first();
+      var label = bar.children(".percent").first();
       label.html(percent + "%");
 
       if(percent == 100) {
@@ -256,7 +256,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode) {
 
       var bar = jCont.find(".bar").first();
       bar.css("width", "0%");
-      var label = bar.children(".label").first();
+      var label = bar.children(".percent").first();
       label.html("0%");
 
       var uploadAction = eXo.wiki.UIUpload.uploadURL + id;
