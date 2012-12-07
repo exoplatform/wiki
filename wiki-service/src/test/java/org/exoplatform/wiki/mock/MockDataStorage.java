@@ -116,7 +116,7 @@ public class MockDataStorage implements DataStorage,Startable {
    * @see org.exoplatform.portal.config.DataStorage#clonePage(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
-  public Page clonePage(String pageId, String clonedOwnerType, String clonedOwnerId, String clonedName) throws Exception {
+  public Page clonePage(String pageId, String clonedOwnerType, String clonedOwnerId, String clonedName) {
     return null;
   }
 
@@ -124,7 +124,7 @@ public class MockDataStorage implements DataStorage,Startable {
    * @see org.exoplatform.portal.config.DataStorage#remove(org.exoplatform.portal.config.model.Page)
    */
   @Override
-  public void remove(Page page) throws Exception {
+  public void remove(Page page) {
 
   }
 
@@ -132,7 +132,7 @@ public class MockDataStorage implements DataStorage,Startable {
    * @see org.exoplatform.portal.config.DataStorage#create(org.exoplatform.portal.config.model.Page)
    */
   @Override
-  public void create(Page page) throws Exception {
+  public void create(Page page) {
     pageCollections.put(page.getId(), page);
   }
 

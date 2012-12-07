@@ -23,6 +23,9 @@ import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationService;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageKey;
+import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.services.organization.OrganizationService;
 
 /**
@@ -47,16 +50,17 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
                                      OrganizationService orgService,
                                      NavigationService navService,
                                      DescriptionService descriptionService,
+                                     PageService pageService,
                                      InitParams params) throws Exception {
-    super(userACL, storage, orgService, navService, descriptionService, params);
+    super(userACL, storage, orgService, navService, descriptionService, pageService, params);
   }
 
   /* (non-Javadoc)
    * @see org.exoplatform.portal.config.UserPortalConfigService#getPage(java.lang.String, java.lang.String)
    */
   @Override
-  public Page getPage(String pageId, String accessUser) throws Exception {
-    return super.getPage(pageId, accessUser);
+  public PageContext getPage(PageKey pageRef) {
+    return super.getPage(pageRef);
   }
 
 }

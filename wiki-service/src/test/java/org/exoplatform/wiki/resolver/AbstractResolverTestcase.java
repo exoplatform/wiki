@@ -30,7 +30,7 @@ public class AbstractResolverTestcase extends AbstractMOWTestcase {
 
   protected UserNode createUserNode(String pageRef, String URI) {
     UserNode userNode = Mockito.mock(UserNode.class);
-    Mockito.when(userNode.getPageRef()).thenReturn(pageRef);
+    Mockito.when(userNode.getPageRef().toString()).thenReturn(pageRef);
     Mockito.when(userNode.getURI()).thenReturn(URI);
     return userNode;
   }

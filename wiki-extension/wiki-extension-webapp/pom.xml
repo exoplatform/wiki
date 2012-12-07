@@ -17,7 +17,7 @@
     </dependency>
     <!--Dependencies for all classes declared in web.xml files-->
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
       <scope>runtime</scope>
     </dependency>
