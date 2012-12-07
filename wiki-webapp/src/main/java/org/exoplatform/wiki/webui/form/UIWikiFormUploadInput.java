@@ -17,8 +17,10 @@
 package org.exoplatform.wiki.webui.form;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
-import org.exoplatform.webui.form.UIFormUploadInput;
+import org.exoplatform.webui.form.input.UIUploadInput;
+
 
 /**
  * Created by The eXo Platform SAS
@@ -26,8 +28,12 @@ import org.exoplatform.webui.form.UIFormUploadInput;
  *          viet.nguyen@exoplatform.com
  * May 19, 2010  
  */
-@ComponentConfig(template = "app:/templates/wiki/webui/form/UIFormUploadInput.gtmpl")
-public class UIWikiFormUploadInput extends UIFormUploadInput {
+@ComponentConfig(
+   template = "app:/templates/wiki/webui/form/UIFormUploadInput.gtmpl", 
+   events = {
+    @EventConfig(listeners = UIUploadInput.CreateUploadIdActionListener.class),
+    @EventConfig(listeners = UIUploadInput.RemoveUploadIdActionListener.class) })
+public class UIWikiFormUploadInput extends UIUploadInput {
 
   final static public String UPLOAD_ACTION = "UploadAttachment" ; 
   
@@ -44,7 +50,7 @@ public class UIWikiFormUploadInput extends UIFormUploadInput {
   public String getPostUploadActionLink() throws Exception {
     UIComponent uiParent = getParent();
     if(uiParent != null){
-      return uiParent.event(UPLOAD_ACTION, getUploadId());
+      return uiParent.event(UPLOAD_ACTION, getUploadIds()[0]);
     } else {
       return "";
     }

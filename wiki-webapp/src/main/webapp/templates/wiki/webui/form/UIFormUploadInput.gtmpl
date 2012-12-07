@@ -1,40 +1,48 @@
 <%
-	String uploadId = uicomponent.getUploadId();
-	boolean isAutoUpload = uicomponent.isAutoUpload();
-	String postUploadActionLink = uicomponent.getPostUploadActionLink();
-	def rcontext = _ctx.getRequestContext();	
-	//rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIUpload.initUploadEntry('"+uploadId+"',"+isAutoUpload+");");
+  String uploadId = uicomponent.getUploadIds()[0];
+  boolean isDynamicMode = uicomponent.isDynamicMode();
+  String postUploadActionLink = uicomponent.getPostUploadActionLink();
+  def rcontext = _ctx.getRequestContext();  
+  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIUpload.initUploadEntry('"+uploadId+"',"+isAutoUpload+");");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIUpload.initUploadEntry('"+uploadId+"',"+isAutoUpload+");");
+  requireJs.require("SHARED/wiki-view", "wikiView").
+  addScripts("wikiView.UIUpload.initUploadEntry(['"+uploadId+"'],"+isDynamicMode+");");
 %>
-<div class="UIFormUploadInput" id="$uploadId">
-	<div class="LimitMessage"><%= _ctx.appRes("UIFormUploadInput.msg.attachment-limit"); %></div>
-	<input type="hidden" id="input$uploadId" rel="tooltip" data-placement="bottom" title="<%=uicomponent.getName();%>" name="<%=uicomponent.getName();%>" value="false"/>
-	<div id="<%=uploadId;%>UploadIframe" class="UploadIframe" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIFormUploadInput.label.UploadLink");%>">
-		<iframe height="38px" width="80%" allowTransparency="true" scrolling="no" frameborder="0" framespacing="0" id="<%=uploadId;%>uploadFrame"></iframe>
-	</div>
-	<div id="<%=uploadId;%>ProgressIframe" class="ProgressIframe" style="display: none;"></div>			
-	<div class="ProgressBarFrame" style="display: none; margin-top:10px;">
-		<div class="ProgressBar">
-			<div class="ProgressBarLeft">
-				<div class="ProgressBarMiddle">
-					<div class="BlueProgressBar">
-						<div class="ProgressBarLabel">0%</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<div class="DeleteFileFrame">
-			<div class="DeleteFileLable" onclick="eXo.wiki.UIUpload.abortUpload($uploadId);"><%=_ctx.appRes("UIFormUploadInput.label.Cancel")%></div>
-		</div>
-	</div>
-	<div class="SelectFileFrame" style="display: none;">
-		<div class="FileName">
-			<div class="FileNameLabel"><span></span></div>
-		</div>
-		<div class="RemoveFile" rel="tooltip" data-placement="bottom" title="Remove Uploaded" onclick="eXo.wiki.UIUpload.deleteUpload($uploadId);"></div>
-	</div>
-	<div class="PostUploadAction" style="display: none;" onclick="$postUploadActionLink">
-	</div>
+<div id="<%=uicomponent.getId()%>">
+<input type="hidden" id="RemoveInputLabel" value="<%= _ctx.appRes("UIFormUploadInput.label.RemoveInput"); %>"/>
+<div class="uiUploadInput" id="UploadInputContainer<%=uploadId%>">
+  <div class="limitMessage" style="display: none;"><%= _ctx.appRes("UIFormUploadInput.msg.limit"); %></div>
+  <input type="hidden" id="RemoveInputUrl<%=uploadId%>" value="<%=uicomponent.event('RemoveUploadId', uploadId);%>"/>
+  <div id="UploadInput<%=uploadId%>" class="uploadInput">
+  </div>
+  <div id="ProgressIframe<%=uploadId%>" class="progressIframe" style="display: none;"></div>      
+  <div class="progressBarFrame" style="display: none;">
+    <div class="progress">
+      <div class="bar" style="width:0%">
+        <div class="label">0%</div>
+      </div>
+    </div>
+    <div class="deleteFileFrame">
+      <div class="deleteFileLable"><%=_ctx.appRes("UIFormUploadInput.label.Cancel")%></div>
+    </div>
+  </div>
+  <div class="selectFileFrame" style="display: none;">
+    <div class="fileName">
+      <div class="fileNameLabel"><span></span></div>
+    </div>
+    <div class="removeFile" title="<%= _ctx.appRes("UIFormUploadInput.label.remove"); %>"></div>
+  </div>
+  <iframe height="0" width="0" name="UploadIFrame<%=uploadId%>" id="UploadIFrame<%=uploadId%>" style="display: none;">
+    <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+    <html xmlns='http://www.w3.org/1999/xhtml'>
+      <head></head>
+      <body></body>
+    </html>
+  </iframe>
+  <div class="postUploadAction" style="display: none;" onclick="$postUploadActionLink"/>
+</div>
+<%if(uicomponent.isDynamicMode()) {%>
+<a class='actionLabel' href="javascript:void(0);" onclick="<%=uicomponent.event('CreateUploadId')%>"><%= _ctx.appRes("UIFormUploadInput.label.AddInput"); %></a>
+<%}%>
+</div>
 </div>

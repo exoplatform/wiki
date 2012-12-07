@@ -25,6 +25,7 @@ import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.upload.UploadResource;
+import org.exoplatform.upload.UploadService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -70,7 +71,6 @@ public class UIWikiUploadAttachment extends UIWikiForm {
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW,WikiMode.EDITPAGE,WikiMode.ADDPAGE});   
     SIZE_LIMIT = Utils.getLimitUploadSize();
     UIWikiFormUploadInput uiInput = new UIWikiFormUploadInput(FIELD_UPLOAD, FIELD_UPLOAD, SIZE_LIMIT);
-    uiInput.setAutoUpload(true);    
     addUIFormInput(uiInput);
   }
 
@@ -92,8 +92,9 @@ public class UIWikiUploadAttachment extends UIWikiForm {
     @Override
     public void processEvent(Event<UIWikiUploadAttachment> event) throws Exception {                 
       UIWikiUploadAttachment wikiAttachmentArea = event.getSource();
+      String id = event.getRequestContext().getRequestParameter(OBJECTID);
       UIWikiFormUploadInput input = (UIWikiFormUploadInput) wikiAttachmentArea.getUIInput(FIELD_UPLOAD);
-      UploadResource uploadResource = input.getUploadResource();
+      UploadResource uploadResource = input.getUploadResource(id);
       
       try {
         if (uploadResource != null) {
@@ -131,7 +132,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
         InputStream is = null;
         
         try {
-          is = input.getUploadDataAsStream();
+          is = input.getUploadDataAsStream(id);
           if ((is == null) || (is.available() == 0)) {
             throw new FileNotFoundException();
           }
@@ -160,6 +161,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
             att.setTitle(uploadResource.getFileName().substring(0, uploadResource.getFileName().lastIndexOf(".")));
           }
           att.setCreator(event.getRequestContext().getRemoteUser());
+          input.removeUploadId(id);
         } catch (Exception e) {
           log.error("An exception happens when saving attach file:" + attachfile.getName(), e);
           event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIApplication.msg.unknown-error",
@@ -177,7 +179,6 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       UIWikiBottomArea bottomArea= wikiPortlet.findFirstComponentOfType(UIWikiBottomArea.class);
       wikiAttachmentArea.removeChildById(FIELD_UPLOAD);
       UIWikiFormUploadInput uiInput = new UIWikiFormUploadInput(FIELD_UPLOAD, FIELD_UPLOAD, SIZE_LIMIT);
-      uiInput.setAutoUpload(true);
       wikiAttachmentArea.addChild(uiInput);
       event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea); 
     }
