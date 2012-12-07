@@ -54,7 +54,7 @@
           uiform.renderChild(uiform.SUBMIT_TOOLBAR_UPPER);
           if(uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_UPPER).isRendered()) {
         %>
-            <label class="publishActivityCheckBoxTitle uiCheckbox pull-right">
+            <label class="publishActivityCheckBoxTitle pull-right">
               <%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_UPPER);%>
               <span><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle");%></span>
             </label>
@@ -107,7 +107,7 @@
           <% } %>
  
           <% if (uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM).isRendered()) { %>	
-            <label class="publishActivityCheckBoxTitle uiCheckbox pull-left">
+            <label class="publishActivityCheckBoxTitle pull-left">
               <%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%>
               <span><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></span>
             </label>
