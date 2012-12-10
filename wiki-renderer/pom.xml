@@ -58,6 +58,13 @@
     <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-xml</artifactId>
+      <exclusions>
+        <!-- net.sourceforge.htmlcleaner:htmlcleaner provides an ant task that xwiki doesn't use (org.xwiki.commons:xwiki-commons-xml). A future version should exclude it. -->
+        <exclusion>
+          <artifactId>ant</artifactId>
+          <groupId>org.apache.ant</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
