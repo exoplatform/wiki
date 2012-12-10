@@ -246,7 +246,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
         FormatBlock spanBlock = new FormatBlock(Collections.singletonList((Block) linkBlock), Format.NONE, spanParameters);
         
         Map<String, String> params = new HashMap<String, String>();
-        params.put("class", "header-container");
+        params.put("class", "header-container clearfix");
         Block headerContainer = new GroupBlock(params);
         headerContainer.addChild(block);
         headerContainer.addChild(spanBlock);
@@ -256,6 +256,17 @@ public class RenderingServiceImpl implements RenderingService, Startable {
         Block sectionContainer = new GroupBlock(params);
         sectionContainer.addChild(section);
         parentBlock.replaceChild(sectionContainer, section);
+        
+        // Add class to header block
+        String classOfHeaderBlock = block.getParameter("class");
+        if (classOfHeaderBlock != null) {
+          if (classOfHeaderBlock.indexOf("pull-left") == -1) {
+        	classOfHeaderBlock += " pull-left";
+          }
+        } else {
+          classOfHeaderBlock = "pull-left";
+        }
+        block.setParameter("class", classOfHeaderBlock);
       }
     }
     
