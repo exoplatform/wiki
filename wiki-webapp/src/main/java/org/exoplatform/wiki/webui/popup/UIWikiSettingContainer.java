@@ -136,10 +136,10 @@ public class UIWikiSettingContainer extends UIExtensionContainer implements UIPo
     this.items = items;
   }
 
-  public void activate() throws Exception {
+  public void activate() {
   }
 
-  public void deActivate() throws Exception {
+  public void deActivate() {
   }
   
   static public class ActiveItemActionListener extends EventListener<UIWikiSettingContainer> {

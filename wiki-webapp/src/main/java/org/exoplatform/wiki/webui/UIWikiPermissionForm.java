@@ -283,11 +283,11 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   }
 
   @Override
-  public void activate() throws Exception {
+  public void activate() {
   }
 
   @Override
-  public void deActivate() throws Exception {
+  public void deActivate() {
   }
 
   private void processPostAction() throws Exception {
@@ -469,7 +469,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       uiUserSelector.setShowSearchUser(true);
       uiUserSelector.setShowSearchGroup(false);
       openPopupAction(uiPopup, uiUserSelector);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm.getParent());
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 

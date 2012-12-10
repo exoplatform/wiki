@@ -19,10 +19,12 @@
        				if (items.get(i).equals(uicomponent.getActiveItem())){
          				selectedClass = "class=\"active\"";
        				}
-                                String label = _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i));
+              String label = _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i));
+              String tabId = items.get(i) + "-tab";
+              String actionLink = "" + uicomponent.event("ActiveItem",items.get(i)) + "";
 	 		%>
-	       			<li $selectedClass>
-					<a data-toggle="tab" href="#$label"><%= label %></a>
+	       			<li $selectedClass onclick="$actionLink">
+								<a data-toggle="tab" href="#$tabId"><%= label %></a>
 		        	</li>
 			<%
 			}	
@@ -38,9 +40,9 @@
        				if (items.get(i).equals(uicomponent.getActiveItem())){
          				selectedClass = " in active";
        				}
-                                String label = _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i));
+          		String tabId = items.get(i) + "-tab"
 			%>
-				<div id="$label" class="tab-pane fade$selectedClass"><div class="Content"> 
+				<div id="$tabId" class="tab-pane fade$selectedClass"><div class="Content"> 
 					<%
 					  	uicomponent.renderChild(items.get(i));
 					%>
