@@ -18,12 +18,12 @@
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIWikiPermalinkForm.init('" + uicomponent.id + "');");  
 %>
+<%uiform.begin()%>
 <div id="$uicomponent.id" class="uiWikiPermalinkForm">
-  <%uiform.begin()%>
   <div class="permalLinkShare"><i class="uiIconPermalink"></i>&nbsp;&nbsp;<%=_ctx.appRes("UIWikiPermalinkForm.label.link-to-share");%></div>
   <div class="permalinkWapperInput"><input id="PermalinkText" class="input-xxxlarge" type="text" onclick="this.focus();this.select()" readonly="readonly" value="$permalink"/></div>
   <div class="permalinkNotify"><i class="$pageInfoCss"></i>&nbsp;&nbsp;$pageInfoNotify</div>
-    <div class="uiAction">
+  <div class="uiAction">
     <%if (canPublicAndRetrictPage) {%>
       <%if (isCurrentPagePublic) {%>
         <button onclick="<%=uicomponent.event(uiform.RESTRICT_ACTION);%>" class="btn btn-primary"><%=_ctx.appRes('UIWikiPermalinkForm.action.Restrict')%></button>
@@ -35,6 +35,6 @@
     <%if (canModifyPagePermission) {%>
       <button onclick="<%=uicomponent.event(uiform.MANAGE_PERMISSION_ACTION);%>" class="btn"><%=_ctx.appRes('UIWikiPermalinkForm.action.ManagePermission')%></button>
     <%}%>
-    </div>
-  <%uiform.end();%>
+  </div>
 </div>
+<%uiform.end();%>
