@@ -122,6 +122,21 @@
     <dependency>
       <groupId>org.xhtmlrenderer</groupId>
       <artifactId>flying-saucer-pdf</artifactId>
+      <exclusions>
+        <!-- These bouncycastle artifacts are in conflict with ones used in exo.core.component.document transitive deps (-jdk15 versions) -->
+        <exclusion>
+          <artifactId>bcmail-jdk14</artifactId>
+          <groupId>bouncycastle</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>bcprov-jdk14</artifactId>
+          <groupId>bouncycastle</groupId>
+        </exclusion>
+        <exclusion>
+          <artifactId>bctsp-jdk14</artifactId>
+          <groupId>org.bouncycastle</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
@@ -161,6 +176,24 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
       <scope>provided</scope>
+    </dependency>
+    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcmail-jdk15</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bctsp-jdk15</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
