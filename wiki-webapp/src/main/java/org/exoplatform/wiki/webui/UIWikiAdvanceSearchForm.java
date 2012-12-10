@@ -21,7 +21,6 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -39,11 +38,9 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
-import org.exoplatform.webui.core.UIPageIterator;
 
 /**
  * Created by The eXo Platform SAS
@@ -64,9 +61,9 @@ public class UIWikiAdvanceSearchForm extends UIForm {
 
   final static String WIKIS = "wikis".intern();
   
-  private static final int NUMBER_OF_RESULT_PER_PAGE = 10;
+  private int itemPerPage = 10;
    
-  private static long numberOfSearchResult;
+  private long numberOfSearchResult;
   
   public UIWikiAdvanceSearchForm() throws Exception {
     addChild(new UIFormStringInput(TEXT, TEXT, null));
@@ -144,25 +141,26 @@ public class UIWikiAdvanceSearchForm extends UIForm {
     gotoSearchPage(1);
   }
 
-  public static long getNumberOfSearchResult() {
+  public long getNumberOfSearchResult() {
     return numberOfSearchResult;
+  }
+  
+  public void setItemsPerPage(int value) {
+    itemPerPage = value;
   }
 
   public void gotoSearchPage(int pageIndex) throws Exception {
     pageIndex = (int) Math.min(pageIndex, getPageAvailable());
     WikiSearchData data = createSearchData();
-    data.setOffset((pageIndex - 1) * NUMBER_OF_RESULT_PER_PAGE);
-    data.setLimit(NUMBER_OF_RESULT_PER_PAGE);
+    data.setOffset((pageIndex - 1) * itemPerPage);
+    data.setLimit(itemPerPage);
 
     WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
     UIWikiAdvanceSearchResult uiSearchResults = getParent().findFirstComponentOfType(UIWikiAdvanceSearchResult.class);
-    PageList<SearchResult> ret = wikiservice.search(data);
-    uiSearchResults.setResults(ret);
+    uiSearchResults.setResults(wikiservice.search(data));
 
-    UIPageIterator uiAdvancePageIterator = getParent().findFirstComponentOfType(UIPageIterator.class);
-    if (ret != null) { 
-      uiAdvancePageIterator.setCurrentPage(pageIndex);
-    }
+    UIAdvancePageIterator uiAdvancePageIterator = getParent().findFirstComponentOfType(UIAdvancePageIterator.class);
+    uiAdvancePageIterator.setCurrentPage(pageIndex);
   }
 
   public String getKeyword() {
@@ -171,7 +169,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
   }
 
   public int getPageAvailable() {
-    double pageAvailabe = numberOfSearchResult * 1.0 / NUMBER_OF_RESULT_PER_PAGE;
+    double pageAvailabe = numberOfSearchResult * 1.0 / itemPerPage;
     if (pageAvailabe > (int) pageAvailabe) {
       pageAvailabe = (int) pageAvailabe + 1;
     }

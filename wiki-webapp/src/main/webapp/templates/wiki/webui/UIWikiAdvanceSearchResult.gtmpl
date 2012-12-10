@@ -6,41 +6,41 @@ import org.exoplatform.commons.utils.PageList ;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.commons.Utils ;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
-import org.exoplatform.webui.core.UIPageIterator;
 import org.exoplatform.wiki.webui.UIWikiAdvanceSearchForm;
 import org.exoplatform.wiki.service.WikiPageParams;
-import java.util.List;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
 
-	List<SearchResult> results = uicomponent.getResults() ;
-	PageList<SearchResult> pl = uicomponent.getChild(UIPageIterator.class).getPageList();
-	def int[] maxItemPerPageList = [5, 10, 15];
+
+  UIWikiPortlet wikiPortlet = uicomponent.getAncestorOfType(UIWikiPortlet.class);
+  UIWikiAdvanceSearchForm advanceSearchForm = wikiPortlet.findFirstComponentOfType(UIWikiAdvanceSearchForm.class);
+
+  PageList<SearchResult> results = uicomponent.getResults() ;     
+	def int[] maxItemPerPageList = [10, 20, 30, 40, 50];
   def maxPageSize = uicomponent.getItemsPerPage();
-	if(pl != null &&	pl.getAll().size() > 0) {
+  if(results != null &&   results.getAll().size() > 0) {
 %>		
 		<div class="uiWikiAdvanceSearchResult" id="$uicomponent.id">
 			<h4 class="titleWithBorder"><%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%></h4>
 			<div class="resultInfo">
-				<span class="resultNumber"><%=UIWikiAdvanceSearchForm.getNumberOfSearchResult()%></span>&nbsp; 
+				<span class="resultNumber"><%=advanceSearchForm.getNumberOfSearchResult()%></span>&nbsp; 
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsFor");%>&nbsp;
 				<strong><%=uicomponent.getKeyword()%></strong>&nbsp;<span class="split"></span>&nbsp;
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.Show");%>&nbsp;
 				
 				<!--dropdownlist-->
 				<div class="btn-group">
-					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">10<i class="uiIconMiniArrowDown"></i></a>
-					<ul class="dropdown-menu">
-						<li><a href="#">10</a></li>
-						<li><a href="#">20</a></li>
-						<li><a href="#">30</a></li>
-						<li><a href="#">40</a></li>
-						<li><a href="#">50</a></li>
-					</ul>
+				<a class="btn dropdown-toggle" data-toggle="dropdown" href="java:void(0)">$maxPageSize<i class="uiIconMiniArrowDown"></i></a>
+				<ul class="dropdown-menu">
+				<% for (maxItemPerPage in maxItemPerPageList) {%>
+						<li><a href="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>">$maxItemPerPage</a></li>
+				<%}%>
+				</ul>
 				</div>
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsOnPage");%>&nbsp;
 			</div>
 			<ul>
 			<%
-				for(SearchResult result in results) {
+				for(SearchResult result in results.getAll()) {
 				    def page = uicomponent.getPage(result);
 					def wiki= uicomponent.getWiki(page);					
 				    WikiPageParams pageParams = new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName());				    
@@ -122,7 +122,7 @@ import java.util.List;
 				String prev = uicomponent.event("PrevPage") ;
 				String next = uicomponent.event("NextPage") ;
 			%>
-			<% uicomponent.renderChild(UIPageIterator.class) ; %>
+			<% uicomponent.renderChild(UIAdvancePageIterator.class) ; %>
 			
 	</div>	
 	

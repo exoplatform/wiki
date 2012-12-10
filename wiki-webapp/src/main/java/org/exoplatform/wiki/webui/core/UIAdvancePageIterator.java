@@ -19,14 +19,12 @@ package org.exoplatform.wiki.webui.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.webui.form.UIForm;
-import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.wiki.webui.UIWikiAdvanceSearchForm;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 
@@ -37,14 +35,12 @@ import org.exoplatform.wiki.webui.UIWikiPortlet;
  * Oct 1, 2010  
  */
 @ComponentConfig(
-  lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIAdvancePageIterator.gtmpl",
   events = {
-    @EventConfig(listeners = UIAdvancePageIterator.GoPageActionListener.class),
-    @EventConfig(listeners = UIAdvancePageIterator.GoNumberPageActionListener.class)
+    @EventConfig(listeners = UIAdvancePageIterator.GoPageActionListener.class)
   }
 )
-public class UIAdvancePageIterator extends UIForm {
+public class UIAdvancePageIterator extends UIComponent {
 
   public static String PREVIOUS = "previous".intern();
   
@@ -65,8 +61,6 @@ public class UIAdvancePageIterator extends UIForm {
   private int currentPage;
 
   public UIAdvancePageIterator(){
-    addUIFormInput( new UIFormStringInput(GOTOPPAGE, null)) ;
-    this.setSubmitAction("return false;");
   }
   
   @SuppressWarnings("unused")
@@ -148,50 +142,4 @@ public class UIAdvancePageIterator extends UIForm {
     }
   }
   
-  static public class GoNumberPageActionListener extends EventListener<UIAdvancePageIterator> {
-    @Override
-    public void execute(Event<UIAdvancePageIterator> event) throws Exception {
-      UIAdvancePageIterator pageIterator = event.getSource();
-      UIWikiPortlet wikiPortlet = pageIterator.getAncestorOfType(UIWikiPortlet.class);
-      UIWikiAdvanceSearchForm advanceSearchForm = wikiPortlet.findFirstComponentOfType(UIWikiAdvanceSearchForm.class);
-      
-      UIFormStringInput stringInput = pageIterator.getUIStringInput(UIAdvancePageIterator.GOTOPPAGE) ;
-      String numberPage = "" ;
-      numberPage = stringInput.getValue() ;
-      stringInput.setValue("") ;
-      int maxPage = advanceSearchForm.getPageAvailable();
-      int presentPage = pageIterator.currentPage;
-      int page = 0;
-      if (numberPage != null && numberPage.length() > 0) {
-        try {
-          page = Integer.parseInt(numberPage.trim());
-          if (page < 0) {
-            event.getRequestContext()
-                 .getUIApplication()
-                 .addMessage(new ApplicationMessage("NameValidator.msg.Invalid-number",
-                                                    new String[] { pageIterator.getLabel(UIAdvancePageIterator.GOPAGE) },
-                                                    ApplicationMessage.WARNING));
-          } else {
-            if (page == 0) {
-              page = 1;
-            } else if (page > maxPage) {
-              page = maxPage;
-            }
-            advanceSearchForm.gotoSearchPage(page);
-          }
-        } catch (NumberFormatException e) {
-          event.getRequestContext()
-               .getUIApplication()
-               .addMessage(new ApplicationMessage("NameValidator.msg.Invalid-number",
-                                                  new String[] { pageIterator.getLabel(UIAdvancePageIterator.GOPAGE) },
-                                                  ApplicationMessage.WARNING));          
-        }
-      }
-      if (page > 0 && page <= maxPage && page != presentPage) {
-        advanceSearchForm.gotoSearchPage(page);
-      }
-      event.getRequestContext().addUIComponentToUpdateByAjax(pageIterator.getParent());
-    }
-  }
-
 }
