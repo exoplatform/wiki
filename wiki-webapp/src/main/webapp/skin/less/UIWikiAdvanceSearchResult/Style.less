@@ -1,11 +1,4 @@
 .uiWikiAdvanceSearchResult {
-	h4 > span.line {
-		border-top: 1px solid @wikiBorder;
-	    display: inline-block;
-	    vertical-align: middle;
-	    width: 83%;
-	}
-	
 	> .resultInfo { 
 		border-bottom: 1px dotted @wikiBorder;
 		padding: 17px 0;
@@ -22,9 +15,21 @@
 		    margin: 0 15px;
 		    vertical-align: middle;
 		}
-		> .selectbox {
-			width: 45px;
+		> .btn-group {
+			> .btn {
+				padding: 4px 7px;
+			}
+			> .dropdown-menu {
+				min-width: 46px;
+				> li > a {
+					padding: 5px 15px;
+				}
+			}
 		}
+	}
+	
+	> .noResult {
+		border-bottom: none;
 	}
 	
 	h6 > a {
