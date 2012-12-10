@@ -39,10 +39,11 @@ UIConfirmBox.prototype.render = function(uicomponentId, titleMessage, message, s
 UIConfirmBox.prototype.doAction = function()  {
   var me = eXo.wiki.UIConfirmBox;
   var action = document.getElementById(me.uicomponentId);
-  if (action && action.href) {
-    window.location = action.href;
-   }
- };
+  var href = action.getAttribute("href");
+  if (action && href) {
+    window.location = href;
+  }
+};
  
 UIConfirmBox.prototype.renderConfirmBox = function(componentId, titleMessage, message, buttonLabelArray, callBackFunctionArray) {
     var me = eXo.wiki.UIConfirmBox;
