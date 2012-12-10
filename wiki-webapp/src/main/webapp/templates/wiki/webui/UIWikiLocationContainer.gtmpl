@@ -1,12 +1,10 @@
- <div class="UIWikiLocationContainer" id="$uicomponent.id"> 
- <table>
-  	<tr>
-  		<td style="width:25%"><label><%=_ctx.appRes("UIWikiMovePageForm.label.CurrentLocation")%></label></td>
-  		 <td><% uicomponent.renderChild(uicomponent.CURRENT_LOCATION);%></td>
-  	</tr>
-  		<tr>  		
-  		<td><label><%=_ctx.appRes("UIWikiMovePageForm.label.NewLocation")%></label></td>
-  		 <td><% uicomponent.renderChild(uicomponent.NEW_LOCATION); %></td>
-  	</tr>
-  </table>
+<div class="uiWikiLocationContainer" id="$uicomponent.id"> 
+  	<div class="clearfix">
+  		<label class="pull-left"><%=_ctx.appRes("UIWikiMovePageForm.label.CurrentLocation")%></label>
+  		<% uicomponent.renderChild(uicomponent.CURRENT_LOCATION);%>
+  	</div>
+  	<div class="clearfix">
+		<label class="pull-left"><%=_ctx.appRes("UIWikiMovePageForm.label.NewLocation")%></label>
+  		<% uicomponent.renderChild(uicomponent.NEW_LOCATION); %>
+  	</div>
 </div >
