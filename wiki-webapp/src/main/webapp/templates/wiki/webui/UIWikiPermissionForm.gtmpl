@@ -7,27 +7,26 @@
   requireJs.addScripts("wikiView.UIWikiPermissionForm.init('" + uicomponent.id + "') ;");  
   uicomponent.renderChild(uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)) ;
 %>
-<div class="uiForm $uicomponent.id">
+<div class="uiWikiPagePermission" id="$uicomponent.id">
   <%uiform.begin()%>
-    <div class="horizontalLayout">
-      <div class="formContainer">
-        <%
-          List children = uicomponent.getChildren() ;
-          for(component in children) {
-            if(component.isRendered() && component.getId() != uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)){
-              uicomponent.renderChild(component) ;
-            }
-          }
-        %>
-        <div class="uiAction uiActionBorder">
-        <% for(action in uicomponent.getActions()) { 
-                     String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
-                     String link = uicomponent.event(action);
-                %>
-          <button onclick="$link" href="javascript:void(0);" class="btn">$actionLabel</button>
-          <%}%>  
-        </div>
-       </div>
-     </div>
+  <div class="resizable">
+		<%
+		  List children = uicomponent.getChildren() ;
+		  for(component in children) {
+		    if(component.isRendered() && component.getId() != uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)){
+		      uicomponent.renderChild(component) ;
+		    }
+		  }
+		%>
+	</div>
+	<div class="uiAction uiActionBorder">
+	<% for(action in uicomponent.getActions()) { 
+	             String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action);
+	             String link = uicomponent.event(action);
+	        %>
+	  <button onclick="$link" href="javascript:void(0);" class="btn">$actionLabel</button>
+	  <%}%>  
+	</div>
+	   
   <% uiform.end();%>
 </div>

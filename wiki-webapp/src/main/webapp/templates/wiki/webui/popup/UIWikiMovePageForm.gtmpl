@@ -1,4 +1,4 @@
-<div class="UIWikiMovePageForm">
+<div class="uiWikiMovePageForm">
  
  <%
  	  uiform.begin(); 	 
@@ -6,12 +6,23 @@
  <%
  	  uiform.renderChild(uiform.PAGENAME_INFO);
  %>
-
-<div class="SideBarContent">
- 	<div class="BarContent">
+<div class="selectSpaceForm form-horizontal clearfix">
+	<label class="pull-left">Select the destination:</label>
+	<div class="btn-group">
+		<button class="btn">engineering</button>
+		<button class="btn dropdown-toggle" data-toggle="dropdown">
+			<span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu">hgfd
+		<!-- dropdown menu links -->
+		</ul>
+    </div>
+</div>
+<div class="sideBarContent">
+ 	<div class="barContent">
  		<%=_ctx.appRes("UITreeExplorer.label.Destination")%>
  	</div>
-	<div class="SideContent">
+	<div class="sideContent">
  		<%
  	  	uiform.renderChild(uiform.UITREE);
  		%> 		
@@ -22,13 +33,16 @@
  	  uiform.renderChild(uiform.LOCATION_CONTAINER);
  %> 
 
- <div class="UIAction">
-  <% 			
- 				String closeLink=  uiform.event("Close");
-				%>
-      <a href="javascript:void(0);" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')"  class="ActionButton LightBlueStyle"><%=_ctx.appRes("UIWikiMovePageForm.action.Move")%></a>
-      
-       <a href="javascript:void(0);" onclick="$closeLink"  class="ActionButton LightBlueStyle"><%=_ctx.appRes("UIWikiMovePageForm.action.Cancel")%></a>
-    </div>
+<div class="uiAction">
+	<% 			
+ 	String closeLink=  uiform.event("Close");
+%>
+	<button data-placement="bottom" rel="tooltip" class="btn btn-primary" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')" id="UISubmitToolBarUpper_SavePage_" data-original-title="Save">
+		<%=_ctx.appRes("UIWikiMovePageForm.action.Move")%>
+	</button>
+	<button data-placement="bottom" rel="tooltip" class="btn" onclick="$closeLink" id="UISubmitToolBarUpper_Cancel_" data-original-title="Cancel">
+		<%=_ctx.appRes("UIWikiMovePageForm.action.Cancel")%>
+	</button>
+</div>
 <% uiform.end(); %>
 </div>

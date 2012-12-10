@@ -89,7 +89,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode) {
     var inputHTML = "<input id='file" + id
         + "' class='file fileHidden' name='file' type='file' onkeypress='return false;'";
     inputHTML += "/>";
-    inputHTML += "<label for='file" + id + "' class='btn btn-primary '>" + uploadText + "</label>";
+    inputHTML += "<label for='file" + id + "' class='btn btn-primary ' onclick=\"$('#file" + id + "').trigger('click');\">" + uploadText + "</label>";
     if (isDynamicMode) {
       inputHTML += "<a class='actionLabel' href='javascript:void(0)' onclick=\""
           + url + "\">" + label + "</a>";

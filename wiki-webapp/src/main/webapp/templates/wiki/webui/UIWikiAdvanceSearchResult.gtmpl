@@ -18,7 +18,7 @@ import java.util.List;
 	if(pl != null &&	pl.getAll().size() > 0) {
 %>		
 		<div class="uiWikiAdvanceSearchResult" id="$uicomponent.id">
-			<h4><%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%> &nbsp;<span class="line"></span></h4>
+			<h4 class="titleWithBorder"><%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%></h4>
 			<div class="resultInfo">
 				<span class="resultNumber"><%=UIWikiAdvanceSearchForm.getNumberOfSearchResult()%></span>&nbsp; 
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsFor");%>&nbsp;
@@ -26,16 +26,16 @@ import java.util.List;
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.Show");%>&nbsp;
 				
 				<!--dropdownlist-->
-			   <select class="selectbox" onchange="window.location.href=this.options[this.selectedIndex].value; return false;" id="PageSizeSelector">
-				<% for (maxItemPerPage in maxItemPerPageList) {
-					if (maxPageSize == maxItemPerPage) {
-				%>
-					<option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>" selected>$maxItemPerPage</option>
-				<% } else { %>
-					<option value="<%=uicomponent.event("ChangeMaxSizePage","$maxItemPerPage")%>">$maxItemPerPage</option>
-				<% } 
-				} %>
-			   </select>
+				<div class="btn-group">
+					<a class="btn dropdown-toggle" data-toggle="dropdown" href="#">10<i class="uiIconMiniArrowDown"></i></a>
+					<ul class="dropdown-menu">
+						<li><a href="#">10</a></li>
+						<li><a href="#">20</a></li>
+						<li><a href="#">30</a></li>
+						<li><a href="#">40</a></li>
+						<li><a href="#">50</a></li>
+					</ul>
+				</div>
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsOnPage");%>&nbsp;
 			</div>
 			<ul>
@@ -127,5 +127,10 @@ import java.util.List;
 	</div>	
 	
 	<%} else { %>
-		<div class="noSearchResult">0&nbsp;<%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %>&nbsp;<strong><%=uicomponent.getKeyword()%></strong></div>
+		<div class="uiWikiAdvanceSearchResult" id="$uicomponent.id">
+			<h4 class="titleWithBorder"><%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%></h4> 
+			<div class="resultInfo noResult">
+				<span class="resultNumber">0</span>&nbsp;<%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %>&nbsp;<strong><%=uicomponent.getKeyword()%></strong>
+			</div>
+		</div>
 	<%} %>
