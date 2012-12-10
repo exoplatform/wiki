@@ -7,7 +7,7 @@
   requireJs.addScripts("wikiView.UIWikiPermissionForm.init('" + uicomponent.id + "') ;");  
   uicomponent.renderChild(uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)) ;
 %>
-<div class="uiWikiPagePermission" id="$uicomponent.id">
+<div class="uiWikiPagePermission">
   <%uiform.begin()%>
   <div class="resizable">
 		<%

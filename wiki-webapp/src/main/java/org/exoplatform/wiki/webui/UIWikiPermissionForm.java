@@ -494,7 +494,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       UIGroupSelector uiGroupSelector = uiWikiPermissionForm.createUIComponent(UIGroupSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
       openPopupAction(uiPopup, uiGroupSelector);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 
@@ -518,7 +518,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       UIGroupMembershipSelector uiGroupMembershipSelector = uiWikiPermissionForm.createUIComponent(UIGroupMembershipSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
       openPopupAction(uiPopup, uiGroupMembershipSelector);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 
