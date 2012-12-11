@@ -7,6 +7,8 @@ import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+
+import org.apache.commons.lang.StringUtils;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -515,7 +517,9 @@ public class Utils {
     UserACL userACL = (UserACL) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
     permissionMap.put(userACL.getSuperUser(), IDType.USER);
     for (String group : userACL.getPortalCreatorGroups()) {
-      permissionMap.put(group, IDType.MEMBERSHIP);
+      if (!StringUtils.isEmpty(group)) {
+        permissionMap.put(group, IDType.MEMBERSHIP);
+      }
     }
     return permissionMap;
   }
