@@ -113,7 +113,7 @@ public class UIFormInputWithActions extends UIFormInputSet {
             } else if (action.getActionType() == ActionData.TYPE_LINK) {
               w.write("<a title=\"" + actionLabel + "\" href=\"" + actionLink + "\">" + actionLabel + "</a>");
             } else if (action.getActionType() == ActionData.TYPE_BUTTON) {
-              w.write("&nbsp;&nbsp;<button class=\"btn\" title=\"" + actionLabel + "\" onclick=\"" + actionLink + "\">" + actionLabel + "</button>");
+              w.write("&nbsp;&nbsp;<button type=\"button\" class=\"btn\" title=\"" + actionLabel + "\" onclick=\"" + actionLink + "\">" + actionLabel + "</button>");
             }
             w.write("&nbsp;");
             if (action.isBreakLine())
