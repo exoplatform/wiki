@@ -11,15 +11,25 @@
     <% } else { %>
   
       <% if(uicomponent.isNavigationRender()) { %>
-        <div class="uiLeftContainerArea wikiBox">
-          <% uicomponent.renderChild(UIWikiNavigationContainer.class); %>       
+        <div class="uiLeftContainerArea">
+			<div class="wikiBox">
+			  <% uicomponent.renderChild(UIWikiNavigationContainer.class); %>       
+			</div>
+			<div class="uiRelatePages wikiBox">
+				<h5 class="titleWikiBox"><a href="http://localhost:8080/portal/intranet/wiki/WikiRelatedPages" data-placement="bottom" rel="tooltip" data-original-title="Related Pages">Related Pages</a></h5>
+				<div class="relateContent">
+					<a href="#" class="relateItem"><i class="uiIconFile"></i>Product road map</a>
+					<a href="#" class="relateItem"><i class="uiIconFile"></i>nothing special</a>
+					<a href="#" class="relateItem"><i class="uiIconFile"></i>nothing special</a>
+				</div>
+			</div>
         </div>
       <% } %>
       
       <div class="resizeBar">
-				<div class="resizeBarContent">
-					<div class="resizeButton"><i class="uiIconMiniArrowLeft"></i></div>
-				</div>
+		<div class="resizeBarContent">
+			<div class="resizeButton"><i class="uiIconMiniArrowLeft"></i></div>
+		</div>
       </div>
       
       <div class="uiRightContainerArea">
