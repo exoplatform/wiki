@@ -72,7 +72,7 @@
   
     <div class="uiWikiNotificationContainer">
       <% for(String message : notificationMessages) { %>
-        message
+        <%=message%> 
       <% } %>
     </div>
 

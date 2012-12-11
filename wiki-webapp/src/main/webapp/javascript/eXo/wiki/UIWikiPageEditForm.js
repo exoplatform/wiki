@@ -24,7 +24,7 @@ function UIWikiPageEditForm() {
 
 UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoSave, pageRevision, isDraftForNewPage, autoSaveSequeneTime, untitledLabel) {
   var pageEditForm = document.getElementById(pageEditFormId);
-  var titleContainer = $(pageEditForm).find('div.UIWikiPageTitleControlForm_PageEditForm')[0];
+  var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
   var titleInput = $(titleContainer).find('input')[0];
 
   var me = eXo.wiki.UIWikiPageEditForm;
@@ -51,7 +51,7 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   }
 
   // Get page content
-  var textAreaContainer = $(pageEditForm).find('div.UIWikiPageContentInputContainer')[0];
+  var textAreaContainer = $(pageEditForm).find('div.uiWikiPageContentInputContainer')[0];
   if (textAreaContainer != null) {
     pageContent = $(textAreaContainer).find('textarea')[0].onkeyup = func;
   } else {
@@ -109,7 +109,7 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
   
   // Get page title
   var pageEditForm = document.getElementById(me.pageEditFormId);
-  var titleContainer = $(pageEditForm).find('div.UIWikiPageTitleControlForm_PageEditForm')[0];
+  var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
   var pageTitle = $(titleContainer).find('input')[0].value;
   if (pageTitle == me.defaultTitle) {
     pageTitle = '';
@@ -118,7 +118,7 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
   // Get page content
   var pageContent = "";
   var isMarkup = true;
-  var textAreaContainer = $(pageEditForm).find('div.UIWikiPageContentInputContainer')[0];
+  var textAreaContainer = $(pageEditForm).find('div.uiWikiPageContentInputContainer')[0];
   if (textAreaContainer != null) {
     isMarkup = true;
     pageContent = $(textAreaContainer).find('textarea')[0].value;
@@ -169,8 +169,8 @@ UIWikiPageEditForm.prototype.onSaveDraftSuccess = function(data) {
     
     var timeSavedDraft = hours + ":" + minutes;
     var pageEditForm = document.getElementById(me.pageEditFormId);
-    var messageArea = $(pageEditForm).find('div.UIWikiPageEditForm_MessageArea')[0];
-    messageArea.style.margin = "25px 0px 0px 10px";
+    var messageArea = $(pageEditForm).find('div.uiWikiPageEditForm_MessageArea')[0];
+    messageArea.style.margin = "15px 0px 0px 10px";
     messageArea.innerHTML = me.saveDraftSuccessMessage + " " + timeSavedDraft;
   }
 };

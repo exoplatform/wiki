@@ -160,7 +160,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     
     // Build message markup
     String messageMarkup = bundle.getString("DraftPage.msg.draft-version-outdated");
-    String messageHTML = "<div class='box notemessage'>" + messageMarkup + "</div>";
+    String messageHTML = "<div class='alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
     
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
@@ -169,9 +169,9 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String continueEdittingActionLink = event("ResumeDraft");
     String deleteDraftLabel = bundle.getString("DraftPage.label.delete");
     String deleteActionLink = event("DeleteDraft");
-    messageHTML = messageHTML.replace("{0}", "<a title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
-    messageHTML = messageHTML.replace("{1}", "<a title=\""+ continueEdittingLabel + "\" href=\"" + continueEdittingActionLink + "\">" + continueEdittingLabel + "</a>");
-    messageHTML = messageHTML.replace("{2}", "<a title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{0}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ continueEdittingLabel + "\" href=\"" + continueEdittingActionLink + "\">" + continueEdittingLabel + "</a>");
+    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
     return messageHTML;
   }
   
@@ -182,7 +182,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String messageMarkup = bundle.getString("DraftPage.msg.draft-exist-notification");
     String dateString = new SimpleDateFormat("MMM dd, yyyy HH:mm").format(draftUpdatedDate);
     messageMarkup = messageMarkup.replace("{0}", dateString);
-    String messageHTML = "<div class='box notemessage'>" + messageMarkup + "</div>";
+    String messageHTML = "<div class='alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
     
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
@@ -192,9 +192,9 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String deleteDraftLabel = bundle.getString("DraftPage.label.delete");
     String deleteActionLink = event("DeleteDraft");
     
-    messageHTML = messageHTML.replace("{1}", "<a title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
-    messageHTML = messageHTML.replace("{2}", "<a title=\""+ resumeDraftLabel + "\" href=\"" + resumeActionLink + "\">" + resumeDraftLabel + "</a>");
-    messageHTML = messageHTML.replace("{3}", "<a title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ resumeDraftLabel + "\" href=\"" + resumeActionLink + "\">" + resumeDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{3}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
     return messageHTML; 
   }
   
@@ -216,7 +216,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
     String messageMarkup = bundle.getString("DraftPage.msg.concurrent-editing");
     messageMarkup = messageMarkup.replace("{0}", usernameList.toString());
-    messageMarkup = "<div class='box warningmessage'>" + messageMarkup + "</div>";;
+    messageMarkup = "<div class='alert'><i class='uiIconWarning'></i>" + messageMarkup + "</div>";;
     
     // Render to message html and return
     return messageMarkup;
