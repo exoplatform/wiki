@@ -40,7 +40,7 @@ import org.exoplatform.wiki.utils.Utils;
  *          phongth@exoplatform.com
  * Nov 16, 2012 
  */
-public class SpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
+public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
   private static final String WIKI_PORTLET_NAME = "wiki";
   
   public void onInit(Application app) {
@@ -48,12 +48,8 @@ public class SpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestCo
 
   public void onStartRequest(final Application app, final WebuiRequestContext context) throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext) context;
-
-    // SiteKey siteKey = new SiteKey(pcontext.getSiteType(), pcontext.getSiteName());
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
-
-    if (pcontext.getSiteType().equals(SiteType.GROUP) && pcontext.getSiteName().startsWith("/spaces") 
-        && (requestPath != null) && (requestPath.length() > 0)) {
+    if (pcontext.getSiteType().equals(SiteType.GROUP) && pcontext.getSiteName().startsWith("/spaces")  && (requestPath != null) && (requestPath.length() > 0)) {
       
       // Check if user want to access to wiki application
       String currentUser = Utils.getCurrentUser();
@@ -82,8 +78,8 @@ public class SpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestCo
   
   private static void redirect(String url) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    portalRequestContext.setResponseComplete(true);
     portalRequestContext.sendRedirect(url);
+//    portalRequestContext.getJavascriptManager().addCustomizedOnLoadScript("window.location.href =\"" + url + "\"");
   }
   
   public void onFailRequest(Application app, WebuiRequestContext context, RequestFailure failureType) throws Exception {
