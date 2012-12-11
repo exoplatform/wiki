@@ -14,7 +14,7 @@
 				String actionLabel = _ctx.appRes(uicomponent.getName() + ".action." + action); 
 				String link = uicomponent.event(action) ;
 		    %>
-				<button class="btn btn-primary" type="button" onclick="$link">$actionLabel</button>
+				<button type="button" class="btn btn-primary" type="button" onclick="$link">$actionLabel</button>
 		    <%}%>
 			<br />
 			<%uiform.renderChild(uicomponent.WIKIS)%>

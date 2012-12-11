@@ -35,7 +35,7 @@
  <% uiform.begin(); %>
   <h4 class="historyLabel"><%= _ctx.appRes("UIWikiPageVersionsList.label.HistoryLabel"); %></h4>
 	<div class="compareSelect">
-		<button  class="btn btn-primary refreshModeTarget"><%= _ctx.appRes("UIWikiPageVersionsList.label.CompareSelected"); %></button>
+		<button type="button"  class="btn btn-primary refreshModeTarget"><%= _ctx.appRes("UIWikiPageVersionsList.label.CompareSelected"); %></button>
 		<a onclick="$compareActionLink" id="$compareActionId" style="display:none;"></a>	
 	</div>
     <table cellspacing="0" borderspacing="0" class="uiFormGrid uiGrid table table-hover table-striped">

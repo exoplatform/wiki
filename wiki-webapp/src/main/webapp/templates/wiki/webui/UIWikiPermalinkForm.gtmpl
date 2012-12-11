@@ -26,14 +26,14 @@
   <div class="uiAction">
     <%if (canPublicAndRetrictPage) {%>
       <%if (isCurrentPagePublic) {%>
-        <button onclick="<%=uicomponent.event(uiform.RESTRICT_ACTION);%>" class="btn btn-primary"><%=_ctx.appRes('UIWikiPermalinkForm.action.Restrict')%></button>
+        <button type="button" onclick="<%=uicomponent.event(uiform.RESTRICT_ACTION);%>" class="btn btn-primary"><%=_ctx.appRes('UIWikiPermalinkForm.action.Restrict')%></button>
       <%} else { %>
-        <button onclick="<%=uicomponent.event(uiform.MAKE_PUBLIC_ACTION);%>" class="btn btn-primary"><%=_ctx.appRes('UIWikiPermalinkForm.action.MakePublic')%></button>
+        <button type="button" onclick="<%=uicomponent.event(uiform.MAKE_PUBLIC_ACTION);%>" class="btn btn-primary"><%=_ctx.appRes('UIWikiPermalinkForm.action.MakePublic')%></button>
       <%}%>
     <%}%>
     
     <%if (canModifyPagePermission) {%>
-      <button onclick="<%=uicomponent.event(uiform.MANAGE_PERMISSION_ACTION);%>" class="btn"><%=_ctx.appRes('UIWikiPermalinkForm.action.ManagePermission')%></button>
+      <button type="button" onclick="<%=uicomponent.event(uiform.MANAGE_PERMISSION_ACTION);%>" class="btn"><%=_ctx.appRes('UIWikiPermalinkForm.action.ManagePermission')%></button>
     <%}%>
   </div>
 </div>

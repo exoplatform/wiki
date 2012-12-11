@@ -6,7 +6,7 @@
     %>    
 </div>
 <div class="uiAction">
-  <button href="javascript:void(0);" onclick="<%= uicomponent.event("SelectPage") %>"  class="btn btn-primary"><%= _ctx.appRes("UIWikiSelectPageForm.action.Select")%></button>
-  <button href="javascript:void(0);" onclick="<%= uicomponent.event("Cancel") %>"  class="btn"><%= _ctx.appRes("UIWikiSelectPageForm.action.Cancel")%></button>
+  <button type="button" href="javascript:void(0);" onclick="<%= uicomponent.event("SelectPage") %>"  class="btn btn-primary"><%= _ctx.appRes("UIWikiSelectPageForm.action.Select")%></button>
+  <button type="button" href="javascript:void(0);" onclick="<%= uicomponent.event("Cancel") %>"  class="btn"><%= _ctx.appRes("UIWikiSelectPageForm.action.Cancel")%></button>
 </div>
 <% uiform.end(); %>

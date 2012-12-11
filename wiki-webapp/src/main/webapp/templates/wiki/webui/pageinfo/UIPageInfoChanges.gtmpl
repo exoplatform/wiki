@@ -52,7 +52,7 @@
 	</table>
 <% if (currentVersions.size() > 0) { %>
   <div class="actionCenter">
-  	<button class="btn" onclick="<%=uicomponent.event("ShowHistory")%>" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>
+  	<button type="button" class="btn" onclick="<%=uicomponent.event("ShowHistory")%>" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>
   </div>
 <% } %>
 

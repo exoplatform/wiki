@@ -11,7 +11,7 @@
   requireJs.require("SHARED/wiki-edit", "wikiEdit");
   requireJs.addScripts("wikiEdit.UIConfirmBox.init();");  
  %>
-<button id="$uicomponent.id" onclick="if(eXo.wiki.UIWikiPageEditForm.cancelSave('$uicomponent.id','$titleMessage','$exitMessage', 'Delete Icon','$okLabel','$cancelLabel'))  $cancelLink;" 
+<button type="button" id="$uicomponent.id" onclick="if(eXo.wiki.UIWikiPageEditForm.cancelSave('$uicomponent.id','$titleMessage','$exitMessage', 'Delete Icon','$okLabel','$cancelLabel'))  $cancelLink;" 
     class="btn"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UISubmitToolBar.action.Cancel");%>">
       <%=_ctx.appRes("UISubmitToolBar.action.Cancel");%>    
 </button>

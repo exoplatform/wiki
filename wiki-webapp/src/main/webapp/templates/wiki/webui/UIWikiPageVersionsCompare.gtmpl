@@ -82,7 +82,7 @@
 	</div>
 	<div class="changedForm">
 		<h6><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Changes").replace("{0}",  String.valueOf(uicomponent.changes)); %></h6>
-		<button class="btn" onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$showHistory');"> <%= _ctx.appRes("UIWikiPageVersionsCompare.label.ViewPageHistory"); %></button><br />
+		<button type="button" class="btn" onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$showHistory');"> <%= _ctx.appRes("UIWikiPageVersionsCompare.label.ViewPageHistory"); %></button><br />
 		<a style="display:none" id="$showHistoryLinkId" onclick="$showHistoryLink"></a>
 		<%= uicomponent.differencesAsHTML %>
 	</div>
