@@ -16,7 +16,7 @@
   ~ Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
   ~ 02110-1301 USA, or see the FSF site: http://www.fsf.org.
   -->
-<repository-service default-repository="${gatein.jcr.repository.default}">
+<repository-service default-repository="${gatein.jcr.repository.default:repository}">
   <repositories>
     <repository name="${gatein.jcr.repository.default}" system-workspace="${gatein.jcr.workspace.system}" default-workspace="${gatein.jcr.workspace.default}">
       <security-domain>exo-domain</security-domain>
@@ -60,17 +60,17 @@
               <property name="index-dir" value="target/temp/index/repository/wiki" />
               <property name="support-highlighting" value="true" />
               <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />                           
-            </properties>
-            
+            </properties>            
           </query-handler>
-          <lock-manager>
-            <time-out>15m</time-out><!-- 15min -->
-            <persister class="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister">
-              <properties>
-                <property name="path" value="../temp/lock/gadgets" />
-              </properties>
-            </persister>
-          </lock-manager>
+          
+          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
+            <properties>
+              <property name="time-out" value="15m" />
+              <property name="path" value="../temp/lock/gadgets" />
+              <property name="jbosscache-configuration" value="exo.portal.component.test.jcr-jbosscache-lock-config.xml" />
+            </properties>
+          </lock-manager>          
+          
         </workspace>
       </workspaces>
     </repository>

@@ -64,12 +64,12 @@
             
           </query-handler>
           <lock-manager>
-            <time-out>15m</time-out><!-- 15min -->
-            <persister class="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister">
+            <!--persister class="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister"-->
               <properties>
+              	<property name="time-out" value="15m" />              
                 <property name="path" value="../temp/lock/gadgets" />
               </properties>
-            </persister>
+            <!--/persister-->
           </lock-manager>
         </workspace>
       </workspaces>
