@@ -80,7 +80,7 @@ public class WikiSpaceAccessService implements WebAppListener, Startable {
       List<ApplicationLifecycle> lifecyces = app.getApplicationLifecycle();
       
       // Add SpaceAccessLifecycle to ApplicationLifecycle list
-      lifecyces.add(new SpaceAccessLifecycle());
+      lifecyces.add(0, new WikiSpaceAccessLifecycle());
       app.setApplicationLifecycle(lifecyces);
     } catch (Exception e) {
       log.error("Could not inject SpaceAccessLifecycle class.", e);
