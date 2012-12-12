@@ -67,7 +67,8 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
         Page page = wikiService.getPageById(PortalConfig.GROUP_TYPE, owner, pageId);
 
         // If user is not member of space but has view permission
-        if (!wikiService.isSpaceMember(spaceId, currentUser) && (page != null) &&  page.hasPermission(PermissionType.VIEWPAGE)) {
+        if (!wikiService.isHiddenSpace(owner) && !wikiService.isSpaceMember(spaceId, currentUser) 
+            && (page != null) && page.hasPermission(PermissionType.VIEWPAGE)) {
           WikiPageParams wikiPageParams = new WikiPageParams(PortalConfig.GROUP_TYPE, owner, pageId);
           String permalink = Utils.getPermanlink(wikiPageParams);
           redirect(permalink);
@@ -79,7 +80,6 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
   private static void redirect(String url) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.sendRedirect(url);
-//    portalRequestContext.getJavascriptManager().addCustomizedOnLoadScript("window.location.href =\"" + url + "\"");
   }
   
   public void onFailRequest(Application app, WebuiRequestContext context, RequestFailure failureType) throws Exception {
