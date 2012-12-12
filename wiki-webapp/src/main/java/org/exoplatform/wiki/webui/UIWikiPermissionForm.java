@@ -26,6 +26,7 @@ import java.util.Map.Entry;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.ComponentConfigs;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -217,12 +218,16 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   private static void closePopupAction(UIPopupWindow uiPopupWindow) {
     uiPopupWindow.setUIComponent(null);
     uiPopupWindow.setShow(false);
+    WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
+    rcontext.addUIComponentToUpdateByAjax(uiPopupWindow);
   }
 
   private static void openPopupAction(UIPopupWindow uiPopup, UIComponent component) {
     uiPopup.setUIComponent(component);
     uiPopup.setShow(true);
     uiPopup.setWindowSize(550, 0);
+    WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
+    rcontext.addUIComponentToUpdateByAjax(uiPopup);
   }
 
   public void setScope(Scope scope) throws Exception {
@@ -405,7 +410,10 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
         }
       }
       uiWikiPermissionForm.setPermission(uiWikiPermissionForm.permissionEntries);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
+      
+      WebuiRequestContext rcontext = event.getRequestContext();
+      rcontext.addUIComponentToUpdateByAjax(uiWikiPermissionForm.getChild(UIPermissionGrid.class));
+      rcontext.addUIComponentToUpdateByAjax(inputWithActions);
     }
 
     private boolean isExistId(String identityId, IDType idType, OrganizationService service) throws Exception {
@@ -450,7 +458,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
         uiWikiPermissionForm.permissionEntries.remove(uiPermissionEntry.getPermissionEntry());
       }
       uiWikiPermissionForm.setPermission(uiWikiPermissionForm.permissionEntries);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm.getChild(UIPermissionGrid.class));
     }
   }
 
@@ -469,7 +477,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       uiUserSelector.setShowSearchUser(true);
       uiUserSelector.setShowSearchGroup(false);
       openPopupAction(uiPopup, uiUserSelector);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 
@@ -480,9 +487,12 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       String values = uiUserSelector.getSelectedUsers();
       UIFormInputWithActions inputWithActions = uiWikiPermissionForm.getChild(UIFormInputWithActions.class);
       UIFormStringInput uiFormStringInput = inputWithActions.getChild(UIFormStringInput.class);
-      uiFormStringInput.setValue(values);
-      closePopupAction(uiWikiPermissionForm.getUserPermissionPopupSelector());
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
+      uiFormStringInput.setValue(values);      
+      UIPopupWindow uiPopup = uiWikiPermissionForm.getUserPermissionPopupSelector(); 
+      closePopupAction(uiPopup);
+      
+      WebuiRequestContext rcontext = event.getRequestContext();
+      rcontext.addUIComponentToUpdateByAjax(uiWikiPermissionForm.getChildById(WIKI_PERMISSION_OWNER));
     }
   }
 
@@ -494,7 +504,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       UIGroupSelector uiGroupSelector = uiWikiPermissionForm.createUIComponent(UIGroupSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
       openPopupAction(uiPopup, uiGroupSelector);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 
@@ -505,7 +514,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       String groupId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIFormInputWithActions inputWithActions = uiWikiPermissionForm.getChild(UIFormInputWithActions.class);
       UIFormStringInput uiFormStringInput = inputWithActions.getChild(UIFormStringInput.class);
-      uiFormStringInput.setValue("*:" + groupId);
+      uiFormStringInput.setValue("*:" + groupId);      
       closePopupAction(uiWikiPermissionForm.getPermissionPopupSelector());
       event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
     }
@@ -518,7 +527,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       UIGroupMembershipSelector uiGroupMembershipSelector = uiWikiPermissionForm.createUIComponent(UIGroupMembershipSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
       openPopupAction(uiPopup, uiGroupMembershipSelector);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopup);
     }
   }
 
@@ -536,16 +544,17 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     }
   }
 
-  static public class ClosePopupActionListener extends EventListener<UIPopupWindow> {
+  static public class ClosePopupActionListener extends UIPopupWindow.CloseActionListener {
     public void execute(Event<UIPopupWindow> event) throws Exception {
-      closePopupAction(event.getSource());
-      event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource().getParent());
+       super.execute(event);
+       closePopupAction(event.getSource());      
     }
   }
 
   static public class CloseUserPopupActionListener extends EventListener<UIUserSelector> {
     public void execute(Event<UIUserSelector> event) throws Exception {
-      closePopupAction((UIPopupWindow)event.getSource().getParent());
+      UIPopupWindow uiPopup = (UIPopupWindow)event.getSource().getParent(); 
+      closePopupAction(uiPopup);
     }
   }
 
