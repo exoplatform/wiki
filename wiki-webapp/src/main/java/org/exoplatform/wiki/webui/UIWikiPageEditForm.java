@@ -160,7 +160,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     
     // Build message markup
     String messageMarkup = bundle.getString("DraftPage.msg.draft-version-outdated");
-    String messageHTML = "<div class='alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
+    String messageHTML = "<div class='alert alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
     
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
@@ -182,7 +182,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String messageMarkup = bundle.getString("DraftPage.msg.draft-exist-notification");
     String dateString = new SimpleDateFormat("MMM dd, yyyy HH:mm").format(draftUpdatedDate);
     messageMarkup = messageMarkup.replace("{0}", dateString);
-    String messageHTML = "<div class='alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
+    String messageHTML = "<div class='alert alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
     
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
