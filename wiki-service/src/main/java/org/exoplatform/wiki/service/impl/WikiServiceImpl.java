@@ -1318,6 +1318,20 @@ public class WikiServiceImpl implements WikiService, Startable {
       return false;
     }
   }
+  
+  public boolean isHiddenSpace(String groupId) throws Exception {
+    try {
+      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
+      String visibility = String.valueOf(spaceClass.getDeclaredMethod("getVisibility").invoke(space));
+      String hiddenValue = String.valueOf(spaceClass.getDeclaredField("HIDDEN").get(space));
+      return hiddenValue.equals(visibility);
+    } catch (ClassNotFoundException e) {
+      return true;
+    }
+  }
 
   @Override
   public DraftPage createDraftForNewPage(WikiPageParams parentPageParam, long clientTime) throws Exception {
