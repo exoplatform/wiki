@@ -199,7 +199,7 @@ UITreeExplorer.prototype.buildNode = function(data) {
     childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +" treeNodeType node "+ hoverClass +" \">";
   }  
   
-  if (data.selectable == true) {
+  if (data.selectable == true && data.retricted == false) {
     if (me.isRenderLink) {
       var index = path.lastIndexOf("%2F"); // Find the index of character "/"
       var pageId = path.substring(index + 3);
@@ -209,8 +209,12 @@ UITreeExplorer.prototype.buildNode = function(data) {
       childNode += "        <a rel=\"tooltip\" data-placement=\"bottom\" title=\"" + nodeName + "\">" + nodeName + "</a>";
     }
   } else {
-    nodeName = me.retrictedLabel;
-    childNode += "         <span style=\"cursor:auto\" title=\"" + me.restrictedTitle + "\"><em>" + nodeName + "</em></span>";
+    if (data.retricted == true) {
+      nodeName = me.retrictedLabel;
+      childNode += "         <span style=\"cursor:auto\" title=\"" + me.restrictedTitle + "\"><em>" + nodeName + "</em></span>";
+    } else if (data.selectable == false) {
+      childNode += "         <span style=\"cursor:auto\" title=\"" + nodeName + "\">" + nodeName + "</span>";
+    }
   }
   
   if (excerptData != null) {
