@@ -51,7 +51,6 @@ public class UIWikiNavigationContainer extends UIWikiForm {
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
     childrenURLSb.append("/wiki/tree/").append(TREETYPE.CHILDREN.toString());
     uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(), null, true);
-    addChild(UIWikiRelatedPages.class, null, null);
   }
   
   @Override

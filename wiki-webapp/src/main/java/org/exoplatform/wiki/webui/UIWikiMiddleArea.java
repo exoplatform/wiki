@@ -52,6 +52,7 @@ public class UIWikiMiddleArea extends UIWikiContainer {
     addChild(UIWikiNavigationContainer.class, null, null);
     addChild(UIWikiPageContainer.class, null, null);
     addChild(UIWikiPageSettingContainer.class, null, null);
+    addChild(UIWikiRelatedPages.class, null, null);
   }
   
   protected boolean isNavigationRender() {

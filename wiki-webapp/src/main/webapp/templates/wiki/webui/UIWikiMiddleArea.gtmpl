@@ -2,6 +2,8 @@
   import org.exoplatform.wiki.webui.UIWikiNavigationContainer;
   import org.exoplatform.wiki.webui.UIWikiPageContainer;
   import org.exoplatform.wiki.webui.UIWikiPageSettingContainer
+  import org.exoplatform.wiki.webui.UIWikiRelatedPages;
+  
 %>
 <div class="uiWikiMiddleArea wikiLayout ClearFix" id="$uicomponent.id">
     <% if(uicomponent.isPageSettingContainerRender()) { %>
@@ -15,14 +17,7 @@
 			<div class="wikiBox">
 			  <% uicomponent.renderChild(UIWikiNavigationContainer.class); %>       
 			</div>
-			<div class="uiRelatePages wikiBox">
-				<h5 class="titleWikiBox"><a href="http://localhost:8080/portal/intranet/wiki/WikiRelatedPages" data-placement="bottom" rel="tooltip" data-original-title="Related Pages">Related Pages</a></h5>
-				<div class="relateContent">
-					<a href="#" class="relateItem"><i class="uiIconFile"></i>Product road map</a>
-					<a href="#" class="relateItem"><i class="uiIconFile"></i>nothing special</a>
-					<a href="#" class="relateItem"><i class="uiIconFile"></i>nothing special</a>
-				</div>
-			</div>
+			<% uicomponent.renderChild(UIWikiRelatedPages.class); %>       
         </div>
       <% } %>
       

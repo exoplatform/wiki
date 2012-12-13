@@ -10,14 +10,17 @@
   requireJs.require("SHARED/wiki-view", "wikiView");
   requireJs.addScripts("wikiView.UIRelated.initMacros();");
 %>
-
-<div id="$uicomponent.id" class="Related">
+<div id="$uicomponent.id" class="Related uiRelatePages wikiBox">
 <% if (relatedPages.size() > 0) { %>
-  <div class="RelatedHeader">
-    <p><%= _ctx.appRes("UIWikiMiddleArea.label.related-pages") %></p>
-  </div>
-  <div class="RelatedContent">
+  <h5 class="titleWikiBox"><%= _ctx.appRes("UIWikiMiddleArea.label.related-pages") %></h5>
+  <div class="relateContent">
     <%= org.exoplatform.wiki.commons.Utils.renderMacroToXHtml(uicomponent, "{{related}}", org.xwiki.rendering.syntax.Syntax.XWIKI_2_0.toIdString()); %>
   </div>
 <% } %>
 </div>
+
+<!--div class="relateContent">
+  <a href="#" class="relateItem"><i class="uiIconFile"></i>Product road map</a>
+  <a href="#" class="relateItem"><i class="uiIconFile"></i>nothing special</a>
+  <a href="#" class="relateItem"><i class="uiIconFile"></i>nothing special</a>
+</div-->
