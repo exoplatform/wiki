@@ -47,7 +47,7 @@
     <div class="uiEditUpper">
       <% uiform.renderChild(uiform.TITLE_CONTROL); %>
     </div>
-
+	<% uiform.renderChild(uiform.FIELD_TEMPLATEDESCTIPTION);%>
     <div class="actionContainer clearfix">
       <div class="pull-right clearfix">
         <%
@@ -67,9 +67,6 @@
 
       <div class="uiWikiPageEditForm_MessageArea pull-left"></div>
     </div>
-
-    <% uiform.renderChild(uiform.FIELD_TEMPLATEDESCTIPTION);%>
-  
     <div class="uiWikiNotificationContainer">
       <% for(String message : notificationMessages) { %>
         <%=message%> 

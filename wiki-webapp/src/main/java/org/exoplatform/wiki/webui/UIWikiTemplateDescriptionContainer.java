@@ -30,7 +30,6 @@ import org.exoplatform.wiki.webui.core.UIWikiContainer;
  * 9 Feb 2011  
  */
 @ComponentConfig(
-                 lifecycle = UIContainerLifecycle.class,
                  template = "app:/templates/wiki/webui/UIWikiTemplateDescriptionContainer.gtmpl"
 )
 public class UIWikiTemplateDescriptionContainer extends UIWikiContainer {
