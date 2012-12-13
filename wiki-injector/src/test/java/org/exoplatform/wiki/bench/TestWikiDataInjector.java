@@ -16,14 +16,14 @@
  */
 package org.exoplatform.wiki.bench;
 
-import java.util.HashMap;
-
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
+
+import java.util.HashMap;
 
 import junit.framework.TestCase;
 
@@ -80,9 +80,7 @@ public class TestWikiDataInjector extends TestCase {
     try {
       String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/configuration.xml").toString();
       StandaloneContainer.addConfigurationURL(containerConf);
-      //
-      String loginConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/login.conf").toString();
-      System.setProperty("java.security.auth.login.config", loginConf);
+
       //
       container = StandaloneContainer.getInstance();
     } catch (Exception e) {
@@ -93,22 +91,26 @@ public class TestWikiDataInjector extends TestCase {
   private static void initJCR() {
     try {
       RepositoryService  repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
-      // Initialize datas
+      assertNotNull(repositoryService);
       Session session = repositoryService.getCurrentRepository().getSystemSession(WIKI_WS);
-      // Remove old data before to starting test case.
+   // Remove old data before to starting test case.
+        	
       StringBuffer stringBuffer = new StringBuffer();
+      	  	
       stringBuffer.append("/jcr:root").append("//*[fn:name() = 'eXoWiki' or fn:name() = 'ApplicationData']");
-      QueryManager qm = session.getWorkspace().getQueryManager();
-      Query query = qm.createQuery(stringBuffer.toString(), Query.XPATH);
-      QueryResult result = query.execute();
-      NodeIterator iter = result.getNodes();
-      while (iter.hasNext()) {
-        Node node = iter.nextNode();
-        try {
-          node.remove();
-        } catch (Exception e) {}
-      }
+      	  	
+      QueryManager qm = session.getWorkspace().getQueryManager();      	  	
+      Query query = qm.createQuery(stringBuffer.toString(), Query.XPATH);      	  	
+      QueryResult result = query.execute();      	  	
+      NodeIterator iter = result.getNodes();      	  	
+      while (iter.hasNext()) {      	  	
+        Node node = iter.nextNode();      	  	
+        try {      	  	
+          node.remove();      	  	
+        } catch (Exception e) {}      	  	
+      } 	  	
       session.save();
+      assertNotNull(session);
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialize JCR: ", e);
     }

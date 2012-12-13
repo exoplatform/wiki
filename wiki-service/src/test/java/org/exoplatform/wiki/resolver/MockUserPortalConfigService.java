@@ -58,7 +58,7 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
   /* (non-Javadoc)
    * @see org.exoplatform.portal.config.UserPortalConfigService#getPage(java.lang.String, java.lang.String)
    */
-  @Override
+
   public PageContext getPage(PageKey pageRef) {
     return super.getPage(pageRef);
   }
