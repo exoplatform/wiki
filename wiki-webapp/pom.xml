@@ -95,7 +95,7 @@
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.web.resources</artifactId>
       <exclusions>
-        <!-- To remove from com.google.javascript:closure-compiler:jar used by org.exoplatform.portal:exo.portal.component.web.resources:jar (TODO : Should be done in gatein master - dep to upgrade ?) -->
+        <!-- To remove from com.google.javascript:closure-compiler:jar used by org.gatein.portal:exo.portal.component.web.resources:jar (TODO : Should be done in gatein master - dep to upgrade ?) -->
         <exclusion>
           <artifactId>ant</artifactId>
           <groupId>org.apache.ant</groupId>
