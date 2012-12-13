@@ -14,12 +14,10 @@
   JavascriptManager jsManager = rcontext.getJavascriptManager();
   def requireJs = jsManager.getRequireJS();
   
-  //jsManager.addJavascript("jQuery.noConflict();");
   requireJs.require("SHARED/jquery", "jQuery").addScripts("jQuery.noConflict();");
   requireJs.require("SHARED/wiki-view", "wikiView");  
   
   if(uicomponent.isKeepSessionAlive()){
-    //jsManager.loadScriptResource("wiki-edit");
     requireJs.require("SHARED/wiki-edit", "wikiEdit");
   }  
   

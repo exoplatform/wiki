@@ -39,7 +39,12 @@ UIWikiPortlet.prototype.init = function(portletId, linkId) {
 
   window.onload = function(event) {
     me.changeMode(event);
+    
+    // Init tooltip
     $("*[rel='tooltip']").tooltip();
+    
+    // Init page tree macro
+    me.initMacros();
   };
   
   window.onbeforeunload = function(event) {

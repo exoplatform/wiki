@@ -158,7 +158,7 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
           .append(TreeNode.DEPTH)
           .append("=")
           .append(startDepth);
-    treeSb.append("<div class=\"UITreeExplorer PageTreeMacro\">")
+    treeSb.append("<div class=\"uiTreeExplorer PageTreeMacro\">")
           .append("  <div>")
           .append("    <input class=\"ChildrenURL\" title=\"hidden\" type=\"hidden\" value=\"").append(treeRestURI).append("\" />")
           .append("    <input class=\"InitParams\" title=\"hidden\" type=\"hidden\" value=\"").append(initSb.toString()).append("\" />")
@@ -169,7 +169,7 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
     RawBlock testRaw = new RawBlock(treeSb.toString(), XHTML_SYNTAX);
     return testRaw;
   }
-
+  
   private WikiContext getWikiContext() {
     ExecutionContext ec = execution.getContext();
     if (ec != null) {

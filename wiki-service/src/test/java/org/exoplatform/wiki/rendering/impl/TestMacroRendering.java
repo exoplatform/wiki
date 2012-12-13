@@ -178,7 +178,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     wikiContext.setPageId("rootPage");
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     StringBuilder xwikiExpectedHtml = new StringBuilder();
-    xwikiExpectedHtml.append("<div class=\"UITreeExplorer PageTreeMacro\">")
+    xwikiExpectedHtml.append("<div class=\"uiTreeExplorer PageTreeMacro\">")
                      .append("  <div>")
                      .append("    <input class=\"ChildrenURL\" title=\"hidden\" type=\"hidden\" value=\"/wiki/tree/children/\" />")
                      .append("    <input class=\"InitParams\" title=\"hidden\" type=\"hidden\" value=\"?path=portal/classic/rootPage&excerpt=false&depth=1\" />")

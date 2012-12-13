@@ -142,7 +142,9 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
 	  var container = $(homeUL).parents("div.uiTreeExplorer")[0];
 	  var h5Container = $(container).prev();	  
 	  $(h5Container).append(aElement);
-	  homeUL.remove();
+	  if (homeUL) {
+	    homeUL.remove();
+	  }
 	  $(container).append(remain);
 	  if (eXo.wiki.WikiLayout) {
 	    eXo.wiki.WikiLayout.processWithHeight();

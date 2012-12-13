@@ -1,10 +1,15 @@
 <% 
- import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
- %>
+  import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
+
+  def rcontext = _ctx.getRequestContext();
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiPageInfo.init();");
+%>
 <% 
   def currentWikiPage = uicomponent.getCurrentPage();
   _ctx.put("currentWikiPage", currentWikiPage);
- %>
+%>
 
 <div class="uiWikiPageInfo row-fluid" id="$uicomponent.id">
 	<div class="span6">

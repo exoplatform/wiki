@@ -82,6 +82,10 @@
         <path>/javascript/eXo/wiki/tree/UITreeExplorer.js</path>
     </script>
     <script>
+        <name>eXo.wiki.UIWikiPageInfo</name>
+        <path>/javascript/eXo/wiki/UIWikiPageInfo.js</path>
+    </script>
+    <script>
         <name>eXo.wiki.WikiLayout</name>
         <path>/javascript/eXo/wiki/layout/WikiLayout.js</path>
     </script>
