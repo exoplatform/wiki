@@ -28,6 +28,7 @@ import org.xwiki.model.reference.AttachmentReference;
 import org.xwiki.model.reference.DocumentReference;
 import org.xwiki.model.reference.EntityReference;
 
+
 /**
  * Created by The eXo Platform SAS
  * Author : viet nguyen

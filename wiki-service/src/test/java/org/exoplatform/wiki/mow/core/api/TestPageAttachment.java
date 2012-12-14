@@ -20,6 +20,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
+
 import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.wiki.mow.api.Model;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -29,8 +30,13 @@ import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.service.WikiService;
+import org.junit.FixMethodOrder;
+import org.junit.runners.MethodSorters;
 
-
+// TODO :
+// * Fix tests to not have to specify the order of execution like this
+// * The order of tests execution changed in Junit 4.11 (https://github.com/KentBeck/junit/blob/master/doc/ReleaseNotes4.11.md)
+@FixMethodOrder(MethodSorters.JVM)
 public class TestPageAttachment extends AbstractMOWTestcase {
   
   public void testAddPageAttachment() throws Exception {

@@ -21,10 +21,9 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.inject.Inject;
-
-import org.slf4j.Logger;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentManager;
@@ -75,7 +74,7 @@ public class DefaultIconTransformation extends AbstractTransformation implements
    * The logger to log.
    */
   @Inject
-  private Logger logger;
+  private static final Log    LOG           = ExoLogger.getLogger(DefaultIconTransformation.class);
   
   /**
    * The computed tree used to perform the fast mapping for each syntax
@@ -113,8 +112,8 @@ public class DefaultIconTransformation extends AbstractTransformation implements
             // Put constructed XDOM to map to use later
             this.mappingDOMs.put(context.getSyntax().toIdString(), mappingTree);
           } catch (ParseException e) {
-            if (logger.isDebugEnabled()) {
-              logger.debug("Failed to parse icon symbols [" + entry.getKey() + "]. Reason = [" + e.getMessage() + "]");
+            if (LOG.isDebugEnabled()) {
+            	LOG.debug("Failed to parse icon symbols [" + entry.getKey() + "]. Reason = [" + e.getMessage() + "]");
             }
           }
         }
@@ -124,7 +123,7 @@ public class DefaultIconTransformation extends AbstractTransformation implements
         parseTree(mappingTree, filteredBlocks);
       }
     } catch (ComponentLookupException e) {
-      logger.error("Failed to transform icon symbols in syntax [" + context.getSyntax().toIdString() + "]. Reason = ["
+    	LOG.error("Failed to transform icon symbols in syntax [" + context.getSyntax().toIdString() + "]. Reason = ["
           + e.getMessage() + "]");
     }
   }
