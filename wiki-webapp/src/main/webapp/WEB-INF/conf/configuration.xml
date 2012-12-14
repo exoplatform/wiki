@@ -698,7 +698,4 @@
     </component-plugin>
   </external-component-plugins>
   
-  <!-- Configurations for wiki service -->
-  <import>jar:/conf/portal/wiki/configuration.xml</import>
-  
 </configuration>
