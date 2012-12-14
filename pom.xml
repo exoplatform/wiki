@@ -56,16 +56,6 @@
     <dependencies>
       <!-- Import versions of external dependencies to use -->
       <dependency>
-        <groupId>org.exoplatform.platform-ui</groupId>
-        <artifactId>platform-ui-web-eXoResources</artifactId>
-        <version>${org.exoplatform.platform-ui.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>exo.kernel.container</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-      </dependency>
-      <dependency>
         <groupId>org.exoplatform</groupId>
         <artifactId>maven-depmgt-pom</artifactId>
         <version>1</version>
@@ -325,6 +315,11 @@
             <groupId>jmock</groupId>
           </exclusion>
         </exclusions>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.platform-ui</groupId>
+        <artifactId>platform-ui-web-eXoResources</artifactId>
+        <version>${org.exoplatform.platform-ui.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.portal</groupId>
