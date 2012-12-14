@@ -19,7 +19,6 @@ package org.exoplatform.wiki.service.impl;
 import javax.servlet.http.HttpSessionEvent;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;

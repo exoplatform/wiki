@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.webui;
 
 import java.util.Arrays;
-
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
@@ -25,9 +24,7 @@ import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.tree.TreeNode;
 import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
-import org.exoplatform.wiki.webui.tree.EventUIComponent;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
-import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
 
 /**
  * Created by The eXo Platform SAS

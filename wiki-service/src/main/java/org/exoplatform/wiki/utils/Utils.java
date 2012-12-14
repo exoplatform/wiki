@@ -1,22 +1,14 @@
 package org.exoplatform.wiki.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Stack;
+import java.util.*;
+
 
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
+import org.apache.commons.lang.StringUtils;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -525,7 +517,9 @@ public class Utils {
     UserACL userACL = (UserACL) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
     permissionMap.put(userACL.getSuperUser(), IDType.USER);
     for (String group : userACL.getPortalCreatorGroups()) {
-      permissionMap.put(group, IDType.MEMBERSHIP);
+      if (!StringUtils.isEmpty(group)) {
+        permissionMap.put(group, IDType.MEMBERSHIP);
+      }
     }
     return permissionMap;
   }
