@@ -168,6 +168,12 @@
     <dependency>
       <groupId>org.picketlink.idm</groupId>
       <artifactId>picketlink-idm-hibernate</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-log4j12</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <!-- Diff engine - http://www.suigeneris.org/kb/display/jrcs/JRCS+Home -->
     <dependency>
