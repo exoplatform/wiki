@@ -16,10 +16,21 @@
     <xwe.module>org.xwiki.gwt.wysiwyg.WysiwygDev</xwe.module>
   </properties>
   <dependencies>
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-dev</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- GWT core dependencies -->
     <dependency>
       <groupId>com.google.gwt</groupId>
       <artifactId>gwt-servlet</artifactId>
+    </dependency>
+    <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
+    <dependency>
+      <groupId>com.google.gwt</groupId>
+      <artifactId>gwt-user</artifactId>
+      <scope>provided</scope>
     </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
@@ -34,6 +45,40 @@
     <dependency>
       <groupId>javax.portlet</groupId>
       <artifactId>portlet-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- GWT libraries -->
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcmail-jdk15</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bcprov-jdk15</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
+    <dependency>
+      <groupId>org.bouncycastle</groupId>
+      <artifactId>bctsp-jdk15</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.commons</groupId>
+      <artifactId>commons-component-common</artifactId>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
@@ -52,6 +97,11 @@
       <artifactId>exo.jcr.component.core</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.exoplatform.jcr</groupId>
+      <artifactId>exo.jcr.component.ext</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
     </dependency>
@@ -60,7 +110,11 @@
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
     <dependency>
-<<<<<<< HEAD
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-macros-iframe</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-renderer</artifactId>
     </dependency>
@@ -75,8 +129,6 @@
       </exclusions>
     </dependency>
     <dependency>
-=======
->>>>>>> f57631d... WIKI-154: Upgrade gatein-3.5.0.Final
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.common</artifactId>
     </dependency>
@@ -129,6 +181,22 @@
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portlet</artifactId>
     </dependency>
+    <!--Dependencies for all classes declared in web.xml files-->
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-wci</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.xhtmlrenderer</groupId>
       <artifactId>flying-saucer-pdf</artifactId>
@@ -162,6 +230,11 @@
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-gwt-user</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-rendering-macro-code</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.xwiki.platform</groupId>
@@ -175,61 +248,6 @@
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-api</artifactId>
-    </dependency>
-    <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcmail-jdk15</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bcprov-jdk15</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
-    <dependency>
-      <groupId>org.bouncycastle</groupId>
-      <artifactId>bctsp-jdk15</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-component-common</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.ext</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-macros-iframe</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <!--Dependencies for all classes declared in web.xml files-->
-    <dependency>
-      <groupId>org.gatein.wci</groupId>
-      <artifactId>wci-wci</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-rendering-macro-code</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
@@ -251,81 +269,6 @@
       <artifactId>xwiki-rendering-syntax-xwiki21</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <!-- GWT libraries -->
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.mockito</groupId>
-      <artifactId>mockito-all</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.slf4j</groupId>
-      <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
-
-
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.api</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.apt</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.common</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.core</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.ext</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-      <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.spi</artifactId>
-      <version>1.2.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.chromattic</groupId>
-        <artifactId>chromattic.metamodel</artifactId>
-        <version>1.2.0</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.chromattic</groupId>
-            <artifactId>chromattic.testgenerator</artifactId>
-          </exclusion>
-        </exclusions>
-    </dependency>
-    <dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-			<version>1.2</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-parsers</artifactId>
-			<version>1.2</version>
-		</dependency>
-
   </dependencies>
   <build>
     <finalName>wiki</finalName>

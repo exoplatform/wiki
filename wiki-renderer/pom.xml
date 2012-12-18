@@ -10,6 +10,12 @@
   <packaging>jar</packaging>
   <name>eXo Wiki Renderer</name>
   <dependencies>
+    <!-- to replace the xstream:xstream artifact required by picocontainer -->
+    <dependency>
+      <groupId>com.thoughtworks.xstream</groupId>
+      <artifactId>xstream</artifactId>
+      <scope>runtime</scope>
+    </dependency>
     <!-- Code macro depends on -->
     <dependency>
       <groupId>commons-lang</groupId>
@@ -158,12 +164,6 @@
     <dependency>
       <groupId>xml-apis</groupId>
       <artifactId>xml-apis</artifactId>
-    </dependency>
-    <!-- to replace the xstream:xstream artifact required by picocontainer -->
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <scope>runtime</scope>
     </dependency>
   </dependencies>
 </project>
