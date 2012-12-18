@@ -475,7 +475,7 @@
         <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-extension-webapp</artifactId>
         <version>${project.version}</version>
-        <classifier>classes</classifier>
+        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
@@ -507,7 +507,7 @@
         <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-webapp</artifactId>
         <version>${project.version}</version>
-        <classifier>classes</classifier>
+        <type>pom</type>
       </dependency>
       <!-- To be replaced by an import of WS parent POM -->
       <dependency>
