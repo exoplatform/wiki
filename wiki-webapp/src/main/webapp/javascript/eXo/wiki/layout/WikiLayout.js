@@ -171,7 +171,7 @@ WikiLayout.prototype.setHeightLayOut = function() {
   }
   hct-=20; //Padding-bottom of wikiLayout
   if (WikiLayout.leftArea && WikiLayout.resizeBar) {
-    $(WikiLayout.leftArea).height(hct + "px");
+    $(WikiLayout.leftArea).height(hct  + 2 + "px");
 	var resideBarContent = $(WikiLayout.resizeBar).find("div.resizeBarContent:first")[0];
 	var titleHeader = $(WikiLayout.leftArea).find(".titleWikiBox:first")[0];
 	var treeExplorer = $(WikiLayout.leftArea).find("div.uiTreeExplorer:first")[0];
