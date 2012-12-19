@@ -159,8 +159,6 @@ WikiLayout.prototype.setHeightLayOut = function() {
   var hct = hdef * 1;
   $(layout).css('height', hdef + 'px');
   var delta = WikiLayout.heightDelta();
-  var uiRelatedPages = $(WikiLayout.leftArea).find("div.uiRelatePages:first")[0];
-  var uiRelatedPagesHeight = uiRelatedPages?uiRelatedPages.offsetHeight:0;
   if(delta > hdef) {
     WikiLayout.setClassBody(WikiLayout.bodyClass);
   }
@@ -175,15 +173,7 @@ WikiLayout.prototype.setHeightLayOut = function() {
 	var resideBarContent = $(WikiLayout.resizeBar).find("div.resizeBarContent:first")[0];
 	var titleHeader = $(WikiLayout.leftArea).find(".titleWikiBox:first")[0];
 	var treeExplorer = $(WikiLayout.leftArea).find("div.uiTreeExplorer:first")[0];
-        $(treeExplorer).css("height", "");
-        if ( (treeExplorer.offsetHeight + 37 + uiRelatedPagesHeight + titleHeader.offsetHeight )< hct) {
-          //Padding top/bottom inside tree, margin top of RelatedPages box = 35px
-          if (uiRelatedPagesHeight>0) {
-            $(treeExplorer).css("height", hct - titleHeader.offsetHeight - uiRelatedPagesHeight - 37 + "px"); 
-          } else {
-            $(treeExplorer).css("height", hct - titleHeader.offsetHeight - uiRelatedPagesHeight - 20 + "px"); 
-          }
-        }
+	$(treeExplorer).css("height", hct - titleHeader.offsetHeight - 20 + "px"); //Padding top/bottom inside tree
 	if (resideBarContent) {
 	  $(resideBarContent).height(hct + "px");
 	}
@@ -198,32 +188,32 @@ WikiLayout.prototype.setHeightLayOut = function() {
   WikiLayout.setHeightRightContent();
 };
 
-WikiLayout.prototype.setHeightRightContent = function () {
+WikiLayout.prototype.setHeightRightContent = function() {
   var WikiLayout = eXo.wiki.WikiLayout;
-  if (!WikiLayout.wikiLayout) WikiLayout.init('');
-  var pageArea = $(WikiLayout.rightArea).find('div.UIWikiPageArea:first')[0];
-  if (pageArea) {
-    var bottomArea = $(WikiLayout.rightArea).find('div.uiWikiBottomArea:first')[0];
-    var pageContainer = $(WikiLayout.rightArea).find('div.UIWikiPageContainer:first')[0];
-    var bottomHeight = bottomArea.offsetHeight;
-    if (bottomArea) {
-      if ($(bottomArea).children().size() <= 0) { //initial padding-top 15px
-        $(bottomArea).css("display", "none");
-        bottomHeight = 0;
-      }
-      if (WikiLayout.leftArea) {
-        var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
-        if (WikiLayout.leftArea.offsetHeight > 0) {
-          $(pageContent).css("height", "");
-          var pageAreaHeight = (WikiLayout.leftArea.offsetHeight - bottomHeight);
-          var poffsetHeight = pageContent.offsetHeight ? pageContent.offsetHeight : 0;
-          if (poffsetHeight + bottomArea.offsetHeight < WikiLayout.leftArea.offsetHeight) {
-            $(pageContent).height(pageAreaHeight - 2 + "px");
-          }
-          $(WikiLayout.rightArea).height(WikiLayout.leftArea.offsetHeight + 1 + "px");
-        } else {
-          $(pageContent).css("height", "");
-        }
+  if(!WikiLayout.wikiLayout) WikiLayout.init('');
+  var pageArea =  $(WikiLayout.rightArea).find('div.UIWikiPageArea')[0];
+  if(pageArea) {
+    var bottomArea = $(WikiLayout.rightArea).find('div.uiWikiBottomArea')[0];
+    var pageContainer = $(WikiLayout.rightArea).find('div.UIWikiPageContainer')[0];
+    if(bottomArea) {
+      if (bottomArea.offsetHeight>0) {
+        $(bottomArea).css("padding-top", "15px");
+      }else {
+        $(bottomArea).css("padding-top", "");
+	  }
+	  if (WikiLayout.leftArea) {
+	    var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
+	    if (WikiLayout.leftArea.offsetHeight>0) {
+          var pageAreaHeight = (WikiLayout.leftArea.offsetHeight - bottomArea.offsetHeight);
+		  $(pageContent).css("height","");
+	      var poffsetHeight = pageContent.offsetHeight?pageContent.offsetHeight:0;
+	      if (poffsetHeight + bottomArea.offsetHeight < WikiLayout.leftArea.offsetHeight) {
+		    $(pageContent).height(pageAreaHeight - 2 + "px");
+	      }
+	      $(WikiLayout.rightArea).height(WikiLayout.leftArea.offsetHeight + 1 + "px");
+		}else {
+		  $(pageContent).css("height","");
+		}
       }
     }
   }
