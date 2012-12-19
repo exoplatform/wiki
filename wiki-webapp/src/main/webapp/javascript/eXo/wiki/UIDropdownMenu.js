@@ -15,7 +15,7 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 function UIDropdownMenu(){
 };
@@ -40,4 +40,6 @@ UIDropdownMenu.prototype.hover = function(event){
 };
 
 eXo.wiki.UIDropdownMenu = new UIDropdownMenu();
-_module.UIDropdownMenu = eXo.wiki.UIDropdownMenu;
+return eXo.wiki.UIDropdownMenu;
+
+})(base, uiForm, webuiExt, $);

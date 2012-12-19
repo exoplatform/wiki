@@ -19,7 +19,7 @@
 
 /**
  * @author Lai Trung Hieu
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 
 function UIWikiTemplateForm() {
@@ -95,4 +95,6 @@ UIWikiTemplateForm.prototype.doAdvanceSearch = function() {
 }
 
 eXo.wiki.UIWikiTemplateForm = new UIWikiTemplateForm();
-_module.UIWikiTemplateForm = eXo.wiki.UIWikiTemplateForm;
+return eXo.wiki.UIWikiTemplateForm;
+
+})(base, uiForm, webuiExt, $);

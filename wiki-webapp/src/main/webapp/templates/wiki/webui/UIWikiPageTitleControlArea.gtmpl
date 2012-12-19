@@ -3,10 +3,9 @@
 	 String inputId=  uicomponent.FIELD_TITLEINPUT;
 	 String untitledLabel = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
 	 boolean isAddMode = uicomponent.isAddMode();
-	 //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPageTitleControlArea.init('"+ uicomponent.id+"', '" + inputId + "', '" + untitledLabel +  "', " + isAddMode + ");");
 	 def requireJs = rcontext.getJavascriptManager().getRequireJS();
-   requireJs.require("SHARED/wiki-view", "wikiView");
-   requireJs.addScripts("wikiView.UIWikiPageTitleControlArea.init('"+ uicomponent.id+"', '" + inputId + "', '" + untitledLabel +  "', " + isAddMode + ");");
+   requireJs.require("SHARED/UIWikiPageTitleControlArea", "UIWikiPageTitleControlArea");
+   requireJs.addScripts("UIWikiPageTitleControlArea.init('"+ uicomponent.id+"', '" + inputId + "', '" + untitledLabel +  "', " + isAddMode + ");");
 %>
 
 <div class="$uicomponent.id" id="$uicomponent.id" >

@@ -15,7 +15,8 @@
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
+
 if (!eXo.wiki) {
   eXo.wiki = {};
 };
@@ -44,4 +45,6 @@ UIWikiSettingContainer.prototype.setHeightLayOut = function() {
 };
 
 eXo.wiki.UIWikiSettingContainer = new UIWikiSettingContainer();
-_module.UIWikiSettingContainer = eXo.wiki.UIWikiSettingContainer;
+return eXo.wiki.UIWikiSettingContainer;
+
+})(base, uiForm, webuiExt, $);

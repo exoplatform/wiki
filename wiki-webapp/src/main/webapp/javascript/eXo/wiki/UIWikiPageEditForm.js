@@ -15,7 +15,8 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
+
 if (!eXo.wiki)
   eXo.wiki = {};
 
@@ -232,4 +233,6 @@ UIWikiPageEditForm.prototype.synPublishActivityCheckboxesStatus = function(check
 };
 
 eXo.wiki.UIWikiPageEditForm = new UIWikiPageEditForm();
-_module.UIWikiPageEditForm = eXo.wiki.UIWikiPageEditForm;
+return eXo.wiki.UIWikiPageEditForm;
+
+})(base, uiForm, webuiExt, $);

@@ -25,10 +25,11 @@
 	//rcontext.getJavascriptManager().addOnResizeJavascript("eXo.wiki.UIWikiMaskWorkspace.resetPosition") ;
 	
 	def requireJs = rcontext.getJavascriptManager().getRequireJS();
-	requireJs.require("SHARED/wiki-view", "wikiView");
-	requireJs.addScripts("wikiView.UIWikiMaskWorkspace.init('" + id + "', " + isShow + ", " + width + ", " + height + ") ;");
-  requireJs.addScripts("wikiView.UIWikiPagePreview.init('" + uicomponent.id + "') ;");
-  requireJs.addScripts("wikiView.UIWikiMaskWorkspace.resetPosition() ;");
+	requireJs.require("SHARED/UIWikiMaskWorkspace", "UIWikiMaskWorkspace");
+	requireJs.require("SHARED/UIWikiPagePreview", "UIWikiPagePreview");
+	requireJs.addScripts("UIWikiMaskWorkspace.init('" + id + "', " + isShow + ", " + width + ", " + height + ") ;");
+  requireJs.addScripts("UIWikiPagePreview.init('" + uicomponent.id + "') ;");
+  requireJs.addScripts("UIWikiMaskWorkspace.resetPosition() ;");
 %>
 <div class="UIWikiMaskWorkspace" id="$maskId" style="display: none;">
 	<div class="ClearFix">

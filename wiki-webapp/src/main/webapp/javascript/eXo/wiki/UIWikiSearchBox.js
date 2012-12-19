@@ -19,8 +19,7 @@
 
 /**
  * @author Lai Trung Hieu
- */
-
+ */(function(base, uiForm, webuiExt, $) {
 
 function UIWikiSearchBox() {
   this.restURL = null;
@@ -317,4 +316,6 @@ UIWikiSearchBox.prototype.shortenWord = function(source, container) {
 };
 
 eXo.wiki.UIWikiSearchBox = new UIWikiSearchBox();
-_module.UIWikiSearchBox = eXo.wiki.UIWikiSearchBox;
+return eXo.wiki.UIWikiSearchBox;
+
+})(base, uiForm, webuiExt, $);

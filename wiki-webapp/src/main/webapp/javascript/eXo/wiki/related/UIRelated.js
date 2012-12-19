@@ -1,3 +1,5 @@
+(function(base, uiForm, webuiExt, $) {
+
 function UIRelated() {
 };
 
@@ -49,4 +51,6 @@ UIRelated.prototype.initMacros = function() {
 };
 
 eXo.wiki.UIRelated = new UIRelated();
-_module.UIRelated = eXo.wiki.UIRelated;
+return eXo.wiki.UIRelated;
+
+})(base, uiForm, webuiExt, $);

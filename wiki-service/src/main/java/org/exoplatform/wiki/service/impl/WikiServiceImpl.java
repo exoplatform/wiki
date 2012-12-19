@@ -876,9 +876,10 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
       model.save();
     } catch (Exception e) {
-      if (log.isDebugEnabled()) {
+    	e.printStackTrace();
+      //if (log.isDebugEnabled()) {
         log.debug("[WikiService] Cannot get wiki " + wikiType + ":" + owner, e);
-      }
+      //}
     }
     return wiki;
   }

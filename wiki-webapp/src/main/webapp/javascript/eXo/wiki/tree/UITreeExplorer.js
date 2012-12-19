@@ -1,3 +1,4 @@
+(function(base, uiForm, webuiExt, $) {
 
 if(eXo.wiki.UITreeExplorer ==  null) {
   eXo.wiki.UITreeExplorer = {};
@@ -216,4 +217,6 @@ UITreeExplorer.prototype.cleanParam = function(data){
 }
 
 eXo.wiki.UITreeExplorer = new UITreeExplorer();
-_module.UITreeExplorer = eXo.wiki.UITreeExplorer;
+return eXo.wiki.UITreeExplorer;
+
+})(base, uiForm, webuiExt, $);

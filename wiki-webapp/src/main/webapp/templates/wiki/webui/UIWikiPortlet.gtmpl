@@ -14,20 +14,21 @@
   JavascriptManager jsManager = rcontext.getJavascriptManager();
   def requireJs = jsManager.getRequireJS();
   
-  //jsManager.addJavascript("jQuery.noConflict();");
   requireJs.require("SHARED/jquery", "jQuery").addScripts("jQuery.noConflict();");
-  requireJs.require("SHARED/wiki-view", "wikiView");  
+  requireJs.require("SHARED/WikiLayout", "WikiLayout");  
+  requireJs.require("SHARED/UIWikiAjaxRequest", "UIWikiAjaxRequest"); 
+  requireJs.require("SHARED/UIWikiPortlet", "UIWikiPortlet");
+  requireJs.require("SHARED/UITreeExplorer", "UITreeExplorer");
   
   if(uicomponent.isKeepSessionAlive()){
-    //jsManager.loadScriptResource("wiki-edit");
-    requireJs.require("SHARED/wiki-edit", "wikiEdit");
+    //requireJs.require("SHARED/wiki-edit", "wikiEdit");
   }  
   
-  requireJs.addScripts("wikiView.WikiLayout.init('" + uicomponent.id + "', '" + userName + "') ;") ; 
-  requireJs.addScripts("wikiView.UIWikiAjaxRequest.init('" + uicomponent.WIKI_PORTLET_ACTION_PREFIX + "', '" + uicomponent.VIEW_PAGE_ACTION + "');");
-  requireJs.addScripts("wikiView.UIWikiPortlet.init('"+uicomponent.id+ "', '" + changeModeLinkId + "');");
-  requireJs.addScripts("wikiView.UIWikiPortlet.keepSessionAlive(" + uicomponent.isKeepSessionAlive() + ");");
-  requireJs.addScripts("wikiView.UITreeExplorer.loading ='" + _ctx.appRes("UITreeExplorer.label.loading") +"' ;");
+  requireJs.addScripts("WikiLayout.init('" + uicomponent.id + "', '" + userName + "') ;") ; 
+  requireJs.addScripts("UIWikiAjaxRequest.init('" + uicomponent.WIKI_PORTLET_ACTION_PREFIX + "', '" + uicomponent.VIEW_PAGE_ACTION + "');");
+  requireJs.addScripts("UIWikiPortlet.init('"+uicomponent.id+ "', '" + changeModeLinkId + "');");
+  requireJs.addScripts("UIWikiPortlet.keepSessionAlive(" + uicomponent.isKeepSessionAlive() + ");");
+  requireJs.addScripts("UITreeExplorer.loading ='" + _ctx.appRes("UITreeExplorer.label.loading") +"' ;");
   
 %>
 <script type="text/javascript"> 
