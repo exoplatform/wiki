@@ -2,9 +2,7 @@
   import java.util.List;
   
   uicomponent.checkToDissplayNotification();
-  def rcontext = _ctx.getRequestContext() ;  
-  def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
+  def rcontext = _ctx.getRequestContext() ;    
   def saveDraftSuccessMessage = _ctx.appRes("DraftPage.msg.save-draft-success");
   def discardDraftConfirmMessage = _ctx.appRes("DraftPage.msg.keep-draft-question");
   
@@ -28,6 +26,10 @@
   List notificationMessages = uicomponent.getNotificationMessages();
   String untitledLabel = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
   
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
+  requireJs.require("SHARED/UIWikiAjaxRequest", "UIWikiAjaxRequest");
+  requireJs.require("SHARED/UIForm", "UIForm");
   requireJs.addScripts("UIWikiPageEditForm.init('" + uicomponent.id + "', '" + saveDraftRestUrl + "', " + isRunAutoSave + ", '" + pageRevision + "', " + isDraftForNewPage + ", " + getAutoSaveSequenceTime + ", '" + untitledLabel + "');");
   requireJs.addScripts("UIWikiPageEditForm.setMessageResource('" + saveDraftSuccessMessage + "', '" + discardDraftConfirmMessage + "');");
   requireJs.addScripts("UIWikiPageEditForm.setCancelDraftAction('" + removeDraftRestUrl + "', '" + cancelDraftConfirmTitle + "', '" + cancelDraftConfirmMessage + "', '" + yesButtonLabel + "', '" + noButtonLabel + "');");

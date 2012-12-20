@@ -60,6 +60,12 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+     <depends>
+      <module>UIRelate</module>
+    </depends>
+     <depends>
+      <module>UITreeExplorer</module>
     </depends>   
   </module>
   
@@ -396,7 +402,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends> 
+    <depends>
+      <module>uiMaskWorkspace</module>
+    </depends>  
   </module>
   
   <module>
@@ -590,7 +599,7 @@
   <module>
     <name>xwikiexplorer</name>
     <script>
-      <path>/javascript/eXo/xwiki/xwikiexplorer/xwikiexplorer.js</path>
+      <path>/javascript/xwiki/xwikiexplorer/xwikiexplorer.js</path>
     </script>
   </module>
   

@@ -21,7 +21,9 @@
   requireJs.require("SHARED/UITreeExplorer", "UITreeExplorer");
   
   if(uicomponent.isKeepSessionAlive()){
-    //requireJs.require("SHARED/wiki-edit", "wikiEdit");
+    requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
+    requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");
+    requireJs.require("SHARED/UIWikiSavePage", "UIWikiSavePage");
   }  
   
   requireJs.addScripts("WikiLayout.init('" + uicomponent.id + "', '" + userName + "') ;") ; 
