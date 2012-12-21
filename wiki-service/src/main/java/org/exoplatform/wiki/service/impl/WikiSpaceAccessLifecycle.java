@@ -28,8 +28,6 @@ import org.exoplatform.web.application.Application;
 import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.RequestFailure;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
@@ -64,11 +62,9 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
         
         // Get page
         WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-        Page page = wikiService.getPageById(PortalConfig.GROUP_TYPE, owner, pageId);
 
         // If user is not member of space but has view permission
-        if (!wikiService.isHiddenSpace(owner) && !wikiService.isSpaceMember(spaceId, currentUser) 
-            && (page != null) && page.hasPermission(PermissionType.VIEWPAGE)) {
+        if (!wikiService.isHiddenSpace(owner) && !wikiService.isSpaceMember(spaceId, currentUser)) {
           WikiPageParams wikiPageParams = new WikiPageParams(PortalConfig.GROUP_TYPE, owner, pageId);
           String permalink = Utils.getPermanlink(wikiPageParams);
           redirect(permalink);
