@@ -4,9 +4,7 @@
   String titleMessage = _ctx.appRes("UIConfirmBox.label.Confirmation");
   String exitMessage = _ctx.appRes("UIConfirmBox.label.ConfirmExit");
   String okLabel = _ctx.appRes("UIConfirmBox.label.Ok");
-  String cancelLink = uicomponent.isNewMode() ? uicomponent.getCurrentPageURL() : "javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');";
-  if(uicomponent.isNewMode()) cancelLink = "window.location.href='"+cancelLink+"'";
-  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIConfirmBox.init();");
+  String cancelLink = "window.location.href='" + uicomponent.getCurrentPageURL() + "'";
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/wiki-edit", "wikiEdit");
   requireJs.addScripts("wikiEdit.UIConfirmBox.init();");  
