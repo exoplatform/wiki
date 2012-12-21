@@ -50,7 +50,7 @@ public class MockDataStorage implements DataStorage,Startable {
 
   private static final Log      LOG                  = ExoLogger.getLogger(MockDataStorage.class);
 
-  private HashMap<String, Page> pageCollections      = new HashMap<String, Page>();
+  static private HashMap<String, Page> pageCollections      = new HashMap<String, Page>();
 
   public static final String[]  PORTAL_CLASSIC__WIKI = new String[] { "portal::classic::wiki", PortalConfig.PORTAL_TYPE, "classic" };
 

@@ -16,6 +16,9 @@
  */
 package org.exoplatform.wiki.resolver;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.DataStorage;
 import org.exoplatform.portal.config.UserACL;
@@ -26,7 +29,9 @@ import org.exoplatform.portal.mop.navigation.NavigationService;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
+import org.exoplatform.portal.mop.page.PageState;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.wiki.mock.MockDataStorage;
 
 /**
  * Created by The eXo Platform SAS
@@ -60,7 +65,22 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
    */
 
   public PageContext getPage(PageKey pageRef) {
-    return super.getPage(pageRef);
+    //return super.getPage(pageRef);
+  	MockDataStorage mockData = new MockDataStorage();
+  	Page page = null;
+		try {
+			page = mockData.getPage(pageRef.format());
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+  	List<String> accessPermissions = null;
+  	if(page.getAccessPermissions() !=null)
+  		accessPermissions = Arrays.asList(page.getAccessPermissions());
+  	PageState pageSate = new PageState(page.getTitle(), page.getDescription(), page.isShowMaxWindow(),page.getFactoryId(), 
+  			accessPermissions, page.getEditPermission());  	
+  	PageContext pageContext = new PageContext(pageRef,pageSate);  	
+  	return pageContext;
   }
 
 }

@@ -16,7 +16,10 @@
  */
 package org.exoplatform.wiki.resolver;
 
+import org.exoplatform.portal.config.model.Page;
+import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.wiki.mock.MockDataStorage;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.mockito.Mockito;
 
@@ -30,8 +33,14 @@ public class AbstractResolverTestcase extends AbstractMOWTestcase {
 
   protected UserNode createUserNode(String pageRef, String URI) {
   	UserNode userNode = Mockito.mock(UserNode.class);
-    Mockito.when(userNode.getPageRef().toString()).thenReturn(pageRef);
+  	PageKey pageKey = PageKey.parse(pageRef);  	
+  	Page page = Mockito.mock(Page.class);
+  	Mockito.when(userNode.getPageRef()).thenReturn(pageKey);
     Mockito.when(userNode.getURI()).thenReturn(URI);
+    MockDataStorage mockData = new MockDataStorage();
+    page.setPageId(pageRef);
+    Mockito.when(page.getPageId()).thenReturn(pageRef);
+    mockData.create(page);
     return userNode;
   }
 }
