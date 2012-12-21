@@ -152,11 +152,6 @@
     </init-params>
   </component-->
   
-  
-  <component>
-    <type>org.exoplatform.wiki.service.impl.WikiSpaceAccessService</type>
-  </component>
-  
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>
