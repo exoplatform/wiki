@@ -21,10 +21,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
+import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.wiki.mow.api.DraftPage;
@@ -275,17 +277,28 @@ public class TestWikiService extends AbstractMOWTestcase {
   public void testSearchRenamedPage() throws Exception{    
     PageImpl page = (PageImpl) wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "Page", "WikiHome");
     page.getContent().setText("This is a rename page test");
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertTrue(wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "Page", "Page01", "Page01"));
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertEquals(1, wService.searchRenamedPage(PortalConfig.PORTAL_TYPE, "classic", "Page").size());
 
     PageImpl guestPage = (PageImpl) wService.createPage(PortalConfig.GROUP_TYPE, "/platform/guests", "Page", "WikiHome");
     guestPage.getContent().setText("This is a rename guest page test");
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertTrue(wService.renamePage(PortalConfig.GROUP_TYPE, "/platform/guests", "Page", "Page01", "Page01"));
     assertEquals(1, wService.searchRenamedPage(PortalConfig.GROUP_TYPE, "/platform/guests", "Page").size());
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     PageImpl demoPage = (PageImpl) wService.createPage(PortalConfig.USER_TYPE, "demo", "Page", "WikiHome");
     demoPage.getContent().setText("This is a rename demo page test");
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertTrue(wService.renamePage(PortalConfig.USER_TYPE, "demo", "Page", "Page01", "Page01"));
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertEquals(1, wService.searchRenamedPage(PortalConfig.USER_TYPE, "demo", "Page").size());
   }
   

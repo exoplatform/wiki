@@ -109,6 +109,6 @@
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-wysiwyg-client</artifactId>
       <scope>runtime</scope>
-    </dependency>
+    </dependency>    
   </dependencies>
 </project>

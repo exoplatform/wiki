@@ -213,6 +213,51 @@
     <component-plugin>
       <name>chromattic</name>
       <set-method>addLifeCycle</set-method>
+      <type>org.exoplatform.wiki.service.impl.WikiChromatticLifeCycle</type>
+      <init-params>
+        <value-param>
+          <name>domain-name</name>
+          <value>wiki</value>
+        </value-param>
+        <value-param>
+          <name>workspace-name</name>
+          <value>collaboration</value>
+        </value-param>
+        <values-param>
+          <name>entities</name>
+          <value>org.exoplatform.wiki.mow.core.api.WikiStoreImpl</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.PortalWiki</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.PortalWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWiki</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.UserWiki</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.ParagraphImpl</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.MarkupImpl</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.WikiLink</value>
+          <value>org.chromattic.ext.ntdef.NTFile</value>
+          <value>org.chromattic.ext.ntdef.NTResource</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionHistory</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionLabels</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode</value>
+          <value>org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin</value>
+          <value>org.exoplatform.wiki.mow.core.api.content.AnnotationImpl</value>
+        </values-param>
+        <!--<properties-param>
+          <name>options</name>
+          <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
+          <property name="org.chromattic.api.Option.root_node.create" value="true"/>
+        </properties-param>
+      --></init-params>
+    </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
+    <component-plugin>
+      <name>chromattic</name>
+      <set-method>addLifeCycle</set-method>
       <type>org.exoplatform.portal.pom.config.MOPChromatticLifeCycle</type>
       <init-params>
         <value-param>
