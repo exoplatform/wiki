@@ -11,6 +11,14 @@
   <name>eXo Wiki Extension configuration war</name>
   <dependencies>
     <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.tika</groupId>
+      <artifactId>tika-parsers</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
       <scope>runtime</scope>
@@ -26,14 +34,6 @@
       <artifactId>wci-wci</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.tika</groupId>
-			<artifactId>tika-parsers</artifactId>
-		</dependency>
   </dependencies>
   <build>
     <finalName>gatein-wiki-${project.version}</finalName>
