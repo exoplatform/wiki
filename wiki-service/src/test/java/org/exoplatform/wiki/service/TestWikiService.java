@@ -178,11 +178,13 @@ public class TestWikiService extends AbstractMOWTestcase {
     wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "oldParent", "WikiHome") ;
     wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "child", "oldParent") ;
     wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "newParent", "WikiHome") ;
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertNotNull(wService.getPageById(PortalConfig.PORTAL_TYPE, "classic", "oldParent")) ;
     assertNotNull(wService.getPageById(PortalConfig.PORTAL_TYPE, "classic", "child")) ;
     assertNotNull(wService.getPageById(PortalConfig.PORTAL_TYPE, "classic", "newParent")) ;
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     WikiPageParams currentLocationParams= new WikiPageParams();
     WikiPageParams newLocationParams= new WikiPageParams();
     currentLocationParams.setPageId("child");
@@ -191,8 +193,11 @@ public class TestWikiService extends AbstractMOWTestcase {
     newLocationParams.setPageId("newParent");
     newLocationParams.setType(PortalConfig.PORTAL_TYPE);
     newLocationParams.setOwner("classic");    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertTrue(wService.movePage(currentLocationParams,newLocationParams)) ;      
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     //moving page from different spaces
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
@@ -200,13 +205,16 @@ public class TestWikiService extends AbstractMOWTestcase {
     UserWiki wiki = userWikiContainer.addWiki("demo");
     wiki.getWikiHome();
     model.save() ;
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     wService.createPage(PortalConfig.USER_TYPE, "demo", "acmePage", "WikiHome") ;
     wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "classicPage", "WikiHome") ;
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     assertNotNull(wService.getPageById(PortalConfig.USER_TYPE, "demo", "acmePage")) ;
     assertNotNull(wService.getPageById(PortalConfig.PORTAL_TYPE, "classic", "classicPage")) ;
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     currentLocationParams.setPageId("acmePage");
     currentLocationParams.setType(PortalConfig.USER_TYPE);
     currentLocationParams.setOwner("demo");
@@ -214,7 +222,8 @@ public class TestWikiService extends AbstractMOWTestcase {
     newLocationParams.setType(PortalConfig.PORTAL_TYPE);
     newLocationParams.setOwner("classic");   
     assertTrue(wService.movePage(currentLocationParams,newLocationParams)) ;
-    
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     // moving a page to another read-only page
     wService.createPage(PortalConfig.PORTAL_TYPE, "demo", "toMovedPage", "WikiHome");
     PageImpl page = (PageImpl) wService.createPage(PortalConfig.USER_TYPE, "demo", "privatePage", "WikiHome");
@@ -223,7 +232,8 @@ public class TestWikiService extends AbstractMOWTestcase {
     page.setPermission(permissionMap);
     assertNotNull(wService.getPageById(PortalConfig.PORTAL_TYPE, "demo", "toMovedPage"));
     assertNotNull(wService.getPageById(PortalConfig.USER_TYPE, "demo", "privatePage"));
-
+    RequestLifeCycle.end();
+    RequestLifeCycle.begin(container);
     currentLocationParams.setPageId("toMovedPage");
     currentLocationParams.setType(PortalConfig.PORTAL_TYPE);
     currentLocationParams.setOwner("demo");
