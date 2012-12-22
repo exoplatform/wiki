@@ -52,20 +52,7 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
       return null;
     }
     OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
-    		                                                                            .getComponentInstanceOfType(OrganizationService.class);
-    
-    /*GroupHandler handler = organizationService.getGroupHandler();
-    Collection allGroups = null;
-		try {
-			allGroups = handler.findGroups(null);
-		} catch (Exception e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-    for (Object object : allGroups) {
-    	System.out.println(object.toString());
-		}*/
-    
+    		                                                                            .getComponentInstanceOfType(OrganizationService.class);        
     try {
       if (organizationService.getGroupHandler().findGroupById(wikiOwner) == null) {
         return null;

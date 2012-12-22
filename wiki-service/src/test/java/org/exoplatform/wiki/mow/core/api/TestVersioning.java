@@ -84,15 +84,4 @@ public class TestVersioning extends AbstractMOWTestcase {
     assertNotNull(frozenNode.getUpdatedDate());
     assertNotNull(frozenNode.getAuthor());
   }
-  
-  public void testOrg() throws Exception {
-    OrganizationService organizationService = (OrganizationService) container.getComponentInstance(OrganizationService.class);
-    GroupHandler handler = organizationService.getGroupHandler();
-    Collection allGroups = handler.findGroups(null);
-    for (Object object : allGroups) {
-    	System.out.println(object.toString());
-		}
-    Assert.assertTrue(allGroups.size() > 0);
- }
-
 }
