@@ -114,13 +114,11 @@
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-parsers</artifactId>
       <scope>test</scope>
-      <version>1.2</version>
     </dependency>
     <dependency>
       <groupId>org.apache.tika</groupId>
       <artifactId>tika-core</artifactId>
       <scope>test</scope>
-      <version>1.2</version>
     </dependency>
   </dependencies>
 </project>
