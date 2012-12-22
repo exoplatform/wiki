@@ -213,18 +213,17 @@ UIWikiSearchBox.prototype.renderMenu = function(data) {
    
   $(searchItemNode).append(linkNode);
   $(searchItemNode).insertBefore(textNode);
-  me.shortenWord(linkNode, me.input.value);
+  me.shortenWord(linkNode[0], me.input);
 
   var resultLength = data.jsonList.length;
   for ( var i = 0; i < resultLength; i++) {
     var itemNode = me.buildChild(data.jsonList[i]);
     $(itemNode).insertBefore(searchItemNode);
     // Check if title is outside of the container
-    var linkContainer = $(itemNode).find(':first')[0];
-    var link = $(linkContainer).find(':first')[0];
+    var link = $(itemNode).find(':first')[0];
     var keyword = me.input.value.trim();    
     var origin =  $(link).html();    
-    var shorten =  me.shortenWord(link, linkContainer);
+    var shorten =  me.shortenWord(link, me.input);
     if (origin!= shorten && keyword.length >= shorten.length-3)
       $(link).html(me.doHighLight(shorten, shorten.substring(0,shorten.length-3)));
     else
