@@ -25,7 +25,6 @@ import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.upload.UploadResource;
-import org.exoplatform.upload.UploadService;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -83,9 +82,8 @@ public class UIWikiUploadAttachment extends UIWikiForm {
     UIWikiPortlet wikiPortlet = this.getAncestorOfType(UIWikiPortlet.class);
     if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
       return Utils.getCurrentNewDraftWikiPage();
-    } else {
-      return Utils.getCurrentWikiPage();
     }
+    return Utils.getCurrentWikiPage();
   }
 
   static public class UploadAttachmentActionListener extends UIWikiPortletActionListener<UIWikiUploadAttachment> {
@@ -180,7 +178,9 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       wikiAttachmentArea.removeChildById(FIELD_UPLOAD);
       UIWikiFormUploadInput uiInput = new UIWikiFormUploadInput(FIELD_UPLOAD, FIELD_UPLOAD, SIZE_LIMIT);
       wikiAttachmentArea.addChild(uiInput);
-      event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea); 
+      UIWikiPageInfoArea inforArea= wikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
+      event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea);
+      event.getRequestContext().addUIComponentToUpdateByAjax(inforArea);
     }
 
     @Override
