@@ -1,16 +1,15 @@
 <%
-  import org.exoplatform.wiki.webui.UIWikiPortlet; 
+  import org.exoplatform.wiki.webui.UIWikiPortlet;
+  
+  def rcontext = _ctx.getRequestContext(); 
+  String addLink = uiform.event(uiform.ACTION_ADD);
+  String anchor = "#" + uiform.ACTION_ADD;
+  String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uiform.ACTION_ADD;
+  String inputId = uiform.TEMPLATE_SEARCHBOX;
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
 %>
-<%
- def rcontext = _ctx.getRequestContext(); 
- String addLink = uiform.event(uiform.ACTION_ADD);
- String anchor = "#" + uiform.ACTION_ADD;
- String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uiform.ACTION_ADD;
- String inputId = uiform.TEMPLATE_SEARCHBOX;
- def requireJs = rcontext.getJavascriptManager().getRequireJS();
- requireJs.require("SHARED/wiki-view", "wikiView");
- requireJs.addScripts("wikiView.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
- %>
 
 <div class="uiTemplateSettingForm uiWikiTemplateForm">
 	<%uiform.begin();%>
@@ -20,12 +19,12 @@
 
     <div class="uiSearchInput" >	
       <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
-      <a style="display:none"  class="TemplateSearchButton" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"></a> 
+      <button type="button" class="btn TemplateSearchButton" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></button>
     </div>
   </div>
 
   <div class="TemplateGrid">
-  	<% uiform.renderChild(uiform.	TEMPLATE_GRID);	%>
+  	<% uiform.renderChild(uiform.TEMPLATE_GRID);	%>
   </div>
   <%uiform.end();%>
 </div>

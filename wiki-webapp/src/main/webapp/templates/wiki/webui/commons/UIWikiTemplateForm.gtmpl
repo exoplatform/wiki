@@ -1,14 +1,13 @@
 <%
- def rcontext = _ctx.getRequestContext(); 
- String inputId = uiform.TEMPLATE_SEARCHBOX;
- //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
- def requireJs = rcontext.getJavascriptManager().getRequireJS();
- requireJs.require("SHARED/wiki-view", "wikiView");
- requireJs.addScripts("wikiView.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
- 
- def selectLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_ADD);
- def cancelLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_CANCEL);
- %>
+  def rcontext = _ctx.getRequestContext(); 
+  String inputId = uiform.TEMPLATE_SEARCHBOX;
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/wiki-view", "wikiView");
+  requireJs.addScripts("wikiView.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
+
+  def selectLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_ADD);
+  def cancelLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_CANCEL);
+%>
 
 <div class="uiWikiTemplateForm">
   <%uiform.begin();%>
@@ -16,7 +15,7 @@
 	    <div class="templateControl">
 	      <div class="uiSearchInput" >	
 	        <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
-	        <a style="display:none" class="TemplateSearchButton" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"></a>
+	        <button type="button" class="btn TemplateSearchButton" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></button>
 	      </div>
 	    </div>
 		
