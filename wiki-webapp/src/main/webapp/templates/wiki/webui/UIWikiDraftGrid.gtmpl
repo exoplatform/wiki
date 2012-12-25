@@ -41,19 +41,22 @@
           String sortTitle = _ctx.appRes(uiParent.getName() + ".action.title." + uiParent.ACTION_SORT);
           
           String clazz = "uiIconArrowUp";
+          String thClazz = "";
           if (field.equals(sortField)) {
-            clazz = "uiIconArrowDownSelect";
+            clazz = "uiIconArrowDown";
             if ("DESC".equals(orderParam)) {
-              clazz = "uiIconArrowUpSelect";
+              clazz = "uiIconArrowUp";
             }
+            thClazz = "selected";
           } else {
             clazz = "uiIconArrowDown";
             if ("DESC".equals(orderParam)) {
               clazz = "uiIconArrowUp";
             }
+            thClazz = "";
           }
         %>
-     	  <th>
+     	  <th class="thClazz">
 			<i onclick="$sortActionLink" class="$clazz pull-right"></i>
      	    <%=_ctx.appRes(name + ".header." + field)%>     	    
      	  </th>
