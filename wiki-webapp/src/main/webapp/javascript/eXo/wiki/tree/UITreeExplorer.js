@@ -60,11 +60,11 @@ UITreeExplorer.prototype.onNodeClick = function(node, absPath) {
   var selectableObj = $(node).find('a');
   if (selectableObj.length > 0) {
     var component = $(node).closest(".uiTreeExplorer");
-    var selectedNode = $(component).find('div.Selected')[0];
+    var selectedNode = $(component).find('div.selected')[0];
     if (selectedNode)
-      $(selectedNode).removeClass("Selected");
-    if (!$(node).hasClass("Selected"))
-      $(node).addClass("Selected");
+      $(selectedNode).removeClass("selected");
+    if (!$(node).hasClass("selected"))
+      $(node).addClass("selected");
     me.selectNode(node, absPath);
   }
 };
