@@ -30,7 +30,7 @@
 <div id="$uicomponent.id" class="uiWikiDraftGrid">
    <table class="uiGrid  table table-hover table-striped" >
       <thead>
-      <tr>
+      <tr class="uiActionBar">
         <% for (field in beanFields) {
           String orderParam = "ASC";
           if (field.equals(sortField) && !isASC) {
@@ -42,9 +42,9 @@
           
           String clazz = "uiIconArrowUp";
           if (field.equals(sortField)) {
-            clazz = "uiIconArrowDown";
+            clazz = "uiIconArrowDownSelect";
             if ("DESC".equals(orderParam)) {
-              clazz = "uiIconArrowUp";
+              clazz = "uiIconArrowUpSelect";
             }
           } else {
             clazz = "uiIconArrowDown";
