@@ -30,7 +30,7 @@
 <div id="$uicomponent.id" class="uiWikiDraftGrid">
    <table class="uiGrid  table table-hover table-striped" >
       <thead>
-      <tr class="uiActionBar">
+      <tr>
         <% for (field in beanFields) {
           String orderParam = "ASC";
           if (field.equals(sortField) && !isASC) {
@@ -41,22 +41,19 @@
           String sortTitle = _ctx.appRes(uiParent.getName() + ".action.title." + uiParent.ACTION_SORT);
           
           String clazz = "uiIconArrowUp";
-          String thClazz = "";
           if (field.equals(sortField)) {
-            clazz = "uiIconArrowDown";
+            clazz = "uiIconArrowDown uiIconBlue ";
             if ("DESC".equals(orderParam)) {
-              clazz = "uiIconArrowUp";
+              clazz = "uiIconArrowUp uiIconBlue ";
             }
-            thClazz = "selected";
           } else {
             clazz = "uiIconArrowDown";
             if ("DESC".equals(orderParam)) {
               clazz = "uiIconArrowUp";
             }
-            thClazz = "";
           }
         %>
-     	  <th class="$thClazz">
+     	  <th>
 			<i onclick="$sortActionLink" class="$clazz pull-right"></i>
      	    <%=_ctx.appRes(name + ".header." + field)%>     	    
      	  </th>
