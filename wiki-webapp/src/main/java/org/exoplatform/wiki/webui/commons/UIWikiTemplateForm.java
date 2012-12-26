@@ -82,9 +82,7 @@ public class UIWikiTemplateForm extends UIForm{
 
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     res = context.getApplicationResourceBundle();
-    addChild(new UIFormStringInput(TEMPLATE_SEARCHBOX,
-                                   null,
-                                   res.getString("UITemplateSettingForm.label.Search")));
+    addChild(new UIFormStringInput(TEMPLATE_SEARCHBOX, null, null));
     grid = addChild(UIWikiGrid.class, null, TEMPLATE_GRID);
     grid.getUIPageIterator().setId(TEMPLATE_ITER);
     grid.getUIPageIterator().setParent(this);
