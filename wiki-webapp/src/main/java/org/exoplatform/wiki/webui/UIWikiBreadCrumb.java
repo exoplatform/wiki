@@ -26,6 +26,9 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.webui.commons.EventUIComponent;
+import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
+import org.exoplatform.webui.commons.UISpacesSwitcher;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -38,8 +41,6 @@ import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
-import org.exoplatform.wiki.webui.tree.EventUIComponent;
-import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
 
 /**
  * Created by The eXo Platform SAS
@@ -70,7 +71,7 @@ public class UIWikiBreadCrumb extends UIContainer {
   private static final Log     log               = ExoLogger.getLogger(UIWikiBreadCrumb.class);
   
   public UIWikiBreadCrumb() throws Exception {
-    UIWikiSpaceSwitcher uiWikiSpaceSwitcher = addChild(UIWikiSpaceSwitcher.class, null, SPACE_SWITCHER);
+    UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     EventUIComponent eventComponent = new EventUIComponent(BREAD_CRUMB_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent);
   }
@@ -181,10 +182,9 @@ public class UIWikiBreadCrumb extends UIContainer {
   
   public static class SwitchSpaceActionListener extends EventListener<UIWikiBreadCrumb> {
     public void execute(Event<UIWikiBreadCrumb> event) throws Exception {
-      String wikiId = event.getRequestContext().getRequestParameter(UIWikiSpaceSwitcher.SPACE_ID_PARAMETER);
-      UIWikiBreadCrumb uiWikiBreadCrumb = event.getSource();
-      UIWikiSpaceSwitcher uiWikiSpaceSwitcher = uiWikiBreadCrumb.getChildById(SPACE_SWITCHER);
-      Wiki wiki = uiWikiSpaceSwitcher.getWikiById(wikiId);
+      String wikiId = event.getRequestContext().getRequestParameter(UISpacesSwitcher.SPACE_ID_PARAMETER);
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+      Wiki wiki = wikiService.getWikiById(wikiId);
       if (wiki != null) {
         PageImpl wikiHome = (PageImpl) wiki.getWikiHome();
         org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, Utils.getWikiPageParams(wikiHome), WikiMode.VIEW, null);

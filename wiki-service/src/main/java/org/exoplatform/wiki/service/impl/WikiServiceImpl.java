@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +32,7 @@ import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
@@ -46,6 +48,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Model;
 import org.exoplatform.wiki.mow.api.Page;
@@ -1570,6 +1573,53 @@ public class WikiServiceImpl implements WikiService, Startable {
     } catch (Exception e) {
       log.warn("Can not remove help pages ...");
     }
+  }
+  
+  public Wiki getWikiById(String wikiId) {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    Wiki wiki = null;
+    if (wikiId.startsWith("/spaces/")) {
+      wiki = wikiService.getWiki(PortalConfig.GROUP_TYPE, wikiId);
+    } else if (wikiId.startsWith("/user/")) {
+      wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
+      wiki = wikiService.getWiki(PortalConfig.USER_TYPE, wikiId);
+    } else if (wikiId.startsWith("/" + getPortalName())) {
+      wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
+      wiki = wikiService.getWiki(PortalConfig.PORTAL_TYPE, wikiId);
+    }
+    return wiki;
+  }
+  
+  private String getPortalName() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
+    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
+    return containerInfo.getContainerName();
+  }
+  
+  public String getWikiNameById(String wikiId) throws Exception {
+    Wiki wiki = getWikiById(wikiId);
+    if (wiki instanceof PortalWiki) {
+      String displayName = wiki.getName();
+      int slashIndex = displayName.lastIndexOf('/');
+      if (slashIndex > -1) {
+        displayName = displayName.substring(slashIndex + 1); 
+      }
+      return displayName;
+    }
+    
+    if (wiki instanceof UserWiki) {
+      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      if (wiki.getOwner().equals(currentUser)) {
+        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+        ResourceBundle res = context.getApplicationResourceBundle();
+        String mySpaceLabel = res.getString("UIWikiSpaceSwitcher.title.my-space");
+        return mySpaceLabel;
+      }
+      return wiki.getOwner();
+    }
+    
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    return wikiService.getSpaceNameByGroupId(wiki.getOwner());
   }
   
   @Override

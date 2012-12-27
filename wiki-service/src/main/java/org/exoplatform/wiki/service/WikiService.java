@@ -305,4 +305,20 @@ public interface WikiService {
    */
   public boolean hasAdminPagePermission(String wikiType, String owner) throws Exception;
 
+  /**
+   * Get wiki by Id
+   * 
+   * @param wikiId The wiki id
+   * @return The wiki
+   */
+  public Wiki getWikiById(String wikiId);
+  
+  /**
+   * Get wiki name by wiki id
+   * 
+   * @param wikiId The wiki id
+   * @return The wiki name
+   * @throws Exception
+   */
+  public String getWikiNameById(String wikiId) throws Exception;
 }

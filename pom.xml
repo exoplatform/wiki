@@ -43,7 +43,7 @@
     <org.exoplatform.ws.version>2.2.10-GA-SNAPSHOT</org.exoplatform.ws.version>
     <org.exoplatform.jcr.version>1.14.10-GA-SNAPSHOT</org.exoplatform.jcr.version>
     <org.gatein.portal.version>3.4.0.Final</org.gatein.portal.version>
-    <org.exoplatform.commons.version>4.0.0.Alpha1-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>4.0.0.Alpha1-space-switcher-SNAPSHOT</org.exoplatform.commons.version>
     <org.gatein.wci.version>2.2.0-Beta02</org.gatein.wci.version>
     <!-- ************** -->
     <!-- Build settings -->

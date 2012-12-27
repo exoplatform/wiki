@@ -23,6 +23,9 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.webui.commons.EventUIComponent;
+import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
+import org.exoplatform.webui.commons.UISpacesSwitcher;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
@@ -51,12 +54,8 @@ import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.UIWikiRichTextArea;
-import org.exoplatform.wiki.webui.UIWikiSpaceSwitcher;
 import org.exoplatform.wiki.webui.WikiMode;
-import org.exoplatform.wiki.webui.tree.EventUIComponent;
-import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
-
 import org.xwiki.rendering.syntax.Syntax;
 
 /**
@@ -112,7 +111,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(Utils.getCurrentWikiPagePath()), eventComponent, false);
     
     // Init space switcher
-    UIWikiSpaceSwitcher uiWikiSpaceSwitcher = addChild(UIWikiSpaceSwitcher.class, null, SPACE_SWITCHER);
+    UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     EventUIComponent eventComponent1 = new EventUIComponent(MOVE_PAGE_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }
@@ -267,21 +266,21 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
   
   public static class SwitchSpaceActionListener extends EventListener<UIWikiMovePageForm> {
     public void execute(Event<UIWikiMovePageForm> event) throws Exception {
-      String wikiId = event.getRequestContext().getRequestParameter(UIWikiSpaceSwitcher.SPACE_ID_PARAMETER);
+      String wikiId = event.getRequestContext().getRequestParameter(UISpacesSwitcher.SPACE_ID_PARAMETER);
       UIWikiMovePageForm uiWikiMovePageForm = event.getSource();
-      UIWikiSpaceSwitcher uiWikiSpaceSwitcher = uiWikiMovePageForm.getChildById(SPACE_SWITCHER);
+      UISpacesSwitcher uiWikiSpaceSwitcher = uiWikiMovePageForm.getChildById(SPACE_SWITCHER);
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       
-      Wiki wiki = uiWikiSpaceSwitcher.getWikiById(wikiId);
+      Wiki wiki = wikiService.getWikiById(wikiId);
       Page wikiHome = wiki.getWikiHome();
       WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName());
-      uiWikiSpaceSwitcher.setCurrentSpace(wiki);
+      uiWikiSpaceSwitcher.setCurrentSpaceName(wikiService.getWikiNameById(wikiId));
       
       // Change the init page of tree
       UITreeExplorer uiTree = uiWikiMovePageForm.getChildById(UITREE);
       uiTree.setInitParam(uiWikiMovePageForm.getInitParam(TreeUtils.getPathFromPageParams(params)));
       
       // Change the breadcrum
-      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       UIWikiLocationContainer uiWikiLocationContainer = uiWikiMovePageForm.getChild(UIWikiLocationContainer.class);
       UIWikiBreadCrumb newlocation = uiWikiLocationContainer.getChildById(UIWikiLocationContainer.NEW_LOCATION);
       newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));

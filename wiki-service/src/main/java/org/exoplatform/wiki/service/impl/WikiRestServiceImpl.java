@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -53,14 +54,20 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.MimeTypeResolver;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.xml.PortalContainerInfo;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -804,7 +811,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   }
   
   @GET
-  @Path("/spaces/mySpaces/")
+  @Path("/spaces/accessibleSpaces/")
   @Produces(MediaType.APPLICATION_JSON)
   public Response searchAccessibleSpaces(@QueryParam("keyword") String keyword) {
     try {
@@ -816,6 +823,44 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       }
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
+  }
+  
+  @GET
+  @Path("/spaces/portalSpaces/")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getPortalSpace() {
+    List<SpaceBean> spaceBeans = new ArrayList<SpaceBean>();
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    String portalOwner = portalRequestContext.getPortalOwner();
+    String portalName = getPortalName();
+    StringBuilder spaceId = new StringBuilder();
+    spaceId.append("/");
+    spaceId.append(portalName);
+    spaceId.append("/");
+    spaceId.append(portalOwner);
+    spaceBeans.add(new SpaceBean(spaceId.toString(), portalOwner, PortalConfig.PORTAL_TYPE));
+    return Response.ok(new BeanToJsons(spaceBeans), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+  }
+  
+  @GET
+  @Path("/spaces/mySpaces/")
+  @Produces(MediaType.APPLICATION_JSON)
+  public Response getMySpace() {
+    List<SpaceBean> spaceBeans = new ArrayList<SpaceBean>();
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    if (!StringUtils.isEmpty(currentUser) && !currentUser.equals(IdentityConstants.ANONIM)) {
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      ResourceBundle res = context.getApplicationResourceBundle();
+      String mySpaceLabel = res.getString("UIWikiSpaceSwitcher.title.my-space");
+      spaceBeans.add(new SpaceBean("/user/" + currentUser, mySpaceLabel, PortalConfig.USER_TYPE));
+    }
+    return Response.ok(new BeanToJsons(spaceBeans), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+  }
+  
+  private String getPortalName() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
+    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
+    return containerInfo.getContainerName();
   }
 
   /**

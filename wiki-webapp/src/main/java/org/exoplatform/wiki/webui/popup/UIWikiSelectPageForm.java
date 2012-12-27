@@ -3,8 +3,12 @@ package org.exoplatform.wiki.webui.popup;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.webui.commons.EventUIComponent;
+import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
+import org.exoplatform.webui.commons.UISpacesSwitcher;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -26,9 +30,6 @@ import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.webui.UIWikiEmptyAjaxBlock;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
-import org.exoplatform.wiki.webui.UIWikiSpaceSwitcher;
-import org.exoplatform.wiki.webui.tree.EventUIComponent;
-import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
 
 @ComponentConfig(
@@ -67,7 +68,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(Utils.getCurrentWikiPagePath()), eventComponent, false);
     
     // Init space switcher
-    UIWikiSpaceSwitcher uiWikiSpaceSwitcher = addChild(UIWikiSpaceSwitcher.class, null, SPACE_SWITCHER);
+    UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     EventUIComponent eventComponent1 = new EventUIComponent(FORM_ID, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }
@@ -158,14 +159,15 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
   
   public static class SwitchSpaceActionListener extends EventListener<UIWikiSelectPageForm> {
     public void execute(Event<UIWikiSelectPageForm> event) throws Exception {
-      String wikiId = event.getRequestContext().getRequestParameter(UIWikiSpaceSwitcher.SPACE_ID_PARAMETER);
+      String wikiId = event.getRequestContext().getRequestParameter(UISpacesSwitcher.SPACE_ID_PARAMETER);
       UIWikiSelectPageForm uiWikiSelectPageForm = event.getSource();
-      UIWikiSpaceSwitcher uiWikiSpaceSwitcher = uiWikiSelectPageForm.getChildById(SPACE_SWITCHER);
+      UISpacesSwitcher uiWikiSpaceSwitcher = uiWikiSelectPageForm.getChildById(SPACE_SWITCHER);
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       
-      Wiki wiki = uiWikiSpaceSwitcher.getWikiById(wikiId);
+      Wiki wiki = wikiService.getWikiById(wikiId);
       Page wikiHome = wiki.getWikiHome();
       WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName());
-      uiWikiSpaceSwitcher.setCurrentSpace(wiki);
+      uiWikiSpaceSwitcher.setCurrentSpaceName(wikiService.getWikiNameById(wikiId));
       
       // Change the init page of tree
       UITreeExplorer uiTree = uiWikiSelectPageForm.getChildById(UI_TREE_ID);

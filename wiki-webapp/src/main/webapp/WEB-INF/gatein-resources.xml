@@ -129,10 +129,6 @@
         <path>/javascript/eXo/wiki/UIWikiRichTextArea.js</path>
     </script>
     <script>
-        <name>eXo.wiki.UIWikiSpaceSwitcher</name>
-        <path>/javascript/eXo/wiki/UIWikiSpaceSwitcher.js</path>
-    </script>
-    <script>
         <name>eXo.wiki.UIWikiPermalinkForm</name>
         <path>/javascript/eXo/wiki/UIWikiPermalinkForm.js</path>
     </script>

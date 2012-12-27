@@ -1965,59 +1965,6 @@ table.UIFormGrid div.Id {
   padding-right: 12px;
 }
   
-.UIWikiPortlet .SpaceChooserPopup {
-  background: #fff;
-  border: 1px solid #ececec;
-  left: 0px;
-  min-width: 250px;
-  position: absolute;
-  top: 26px;
-}
-
-.UIWikiPortlet .SpaceChooserPopup .title {
-  line-height: 30px; 
-  border-bottom: 1px solid #e1e1e1; 
-  background: #ececec; 
-  padding: 0px 10px; 
-  font-weight: bold; 
-  color: #444;
-}
-
-.UIWikiPortlet .SpaceChooserPopup .SpaceOption {
-  line-height: 20px; 
-  border-bottom: 1px solid #e1e1e1;  
-  padding: 5px 10px;
-  color: #696969;
-  cursor: pointer;
-}
-
-.UIWikiPortlet .SpaceChooserPopup .SpaceOption:hover {
-  background: #F7F7F7; 
-  color: #000000;
-}
-
-.UIWikiPortlet .SpaceChooserPopup .SpaceSearch {
-  line-height: 20px; 
-  border-bottom: 1px solid #e1e1e1;  
-  padding: 5px 10px; 
-}
-
-.UIWikiPortlet .SpaceChooserPopup .SpaceSearch input {
-  width: 94%; 
-  height: 18px; 
-  padding: 0px 5px; 
-  border: 1px solid #f0f0f0;
-  border-radius: 3px;
-}
-
-.UIWikiPortlet .SpaceChooserPopup .Focus {
-  color: #696969;
-}
-
-.UIWikiPortlet .SpaceChooserPopup .LostFocus {
-  color: #dedede;
-}
-
 .UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiMovePageForm, .UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiSelectPageForm {
   position: relative;
   float: left;
@@ -2027,19 +1974,6 @@ table.UIFormGrid div.Id {
   padding: 0px 0px 0px 5px;
   border: 1px solid #e1e1e1;
   cursor:pointer;
-}
-
-.UIWikiPortlet .SpaceSwitcher {
-  line-height: 29px;
-  padding: 0 15px;
-}
-
-.UIWikiPortlet .SpaceChooserPopup .NoSpace {
-  padding: 5px;
-  margin-left:auto;
-  margin-right:auto;
-  text-align:center;
-  color: #000000;
 }
 
 .UIWikiPortlet .UIWikiSelectPageForm .SpaceSwitcher {
