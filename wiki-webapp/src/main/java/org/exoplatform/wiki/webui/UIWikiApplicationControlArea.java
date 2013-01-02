@@ -16,6 +16,8 @@
  */
 package org.exoplatform.wiki.webui;
 
+import java.util.ResourceBundle;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.commons.UISpacesSwitcher;
@@ -23,6 +25,9 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
+import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.control.UIWikiToolBar;
@@ -57,10 +62,37 @@ public class UIWikiApplicationControlArea extends UIContainer {
                                                           params.getPageId()));
     
     UISpacesSwitcher uiWikiSpaceSwitcher = wikiBreadCrumb.getChildById(UIWikiBreadCrumb.SPACE_SWITCHER);
-    uiWikiSpaceSwitcher.setCurrentSpaceName(wikiService.getWikiNameById(Utils.getCurrentWiki().getName()));
+    uiWikiSpaceSwitcher.setCurrentSpaceName(getCurrentSpaceName());
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);
   }
+  
+  private String getCurrentSpaceName() throws Exception {
+    Wiki currentSpace = Utils.getCurrentWiki();
+    if (currentSpace instanceof PortalWiki) {
+      String displayName = currentSpace.getName();
+      int slashIndex = displayName.lastIndexOf('/');
+      if (slashIndex > -1) {
+        displayName = displayName.substring(slashIndex + 1);
+      }
+      return displayName;
+    }
+
+    if (currentSpace instanceof UserWiki) {
+      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      if (currentSpace.getOwner().equals(currentUser)) {
+        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+        ResourceBundle res = context.getApplicationResourceBundle();
+        String mySpaceLabel = res.getString("UIWikiSpaceSwitcher.title.my-space");
+        return mySpaceLabel;
+      }
+      return currentSpace.getOwner();
+    }
+
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    return wikiService.getSpaceNameByGroupId(currentSpace.getOwner());
+  }
+
   
   private  String getCurrentActionLabel() {
     UIWikiPortlet wikiPortlet= this.getAncestorOfType(UIWikiPortlet.class);
