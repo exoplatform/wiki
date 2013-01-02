@@ -112,6 +112,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     
     // Init space switcher
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
+    uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.getCurrentSpaceName());
     EventUIComponent eventComponent1 = new EventUIComponent(MOVE_PAGE_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }

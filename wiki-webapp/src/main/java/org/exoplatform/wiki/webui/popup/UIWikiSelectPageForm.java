@@ -69,6 +69,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     
     // Init space switcher
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
+    uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.getCurrentSpaceName());
     EventUIComponent eventComponent1 = new EventUIComponent(FORM_ID, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }

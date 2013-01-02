@@ -62,37 +62,10 @@ public class UIWikiApplicationControlArea extends UIContainer {
                                                           params.getPageId()));
     
     UISpacesSwitcher uiWikiSpaceSwitcher = wikiBreadCrumb.getChildById(UIWikiBreadCrumb.SPACE_SWITCHER);
-    uiWikiSpaceSwitcher.setCurrentSpaceName(getCurrentSpaceName());
+    uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.getCurrentSpaceName());
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);
   }
-  
-  private String getCurrentSpaceName() throws Exception {
-    Wiki currentSpace = Utils.getCurrentWiki();
-    if (currentSpace instanceof PortalWiki) {
-      String displayName = currentSpace.getName();
-      int slashIndex = displayName.lastIndexOf('/');
-      if (slashIndex > -1) {
-        displayName = displayName.substring(slashIndex + 1);
-      }
-      return displayName;
-    }
-
-    if (currentSpace instanceof UserWiki) {
-      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-      if (currentSpace.getOwner().equals(currentUser)) {
-        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-        ResourceBundle res = context.getApplicationResourceBundle();
-        String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
-        return mySpaceLabel;
-      }
-      return currentSpace.getOwner();
-    }
-
-    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    return wikiService.getSpaceNameByGroupId(currentSpace.getOwner());
-  }
-
   
   private  String getCurrentActionLabel() {
     UIWikiPortlet wikiPortlet= this.getAncestorOfType(UIWikiPortlet.class);

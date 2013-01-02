@@ -62,7 +62,9 @@ import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
+import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
@@ -94,6 +96,32 @@ public class Utils {
   public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;
   
   public static final String SLASH = "/";
+  
+  public static String getCurrentSpaceName() throws Exception {
+    Wiki currentSpace = Utils.getCurrentWiki();
+    if (currentSpace instanceof PortalWiki) {
+      String displayName = currentSpace.getName();
+      int slashIndex = displayName.lastIndexOf('/');
+      if (slashIndex > -1) {
+        displayName = displayName.substring(slashIndex + 1);
+      }
+      return displayName;
+    }
+
+    if (currentSpace instanceof UserWiki) {
+      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      if (currentSpace.getOwner().equals(currentUser)) {
+        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+        ResourceBundle res = context.getApplicationResourceBundle();
+        String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
+        return mySpaceLabel;
+      }
+      return currentSpace.getOwner();
+    }
+
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    return wikiService.getSpaceNameByGroupId(currentSpace.getOwner());
+  }
   
   public static String getCurrentRequestURL() throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();

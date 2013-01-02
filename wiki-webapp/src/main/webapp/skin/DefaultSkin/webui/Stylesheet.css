@@ -1946,7 +1946,7 @@ table.UIFormGrid div.Id {
   cursor: pointer;
 }
 
-.UIWikiPortlet .UIWikiSpaceSwitcher_BreadCrumb {
+.UIWikiPortlet .UISpaceSwitcher_BreadCrumb {
   position: relative;
   z-index: 1;
   float:left;
@@ -1955,17 +1955,17 @@ table.UIFormGrid div.Id {
   color:#707070;
 }
   
-.UIWikiPortlet .UIWikiSpaceSwitcher_BreadCrumb:hover {
+.UIWikiPortlet .UISpaceSwitcher_BreadCrumb:hover {
   color:#000000;
   cursor: pointer;
 }
 
-.UIWikiPortlet .UIWikiSpaceSwitcher_BreadCrumb .SpaceChooser {
+.UIWikiPortlet .UISpaceSwitcher_BreadCrumb .SpaceChooser {
   background: url('background/BrowseDownIcon.png') no-repeat right center;
   padding-right: 12px;
 }
   
-.UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiMovePageForm, .UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiSelectPageForm {
+.UIWikiPortlet .UISpaceSwitcher_UIWikiMovePageForm, .UIWikiPortlet .UISpaceSwitcher_UIWikiSelectPageForm {
   position: relative;
   float: left;
   margin-left: 10px;
@@ -1976,16 +1976,16 @@ table.UIFormGrid div.Id {
   cursor:pointer;
 }
 
-.UIWikiPortlet .UIWikiSelectPageForm .SpaceSwitcher {
+.UIWikiPortlet .UISelectPageForm .SpaceSwitcher {
   padding: 15px 15px 0px 15px;
 }
 
-.UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiMovePageForm .SpaceChooserPopup, .UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiSelectPageForm .SpaceChooserPopup {
+.UIWikiPortlet .UISpaceSwitcher_UIWikiMovePageForm .SpaceChooserPopup, .UIWikiPortlet .UISpaceSwitcher_UIWikiSelectPageForm .SpaceChooserPopup {
   left: -1px;
   top: 31px;
 }
 
-.UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiMovePageForm .SpaceChooser, .UIWikiPortlet .UIWikiSpaceSwitcher_UIWikiSelectPageForm .SpaceChooser {
+.UIWikiPortlet .UISpaceSwitcher_UIWikiMovePageForm .SpaceChooser, .UIWikiPortlet .UISpaceSwitcher_UIWikiSelectPageForm .SpaceChooser {
   background: url("/wiki/skin/DefaultSkin/webui/UIWikiBreadCrumb/../background/BrowseDownIcon.png") no-repeat scroll 97%  center;
   padding-right: 22px;
 }
