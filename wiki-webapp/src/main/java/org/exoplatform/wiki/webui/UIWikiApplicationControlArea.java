@@ -83,7 +83,7 @@ public class UIWikiApplicationControlArea extends UIContainer {
       if (currentSpace.getOwner().equals(currentUser)) {
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         ResourceBundle res = context.getApplicationResourceBundle();
-        String mySpaceLabel = res.getString("UIWikiSpaceSwitcher.title.my-space");
+        String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
         return mySpaceLabel;
       }
       return currentSpace.getOwner();

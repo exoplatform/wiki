@@ -88,7 +88,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
   
   private static final String SWITCH_SPACE_ACTION = "SwitchSpace";
   
-  private static final String SPACE_SWITCHER = "UIWikiSpaceSwitcher_UIWikiMovePageForm";
+  private static final String SPACE_SWITCHER = "UISpaceSwitcher_UIWikiMovePageForm";
   
   private static final String RENAME_ACTION = "Rename";
   

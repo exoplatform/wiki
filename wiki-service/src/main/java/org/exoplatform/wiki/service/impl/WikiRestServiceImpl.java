@@ -825,44 +825,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
   }
   
-  @GET
-  @Path("/spaces/portalSpaces/")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getPortalSpace() {
-    List<SpaceBean> spaceBeans = new ArrayList<SpaceBean>();
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    String portalOwner = portalRequestContext.getPortalOwner();
-    String portalName = getPortalName();
-    StringBuilder spaceId = new StringBuilder();
-    spaceId.append("/");
-    spaceId.append(portalName);
-    spaceId.append("/");
-    spaceId.append(portalOwner);
-    spaceBeans.add(new SpaceBean(spaceId.toString(), portalOwner, PortalConfig.PORTAL_TYPE));
-    return Response.ok(new BeanToJsons(spaceBeans), MediaType.APPLICATION_JSON).cacheControl(cc).build();
-  }
-  
-  @GET
-  @Path("/spaces/mySpaces/")
-  @Produces(MediaType.APPLICATION_JSON)
-  public Response getMySpace() {
-    List<SpaceBean> spaceBeans = new ArrayList<SpaceBean>();
-    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-    if (!StringUtils.isEmpty(currentUser) && !currentUser.equals(IdentityConstants.ANONIM)) {
-      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-      ResourceBundle res = context.getApplicationResourceBundle();
-      String mySpaceLabel = res.getString("UIWikiSpaceSwitcher.title.my-space");
-      spaceBeans.add(new SpaceBean("/user/" + currentUser, mySpaceLabel, PortalConfig.USER_TYPE));
-    }
-    return Response.ok(new BeanToJsons(spaceBeans), MediaType.APPLICATION_JSON).cacheControl(cc).build();
-  }
-  
-  private String getPortalName() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
-    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
-    return containerInfo.getContainerName();
-  }
-
   /**
    * Save draft title and content for a page specified by the given page params
    * 
