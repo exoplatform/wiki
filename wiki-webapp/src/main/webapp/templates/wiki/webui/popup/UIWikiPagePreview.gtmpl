@@ -1,8 +1,6 @@
-<div class="UIWikiPagePreview">
-  <div class="UIWikiPortlet">
-    <div class="UIWikiPageTitlePreview">
+<div class="uiWikiPagePreview">
+    <div class="uiWikiPageTitlePreview">
       ${uicomponent.pageTitle}
     </div>
     <% uicomponent.renderChildren(); %>
-  </div>
 </div>

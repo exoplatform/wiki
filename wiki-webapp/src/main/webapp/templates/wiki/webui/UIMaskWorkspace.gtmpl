@@ -30,16 +30,16 @@
   requireJs.addScripts("wikiView.UIWikiPagePreview.init('" + uicomponent.id + "') ;");
   requireJs.addScripts("wikiView.UIWikiMaskWorkspace.resetPosition() ;");
 %>
-<div class="UIWikiMaskWorkspace" id="$maskId" style="display: none;">
-	<div class="ClearFix">
+<div class="uiWikiMaskWorkspace" id="$maskId" style="display: none;">
+	<div class="wikiPreviewHeader clearfix">
 	<% String action = "";
      if(component != null){
        action = component.getActions()[0];
        action = component.event(action);
 	   }
 	%>
-		<a href="$action" class="CloseButton"><span></span></a>
-		<div class="PopupTitle"><%=uicomponent.getPopupTitle();%></div>
+		<a href="$action" class="actionIcon pull-right"><i class="uiIconClose"></i></a>
+		<div class="popupTitle"><%=uicomponent.getPopupTitle();%></div>
 	</div>
 	<%uicomponent.renderChildren();%>
 </div>
