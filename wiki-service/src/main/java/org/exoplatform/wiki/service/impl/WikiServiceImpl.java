@@ -1612,7 +1612,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       if (wiki.getOwner().equals(currentUser)) {
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         ResourceBundle res = context.getApplicationResourceBundle();
-        String mySpaceLabel = res.getString("UIWikiSpaceSwitcher.title.my-space");
+        String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
         return mySpaceLabel;
       }
       return wiki.getOwner();
