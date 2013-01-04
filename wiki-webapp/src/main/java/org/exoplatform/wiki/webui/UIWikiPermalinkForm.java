@@ -112,49 +112,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
    */
   protected static String getPermanlink() throws Exception {
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    
-    // get wiki webapp name
-    String wikiWebappUri = wikiService.getWikiWebappUri();
-    
-    // Create permalink
-    StringBuilder sb = new StringBuilder(wikiWebappUri);
-    sb.append("/");
-    
-    if (!params.getType().equalsIgnoreCase(WikiType.PORTAL.toString())) {
-      sb.append(params.getType().toLowerCase());
-      sb.append("/");
-      sb.append(org.exoplatform.wiki.utils.Utils.validateWikiOwner(params.getType(), params.getOwner()));
-      sb.append("/");
-    }
-    
-    if (params.getPageId() != null) {
-      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
-    }
-    
-    return getDomainUrl() + fillPortalName(sb.toString());
-  }
-  
-  private static String getDomainUrl() {
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    StringBuilder domainUrl = new StringBuilder();
-    domainUrl.append(portalRequestContext.getRequest().getScheme());
-    domainUrl.append("://");
-    
-    domainUrl.append(portalRequestContext.getRequest().getLocalName());
-    int port = portalRequestContext.getRequest().getLocalPort();
-    if (port != 80) {
-      domainUrl.append(":");
-      domainUrl.append(port);
-    }
-    return domainUrl.toString();
-  }
-  
-  private static String fillPortalName(String url) {
-    RequestContext ctx = RequestContext.getCurrentInstance();
-    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
-    NavigationResource resource = new NavigationResource(SiteType.PORTAL, Util.getPortalRequestContext().getPortalOwner(), url);
-    return nodeURL.setResource(resource).toString(); 
+    return org.exoplatform.wiki.utils.Utils.getPermanlink(params);
   }
   
   public static class RestrictActionListener extends EventListener<UIWikiPermalinkForm> {

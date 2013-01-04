@@ -237,6 +237,24 @@ public interface WikiService {
   public String getWikiWebappUri();
   
   /**
+   * Checks whether a user is a space's member or not.
+   *
+   * @param spaceId  the existing space id
+   * @param userId the remote user id
+   * @return true if that user is a member; otherwise, false
+   */
+  public boolean isSpaceMember(String spaceId, String userId);
+  
+  /**
+   * Check if the space is hidden or not
+   * 
+   * @param groupId The group Id to check
+   * @return the space is hidden or not
+   * @throws Exception
+   */
+  public boolean isHiddenSpace(String groupId) throws Exception;
+   
+  /** 
    * Check if the current user has addmin permission on the space
    * 
    * @param wikiType The wiki type of the space

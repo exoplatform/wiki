@@ -24,9 +24,13 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
+
+import javax.jws.WebResult;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.converter.BlockConverter;
 import org.picocontainer.Startable;
@@ -232,6 +236,14 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     if (supportSectionEdit) {
       List<HeaderBlock> filteredHeaders = getFilteredHeaders(xdom);
       int sectionIndex = 1;
+      
+      String editSectionLabel = "Edit section: ";
+      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+      if (context != null) {
+        ResourceBundle bundle = context.getApplicationResourceBundle();
+        editSectionLabel = bundle.getString("UIWikiPageEditForm.label.edit-section");
+      }
+      
       for (HeaderBlock block : filteredHeaders) {
         SectionBlock section = block.getSection();
         Block parentBlock = section.getParent();
@@ -239,7 +251,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
         sectionIndex++;
         List<Block> emtyList = Collections.emptyList();
         Map<String, String> linkParameters = new LinkedHashMap<String, String>();
-        linkParameters.put("title", "Edit section: " + renderXDOM(new XDOM(block.getChildren()), sourceSyntax));
+        linkParameters.put("title", editSectionLabel + renderXDOM(new XDOM(block.getChildren()), sourceSyntax));
         LinkBlock linkBlock = new LinkBlock(emtyList, link, true, linkParameters);
         Map<String, String> spanParameters = new LinkedHashMap<String, String>();
         spanParameters.put("class", "EditSection");
@@ -261,7 +273,6 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     
     renderer.render(xdom, printer);
     return printer;
-
   }
 
   public XDOM parse(String markup, String sourceSyntax) throws Exception {
