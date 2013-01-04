@@ -78,7 +78,7 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
     portalRequestContext.sendRedirect(url);
   }
   
-  public void onFailRequest(Application app, WebuiRequestContext context, RequestFailure failureType) throws Exception {
+  public void onFailRequest(Application app, WebuiRequestContext context, RequestFailure failureType) {
   }
 
   public void onEndRequest(Application app, WebuiRequestContext context) throws Exception {
