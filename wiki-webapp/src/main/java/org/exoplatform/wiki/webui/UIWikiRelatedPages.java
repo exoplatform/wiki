@@ -14,6 +14,6 @@ public class UIWikiRelatedPages extends UIWikiContainer {
   public UIWikiRelatedPages() {
     super();
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.EDITPAGE,
-        WikiMode.DELETEPAGE, WikiMode.VIEWREVISION, WikiMode.SHOWHISTORY, WikiMode.PAGEINFO });
+        WikiMode.VIEWREVISION, WikiMode.SHOWHISTORY, WikiMode.PAGEINFO });
   }
 }

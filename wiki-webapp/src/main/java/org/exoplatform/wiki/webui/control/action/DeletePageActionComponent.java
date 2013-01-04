@@ -21,11 +21,13 @@ import java.util.List;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
+import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
+import org.exoplatform.wiki.webui.UIWikiDeletePageConfirm;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
-import org.exoplatform.wiki.webui.WikiMode;
+import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
 import org.exoplatform.wiki.webui.control.filter.DeniedOnWikiHomePageFilter;
 import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
@@ -63,15 +65,17 @@ public class DeletePageActionComponent extends AbstractEventActionComponent {
 
   @Override
   public boolean isAnchor() {
-    return true;
+    return false;
   }
   
   public static class DeletePageActionListener extends MoreContainerActionListener<DeletePageActionComponent> {
     @Override
-    protected void processEvent(Event<DeletePageActionComponent> event) throws Exception {    
-      UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
-      wikiPortlet.changeMode(WikiMode.DELETEPAGE);
+    protected void processEvent(Event<DeletePageActionComponent> event) throws Exception {  
+      UIWikiPortlet uiWikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
+      UIPopupContainer uiPopupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);
+      UIWikiDeletePageConfirm uiWikiDeletePageConfirm = uiPopupContainer.createUIComponent(UIWikiDeletePageConfirm.class, null, "UIWikiDeletePageConfirm");
+      uiPopupContainer.activate(uiWikiDeletePageConfirm, 800, 0);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
     }
   }
-
 }

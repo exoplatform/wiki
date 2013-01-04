@@ -17,23 +17,24 @@
 package org.exoplatform.wiki.webui;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.lifecycle.Lifecycle;
+import org.exoplatform.webui.core.UIPopupComponent;
+import org.exoplatform.webui.core.UIPopupContainer;
+import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.webui.core.UIWikiComponent;
+import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 
 /**
  * Created by The eXo Platform SAS
@@ -42,32 +43,34 @@ import org.exoplatform.wiki.webui.core.UIWikiComponent;
  * Apr 26, 2010  
  */
 @ComponentConfig(
-  lifecycle = Lifecycle.class,
+  lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiDeletePageConfirm.gtmpl",
   events = {
       @EventConfig(listeners = UIWikiDeletePageConfirm.OKActionListener.class),
       @EventConfig(listeners = UIWikiDeletePageConfirm.CancelActionListener.class)
     }
 )
-
-public class UIWikiDeletePageConfirm extends UIWikiComponent {
-  private WikiService wservice ;
-  private String pageID ;
-  private String owner ;
-  public UIWikiDeletePageConfirm() throws Exception{
-    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.DELETEPAGE});
-    wservice = (WikiService)PortalContainer.getComponent(WikiService.class) ;
-  }
+public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent {
+  public static final String OK_ACTION = "OK";
+  public static final String CANCEL_ACTION = "Cancel";
   
+  private WikiService wservice;
+  private String pageID;
+  private String owner;
+
+  public UIWikiDeletePageConfirm() throws Exception {
+    wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+  }
+
   protected List<SearchResult> getRelativePages() {
-    try{
-      WikiPageParams params = Utils.getCurrentWikiPageParams() ;
-      return wservice.searchRenamedPage(params.getType(), params.getOwner(), params.getPageId()) ;
+    try {
+      WikiPageParams params = Utils.getCurrentWikiPageParams();
+      return wservice.searchRenamedPage(params.getType(), params.getOwner(), params.getPageId());
     } catch (Exception e) {
       return new ArrayList<SearchResult>();
     }
   }
-  
+
   protected PageImpl getCurrentPage() {
     try {
       WikiPageParams params = Utils.getCurrentWikiPageParams();
@@ -78,40 +81,54 @@ public class UIWikiDeletePageConfirm extends UIWikiComponent {
       return null;
     }
   }
-  
-  protected String getCurrentPageId(){ return pageID ;}
-  protected String getWiki(){ return owner ;}
-  
+
+  protected String getCurrentPageId() {
+    return pageID;
+  }
+
+  protected String getWiki() {
+    return owner;
+  }
+
   protected String getHomeURL() {
     return Util.getPortalRequestContext().getPortalURI() + "wiki";
   }
   
+  protected void cancelPopup(Event<UIWikiDeletePageConfirm> event) throws Exception {
+    UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
+    UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
+    popupContainer.cancelPopupAction();
+    event.getRequestContext().addUIComponentToUpdateByAjax(popupContainer);
+  }
+  
   static public class OKActionListener extends EventListener<UIWikiDeletePageConfirm> {
     public void execute(Event<UIWikiDeletePageConfirm> event) throws Exception {
-      UIWikiDeletePageConfirm component = event.getSource() ;
+      UIWikiDeletePageConfirm uiWikiDeletePageConfirm = event.getSource();
       WikiService wService = (WikiService) PortalContainer.getComponent(WikiService.class);
-      WikiPageParams params = Utils.getCurrentWikiPageParams() ;
+      WikiPageParams params = Utils.getCurrentWikiPageParams();
       wService.removeDraft(params);
-      wService.deletePage(params.getType(), params.getOwner(), params.getPageId()) ;      
-      
-      component.getAncestorOfType(UIWikiPortlet.class).changeMode(WikiMode.VIEW) ;
-      UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
-      UIWikiBreadCrumb breadcumb = wikiPortlet.findFirstComponentOfType(UIWikiBreadCrumb.class) ;
-      PortalRequestContext prContext = Util.getPortalRequestContext();
-      String parentURL = breadcumb.getParentURL() ;
-      prContext.setResponseComplete(true);
-      prContext.getResponse().sendRedirect(parentURL) ;      
+      wService.deletePage(params.getType(), params.getOwner(), params.getPageId());
+      UIWikiPortlet wikiPortlet = uiWikiDeletePageConfirm.getAncestorOfType(UIWikiPortlet.class);
+      wikiPortlet.changeMode(WikiMode.VIEW);
+      UIWikiBreadCrumb breadcumb = wikiPortlet.findFirstComponentOfType(UIWikiBreadCrumb.class);
+      String parentURL = breadcumb.getParentURL();
+      uiWikiDeletePageConfirm.cancelPopup(event);
+      Utils.ajaxRedirect(event, parentURL);
     }
-  }  
-  
+  }
+
   static public class CancelActionListener extends EventListener<UIWikiDeletePageConfirm> {
     public void execute(Event<UIWikiDeletePageConfirm> event) throws Exception {
-      UIWikiDeletePageConfirm component = event.getSource() ;
-      //String pageId = event.getRequestContext().getRequestParameter(OBJECTID);
-      component.getAncestorOfType(UIWikiPortlet.class).changeMode(WikiMode.VIEW) ; 
-      PortalRequestContext prContext = Util.getPortalRequestContext();
-      prContext.setResponseComplete(true);
-      prContext.getResponse().sendRedirect(Utils.getCurrentRequestURL()) ;
+      UIWikiDeletePageConfirm uiWikiDeletePageConfirm = event.getSource();
+      uiWikiDeletePageConfirm.cancelPopup(event);
     }
+  }
+
+  @Override
+  public void activate() throws Exception {
+  }
+
+  @Override
+  public void deActivate() throws Exception {
   }
 }

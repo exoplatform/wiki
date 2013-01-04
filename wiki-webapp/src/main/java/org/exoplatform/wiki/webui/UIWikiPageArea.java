@@ -34,12 +34,11 @@ import org.exoplatform.wiki.webui.core.UIWikiContainer;
 public class UIWikiPageArea extends UIWikiContainer {
   public UIWikiPageArea() throws Exception{
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.EDITPAGE,
-        WikiMode.ADDPAGE, WikiMode.PAGE_NOT_FOUND, WikiMode.DELETEPAGE, WikiMode.HELP,
+        WikiMode.ADDPAGE, WikiMode.PAGE_NOT_FOUND, WikiMode.HELP,
         WikiMode.VIEWREVISION, WikiMode.ADDTEMPLATE, WikiMode.EDITTEMPLATE});
     
     addChild(UIWikiPageContentArea.class, null, null);
     addChild(UIWikiPageEditForm.class, null, null);
     addChild(UIWikiPageNotFound.class, null, null);
-    addChild(UIWikiDeletePageConfirm.class, null, null);
   }
 }

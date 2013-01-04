@@ -70,8 +70,6 @@ public class UIWikiApplicationControlArea extends UIContainer {
       return "UIWikiPortlet.label.Show-History";
     case VIEWREVISION:
       return "UIWikiPortlet.label.View-Revision";
-    case DELETEPAGE:
-      return "UIWikiPortlet.label.Delete-Confirm";
     case EDITTEMPLATE:
       return "UIWikiPortlet.label.Edit-Template";
     case ADDTEMPLATE:
@@ -84,6 +82,4 @@ public class UIWikiApplicationControlArea extends UIContainer {
       return "";
     }
   }
-  
-  
 }

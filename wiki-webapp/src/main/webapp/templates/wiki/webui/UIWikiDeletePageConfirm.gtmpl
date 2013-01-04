@@ -1,34 +1,29 @@
 <%
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl ;
-import org.exoplatform.wiki.commons.Utils ;
+  import org.exoplatform.wiki.mow.core.api.wiki.PageImpl ;
+  import org.exoplatform.wiki.commons.Utils ;
 
-	PageImpl page = uicomponent.getCurrentPage() ;
+  PageImpl page = uicomponent.getCurrentPage() ;
 %>
 
-<div class="UIWikiDeletePageConfirm">	
-	<%
-		if(page == null) {
-			%>
-				<div>This page with id '<%=uicomponent.getCurrentPageId()%>' does not exist</div>
-			<%
-		}else {
-		%>
-			<div>
-				<h2><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfoHeader").replace("{0}", "<span>" + page.getTitle() + "</span>"); %></h2>
-				<p><strong><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo1"); %></strong> <br/><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo2"); %> </p>				
-				<ul>
-					<li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo3"); %></li>
-					<li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo4"); %></li>
-					<li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5").replace("{0}", "<strong>" + uicomponent.getWiki() + ": " + page.getParentPage().getTitle() + "</strong>."); %></li>
-				</ul>
-			</div>		
-		<%
-		}
-	%>
-	
-	<div class="UIAction">
-      <a href="<%=uicomponent.url("OK")%>" class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiDeletePageConfirm.action.OK"); %></a>
-       <a href="<%=uicomponent.url("Cancel")%>" class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiDeletePageConfirm.action.Cancel"); %></a>
-    </div>
-   
+<div class="uiWikiDeletePageConfirm">
+  <% uiform.begin();%>
+  <% if(page == null) { %>
+	   <div><%= _ctx.appRes("UIWikiDeletePageConfirm.label.page-not-exist").replace("{0}", uicomponent.getCurrentPageId()); %></div>
+  <% } else { %>
+	   <div>
+		 <h2><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfoHeader").replace("{0}", "<span>" + page.getTitle() + "</span>"); %></h2>
+		 <p><strong><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo1"); %></strong> <br/><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo2"); %> </p>				
+		 <ul>
+		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo3"); %></li>
+		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo4"); %></li>
+		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5").replace("{0}", "<strong>" + uicomponent.getWiki() + ": " + page.getParentPage().getTitle() + "</strong>."); %></li>
+		 </ul>
+	   </div>
+	   
+	   <div class="uiAction uiActionBorder">
+	     <button type="button" onclick="<%=uiform.event(uicomponent.OK_ACTION);%>" class="btn"><%= _ctx.appRes("UIWikiDeletePageConfirm.action.OK");%></button>
+	     <button type="button" onclick="<%=uiform.event(uicomponent.CANCEL_ACTION);%>" class="btn"><%= _ctx.appRes("UIWikiDeletePageConfirm.action.Cancel");%></button>
+       </div>
+  <% } %>
+  <% uiform.end();%>
 </div>

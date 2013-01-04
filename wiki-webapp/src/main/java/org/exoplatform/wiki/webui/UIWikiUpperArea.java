@@ -36,7 +36,7 @@ public class UIWikiUpperArea extends UIWikiContainer {
   public UIWikiUpperArea() throws Exception {
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.EDITPAGE,
         WikiMode.ADDPAGE, WikiMode.ADVANCEDSEARCH, WikiMode.SHOWHISTORY, WikiMode.PAGE_NOT_FOUND,
-        WikiMode.DELETEPAGE, WikiMode.VIEWREVISION, WikiMode.PAGEINFO, WikiMode.EDITTEMPLATE,
+        WikiMode.VIEWREVISION, WikiMode.PAGEINFO, WikiMode.EDITTEMPLATE,
         WikiMode.ADDTEMPLATE, WikiMode.COMPAREREVISION , WikiMode.SPACESETTING, WikiMode.MYDRAFTS});
     addChild(UIWikiApplicationControlArea.class, null, null);
   }

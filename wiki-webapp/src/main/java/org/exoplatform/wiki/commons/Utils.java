@@ -19,8 +19,6 @@ package org.exoplatform.wiki.commons;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -56,7 +54,6 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
@@ -411,8 +408,6 @@ public class Utils {
       return "EditPage";
     case ADDPAGE:
       return "AddPage";
-    case DELETEPAGE:
-      return "DeletePage";
     case ADDTEMPLATE:
       return "AddTemplate";
     case EDITTEMPLATE:
