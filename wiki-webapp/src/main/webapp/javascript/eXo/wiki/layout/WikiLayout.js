@@ -224,6 +224,7 @@ WikiLayout.prototype.setHeightRightContent = function() {
         $(bottomArea).css("display", "none");
         bottomHeight = 0;
       }
+      
       if (WikiLayout.leftArea) {
         var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
         if (WikiLayout.leftArea.offsetHeight > 0) {
@@ -239,8 +240,36 @@ WikiLayout.prototype.setHeightRightContent = function() {
         }
       }
     }
+    WikiLayout.checkToShowGradientScroll();
   }
 };
+
+WikiLayout.prototype.checkToShowGradientScroll = function() {
+  var WikiLayout = eXo.wiki.WikiLayout;
+  var scrollTop = $(WikiLayout.rightArea).find('.uiScrollTop')[0];
+  var scrollBottom = $(WikiLayout.rightArea).find('.uiScrollBottom')[0];
+  
+  if (!scrollTop || !scrollBottom) {
+    return;
+  }
+  
+  var pageArea = $(WikiLayout.rightArea).find('div.UIWikiPageArea:first')[0];
+  if (pageArea) {
+    if (WikiLayout.leftArea) {
+      var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
+      var isShowGradientScroll = pageContent.offsetHeight > WikiLayout.rightArea.offsetHeight;
+	  if (isShowGradientScroll) {
+	    $(scrollTop).css("display", "block");
+	    $(scrollBottom).css("display", "block");
+	    $(scrollBottom).css("top", (WikiLayout.rightArea.offsetTop + WikiLayout.rightArea.offsetHeight - scrollBottom.offsetHeight) + "px");
+	  } else {
+	    $(scrollTop).css("display", "none");
+	    $(scrollBottom).css("display", "none");
+	  }
+    }
+  }
+};
+
 /**
  * Function      showHideSideBar
  * @purpose      Switch the visible of the leftcontainer

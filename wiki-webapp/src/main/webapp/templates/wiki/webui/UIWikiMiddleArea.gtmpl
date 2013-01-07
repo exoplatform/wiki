@@ -28,9 +28,9 @@
       </div>
       
       <div class="uiRightContainerArea">
-      	<i class="uiScrollTop"></i>
+      	<i class="uiScrollTop" style="display:none"></i>
         <% uicomponent.renderChild(UIWikiPageContainer.class); %>
-        <i class="uiScrollBottom"></i>
+        <i class="uiScrollBottom" style="display:none"></i>
       </div>
       
     <% } %>

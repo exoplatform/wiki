@@ -161,7 +161,22 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bts_button</module>
+    </depends>
+    <depends>
+      <module>bts_collapse</module>
+    </depends>
+    <depends>
+      <module>bts_dropdown</module>
+    </depends>
+    <depends>
+      <module>bts_tab</module>
+    </depends>
+    <depends>
+      <module>bts_tooltip</module>
+    </depends>
   </module>
   
   <!-- Javascripts used in Edit Mode -->
