@@ -196,14 +196,29 @@
     </script>
     
     <depends>
-        <module>base</module>
+      <module>base</module>
     </depends>
     <depends>
       <module>webui</module>
     </depends>
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bts_button</module>
+    </depends>
+    <depends>
+      <module>bts_collapse</module>
+    </depends>
+    <depends>
+      <module>bts_dropdown</module>
+    </depends>
+    <depends>
+      <module>bts_tab</module>
+    </depends>
+    <depends>
+      <module>bts_tooltip</module>
+    </depends>
   </module>
   
   <!-- XWiki Explorer JS -->

@@ -240,7 +240,11 @@ WikiLayout.prototype.setHeightRightContent = function() {
         }
       }
     }
+    
     WikiLayout.checkToShowGradientScroll();
+    $(WikiLayout.rightArea).scroll(function() {
+      eXo.wiki.WikiLayout.checkToShowGradientScroll();
+    });
   }
 };
 
@@ -258,14 +262,23 @@ WikiLayout.prototype.checkToShowGradientScroll = function() {
     if (WikiLayout.leftArea) {
       var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
       var isShowGradientScroll = pageContent.offsetHeight > WikiLayout.rightArea.offsetHeight;
-	  if (isShowGradientScroll) {
-	    $(scrollTop).css("display", "block");
-	    $(scrollBottom).css("display", "block");
-	    $(scrollBottom).css("top", (WikiLayout.rightArea.offsetTop + WikiLayout.rightArea.offsetHeight - scrollBottom.offsetHeight) + "px");
-	  } else {
-	    $(scrollTop).css("display", "none");
-	    $(scrollBottom).css("display", "none");
-	  }
+      if (isShowGradientScroll) {
+        if (WikiLayout.rightArea.scrollTop > 0) {
+          $(scrollTop).css("display", "block");
+        } else {
+          $(scrollTop).css("display", "none");
+        }
+        
+        if (WikiLayout.rightArea.scrollTop < WikiLayout.rightArea.offsetHeight - 10) {
+          $(scrollBottom).css("display", "block");
+          $(scrollBottom).css("top", (WikiLayout.rightArea.offsetTop + WikiLayout.rightArea.offsetHeight - scrollBottom.offsetHeight) + "px");
+        } else {
+          $(scrollBottom).css("display", "none");
+        }
+      } else {
+        $(scrollTop).css("display", "none");
+        $(scrollBottom).css("display", "none");
+      }
     }
   }
 };
