@@ -3,4 +3,4 @@
  String actionLink = uicomponent.getActionLink();
  String labelName = _ctx.appRes(uicomponent.getParent().getName() +".action." + actionName);
  %>
-<button type="button" class="btn" onclick="$actionLink" rel="tooltip" data-placement="bottom" title="$labelName"><i class="uiIconWikiHelp"></i> $labelName</button>
+<button type="button" class="btn" onclick="$actionLink" data-placement="bottom"><i class="uiIconWikiHelp"></i> $labelName</button>
