@@ -8,7 +8,7 @@
   String pageInfoCss = "";
   if (isCurrentPagePublic) {
     pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.public-page");
-    pageInfoCss = "uiIconUnLockMini";
+    pageInfoCss = "uiIconUnlockMini";
   } else {
     pageInfoNotify = _ctx.appRes("UIWikiPermalinkForm.label.restrict-page");
     pageInfoCss = "uiIconLockMini";
