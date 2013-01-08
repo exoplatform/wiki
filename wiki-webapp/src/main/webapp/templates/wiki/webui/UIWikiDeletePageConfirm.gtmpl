@@ -10,13 +10,14 @@
   <% if(page == null) { %>
 	   <div><%= _ctx.appRes("UIWikiDeletePageConfirm.label.page-not-exist").replace("{0}", uicomponent.getCurrentPageId()); %></div>
   <% } else { %>
-	   <div>
-		 <h2><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfoHeader").replace("{0}", "<span>" + page.getTitle() + "</span>"); %></h2>
-		 <p><strong><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo1"); %></strong> <br/><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo2"); %> </p>				
+	   <div class="WikiDeleteContent">
+		 <p><i class="uiIconQuestion uiIconBlue"></i><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo1"); %></p>
+		 <h6><%=  page.getTitle(); %></h6>
+		 <p class="node"><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo2"); %> </p>				
 		 <ul>
 		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo3"); %></li>
-		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo4"); %></li>
-		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5").replace("{0}", "<strong>" + uicomponent.getWiki() + ": " + page.getParentPage().getTitle() + "</strong>."); %></li>
+		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo4"); %></li> 
+		   <li class="breadcrumb"><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5").replace("{0}", uicomponent.getWiki() + " <span class='uiIconMiniArrowRight'>&nbsp;</span> " + "<strong class='active'>"  + page.getParentPage().getTitle() + "</strong>."); %></li>
 		 </ul>
 	   </div>
 	   
