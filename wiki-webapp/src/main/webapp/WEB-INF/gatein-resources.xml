@@ -33,7 +33,7 @@
     <name>WikiPortlet</name>
     <module>      
       <depends>
-        <module>wiki-view</module>
+        <module>wikiView</module>
       </depends>
       <depends>
          <module>jquery</module>

@@ -159,13 +159,15 @@ UITreeExplorer.prototype.buildNode = function(data) {
   var lastNodeClass = "";
   var hoverClass = "";
   var excerptData = data.excerpt;
-  var path = data.path.replaceAll("/", ".");
+  var Re = new RegExp("\\/","g");
+  var path = data.path.replace(Re, ".");
   var param = "?path=" + path;
   if (excerptData!=null) {
     param += "&excerpt=true";
   }
   if (data.extendParam)
-    param += "&current=" + data.extendParam.replaceAll("/",".");
+    param += "&current=" + data.extendParam.replace(Re, ".");
+  
   if (data.lastNode == true) {
     lastNodeClass = "LastNode";
   }
