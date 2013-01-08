@@ -1,8 +1,7 @@
 package org.exoplatform.wiki.utils;
 
+import java.net.URLEncoder;
 import java.util.*;
-
-
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
@@ -13,8 +12,11 @@ import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.SiteType;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
@@ -30,6 +32,9 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.url.navigation.NavigationResource;
+import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.mow.api.Page;
@@ -150,6 +155,68 @@ public class Utils {
   }
   
   /**
+   * Get the permalink of current wiki page <br>
+   * 
+   * <ul>With the current page param:</ul>
+   *   <li>type = "group"</li>
+   *   <li>owner = "spaces/test_space"</li>
+   *   <li>pageId = "test_page"</li>
+   * <br>
+   *  
+   * <ul>The permalink will be: </ul>
+   * <li>http://int.exoplatform.org/portal/intranet/wiki/group/spaces/test_space/test_page</li>
+   * <br>
+   * 
+   * @return The permalink of current wiki page
+   * @throws Exception
+   */
+  public static String getPermanlink(WikiPageParams params) throws Exception {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    
+    // get wiki webapp name
+    String wikiWebappUri = wikiService.getWikiWebappUri();
+    
+    // Create permalink
+    StringBuilder sb = new StringBuilder(wikiWebappUri);
+    sb.append("/");
+    
+    if (!params.getType().equalsIgnoreCase(WikiType.PORTAL.toString())) {
+      sb.append(params.getType().toLowerCase());
+      sb.append("/");
+      sb.append(org.exoplatform.wiki.utils.Utils.validateWikiOwner(params.getType(), params.getOwner()));
+      sb.append("/");
+    }
+    
+    if (params.getPageId() != null) {
+      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
+    }
+    
+    return getDomainUrl() + fillPortalName(sb.toString());
+  }
+  
+  private static String getDomainUrl() {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    StringBuilder domainUrl = new StringBuilder();
+    domainUrl.append(portalRequestContext.getRequest().getScheme());
+    domainUrl.append("://");
+    
+    domainUrl.append(portalRequestContext.getRequest().getLocalName());
+    int port = portalRequestContext.getRequest().getLocalPort();
+    if (port != 80) {
+      domainUrl.append(":");
+      domainUrl.append(port);
+    }
+    return domainUrl.toString();
+  }
+  
+  private static String fillPortalName(String url) {
+    RequestContext ctx = RequestContext.getCurrentInstance();
+    NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
+    NavigationResource resource = new NavigationResource(SiteType.PORTAL, Util.getPortalRequestContext().getPortalOwner(), url);
+    return nodeURL.setResource(resource).toString(); 
+  }
+
+  /**
    * Get the editting log of wiki page
    * 
    * @param pageId The id of wiki page to get log
@@ -163,6 +230,7 @@ public class Utils {
     return logByPage;
   }
    
+
   //The path should get from NodeHierarchyCreator 
   public static String getPortalWikisPath() {    
     String path = "/exo:applications/" 

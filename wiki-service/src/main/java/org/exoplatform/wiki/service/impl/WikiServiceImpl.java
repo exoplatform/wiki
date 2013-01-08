@@ -105,7 +105,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   final static private int             CIRCULAR_RENAME_FLAG   = 1000;
 
   private static final long            DEFAULT_SAVE_DRAFT_SEQUENCE_TIME = 30000;
-  
+
   private ConfigurationManager  configManager;
 
   private JCRDataStorage        jcrDataStorage;
@@ -1299,6 +1299,40 @@ public class WikiServiceImpl implements WikiService, Startable {
     return wikiWebappUri;
   }
   
+  @Override
+  public boolean isSpaceMember(String spaceId, String userId) {
+    try {
+      // Get space service
+      Class<?> spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      
+      // Get space by Id
+      Class<?> spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByPrettyName", String.class).invoke(spaceService, spaceId);
+      
+      // Check if user is the member of space or not
+      Boolean bool = Boolean.valueOf(String.valueOf(spaceServiceClass.getDeclaredMethod("isMember", spaceClass, String.class).invoke(spaceService, space, userId)));
+      return bool.booleanValue();
+    } catch (Exception e) {
+      log.debug("Can not check if user is space member", e);
+      return false;
+    }
+  }
+  
+  public boolean isHiddenSpace(String groupId) throws Exception {
+    try {
+      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
+      String visibility = String.valueOf(spaceClass.getDeclaredMethod("getVisibility").invoke(space));
+      String hiddenValue = String.valueOf(spaceClass.getDeclaredField("HIDDEN").get(space));
+      return hiddenValue.equals(visibility);
+    } catch (ClassNotFoundException e) {
+      return true;
+    }
+  }
+
   @Override
   public DraftPage createDraftForNewPage(WikiPageParams parentPageParam, long clientTime) throws Exception {
     // Create suffix for draft name

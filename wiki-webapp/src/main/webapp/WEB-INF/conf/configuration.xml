@@ -29,6 +29,11 @@
     <type>org.exoplatform.webui.ext.impl.UIExtensionManagerImpl</type>
   </component>
   
+  <component>
+    <key>org.exoplatform.wiki.service.impl.WikiSpaceAccessLifecycle</key>
+    <type>org.exoplatform.wiki.service.impl.WikiSpaceAccessLifecycle</type>
+  </component>
+  
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
