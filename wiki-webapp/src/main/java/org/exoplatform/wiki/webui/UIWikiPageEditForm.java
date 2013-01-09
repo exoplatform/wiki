@@ -105,8 +105,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
   public static final String CLOSE = "Close";
   
   public UIWikiPageEditForm() throws Exception {
-    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.EDITPAGE, WikiMode.ADDPAGE,
-        WikiMode.EDITTEMPLATE, WikiMode.ADDTEMPLATE });
+    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.EDITPAGE, WikiMode.ADDPAGE, WikiMode.EDITTEMPLATE, WikiMode.ADDTEMPLATE });
     addChild(UIWikiPageTitleControlArea.class, null, TITLE_CONTROL).toInputMode();
     addChild(UISubmitToolBar.class, null, SUBMIT_TOOLBAR_UPPER);
     addUIFormInput(new UICheckBoxInput(FIELD_PUBLISH_ACTIVITY_UPPER, FIELD_PUBLISH_ACTIVITY_UPPER, false));
@@ -169,9 +168,9 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String continueEdittingActionLink = event("ResumeDraft");
     String deleteDraftLabel = bundle.getString("DraftPage.label.delete");
     String deleteActionLink = event("DeleteDraft");
-    messageHTML = messageHTML.replace("{0}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
-    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ continueEdittingLabel + "\" href=\"" + continueEdittingActionLink + "\">" + continueEdittingLabel + "</a>");
-    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{0}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\"><b>" + viewChangeDraftLabel + "</b></a>");
+    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ continueEdittingLabel + "\" href=\"" + continueEdittingActionLink + "\"><b>" + continueEdittingLabel + "</b></a>");
+    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\"><b>" + deleteDraftLabel + "</b></a>");
     return messageHTML;
   }
   
@@ -192,9 +191,9 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String deleteDraftLabel = bundle.getString("DraftPage.label.delete");
     String deleteActionLink = event("DeleteDraft");
     
-    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
-    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ resumeDraftLabel + "\" href=\"" + resumeActionLink + "\">" + resumeDraftLabel + "</a>");
-    messageHTML = messageHTML.replace("{3}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\"><b>" + viewChangeDraftLabel + "</b></a>");
+    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ resumeDraftLabel + "\" href=\"" + resumeActionLink + "\"><b>" + resumeDraftLabel + "</b></a>");
+    messageHTML = messageHTML.replace("{3}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\"><b>" + deleteDraftLabel + "</b></a>");
     return messageHTML; 
   }
   
@@ -215,7 +214,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     // Build message markup
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
     String messageMarkup = bundle.getString("DraftPage.msg.concurrent-editing");
-    messageMarkup = messageMarkup.replace("{0}", usernameList.toString());
+    messageMarkup = messageMarkup.replace("{0}", "<b>" + usernameList.toString() + "</b>");
     messageMarkup = "<div class='alert'><i class='uiIconWarning'></i>" + messageMarkup + "</div>";;
     
     // Render to message html and return

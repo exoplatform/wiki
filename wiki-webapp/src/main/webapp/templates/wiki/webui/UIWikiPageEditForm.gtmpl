@@ -56,7 +56,6 @@
         %>
             <label class="publishActivityCheckBoxTitle pull-right">
               <%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_UPPER);%>
-              <span><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle");%></span>
             </label>
         <% } %>
       </div>
@@ -106,7 +105,6 @@
           <% if (uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM).isRendered()) { %>	
             <label class="publishActivityCheckBoxTitle pull-left">
               <%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%>
-              <span><%= _ctx.appRes("UIWikiPageEditForm.label.PublishActivityCheckBoxTitle"); %></span>
             </label>
           <% } %>
         </div>
