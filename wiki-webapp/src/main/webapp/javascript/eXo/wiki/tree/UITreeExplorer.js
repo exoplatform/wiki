@@ -196,9 +196,17 @@ UITreeExplorer.prototype.buildNode = function(data) {
   childNode += " <li  class=\"" + lastNodeClass + "\" >";
   childNode += "   <div class=\""+iconType+"\" id=\"" + path + "\" onclick=\"event.cancelBubble=true;  if(eXo.wiki.UITreeExplorer.collapseExpand(this)) return;  eXo.wiki.UITreeExplorer.render('"+ param + "', this)\">";
   if (me.isRenderLink) {
-    childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ nodeTypeCSS +" treeNodeType node "+ hoverClass +" \">";
+    if (data.retricted == true) {
+      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\"uiIconWikiRestrictedFile treeNodeType node "+ hoverClass +" \">";
+    } else {
+      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ nodeTypeCSS +" treeNodeType node "+ hoverClass +" \">";
+    }
   } else {
-    childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +" treeNodeType node "+ hoverClass +" \">";
+    if (data.retricted == true) {
+      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\"uiIconWikiRestrictedFile treeNodeType node "+ hoverClass +" \">";
+    } else {
+      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +" treeNodeType node "+ hoverClass +" \">";
+    }    
   }  
   
   if (data.selectable == true && data.retricted == false) {
