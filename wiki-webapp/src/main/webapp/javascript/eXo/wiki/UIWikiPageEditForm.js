@@ -99,7 +99,7 @@ UIWikiPageEditForm.prototype.decorateInputOfTemplate = function(defaultTitleOfTe
   var titleInput = $(titleContainer).find('input')[0];
   eXo.wiki.UIWikiPortlet.decorateInput(titleInput, defaultTitleOfTemplate, true);
   
-  var descriptionContainer = $(pageEditForm).find('div.UIWikiTemplateDescriptionContainer')[0];
+  var descriptionContainer = $(pageEditForm).find('div.uiWikiTemplateDescriptionContainer')[0];
   var descriptionInput = $(descriptionContainer).find('input')[0];
   eXo.wiki.UIWikiPortlet.decorateInput(descriptionInput, defaultDescriptionOfTemplate, true);
 };
