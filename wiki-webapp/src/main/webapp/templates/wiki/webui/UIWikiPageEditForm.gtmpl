@@ -99,6 +99,7 @@
 	  
     <% uiform.renderChild(uiform.RICHTEXT_AREA); %>
   
+    <% if(uiform.getChildById(uiform.FIELD_COMMENT).isRendered() && uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM).isRendered()) { %>
       <div class="form-horizontal clearfix">
         <div class="control-group">
           <% if(uiform.getChildById(uiform.FIELD_COMMENT).isRendered()) { %>
@@ -115,6 +116,7 @@
           <% } %>
         </div>
       </div>
+    <% } %>
     </div>
     <% uiform.renderChild(uiform.SUBMIT_TOOLBAR_BOTTOM); %>
   </div>
