@@ -232,6 +232,11 @@ public class UIWikiPageEditForm extends UIWikiForm {
     this.initDraftName = initDraftName;
   }
   
+  public boolean isInTemplateMode() {
+    UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
+    return (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE) || (wikiPortlet.getWikiMode() == WikiMode.EDITTEMPLATE);
+  }
+  
   public boolean isNewPage() {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     return wikiPortlet.getWikiMode() != WikiMode.EDITPAGE;

@@ -38,10 +38,10 @@ UIConfirmBox.prototype.render = function(uicomponentId, titleMessage, message, s
  
 UIConfirmBox.prototype.doAction = function()  {
   var me = eXo.wiki.UIConfirmBox;
-  var action = document.getElementById(me.uicomponentId);
+  var action = document.getElementById("link_" + me.uicomponentId);
   var href = action.getAttribute("href");
   if (action && href) {
-    window.location = href;
+    eval(href);
   }
 };
  
@@ -49,34 +49,29 @@ UIConfirmBox.prototype.renderConfirmBox = function(componentId, titleMessage, me
     var me = eXo.wiki.UIConfirmBox;
     
     // Build the confirm box
-    me.confirmBox = $('<div/>', {
-      'class' : 'ConfirmBox',
-      align : 'center'
-    }).append($('<div/>', {
-      'class' : 'ConfirmBar'
-    }).append($('<div/>', {
-      'class' : 'ConfirmTitle',
-      text : titleMessage
-    }), $('<a/>', {
-      'class' : 'CloseButton',
-      href : 'javascript:eXo.wiki.UIConfirmBox.closeConfirm()'
-    })));
-
-    var container = $('<div/>').append($('<div/>', {
-      'class' : 'ConfirmMessage',
-      text : message
-    }));
-    
-    // Create buttons
+    me.confirmBox = $('<div/>', {'class':'uiPopup UIDragObject NormalStyle', 'width':'460','height':'200'});
+    me.confirmBox.append($(""
+      + "<div class='popupHeader clearfix'>"
+	  +   "<a href='javascript:eXo.wiki.UIConfirmBox.closeConfirm()' class='uiIconClose pull-right'></a>"
+	  +   "<span class='PopupTitle popupTitle'>" + titleMessage + "</span>"
+	  + "</div>"
+	  + "<div class='PopupContent popupContent'>"
+	  +   "<div class='confirmMessage'><i class='uiIconNotification uiIconBlue'></i>" + message + "</div>"
+	  +   "<div class='uiAction uiActionBorder'></div>"
+	  + "</div>"
+	  + "<span class='uiIconResize pull-right' style='display: block;'></span>"));
+	  
+	// Create buttons
+    var actionContainer = $(me.confirmBox).find('div.uiAction')[0];
     for (i = 0; i < buttonLabelArray.length; i++) {
       if (buttonLabelArray[i]) {
-        me.createInput(container, callBackFunctionArray[i], buttonLabelArray[i]);
+        me.createInput(actionContainer, callBackFunctionArray[i], buttonLabelArray[i]);
       }
     }
-    
-    // Append confirm box to UI
+	  
+	// Append confirm box to UI
     var component = document.getElementById(componentId);
-    $(component).append($(me.confirmBox).append(container));
+    $(component).append(me.confirmBox);
     
     // Create maskLayer
     this.maskLayer = eXo.core.UIMaskLayer.createMask("UIPortalApplication", me.confirmBox[0], 30);
@@ -84,18 +79,17 @@ UIConfirmBox.prototype.renderConfirmBox = function(componentId, titleMessage, me
 };
 
 UIConfirmBox.prototype.createInput = function(container, callBackFunction, message) {
-  $(container).append($('<input/>', {
-    value: message,
-    type: 'button',
+  var button = $('<button/>', {
+    'class': 'btn',
     click: function(event) {
-     if (callBackFunction){
-       callBackFunction();
-     }
-     eXo.wiki.UIConfirmBox.closeConfirm();
+      if (callBackFunction) {
+        callBackFunction();
+      }
+      eXo.wiki.UIConfirmBox.closeConfirm();
     }
-   }
-  )
- )
+  });
+  button.append(message);
+  $(container).append(button);
 };
 
 UIConfirmBox.prototype.closeConfirm = function() {

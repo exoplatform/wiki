@@ -92,6 +92,18 @@ UIWikiPageEditForm.prototype.setRestParam = function(wikiType, wikiOwner, pageId
   me.createRestParam();
 };
 
+UIWikiPageEditForm.prototype.decorateInputOfTemplate = function(defaultTitleOfTemplate, defaultDescriptionOfTemplate) {
+  var me = eXo.wiki.UIWikiPageEditForm;
+  var pageEditForm = document.getElementById(me.pageEditFormId);
+  var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
+  var titleInput = $(titleContainer).find('input')[0];
+  eXo.wiki.UIWikiPortlet.decorateInput(titleInput, defaultTitleOfTemplate, true);
+  
+  var descriptionContainer = $(pageEditForm).find('div.UIWikiTemplateDescriptionContainer')[0];
+  var descriptionInput = $(descriptionContainer).find('input')[0];
+  eXo.wiki.UIWikiPortlet.decorateInput(descriptionInput, defaultDescriptionOfTemplate, true);
+};
+
 UIWikiPageEditForm.prototype.createRestParam = function() {
   var me = eXo.wiki.UIWikiPageEditForm;
   var clientTime = new Date().getTime();

@@ -34,6 +34,12 @@
   requireJs.addScripts("wikiEdit.UIWikiPageEditForm.setCancelDraftAction('" + removeDraftRestUrl + "', '" + cancelDraftConfirmTitle + "', '" + cancelDraftConfirmMessage + "', '" + yesButtonLabel + "', '" + noButtonLabel + "');");
   requireJs.addScripts("wikiEdit.UIWikiPageEditForm.setRestParam('" + wikiType + "', '" + wikiOwner + "', '" + pageId + "', '" + initDraftName + "');");
   requireJs.addScripts("wikiEdit.UIWikiPageEditForm.synPublishActivityCheckboxesStatus('" + uiform.FIELD_PUBLISH_ACTIVITY_UPPER + "','" + uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM + "');");
+  
+  if (uicomponent.isInTemplateMode()) {
+    String defaultTitleOfTemplate = _ctx.appRes("UIWikiPageEditForm.label.SampleTemplateTitle");
+    String defaultDescriptionOfTemplate = _ctx.appRes("UIWikiPageEditForm.label.Description");
+    requireJs.addScripts("wikiEdit.UIWikiPageEditForm.decorateInputOfTemplate('" + defaultTitleOfTemplate + "', '" + defaultDescriptionOfTemplate + "');");
+  }
 %>
 <div class="uiWikiPageEditForm">
 <% uiform.begin();%>
