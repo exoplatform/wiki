@@ -11,8 +11,8 @@
   def deleteLink = uiPermissionForm.event(uiPermissionForm.DELETE_ENTRY, uicomponent.id);
 %>
 <td>
-  <div title="$fullName">$fullName</div>
-  <div title="$id" class="Id">($id)</div>
+  <div rel='tooltip' data-placement='bottom' title="$fullName">$fullName</div>
+  <div rel='tooltip' data-placement='bottom' title="$id" class="Id">($id)</div>
 </td>
 <%
   for(permission in permissions){
@@ -26,6 +26,6 @@
 %>
 <td class="center">
    <% if (!isImmutable) { %>
-		<a class="actionIcon"  title="<%= _ctx.appRes("UIPermissionEntry.title.DeletePermission"); %>" onclick="$deleteLink" ><i class="uiIconDelete"></i></a>
+		<a class="actionIcon" rel='tooltip' data-placement='bottom'  title="<%= _ctx.appRes("UIPermissionEntry.title.DeletePermission"); %>" onclick="$deleteLink" ><i class="uiIconDelete"></i></a>
    <% } %>
 </td>

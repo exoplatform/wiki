@@ -30,7 +30,7 @@
     <div class="fileName">
       <div class="fileNameLabel"><span></span></div>
     </div>
-    <div class="removeFile" title="<%= _ctx.appRes("UIFormUploadInput.label.remove"); %>"></div>
+    <div class="removeFile" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIFormUploadInput.label.remove"); %>"></div>
   </div>
   <iframe height="0" width="0" name="UploadIFrame<%=uploadId%>" id="UploadIFrame<%=uploadId%>" style="display: none;">
     <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
