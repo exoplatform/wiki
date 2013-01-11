@@ -169,11 +169,6 @@ WikiLayout.prototype.setHeightLayOut = function() {
   if(delta > hdef) {
     WikiLayout.setClassBody(WikiLayout.bodyClass);
   }
-  while ((delta = WikiLayout.heightDelta()) > 0 && hdef > delta) {
-    hct = hdef - delta;
-    $(layout).css('height', hct + "px");
-    hdef = hdef - 2;
-  }
   hct-=20; //Padding-bottom of wikiLayout
 
   if (WikiLayout.leftArea && WikiLayout.resizeBar) {
@@ -194,9 +189,9 @@ WikiLayout.prototype.setHeightLayOut = function() {
       }
     }
 
-	  if (resideBarContent) {
-	    $(resideBarContent).height(hct + "px");
-	  }
+    if (resideBarContent) {
+      $(resideBarContent).height(hct + "px");
+    }
   } else if (WikiLayout.verticalLine) {
     $(WikiLayout.verticalLine).height(hct + "px");
   }
@@ -204,7 +199,6 @@ WikiLayout.prototype.setHeightLayOut = function() {
   if (WikiLayout.rightArea) {
     $(WikiLayout.rightArea).height(hct + "px");
   }
-  
   WikiLayout.setHeightRightContent();
 };
 
