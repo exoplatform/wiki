@@ -1,12 +1,7 @@
 package org.exoplatform.wiki.utils;
 
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Properties;
-import java.util.Stack;
+import java.util.*;
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
@@ -214,6 +209,7 @@ public class Utils {
     return domainUrl.toString();
   }
   
+<<<<<<< HEAD
   /**
    * Get the permalink of current wiki page <br>
    * 
@@ -269,6 +265,8 @@ public class Utils {
     return domainUrl.toString();
   }
   
+=======
+>>>>>>> master
   private static String fillPortalName(String url) {
     RequestContext ctx = RequestContext.getCurrentInstance();
     NodeURL nodeURL =  ctx.createURL(NodeURL.TYPE);
@@ -290,6 +288,7 @@ public class Utils {
     return logByPage;
   }
    
+
   //The path should get from NodeHierarchyCreator 
   public static String getPortalWikisPath() {    
     String path = "/exo:applications/" 

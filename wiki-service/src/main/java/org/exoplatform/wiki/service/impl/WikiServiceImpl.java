@@ -1319,25 +1319,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
   
-  private void removeDraftPages() {
-    try {
-      // Get space service
-      Class<?> spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-      
-      // Get space by Id
-      Class<?> spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByPrettyName", String.class).invoke(spaceService, spaceId);
-      
-      // Check if user is the member of space or not
-      Boolean bool = Boolean.valueOf(String.valueOf(spaceServiceClass.getDeclaredMethod("isMember", spaceClass, String.class).invoke(spaceService, space, userId)));
-      return bool.booleanValue();
-    } catch (Exception e) {
-      log.debug("Can not check if user is space member", e);
-      return false;
-    }
-  }
-  
   public boolean isHiddenSpace(String groupId) throws Exception {
     try {
       Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
