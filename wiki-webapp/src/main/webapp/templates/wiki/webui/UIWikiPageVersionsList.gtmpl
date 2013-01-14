@@ -29,9 +29,8 @@
   String anchor = "#" + compareAction;
   String compareActionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + compareAction;
   String compareActionLink = uicomponent.event(compareAction);
-  def box = uicomponent.getParent() instanceof UIWikiBottomArea ? "wikiBox" : "";
 %>
-<div class="uiWikiPageVersionsList uiAttachmentUploadContainer ${box}">
+<div class="uiWikiPageVersionsList uiAttachmentUploadContainer wikiBox">
  <% uiform.begin(); %>
   <h4 class="historyLabel"><%= _ctx.appRes("UIWikiPageVersionsList.label.HistoryLabel"); %></h4>
 	<div class="compareSelect">
