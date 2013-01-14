@@ -1,4 +1,4 @@
-<h5 class="titleWikiBox"></h5>
+<h6 class="titleWikiBox"></h6>
 <%
   List children = uicomponent.getChildren() ;
   for(component in children) {
