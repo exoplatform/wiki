@@ -170,11 +170,18 @@ public interface Page {
   Wiki getWiki();
   
   /**
-   * set alow page minor edit or not
+   * is page in minor edit or not
    * 
    * @param isMinorEdit
    */
   void setMinorEdit(boolean isMinorEdit);
+  
+  /**
+   * is page in minor edit or not
+   * 
+   * @return
+   */
+  public boolean isMinorEdit();
   
   /**
    * set url

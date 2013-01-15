@@ -124,6 +124,7 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
     if (isRenameHome) {
       page.setTitle(newTitle);
     } else {
+      page.setMinorEdit(false);
       wikiService.renamePage(pageParams.getType(),
                              pageParams.getOwner(),
                              pageParams.getPageId(),

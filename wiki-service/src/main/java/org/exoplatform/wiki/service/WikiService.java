@@ -273,4 +273,38 @@ public interface WikiService {
    * @throws Exception
    */
   public boolean hasAdminPagePermission(String wikiType, String owner) throws Exception;
+  
+  /**
+   * Publish a update activity
+   * 
+   * @param wikiType The wiki type
+   * @param wikiOwner The wiki owner
+   * @param pageId The page id
+   * @param page The wiki page
+   * @param wikiUpdateType The update type
+   * @throws Exception
+   */
+  public void postUpdatePage(String wikiType, String wikiOwner, String pageId, Page page, String wikiUpdateType) throws Exception;
+  
+  /**
+   * Publish a add activity
+   * 
+   * @param wikiType The wiki type
+   * @param wikiOwner The wiki owner
+   * @param pageId The page id
+   * @param page The wiki page
+   * @throws Exception
+   */
+  public void postAddPage(final String wikiType, final String wikiOwner, final String pageId, Page page) throws Exception;
+  
+  /**
+   * Publish a delete page activity
+   * 
+   * @param wikiType The wiki type
+   * @param wikiOwner The wiki owner
+   * @param pageId The page id
+   * @param page The wiki page
+   * @throws Exception
+   */
+  public void postDeletePage(String wikiType, String wikiOwner, String pageId, Page page) throws Exception;
 }
