@@ -36,6 +36,7 @@ function WikiLayout() {
   this.leftMinWidth  = 235;
   this.rightMinWidth = 250;
   this.userName      = "";
+   
 };
 
 $(window).resize(function() {
@@ -133,12 +134,7 @@ WikiLayout.prototype.setHeightLayOut = function() {
   var delta = WikiLayout.heightDelta();
   if(delta > hdef) {
     WikiLayout.setClassBody(WikiLayout.bodyClass);
-  }
-  while ((delta = WikiLayout.heightDelta()) > 0 && hdef > delta) {
-    hct = hdef - delta;
-    $(layout).css('height', hct + "px");
-    hdef = hdef - 2;
-  }
+  } 
   
   if (WikiLayout.leftArea && WikiLayout.resizeBar) {
     $(WikiLayout.leftArea).height(hct + "px");
