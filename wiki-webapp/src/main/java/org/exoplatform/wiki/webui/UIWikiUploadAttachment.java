@@ -179,8 +179,12 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       UIWikiFormUploadInput uiInput = new UIWikiFormUploadInput(FIELD_UPLOAD, FIELD_UPLOAD, SIZE_LIMIT);
       wikiAttachmentArea.addChild(uiInput);
       UIWikiPageInfoArea inforArea= wikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
-      event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea);
-      event.getRequestContext().addUIComponentToUpdateByAjax(inforArea);
+      if (bottomArea != null && bottomArea.isRendered() && bottomArea.getAccept_Modes().contains(bottomArea.getCurrentMode())) {
+        event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea);
+      }
+      if (inforArea != null && inforArea.isRendered() && inforArea.getAccept_Modes().contains(inforArea.getCurrentMode())) {
+        event.getRequestContext().addUIComponentToUpdateByAjax(inforArea);
+      }
     }
 
     @Override
