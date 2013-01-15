@@ -4,20 +4,12 @@
   <parent>
     <artifactId>wiki-extension</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.0.0.Alpha1-kill-exobuild-SNAPSHOT</version>
+    <version>4.0.0.Alpha1-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-extension-webapp</artifactId>
   <packaging>war</packaging>
   <name>eXo Wiki Extension configuration war</name>
-  <dependencies>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-core</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.apache.tika</groupId>
-      <artifactId>tika-parsers</artifactId>
-    </dependency>
+  <dependencies>    
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
