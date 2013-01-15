@@ -595,11 +595,11 @@
   </module>
   
   
-  <!-- XWiki Explorer JS -->
+  <!-- XWiki Explorer JS -->  
   <module>
-    <name>xwikiexplorer</name>
-    <script>
-      <path>/javascript/xwiki/xwikiexplorer/xwikiexplorer.js</path>
+    <name>XWiki</name>
+    <script>      
+      <path>/javascript/eXo/xwiki/xwikiexplorer/xwikiexplorer.js</path>
     </script>
   </module>
   
