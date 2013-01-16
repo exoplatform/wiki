@@ -53,7 +53,7 @@
             }
           }
         %>
-     	  <th onclick="$sortActionLink" >
+     	  <th onclick="$sortActionLink" style="cursor: pointer;" >
 			<i class="$clazz pull-right"></i>
      	    <%=_ctx.appRes(name + ".header." + field)%>     	    
      	  </th>
