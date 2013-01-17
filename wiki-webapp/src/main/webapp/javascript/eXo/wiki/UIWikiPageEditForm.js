@@ -182,7 +182,7 @@ UIWikiPageEditForm.prototype.onSaveDraftSuccess = function(data) {
     var timeSavedDraft = hours + ":" + minutes;
     var pageEditForm = document.getElementById(me.pageEditFormId);
     var messageArea = $(pageEditForm).find('div.uiWikiPageEditForm_MessageArea')[0];
-    messageArea.style.margin = "15px 0px 0px 10px";
+    messageArea.style.margin = "13px 0px 0px 10px";
     messageArea.innerHTML = me.saveDraftSuccessMessage + " " + timeSavedDraft;
   }
 };
