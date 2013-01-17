@@ -103,16 +103,18 @@
       <div class="form-horizontal clearfix">
         <div class="control-group">
           <% if(uiform.getChildById(uiform.FIELD_COMMENT).isRendered()) { %>
-            <label class="control-label pull-left" for="<%=uiform.FIELD_COMMENT%>"><%= _ctx.appRes("UIWikiPageEditForm.label.CommentTitle"); %></label>
-            <div class="controls pull-left">
-              <% uiform.renderField(uiform.FIELD_COMMENT);%>
-            </div>
+            <label class="control-label" for="<%=uiform.FIELD_COMMENT%>"><%= _ctx.appRes("UIWikiPageEditForm.label.CommentTitle"); %></label>
           <% } %>
  
           <% if (uiform.getChildById(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM).isRendered()) { %>	
-            <label class="publishActivityCheckBoxTitle pull-left">
+            <label class="publishActivityCheckBoxTitle pull-right">
               <%uiform.renderField(uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM);%>
             </label>
+          <% } %>
+           <% if(uiform.getChildById(uiform.FIELD_COMMENT).isRendered()) { %>
+            <div class="controls">
+              <% uiform.renderField(uiform.FIELD_COMMENT);%>
+            </div>
           <% } %>
         </div>
       </div>
