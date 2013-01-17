@@ -50,7 +50,7 @@ public class MockDataStorage implements DataStorage,Startable {
 
   private static final Log      LOG                  = ExoLogger.getLogger(MockDataStorage.class);
 
-  private HashMap<String, Page> pageCollections      = new HashMap<String, Page>();
+  static private HashMap<String, Page> pageCollections      = new HashMap<String, Page>();
 
   public static final String[]  PORTAL_CLASSIC__WIKI = new String[] { "portal::classic::wiki", PortalConfig.PORTAL_TYPE, "classic" };
 
@@ -116,7 +116,7 @@ public class MockDataStorage implements DataStorage,Startable {
    * @see org.exoplatform.portal.config.DataStorage#clonePage(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
-  public Page clonePage(String pageId, String clonedOwnerType, String clonedOwnerId, String clonedName) throws Exception {
+  public Page clonePage(String pageId, String clonedOwnerType, String clonedOwnerId, String clonedName) {
     return null;
   }
 
@@ -124,7 +124,7 @@ public class MockDataStorage implements DataStorage,Startable {
    * @see org.exoplatform.portal.config.DataStorage#remove(org.exoplatform.portal.config.model.Page)
    */
   @Override
-  public void remove(Page page) throws Exception {
+  public void remove(Page page) {
 
   }
 
@@ -132,7 +132,7 @@ public class MockDataStorage implements DataStorage,Startable {
    * @see org.exoplatform.portal.config.DataStorage#create(org.exoplatform.portal.config.model.Page)
    */
   @Override
-  public void create(Page page) throws Exception {
+  public void create(Page page) {
     pageCollections.put(page.getId(), page);
   }
 

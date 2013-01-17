@@ -15,7 +15,7 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 function UIWikiSavePage() {
   this.disableClass = ["SavePage", "MinorEdit", "SaveTemplate"];
@@ -56,4 +56,6 @@ UIWikiSavePage.prototype.disableButton = function(parent, action) {
 }
 
 eXo.wiki.UIWikiSavePage = new UIWikiSavePage();
-_module.UIWikiSavePage = eXo.wiki.UIWikiSavePage;
+return eXo.wiki.UIWikiSavePage;
+
+})(base, uiForm, webuiExt, $);

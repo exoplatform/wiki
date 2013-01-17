@@ -3,10 +3,9 @@
   
   def rcontext = _ctx.getRequestContext() ;
   String editActionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + "EditPage";
-  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiEditParagraph.init('" + uicomponent.id +"', '" + editActionId + "');");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiEditParagraph.init('" + uicomponent.id +"', '" + editActionId + "');");
+  requireJs.require("SHARED/UIWikiEditParagraph", "UIWikiEditParagraph");
+  requireJs.addScripts("UIWikiEditParagraph.init('" + uicomponent.id +"', '" + editActionId + "');");
 %>
 <div class="UIWikiPageContentArea" id="$uicomponent.id">
 	<% uicomponent.renderChildren(); %>

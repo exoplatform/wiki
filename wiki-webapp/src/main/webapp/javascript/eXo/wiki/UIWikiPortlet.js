@@ -15,8 +15,7 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-
+ */(function(base, uiForm, webuiExt, $) {
 
 if (!eXo.wiki)
   eXo.wiki = {};
@@ -351,7 +350,7 @@ UIWikiPortlet.prototype.ajaxRedirect = function(url) {
 }
 
 eXo.wiki.UIWikiPortlet = new UIWikiPortlet();
-_module.UIWikiPortlet = eXo.wiki.UIWikiPortlet;
+return eXo.wiki.UIWikiPortlet;
 
 /** ******************* Other functions ***************** */
 
@@ -362,3 +361,5 @@ String.prototype.trim = function() {
 String.prototype.replaceAll = function(oldText, newText) {
   return this.replace(new RegExp(oldText, "g"), newText);
 }
+
+})(base, uiForm, webuiExt, $);

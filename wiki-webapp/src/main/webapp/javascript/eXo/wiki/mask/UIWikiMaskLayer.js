@@ -19,7 +19,9 @@
 
 /**
  * Manages the mask layer component
- */
+ */(function(base, uiForm, webuiExt, $) {
+
+
 function UIWikiMaskLayer() {
 } ;
 
@@ -307,4 +309,6 @@ UIWikiMaskLayer.prototype.resizeMaskLayer = function() {
 };
 
 eXo.wiki.UIWikiMaskLayer = new UIWikiMaskLayer() ;
-_module.UIWikiMaskLayer = eXo.wiki.UIWikiMaskLayer;
+return eXo.wiki.UIWikiMaskLayer;
+
+})(base, uiForm, webuiExt, $);

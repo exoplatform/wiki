@@ -15,7 +15,8 @@
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
+
 if (!eXo.wiki) {
   eXo.wiki = {};
 };
@@ -52,4 +53,6 @@ UIWikiPageNotFound.prototype.hidePopup = function() {
 }
 
 eXo.wiki.UIWikiPageNotFound = new UIWikiPageNotFound();
-_module.UIWikiPageNotFound = eXo.wiki.UIWikiPageNotFound;
+return eXo.wiki.UIWikiPageNotFound;
+
+})(base, uiForm, webuiExt, $);

@@ -9,7 +9,7 @@
   <artifactId>wiki-extension-webapp</artifactId>
   <packaging>war</packaging>
   <name>eXo Wiki Extension configuration war</name>
-  <dependencies>
+  <dependencies>    
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.container</artifactId>
@@ -17,7 +17,7 @@
     </dependency>
     <!--Dependencies for all classes declared in web.xml files-->
     <dependency>
-      <groupId>org.exoplatform.portal</groupId>
+      <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
       <scope>runtime</scope>
     </dependency>

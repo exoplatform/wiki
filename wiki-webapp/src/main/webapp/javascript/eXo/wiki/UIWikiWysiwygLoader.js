@@ -6,7 +6,6 @@
  * @param lazy {@code true} if you want to load the WYSIWYG code on demand, {@code false} if you want to load the
  *            WYSIWYG code when the page is loaded
  */
-
 var xwe;
 
 if (!eXo.wiki)

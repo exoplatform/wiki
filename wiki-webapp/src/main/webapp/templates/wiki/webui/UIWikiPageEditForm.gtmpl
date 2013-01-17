@@ -2,11 +2,7 @@
   import java.util.List;
   
   uicomponent.checkToDissplayNotification();
-
-  def rcontext = _ctx.getRequestContext() ;  
-//rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPageEditForm.editPageContent('" + uicomponent.id + "');");
-   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-   requireJs.require("SHARED/wiki-edit", "wikiEdit");
+  def rcontext = _ctx.getRequestContext() ;    
   def saveDraftSuccessMessage = _ctx.appRes("DraftPage.msg.save-draft-success");
   def discardDraftConfirmMessage = _ctx.appRes("DraftPage.msg.keep-draft-question");
   
@@ -30,11 +26,15 @@
   List notificationMessages = uicomponent.getNotificationMessages();
   String untitledLabel = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
   
-  requireJs.addScripts("wikiEdit.UIWikiPageEditForm.init('" + uicomponent.id + "', '" + saveDraftRestUrl + "', " + isRunAutoSave + ", '" + pageRevision + "', " + isDraftForNewPage + ", " + getAutoSaveSequenceTime + ", '" + untitledLabel + "');");
-  requireJs.addScripts("wikiEdit.UIWikiPageEditForm.setMessageResource('" + saveDraftSuccessMessage + "', '" + discardDraftConfirmMessage + "');");
-  requireJs.addScripts("wikiEdit.UIWikiPageEditForm.setCancelDraftAction('" + removeDraftRestUrl + "', '" + cancelDraftConfirmTitle + "', '" + cancelDraftConfirmMessage + "', '" + yesButtonLabel + "', '" + noButtonLabel + "');");
-  requireJs.addScripts("wikiEdit.UIWikiPageEditForm.setRestParam('" + wikiType + "', '" + wikiOwner + "', '" + pageId + "', '" + initDraftName + "');");
-  requireJs.addScripts("wikiEdit.UIWikiPageEditForm.synPublishActivityCheckboxesStatus('" + uiform.FIELD_PUBLISH_ACTIVITY_UPPER + "','" + uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM + "');");
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
+  requireJs.require("SHARED/UIWikiAjaxRequest", "UIWikiAjaxRequest");
+  requireJs.require("SHARED/UIForm", "UIForm");
+  requireJs.addScripts("UIWikiPageEditForm.init('" + uicomponent.id + "', '" + saveDraftRestUrl + "', " + isRunAutoSave + ", '" + pageRevision + "', " + isDraftForNewPage + ", " + getAutoSaveSequenceTime + ", '" + untitledLabel + "');");
+  requireJs.addScripts("UIWikiPageEditForm.setMessageResource('" + saveDraftSuccessMessage + "', '" + discardDraftConfirmMessage + "');");
+  requireJs.addScripts("UIWikiPageEditForm.setCancelDraftAction('" + removeDraftRestUrl + "', '" + cancelDraftConfirmTitle + "', '" + cancelDraftConfirmMessage + "', '" + yesButtonLabel + "', '" + noButtonLabel + "');");
+  requireJs.addScripts("UIWikiPageEditForm.setRestParam('" + wikiType + "', '" + wikiOwner + "', '" + pageId + "', '" + initDraftName + "');");
+  requireJs.addScripts("UIWikiPageEditForm.synPublishActivityCheckboxesStatus('" + uiform.FIELD_PUBLISH_ACTIVITY_UPPER + "','" + uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM + "');");
 %>
 <div class="UIWikiPageEditForm">
 <% uiform.begin();%>

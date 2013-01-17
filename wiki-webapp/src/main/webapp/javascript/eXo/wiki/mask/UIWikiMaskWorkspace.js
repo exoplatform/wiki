@@ -19,7 +19,8 @@
 
 /**
  * The mask layer, that appears when an ajax call waits for its result
- */
+ */(function(base, uiForm, webuiExt, $) {
+
 function UIWikiMaskWorkspace() {
 };
 /**
@@ -69,4 +70,6 @@ UIWikiMaskWorkspace.prototype.resetPosition = function() {
 } ;
 
 eXo.wiki.UIWikiMaskWorkspace = new UIWikiMaskWorkspace() ;
-_module.UIWikiMaskWorkspace = eXo.wiki.UIWikiMaskWorkspace;
+return eXo.wiki.UIWikiMaskWorkspace;
+
+})(base, uiForm, webuiExt, $);
