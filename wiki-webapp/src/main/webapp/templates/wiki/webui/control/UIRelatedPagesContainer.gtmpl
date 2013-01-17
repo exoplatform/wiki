@@ -4,13 +4,14 @@
   import org.exoplatform.wiki.webui.control.action.RemoveRelatedPageActionComponent;
  %>
 <div class="uiPageInfoItem uiPageInfoRelatedPage">
-	<h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.related-pages") %></h6>
+	
 	    
 	<%
 	  def currentWikiPage = uicomponent.getCurrentPage();
 	  def relatedPages = currentWikiPage.getRelatedPages(); 
 	%>
 	<table class="uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+		<caption><h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.related-pages") %></h6></caption>
 	  <thead>
 	    <tr>
 	      <th ><%= _ctx.appRes("UIWikiPageInfo.label.wiki")%></th>
@@ -57,10 +58,16 @@
 	      <td colspan="3"></td>
 	   	</tr>
 	   <% } %>
+	   <tr>
+	      <td colspan="3" style="padding: 0px;">
+			<% if(uicomponent.isHasExtension()) {
+			  uicomponent.renderChild(AddRelatedPageActionComponent.class);
+			  }
+			  %>
+		  </td>
+	   	</tr>
 	  </tbody>
+	  
 	</table>
-	<% if(uicomponent.isHasExtension()) {
-	  uicomponent.renderChild(AddRelatedPageActionComponent.class);
-	  }
-	  %>
+	
 </div>

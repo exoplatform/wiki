@@ -17,8 +17,9 @@
   def movelink = "";
 %>
 <div class="uiPageInfoItem uiPageInfoSummary">
-  <h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.summary")%></h6>
+  
 	<table class="uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+		<caption><h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.summary")%></h6></caption>
 		<tr>
 			<td><b><%= _ctx.appRes("UIWikiPageInfo.label.title")%></b></td>
 			<td>$title</td>

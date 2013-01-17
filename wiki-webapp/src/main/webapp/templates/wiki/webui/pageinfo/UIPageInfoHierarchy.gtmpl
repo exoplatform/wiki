@@ -9,6 +9,7 @@
 <div class="uiPageInfoItem uiPageInfoHierarchy">
 	<h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.hierarchy")%></h6>
   <div class="pageInfoItemBody">
+	
 		<% if (parentPage != null) { %>
 	  <div><%= _ctx.appRes("UIWikiPageInfo.label.parent-page")%></div>
 	  <ul class="content">
