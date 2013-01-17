@@ -7,8 +7,8 @@ import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.commons.DateTimeFomatter;
 
   def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiPageNotFound.init();");  
+  requireJs.require("SHARED/UIWikiPageNotFound", "UIWikiPageNotFound");
+  requireJs.addScripts("UIWikiPageNotFound.init();");  
 %>
 <div class="UIWikiPageNotFound">
 

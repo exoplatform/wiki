@@ -9,6 +9,11 @@
   String cancelLabel = _ctx.appRes("UIConfirmBox.label.Cancel");
   boolean isNewMode = uicomponent.isNewMode();
   String pageTitleInputId= uicomponent.getPageTitleInputId();
+  def rcontext = _ctx.getRequestContext() ;  
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/UIWikiSavePage", "UIWikiSavePage");
+  requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");
+  requireJs.require("SHARED/UIForm", "UIForm");
 %>
 <a id="$uicomponent.id" href="$link" onclick="return eXo.wiki.UIWikiSavePage.confirm('$uicomponent.id', $isNewMode, '$pageTitleInputId', '$untitledMessage','$titleMessage',  '$addMessage',  'SavePage Icon',  '$confirmLabel','$cancelLabel');" class="SavePage ActionButton LightBlueStyle" title="<%=_ctx.appRes("UISubmitToolBar.action.SavePage");%>">
     <%=_ctx.appRes("UISubmitToolBar.action.SavePage");%>

@@ -61,7 +61,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
 
   static {
     initContainer();
-    initJCR();
+    //initJCR();
   }
 
   protected void begin() {

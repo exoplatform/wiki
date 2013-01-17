@@ -86,14 +86,14 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
   }
   
   @Override
-  public void activate() throws Exception {
+  public void activate() {
     
   }
   
   
   
   @Override
-  public void deActivate() throws Exception {
+  public void deActivate() {
 
     
   }

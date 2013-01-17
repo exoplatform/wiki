@@ -16,6 +16,8 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
+import java.util.Collection;
+
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -26,6 +28,7 @@ import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
@@ -49,7 +52,7 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
       return null;
     }
     OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
-                                                                                       .getComponentInstanceOfType(OrganizationService.class);
+    		                                                                            .getComponentInstanceOfType(OrganizationService.class);        
     try {
       if (organizationService.getGroupHandler().findGroupById(wikiOwner) == null) {
         return null;

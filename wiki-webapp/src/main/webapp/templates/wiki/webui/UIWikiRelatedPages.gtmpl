@@ -5,10 +5,9 @@
   def relatedPages = currentPage.getRelatedPages();
 
   def rcontext = _ctx.getRequestContext();
-  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIRelated.initMacros();");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIRelated.initMacros();");
+  requireJs.require("SHARED/UIRelated", "UIRelated");
+  requireJs.addScripts("UIRelated.initMacros();");
 %>
 
 <div id="$uicomponent.id" class="Related">

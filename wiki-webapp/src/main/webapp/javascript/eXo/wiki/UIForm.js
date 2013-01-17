@@ -15,7 +15,7 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 if(!eXo.wiki) eXo.wiki = {};
 
@@ -46,4 +46,6 @@ UIForm.prototype.submitPageEvent = function(formId, action, params) {
 } ;
 
 eXo.wiki.UIForm = new UIForm();
-_module.UIForm = eXo.wiki.UIForm;
+return eXo.wiki.UIForm;
+
+})(base, uiForm, webuiExt, $);

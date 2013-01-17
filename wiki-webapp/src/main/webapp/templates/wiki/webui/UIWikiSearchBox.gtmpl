@@ -8,10 +8,10 @@
   String restUrl= uicomponent.getContextSearchURL();
   
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
-  requireJs.addScripts("wikiView.UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
-  requireJs.addScripts("wikiView.UIWikiSearchBox.searchMsg ='" + searchForLabel +"' ;");
+  requireJs.require("SHARED/UIWikiSearchBox", "UIWikiSearchBox");
+  requireJs.addScripts("UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
+  requireJs.addScripts("UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
+  requireJs.addScripts("UIWikiSearchBox.searchMsg ='" + searchForLabel +"' ;");
 %>
 <div class="UIWikiSearchBox">
   <% uiform.begin() %>

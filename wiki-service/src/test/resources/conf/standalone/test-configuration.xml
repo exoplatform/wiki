@@ -24,117 +24,8 @@
    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
   
-  <component>
-    <key>org.exoplatform.commons.chromattic.ChromatticManager</key>
-    <type>org.exoplatform.commons.chromattic.ChromatticManager</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.portal.config.UserPortalConfigService</key>
-    <type>org.exoplatform.wiki.resolver.MockUserPortalConfigService</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.portal.config.UserACL</key>
-    <type>org.exoplatform.wiki.mock.MockUserACL</type>
-    <init-params>
-    </init-params>
-  </component>
-
-  <component>
-    <key>org.exoplatform.portal.config.DataStorage</key>
-    <type>org.exoplatform.wiki.mock.MockDataStorage</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.portal.mop.navigation.NavigationService</key>
-    <type>org.exoplatform.wiki.mock.MockNavigationService</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.portal.mop.description.DescriptionService</key>
-    <type>org.exoplatform.wiki.mock.MockDescriptionService</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.services.organization.OrganizationService</key>
-    <type>org.exoplatform.services.organization.hibernate.OrganizationServiceImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.services.security.Authenticator</key>
-    <type>org.exoplatform.services.organization.auth.OrganizationAuthenticatorImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.services.database.HibernateService</key>
-    <type>org.exoplatform.services.database.impl.HibernateServiceImpl</type>
-    <init-params>
-      <properties-param>
-        <name>hibernate.properties</name>
-        <description>Default Hibernate Service</description>
-        <property name="hibernate.show_sql" value="false" />
-        <property name="hibernate.cglib.use_reflection_optimizer" value="true" />
-        <property name="hibernate.connection.url" value="jdbc:hsqldb:mem:target/temp/data/portal" />
-        <property name="hibernate.connection.driver_class" value="org.hsqldb.jdbcDriver" />
-        <property name="hibernate.connection.autocommit" value="true" />
-        <property name="hibernate.connection.username" value="sa" />
-        <property name="hibernate.connection.password" value="" />
-        <property name="hibernate.dialect" value="org.hibernate.dialect.HSQLDialect" />
-        <property name="hibernate.c3p0.min_size" value="5" />
-        <property name="hibernate.c3p0.max_size" value="20" />
-        <property name="hibernate.c3p0.timeout" value="1800" />
-        <property name="hibernate.c3p0.max_statements" value="50" />
-      </properties-param>
-    </init-params>
-  </component>
-
-  <component>
-     <key>org.jboss.cache.transaction.TransactionManagerLookup</key>
-     <type>org.jboss.cache.transaction.JBossStandaloneJTAManagerLookup</type>
-  </component>
   
-  <component>
-    <key>org.exoplatform.services.transaction.TransactionService</key>
-    <type>org.exoplatform.services.transaction.jbosscache.JBossTransactionsService</type>
-    <init-params>
-      <value-param>
-        <name>timeout</name>
-        <value>300</value>
-      </value-param>
-    </init-params>
-  </component>
-
-  <component>
-    <key>org.gatein.common.transaction.JTAUserTransactionLifecycleService</key>
-    <type>org.gatein.common.transaction.JTAUserTransactionLifecycleServiceImpl</type>
-  </component>
-
-  <component>
-    <key>org.exoplatform.portal.pom.data.ModelDataStorage</key>
-    <type>org.exoplatform.portal.pom.config.POMDataStorage</type>
-  </component>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.services.database.HibernateService</target-component>
-    <component-plugin>
-      <name>add.hibernate.mapping</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.database.impl.AddHibernateMappingPlugin</type>
-      <init-params>
-        <values-param>
-          <name>hibernate.mapping</name>
-          <value>org/exoplatform/services/organization/impl/UserImpl.hbm.xml</value>
-          <value>org/exoplatform/services/organization/impl/MembershipImpl.hbm.xml</value>
-          <value>org/exoplatform/services/organization/impl/GroupImpl.hbm.xml</value>
-          <value>org/exoplatform/services/organization/impl/MembershipTypeImpl.hbm.xml</value>
-          <value>org/exoplatform/services/organization/impl/UserProfileData.hbm.xml</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
-  <!-- The section for configuring data for user/group -->
+ <!-- The section for configuring data for user/group -->
   <external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
     <component-plugin>
@@ -175,6 +66,7 @@
         </object-param>
       </init-params> 
     </component-plugin>
+    
     <component-plugin>
       <name>ecm.new.user.event.listener</name>
       <set-method>addListenerPlugin</set-method>
@@ -394,4 +286,4 @@
 
   <remove-configuration>org.exoplatform.services.cache.ExoCacheFactory</remove-configuration>
   <remove-configuration>org.exoplatform.services.scheduler.JobSchedulerService</remove-configuration>
-</configuration>
+</configuration> 

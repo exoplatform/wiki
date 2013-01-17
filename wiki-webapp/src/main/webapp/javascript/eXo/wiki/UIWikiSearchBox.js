@@ -15,12 +15,7 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-
-/**
- * @author Lai Trung Hieu
- */
-
+ */(function(base, uiForm, webuiExt, $) {
 
 function UIWikiSearchBox() {
   this.restURL = null;
@@ -317,4 +312,6 @@ UIWikiSearchBox.prototype.shortenWord = function(source, container) {
 };
 
 eXo.wiki.UIWikiSearchBox = new UIWikiSearchBox();
-_module.UIWikiSearchBox = eXo.wiki.UIWikiSearchBox;
+return eXo.wiki.UIWikiSearchBox;
+
+})(base, uiForm, webuiExt, $);
