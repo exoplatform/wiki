@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
-import java.util.ResourceBundle;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
@@ -38,6 +37,7 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -53,21 +53,16 @@ import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.common.http.HTTPStatus;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.MimeTypeResolver;
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.xml.PortalContainerInfo;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -336,7 +331,48 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     return spaces;
   }
-
+  
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+  private List getLastAccessedSpace(String userId, String appId, int offset, int limit) throws Exception {
+    List spaces = new ArrayList();
+    Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+    Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+    spaces = (List) spaceServiceClass.getDeclaredMethod("getLastAccessedSpace", String.class, String.class, Integer.class, Integer.class)
+      .invoke(spaceService, userId, appId, new Integer(offset), new Integer(limit));
+    return spaces;
+  }
+  
+  @SuppressWarnings({ "rawtypes", "unchecked"})
+  private <T> T getValueFromSpace(Object space, String getterMethod, Class<T> propertyClass) throws Exception {
+    Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+    T propertyValue = (T) spaceClass.getMethod(getterMethod).invoke(space);
+    return propertyValue;
+  }
+  
+  @GET
+  @Path("/lastVisited/spaces")
+  @Produces("application/xml")
+  @SuppressWarnings("rawtypes")
+  public Spaces getLastVisitedSpaces(@Context UriInfo uriInfo,
+                                     @QueryParam("offset") Integer offset,
+                                     @QueryParam("limit") Integer limit) {
+    Spaces spaces = objectFactory.createSpaces();
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    try {
+      List lastVisitedSpaces = getLastAccessedSpace(currentUser, "Wiki", offset, limit);
+      for (Object space : lastVisitedSpaces) {
+        String groupId = getValueFromSpace(space, "getGroupId", String.class);
+        String displayName = getValueFromSpace(space, "getDisplayName", String.class);
+        Wiki wiki = wikiService.getWikiById(groupId);
+        Page page = wikiService.getPageById(wiki.getType(), wiki.getOwner(), WikiNodeType.Definition.WIKI_HOME_NAME);
+        spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wiki.getType(), displayName, page));
+      }
+    } catch (Exception e) {
+      log.error(e.getMessage(), e);
+    }
+    return spaces;
+  }
+  
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/")
   @Produces("application/xml")

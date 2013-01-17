@@ -1359,10 +1359,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public boolean addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception {
-    
     PageImpl orginary = (PageImpl) getPageById(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
     PageImpl related = (PageImpl) getPageById(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
-    
     return orginary.addRelatedPage(related) != null;
   }
 
@@ -1374,8 +1372,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public boolean removeRelatedPage(WikiPageParams orginaryPageParams,
-                                   WikiPageParams relatedPageParams) throws Exception {
+  public boolean removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception {
     PageImpl orginary = (PageImpl) getPageById(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
     PageImpl related = (PageImpl) getPageById(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
     return orginary.removeRelatedPage(related) != null;

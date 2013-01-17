@@ -527,7 +527,7 @@ isc.XWEWikiDataSource.addProperties({
 
 isc.XWEWikiDataSource.addMethods({
     init : function() {
-        this.dataURL = XWiki.constants.rest.baseRestURI + "wiki/" + eXo.wiki.UIWikiRichTextArea.wiki + "/spaces";
+        this.dataURL = XWiki.constants.rest.baseRestURI + "wiki/lastVisited/spaces?offset=0&limit=10";
         this.Super("init", arguments);
     }
 });
