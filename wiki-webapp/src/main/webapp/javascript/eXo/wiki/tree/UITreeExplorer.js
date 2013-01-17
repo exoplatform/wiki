@@ -1,3 +1,4 @@
+(function(base, uiForm, webuiExt, $) {
 
 if(eXo.wiki.UITreeExplorer ==  null) {
   eXo.wiki.UITreeExplorer = {};
@@ -176,13 +177,15 @@ UITreeExplorer.prototype.buildNode = function(data) {
   var lastNodeClass = "";
   var hoverClass = "node";
   var excerptData = data.excerpt;
-  var path = data.path.replaceAll("/", ".");
+  var Re = new RegExp("\\/","g");
+  var path = data.path.replace(Re, ".");
   var param = "?path=" + path;
   if (excerptData!=null) {
     param += "&excerpt=true";
   }
   if (data.extendParam)
-    param += "&current=" + data.extendParam.replaceAll("/",".");
+    param += "&current=" + data.extendParam.replace(Re, ".");
+  
   if (data.lastNode == true) {
     lastNodeClass = "lastNode node";
   }
@@ -244,4 +247,6 @@ UITreeExplorer.prototype.cleanParam = function(data){
 }
 
 eXo.wiki.UITreeExplorer = new UITreeExplorer();
-_module.UITreeExplorer = eXo.wiki.UITreeExplorer;
+return eXo.wiki.UITreeExplorer;
+
+})(base, uiForm, webuiExt, $);

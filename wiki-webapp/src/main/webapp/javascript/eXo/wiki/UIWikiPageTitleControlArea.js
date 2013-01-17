@@ -15,7 +15,7 @@
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 function UIWikiPageTitleControlArea() {
 };
@@ -29,4 +29,6 @@ UIWikiPageTitleControlArea.prototype.init = function(componentId, inputId, untit
 };
 
 eXo.wiki.UIWikiPageTitleControlArea = new UIWikiPageTitleControlArea();
-_module.UIWikiPageTitleControlArea = eXo.wiki.UIWikiPageTitleControlArea;
+return eXo.wiki.UIWikiPageTitleControlArea;
+
+})(base, uiForm, webuiExt, $);

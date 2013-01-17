@@ -15,11 +15,7 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */
-
-/**
- * @author Lai Trung Hieu
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 
 function UIWikiTemplateForm() {
@@ -95,4 +91,6 @@ UIWikiTemplateForm.prototype.doAdvanceSearch = function() {
 }
 
 eXo.wiki.UIWikiTemplateForm = new UIWikiTemplateForm();
-_module.UIWikiTemplateForm = eXo.wiki.UIWikiTemplateForm;
+return eXo.wiki.UIWikiTemplateForm;
+
+})(base, uiForm, webuiExt, $);

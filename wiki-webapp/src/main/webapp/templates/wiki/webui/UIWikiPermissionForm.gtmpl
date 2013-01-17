@@ -3,8 +3,8 @@
   
   JavascriptManager jsmanager = _ctx.getRequestContext().getJavascriptManager();
   def requireJs = jsmanager.getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiPermissionForm.init('" + uicomponent.id + "') ;");  
+  requireJs.require("SHARED/UIWikiPermissionForm", "UIWikiPermissionForm");
+  requireJs.addScripts("UIWikiPermissionForm.init('" + uicomponent.id + "') ;");   
   uicomponent.renderChild(uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)) ;
 %>
 <div class="uiWikiPagePermission">

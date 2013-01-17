@@ -72,7 +72,7 @@ public abstract class WikiContainer<T extends Wiki> {
     else {
       if(hasAdminPermission){
         wiki = addWiki(wikiOwner);
-        ((WikiImpl)wiki).initTemplate();
+        if(wiki != null) ((WikiImpl)wiki).initTemplate();
       }
       return wiki;
     }

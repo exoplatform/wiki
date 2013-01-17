@@ -62,14 +62,14 @@
               <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />                           
             </properties>
             
-          </query-handler>
-          <lock-manager>
-            <time-out>15m</time-out><!-- 15min -->
-            <persister class="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister">
-              <properties>
-                <property name="path" value="../temp/lock/gadgets" />
-              </properties>
-            </persister>
+          </query-handler>          
+          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
+            <properties>
+              <property name="persister-class-name" value="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister"/>
+              <property name="time-out" value="15m" />
+              <property name="path" value="../temp/lock/gadgets" />
+              <property name="jbosscache-configuration" value="exo.portal.component.test.jcr-jbosscache-lock-config.xml" />
+            </properties>
           </lock-manager>
         </workspace>
       </workspaces>

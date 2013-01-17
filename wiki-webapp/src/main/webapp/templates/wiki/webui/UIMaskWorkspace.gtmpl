@@ -20,15 +20,15 @@
 	String init = "eXo.wiki.UIWikiMaskWorkspace.init('"+id+"', "+isShow+", "+width+", "+height+");";
 	String initHeight = "eXo.wiki.UIWikiPagePreview.init('"+id+"');";
 	String resize = "eXo.wiki.UIWikiMaskWorkspace.resetPosition('"+id+"');";
-	//rcontext.getJavascriptManager().addCustomizedOnLoadScript(init) ;
-	//rcontext.getJavascriptManager().addCustomizedOnLoadScript(initHeight) ;
-	//rcontext.getJavascriptManager().addOnResizeJavascript("eXo.wiki.UIWikiMaskWorkspace.resetPosition") ;
 	
 	def requireJs = rcontext.getJavascriptManager().getRequireJS();
-	requireJs.require("SHARED/wiki-view", "wikiView");
-	requireJs.addScripts("wikiView.UIWikiMaskWorkspace.init('" + id + "', " + isShow + ", " + width + ", " + height + ") ;");
-  requireJs.addScripts("wikiView.UIWikiPagePreview.init('" + uicomponent.id + "') ;");
-  requireJs.addScripts("wikiView.UIWikiMaskWorkspace.resetPosition() ;");
+	requireJs.require("SHARED/UIWikiMaskWorkspace", "UIWikiMaskWorkspace");
+	requireJs.require("SHARED/UIWikiPagePreview", "UIWikiPagePreview");
+	requireJs.require("SHARED/UIWikiMaskLayer", "UIWikiMaskLayer");
+	
+	requireJs.addScripts("UIWikiMaskWorkspace.init('" + id + "', " + isShow + ", " + width + ", " + height + ") ;");
+  requireJs.addScripts("UIWikiPagePreview.init('" + uicomponent.id + "') ;");
+  requireJs.addScripts("UIWikiMaskWorkspace.resetPosition() ;");
 %>
 <div class="uiWikiMaskWorkspace" id="$maskId" style="display: none;">
 	<div class="wikiPreviewHeader clearfix">

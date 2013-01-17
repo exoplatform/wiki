@@ -3,12 +3,12 @@ package org.exoplatform.wiki.resolver;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
-import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.page.PageContext;
+import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 public class URLResolver extends Resolver{
@@ -74,14 +74,14 @@ public class URLResolver extends Resolver{
       }
     }else{
       if (portalUserNode != null && portalUserNode.getPageRef() != null
-          && !portalUserNode.getPageRef().startsWith(PortalConfig.PORTAL_TYPE)) {
-        String[] components = Utils.split("::", portalUserNode.getPageRef());
-        params.setType(components[0]);
-        params.setOwner(components[1]);
+          && !portalUserNode.getPageRef().toString().startsWith(PortalConfig.PORTAL_TYPE)) {
+      	PageKey pageKey = portalUserNode.getPageRef();
+        params.setType(pageKey.getSite().getTypeName());
+        params.setOwner(pageKey.getSite().getName());
       } else {
         params.setType(PortalConfig.PORTAL_TYPE);
-        Page page = configService.getPage(portalUserNode.getPageRef(), ConversationState.getCurrent().getIdentity().getUserId());
-        params.setOwner(page.getOwnerId());
+        PageContext pageContext = configService.getPage(portalUserNode.getPageRef());
+        params.setOwner(pageContext.getKey().getSite().getName());
       }
       if (uri.length() > 0)
         params.setPageId(uri);

@@ -1,9 +1,8 @@
 <%
 	def rcontext = _ctx.getRequestContext() ;
-	//rcontext.getJavascriptManager().addJavascript("eXo.wiki.WikiLayout.setHeightRightContent() ;") ; 
 	def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.WikiLayout.setHeightRightContent() ;") ; 
+  requireJs.require("SHARED/WikiLayout", "WikiLayout");
+  requireJs.addScripts("WikiLayout.setHeightRightContent() ;") ; 
 %>
 
 <div class="uiWikiPageContainer" id="$uicomponent.id">

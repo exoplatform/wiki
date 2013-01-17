@@ -2,8 +2,8 @@
   def rcontext = _ctx.getRequestContext() ;  
   //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIDropdownMenu.init(\""+uicomponent.id+"\");");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIDropdownMenu.init(\""+uicomponent.id+"\");");
+  requireJs.require("SHARED/UIDropdownMenu", "UIDropdownMenu");
+  requireJs.addScripts("UIDropdownMenu.init(\""+uicomponent.id+"\");");
 %>
 <div id="$uicomponent.id" class="dropdown">
 	<div data-toggle="dropdown" class="uiActionWithLabel"><%= _ctx.appRes("UIWikiToolBar.action.Browse") %><i class="uiIconMiniArrowDown uiIconLightGray"></i></div>

@@ -6,8 +6,8 @@
   String okLabel = _ctx.appRes("UIConfirmBox.label.Ok");
   String cancelLink = "window.location.href='" + uicomponent.getCurrentPageURL() + "'";
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-edit", "wikiEdit");
-  requireJs.addScripts("wikiEdit.UIConfirmBox.init();");  
+  requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");
+  requireJs.addScripts("UIConfirmBox.init();");  
  %>
 <a style="display:none" id="link_$uicomponent.id" href="$cancelLink"></a>
 <button type="button" id="$uicomponent.id" onclick="if(eXo.wiki.UIWikiPageEditForm.cancelSave('$uicomponent.id','$titleMessage','$exitMessage', 'Delete Icon','$okLabel','$cancelLabel'))  $cancelLink;" 

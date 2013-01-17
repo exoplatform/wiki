@@ -92,7 +92,7 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       String downloadLink = dservice.getDownloadLink(dservice.addDownloadResource(dresource)) ;
       
       RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();      
-      requireJS.require("SHARED/wiki-view", "wikiView").addScripts("wikiView.UIWikiPortlet.ajaxRedirect('" + downloadLink + "');");
+      requireJS.require("SHARED/UIWikiPortlet", "UIWikiPortlet").addScripts("UIWikiPortlet.ajaxRedirect('" + downloadLink + "');");
       super.processEvent(event);      
     }
     

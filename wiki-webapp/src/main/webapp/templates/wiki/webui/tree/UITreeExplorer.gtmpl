@@ -32,8 +32,8 @@
  
  if (initParam!=null) {
    def requireJs = rcontext.getJavascriptManager().getRequireJS();
-   requireJs.require("SHARED/wiki-view", "wikiView");
-   requireJs.addScripts("wikiView.UITreeExplorer.init('" + uicomponent.id  + "','" + initParam + "',true," + isRenderLink + ",'" + baseLink + "','" + retrictedLabel + "',\"" + restrictedTitle + "\");");
+   requireJs.require("SHARED/UITreeExplorer", "UITreeExplorer");
+   requireJs.addScripts("UITreeExplorer.init('" + uicomponent.id  + "','" + initParam + "',true," + isRenderLink + ",'" + baseLink + "','" + retrictedLabel + "',\"" + restrictedTitle + "\");");
  } 
 %>
 	<div class="uiTreeExplorer" id="$uicomponent.id">

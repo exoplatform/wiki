@@ -1,10 +1,9 @@
 <%
   def rcontext = _ctx.getRequestContext() ;
   String inputId = uicomponent.TEXT;  
-  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiAdvanceSearchForm.init(\"" + inputId + "\");");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiAdvanceSearchForm.init(\"" + inputId + "\");");
+  requireJs.require("SHARED/UIWikiAdvanceSearchForm", "UIWikiAdvanceSearchForm");
+  requireJs.addScripts("UIWikiAdvanceSearchForm.init(\"" + inputId + "\");");
 %>
 
 <div class="uiWikiAdvanceSearchForm">

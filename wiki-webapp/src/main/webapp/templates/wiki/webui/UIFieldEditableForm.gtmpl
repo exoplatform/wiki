@@ -14,8 +14,8 @@ import org.exoplatform.wiki.commons.Utils;
   String submitAction= uicomponent.url(uicomponent.SAVE);  
   //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIFieldEditableForm.init('"+ uicomponent.id + "', '" +parentId + "', '" +titleId +"', '" + inputId +"');");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIFieldEditableForm.init('"+ uicomponent.id + "', '" +parentId + "', '" +titleId +"', '" + inputId +"');");
+  requireJs.require("SHARED/UIFieldEditableForm", "UIFieldEditableForm");
+  requireJs.addScripts("UIFieldEditableForm.init('"+ uicomponent.id + "', '" +parentId + "', '" +titleId +"', '" + inputId +"');");
   
 	%>
 

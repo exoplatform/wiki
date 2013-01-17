@@ -5,8 +5,8 @@
   def rcontext = _ctx.getRequestContext();  
   //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIUpload.initUploadEntry('"+uploadId+"',"+isAutoUpload+");");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView").
-  addScripts("wikiView.UIUpload.initUploadEntry(['"+uploadId+"'],"+isDynamicMode+");");
+  requireJs.require("SHARED/UIUpload", "UIUpload");
+  requireJs.addScripts("UIUpload.initUploadEntry('"+uploadId+"',"+isAutoUpload+");");
 %>
 <div id="<%=uicomponent.getId()%>">
 <input type="hidden" id="RemoveInputLabel" value="<%= _ctx.appRes("UIFormUploadInput.label.RemoveInput"); %>"/>

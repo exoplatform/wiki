@@ -2,9 +2,8 @@
   def rcontext = _ctx.getRequestContext(); 
   String inputId = uiform.TEMPLATE_SEARCHBOX;
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
-
+  requireJs.require("SHARED/UIWikiTemplateForm", "UIWikiTemplateForm");
+  requireJs.addScripts("UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
   def selectLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_ADD);
   def cancelLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_CANCEL);
 %>

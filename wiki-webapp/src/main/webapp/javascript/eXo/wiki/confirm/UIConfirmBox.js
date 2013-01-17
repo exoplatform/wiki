@@ -15,7 +15,7 @@
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 if (!eXo.wiki)
   eXo.wiki = {};
@@ -120,4 +120,6 @@ UIConfirmBox.prototype.resetPosition = function() {
 };
 
 eXo.wiki.UIConfirmBox = new UIConfirmBox();
-_module.UIConfirmBox = eXo.wiki.UIConfirmBox;
+return eXo.wiki.UIConfirmBox;
+
+})(base, uiForm, webuiExt, $);

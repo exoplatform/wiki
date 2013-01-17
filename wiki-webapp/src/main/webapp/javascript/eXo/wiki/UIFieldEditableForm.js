@@ -15,7 +15,7 @@
  * along with this software; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF
  * site: http://www.fsf.org.
- */
+ */(function(base, uiForm, webuiExt, $) {
 
 if (!eXo.wiki)
   eXo.wiki = {};
@@ -105,4 +105,6 @@ UIFieldEditableForm.prototype.enterHandler = function(evt) {
 };
 
 eXo.wiki.UIFieldEditableForm = new UIFieldEditableForm();
-_module.UIFieldEditableForm = eXo.wiki.UIFieldEditableForm;
+return eXo.wiki.UIFieldEditableForm;
+
+})(base, uiForm, webuiExt, $);

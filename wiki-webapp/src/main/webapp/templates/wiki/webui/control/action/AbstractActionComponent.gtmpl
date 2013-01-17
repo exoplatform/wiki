@@ -8,6 +8,10 @@
  String actionLink = uicomponent.getActionLink();
  boolean isAnchor = uicomponent.isAnchor();
  String labelName = _ctx.appRes(uicomponent.getParent().getName() +".action." + actionName);
+ def rcontext = _ctx.getRequestContext() ;  
+ def requireJs = rcontext.getJavascriptManager().getRequireJS();
+ requireJs.require("SHARED/UIWikiAjaxRequest", "UIWikiAjaxRequest");
+ requireJs.require("SHARED/UIForm", "UIForm");
   
  %>
 <% if (isAnchor)  {%>

@@ -11,8 +11,8 @@
   51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA, or see the FSF site: 
   http://www.fsf.org. -->
 
-<gatein-resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_2_1 http://www.gatein.org/xml/ns/gatein_resources_1_2_1"
-   xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_2_1">
+<gatein-resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.gatein.org/xml/ns/gatein_resources_1_3 http://www.gatein.org/xml/ns/gatein_resources_1_3"
+   xmlns="http://www.gatein.org/xml/ns/gatein_resources_1_3">
 
   <portal-skin>
     <skin-name>Default</skin-name>
@@ -42,7 +42,7 @@
     <name>WikiPortlet</name>
     <module>      
       <depends>
-        <module>wiki-view</module>
+        <module>wikiView</module>
       </depends>
       <depends>
          <module>jquery</module>
@@ -52,35 +52,161 @@
   
   <!-- Javascripts used in View Mode -->
   <module>
-    <name>wiki-view</name>
+    <name>UIWikiPortlet</name>
+    <load-group>wikiView</load-group>
     <script>
-      <name>eXo.wiki.UIWikiPortlet</name>
       <path>/javascript/eXo/wiki/UIWikiPortlet.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>
+     <depends>
+      <module>UIRelate</module>
+    </depends>
+     <depends>
+      <module>UITreeExplorer</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiAjaxRequest</name>
+    <load-group>wikiView</load-group>
     <script>
-        <name>eXo.wiki.UIWikiAjaxRequest</name>
-        <path>/javascript/eXo/wiki/UIWikiAjaxRequest.js</path>
+      <path>/javascript/eXo/wiki/UIWikiAjaxRequest.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiPageVersionsList</name>
+    <load-group>wikiView</load-group>
     <script>
-        <name>eXo.wikiUIWikiPageVersionsList</name>
-        <path>/javascript/eXo/wiki/UIWikiPageVersionsList.js</path>
+      <path>/javascript/eXo/wiki/UIWikiPageVersionsList.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiEditParagraph</name>
+    <load-group>wikiView</load-group>
     <script>
-        <name>eXo.wiki.UIWikiEditParagraph</name>
-        <path>/javascript/eXo/wiki/UIWikiEditParagraph.js</path>
+      <path>/javascript/eXo/wiki/UIWikiEditParagraph.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiSearchBox</name>
+    <load-group>wikiView</load-group>
     <script>
-        <name>eXo.wiki.UIWikiSearchBox</name>
-        <path>/javascript/eXo/wiki/UIWikiSearchBox.js</path>
+      <path>/javascript/eXo/wiki/UIWikiSearchBox.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiAdvanceSearchForm</name>
+    <load-group>wikiView</load-group>
     <script>
-        <name>eXo.wiki.UIWikiAdvanceSearchForm</name>
-        <path>/javascript/eXo/wiki/UIWikiAdvanceSearchForm.js</path>
+      <path>/javascript/eXo/wiki/UIWikiAdvanceSearchForm.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UITreeExplorer</name>
+    <load-group>wikiView</load-group>
     <script>
-        <name>eXo.wiki.UITreeExplorer</name>
-        <path>/javascript/eXo/wiki/tree/UITreeExplorer.js</path>
+      <path>/javascript/eXo/wiki/tree/UITreeExplorer.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>WikiLayout</name>
+    <load-group>wikiView</load-group>
     <script>
         <name>eXo.wiki.UIWikiPageInfo</name>
         <path>/javascript/eXo/wiki/UIWikiPageInfo.js</path>
@@ -89,72 +215,327 @@
         <name>eXo.wiki.WikiLayout</name>
         <path>/javascript/eXo/wiki/layout/WikiLayout.js</path>
     </script>
-    <script>
-        <name>eXo.wiki.UIUpload</name>
-        <path>/javascript/eXo/wiki/UIUpload.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIFieldEditableForm</name>
-        <path>/javascript/eXo/wiki/UIFieldEditableForm.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIRelated</name>
-        <path>/javascript/eXo/wiki/related/UIRelated.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiPageTitleControlArea</name>
-        <path>/javascript/eXo/wiki/UIWikiPageTitleControlArea.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIDropdownMenu</name>
-        <path>/javascript/eXo/wiki/UIDropdownMenu.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiSettingContainer</name>
-        <path>/javascript/eXo/wiki/UIWikiSettingContainer.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiTemplateForm</name>
-        <path>/javascript/eXo/wiki/UIWikiTemplateForm.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiPermissionForm</name>
-        <path>/javascript/eXo/wiki/UIWikiPermissionForm.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiPagePreview</name>
-        <path>/javascript/eXo/wiki/UIWikiPagePreview.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiMaskLayer</name>
-        <path>/javascript/eXo/wiki/mask/UIWikiMaskLayer.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiMaskWorkspace</name>
-        <path>/javascript/eXo/wiki/mask/UIWikiMaskWorkspace.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIForm</name>
-        <path>/javascript/eXo/wiki/UIForm.js</path>
-    </script>      
-    <script>
-        <name>eXo.wiki.UIWikiRichTextArea</name>
-        <path>/javascript/eXo/wiki/UIWikiRichTextArea.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiPermalinkForm</name>
-        <path>/javascript/eXo/wiki/UIWikiPermalinkForm.js</path>
-    </script>
-    <script>
-        <name>eXo.wiki.UIWikiPageNotFound</name>
-        <path>/javascript/eXo/wiki/UIWikiPageNotFound.js</path>
-    </script>
-    
+        
     <depends>
         <module>base</module>
     </depends>
     <depends>
-        <module>webui</module>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIUpload</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIUpload.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+   <module>
+    <name>UIFieldEditableForm</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIFieldEditableForm.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIRelated</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/related/UIRelated.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiPageTitleControlArea</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiPageTitleControlArea.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIDropdownMenu</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIDropdownMenu.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiSettingContainer</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiSettingContainer.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiTemplateForm</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiTemplateForm.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiPermissionForm</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiPermissionForm.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiPagePreview</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiPagePreview.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends> 
+    <depends>
+      <module>uiMaskWorkspace</module>
+    </depends>  
+  </module>
+  
+  <module>
+    <name>UIWikiMaskLayer</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/mask/UIWikiMaskLayer.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiMaskWorkspace</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/mask/UIWikiMaskWorkspace.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIForm</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIForm.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiRichTextArea</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiRichTextArea.js</path>
+    </script>
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiPermalinkForm</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiPermalinkForm.js</path>
+    </script>
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiPageNotFound</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiPageNotFound.js</path>
+    </script>
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
     </depends>
     <depends>
         <module>webui-ext</module>
@@ -179,28 +560,64 @@
     </depends>
   </module>
   
-  <!-- Javascripts used in Edit Mode -->
   <module>
-    <name>wiki-edit</name>
+    <name>UIWikiPageEditForm</name>
+    <load-group>wikiEdit</load-group>
     <script>
-      <name>eXo.wiki.UIWikiPageEditForm</name>
       <path>/javascript/eXo/wiki/UIWikiPageEditForm.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>  
+  
+  <module>
+    <name>UIConfirmBox</name>
+    <load-group>wikiEdit</load-group>
     <script>
-      <name>eXo.wiki.UIConfirmBox</name>
       <path>/javascript/eXo/wiki/confirm/UIConfirmBox.js</path>
     </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>   
+  </module>
+  
+  <module>
+    <name>UIWikiSavePage</name>
+    <load-group>wikiEdit</load-group>
     <script>
-      <name>eXo.wiki.UIWikiSavePage</name>
       <path>/javascript/eXo/wiki/UIWikiSavePage.js</path>
     </script>
-    
+        
     <depends>
       <module>base</module>
     </depends>
     <depends>
-      <module>webui</module>
+        <module>uiForm</module>
     </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
     <depends>
       <module>jquery</module>
     </depends>
@@ -221,11 +638,11 @@
     </depends>
   </module>
   
-  <!-- XWiki Explorer JS -->
+  
+  <!-- XWiki Explorer JS -->  
   <module>
-    <name>xwikiexplorer</name>
-    <script>
-      <name>XWiki</name>
+    <name>XWiki</name>
+    <script>      
       <path>/javascript/eXo/xwiki/xwikiexplorer/xwikiexplorer.js</path>
     </script>
   </module>

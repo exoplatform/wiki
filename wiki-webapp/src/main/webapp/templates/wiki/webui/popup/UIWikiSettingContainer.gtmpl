@@ -4,11 +4,10 @@
   def rcontext = _ctx.getRequestContext();
   JavascriptManager jsManager = rcontext.getJavascriptManager();
   def requireJs = jsManager.getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiSettingContainer.init('" + uicomponent.id + "') ;"); 
+  requireJs.require("SHARED/UIWikiSettingContainer", "UIWikiSettingContainer");
+  requireJs.addScripts("UIWikiSettingContainer.init('" + uicomponent.id + "') ;");
   List<String> items  = uicomponent.getItems();
 %>
-
 
 <div class="uiWikiSettingContainer" id="$uicomponent.id">
   	<div class="uiTabNormal uiTabInPage">

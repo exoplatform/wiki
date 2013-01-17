@@ -13,10 +13,9 @@
 %>
 <%
 	def rcontext = _ctx.getRequestContext() ;
-	//rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIWikiPageVersionsList.init(\""+uicomponent.id+"\");");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiPageVersionsList.init(\""+uicomponent.id+"\");");
+  requireJs.require("SHARED/UIWikiPageVersionsList", "UIWikiPageVersionsList");
+  requireJs.addScripts("UIWikiPageVersionsList.init(\""+uicomponent.id+"\");");
   
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
   List<NTVersion> versionsList = uicomponent.getVersionsList();

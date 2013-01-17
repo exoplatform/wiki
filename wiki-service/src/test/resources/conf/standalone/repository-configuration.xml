@@ -26,12 +26,12 @@
         <workspace name="${gatein.jcr.workspace.default}">
           <container class="org.exoplatform.services.jcr.impl.storage.jdbc.optimisation.CQJDBCWorkspaceDataContainer">
             <properties>
-              <property name="source-name" value="jdbcjcr" />
+              <property name="source-name" value="jdbcidm" />
               <property name="dialect" value="auto" />
               <property name="multi-db" value="false" />
               <property name="update-storage" value="false" />
               <property name="max-buffer-size" value="200k" />
-              <property name="swap-directory" value="target/temp/swap/wiki" />
+              <property name="swap-directory" value="target/temp/swap/${gatein.jcr.workspace.default}" />
             </properties>
             <value-storages>
               <value-storage id="${gatein.jcr.workspace.default}" class="org.exoplatform.services.jcr.impl.storage.value.fs.TreeFileValueStorage">
@@ -57,19 +57,19 @@
           </cache>
           <query-handler class="org.exoplatform.services.jcr.impl.core.query.lucene.SearchIndex">
             <properties>
-              <property name="index-dir" value="target/temp/index/repository/wiki" />
+              <property name="index-dir" value="target/temp/index/repository/${gatein.jcr.workspace.default}" />
               <property name="support-highlighting" value="true" />
               <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />                           
             </properties>
             
-          </query-handler>
-          <lock-manager>
-            <time-out>15m</time-out><!-- 15min -->
-            <persister class="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister">
-              <properties>
-                <property name="path" value="../temp/lock/gadgets" />
-              </properties>
-            </persister>
+          </query-handler>          
+          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
+            <properties>
+              <property name="persister-class-name" value="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister"/>
+              <property name="time-out" value="15m" />
+              <property name="path" value="../temp/lock/gadgets" />
+              <property name="jbosscache-configuration" value="exo.portal.component.test.jcr-jbosscache-lock-config.xml" />
+            </properties>
           </lock-manager>
         </workspace>
       </workspaces>

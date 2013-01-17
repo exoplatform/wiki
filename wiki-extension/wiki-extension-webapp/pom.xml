@@ -9,6 +9,24 @@
   <artifactId>wiki-extension-webapp</artifactId>
   <packaging>war</packaging>
   <name>eXo Wiki Extension configuration war</name>
+  <dependencies>    
+    <dependency>
+      <groupId>org.exoplatform.kernel</groupId>
+      <artifactId>exo.kernel.container</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <!--Dependencies for all classes declared in web.xml files-->
+    <dependency>
+      <groupId>org.gatein.portal</groupId>
+      <artifactId>exo.portal.webui.portal</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.wci</groupId>
+      <artifactId>wci-wci</artifactId>
+      <scope>runtime</scope>
+    </dependency>
+  </dependencies>
   <build>
     <finalName>gatein-wiki-${project.version}</finalName>
   </build>

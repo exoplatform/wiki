@@ -219,7 +219,8 @@ public class JCRDataStorage implements DataStorage{
     SearchResult result = new SearchResult() ;
     result.setPageName(node.getName()) ;
     String title = node.getProperty(WikiNodeType.Definition.TITLE).getString();
-    InputStream data = node.getNode(WikiNodeType.Definition.CONTENT).getNode(WikiNodeType.Definition.ATTACHMENT_CONTENT).getProperty(WikiNodeType.Definition.DATA).getStream();
+    InputStream data = node.getNode(WikiNodeType.Definition.CONTENT).getNode(WikiNodeType.Definition.ATTACHMENT_CONTENT)
+    		.getProperty(WikiNodeType.Definition.DATA).getStream();
     byte[] bytes = IO.getBytes(data);
     String content = new String(bytes, "UTF-8");
     if(content.length() > 100) content = content.substring(0, 100) + "...";

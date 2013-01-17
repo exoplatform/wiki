@@ -16,6 +16,8 @@
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
  */
+ (function(base, uiForm, webuiExt, $) {
+
 function UIWikiSearchBox() {
   this.restURL = null;
   this.input = null;
@@ -286,4 +288,6 @@ UIWikiSearchBox.prototype.shortenWord = function(source, container) {
 };
 
 eXo.wiki.UIWikiSearchBox = new UIWikiSearchBox();
-_module.UIWikiSearchBox = eXo.wiki.UIWikiSearchBox;
+return eXo.wiki.UIWikiSearchBox;
+
+})(base, uiForm, webuiExt, $);

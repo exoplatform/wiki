@@ -39,13 +39,13 @@
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
     <org.exoplatform.platform-ui.version>1.0.0-SNAPSHOT</org.exoplatform.platform-ui.version>
-    <org.exoplatform.kernel.version>2.3.10-GA-SNAPSHOT</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.4.10-GA-SNAPSHOT</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.2.10-GA-SNAPSHOT</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.14.10-GA-SNAPSHOT</org.exoplatform.jcr.version>
-    <org.gatein.portal.version>3.4.0.Final</org.gatein.portal.version>
+    <org.exoplatform.kernel.version>2.4.0-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.3.0-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.15.0-GA</org.exoplatform.jcr.version>
+    <org.gatein.portal.version>3.5.0.Final</org.gatein.portal.version>
     <org.exoplatform.commons.version>4.0.0.Alpha1-relooking-SNAPSHOT</org.exoplatform.commons.version>
-    <org.gatein.wci.version>2.3.0.Beta02</org.gatein.wci.version>
+    <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
     <!-- ************** -->
     <!-- Build settings -->
     <!-- ************** -->
@@ -58,7 +58,7 @@
       <dependency>
         <groupId>org.exoplatform</groupId>
         <artifactId>maven-depmgt-pom</artifactId>
-        <version>1</version>
+        <version>2-SNAPSHOT</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -316,13 +316,77 @@
           </exclusion>
         </exclusions>
       </dependency>
+      <!-- Our own project modules -->
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-extension-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-extension-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-injector</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-macros-iframe</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-renderer</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-service</artifactId>
+        <version>${project.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.exoplatform.platform-ui</groupId>
         <artifactId>platform-ui-web-eXoResources</artifactId>
         <version>${org.exoplatform.platform-ui.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>war</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <!-- To be replaced by an import of WS parent POM -->
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.frameworks.json</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.ws</groupId>
+        <artifactId>exo.ws.rest.core</artifactId>
+        <version>${org.exoplatform.ws.version}</version>
+        <exclusions>
+          <exclusion>
+            <!-- To be fixed in the original project -->
+            <artifactId>servlet-api</artifactId>
+            <groupId>javax.servlet</groupId>
+          </exclusion>
+        </exclusions>
+      </dependency>
+      <!-- To be replaced by an import of GateIn Portal parent POM -->
+      <dependency>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.component.common</artifactId>
         <version>${org.gatein.portal.version}</version>
         <exclusions>
@@ -333,9 +397,8 @@
           </exclusion>
         </exclusions>
       </dependency>
-      <!-- To be replaced by an import of GateIn Portal parent POM -->
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.component.portal</artifactId>
         <version>${org.gatein.portal.version}</version>
         <exclusions>
@@ -372,12 +435,12 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.component.web.controller</artifactId>
         <version>${org.gatein.portal.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.component.web.resources</artifactId>
         <version>${org.gatein.portal.version}</version>
         <exclusions>
@@ -408,7 +471,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.component.web.server</artifactId>
         <version>${org.gatein.portal.version}</version>
         <exclusions>
@@ -420,12 +483,12 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.webui.core</artifactId>
         <version>${org.gatein.portal.version}</version>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.webui.eXo</artifactId>
         <version>${org.gatein.portal.version}</version>
         <exclusions>
@@ -437,7 +500,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.webui.framework</artifactId>
         <version>${org.gatein.portal.version}</version>
         <exclusions>
@@ -449,7 +512,7 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.webui.portal</artifactId>
         <version>${org.gatein.portal.version}</version>
         <exclusions>
@@ -466,79 +529,9 @@
         </exclusions>
       </dependency>
       <dependency>
-        <groupId>org.exoplatform.portal</groupId>
+        <groupId>org.gatein.portal</groupId>
         <artifactId>exo.portal.webui.portlet</artifactId>
         <version>${org.gatein.portal.version}</version>
-      </dependency>
-      <!-- Our own project modules -->
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-extension-webapp</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-extension-webapp</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-injector</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-macros-iframe</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-renderer</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-service</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-webapp</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-webapp</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
-      </dependency>
-      <!-- To be replaced by an import of WS parent POM -->
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.frameworks.json</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>exo.ws.rest.core</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-        <exclusions>
-          <exclusion>
-            <!-- To be fixed in the original project -->
-            <artifactId>servlet-api</artifactId>
-            <groupId>javax.servlet</groupId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <!-- TODO : To remove after GateIn 3.5.0 upgrade -->
-      <!-- Forced upgrade to fix a bug in GateIn commons-logging to discover SLF4J -->
-      <dependency>
-        <groupId>org.gatein.common</groupId>
-        <artifactId>common-logging</artifactId>
-        <version>2.1.0.Final</version>
       </dependency>
       <dependency>
         <groupId>org.gatein.wci</groupId>
