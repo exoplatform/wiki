@@ -1,6 +1,4 @@
 <% 
   String deleteLink = uicomponent.event(uicomponent.DELETE_ACTION, URLEncoder.encode(uicomponent.getAttachmentName(), "UTF-8"));
 %>
-<a class="actionIcon" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.RemoveAttachment"); %>" onclick="$deleteLink" alt="<%= _ctx.appRes("UIAttachmentUploadListForm.label.RemoveAttachment"); %>">
-	<i class="uiIconDelete"></i>
-</a>
+<a class="actionIcon" onclick="$deleteLink"><i class="uiIconDelete"></i></a>

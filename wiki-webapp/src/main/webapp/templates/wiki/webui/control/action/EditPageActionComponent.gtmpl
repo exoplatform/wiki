@@ -1,18 +1,17 @@
 <%
-  import org.exoplatform.wiki.webui.UIWikiPortlet;  
-%>
-<% 
- String actionName = uicomponent.getActionName();
- String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + actionName;
- String anchor = "#" + actionName;
- String actionLink = uicomponent.getActionLink();
- boolean isAnchor = uicomponent.isAnchor();
- String labelName = _ctx.appRes(uicomponent.getParent().getName() +".action." + actionName);
+  import org.exoplatform.wiki.webui.UIWikiPortlet;
   
- %>
+  String actionName = uicomponent.getActionName();
+  String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + actionName;
+  String anchor = "#" + actionName;
+  String actionLink = uicomponent.getActionLink();
+  boolean isAnchor = uicomponent.isAnchor();
+  String labelName = _ctx.appRes(uicomponent.getParent().getName() +".action." + actionName);
+%>
+
 <% if (isAnchor)  {%>
-  <div onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor');" class="uiActionWithLabel" href="javaScript:void(0)" rel="tooltip" data-placement="bottom" title="$labelName"><i class="uiIcon$actionName uiIconLightGray"></i>&nbsp;$labelName</div>
+  <div onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor');" class="uiActionWithLabel" href="javaScript:void(0)"><i class="uiIcon$actionName uiIconLightGray"></i>&nbsp;$labelName</div>
   <div onclick="$actionLink" href="javaScript:void(0)" class="uiActionWithLabel" id="$actionId" style="display:none;">&nbsp;</div>
 <%} else { %>
-  <div onclick="$actionLink" href="javaScript:void(0)" class="uiActionWithLabel" rel="tooltip" data-placement="bottom" title="$labelName"><i class="uiIcon$actionName uiIconLightGray"></i>&nbsp;$labelName</div>
+  <div onclick="$actionLink" href="javaScript:void(0)" class="uiActionWithLabel"><i class="uiIcon$actionName uiIconLightGray"></i>&nbsp;$labelName</div>
 <%} %>

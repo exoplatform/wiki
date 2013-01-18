@@ -1,11 +1,11 @@
-	<%  
-	  def rcontext = _ctx.getRequestContext() ;    
-	  String link = uicomponent.event(uicomponent.WATCH_PAGE);
-	  boolean isWatched = uicomponent.detectWatched(false);
-	%>
-	<% if (!isWatched){ %>
-		<a href="$link" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("MoreExtensionContainer.action.WatchPage");%>"><i class="uiIconWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.WatchPage"); %></a>
-	<% } else { %>
-		<a href="$link" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("MoreExtensionContainer.action.UnWatchPage");%>"><i class="uiIconUnWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.UnWatchPage"); %></a>
-	<% } %>
+<%  
+  def rcontext = _ctx.getRequestContext() ;    
+  String link = uicomponent.event(uicomponent.WATCH_PAGE);
+  boolean isWatched = uicomponent.detectWatched(false);
+%>
+<% if (!isWatched){ %>
+	<a href="$link"><i class="uiIconWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.WatchPage"); %></a>
+<% } else { %>
+	<a href="$link"><i class="uiIconUnWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.UnWatchPage"); %></a>
+<% } %>
 	

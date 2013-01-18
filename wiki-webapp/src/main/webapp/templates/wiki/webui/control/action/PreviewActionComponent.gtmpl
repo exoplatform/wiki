@@ -2,5 +2,5 @@
  String actionName = uicomponent.getActionName();
  String actionLink = uicomponent.getActionLink();
  String labelName = _ctx.appRes(uicomponent.getParent().getName() +".action." + actionName);
- %>
-<button type="button" class="btn" onclick="$actionLink" data-placement="bottom"><i class="uiIconWatchPage"></i> $labelName</button>
+%>
+<button type="button" class="btn" onclick="$actionLink"><i class="uiIconWatchPage"></i>$labelName</button>

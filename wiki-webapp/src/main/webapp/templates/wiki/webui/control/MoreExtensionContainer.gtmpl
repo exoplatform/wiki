@@ -1,6 +1,5 @@
 <%
   def rcontext = _ctx.getRequestContext() ;  
-  //rcontext.getJavascriptManager().addJavascript("eXo.wiki.UIDropdownMenu.init(\""+uicomponent.id+"\");");
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIDropdownMenu", "UIDropdownMenu");
   requireJs.addScripts("UIDropdownMenu.init(\""+uicomponent.id+"\");");

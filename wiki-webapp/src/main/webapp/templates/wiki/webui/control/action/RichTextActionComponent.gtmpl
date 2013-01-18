@@ -1,10 +1,9 @@
 <%
-import org.exoplatform.webui.form.UIForm;
-%>
-<%
+  import org.exoplatform.webui.form.UIForm;
+  
   UIForm form = uicomponent.getAncestorOfType(UIForm.class); 
   String actionLink =  form.event(uicomponent.ACTION, uicomponent.getId(), uicomponent.ACTION);
   String actionLabel = uicomponent.label; 
   String labelName = _ctx.appRes(uicomponent.getParent().getName() +".action." + actionLabel);
- %>
-<button type="button" class="btn" onclick="$actionLink" data-placement="bottom"><i class="uiIconWikiRickText"></i> $labelName</button>
+%>
+<button type="button" class="btn" onclick="$actionLink"><i class="uiIconWikiRickText"></i>$labelName</button>

@@ -1,5 +1,5 @@
 <%
-	String restoreLink = uicomponent.event(uicomponent.RESTORE_ACTION, uicomponent.versionName);
-	String restoreLabel = (uicomponent.isCurrentVersion) ? "" : uicomponent.label;
+  String restoreLink = uicomponent.event(uicomponent.RESTORE_ACTION, uicomponent.versionName);
+  String restoreLabel = (uicomponent.isCurrentVersion) ? "" : uicomponent.label;
 %>
-<a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeHash('#');" class="actionIcon" onclick="$restoreLink"  rel="tooltip" data-placement="bottom" title="<%=uicomponent.tooltip;%>"> <i class="uiIconRestore"></i> </a>
+<a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeHash('#');" class="actionIcon" onclick="$restoreLink"><i class="uiIconRestore"></i>$restoreLabel</a>
