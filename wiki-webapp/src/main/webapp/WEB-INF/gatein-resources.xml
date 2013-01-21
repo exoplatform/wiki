@@ -43,6 +43,25 @@
   
   <!-- Javascripts used in View Mode -->
   <module>
+    <name>bootstrap_wiki</name>
+    
+    <depends>
+      <module>bts_button</module>
+    </depends>
+    <depends>
+      <module>bts_collapse</module>
+    </depends>
+    <depends>
+      <module>bts_dropdown</module>
+    </depends>
+    <depends>
+      <module>bts_tab</module>
+    </depends>
+    <depends>
+      <module>bts_tooltip</module>
+    </depends>
+  </module>
+  <module>
     <name>UIWikiPortlet</name>
     <load-group>wikiView</load-group>
     <script>
@@ -66,6 +85,9 @@
     </depends>
      <depends>
       <module>UITreeExplorer</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -87,7 +109,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends> 
   </module>
   
   <module>
@@ -108,7 +133,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>
   </module>
   
   <module>
@@ -129,7 +157,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>
   </module>
   
   <module>
@@ -150,7 +181,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>
   </module>
   
   <module>
@@ -171,6 +205,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -192,7 +229,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
   </module>
   
   <module>
@@ -213,6 +253,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -234,7 +277,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
   </module>
   
    <module>
@@ -255,6 +301,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -276,7 +325,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>
   </module>
   
   <module>
@@ -297,6 +349,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -318,6 +373,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -339,6 +397,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -360,6 +421,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -381,7 +445,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
   </module>
   
   <module>
@@ -405,6 +472,9 @@
     </depends> 
     <depends>
       <module>uiMaskWorkspace</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>  
   </module>
   
@@ -426,6 +496,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -447,7 +520,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
   </module>
   
   <module>
@@ -468,7 +544,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
   </module>
   
   <module>
@@ -488,7 +567,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
   </module>
   
   <module>
@@ -508,6 +590,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -528,6 +613,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -549,7 +637,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends> 
   </module>  
   
   <module>
@@ -570,6 +661,9 @@
     </depends> 
     <depends>
       <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
     </depends>   
   </module>
   
@@ -591,7 +685,10 @@
     </depends> 
     <depends>
       <module>jquery</module>
-    </depends>   
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
   </module>
   
   
