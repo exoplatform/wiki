@@ -27,13 +27,16 @@
     <skin-name>Default</skin-name>
     <css-path>/skin/DefaultSkin/webui/Stylesheet.css</css-path>
     <css-priority>1</css-priority>
-  </portlet-skin>  
+  </portlet-skin>
   
   <portlet>
     <name>WikiPortlet</name>
     <module>      
       <depends>
         <module>wikiView</module>
+      </depends>
+      <depends>
+        <module>wikiEdit</module>
       </depends>
       <depends>
          <module>jquery</module>
@@ -456,6 +459,33 @@
     <load-group>wikiView</load-group>
     <script>
       <path>/javascript/eXo/wiki/UIWikiPagePreview.js</path>
+    </script>
+        
+    <depends>
+        <module>base</module>
+    </depends>
+    <depends>
+        <module>uiForm</module>
+    </depends>
+    <depends>
+        <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends> 
+    <depends>
+      <module>uiMaskWorkspace</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>  
+  </module>
+  
+  <module>
+    <name>UIWikiPageInfo</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiPageInfo.js</path>
     </script>
         
     <depends>

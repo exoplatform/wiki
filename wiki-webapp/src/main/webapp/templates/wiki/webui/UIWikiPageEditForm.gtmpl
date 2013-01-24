@@ -39,7 +39,7 @@
   if (uicomponent.isInTemplateMode()) {
     String defaultTitleOfTemplate = _ctx.appRes("UIWikiPageEditForm.label.SampleTemplateTitle");
     String defaultDescriptionOfTemplate = _ctx.appRes("UIWikiPageEditForm.label.Description");
-    requireJs.addScripts("UIWikiPageEditForm.UIWikiPageEditForm.decorateInputOfTemplate('" + defaultTitleOfTemplate + "', '" + defaultDescriptionOfTemplate + "');");
+    requireJs.addScripts("UIWikiPageEditForm.decorateInputOfTemplate('" + defaultTitleOfTemplate + "', '" + defaultDescriptionOfTemplate + "');");
   }
 %>
 <div class="uiWikiPageEditForm">

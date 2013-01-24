@@ -20,284 +20,332 @@
 if(!eXo.wiki) eXo.wiki = {}; 
 
 function UIUpload() {
-	this.listUpload = [];
-	this.refreshTime = 1000;
-	this.delayTime = 5000;  
+  this.listUpload = new Array();
+  this.isAutoUpload = false;
+  //this.listLimitMB = new Array();
+};
+/**
+ * Initialize upload and create a upload request to server
+ * @param {String} uploadId identifier upload
+ * @param {boolean} isAutoUpload auto upload or none
+ */
+UIUpload.prototype.initUploadEntry = function(uploadId, isAutoUpload) {
+  var url = eXo.env.server.context + "/upload?" ;
+  url += "action=progress&uploadId="+uploadId ;
+  var responseText = ajaxAsyncGetRequest(url, false);
+  
+  try {        
+    var response = eval("response = " + responseText);
+  } catch (err) {
+    return;
+  }
+  UIUpload.isAutoUpload = isAutoUpload;
+  if(response.upload[uploadId] == undefined || response.upload[uploadId].percent == undefined) {
+    //eXo.wiki.UIUpload.listLimitMB.push();
+    this.createUploadEntry(uploadId, isAutoUpload);
+  } else if(response.upload[uploadId].percent == 100)  {
+    this.showUploaded(uploadId, decodeURIComponent(response.upload[uploadId].fileName));
+  } 
 };
 
-  /**
-   * Initialize upload and create a upload request to server
-   * 
-   * @param {String}
-   *          uploadId identifier upload
-   */
-UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode) {
-    if (isDynamicMode && uploadId.length > 1) {
-      isDynamicMode = true;
-    } else {
-      isDynamicMode = false;
-    }
-    
-    if (!eXo.wiki.UIUpload.progressURL) {
-    	var context = eXo.env.server.context;
-        eXo.wiki.UIUpload.progressURL = context + "/upload?action=progress&uploadId=";
-        eXo.wiki.UIUpload.uploadURL = context + "/upload?action=upload&uploadId=";
-        eXo.wiki.UIUpload.abortURL = context + "/upload?action=abort&uploadId=";
-        eXo.wiki.UIUpload.deleteURL = context + "/upload?action=delete&uploadId=";
-    }
-    
-    for ( var i = 0; i < uploadId.length; i++) {
-      var url = eXo.wiki.UIUpload.progressURL + uploadId[i];
-      var responseText = ajaxAsyncGetRequest(url, false);
-      try {        
-    	  eval("var response = " + responseText);
-      } catch (err) {
-        return;
-      }
-      
-      var uploadCont = $("#UploadInputContainer" + uploadId[i]);
-      uploadCont.on("click", ".deleteFileLable, .Abort, .removeFile", (function(id) {
-    		  return function() {
-    			  if ($(this).hasClass("removeFile")) {
-    				  eXo.wiki.UIUpload.deleteUpload(id, isDynamicMode && uploadId.length > 1);    			      			      		 
-    			  } else {
-    				  eXo.wiki.UIUpload.abortUpload(id, isDynamicMode);
-    			  }
-    		  };
-      })(uploadId[i]));
-      
-      uploadCont.on("change", ".file", (function(id) {
-    	  return function() {
-    		  eXo.wiki.UIUpload.upload(id);    		  
-    	  };
-      })(uploadId[i]));
-      
-      if (response.upload[uploadId[i]] == undefined
-          || response.upload[uploadId[i]].percent == undefined) {
-        eXo.wiki.UIUpload.createEntryUpload(uploadId[i], isDynamicMode);
-      } else if (response.upload[uploadId[i]].percent == 100) {
-        eXo.wiki.UIUpload.showUploaded(uploadId[i], response.upload[uploadId[i]].fileName);
-      }
-    }
-  }; 
 
-  UIUpload.prototype.createEntryUpload = function(id, isDynamicMode) {
-	var uploadText = "Upload New File";
-    var div = document.getElementById('UploadInput' + id);
-    var url = document.getElementById('RemoveInputUrl' + id).value;
-    var label = document.getElementById('RemoveInputLabel').value;
-    var inputHTML = "<input id='file" + id
-        + "' class='file fileHidden' name='file' type='file' onkeypress='return false;'";
-    inputHTML += "/>";
- 	inputHTML += "<label for='file" + id + "' class='btn btn-primary '>" + uploadText + "</label>";
-    if (isDynamicMode) {
-      inputHTML += "<a class='actionLabel' href='javascript:void(0)' onclick=\""
-          + url + "\">" + label + "</a>";
-    }
-    div.style.display = 'block';
-    div.innerHTML = inputHTML;
-  };
-
-  UIUpload.prototype.displayUploadButton = function(id) {
-    var flag = true;
-    if (id instanceof Array) {
-      var img = document.getElementById('IconUpload' + id[0]);
-      for ( var i = 0; i < id.length; i++) {
-        var input = document.getElementById('file' + id[i]);
-        if (input == null)
-          flag = true;
-        else if (input.value == null || input.value == '')
-          flag = false;
-      }
-      if (flag)
-        img.style.display = 'none';
-    } else
-      return;
-  };
-
-  UIUpload.prototype.showUploaded = function(id, fileName) {
-    eXo.wiki.UIUpload.remove(id);
-    var container = parent.document.getElementById('UploadInputContainer' + id);
-    var element = document.getElementById('ProgressIframe' + id);
-    element.innerHTML = "<span></span>";
-
-    jCont = $(container);
-    var UploadInput = jCont.find('#UploadInput' + id);
-    UploadInput.hide();
-
-    var progressIframe = jCont.find('#ProgressIframe' + id);
-    progressIframe.hide();
-
-    var selectFileFrame = jCont.find(".selectFileFrame").first();
-    selectFileFrame.show();
-
-    var fileNameLabel = selectFileFrame.find(".fileNameLabel").first();
-    if (fileName.length)
-      fileNameLabel.html(decodeURIComponent(fileName));
-
-    var progressBarFrame = jCont.find(".progressBarFrame").first();
-    progressBarFrame.hide();
-  };
-
-  UIUpload.prototype.refreshProgress = function(uploadId) {
-    var list = eXo.wiki.UIUpload.listUpload;
-    if (list.length < 1)
-      return;
-    var url = eXo.wiki.UIUpload.progressURL;
-
-    for ( var i = 0; i < list.length; i++) {
-      url = url + "&uploadId=" + list[i];
-    }
-    var responseText = ajaxAsyncGetRequest(url, false);
-    if (eXo.wiki.UIUpload.listUpload.length > 0) {
-      setTimeout(
-          function() {eXo.wiki.UIUpload.refreshProgress(uploadId);},
-          eXo.wiki.UIUpload.refreshTime);
-    }
-
-    try {
-    	eval("var response = " + responseText);
-    } catch (err) {
-      return;
-    }
-
-    for (id in response.upload) {
-      var container = parent.document.getElementById('UploadInputContainer'
-          + id);
-      var jCont = $(container);
-      if (response.upload[id].status == "failed") {
-        eXo.wiki.UIUpload.abortUpload(id);
-        var message = jCont.children(".limitMessage").first().html();
-        message = message.replace("{0}", response.upload[id].size);
-        message = message.replace("{1}", response.upload[id].unit);
-        alert(message);
-        continue;
-      }
-      var element = document.getElementById('ProgressIframe' + id);
-      var percent = response.upload[id].percent;
-      var bar = jCont.find(".bar").first();
-      bar.css("width", percent + "%");
-      var label = bar.children(".percent").first();
-      label.html(percent + "%");
-
-      if(percent == 100) {
-          var postUploadActionNode = $(container).find('div.postUploadAction')[0];
-          if(postUploadActionNode) {
-            eXo.wiki.UIUpload.listUpload.remove(id);
-            postUploadActionNode.onclick();
-          } else {
-            this.showUploaded(id, "");
-          }
-        }
-    }
-
-    if (eXo.wiki.UIUpload.listUpload.length < 1)
-      return;
-
-    if (element) {
-      element.innerHTML = "Uploaded " + percent + "% "
-          + "<span class='Abort'>Abort</span>";
-    }
-  };
-
-  UIUpload.prototype.deleteUpload = function(id, isDynamicMode) {
-    var url = eXo.wiki.UIUpload.deleteURL + id;
-    ajaxRequest('GET', url, false);
-    
-    var container = parent.document.getElementById('UploadInputContainer' + id);
-    var selectFileFrame = $(container).find(".selectFileFrame").first();
-    selectFileFrame.hide();
-
-    eXo.wiki.UIUpload.createEntryUpload(id, isDynamicMode);
-  };
-
-  UIUpload.prototype.abortUpload = function(id, isDynamicMode) {
-    eXo.wiki.UIUpload.remove(id);
-    var url = eXo.wiki.UIUpload.abortURL + id;
-    ajaxRequest('GET', url, false);
-    
-    var container = parent.document.getElementById('UploadInputContainer' + id);
-    var jCont = $(container);
-    var progressIframe = jCont.find('#ProgressIframe' + id);
-    progressIframe.hide();
-
-    var progressBarFrame = jCont.find(".progressBarFrame").first();
-    progressBarFrame.hide();
-
-    eXo.wiki.UIUpload.createEntryUpload(id, isDynamicMode);
-  };
-
-  /**
-   * Start upload file
-   * 
-   * @param {Object}
-   *          clickEle
-   * @param {String}
-   *          id
-   */
-  UIUpload.prototype.doUpload = function(id) {
-    var container = parent.document.getElementById('UploadInputContainer' + id);
-    var jCont = $(container);
-    eXo.wiki.UIUpload.displayUploadButton(id);
-    if (id instanceof Array) {
-      for ( var i = 0; i < id.length; i++) {
-        eXo.wiki.UIUpload.doUpload(id[i]);
-      }
-    } else {
-      var file = document.getElementById('file' + id);
-      if (file == null || file == undefined)
-        return;
-      if (file.value == null || file.value == '')
-        return;
-      var temp = file.value;
-
-      var progressBarFrame = jCont.find(".progressBarFrame").first();
-      progressBarFrame.show();
-
-      var bar = jCont.find(".bar").first();
-      bar.css("width", "0%");
-      var label = bar.children(".percent").first();
-      label.html("0%");
-
-      var uploadAction = eXo.wiki.UIUpload.uploadURL + id;
-      var formHTML = "<form id='form" + id
-          + "' class='UIUploadForm' style='margin: 0px; padding: 0px' action='"
-          + uploadAction
-          + "' enctype='multipart/form-data' target='UploadIFrame" + id
-          + "' method='post'></form>";
-      var div = document.createElement("div");
-      div.innerHTML = formHTML;
-      var form = div.firstChild;
-
-      form.appendChild(file);
-      document.body.appendChild(div);
-      form.submit();
-      document.body.removeChild(div);
-
-      if (eXo.wiki.UIUpload.listUpload.length == 0) {
-        eXo.wiki.UIUpload.listUpload.push(id);
-        setTimeout(function() {eXo.wiki.UIUpload.refreshProgress(id);},
-            eXo.wiki.UIUpload.refreshTime);
-      } else {
-        eXo.wiki.UIUpload.listUpload.push(id);
-      }
-
-      var UploadInput = jCont.find('#UploadInput' + id);
-      UploadInput.hide();
-    }
-  };
-
-  UIUpload.prototype.upload = function(id) {
-    setTimeout(function() {eXo.wiki.UIUpload.doUpload(id)}, eXo.wiki.UIUpload.delayTime);
-  };
+UIUpload.prototype.createUploadEntry = function(uploadId, isAutoUpload) {
+  var me = eXo.wiki.UIUpload;
+  var iframe = document.getElementById(uploadId+'uploadFrame');
+  var idoc = iframe.contentWindow.document ;
+  if ($.browser.mozilla) {
+    me.createUploadEntryForFF(idoc, uploadId, isAutoUpload);
+    return;
+  }
+  var uploadAction = eXo.env.server.context + "/upload?" ;
+  uploadAction += "uploadId=" + uploadId+"&action=upload" ; 
   
-  UIUpload.prototype.remove = function(id) {
-  	var idx = $.inArray(id, eXo.wiki.UIUpload.listUpload);
-  	if (idx !== -1) {
-  		eXo.wiki.UIUpload.listUpload.splice(idx, 1);  		
-  	}
-  };
+  var uploadHTML = "";
+  uploadHTML += "<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>";
+  uploadHTML += "<html xmlns='http://www.w3.org/1999/xhtml' xml:lang='en' lang='" +eXo.core.I18n.lang+ "' dir='" +eXo.core.I18n.dir+ "'>";
+  uploadHTML += "<head>";
+  uploadHTML += "<style type='text/css'>";
+  uploadHTML += this.getStyleSheetContent();
+  uploadHTML += "</style>";
+  uploadHTML += "<script type='text/javascript'>var eXo = parent.eXo</script>";
+  uploadHTML += "</head>";
+  uploadHTML += "<body style='margin: 0px; border: 0px;'>";
+  uploadHTML += this.getUploadContent(uploadId, uploadAction, isAutoUpload);
+  uploadHTML += "</body>";
+  uploadHTML += "</html>";
 
+  idoc.open();
+  idoc.write(uploadHTML);
+  idoc.close(); 
+};
+
+UIUpload.prototype.createUploadEntryForFF = function(idoc, uploadId, isAutoUpload){
+  var uploadAction = eXo.env.server.context + "/upload?" ;
+  uploadAction += "uploadId=" + uploadId+"&action=upload" ; 
+    
+  var newDoctype = document.implementation.createDocumentType('html','-//W3C//DTD XHTML 1.0 Transitional//EN','http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'); 
+  if (idoc.doctype) {
+    idoc.replaceChild(newDoctype, idoc.doctype);
+  }
+  idoc.lang = eXo.core.I18n.lang;
+  idoc.xmlns = 'http://www.w3.org/1999/xhtml';
+  idoc.dir = eXo.core.I18n.dir;
+   
+  idoc.head = idoc.head || idoc.getElementsByTagName('head')[0];
+  var script = document.createElement('script');
+  script.type = "text/javascript";
+  script.text = "var eXo = parent.eXo";
+  idoc.head.appendChild(script);
+
+  $(idoc.head).append( $('<style/>', {
+  'type': 'text/css',
+  text : this.getStyleSheetContent()
+}));
+  
+  $(idoc.body).html(this.getUploadContent(uploadId, uploadAction, isAutoUpload));
+}
+
+UIUpload.prototype.getUploadContent = function(uploadId, uploadAction, isAutoUpload) {
+  var container = parent.document.getElementById(uploadId);
+  var uploadIframe = $(container).find('#'+uploadId+ 'UploadIframe')[0];
+  var uploadText = uploadIframe.title;
+  var delta = 6;
+  if ($.browser.msie !=undefined) delta = 9;
+  var size = String(uploadText).length;
+  if (size < 21) {
+    size = 1;
+  } else {
+    size = 1 + Math.round((size*delta - 100)/9);
+  }
+  var uploadHTML = "";  
+  uploadHTML += "  <form id='"+uploadId+"' class='UIUploadForm' style='margin: 0px; padding: 0px' action='"+uploadAction+"' enctype='multipart/form-data' method='post'>";
+  uploadHTML += "    <div class='BrowseDiv'>";
+  uploadHTML += "      <div class='InputContent'>";
+  uploadHTML += "        <input type='file' name='file' size='" + size + "' id='WikiUploadFile' class='FileHidden' value='' title='" + uploadText + "' onchange='eXo.wiki.UIUpload.upload(this, " + uploadId + ")'/>";
+  uploadHTML += "        <label for='WikiUploadFile' class='BrowseLink'>" + uploadText + "</label>";
+  uploadHTML += "      </div>";
+  uploadHTML += "    </div>";
+  uploadHTML += "  </form>";
+  return uploadHTML;
+}
+
+UIUpload.prototype.getStyleSheetContent = function(){
+  var styleText = "";
+  styleText += ".FileHidden { cursor: pointer; overflow: hidden; position: absolute; height: 16px; top: 1px; left: 0px; z-index: 1; width: 100%; *width: auto; *left: -8px;";
+  styleText += "  opacity: 0; -moz-opacity:0 ; filter:alpha(opacity: 0);} ";
+  styleText += ".BrowseDiv {margin: 10px 0px 10px 0px; height: 20px;} ";
+  styleText += ".InputContent { cursor: pointer; position: relative; ";
+  styleText += "  background: url('/wiki/skin/DefaultSkin/webui/UIWikiSearchBox/icons/16x16/AttachFileIcon.gif') no-repeat left top;)}";
+  styleText += ".BrowseLink { font-family: Arial, Helvetica, sans-serif; text-align: left; font-size: 12px; color: #165FB3;";
+  styleText += "  text-decoration: none; padding: 0px 0px 0px 20px;}";
+  styleText += ".UIUploadForm .BrowseLink:hover {cursor: pointer; text-decoration: underline;}";
+  return styleText;
+}
+
+/**
+ * Refresh progress bar to update state of upload progress
+ * @param {String} elementId identifier of upload bar frame
+ */
+UIUpload.prototype.refeshProgress = function(elementId) {
+  var list =  eXo.wiki.UIUpload.listUpload;
+  if(list.length < 1) return;
+  var url = eXo.env.server.context + "/upload?" ;
+  url += "action=progress" ;
+//  var url =  eXo.env.server.context + "/upload?action=progress";  
+  for(var i = 0; i < list.length; i++){
+    url = url + "&uploadId=" + list[i];
+  }
+
+  var responseText = ajaxAsyncGetRequest(url, false);
+  if(list.length > 0) {
+    setTimeout("eXo.wiki.UIUpload.refeshProgress('" + elementId + "');", 1000); 
+  }
+    
+  try {        
+    var response = eval("response = " + responseText);
+  } catch (err) {
+    return;
+  }
+  
+  for(id in response.upload) {
+    var container = parent.document.getElementById(elementId);
+    if (response.upload[id].status == "failed") {
+      this.abortUpload(id);
+      var message = $(container).find('div.LimitMessage')[0].innerHTML;
+      alert(message.replace("{0}", response.upload[id].size)) ;
+//      alert(response.upload[id].message);
+      continue;
+    }
+    var element = document.getElementById(id+"ProgressIframe");
+    var percent  =   response.upload[id].percent;
+    var progressBarMiddle = $(container).find('div.ProgressBarMiddle')[0];
+    var blueProgressBar = $(progressBarMiddle).find('div.BlueProgressBar')[0];
+    var progressBarLabel = $(blueProgressBar).find('div.ProgressBarLabel')[0];
+    $(blueProgressBar).width(percent + "%");
+    $(progressBarLabel).html(percent + "%");
+    
+    if(percent == 100) {
+      var postUploadActionNode = $(container).find('div.PostUploadAction')[0];
+      if(postUploadActionNode) {
+        eXo.wiki.UIUpload.listUpload.remove(elementId);
+        postUploadActionNode.onclick();
+      } else {
+        this.showUploaded(id, "");
+      }
+    }
+  }
+  
+  if(eXo.wiki.UIUpload.listUpload.length < 1) return;
+  if (element){
+    $(element).html("Uploaded "+ percent + "% " + "<span onclick='parent.eXo.wiki.UIUpload.abortUpload("+id+")'>Abort</span>");
+  }
+};
+/**
+ * Show uploaded state when upload has just finished a file
+ * @param {String} id uploaded identifier
+ * @param {String} fileName uploaded file name
+ */
+UIUpload.prototype.showUploaded = function(id, fileName) {
+  eXo.wiki.UIUpload.listUpload.remove(id);
+  var container = parent.document.getElementById(id);
+  var element = document.getElementById(id+"ProgressIframe");
+  $(element).html("<span></span>");
+  
+  var uploadIframe = $(container).find('#'+id+'UploadIframe')[0];
+  $(uploadIframe).hide();
+  var progressIframe = $(container).find('#'+id+'ProgressIframe')[0];
+  $(progressIframe).hide();
+    
+  var selectFileFrame = $(container).find('div.SelectFileFrame')[0];
+  // selectFileFrame.style.display = "block" ;
+  var fileNameLabel = $(selectFileFrame).find('div.FileNameLabel')[0];
+  if(fileName != null) $(fileNameLabel).append(" " + fileName);
+  var progressBarFrame = $(container).find('div.ProgressBarFrame')[0];
+  $(progressBarFrame).hide();
+  var tmp = element.parentNode;
+  var temp = tmp.parentNode;
+  //TODO: dang.tung - always return true even we reload browser
+  var  input = parent.document.getElementById('input' + id);
+  $(input).val("true");  
+};
+/**
+ * Abort upload process
+ * @param {String} id upload identifier
+ */
+UIUpload.prototype.abortUpload = function(id) {
+  eXo.wiki.UIUpload.listUpload.remove(id);
+  var url = eXo.env.server.context + "/upload?" ;
+  url += "uploadId=" +id+"&action=abort" ;
+//  var url = eXo.env.server.context + "/upload?uploadId=" +id+"&action=abort" ;
+  $.get(url);
+  
+  var container = parent.document.getElementById(id);
+  var uploadIframe = $(container).find('#'+id+'UploadIframe')[0];
+  $(uploadIframe).show();
+  eXo.wiki.UIUpload.createUploadEntry(id, UIUpload.isAutoUpload);
+  var progressIframe = $(container).find('#'+id+"ProgressIframe")[0];
+  $(progressIframe).hide();
+
+  var tmp = progressIframe.parentNode;
+  var temp = tmp.parentNode;
+  var progressBarFrame = $(container).find('div.ProgressBarFrame')[0];
+  $(progressBarFrame).hide();
+  var selectFileFrame = $(container).find('div.SelectFileFrame')[0];
+  $(selectFileFrame).hide();
+   
+  var  input = parent.document.getElementById('input' + id);
+  $(input).val("false");
+};
+/**
+ * Delete uploaded file
+ * @param {String} id upload identifier
+ */
+UIUpload.prototype.deleteUpload = function(id) {
+  var url = eXo.env.server.context + "/upload?";
+  url += "uploadId=" +id+"&action=delete" ;
+//  var url = eXo.env.server.context + "/upload?uploadId=" +id+"&action=delete" ;
+  $.get(url);  
+  var container = parent.document.getElementById(id);
+  var uploadIframe =  $(container).find('#'+id+'UploadIframe')[0];
+  $(uploadIframe).show();
+  eXo.wiki.UIUpload.createUploadEntry(id, UIUpload.isAutoUpload);
+  var progressIframe = $(container).find('#'+id+'ProgressIframe')[0];
+  $(progressIframe).hide();
+
+  var tmp = progressIframe.parentNode;
+  var temp = tmp.parentNode;
+  var progressBarFrame = $(container).find('div.ProgressBarFrame')[0];
+  $(progressBarFrame).hide();
+  var selectFileFrame = $(container).find('div.SelectFileFrame')[0];
+  $(selectFileFrame).hide();
+   
+  var  input = parent.document.getElementById('input' + id);
+  $(input).val('false');
+} ;
+
+/**
+ * Start upload file
+ * @param {Object} clickEle
+ * @param {String} id
+ */
+UIUpload.prototype.upload = function(clickEle, id) {
+  var container = parent.document.getElementById(id);  
+  var uploadFrame = parent.document.getElementById(id+"uploadFrame");
+  var form = uploadFrame.contentWindow.document.getElementById(id);
+
+  var file  = $(form).find('#WikiUploadFile')[0];
+  if(file.value == null || file.value == '') return;  
+  var infoUploaded = $(container).find('div.FileNameLabel')[0];
+  var temp = file.value;
+
+  if (temp.indexOf('/') != -1) {
+    temp = temp.substr((temp.lastIndexOf('/') + 1), temp.length - 1) ;
+  }
+  
+  if (temp.indexOf('\\') != -1) {
+    temp = temp.substr((temp.lastIndexOf('\\') + 1), temp.length - 1) ;
+  }
+  $(infoUploaded).html(temp);
+
+  var progressBarFrame = $(container).find('div.ProgressBarFrame')[0];
+  $(progressBarFrame).show();  
+  var progressBarMiddle = $(container).find('div.ProgressBarMiddle')[0];
+  var blueProgressBar = $(progressBarMiddle).find('div.BlueProgressBar')[0];
+  var progressBarLabel = $(blueProgressBar).find('div.ProgressBarLabel')[0];
+  $(blueProgressBar).width("0%");
+  $(progressBarLabel).html("0%");
+  
+  var  input = parent.document.getElementById('input' + id);
+  $(input).val("true");
+  
+  var uploadIframe = $(container).find('#'+id+'UploadIframe')[0];
+  $(uploadIframe).hide();
+  var progressIframe = $(container).find('#'+id+'ProgressIframe')[0];
+  $(progressIframe).hide();
+
+  var tmp = progressIframe.parentNode;
+  var temp = tmp.parentNode;
+  
+  form.submit() ;
+  
+  var list = eXo.wiki.UIUpload.listUpload;
+  if(list.length == 0) {
+    eXo.wiki.UIUpload.listUpload.push(form.id);
+    setTimeout("eXo.wiki.UIUpload.refeshProgress('" + id + "');", 1000);
+  } else {
+    eXo.wiki.UIUpload.listUpload.push(form.id);  
+  }
+} ;
+
+UIUpload.prototype.validate = function(name) {
+  if(name.indexOf(':')>=0 || name.indexOf('/')>=0 || name.indexOf('\\')>=0 || name.indexOf('|')>=0 || name.indexOf('^')>=0 || name.indexOf('#')>=0 ||
+    name.indexOf(';')>=0 || name.indexOf('[')>=0 || name.indexOf(']')>=0 || name.indexOf('{')>=0 || name.indexOf('}')>=0 || name.indexOf('<')>=0 || name.indexOf('>')>=0 || name.indexOf('*')>=0 ||
+    name.indexOf('\'')>=0 || name.indexOf('\"')>=0 || name.indexOf('+')>=0) {
+    return false;
+  } else {
+    return true;
+  }
+}
 
 eXo.wiki.UIUpload = new UIUpload();
 return eXo.wiki.UIUpload;

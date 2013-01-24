@@ -37,6 +37,19 @@ public class UIWikiFormUploadInput extends UIUploadInput {
 
   final static public String UPLOAD_ACTION = "UploadAttachment" ; 
   
+  /**
+   * The auto upload feature
+   */
+  private boolean isAutoUpload = false;
+  
+  public boolean isAutoUpload() {
+    return isAutoUpload;
+  }
+
+  public void setAutoUpload(boolean isAutoUpload) {
+    this.isAutoUpload = isAutoUpload;
+  }
+  
   public UIWikiFormUploadInput(String name, String bindingExpression) {
     super(name, bindingExpression);
     setComponentConfig(UIWikiFormUploadInput.class, null);

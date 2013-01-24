@@ -8,7 +8,7 @@
   String inputId = uiform.TEMPLATE_SEARCHBOX;
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiTemplateForm", "UIWikiTemplateForm");
-  requireJs.addScripts("UIWikiTemplateForm.UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
+  requireJs.addScripts("UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
 %>
 
 <div class="uiTemplateSettingForm uiWikiTemplateForm">

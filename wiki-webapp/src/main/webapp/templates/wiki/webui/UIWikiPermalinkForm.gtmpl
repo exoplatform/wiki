@@ -16,7 +16,7 @@
   
   def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiPermalinkForm", "UIWikiPermalinkForm");
-  requireJs.addScripts("UIWikiPermalinkForm.UIWikiPermalinkForm.init('" + uicomponent.id + "');");  
+  requireJs.addScripts("UIWikiPermalinkForm.init('" + uicomponent.id + "');");  
 %>
 <%uiform.begin()%>
 <div id="$uicomponent.id" class="uiWikiPermalinkForm">

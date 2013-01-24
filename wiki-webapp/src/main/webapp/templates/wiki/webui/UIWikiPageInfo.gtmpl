@@ -3,8 +3,8 @@
 
   def rcontext = _ctx.getRequestContext();
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/wiki-view", "wikiView");
-  requireJs.addScripts("wikiView.UIWikiPageInfo.init();");
+  requireJs.require("SHARED/UIWikiPageInfo", "UIWikiPageInfo");
+  requireJs.addScripts("UIWikiPageInfo.init();");
 %>
 <% 
   def currentWikiPage = uicomponent.getCurrentPage();

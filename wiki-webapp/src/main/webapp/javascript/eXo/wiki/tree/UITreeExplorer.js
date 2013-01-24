@@ -43,17 +43,19 @@ UITreeExplorer.prototype.initMacros = function() {
 };
 
 UITreeExplorer.prototype.collapseExpand = function(element) {
-  var node = element.parentNode;
-  var subGroup = $(node).find('ul.nodeGroup')[0];
-  if ($(element).hasClass('EmptyIcon'))
-    return true;
-  if (!subGroup) {
-    $(element).addClass('uiIconCollapse');
-    return false;
-  }
-  $(subGroup).toggle();
-  $(element).toggleClass('uiIconExpand','uiIconCollapse');
-  return true;
+  if(element) {
+	  var node = element.parentNode;
+	  var subGroup = $(node).find('ul.nodeGroup')[0];
+	  if ($(element).hasClass('EmptyIcon'))
+	    return true;
+	  if (!subGroup) {
+	    $(element).addClass('uiIconCollapse');
+	    return false;
+	  }
+	  $(subGroup).toggle();
+	  $(element).toggleClass('uiIconExpand','uiIconCollapse');
+	  return true;
+	}
 };
 
 UITreeExplorer.prototype.onNodeClick = function(node, absPath) {
@@ -98,31 +100,33 @@ UITreeExplorer.prototype.selectNode = function(node, nodePath) {
 
 UITreeExplorer.prototype.render = function(param, element, isFullRender) {
   var me = eXo.wiki.UITreeExplorer;
-  var node = element.parentNode;
-  var component = $(node).closest(".uiTreeExplorer");
-  var url = $(component).find('input.ChildrenURL')[0].value;
-  if (isFullRender) {
-    url = $(component).find('input.InitURL')[0].value;
-  }
-  var restURL = url + param;
-
-  var childBlock = document.createElement("ul");
-  if (me.innerDoc) {
-    childBlock = me.innerDoc.createElement("ul");
-    me.innerDoc = null;
-  }
-  $(childBlock).addClass('nodeGroup');
-  $(childBlock).html(me.loading);
-  $(node).append(childBlock);
-  $.ajax({
-    async : false,
-    url : restURL,
-    type : 'GET',
-    data : '',
-    success : function(data) {
-      me.renderTreeNodes(childBlock, data);
-    }
-  });
+  if(element) {
+	  var node = element.parentNode;
+	  var component = $(node).closest(".uiTreeExplorer");
+	  var url = $(component).find('input.ChildrenURL')[0].value;
+	  if (isFullRender) {
+	    url = $(component).find('input.InitURL')[0].value;
+	  }
+	  var restURL = url + param;
+	
+	  var childBlock = document.createElement("ul");
+	  if (me.innerDoc) {
+	    childBlock = me.innerDoc.createElement("ul");
+	    me.innerDoc = null;
+	  }
+	  $(childBlock).addClass('nodeGroup');
+	  $(childBlock).html(me.loading);
+	  $(node).append(childBlock);
+	  $.ajax({
+	    async : false,
+	    url : restURL,
+	    type : 'GET',
+	    data : '',
+	    success : function(data) {
+	      me.renderTreeNodes(childBlock, data);
+	    }
+	  });
+	}
 };
 
 UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
