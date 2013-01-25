@@ -680,7 +680,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
       PageList<SearchResult> result = jcrDataStorage.search(wStore.getSession(), data);
       
-      if ((data.getTitle() != null) && (data.getWikiType() != null) && (data.getWikiOwner() != null)) {
+      if ((data.getTitle() != null) && (data.getWikiType() != null) && (data.getWikiOwner() != null) && (result.getPageSize() > 0)) {
         PageImpl homePage = getWikiHome(data.getWikiType(), data.getWikiOwner());
         if (data.getTitle().equals("") || homePage != null && homePage.getTitle().contains(data.getTitle())) {
           Calendar wikiHomeCreateDate = Calendar.getInstance();
