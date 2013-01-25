@@ -135,19 +135,22 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     // Get resource bundle
     String dupplicatedParentMessage = bundle.getString("UIWikiMovePageForm.msg.main-page-duplicate");
     String dupplicatedChildMessage = bundle.getString("UIWikiMovePageForm.msg.sub-page-duplicate");
+    String renameParentTooltip = bundle.getString("UIWikiMovePageForm.label.rename-main-page");
+    String renameChildTooltip = bundle.getString("UIWikiMovePageForm.label.rename-sub-page");
     String renameActionLabel = bundle.getString("UIWikiMovePageForm.action.Rename");
     
     for (int i = 0; i < Math.min(duplicatedPages.size(), maxWarning); i++) {
       PageImpl page = duplicatedPages.get(i);
       // Build message markup
-      String messageMarkup = dupplicatedChildMessage;
+      String message = dupplicatedChildMessage;
+      String tooltip = renameChildTooltip;
       if (pageToMove.getName().equals(page.getName())) {
-        messageMarkup = dupplicatedParentMessage;
+        message = dupplicatedParentMessage;
+        tooltip = renameParentTooltip;
       }
-      messageMarkup = "{{warning}}" + messageMarkup + "{{/warning}}";
       
       // Convert message markup to html
-      String messageHTML = renderingService.render(messageMarkup, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+      String messageHTML = "<div class='box warningmessage' title='" + tooltip + "'>" + message + "</div>";
       
       // Add actions to message html
       String renameActionLink = event(RENAME_ACTION, page.getName());
