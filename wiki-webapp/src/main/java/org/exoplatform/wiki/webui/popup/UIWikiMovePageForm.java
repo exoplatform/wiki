@@ -150,15 +150,15 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       }
       
       // Convert message markup to html
-      String messageHTML = "<div class='box warningmessage' title='" + tooltip + "'>" + message + "</div>";
+      String messageHTML = "<div class='box warningmessage'>" + message + "</div>";
       
       // Add actions to message html
       String renameActionLink = event(RENAME_ACTION, page.getName());
       if (pageToMove.getName().equals(page.getName())) {
-        messageHTML = messageHTML.replace("{0}", "<a title=\""+ renameActionLabel + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
+        messageHTML = messageHTML.replace("{0}", "<a title=\""+ tooltip + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
       } else {
         messageHTML = messageHTML.replace("{0}", page.getName());
-        messageHTML = messageHTML.replace("{1}", "<a title=\""+ renameActionLabel + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
+        messageHTML = messageHTML.replace("{1}", "<a title=\""+ tooltip + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
       }
       
       // Append the notification
