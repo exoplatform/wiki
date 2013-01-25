@@ -187,7 +187,8 @@ public class UIWikiBreadCrumb extends UIContainer {
       Wiki wiki = wikiService.getWikiById(wikiId);
       if (wiki != null) {
         PageImpl wikiHome = (PageImpl) wiki.getWikiHome();
-        org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, Utils.getWikiPageParams(wikiHome), WikiMode.VIEW, null);
+        String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName()));
+        org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, permalink);
       } else {
         log.warn(String.format("Wrong wiki id: [%s], can not change space", wikiId));
       }
