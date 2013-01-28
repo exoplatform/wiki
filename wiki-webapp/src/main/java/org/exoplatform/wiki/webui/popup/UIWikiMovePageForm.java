@@ -30,6 +30,7 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
 import org.exoplatform.webui.core.UIPopupContainer;
+import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -122,7 +123,6 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       return StringUtils.EMPTY;
     }
     
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
     StringBuilder notifications = new StringBuilder();
     
@@ -150,14 +150,14 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       }
       
       // Convert message markup to html
-      String messageHTML = "<div class='box warningmessage'>" + message + "</div>";
+      String messageHTML = "<div class='warningmessage'>" + message + "</div>";
       
       // Add actions to message html
       String renameActionLink = event(RENAME_ACTION, page.getName());
       if (pageToMove.getName().equals(page.getName())) {
         messageHTML = messageHTML.replace("{0}", "<a title=\""+ tooltip + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
       } else {
-        messageHTML = messageHTML.replace("{0}", page.getName());
+        messageHTML = messageHTML.replace("{0}", page.getTitle());
         messageHTML = messageHTML.replace("{1}", "<a title=\""+ tooltip + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
       }
       
@@ -168,12 +168,11 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     // Check to add "and more" label
     if (duplicatedPages.size() > maxWarning) {
       String andMoreLabel = bundle.getString("UIWikiMovePageForm.msg.and-more");
-      andMoreLabel = "{{warning}}" + andMoreLabel + "{{/warning}}";
-      andMoreLabel = renderingService.render(andMoreLabel, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+      andMoreLabel = "<div class='warningmessage'>" + andMoreLabel + "</div>";
       notifications.append(andMoreLabel);
     }
     
-    return notifications.toString();
+    return "<div class='box'>" + notifications.toString() + "</div>";
   }
   
   public List<PageImpl> getDupplicatedPages() {
@@ -227,7 +226,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
         // If there're some dupplicated page then show warning and return
         if (movePageForm.duplicatedPages.size() > 0) {
           movePageForm.pageToMove = movepage;
-          event.getRequestContext().addUIComponentToUpdateByAjax(movePageForm.getParent());
+          event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPortlet);
           return;
         }
       }
@@ -289,7 +288,8 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       UIWikiBreadCrumb newlocation = uiWikiLocationContainer.getChildById(UIWikiLocationContainer.NEW_LOCATION);
       newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
       
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiMovePageForm.getParent());
+      event.getRequestContext().addUIComponentToUpdateByAjax(newlocation);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiTree);
     }
   }
   
