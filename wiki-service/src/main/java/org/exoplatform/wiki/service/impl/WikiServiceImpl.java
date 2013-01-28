@@ -340,9 +340,6 @@ public class WikiServiceImpl implements WikiService, Startable {
       processCircularRename(entry, newEntry);
     }
     parentPage.getChromatticSession().save();
-    
-    // Post activity
-    postUpdatePage(wikiType, wikiOwner, newName, currentPage, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
     return true ;    
   }
 
@@ -370,6 +367,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       mix.setTargetPage(destPage);      
       WikiImpl destWiki = (WikiImpl) destPage.getWiki();
       movePage.setParentPage(destPage);
+      movePage.setMinorEdit(false);
       
       //update LinkRegistry
       if (!newLocationParams.getType().equals(currentLocationParams.getType())) {

@@ -33,6 +33,7 @@ import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.webui.control.UIWikiExtensionContainer;
 
 /**
@@ -121,15 +122,22 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
     Page page = Utils.getCurrentWikiPage();
     boolean isRenameHome = WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName())
         && !newName.equals(pageParams.getPageId());
+    page.setMinorEdit(false);
     if (isRenameHome) {
       page.setTitle(newTitle);
+      
+      // Post activity
+      wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), page.getName(), page, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
     } else {
-      page.setMinorEdit(false);
       wikiService.renamePage(pageParams.getType(),
                              pageParams.getOwner(),
                              pageParams.getPageId(),
                              newName,
                              newTitle);
+      
+      // Post activity
+      Page renamedPage = wikiService.getPageById(pageParams.getType(), pageParams.getOwner(), newName);
+      wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), newName, renamedPage, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
     }
     pageParams.setPageId(newName);
     Utils.redirect(pageParams, WikiMode.VIEW);

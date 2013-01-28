@@ -118,6 +118,8 @@ public class SavePageActionComponent extends UIComponent {
       Page page = Utils.getCurrentWikiPage();
       Utils.setUpWikiContext(wikiPortlet);
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      boolean isRenamedPage = false;
+      boolean isContentChange = false;
 
       try {
         WikiNameValidator.validate(titleInput.getValue());
@@ -180,12 +182,18 @@ public class SavePageActionComponent extends UIComponent {
                                                              page.getSyntax(),
                                                              wikiPortlet.getSectionIndex(),
                                                              markup);
+            isContentChange = true;
           }
           
           // Check if publish activity on activity stream
           UICheckBoxInput publishActivityCheckBox = wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
           page.setMinorEdit(!publishActivityCheckBox.isChecked());
           pageEditForm.synPublishActivityStatus(false);
+          
+          // Check if the title is change or not
+          if (!page.getTitle().equals(title)) {
+            isRenamedPage = true;
+          }
           
           // Rename page if need
           if (!page.getName().equals(newPageId)) {
@@ -205,6 +213,7 @@ public class SavePageActionComponent extends UIComponent {
             
             if (!page.getContent().getText().equals(markup)) {
               page.getContent().setText(markup);
+              isContentChange = true;
             }
  
             if (!pageEditForm.getTitle().equals(title)) {
@@ -223,7 +232,13 @@ public class SavePageActionComponent extends UIComponent {
            }
           
           // Post edit content activity
-          wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_TYPE);
+          if (isRenamedPage && isContentChange) {
+            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
+          } else if (isRenamedPage) {
+            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
+          } else if (isContentChange) {
+            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_TYPE);
+          }
         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
           Page draftPage = Utils.getCurrentNewDraftWikiPage();
           Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();

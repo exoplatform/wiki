@@ -10,6 +10,8 @@ public abstract class PageWikiListener extends BaseComponentPlugin {
   
   public static final String EDIT_PAGE_CONTENT_TYPE = "editPageContent";
   
+  public static final String EDIT_PAGE_CONTENT_AND_TITLE_TYPE = "editPageContentAndTitle";
+  
   public static final String MOVE_PAGE_TYPE = "movePage";
   
   public abstract void postAddPage(final String wikiType, final String wikiOwner, final String pageId, Page page) throws Exception;
