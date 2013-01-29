@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -30,7 +31,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
 import org.exoplatform.webui.core.UIPopupContainer;
-import org.exoplatform.webui.core.UIPopupWindow;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
@@ -42,7 +42,6 @@ import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.TreeNode;
@@ -57,7 +56,6 @@ import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.UIWikiRichTextArea;
 import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
-import org.xwiki.rendering.syntax.Syntax;
 
 /**
  * Created by The eXo Platform SAS
@@ -93,9 +91,9 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
   
   private static final String RENAME_ACTION = "Rename";
   
-  private List<PageImpl> duplicatedPages;
+  private List<PageInfo> duplicatedPages;
   
-  private PageImpl pageToMove;
+  private PageInfo pageToMove;
   
   public UIWikiMovePageForm() throws Exception {
     addChild(new UIFormInputInfo(PAGENAME_INFO, PAGENAME_INFO, null));
@@ -140,7 +138,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     String renameActionLabel = bundle.getString("UIWikiMovePageForm.action.Rename");
     
     for (int i = 0; i < Math.min(duplicatedPages.size(), maxWarning); i++) {
-      PageImpl page = duplicatedPages.get(i);
+      PageInfo page = duplicatedPages.get(i);
       // Build message markup
       String message = dupplicatedChildMessage;
       String tooltip = renameChildTooltip;
@@ -155,10 +153,10 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       // Add actions to message html
       String renameActionLink = event(RENAME_ACTION, page.getName());
       if (pageToMove.getName().equals(page.getName())) {
-        messageHTML = messageHTML.replace("{0}", "<a title=\""+ tooltip + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
+        messageHTML = messageHTML.replace("{0}", "<a title='"+ tooltip + "' href='" + renameActionLink + "'>" + renameActionLabel + "</a>");
       } else {
         messageHTML = messageHTML.replace("{0}", page.getTitle());
-        messageHTML = messageHTML.replace("{1}", "<a title=\""+ tooltip + "\" href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
+        messageHTML = messageHTML.replace("{1}", "<a title='"+ tooltip + "' href='" + renameActionLink + "'>" + renameActionLabel + "</a>");
       }
       
       // Append the notification
@@ -175,12 +173,39 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     return "<div class='box'>" + notifications.toString() + "</div>";
   }
   
-  public List<PageImpl> getDupplicatedPages() {
+  public List<PageInfo> getDupplicatedPages() {
     return duplicatedPages;
   }
 
-  public void setDupplicatedPages(List<PageImpl> dupplicatedPages) {
+  public void setDupplicatedPages(List<PageInfo> dupplicatedPages) {
     this.duplicatedPages = dupplicatedPages;
+  }
+  
+  class PageInfo {
+    private String name;
+    
+    private String title;
+    
+    public PageInfo(Page page) {
+      this.name = page.getName();
+      this.title = page.getTitle();
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(String name) {
+      this.name = name;
+    }
+
+    public String getTitle() {
+      return title;
+    }
+
+    public void setTitle(String title) {
+      this.title = title;
+    }
   }
 
   static public class CloseActionListener extends EventListener<UIWikiMovePageForm> {
@@ -202,7 +227,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       WikiPageParams currentLocationParams = currentLocation.getPageParam();
       WikiPageParams newLocationParams = newLocation.getPageParam();
       
-      if (newLocationParams==null) {
+      if (newLocationParams == null) {
         event.getRequestContext()
              .getUIApplication()
              .addMessage(new ApplicationMessage("UIWikiMovePageForm.msg.new-location-can-not-be-empty",
@@ -221,12 +246,15 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
           !currentLocationParams.getOwner().equals(newLocationParams.getOwner())) {
         
         // Get the list of dupplicated page
-        movePageForm.duplicatedPages = wservice.getDuplicatePages(movepage, wservice.getWiki(newLocationParams.getType(), newLocationParams.getOwner()), null);
+        List<PageImpl> duplicatedPageList = wservice.getDuplicatePages(movepage, wservice.getWiki(newLocationParams.getType(), newLocationParams.getOwner()), null);
+        movePageForm.duplicatedPages = new ArrayList<UIWikiMovePageForm.PageInfo>();
+        for (PageImpl page : duplicatedPageList) {
+          movePageForm.duplicatedPages.add(movePageForm.new PageInfo(page));
+        }
         
         // If there're some dupplicated page then show warning and return
         if (movePageForm.duplicatedPages.size() > 0) {
-          movePageForm.pageToMove = movepage;
-          event.getRequestContext().addUIComponentToUpdateByAjax(movePageForm.getParent());
+          movePageForm.pageToMove = movePageForm.new PageInfo(movepage);
           return;
         }
       }
@@ -296,7 +324,6 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       UIWikiLocationContainer uiWikiLocationContainer = uiWikiMovePageForm.getChild(UIWikiLocationContainer.class);
       UIWikiBreadCrumb newlocation = uiWikiLocationContainer.getChildById(UIWikiLocationContainer.NEW_LOCATION);
       newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
-      
       event.getRequestContext().addUIComponentToUpdateByAjax(newlocation);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiTree);
     }
