@@ -226,7 +226,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
         // If there're some dupplicated page then show warning and return
         if (movePageForm.duplicatedPages.size() > 0) {
           movePageForm.pageToMove = movepage;
-          event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPortlet);
+          event.getRequestContext().addUIComponentToUpdateByAjax(movePageForm.getParent());
           return;
         }
       }
@@ -281,7 +281,16 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       
       // Change the init page of tree
       UITreeExplorer uiTree = uiWikiMovePageForm.getChildById(UITREE);
-      uiTree.setInitParam(uiWikiMovePageForm.getInitParam(TreeUtils.getPathFromPageParams(params)));
+      StringBuilder initParams = new StringBuilder();
+      initParams.append("?")
+        .append(TreeNode.PATH)
+        .append("=")
+        .append(TreeUtils.getPathFromPageParams(params))
+        .append("&")
+        .append(TreeNode.CURRENT_PATH)
+        .append("=")
+        .append(Utils.getCurrentWikiPagePath());
+      uiTree.setInitParam(initParams.toString());
       
       // Change the breadcrum
       UIWikiLocationContainer uiWikiLocationContainer = uiWikiMovePageForm.getChild(UIWikiLocationContainer.class);

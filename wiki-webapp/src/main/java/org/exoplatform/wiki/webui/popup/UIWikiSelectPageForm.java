@@ -172,7 +172,16 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
       
       // Change the init page of tree
       UITreeExplorer uiTree = uiWikiSelectPageForm.getChildById(UI_TREE_ID);
-      uiTree.setInitParam(uiWikiSelectPageForm.getInitParam(TreeUtils.getPathFromPageParams(params)));
+      StringBuilder initParams = new StringBuilder();
+      initParams.append("?")
+        .append(TreeNode.PATH)
+        .append("=")
+        .append(TreeUtils.getPathFromPageParams(params))
+        .append("&")
+        .append(TreeNode.CURRENT_PATH)
+        .append("=")
+        .append(Utils.getCurrentWikiPagePath());
+      uiTree.setInitParam(initParams.toString());
       
       event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiSelectPageForm.getParent());
     }
