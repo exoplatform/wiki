@@ -122,6 +122,7 @@ public class JCRDataStorage implements DataStorage{
     String path = row.getValue(WikiNodeType.Definition.PATH).getString();
     String title = (row.getValue(WikiNodeType.Definition.TITLE) == null ? null : row.getValue(WikiNodeType.Definition.TITLE).getString());
     String excerpt = null;
+    long jcrScore = row.getValue("jcr:score").getLong();
     Calendar updateDate = GregorianCalendar.getInstance();
     Calendar createdDate = GregorianCalendar.getInstance();
     PageImpl page = null;
@@ -165,6 +166,7 @@ public class JCRDataStorage implements DataStorage{
     
     SearchResult result = new SearchResult(excerpt, title, path, type, updateDate, createdDate);
     result.setUrl(page.getURL());
+    result.setJcrScore(jcrScore);
     return result;
   }
   

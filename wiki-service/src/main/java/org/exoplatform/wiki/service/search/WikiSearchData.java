@@ -83,7 +83,7 @@ public class WikiSearchData extends SearchData {
     if (onlyHomePages) {
       queryPath = queryPath.substring(0, queryPath.length() - 3) + "'";
     }
-    statement.append("SELECT jcr:primaryType, jcr:path, title, fileType ")
+    statement.append("SELECT jcr:primaryType, jcr:path, jcr:score, title, fileType ")
              .append("FROM nt:base ")
              .append("WHERE ")
              .append(queryPath)

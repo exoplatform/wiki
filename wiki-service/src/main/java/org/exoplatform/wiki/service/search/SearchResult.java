@@ -11,6 +11,7 @@ public class SearchResult {
   protected String type ;
   protected String pageName ;
   protected String url;
+  protected long   jcrScore;
   protected Calendar updatedDate;  
   protected Calendar createdDate;
   
@@ -80,6 +81,14 @@ public class SearchResult {
   public String getUrl() {
     return url;
   }
+  
+  public void setJcrScore(long jcrScore) {
+    this.jcrScore = jcrScore;
+  }
+  
+  public long getJcrScore() {
+    return jcrScore;
+  }
 
   public Calendar getUpdatedDate() {
     return updatedDate;
@@ -101,6 +110,5 @@ public class SearchResult {
    */
   public void setCreatedDate(Calendar createdDate) {
     this.createdDate = createdDate;
-  }  
-  
+  }
 }

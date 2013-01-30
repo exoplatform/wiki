@@ -1,14 +1,27 @@
 package org.exoplatform.wiki.service.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchResult;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.search.WikiSearchData;
 
 public class WikiSearchServiceConnector extends SearchServiceConnector {
+  
+  private static final Log LOG = ExoLogger.getLogger("org.exoplatform.wiki.service.impl.WikiSearchServiceConnector");
+  
+  public static final String WIKI_PAGE_ICON = "uiPageIcon";
+  
+  public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
   private WikiService wikiService;
   
@@ -19,8 +32,55 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
 
   @Override
   public Collection<SearchResult> search(String query, Collection<String> sites, int offset, int limit, String sort, String order) {
+    WikiSearchData searchData = new WikiSearchData(query, null, null, null, null, null);
+    searchData.setNodeType(WikiNodeType.WIKI_PAGE);
+    searchData.setOffset(offset);
+    searchData.setLimit(limit);
+    searchData.setSort(sort);
+    searchData.setOrder(order);
     
-    return null;
+    List<SearchResult> searchResults = new ArrayList<SearchResult>();
+    try {
+      PageList<org.exoplatform.wiki.service.search.SearchResult> wikiSearchPageList = wikiService.search(searchData);
+      if (wikiSearchPageList != null) {
+        List<org.exoplatform.wiki.service.search.SearchResult> wikiSearchResults = wikiSearchPageList.getAll();
+        for (org.exoplatform.wiki.service.search.SearchResult wikiSearchResult : wikiSearchResults) {
+          searchResults.add(buildResult(wikiSearchResult));
+        }
+      }
+    } catch (Exception e) {
+      LOG.info("Could not execute unified seach on wiki" , e) ; 
+    }
+    return searchResults;
   }
-
+  
+  private String getResultIcon(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+    return WIKI_PAGE_ICON;
+  }
+  
+  private String getExcerptOfPage(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+    // TODO
+    return "";
+  }
+  
+  private String getPageDetail(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+    // TODO Pages detail ="the site" + " - " + "the url"
+    return "";
+  }
+  
+  private SearchResult buildResult(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+    SearchResult result = new SearchResult() ;
+    try {
+      result.setTitle(wikiSearchResult.getTitle());
+      result.setUrl(wikiSearchResult.getUrl());
+      result.setExcerpt(getExcerptOfPage(wikiSearchResult));
+      result.setDetail(getPageDetail(wikiSearchResult));
+      result.setRelevancy(wikiSearchResult.getJcrScore());
+      result.setDate(wikiSearchResult.getUpdatedDate().getTime().getTime());
+      result.setImageUrl(getResultIcon(wikiSearchResult));
+    }catch (Exception e) {
+      LOG.info("Error when getting property from node " + e);
+    }
+    return result;
+  }
 }
