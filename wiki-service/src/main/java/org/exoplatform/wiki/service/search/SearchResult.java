@@ -10,7 +10,8 @@ public class SearchResult {
   protected String path ;
   protected String type ;
   protected String pageName ;
-  protected Calendar   updatedDate;  
+  protected String url;
+  protected Calendar updatedDate;  
   protected Calendar createdDate;
   
   public SearchResult() {}
@@ -70,6 +71,14 @@ public class SearchResult {
 
   public String getPageName() {
     return pageName;
+  }
+  
+  public void setUrl(String url) {
+    this.url = url;
+  }
+  
+  public String getUrl() {
+    return url;
   }
 
   public Calendar getUpdatedDate() {

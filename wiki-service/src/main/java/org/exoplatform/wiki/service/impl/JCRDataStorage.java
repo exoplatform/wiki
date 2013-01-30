@@ -119,7 +119,6 @@ public class JCRDataStorage implements DataStorage{
   
   private SearchResult getResult(Row row) throws Exception {
     String type = row.getValue(WikiNodeType.Definition.PRIMARY_TYPE).getString();
-
     String path = row.getValue(WikiNodeType.Definition.PATH).getString();
     String title = (row.getValue(WikiNodeType.Definition.TITLE) == null ? null : row.getValue(WikiNodeType.Definition.TITLE).getString());
     String excerpt = null;
@@ -159,9 +158,13 @@ public class JCRDataStorage implements DataStorage{
       updateDate.setTime(page.getUpdatedDate());
       createdDate.setTime(page.getCreatedDate());
     }
-    if (page == null || !page.hasPermission(PermissionType.VIEWPAGE))
+    
+    if (page == null || !page.hasPermission(PermissionType.VIEWPAGE)) {
       return null;
+    }
+    
     SearchResult result = new SearchResult(excerpt, title, path, type, updateDate, createdDate);
+    result.setUrl(page.getURL());
     return result;
   }
   

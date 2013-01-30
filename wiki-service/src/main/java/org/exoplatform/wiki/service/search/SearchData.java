@@ -50,6 +50,10 @@ public class SearchData {
   public String jcrQueryPath;
   
   private long offset = 0;
+  
+  protected String sort;
+  
+  protected String order;
     
   public int limit = Integer.MAX_VALUE;
   
@@ -167,5 +171,21 @@ public class SearchData {
 
   public void setOffset(long offset) {
     this.offset = offset;
+  }
+
+  public String getSort() {
+    return sort;
+  }
+
+  public void setSort(String sort) {
+    this.sort = sort;
+  }
+
+  public String getOrder() {
+    return order;
+  }
+
+  public void setOrder(String order) {
+    this.order = order;
   }
 }
