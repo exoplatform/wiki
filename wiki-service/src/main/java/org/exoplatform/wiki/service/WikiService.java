@@ -273,4 +273,13 @@ public interface WikiService {
    * @throws Exception
    */
   public boolean hasAdminPagePermission(String wikiType, String owner) throws Exception;
+  
+  /**
+   * Get space name by group Id
+   * 
+   * @param groupId The group Id to get space name
+   * @return The space name
+   * @throws Exception
+   */
+  public String getSpaceNameByGroupId(String groupId) throws Exception;
 }

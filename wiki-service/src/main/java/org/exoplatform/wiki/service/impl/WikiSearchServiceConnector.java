@@ -1,6 +1,8 @@
 package org.exoplatform.wiki.service.impl;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -8,12 +10,19 @@ import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.xwiki.rendering.syntax.Syntax;
 
 public class WikiSearchServiceConnector extends SearchServiceConnector {
   
@@ -23,11 +32,16 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
+  private static final int   EXCERPT_LENGTH    = 140;
+  
   private WikiService wikiService;
+  
+  private RenderingService renderingService;
   
   public WikiSearchServiceConnector(InitParams initParams) {
     super(initParams);
     wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    renderingService = (RenderingService) PortalContainer.getInstance().getComponentInstanceOfType(RenderingService.class);
   }
 
   @Override
@@ -58,14 +72,58 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     return WIKI_PAGE_ICON;
   }
   
+  private PageImpl getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
+    PageImpl page = null;
+    if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
+      AttachmentImpl searchContent = (AttachmentImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
+      page = searchContent.getParentPage();
+    } else if (WikiNodeType.WIKI_PAGE.equals(result.getType()) || WikiNodeType.WIKI_HOME.equals(result.getType())) {
+      page = (PageImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
+    }
+    return page;
+  }
+  
   private String getExcerptOfPage(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
-    // TODO
-    return "";
+    String excerpt = "";
+    try {
+      PageImpl page = getPage(wikiSearchResult);
+      excerpt = renderingService.render(page.getContent().getText(), page.getSyntax(), Syntax.PLAIN_1_0.toIdString(), false);
+      excerpt = excerpt.split("\n")[0];
+      if (excerpt.length() > EXCERPT_LENGTH) {
+        excerpt = excerpt.substring(0, EXCERPT_LENGTH) + "...";
+      }
+    } catch (Exception e) {
+      LOG.info("Can not get page excerpt ", e);
+    }
+    return excerpt;
   }
   
   private String getPageDetail(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
-    // TODO Pages detail ="the site" + " - " + "the url"
-    return "";
+    StringBuffer pageDetail = new StringBuffer();
+    try {
+      
+      // Get space name
+      PageImpl page = getPage(wikiSearchResult);
+      String spaceName = "";
+      Wiki wiki = page.getWiki();
+      if (wiki.getType().equals(PortalConfig.GROUP_TYPE)) {
+        spaceName = wikiService.getSpaceNameByGroupId("/spaces/" + wiki.getOwner());
+      } else {
+        spaceName = wiki.getOwner();
+      }
+      
+      // Get update date
+      Calendar updateDate = wikiSearchResult.getUpdatedDate();
+      SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_FORMAT);
+      
+      // Build page detail
+      pageDetail.append(spaceName);
+      pageDetail.append(" - ");
+      pageDetail.append(format.format(updateDate.getTime()));
+    } catch (Exception e) {
+      LOG.info("Can not get page detail ", e);
+    }
+    return pageDetail.toString();
   }
   
   private SearchResult buildResult(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
@@ -79,7 +137,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       result.setDate(wikiSearchResult.getUpdatedDate().getTime().getTime());
       result.setImageUrl(getResultIcon(wikiSearchResult));
     }catch (Exception e) {
-      LOG.info("Error when getting property from node " + e);
+      LOG.info("Error when getting property from node ", e);
     }
     return result;
   }

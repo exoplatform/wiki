@@ -1478,6 +1478,22 @@ public class WikiServiceImpl implements WikiService, Startable {
     return jcrDataStorage.getWikiPageByUUID(wStore.getSession(), uuid);
   }
   
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public String getSpaceNameByGroupId(String groupId) throws Exception {
+    try {
+      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      
+      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
+      return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
+    } catch (ClassNotFoundException e) {
+      Model model = getModel();
+      Wiki wiki = getWiki(PortalConfig.GROUP_TYPE, groupId.substring(1), model);
+      return wiki.getName();
+    }
+  }
+  
   private DraftPage getDraftOfWikiPage(Page targetPage) throws Exception {
     // If target page is null then return null
     if (targetPage == null) {
