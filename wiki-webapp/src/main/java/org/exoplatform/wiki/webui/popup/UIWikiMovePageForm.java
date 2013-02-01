@@ -153,10 +153,10 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       // Add actions to message html
       String renameActionLink = event(RENAME_ACTION, page.getName());
       if (pageToMove.getName().equals(page.getName())) {
-        messageHTML = messageHTML.replace("{0}", "<a title='"+ tooltip + "' href='" + renameActionLink + "'>" + renameActionLabel + "</a>");
+        messageHTML = messageHTML.replace("{0}", "<a title='"+ tooltip + "' href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
       } else {
         messageHTML = messageHTML.replace("{0}", page.getTitle());
-        messageHTML = messageHTML.replace("{1}", "<a title='"+ tooltip + "' href='" + renameActionLink + "'>" + renameActionLabel + "</a>");
+        messageHTML = messageHTML.replace("{1}", "<a title='"+ tooltip + "' href=\"" + renameActionLink + "\">" + renameActionLabel + "</a>");
       }
       
       // Append the notification
