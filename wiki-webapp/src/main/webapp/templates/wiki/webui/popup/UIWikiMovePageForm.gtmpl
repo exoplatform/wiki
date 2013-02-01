@@ -10,10 +10,8 @@
 
   <div class="NotificationArea"><%=uiform.createDuplicatedPageNotification(); %></div>
 
+  <div class="BarContent"><%=_ctx.appRes("UITreeExplorer.label.Destination")%></div>
   <div class="SideBarContent">
- 	<div class="BarContent">
- 	  <%=_ctx.appRes("UITreeExplorer.label.Destination")%>
- 	</div>
 	<div class="SideContent">
  	 <% uiform.renderChild(uiform.UITREE); %> 		
     </div>
