@@ -324,8 +324,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       UIWikiLocationContainer uiWikiLocationContainer = uiWikiMovePageForm.getChild(UIWikiLocationContainer.class);
       UIWikiBreadCrumb newlocation = uiWikiLocationContainer.getChildById(UIWikiLocationContainer.NEW_LOCATION);
       newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
-      event.getRequestContext().addUIComponentToUpdateByAjax(newlocation);
-      event.getRequestContext().addUIComponentToUpdateByAjax(uiTree);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiMovePageForm.getParent());
     }
   }
   
