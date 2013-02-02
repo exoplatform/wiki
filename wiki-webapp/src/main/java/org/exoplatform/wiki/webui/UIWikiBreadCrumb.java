@@ -137,12 +137,12 @@ public class UIWikiBreadCrumb extends UIContainer {
   }
 
   public String getWikiName() throws Exception {
-    if (getPageParam() != null) {
-      String wikiName = getPageParam().getOwner();
-      if (!isDisplayFullSpaceName && wikiName.indexOf('/') > -1) {
-        wikiName = wikiName.substring(wikiName.lastIndexOf('/') + 1);
-      }
-      return wikiName;
+    WikiPageParams params = getPageParam();
+    if (params != null) {
+      String wikiType = params.getType();
+      String wikiOwner = params.getOwner();
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+      return org.exoplatform.wiki.commons.Utils.getSpaceName(wikiService.getWiki(wikiType, wikiOwner));
     }
     return null;
   }

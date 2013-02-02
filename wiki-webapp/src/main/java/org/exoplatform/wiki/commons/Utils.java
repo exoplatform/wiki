@@ -19,8 +19,6 @@ package org.exoplatform.wiki.commons;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -48,7 +46,6 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIComponent;
@@ -58,7 +55,6 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
@@ -107,28 +103,32 @@ public class Utils {
   
   public static String getCurrentSpaceName() throws Exception {
     Wiki currentSpace = Utils.getCurrentWiki();
-    if (currentSpace instanceof PortalWiki) {
-      String displayName = currentSpace.getName();
+    return getSpaceName(currentSpace);
+  }
+  
+  public static String getSpaceName(Wiki space) throws Exception {
+    if (space instanceof PortalWiki) {
+      String displayName = space.getName();
       int slashIndex = displayName.lastIndexOf('/');
       if (slashIndex > -1) {
         displayName = displayName.substring(slashIndex + 1);
       }
-      return displayName;
+      return Utils.upperFirstCharacter(displayName);
     }
 
-    if (currentSpace instanceof UserWiki) {
+    if (space instanceof UserWiki) {
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-      if (currentSpace.getOwner().equals(currentUser)) {
+      if (space.getOwner().equals(currentUser)) {
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         ResourceBundle res = context.getApplicationResourceBundle();
         String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
         return mySpaceLabel;
       }
-      return currentSpace.getOwner();
+      return space.getOwner();
     }
 
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    return wikiService.getSpaceNameByGroupId(currentSpace.getOwner());
+    return wikiService.getSpaceNameByGroupId(space.getOwner());
   }
   
   public static String getCurrentRequestURL() throws Exception {
@@ -380,6 +380,12 @@ public class Utils {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
+  }
+  
+  public static void redirect(String url) throws Exception {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    portalRequestContext.setResponseComplete(true);
+    portalRequestContext.sendRedirect(url);
   }
   
   public static void ajaxRedirect(Event<? extends UIComponent> event,
