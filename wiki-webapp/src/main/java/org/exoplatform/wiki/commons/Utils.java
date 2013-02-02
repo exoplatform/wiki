@@ -31,6 +31,7 @@ import javax.portlet.PortletPreferences;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -96,6 +97,13 @@ public class Utils {
   public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;
   
   public static final String SLASH = "/";
+  
+  public static String upperFirstCharacter(String str) {
+    if (StringUtils.isEmpty(str)) {
+      return str;
+    }
+    return str.substring(0, 1).toUpperCase() + str.substring(1);
+  }
   
   public static String getCurrentSpaceName() throws Exception {
     Wiki currentSpace = Utils.getCurrentWiki();

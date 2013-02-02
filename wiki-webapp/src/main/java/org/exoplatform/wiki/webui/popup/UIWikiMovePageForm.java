@@ -111,7 +111,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     
     // Init space switcher
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
-    uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.getCurrentSpaceName());
+    uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(Utils.getCurrentSpaceName()));
     EventUIComponent eventComponent1 = new EventUIComponent(MOVE_PAGE_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }
@@ -305,7 +305,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       Wiki wiki = wikiService.getWikiById(wikiId);
       Page wikiHome = wiki.getWikiHome();
       WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName());
-      uiWikiSpaceSwitcher.setCurrentSpaceName(wikiService.getWikiNameById(wikiId));
+      uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(wikiService.getWikiNameById(wikiId)));
       
       // Change the init page of tree
       UITreeExplorer uiTree = uiWikiMovePageForm.getChildById(UITREE);
