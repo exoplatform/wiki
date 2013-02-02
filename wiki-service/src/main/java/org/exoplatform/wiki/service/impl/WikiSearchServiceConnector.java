@@ -59,7 +59,10 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       if (wikiSearchPageList != null) {
         List<org.exoplatform.wiki.service.search.SearchResult> wikiSearchResults = wikiSearchPageList.getAll();
         for (org.exoplatform.wiki.service.search.SearchResult wikiSearchResult : wikiSearchResults) {
-          searchResults.add(buildResult(wikiSearchResult));
+          SearchResult searchResult = buildResult(wikiSearchResult);
+          if (searchResult != null) {
+            searchResults.add(searchResult);
+          }
         }
       }
     } catch (Exception e) {
@@ -127,18 +130,18 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
   
   private SearchResult buildResult(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
-    SearchResult result = new SearchResult() ;
     try {
-      result.setTitle(wikiSearchResult.getTitle());
-      result.setUrl(wikiSearchResult.getUrl());
-      result.setExcerpt(getExcerptOfPage(wikiSearchResult));
-      result.setDetail(getPageDetail(wikiSearchResult));
-      result.setRelevancy(wikiSearchResult.getJcrScore());
-      result.setDate(wikiSearchResult.getUpdatedDate().getTime().getTime());
-      result.setImageUrl(getResultIcon(wikiSearchResult));
-    }catch (Exception e) {
+      String title = wikiSearchResult.getTitle();
+      String url = wikiSearchResult.getUrl();
+      String excerpt = getExcerptOfPage(wikiSearchResult);
+      String detail = getPageDetail(wikiSearchResult);
+      long relevancy = wikiSearchResult.getJcrScore();
+      long date = wikiSearchResult.getUpdatedDate().getTime().getTime();
+      String imageUrl = getResultIcon(wikiSearchResult);
+      return new SearchResult(url, title, excerpt, detail, imageUrl, date, relevancy);
+    } catch (Exception e) {
       LOG.info("Error when getting property from node ", e);
+      return null;
     }
-    return result;
   }
 }
