@@ -63,18 +63,23 @@ public class JCRDataStorage implements DataStorage{
     QueryResult result = q.execute();
     RowIterator iter = result.getRows();
     long numberOfSearchForTitleResult = iter.getSize();
-    int position = 0;
-    while (iter.hasNext()) {
-      if ((data.getOffset() <= position) && (position < data.getOffset() + data.getLimit())) {
-        SearchResult tempResult = getResult(iter.nextRow());
-        // If contains, merges with the exist
-        if (tempResult != null && !isContains(resultList, tempResult)) {
-          resultList.add(tempResult);
-        }
-      } else {
-        iter.nextRow();
+    if (numberOfSearchForTitleResult > data.getOffset()) {
+      if (data.getOffset() > 0) {
+        iter.skip(data.getOffset());
       }
-      position++;
+      long position = data.getOffset();
+      while (iter.hasNext()) {
+        if (position < data.getOffset() + data.getLimit()) {
+          SearchResult tempResult = getResult(iter.nextRow());
+          // If contains, merges with the exist
+          if (tempResult != null && !isContains(resultList, tempResult)) {
+            resultList.add(tempResult);
+          }
+        } else {
+          iter.nextRow();
+        }
+        position++;
+      }
     }
     
     // if we have enough result then return
