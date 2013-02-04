@@ -22,6 +22,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.exoplatform.wiki.utils.Utils;
 import org.xwiki.rendering.syntax.Syntax;
 
 public class WikiSearchServiceConnector extends SearchServiceConnector {
@@ -47,7 +48,6 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   @Override
   public Collection<SearchResult> search(String query, Collection<String> sites, int offset, int limit, String sort, String order) {
     WikiSearchData searchData = new WikiSearchData(query, null, null, null, null, null);
-    searchData.setNodeType(WikiNodeType.WIKI_PAGE);
     searchData.setOffset(offset);
     searchData.setLimit(limit);
     searchData.setSort(sort);

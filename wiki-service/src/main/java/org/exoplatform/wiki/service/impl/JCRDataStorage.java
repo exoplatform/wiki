@@ -12,6 +12,7 @@ import java.util.List;
 import javax.jcr.ImportUUIDBehavior;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
@@ -55,22 +56,63 @@ public class JCRDataStorage implements DataStorage{
   
   public PageList<SearchResult> search(ChromatticSession session, WikiSearchData data) throws Exception {
     List<SearchResult> resultList = new ArrayList<SearchResult>();
-    String statement = data.getStatement();
+    
+    // Search for title
+    String statement = data.getStatementForSearchingTitle();
     QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
-    q.setOffset(data.getOffset());
-    q.setLimit(data.getLimit());
     QueryResult result = q.execute();
     RowIterator iter = result.getRows();
+    long numberOfSearchForTitleResult = iter.getSize();
+    int position = 0;
     while (iter.hasNext()) {
-      SearchResult tempResult = getResult(iter.nextRow());
-      // If contains, merges with the exist
-      if (tempResult != null && !isContains(resultList, tempResult)) {
-        resultList.add(tempResult);
+      if ((data.getOffset() <= position) && (position < data.getOffset() + data.getLimit())) {
+        SearchResult tempResult = getResult(iter.nextRow());
+        // If contains, merges with the exist
+        if (tempResult != null && !isContains(resultList, tempResult)) {
+          resultList.add(tempResult);
+        }
+      } else {
+        iter.nextRow();
+      }
+      position++;
+    }
+    
+    // if we have enough result then return
+    if (resultList.size() >= data.getLimit()) {
+      return new ObjectPageList<SearchResult>(resultList, resultList.size());
+    }
+    
+    // Search for wiki content
+    long searchForContentOffset = 0;
+    long searchForContentLimit = 0;
+    if (numberOfSearchForTitleResult > data.getOffset()) {
+      searchForContentOffset = 0;
+      searchForContentLimit = data.getLimit() - (numberOfSearchForTitleResult - data.getOffset());
+    } else {
+      searchForContentOffset = data.getOffset() - numberOfSearchForTitleResult;
+      searchForContentLimit = searchForContentOffset + data.getLimit();
+    }
+    
+    if (searchForContentOffset > 0 && searchForContentLimit > 0) {
+      statement = data.getStatementForSearchingContent();
+      q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
+      q.setOffset(searchForContentOffset);
+      q.setLimit(searchForContentLimit);
+      result = q.execute();
+      iter = result.getRows();
+      while (iter.hasNext()) {
+        SearchResult tempResult = getResult(iter.nextRow());
+        // If contains, merges with the exist
+        if (tempResult != null && !isContains(resultList, tempResult)) {
+          resultList.add(tempResult);
+        }
       }
     }
+    
+    // Return all the result
     return new ObjectPageList<SearchResult>(resultList, resultList.size());
   }
-
+  
   public Page getWikiPageByUUID(ChromatticSession session, String uuid) throws Exception {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT path ");
@@ -344,7 +386,7 @@ public class JCRDataStorage implements DataStorage{
                                                        TemplateSearchData data) throws Exception {
 
     List<TemplateSearchResult> resultList = new ArrayList<TemplateSearchResult>();
-    String statement = data.getStatement();
+    String statement = data.getStatementForSearchingTitle();
     Query q = ((ChromatticSessionImpl)session).getDomainSession().getSessionWrapper().createQuery(statement);
     QueryResult result = q.execute();
     RowIterator iter = result.getRows();

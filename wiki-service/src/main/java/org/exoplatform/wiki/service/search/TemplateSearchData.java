@@ -65,7 +65,7 @@ public class TemplateSearchData extends SearchData {
   }
 
   @Override
-  public String getStatement() {
+  public String getStatementForSearchingTitle() {
     StringBuilder statement = new StringBuilder();
     try {
       String title = getTitle();

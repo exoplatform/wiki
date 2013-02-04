@@ -161,7 +161,7 @@ public class SearchData {
     this.limit = limit;
   }
 
-  public String getStatement() {
+  public String getStatementForSearchingTitle() {
     return null;
   }
   

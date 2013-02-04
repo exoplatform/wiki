@@ -661,12 +661,13 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   public PageList<SearchResult> searchContent(WikiSearchData data) throws Exception {
     List<SearchResult> results = search(data).getAll();
+    List<SearchResult> newResult = new ArrayList<SearchResult>(results);
     for (SearchResult result : results) {
       if (WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
-        results.remove(result);
+        newResult.remove(result);
       }
     }
-    return new ObjectPageList<SearchResult>(results, 10);
+    return new ObjectPageList<SearchResult>(newResult, 10);
   }
   
   public PageList<SearchResult> search(WikiSearchData data) throws Exception {

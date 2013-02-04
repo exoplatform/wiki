@@ -94,8 +94,8 @@ public class WikiSearchData extends SearchData {
              .append("ORDER BY jcr:score DESC");
     return statement.toString();
   }
-
-  public String getStatement() {
+  
+  public String getStatementForSearchingTitle() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT title, jcr:primaryType, path, excerpt(.) ");
     
@@ -105,7 +105,17 @@ public class WikiSearchData extends SearchData {
       statement.append("FROM " + nodeType + " ");
     }
     statement.append("WHERE ");
-    statement.append(getContentCdt());
+    statement.append(searchTitleCondition());
+    statement.append(createOrderClause());
+    return statement.toString();
+  }
+  
+  public String getStatementForSearchingContent() {
+    StringBuilder statement = new StringBuilder();
+    statement.append("SELECT jcr:content, jcr:primaryType, path, excerpt(.) ");
+    statement.append("FROM " + WikiNodeType.WIKI_ATTACHMENT + " ");
+    statement.append("WHERE ");
+    statement.append(searchContentCondition());
     statement.append(createOrderClause());
     return statement.toString();
   }
@@ -186,7 +196,31 @@ public class WikiSearchData extends SearchData {
     return terms;
   }
   
-  private String getContentCdt() {
+  private String searchContentCondition() {
+    StringBuilder clause = new StringBuilder();
+    String queryPath = this.jcrQueryPath;
+    clause.append(queryPath);
+    
+    if (text != null && text.length() > 0) {
+      clause.append(" AND (");
+      Collection<String> inputs = parseSearchText(text) ;
+      int inputCount = 0 ;
+      for(String keyword : inputs){
+        if(inputCount > 0) clause.append(" OR ");
+        clause.append(" CONTAINS(*, '").append(keyword).append("')");
+        inputCount ++ ;
+      }
+      clause.append(")");
+    } else {
+      if (content != null && content.length() > 0) {
+        clause.append(" AND ");
+        clause.append(" CONTAINS(*, '").append(content).append("') ");
+      }
+    }
+    return clause.toString();
+  }
+  
+  private String searchTitleCondition() {
     StringBuilder clause = new StringBuilder();
     String queryPath = this.jcrQueryPath;
     clause.append(queryPath);
@@ -205,10 +239,6 @@ public class WikiSearchData extends SearchData {
       if (title != null && title.length() > 0) {
         clause.append(" AND ");
         clause.append(" CONTAINS(title, '").append(title).append("') ");
-      }
-      if (content != null && content.length() > 0) {
-        clause.append(" AND ");
-        clause.append(" CONTAINS(*, '").append(content).append("') ");
       }
     }
     return clause.toString();
