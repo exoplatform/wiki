@@ -1,14 +1,14 @@
-@import url('UIWikiPageContent/Stylesheet.css');
+/*@import url('UIWikiPageContent/Stylesheet.css');
 
 @import url('UIAdvancePageIterator/Stylesheet.css');
 
 @import url('UIWikiBreadCrumb/Stylesheet.css');
 
-@import url('UIWikiSearchBox/Stylesheet.css');
+@import url('UIWikiSearchBox/Stylesheet.css');*/
 
 @import url('UIWikiRichTextEditor/Stylesheet.css');
 
-@import url('UITreeExplorer/Stylesheet.css');
+/*@import url('UITreeExplorer/Stylesheet.css');
 
 @import url('UIWikiToolBar/Stylesheet.css');
 
@@ -30,11 +30,11 @@
 
 @import url('UIEditorTabs/Stylesheet.css');
 
-@import url('icons/Stylesheet.css');
+@import url('icons/Stylesheet.css');*/
 
 @import url('/wiki/skin/css/wiki.css');
 
-.TextAlignLeft{
+/*.TextAlignLeft{
 	text-align: left;
 }
 
@@ -80,7 +80,7 @@
 }
 */
 
-.UIWikiPortlet .UIAction a {
+/*.UIWikiPortlet .UIAction a {
 	text-decoration: none;
 	color: black;
 }
@@ -103,7 +103,7 @@
 }
 
 /*===========================*/
-.box {
+/*.box {
 	border: 1px solid #DDDDDD;
 	margin: 1em 0;
 	display: block;
@@ -216,7 +216,7 @@ span.Excerpt p {
 }
 
 /*===========================*/
-.UIWikiPortlet {
+/*.UIWikiPortlet {
 	border: none;
 	color: #333333;
 	background-color: #FFFFFF;
@@ -469,7 +469,7 @@ table.UIFormGrid div.Id {
 
 /*############################## -- Begin Resize CSS function -- ##############################*/
 
-.UIWikiPortlet .Spliter {
+/*.UIWikiPortlet .Spliter {
 	background: #e1e1e1;
 	width: 1px;
 	cursor: col-resize;
@@ -480,7 +480,7 @@ table.UIFormGrid div.Id {
 .UIWikiPortlet .ResizeSideBar{
 	float: left; /* orientation=lt */
 	float: right; /* orientation=rt */
-	width: 15px;
+/*	width: 15px;
 	cursor:col-resize;
 	position: relative;
   border-right: solid 1px #fff;
@@ -541,7 +541,7 @@ table.UIFormGrid div.Id {
 }
 /*############################## -- End Resize CSS function -- ##############################*/
 
-.UIWikiPortlet .VerticalLine {
+/*.UIWikiPortlet .VerticalLine {
 	background: #e1e1e1;
 	width: 1px;
 	padding: 0px;
@@ -585,7 +585,7 @@ table.UIFormGrid div.Id {
 }
 
 /* wiki homepage */
-.UIWikiPortlet .UIWikiPageArea {
+/*.UIWikiPortlet .UIWikiPageArea {
 	padding: 0px 15px 45px 15px;
 	overflow: visible;
 }
@@ -794,7 +794,7 @@ table.UIFormGrid div.Id {
 }
 
 /* wiki mask workspace */
-.UIWikiMaskWorkspace {
+/*.UIWikiMaskWorkspace {
 	border-radius: 4px;
 	background-color: #E1E1E1;
 	padding: 9px 3px 6px 3px;
@@ -870,7 +870,7 @@ table.UIFormGrid div.Id {
 }
 
 /* Advance search */
-.UIWikiSearchSpaceArea {
+/*.UIWikiSearchSpaceArea {
 	padding: 8px 20px;
 }
 
@@ -919,13 +919,13 @@ table.UIFormGrid div.Id {
 }
 
 /* Advance Search Result */
-.UIWikiAdvanceSearchResult {
+/*.UIWikiAdvanceSearchResult {
 	height:400px;
 	overflow:auto;
 }
 
 /* Advance Search Result */
-.UIWikiAdvanceSearchResult .ResultInfo {
+/*.UIWikiAdvanceSearchResult .ResultInfo {
 	border-bottom: 2px solid #C2C2C2;
 	color: #363636;
 	margin: 20px 0 0;
@@ -952,7 +952,7 @@ table.UIFormGrid div.Id {
 	background: url("/wiki/skin/DefaultSkin/webui/UIWikiSearchBox/background/UIWikiSearchBG.png") no-repeat scroll 0px -124px transparent;
 }
 ****/
-.UIWikiPortlet .attach {
+/*.UIWikiPortlet .attach {
 	background: url("/wiki/skin/DefaultSkin/webui/UIWikiSearchBox/icons/16x16/AttachFileIcon.gif") no-repeat left top;
 }
 
@@ -1136,7 +1136,7 @@ table.UIFormGrid div.Id {
 }
 
 /*Page iterator*/
-.UIWikiAdvanceSearchResult .UIPageIterator {
+/*.UIWikiAdvanceSearchResult .UIPageIterator {
 	margin: 35px 0 10px 370px;
 	width: auto;
 }
@@ -1236,7 +1236,7 @@ table.UIFormGrid div.Id {
 
 
 /* File Attachment */
-.UIAttachmentUploadListForm .UIFormGrid td a {
+/*.UIAttachmentUploadListForm .UIFormGrid td a {
 	color: #4175b2;
 }
 
@@ -1301,7 +1301,7 @@ table.UIFormGrid div.Id {
 }
 
 /* Wiki - Page not found */
-.UIWikiPageNotFound {
+/*.UIWikiPageNotFound {
 	padding: 10px 10px 20px;
 	color: #363636;
 }
@@ -1388,7 +1388,7 @@ table.UIFormGrid div.Id {
 }
 
 /* Wiki delete page confirm */
-.UIWikiDeletePageConfirm {
+/*.UIWikiDeletePageConfirm {
 	color: #363636;
 }
 
@@ -1414,7 +1414,7 @@ table.UIFormGrid div.Id {
 }
 
 /*Page History Area*/
-.UIWikiHistorySpaceArea {
+/*.UIWikiHistorySpaceArea {
 	min-height: 300px;
 	padding: 10px 15px 15px 15px;
 }
@@ -1511,7 +1511,7 @@ table.UIFormGrid div.Id {
 }
 
 /* Hover Link and Menu */
-.UIWikiPortlet .HoverLink {
+/*.UIWikiPortlet .HoverLink {
 	float: right;
 	margin: 0;
 }
@@ -1532,7 +1532,7 @@ table.UIFormGrid div.Id {
 
 
 /**************For Hover Menu***********************/
-.UIWikiPortlet .MoreMenu {
+/*.UIWikiPortlet .MoreMenu {
 	white-space: nowrap;
 	top: 29px;
 	right: 0px;
@@ -1580,7 +1580,7 @@ table.UIFormGrid div.Id {
 }
 
 /******************************************************** UIWikiPageEditForm *************************************************************/ 
-.UIWikiPageEditForm .UIEditUpper {
+/*.UIWikiPageEditForm .UIEditUpper {
   height: 43px;
 }
 
@@ -1680,7 +1680,7 @@ table.UIFormGrid div.Id {
 }
 
 /* Wiki help */
-.UIWikiSidePanelArea {
+/*.UIWikiSidePanelArea {
 	margin: 0px 0 10px;
 	padding: 0;
 	line-height: 16px;
@@ -1984,7 +1984,7 @@ table.UIFormGrid div.Id {
 }
 
 /************** Resize Column******************/
-.UIWikiPortlet .ResizeSideBar {
+/*.UIWikiPortlet .ResizeSideBar {
 	border-right: 1px solid #FFFFFF;
 	cursor: col-resize;
 	float: left;
@@ -2044,3 +2044,4 @@ table.UIFormGrid div.Id {
 .UIWikiPortlet .ResizeSideBar .ShowLeftContent:hover span {
 	background: url("background/RightArrow.png") no-repeat center -26px;
 }
+*/
