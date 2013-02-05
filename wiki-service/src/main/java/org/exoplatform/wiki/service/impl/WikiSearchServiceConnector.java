@@ -110,7 +110,12 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       String spaceName = "";
       Wiki wiki = page.getWiki();
       if (wiki.getType().equals(PortalConfig.GROUP_TYPE)) {
-        spaceName = wikiService.getSpaceNameByGroupId("/spaces/" + wiki.getOwner());
+        String wikiOwner = wiki.getOwner();
+        if (wikiOwner.indexOf('/') == -1) {
+          spaceName = wikiService.getSpaceNameByGroupId("/spaces/" + wiki.getOwner());
+        } else {
+          spaceName = wikiService.getSpaceNameByGroupId(wiki.getOwner());
+        }
       } else {
         spaceName = wiki.getOwner();
       }
