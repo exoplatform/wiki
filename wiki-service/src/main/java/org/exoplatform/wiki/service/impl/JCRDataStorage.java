@@ -176,11 +176,6 @@ public class JCRDataStorage implements DataStorage{
     if (WikiNodeType.WIKI_ATTACHMENT_CONTENT.equals(type)) {
       // Transform to Attachment result
       type = WikiNodeType.WIKI_ATTACHMENT.toString();
-      try {
-        excerpt = row.getValue("rep:excerpt(.)").getString();
-      } catch(ArrayIndexOutOfBoundsException ex) {
-      	excerpt = "";
-      }
       path = path.substring(0, path.lastIndexOf("/"));
       if(!path.endsWith(WikiNodeType.Definition.CONTENT)){
         AttachmentImpl searchAtt = (AttachmentImpl) Utils.getObject(path, WikiNodeType.WIKI_ATTACHMENT);
@@ -205,6 +200,12 @@ public class JCRDataStorage implements DataStorage{
       page = (PageImpl) Utils.getObject(path, type);
       updateDate.setTime(page.getUpdatedDate());
       createdDate.setTime(page.getCreatedDate());
+    }
+    
+    try {
+      excerpt = row.getValue("rep:excerpt(.)").getString();
+    } catch(ArrayIndexOutOfBoundsException ex) {
+      excerpt = "";
     }
     
     if (page == null || !page.hasPermission(PermissionType.VIEWPAGE)) {

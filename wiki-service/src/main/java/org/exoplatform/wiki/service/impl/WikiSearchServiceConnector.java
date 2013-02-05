@@ -87,18 +87,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
   
   private String getExcerptOfPage(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
-    String excerpt = "";
-    try {
-      PageImpl page = getPage(wikiSearchResult);
-      excerpt = renderingService.render(page.getContent().getText(), page.getSyntax(), Syntax.PLAIN_1_0.toIdString(), false);
-      excerpt = excerpt.split("\n")[0];
-      if (excerpt.length() > EXCERPT_LENGTH) {
-        excerpt = excerpt.substring(0, EXCERPT_LENGTH) + "...";
-      }
-    } catch (Exception e) {
-      LOG.info("Can not get page excerpt ", e);
-    }
-    return excerpt;
+    return wikiSearchResult.getExcerpt();
   }
   
   private String getPageDetail(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
