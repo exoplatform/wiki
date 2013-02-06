@@ -538,6 +538,7 @@
           <configuration>
             <systemPropertyVariables>
               <com.arjuna.ats.arjuna.objectstore.objectStoreDir>${project.build.directory}</com.arjuna.ats.arjuna.objectstore.objectStoreDir>
+              <ObjectStoreEnvironmentBean.objectStoreDir>${project.build.directory}</ObjectStoreEnvironmentBean.objectStoreDir>
             </systemPropertyVariables>
           </configuration>
         </plugin>
