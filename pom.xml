@@ -45,11 +45,6 @@
     <org.gatein.portal.version>3.5.0.Final</org.gatein.portal.version>
     <org.exoplatform.commons.version>4.0.0.Alpha1-SNAPSHOT</org.exoplatform.commons.version>
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
-    <!-- ************** -->
-    <!-- Build settings -->
-    <!-- ************** -->
-    <!-- gwt-maven-plugin version must be enforced to use the same as gwt deps -->
-    <version.gwt.plugin>2.4.0</version.gwt.plugin>
   </properties>
   <dependencyManagement>
     <dependencies>
