@@ -4,7 +4,7 @@
   <parent>
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
-    <version>9-SNAPSHOT</version>
+    <version>9-beta-1</version>
     <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform.wiki</groupId>
@@ -38,6 +38,7 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
+    <org.exoplatform.depmgt.version>2</org.exoplatform.depmgt.version>
     <org.exoplatform.kernel.version>2.4.0-GA</org.exoplatform.kernel.version>
     <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
     <org.exoplatform.ws.version>2.3.0-GA</org.exoplatform.ws.version>
@@ -52,7 +53,7 @@
       <dependency>
         <groupId>org.exoplatform</groupId>
         <artifactId>maven-depmgt-pom</artifactId>
-        <version>2-SNAPSHOT</version>
+        <version>${org.exoplatform.depmgt.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -532,16 +533,6 @@
   <build>
     <pluginManagement>
       <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-surefire-plugin</artifactId>
-          <configuration>
-            <systemPropertyVariables>
-              <com.arjuna.ats.arjuna.objectstore.objectStoreDir>${project.build.directory}</com.arjuna.ats.arjuna.objectstore.objectStoreDir>
-              <ObjectStoreEnvironmentBean.objectStoreDir>${project.build.directory}</ObjectStoreEnvironmentBean.objectStoreDir>
-            </systemPropertyVariables>
-          </configuration>
-        </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-war-plugin</artifactId>
