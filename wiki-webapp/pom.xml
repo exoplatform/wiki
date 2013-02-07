@@ -10,7 +10,6 @@
   <packaging>war</packaging>
   <name>eXo Wiki Webapp</name>
   <properties>
-    <gwt.style>DETAILED</gwt.style>
     <gwt.output.directory>${project.build.directory}/${project.build.finalName}/resources/js/xwiki/wysiwyg</gwt.output.directory>
     <xwe.directory>${gwt.output.directory}/xwe</xwe.directory>
     <xwe.module>org.xwiki.gwt.wysiwyg.WysiwygDev</xwe.module>
@@ -296,6 +295,13 @@
             </configuration>
           </execution>
         </executions>
+        <configuration>
+          <module>${xwe.module}</module>
+          <webappDirectory>${gwt.output.directory}</webappDirectory>
+          <disableCastChecking>true</disableCastChecking>
+          <disableClassMetadata>true</disableClassMetadata>
+          <extraJvmArgs>-Xmx1024m -Xss1024k -Djava.awt.headless=true</extraJvmArgs>
+        </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -461,7 +467,6 @@
     <profile>
       <id>exo-release</id>
       <properties>
-        <gwt.style>OBF</gwt.style>
         <xwe.module>org.xwiki.gwt.wysiwyg.Wysiwyg</xwe.module>
       </properties>
     </profile>
