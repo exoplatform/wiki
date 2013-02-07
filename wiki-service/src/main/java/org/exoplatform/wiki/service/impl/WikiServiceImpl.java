@@ -39,6 +39,8 @@ import org.exoplatform.services.deployment.plugins.XMLDeploymentPlugin;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
+import org.exoplatform.services.jcr.core.nodetype.ExtendedNodeTypeManager;
+import org.exoplatform.services.jcr.core.nodetype.NodeTypeDataManager;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -1575,6 +1577,26 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
   
+  private void registerNodeTypes(String nodeTypeFilesName, int alreadyExistsBehaviour) throws Exception {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    ConfigurationManager configurationService = (ConfigurationManager) container.getComponentInstanceOfType(ConfigurationManager.class);
+    InputStream nodetypeDefinition = configurationService.getInputStream(nodeTypeFilesName);
+    RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+    ExtendedNodeTypeManager ntManager =   repositoryService.getCurrentRepository().getNodeTypeManager();
+    log.info("\nTrying register node types from xml-file " + nodeTypeFilesName);
+    ntManager.registerNodeTypes(nodetypeDefinition, alreadyExistsBehaviour, NodeTypeDataManager.TEXT_XML);
+    log.info("\nNode types were registered from xml-file " + nodeTypeFilesName);
+  }
+  
+  private void checkToRegisterNodetype() {
+    try {
+      registerNodeTypes("jar:/conf/portal/wiki-nodetypes.xml", ExtendedNodeTypeManager.REPLACE_IF_EXISTS);
+    } catch (Exception e) {
+      log.warn("Can not check and register wiki's nodetype", e);
+    }
+  }
+  
+  
   @Override
   public void start() {
     try {
@@ -1588,6 +1610,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
       addEmotionIcons();
       removeHelpPages();
+      checkToRegisterNodetype();
       try {
         getWikiHome(PortalConfig.GROUP_TYPE, "sandbox");
       } catch (Exception e) {
