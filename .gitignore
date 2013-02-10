@@ -15,6 +15,7 @@
 temp
 bin
 target
+pom.xml.versionsBackup
 .svn
 .DS_Store
 pom.xml~
