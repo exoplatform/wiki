@@ -5,7 +5,7 @@
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>9-beta-1</version>
-    <relativePath />
+    <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform.wiki</groupId>
   <artifactId>wiki</artifactId>
@@ -24,8 +24,8 @@
   <scm>
     <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/wiki.git</developerConnection>
-    <url>https://fisheye.exoplatform.org/browse/wiki</url>
     <tag>HEAD</tag>
+    <url>https://fisheye.exoplatform.org/browse/wiki</url>
   </scm>
   <properties>
     <!-- **************************************** -->
