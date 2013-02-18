@@ -108,8 +108,9 @@ public class UIWikiBreadCrumb extends UIContainer {
     return isLink;
   }
 
-  public void setLink(boolean isLink) {
+  public UIWikiBreadCrumb setLink(boolean isLink) {
     this.isLink = isLink;
+    return this;
   }
   
   public boolean isAllowChooseSpace() {
