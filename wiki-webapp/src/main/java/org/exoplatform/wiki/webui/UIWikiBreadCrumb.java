@@ -68,6 +68,8 @@ public class UIWikiBreadCrumb extends UIContainer {
   
   private boolean              isAllowChooseSpace = false;
   
+  private boolean              isShowWikiName = true;
+  
   private static final Log     log               = ExoLogger.getLogger(UIWikiBreadCrumb.class);
   
   public UIWikiBreadCrumb() throws Exception {
@@ -119,6 +121,14 @@ public class UIWikiBreadCrumb extends UIContainer {
   
   public void setAllowChooseSpace(boolean isAlowChooseSpace) {
     this.isAllowChooseSpace = isAlowChooseSpace;
+  }
+  
+  public boolean isShowWikiName() {
+    return isShowWikiName;
+  }
+  
+  public void setShowWikiName(boolean isShowWikiName) {
+    this.isShowWikiName = isShowWikiName;
   }
 
   public WikiPageParams getPageParam() throws Exception {

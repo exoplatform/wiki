@@ -57,7 +57,7 @@ public class UIRelatedPagesContainer extends UIWikiExtensionContainer {
   public UIRelatedPagesContainer() throws Exception {
     super(); 
     breadcrumb = addChild(UIWikiBreadCrumb.class, null, "UIWikiBreadCrumb_PageInfo");
-    breadcrumb.setLink(true);
+    breadcrumb.setLink(true).setShowWikiName(false);
   }
 
   @Override
