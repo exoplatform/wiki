@@ -21,18 +21,18 @@
     border: 1px solid #E1E1E1;
 	border-radius: 5px;
     height: 240px;
-    margin: 15px 15px 0;
-    padding: 15px;
+    margin: 0px 15px 0px;
+    padding: 15px 15px 0px 15px;
     width: auto;
 	overflow: auto;
 }
 
-.UIWikiPortlet .SideBarContent .BarContent {
+.UIWikiPortlet .BarContent {
     background: none;
     color: #363636;
     font-weight: bold;
     height: auto;
-    padding: 0px;
+    padding: 15px 0px 2px 15px;
 	font-size: 12px;
 }
 
@@ -56,6 +56,12 @@
     border-top: none;
     margin-top: 4px;
 	background: #e1e1e1;
+}
+
+.UIWikiPortlet .UIWikiMovePageForm .NotificationArea {
+  padding: 5px 5px 5px 10px;
+  margin-left:auto;
+  margin-right:auto;
 }
 
 .UIWikiPortlet .UIWikiMovePageForm table {

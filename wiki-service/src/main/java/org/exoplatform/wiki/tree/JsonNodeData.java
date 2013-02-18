@@ -44,6 +44,8 @@ public class JsonNodeData {
   protected boolean          isLastNode;
 
   protected boolean          isSelectable;
+  
+  protected boolean          isRetricted     = false;
 
   protected boolean          isExpanded   = false;
 
@@ -71,6 +73,7 @@ public class JsonNodeData {
     this.excerpt = excerpt;
     this.children = TreeUtils.tranformToJson(treeNode, context);
     this.isSelected = treeNode.isSelected();
+    this.isRetricted = treeNode.isRetricted;
     if (this.children.size() > 0)
       this.isExpanded = true;
   }
@@ -121,6 +124,14 @@ public class JsonNodeData {
 
   public void setSelectable(boolean isSelectable) {
     this.isSelectable = isSelectable;
+  }
+  
+  public boolean isRetricted() {
+    return isRetricted;
+  }
+  
+  public void setRetricted(boolean isRetricted) {
+    this.isRetricted = isRetricted;
   }
 
   public String getCurrentPath() {

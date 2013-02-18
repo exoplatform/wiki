@@ -11,13 +11,22 @@
    <div class="BreadcumbsInfoBar ClearFix">  
    <% if(breadCumbs!=null && breadCumbs.size() > 0) {
         String note = "LeftBlock"; %>
-        <a class="$note" style="text-transform:capitalize;">
-          <% if (uicomponent.isShowWikiType()) { %>
-            <%= uicomponent.getWikiType(); %> : 
+        <% if (uicomponent.isAllowChooseSpace()) {
+          uicomponent.renderChild(uicomponent.SPACE_SWITCHER);
+        } else { %>
+          <a class="$note" style="text-transform:capitalize;">
+          <% if (uicomponent.isShowWikiName()) { %>
+            <% if (uicomponent.isShowWikiType()) { %>
+              <%= uicomponent.getWikiType(); %> : 
+            <% } %>
+            <%= uicomponent.getWikiName(); %>
           <% } %>
-          <%= uicomponent.getWikiName(); %>
-        </a>
-        <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
+          </a>
+        <% } %>
+        
+        <% if (uicomponent.isShowWikiName()) { %>
+          <div class="RightBlackGridArrowIcon LeftBlock RightBlackGridArrow16x16Icon"><span></span></div>
+        <% } %>
      <% for(i in 0 .. breadCumbs.size()-1) {
           breadcumbData = breadCumbs.get(i);
           String title = breadcumbData.getTitle();

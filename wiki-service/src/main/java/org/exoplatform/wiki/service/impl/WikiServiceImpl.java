@@ -16,11 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
@@ -30,6 +32,7 @@ import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
@@ -47,6 +50,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Model;
 import org.exoplatform.wiki.mow.api.Page;
@@ -678,7 +682,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
       PageList<SearchResult> result = jcrDataStorage.search(wStore.getSession(), data);
       
-      if ((data.getTitle() != null) && (data.getWikiType() != null) && (data.getWikiOwner() != null)) {
+      if ((data.getTitle() != null) && (data.getWikiType() != null) && (data.getWikiOwner() != null) && (result.getPageSize() > 0)) {
         PageImpl homePage = getWikiHome(data.getWikiType(), data.getWikiOwner());
         if (data.getTitle().equals("") || homePage != null && homePage.getTitle().contains(data.getTitle())) {
           Calendar wikiHomeCreateDate = Calendar.getInstance();
@@ -831,6 +835,28 @@ public class WikiServiceImpl implements WikiService, Startable {
     return null;
   }
   
+  public List<PageImpl> getDuplicatePages(PageImpl parentPage, Wiki targetWiki, List<PageImpl> resultList) throws Exception {
+    if (resultList == null) {
+      resultList = new ArrayList<PageImpl>();
+    }
+    
+    // if the result list have more than 6 elements then return
+    if (resultList.size() > 6) {
+      return resultList;
+    }
+    
+    // if parent page is duppicated then add to list
+    if (isExisting(targetWiki.getType(), targetWiki.getOwner(), parentPage.getName())) {
+      resultList.add(parentPage);
+    }
+    
+    // Check the duplication of all childrent
+    for (PageImpl page : parentPage.getChildPages().values()) {
+      getDuplicatePages(page, targetWiki, resultList);
+    }
+    return resultList;
+  }
+  
   private Model getModel() {
     MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer()
                                                             .getComponentInstanceOfType(MOWService.class);
@@ -859,7 +885,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
     return wikiPage;
   }
-
+  
+  public Wiki getWiki(String wikiType, String owner) {
+    return getWiki(wikiType, owner, getModel());
+  }
+  
   private Wiki getWiki(String wikiType, String owner, Model model) {
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiImpl wiki = null;
@@ -1272,13 +1302,73 @@ public class WikiServiceImpl implements WikiService, Startable {
       jcrDataStorage.setTemplatePagePlugin(plugin);
     }
   }
+  
+  public UserWiki getOrCreateUserWiki(String username) {
+    Model model = getModel();
+    return (UserWiki) getWiki(PortalConfig.USER_TYPE, username, model);
+  }
+  
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public String getSpaceNameByGroupId(String groupId) throws Exception {
+    try {
+      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      
+      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
+      return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
+    } catch (ClassNotFoundException e) {
+      Model model = getModel();
+      Wiki wiki = getWiki(PortalConfig.GROUP_TYPE, groupId.substring(1), model);
+      return wiki.getName();
+    }
+  }
+  
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public List<SpaceBean> searchSpaces(String keyword) throws Exception {
+    List<SpaceBean> spaceBeans = new ArrayList<SpaceBean>();
+    
+    // Get group wiki
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    try {
+      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      
+      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      ListAccess spaces = null;
+      if (StringUtils.isEmpty(keyword)) {
+        spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesWithListAccess", String.class).invoke(spaceService, currentUser);
+      } else {
+        keyword = keyword.trim();
+        Class spaceFilterClass = Class.forName("org.exoplatform.social.core.space.SpaceFilter");
+        Object spaceFilter = spaceFilterClass.getConstructor(String.class).newInstance(keyword);
+        spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesByFilter", String.class, spaceFilterClass).invoke(spaceService, currentUser, spaceFilter);
+      }
+      
+      for (Object space : spaces.load(0, spaces.getSize())) {
+        String groupId = String.valueOf(spaceClass.getMethod("getGroupId").invoke(space));
+        String spaceName = String.valueOf(spaceClass.getMethod("getDisplayName").invoke(space));
+        spaceBeans.add(new SpaceBean(groupId, spaceName, PortalConfig.GROUP_TYPE));
+      }
+    } catch (ClassNotFoundException e) {
+      Collection<Wiki> wikis = Utils.getWikisByType(WikiType.GROUP);
+      if (keyword != null) {
+        keyword = keyword.trim();
+      }
+      
+      for (Wiki wiki : wikis) {
+        if (wiki.getName().contains(keyword)) {
+          spaceBeans.add(new SpaceBean(wiki.getOwner(), wiki.getName(), PortalConfig.GROUP_TYPE));
+        }
+      }
+    }
+    return spaceBeans;
+  }
 
   @Override
   public boolean addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception {
-    
     PageImpl orginary = (PageImpl) getPageById(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
     PageImpl related = (PageImpl) getPageById(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
-    
     return orginary.addRelatedPage(related) != null;
   }
 
@@ -1290,8 +1380,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public boolean removeRelatedPage(WikiPageParams orginaryPageParams,
-                                   WikiPageParams relatedPageParams) throws Exception {
+  public boolean removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception {
     PageImpl orginary = (PageImpl) getPageById(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
     PageImpl related = (PageImpl) getPageById(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
     return orginary.removeRelatedPage(related) != null;
@@ -1523,6 +1612,53 @@ public class WikiServiceImpl implements WikiService, Startable {
     } catch (Exception e) {
       log.warn("Can not remove help pages ...");
     }
+  }
+  
+  public Wiki getWikiById(String wikiId) {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    Wiki wiki = null;
+    if (wikiId.startsWith("/spaces/")) {
+      wiki = wikiService.getWiki(PortalConfig.GROUP_TYPE, wikiId);
+    } else if (wikiId.startsWith("/user/")) {
+      wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
+      wiki = wikiService.getWiki(PortalConfig.USER_TYPE, wikiId);
+    } else if (wikiId.startsWith("/" + getPortalName())) {
+      wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
+      wiki = wikiService.getWiki(PortalConfig.PORTAL_TYPE, wikiId);
+    }
+    return wiki;
+  }
+  
+  private String getPortalName() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
+    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
+    return containerInfo.getContainerName();
+  }
+  
+  public String getWikiNameById(String wikiId) throws Exception {
+    Wiki wiki = getWikiById(wikiId);
+    if (wiki instanceof PortalWiki) {
+      String displayName = wiki.getName();
+      int slashIndex = displayName.lastIndexOf('/');
+      if (slashIndex > -1) {
+        displayName = displayName.substring(slashIndex + 1); 
+      }
+      return displayName;
+    }
+    
+    if (wiki instanceof UserWiki) {
+      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      if (wiki.getOwner().equals(currentUser)) {
+        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+        ResourceBundle res = context.getApplicationResourceBundle();
+        String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
+        return mySpaceLabel;
+      }
+      return wiki.getOwner();
+    }
+    
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    return wikiService.getSpaceNameByGroupId(wiki.getOwner());
   }
   
   private void registerNodeTypes(String nodeTypeFilesName, int alreadyExistsBehaviour) throws Exception {

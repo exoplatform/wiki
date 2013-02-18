@@ -19,8 +19,6 @@ package org.exoplatform.wiki.commons;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +29,7 @@ import javax.portlet.PortletPreferences;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -56,12 +55,13 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
+import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
@@ -94,6 +94,43 @@ public class Utils {
   
   public static final String SLASH = "/";
   
+  public static String upperFirstCharacter(String str) {
+    if (StringUtils.isEmpty(str)) {
+      return str;
+    }
+    return str.substring(0, 1).toUpperCase() + str.substring(1);
+  }
+  
+  public static String getCurrentSpaceName() throws Exception {
+    Wiki currentSpace = Utils.getCurrentWiki();
+    return getSpaceName(currentSpace);
+  }
+  
+  public static String getSpaceName(Wiki space) throws Exception {
+    if (space instanceof PortalWiki) {
+      String displayName = space.getName();
+      int slashIndex = displayName.lastIndexOf('/');
+      if (slashIndex > -1) {
+        displayName = displayName.substring(slashIndex + 1);
+      }
+      return Utils.upperFirstCharacter(displayName);
+    }
+
+    if (space instanceof UserWiki) {
+      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      if (space.getOwner().equals(currentUser)) {
+        WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+        ResourceBundle res = context.getApplicationResourceBundle();
+        String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
+        return mySpaceLabel;
+      }
+      return space.getOwner();
+    }
+
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    return wikiService.getSpaceNameByGroupId(space.getOwner());
+  }
+  
   public static String getCurrentRequestURL() throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     HttpServletRequest request = portalRequestContext.getRequest();
@@ -116,7 +153,7 @@ public class Utils {
     params.setParameters(paramsMap);
     return params;
   }
-
+  
   public static Page getCurrentWikiPage() throws Exception {
     String requestURL = Utils.getCurrentRequestURL();
     PageResolver pageResolver = (PageResolver) PortalContainer.getComponent(PageResolver.class);
@@ -343,6 +380,12 @@ public class Utils {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
+  }
+  
+  public static void redirect(String url) throws Exception {
+    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+    portalRequestContext.setResponseComplete(true);
+    portalRequestContext.sendRedirect(url);
   }
   
   public static void ajaxRedirect(Event<? extends UIComponent> event,
