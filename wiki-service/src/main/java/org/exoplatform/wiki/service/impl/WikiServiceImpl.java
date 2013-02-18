@@ -1339,6 +1339,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       if (StringUtils.isEmpty(keyword)) {
         spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesWithListAccess", String.class).invoke(spaceService, currentUser);
       } else {
+        keyword = keyword.trim();
         Class spaceFilterClass = Class.forName("org.exoplatform.social.core.space.SpaceFilter");
         Object spaceFilter = spaceFilterClass.getConstructor(String.class).newInstance(keyword);
         spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesByFilter", String.class, spaceFilterClass).invoke(spaceService, currentUser, spaceFilter);
@@ -1351,6 +1352,10 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
     } catch (ClassNotFoundException e) {
       Collection<Wiki> wikis = Utils.getWikisByType(WikiType.GROUP);
+      if (keyword != null) {
+        keyword = keyword.trim();
+      }
+      
       for (Wiki wiki : wikis) {
         if (wiki.getName().contains(keyword)) {
           spaceBeans.add(new SpaceBean(wiki.getOwner(), wiki.getName(), PortalConfig.GROUP_TYPE));
