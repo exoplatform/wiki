@@ -49,8 +49,8 @@ public class UIWikiLocationContainer extends UIContainer {
   final static public String CHANGE_NEWLOCATION = "ChangeNewLocation";
   
   public UIWikiLocationContainer() throws Exception {
-    addChild(UIWikiBreadCrumb.class, null, CURRENT_LOCATION).setLink(false);
-    addChild(UIWikiBreadCrumb.class, null, NEW_LOCATION).setLink(false);
+    addChild(UIWikiBreadCrumb.class, null, CURRENT_LOCATION).setLink(false).setShowWikiType(false);
+    addChild(UIWikiBreadCrumb.class, null, NEW_LOCATION).setLink(false).setShowWikiType(false);
   }
   
   static public class ChangeNewLocationActionListener extends EventListener<UIWikiLocationContainer> {

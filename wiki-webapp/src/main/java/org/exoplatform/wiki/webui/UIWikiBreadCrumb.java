@@ -24,9 +24,19 @@ import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.webui.commons.EventUIComponent;
+import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
+import org.exoplatform.webui.commons.UISpacesSwitcher;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
+import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
+import org.exoplatform.webui.event.Event;
+import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -40,15 +50,33 @@ import org.exoplatform.wiki.utils.Utils;
  */
 @ComponentConfig(
   lifecycle = Lifecycle.class,
-  template = "app:/templates/wiki/webui/UIWikiBreadCrumb.gtmpl"
+  template = "app:/templates/wiki/webui/UIWikiBreadCrumb.gtmpl",
+  events = {@EventConfig(listeners = UIWikiBreadCrumb.SwitchSpaceActionListener.class)}
 )
 public class UIWikiBreadCrumb extends UIContainer {
+  public static final String  SPACE_SWITCHER = "UISpaceSwitcher_BreadCrumb";
+  
+  private static final String  SWITCH_SPACE_ACTION = "SwitchSpace";
+  
+  private static final String  BREAD_CRUMB_CONTAINER = "UIWikiBreadCrumb";
 
   private List<BreadcrumbData> breadCumbs = new ArrayList<BreadcrumbData>();
 
   private String               actionLabel;
 
   private boolean              isLink     = true;
+  
+  private boolean              isAllowChooseSpace = false;
+  
+  private boolean              isShowWikiName = true;
+  
+  private static final Log     log               = ExoLogger.getLogger(UIWikiBreadCrumb.class);
+  
+  public UIWikiBreadCrumb() throws Exception {
+    UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
+    EventUIComponent eventComponent = new EventUIComponent(BREAD_CRUMB_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
+    uiWikiSpaceSwitcher.init(eventComponent);
+  }
 
   private boolean              isShowWikiType = true;
   
@@ -82,10 +110,27 @@ public class UIWikiBreadCrumb extends UIContainer {
     return isLink;
   }
 
-  public void setLink(boolean isLink) {
+  public UIWikiBreadCrumb setLink(boolean isLink) {
     this.isLink = isLink;
+    return this;
   }
   
+  public boolean isAllowChooseSpace() {
+    return isAllowChooseSpace;
+  }
+  
+  public void setAllowChooseSpace(boolean isAlowChooseSpace) {
+    this.isAllowChooseSpace = isAlowChooseSpace;
+  }
+  
+  public boolean isShowWikiName() {
+    return isShowWikiName;
+  }
+  
+  public void setShowWikiName(boolean isShowWikiName) {
+    this.isShowWikiName = isShowWikiName;
+  }
+
   public WikiPageParams getPageParam() throws Exception {
     if (this.breadCumbs != null && this.breadCumbs.size() > 0) {
       WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
@@ -103,12 +148,12 @@ public class UIWikiBreadCrumb extends UIContainer {
   }
 
   public String getWikiName() throws Exception {
-    if (getPageParam() != null) {
-      String wikiName = getPageParam().getOwner();
-      if (!isDisplayFullSpaceName && wikiName.indexOf('/') > -1) {
-        wikiName = wikiName.substring(wikiName.lastIndexOf('/') + 1);
-      }
-      return wikiName;
+    WikiPageParams params = getPageParam();
+    if (params != null) {
+      String wikiType = params.getType();
+      String wikiOwner = params.getOwner();
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+      return org.exoplatform.wiki.commons.Utils.getSpaceName(wikiService.getWiki(wikiType, wikiOwner));
     }
     return null;
   }
@@ -144,5 +189,20 @@ public class UIWikiBreadCrumb extends UIContainer {
     }
     sb.append(breadCumbData.getId());
     return sb.toString();
+  }
+  
+  public static class SwitchSpaceActionListener extends EventListener<UIWikiBreadCrumb> {
+    public void execute(Event<UIWikiBreadCrumb> event) throws Exception {
+      String wikiId = event.getRequestContext().getRequestParameter(UISpacesSwitcher.SPACE_ID_PARAMETER);
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+      Wiki wiki = wikiService.getWikiById(wikiId);
+      if (wiki != null) {
+        PageImpl wikiHome = (PageImpl) wiki.getWikiHome();
+        String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName()));
+        org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, permalink);
+      } else {
+        log.warn(String.format("Wrong wiki id: [%s], can not change space", wikiId));
+      }
+    }
   }
 }
