@@ -16,12 +16,18 @@
  */
 package org.exoplatform.wiki.webui;
 
+import java.util.ResourceBundle;
+
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.commons.UISpacesSwitcher;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
+import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.control.UIWikiToolBar;
@@ -40,7 +46,8 @@ public class UIWikiApplicationControlArea extends UIContainer {
   public UIWikiApplicationControlArea() throws Exception{
     addChild(UIWikiSearchBox.class, null, null);
     addChild(UIWikiToolBar.class, null, null);
-    addChild(UIWikiBreadCrumb.class, null, null);
+    UIWikiBreadCrumb uiWikiBreadCrumb = addChild(UIWikiBreadCrumb.class, null, null);
+    uiWikiBreadCrumb.setAllowChooseSpace(true);
   }
 
   @Override
@@ -53,6 +60,9 @@ public class UIWikiApplicationControlArea extends UIContainer {
     wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(),
                                                           params.getOwner(),
                                                           params.getPageId()));
+    
+    UISpacesSwitcher uiWikiSpaceSwitcher = wikiBreadCrumb.getChildById(UIWikiBreadCrumb.SPACE_SWITCHER);
+    uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(Utils.getCurrentSpaceName()));
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);
   }

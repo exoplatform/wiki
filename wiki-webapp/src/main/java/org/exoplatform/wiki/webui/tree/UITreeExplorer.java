@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.webui.tree ;
 
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.webui.commons.EventUIComponent;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;

@@ -1,5 +1,10 @@
-
+<div class="UIWikiSelectPageForm">
 <% uiform.begin(); %>
+<div class="SpaceSwitcher ClearFix">
+  <div class="FL"><%=_ctx.appRes("UIWikiSelectPageForm.label.select-the-space")%></div>
+  <% uiform.renderChild(uiform.SPACE_SWITCHER);%>
+</div>
+
 <div class="SideBarContent">
   <div class="SideContent">
     <%
@@ -12,3 +17,4 @@
   <a href="javascript:void(0);" onclick="<%= uicomponent.event("Cancel") %>"  class="ActionButton LightBlueStyle"><%= _ctx.appRes("UIWikiSelectPageForm.action.Cancel")%></a>
 </div>
 <% uiform.end(); %>
+</div>

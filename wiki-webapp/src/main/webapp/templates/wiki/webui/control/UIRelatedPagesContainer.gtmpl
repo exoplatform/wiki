@@ -46,14 +46,14 @@
 	       %>
 	        <tr class="$rowClass">
 	          <td width="20%">
-	            ${wikiParams.getType()}
+	            <%=uicomponent.getGroupName(wikiParams.getType(), wikiParams.getOwner()); %>
 	          </td>
 	          <td width="60%">
 	           <% uicomponent.renderChild(breadcrumbComponent); %>
 	          </td>
             <% if(uicomponent.isHasExtension()) {%>
 	          <td>
-	            <a href="$rmAction"><%= _ctx.appRes("UIWikiPageInfo.label.remove") %></a>
+	            <img title="<%= _ctx.appRes("UIWikiPageInfo.label.remove"); %>" onclick="$rmAction" alt="<%= _ctx.appRes("UIWikiPageInfo.label.remove"); %>" class="RemoveFile" src="/eXoResources/skin/DefaultSkin/background/Blank.gif"/>
 	          </td>
             <% }%>
 	        </tr>
