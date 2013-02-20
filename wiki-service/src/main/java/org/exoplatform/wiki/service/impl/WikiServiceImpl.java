@@ -674,12 +674,13 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   public PageList<SearchResult> searchContent(WikiSearchData data) throws Exception {
     List<SearchResult> results = search(data).getAll();
+    List<SearchResult> newResult = new ArrayList<SearchResult>(results);
     for (SearchResult result : results) {
       if (WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
-        results.remove(result);
+        newResult.remove(result);
       }
     }
-    return new ObjectPageList<SearchResult>(results, 10);
+    return new ObjectPageList<SearchResult>(newResult, 10);
   }
   
   public PageList<SearchResult> search(WikiSearchData data) throws Exception {
@@ -1315,21 +1316,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     return (UserWiki) getWiki(PortalConfig.USER_TYPE, username, model);
   }
   
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public String getSpaceNameByGroupId(String groupId) throws Exception {
-    try {
-      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-      
-      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
-      return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
-    } catch (ClassNotFoundException e) {
-      Model model = getModel();
-      Wiki wiki = getWiki(PortalConfig.GROUP_TYPE, groupId.substring(1), model);
-      return wiki.getName();
-    }
-  }
   
   @SuppressWarnings({"rawtypes", "unchecked"})
   public List<SpaceBean> searchSpaces(String keyword) throws Exception {
@@ -1618,6 +1604,22 @@ public class WikiServiceImpl implements WikiService, Startable {
           log.warn(String.format("executing listener [%s] on [%s] failed", l.toString(), pageImpl.getPath()), e);
         }
       }
+    }
+  }
+
+  @SuppressWarnings({"rawtypes", "unchecked"})
+  public String getSpaceNameByGroupId(String groupId) throws Exception {
+    try {
+      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+      
+      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
+      return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
+    } catch (ClassNotFoundException e) {
+      Model model = getModel();
+      Wiki wiki = getWiki(PortalConfig.GROUP_TYPE, groupId.substring(1), model);
+      return wiki.getName();
     }
   }
   

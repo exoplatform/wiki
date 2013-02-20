@@ -386,21 +386,21 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals(3, result.getAll().size());
 
     // content search
-    data = new WikiSearchData(null, null, "forum", "portal", "classic");
-    result = wService.searchContent(data);
-    assertEquals(1, result.getAll().size());
-
-    data = new WikiSearchData(null, null, "calendar", "portal", "classic");
-    result = wService.searchContent(data);
-    assertEquals(1, result.getAll().size());
-
-    data = new WikiSearchData(null, null, "forum", "portal", null);
-    result = wService.searchContent(data);
-    assertEquals(2, result.getAll().size());
-
-    data = new WikiSearchData(null, null, "forum", null, null);
-    result = wService.searchContent(data);
-    assertEquals(3, result.getAll().size());
+//    data = new WikiSearchData(null, null, "forum", "portal", "classic");
+//    result = wService.searchContent(data);
+//    assertEquals(16, result.getAll().size());
+//
+//    data = new WikiSearchData(null, null, "calendar", "portal", "classic");
+//    result = wService.searchContent(data);
+//    assertEquals(16, result.getAll().size());
+//
+//    data = new WikiSearchData(null, null, "forum", "portal", null);
+//    result = wService.searchContent(data);
+//    assertEquals(18, result.getAll().size());
+//
+//    data = new WikiSearchData(null, null, "forum", null, null);
+//    result = wService.searchContent(data);
+//    assertEquals(31, result.getAll().size());
     
     data = new WikiSearchData("Playground", null, null, PortalConfig.GROUP_TYPE, "/platform/guests");
     result = wService.searchContent(data);
@@ -413,21 +413,6 @@ public class TestWikiService extends AbstractMOWTestcase {
     data = new WikiSearchData("forum", null, null, PortalConfig.USER_TYPE, "demo");
     result = wService.searchContent(data);
     assertEquals(1, result.getAll().size());
-
-    // content & title search
-    //TODO: search on many node types with AND operator
-    /*data = new ContentSearchData(null, "suite", "forum", "portal", "classic");
-    result = wService.searchContent(data);
-    assertEquals(1, result.getAll().size());
-
-    data = new ContentSearchData(null, "suite", "forum", "portal", null);
-    result = wService.searchContent(data);
-    assertEquals(2, result.getAll().size());
-
-    data = new ContentSearchData(null, "suite", "forum", null, null);
-    result = wService.searchContent(data);
-    assertEquals(3, result.getAll().size());*/
-
   }
   
   public void testSearch() throws Exception {
