@@ -98,6 +98,11 @@
 	display: block;
 }
 
+.UIWikiPortlet .UIWikiPageInfo .UIPageInfoRelatedPage .UIPageInfoItemBody td {
+	background: none;
+	line-height: 25px;
+}
+
 .UIWikiPortlet .UIWikiPageInfo .UIPageInfoRelatedPage .UIPageInfoItemBody .ActionContainer a:hover {
 	text-decoration: none;
 }

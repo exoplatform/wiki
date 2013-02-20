@@ -1,12 +1,17 @@
+<div class="UIWikiSelectPageForm">
+  <% uiform.begin(); %>
+  <div class="SpaceSwitcher ClearFix">
+    <div class="FL"><%=_ctx.appRes("UIWikiSelectPageForm.label.select-the-space")%></div>
+    <% uiform.renderChild(uiform.SPACE_SWITCHER);%>
+  </div>
 
-<% uiform.begin(); %>
-<div class="popupContenRelated">
-    <%
-      uiform.renderChild(uiform.UI_TREE_ID);
-    %>    
+  <div class="popupContenRelated">
+    <% uiform.renderChild(uiform.UI_TREE_ID); %>    
+  </div>
+
+  <div class="uiAction">
+    <button type="button" href="javascript:void(0);" onclick="<%= uicomponent.event("SelectPage") %>"  class="btn btn-primary"><%= _ctx.appRes("UIWikiSelectPageForm.action.Select")%></button>
+    <button type="button" href="javascript:void(0);" onclick="<%= uicomponent.event("Cancel") %>"  class="btn"><%= _ctx.appRes("UIWikiSelectPageForm.action.Cancel")%></button>
+  </div>
+  <% uiform.end(); %>
 </div>
-<div class="uiAction">
-  <button type="button" href="javascript:void(0);" onclick="<%= uicomponent.event("SelectPage") %>"  class="btn btn-primary"><%= _ctx.appRes("UIWikiSelectPageForm.action.Select")%></button>
-  <button type="button" href="javascript:void(0);" onclick="<%= uicomponent.event("Cancel") %>"  class="btn"><%= _ctx.appRes("UIWikiSelectPageForm.action.Cancel")%></button>
-</div>
-<% uiform.end(); %>

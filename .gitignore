@@ -1,22 +1,48 @@
-*.class
+#
+# Default excludes
+#
 
-# Package Files #
+# Binaries
+*.7z
+*.dmg
+*.gz
+*.iso
 *.jar
+*.rar
+*.tar
+*.zip
 *.war
 *.ear
-# Others #
-.settings
-.project
-.classpath
-.idea
+*.sar
+*.class
+
+# Maven 
+target/
+pom.xml.versionsBackup
+
+# IntelliJ project files 
 *.iml
-*.ipr
 *.iws
 temp
-bin
 target
 pom.xml.versionsBackup
 .svn
-.DS_Store
-pom.xml~
+*.ipr
+.idea/
 
+#bin folder
+bin/
+
+#log file
+*.log
+
+# eclipse project file
+.settings/
+.classpath
+.project
+
+# OS
+.DS_Store
+
+# Misc
+*.swp

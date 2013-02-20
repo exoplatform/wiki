@@ -6,7 +6,7 @@
   import org.exoplatform.wiki.tree.SpaceTreeNode;
   import org.exoplatform.portal.config.model.PortalConfig;  
   import org.exoplatform.wiki.webui.UIWikiPortlet;
-  import org.exoplatform.wiki.webui.tree.EventUIComponent.EVENTTYPE;
+  import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
 %>
 <% 
  def rcontext = _ctx.getRequestContext();

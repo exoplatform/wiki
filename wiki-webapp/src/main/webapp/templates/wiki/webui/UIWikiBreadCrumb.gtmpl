@@ -11,16 +11,27 @@
 	
    <ul class="breadcrumb">  
    <% if(breadCumbs!=null && breadCumbs.size() > 0) {
-        String note = "LeftBlock"; %>
-		<li>
-			<a>
-			  <% if (uicomponent.isShowWikiType()) { %>
-				<%= uicomponent.getWikiType(); %> : 
-			  <% } %>
-			  <%= uicomponent.getWikiName(); %>
-			</a>
-			<span class="uiIconMiniArrowRight">&nbsp;</span>
-		</li>
+
+      String note = "LeftBlock"; %>
+      <% if (uicomponent.isAllowChooseSpace()) {
+        uicomponent.renderChild(uicomponent.SPACE_SWITCHER);
+      } else { %>
+        <li>
+			    <a>
+            <% if (uicomponent.isShowWikiName()) { %>
+              <% if (uicomponent.isShowWikiType()) { %>
+                <%= uicomponent.getWikiType(); %> : 
+              <% } %>
+              <%= uicomponent.getWikiName(); %>
+            <% } %>
+			    </a>
+		    </li>
+      <% } %>
+		
+      <% if (uicomponent.isShowWikiName()) { %>
+        <span class="uiIconMiniArrowRight">&nbsp;</span>
+      <% } %>
+
      <% for(i in 0 .. breadCumbs.size()-1) {
 	   def liClass = (i == breadCumbs.size()-1) && (uicomponent.getActionLabel()==null || "".equals(uicomponent.getActionLabel()))?"active":"";
 	   %>
@@ -52,7 +63,7 @@
    %>
          <li class="active"><span class="uiIconMiniArrowRight">&nbsp;</span>$label</li>
          
-   <% } %>
+  <% } %>
   </ul>
 
   <div class="BreadcumPopup">

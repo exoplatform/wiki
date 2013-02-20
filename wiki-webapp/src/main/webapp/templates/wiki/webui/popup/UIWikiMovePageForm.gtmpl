@@ -1,48 +1,34 @@
 <div class="uiWikiMovePageForm">
  
- <%
- 	  uiform.begin(); 	 
- %>  
- <%
- 	  uiform.renderChild(uiform.PAGENAME_INFO);
- %>
-<div class="selectSpaceForm form-horizontal clearfix">
-	<label class="pull-left">Select the destination:</label>
-	<div class="btn-group">
-		<button class="btn">engineering</button>
-		<button class="btn dropdown-toggle" data-toggle="dropdown">
-			<span class="caret"></span>
-		</button>
-		<ul class="dropdown-menu">hgfd
-		<!-- dropdown menu links -->
-		</ul>
-    </div>
-</div>
-<div class="sideBarContent">
- 	<div class="barContent">
- 		<%=_ctx.appRes("UITreeExplorer.label.Destination")%>
- 	</div>
-	<div class="sideContent">
- 		<%
- 	  	uiform.renderChild(uiform.UITREE);
- 		%> 		
-  </div>
-</div>
-
   <%
- 	  uiform.renderChild(uiform.LOCATION_CONTAINER);
- %> 
+    uiform.begin(); 	 
+    uiform.renderChild(uiform.PAGENAME_INFO);
+  %>
 
-<div class="uiAction">
-	<% 			
- 	String closeLink=  uiform.event("Close");
-%>
-	<button data-placement="bottom" rel="tooltip" class="btn btn-primary" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')" id="UISubmitToolBarUpper_SavePage_" data-original-title="Save">
-		<%=_ctx.appRes("UIWikiMovePageForm.action.Move")%>
-	</button>
-	<button data-placement="bottom" rel="tooltip" class="btn" onclick="$closeLink" id="UISubmitToolBarUpper_Cancel_" data-original-title="Cancel">
-		<%=_ctx.appRes("UIWikiMovePageForm.action.Cancel")%>
-	</button>
-</div>
-<% uiform.end(); %>
+  <div class="SpaceSwitcher ClearFix">
+    <div class="FL"><%=_ctx.appRes("UIWikiMovePageForm.label.select-the-destination")%></div>
+    <% uiform.renderChild(uiform.SPACE_SWITCHER);%>
+  </div>
+
+  <div class="NotificationArea"><%=uiform.createDuplicatedPageNotification(); %></div>
+
+  <div class="sideBarContent">
+ 	  <div class="barContent"><%=_ctx.appRes("UITreeExplorer.label.Destination")%></div>
+	  <div class="sideContent"><%uiform.renderChild(uiform.UITREE);%></div>
+  </div>
+
+  <% uiform.renderChild(uiform.LOCATION_CONTAINER); %> 
+
+  <div class="uiAction">
+	  <% String closeLink = uiform.event("Close");%>
+	  <button data-placement="bottom" rel="tooltip" class="btn btn-primary" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')" data-original-title="Save">
+		  <%=_ctx.appRes("UIWikiMovePageForm.action.Move")%>
+	  </button>
+	  <button data-placement="bottom" rel="tooltip" class="btn" onclick="$closeLink" data-original-title="Cancel">
+		  <%=_ctx.appRes("UIWikiMovePageForm.action.Cancel")%>
+	  </button>
+  </div>
+
+  <% uiform.end(); %>
+
 </div>

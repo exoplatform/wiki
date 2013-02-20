@@ -24,9 +24,12 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.Template;
 import org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer;
+import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
+import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
@@ -91,6 +94,17 @@ public interface WikiService {
   public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   public List<TitleSearchResult> searchDataByTitle(WikiSearchData data) throws Exception;
+  
+  /**
+   * Get a list of duppilcated page between all children pages of parentPage and targetWiki before execute moving page
+   * 
+   * @param parentPage The page to check before execute moving
+   * @param targetWiki The target wiki to move page to
+   * @param resultList The list of duppicate wiki page
+   * @return The list of duppicate wiki page
+   * @throws Exception
+   */
+  public List<PageImpl> getDuplicatePages(PageImpl parentPage, Wiki targetWiki, List<PageImpl> resultList) throws Exception;
 
   public Object findByPath(String path, String objectNodeType) throws Exception;
 
@@ -230,7 +244,42 @@ public interface WikiService {
   public DraftPage getLastestDraft() throws Exception;
 
   /**
-   * Get the wiki webapp uri
+   * Get user wiki, and if it did not create yet then create new one
+   * 
+   * @param username The user name
+   * @return The UserWiki for user
+   */
+  public UserWiki getOrCreateUserWiki(String username);
+ 
+  /**
+   * Get space name by group Id
+   * 
+   * @param groupId The group Id to get space name
+   * @return The space name
+   * @throws Exception
+   */
+  public String getSpaceNameByGroupId(String groupId) throws Exception;
+  
+  /**
+   * Search for spaces by keyword
+   * 
+   * @param keyword The keyword to search spaces
+   * @return The list of spaces that match wiki keyword
+   * @throws Exception
+   */
+  public List<SpaceBean> searchSpaces(String keyword) throws Exception;
+  
+  /**
+   * Get a wiki that definds by wikiType and owner
+   * 
+   * @param wikiType The wiki type
+   * @param owner Wiki owner
+   * @return The wiki
+   */
+  public Wiki getWiki(String wikiType, String owner);
+  
+  /**
+   * Get the uri of wiki webapp
    * 
    * @return wiki webapp uri
    */
@@ -273,4 +322,22 @@ public interface WikiService {
    * @throws Exception
    */
   public boolean hasAdminPagePermission(String wikiType, String owner) throws Exception;
+  
+
+  /**
+   * Get wiki by Id
+   * 
+   * @param wikiId The wiki id
+   * @return The wiki
+   */
+  public Wiki getWikiById(String wikiId);
+  
+  /**
+   * Get wiki name by wiki id
+   * 
+   * @param wikiId The wiki id
+   * @return The wiki name
+   * @throws Exception
+   */
+  public String getWikiNameById(String wikiId) throws Exception;
 }

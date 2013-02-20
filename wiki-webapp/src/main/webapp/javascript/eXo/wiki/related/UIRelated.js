@@ -1,5 +1,8 @@
 (function(base, uiForm, webuiExt, $) {
 
+if (!eXo.wiki)
+  eXo.wiki = {};
+
 function UIRelated() {
 };
 

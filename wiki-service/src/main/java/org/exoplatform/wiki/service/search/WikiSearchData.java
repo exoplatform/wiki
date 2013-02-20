@@ -1,5 +1,13 @@
 package org.exoplatform.wiki.service.search;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
@@ -12,6 +20,10 @@ public class WikiSearchData extends SearchData {
   public static String PORTAL_PAGESPATH = PORTAL_PATH + WIKIHOME_PATH;
 
   public static String GROUP_PAGESPATH  = GROUP_PATH + WIKIHOME_PATH;
+  
+  public static String ASC_ORDER = "ASC";
+  
+  public static String DESC_ORDER = "DESC";
 
   private String pagePath = "";
   
@@ -71,7 +83,7 @@ public class WikiSearchData extends SearchData {
     if (onlyHomePages) {
       queryPath = queryPath.substring(0, queryPath.length() - 3) + "'";
     }
-    statement.append("SELECT jcr:primaryType, jcr:path, title, fileType ")
+    statement.append("SELECT jcr:primaryType, jcr:path, jcr:score, title, fileType ")
              .append("FROM nt:base ")
              .append("WHERE ")
              .append(queryPath)
@@ -82,8 +94,8 @@ public class WikiSearchData extends SearchData {
              .append("ORDER BY jcr:score DESC");
     return statement.toString();
   }
-
-  public String getStatement() {
+  
+  public String getStatementForSearchingTitle() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT title, jcr:primaryType, path, excerpt(.) ");
     
@@ -93,7 +105,18 @@ public class WikiSearchData extends SearchData {
       statement.append("FROM " + nodeType + " ");
     }
     statement.append("WHERE ");
-    statement.append(getContentCdt());
+    statement.append(searchTitleCondition());
+    statement.append(createOrderClause());
+    return statement.toString();
+  }
+  
+  public String getStatementForSearchingContent() {
+    StringBuilder statement = new StringBuilder();
+    statement.append("SELECT jcr:content, jcr:primaryType, path, excerpt(.) ");
+    statement.append("FROM " + WikiNodeType.WIKI_ATTACHMENT + " ");
+    statement.append("WHERE ");
+    statement.append(searchContentCondition());
+    statement.append(createOrderClause());
     return statement.toString();
   }
 
@@ -106,6 +129,21 @@ public class WikiSearchData extends SearchData {
       statement.append(" oldPageIds = '").append(getPageId()).append("'");
     }
     return statement.toString();
+  }
+  
+  private String createOrderClause() {
+    StringBuffer clause = new StringBuffer();
+    if (isOrderValid(order) && StringUtils.isNotEmpty(sort)) {
+      clause.append(" ORDER BY ");
+      clause.append(sort);
+      clause.append(" ");
+      clause.append(order);
+    }
+    return clause.toString();
+  }
+  
+  private boolean isOrderValid(String order) {
+    return ASC_ORDER.equals(order) || DESC_ORDER.equals(order) || "".equals(order);
   }
   
   /**
@@ -146,22 +184,61 @@ public class WikiSearchData extends SearchData {
     return constraint.toString();
   }
   
-  private String getContentCdt() {
+  private List<String> parseSearchText(String searchText) {
+    List<String> terms = new LinkedList<String>();
+    Matcher matcher = Pattern.compile("\"([^\"]+)\"").matcher(searchText);
+    while (matcher.find()) {
+      String founds = matcher.group(1);
+      terms.add(founds);
+    }
+    String remain = matcher.replaceAll("").replaceAll("\"", "").trim(); //remove all remaining double quotes
+    if(!remain.isEmpty()) terms.addAll(Arrays.asList(remain.split("\\s+")));
+    return terms;
+  }
+  
+  private String searchContentCondition() {
     StringBuilder clause = new StringBuilder();
     String queryPath = this.jcrQueryPath;
     clause.append(queryPath);
     
     if (text != null && text.length() > 0) {
-      clause.append(" AND ");
-      clause.append(" CONTAINS(*, '").append(text).append("')");
+      clause.append(" AND (");
+      Collection<String> inputs = parseSearchText(text) ;
+      int inputCount = 0 ;
+      for(String keyword : inputs){
+        if(inputCount > 0) clause.append(" OR ");
+        clause.append(" CONTAINS(*, '").append(keyword).append("')");
+        inputCount ++ ;
+      }
+      clause.append(")");
+    } else {
+      if (content != null && content.length() > 0) {
+        clause.append(" AND ");
+        clause.append(" CONTAINS(*, '").append(content).append("') ");
+      }
+    }
+    return clause.toString();
+  }
+  
+  private String searchTitleCondition() {
+    StringBuilder clause = new StringBuilder();
+    String queryPath = this.jcrQueryPath;
+    clause.append(queryPath);
+    
+    if (text != null && text.length() > 0) {
+      clause.append(" AND (");
+      Collection<String> inputs = parseSearchText(text) ;
+      int inputCount = 0 ;
+      for(String keyword : inputs){
+        if(inputCount > 0) clause.append(" OR ");
+        clause.append(" CONTAINS(*, '").append(keyword).append("')");
+        inputCount ++ ;
+      }
+      clause.append(")");
     } else {
       if (title != null && title.length() > 0) {
         clause.append(" AND ");
         clause.append(" CONTAINS(title, '").append(title).append("') ");
-      }
-      if (content != null && content.length() > 0) {
-        clause.append(" AND ");
-        clause.append(" CONTAINS(*, '").append(content).append("') ");
       }
     }
     return clause.toString();

@@ -712,7 +712,7 @@ public class Utils {
     MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MOWService.class);
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getModel().getWikiStore();
 
-    String statement = data.getStatement();
+    String statement = data.getStatementForSearchingTitle();
     QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) wStore.getSession()).getDomainSession().getSessionWrapper()
         .createQuery(statement);
     QueryResult result = q.execute();

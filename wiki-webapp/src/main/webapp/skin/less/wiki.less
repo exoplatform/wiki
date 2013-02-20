@@ -323,3 +323,49 @@
 .uiWikiPageVersionsList{
 	padding: 8px 15px 15px;
 }
+
+/******* wiki space-switcher ************/
+
+.uiWikiPortlet .UISpaceSwitcher_BreadCrumb {
+  position: relative;
+  z-index: 1;
+  float:left;
+  background: #ececec;
+  padding: 0px 8px;
+  color:#707070;
+}
+  
+.uiWikiPortlet .UISpaceSwitcher_BreadCrumb:hover {
+  color:#000000;
+  cursor: pointer;
+}
+
+.uiWikiPortlet .UISpaceSwitcher_BreadCrumb .SpaceChooser {
+  background: url('background/BrowseDownIcon.png') no-repeat right center;
+  padding-right: 12px;
+}
+  
+.uiWikiPortlet .UISpaceSwitcher_UIWikiMovePageForm, .uiWikiPortlet .UISpaceSwitcher_UIWikiSelectPageForm {
+  position: relative;
+  float: left;
+  margin-left: 10px;
+  background: #f5f5f5;
+  width: 245px;
+  padding: 0px 0px 0px 5px;
+  border: 1px solid #e1e1e1;
+  cursor:pointer;
+}
+
+.uiWikiPortlet .UISelectPageForm .SpaceSwitcher {
+  padding: 15px 15px 0px 15px;
+}
+
+.uiWikiPortlet .UISpaceSwitcher_UIWikiMovePageForm .SpaceChooserPopup, .uiWikiPortlet .UISpaceSwitcher_UIWikiSelectPageForm .SpaceChooserPopup {
+  left: -1px;
+  top: 31px;
+}
+
+.uiWikiPortlet .UISpaceSwitcher_UIWikiMovePageForm .SpaceChooser, .uiWikiPortlet .UISpaceSwitcher_UIWikiSelectPageForm .SpaceChooser {
+  background: url("/wiki/skin/DefaultSkin/webui/UIWikiBreadCrumb/../background/BrowseDownIcon.png") no-repeat scroll 97%  center;
+  padding-right: 22px;
+}

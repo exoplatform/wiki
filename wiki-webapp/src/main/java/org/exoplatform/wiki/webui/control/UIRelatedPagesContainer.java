@@ -18,9 +18,16 @@ package org.exoplatform.wiki.webui.control;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
+import org.exoplatform.container.ExoContainer;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.xml.PortalContainerInfo;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.wiki.commons.Utils;
@@ -50,7 +57,7 @@ public class UIRelatedPagesContainer extends UIWikiExtensionContainer {
   public UIRelatedPagesContainer() throws Exception {
     super(); 
     breadcrumb = addChild(UIWikiBreadCrumb.class, null, "UIWikiBreadCrumb_PageInfo");
-    breadcrumb.setLink(true);
+    breadcrumb.setLink(true).setShowWikiName(false);
   }
 
   @Override
@@ -60,6 +67,25 @@ public class UIRelatedPagesContainer extends UIWikiExtensionContainer {
   
   protected boolean isHasExtension() {
     return extensionSize > 0;
+  }
+  
+  protected String getGroupName(String wikiType, String wikiOwner) throws Exception {
+    WikiService service = getApplicationComponent(WikiService.class);
+    if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
+      return service.getSpaceNameByGroupId(wikiOwner);
+    }
+    
+    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
+      PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
+      return containerInfo.getContainerName();
+    }
+    
+    if (PortalConfig.USER_TYPE.equals(wikiType)) {
+      ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
+      return bundle.getString("UIRelatedPagesContainer.title.my-space");
+    }
+    return StringUtils.EMPTY;
   }
 
   @Override
