@@ -334,7 +334,7 @@ New line
 = Links =
 
 (% style="width:100%" %)
-|=Feature|=XWiki Syntax 2.0|=Result XWiki Syntax 2.0
+|=Feature|=XWiki Syntax 2.0|=Result
 |Link to a page in the current wiki|{{{[[Wiki Home]]}}}|[[Wiki Home]]
 |Link with a label|{{{[[label>>Wiki Home]]}}}|[[label>>Wiki Home]]
 |Link to a page with the wiki name specified|{{{[[Wiki Home>>classic.Wiki Home]]}}}|[[Wiki Home>>classic.Wiki Home]]
@@ -343,9 +343,9 @@ New line
 ||{{{[[Wiki Home>>user:root.Wiki Home]]}}}|
 ||{{{[[label>>wikiType:wikiId.pageName]]}}}|
 |Link that opens in a new page|{{{[[label>>Wiki Home||rel="__blank"]]}}}|[[label>>Wiki Home||rel="__blank"]]
-|Link to a URL directly in the text|{{{This is a URL: http://xwiki.org}}}|This is a URL: http://xwiki.org
-|Link to a URL|{{{[[http://xwiki.org]]}}}|[[http://xwiki.org]]
-|Link to a URL with a label|{{{[[XWiki>>http://xwiki.org]]}}}|[[XWiki>>http://xwiki.org]]
+|Link to a URL directly in the text|{{{This is a URL: http://www.exoplatform.com}}}|This is a URL: http://www.exoplatform.com
+|Link to a URL|{{{[[http://www.exoplatform.com]]}}}|[[http://www.exoplatform.com]]
+|Link to a URL with a label|{{{[[eXo>>http://www.exoplatform.com]]}}}|[[eXo>>http://www.exoplatform.com]]
 |Link to an email|{{{[[email>>mailto:john@smith.net]]}}}|[[email>>mailto:john@smith.net]]
 |Image Link|(((
 {{{[[image:classic.Wiki Home@img.png]]}}}
