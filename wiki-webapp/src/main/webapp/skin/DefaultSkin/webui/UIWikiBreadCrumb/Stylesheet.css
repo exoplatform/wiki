@@ -25,6 +25,7 @@
 	height: auto;	
 	white-space: normal;
 	float:left;
+	overflow:inherit;
 }
 
 .UIWikiPortlet .UIWikiBreadCrumb a.Selected {

@@ -36,5 +36,4 @@ public interface WikiRestService {
                               String wikiContextKey,
                               boolean isMarkup,
                               String data);
-  
 }

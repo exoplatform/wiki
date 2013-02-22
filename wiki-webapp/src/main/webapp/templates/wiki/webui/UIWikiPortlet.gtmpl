@@ -19,6 +19,7 @@
   requireJs.require("SHARED/UIWikiAjaxRequest", "UIWikiAjaxRequest"); 
   requireJs.require("SHARED/UIWikiPortlet", "UIWikiPortlet");
   requireJs.require("SHARED/UITreeExplorer", "UITreeExplorer");
+  requireJs.require("SHARED/UIRelated", "UIRelated");
   
   if(uicomponent.isKeepSessionAlive()){
     requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
