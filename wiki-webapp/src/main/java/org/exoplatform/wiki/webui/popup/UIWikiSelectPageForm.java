@@ -53,7 +53,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
   
   private static final String SWITCH_SPACE_ACTION = "SwitchSpace";
   
-  private static final String SPACE_SWITCHER = "UISpaceSwitcher_UIWikiSelectPageForm";
+  private static final String SPACE_SWITCHER = "uiSpaceSwitcher_UIWikiSelectPageForm";
   
   public UIWikiSelectPageForm() throws Exception {
     setId(FORM_ID);

@@ -54,7 +54,7 @@ import org.exoplatform.wiki.utils.Utils;
   events = {@EventConfig(listeners = UIWikiBreadCrumb.SwitchSpaceActionListener.class)}
 )
 public class UIWikiBreadCrumb extends UIContainer {
-  public static final String  SPACE_SWITCHER = "UISpaceSwitcher_BreadCrumb";
+  public static final String  SPACE_SWITCHER = "uiSpaceSwitcher_BreadCrumb";
   
   private static final String  SWITCH_SPACE_ACTION = "SwitchSpace";
   
