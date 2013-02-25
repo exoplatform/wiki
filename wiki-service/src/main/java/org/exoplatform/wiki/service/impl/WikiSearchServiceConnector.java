@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org.exoplatform.commons.api.search.SearchServiceConnector;
+import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
@@ -46,7 +47,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
 
   @Override
-  public Collection<SearchResult> search(String query, Collection<String> sites, int offset, int limit, String sort, String order) {
+  public Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
     WikiSearchData searchData = new WikiSearchData(query, null, null, null, null, null);
     searchData.setOffset(offset);
     searchData.setLimit(limit);
