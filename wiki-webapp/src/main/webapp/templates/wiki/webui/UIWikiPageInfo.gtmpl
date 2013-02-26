@@ -5,24 +5,18 @@
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiPageInfo", "UIWikiPageInfo");
   requireJs.addScripts("UIWikiPageInfo.init();");
-%>
-<% 
+  
   def currentWikiPage = uicomponent.getCurrentPage();
   _ctx.put("currentWikiPage", currentWikiPage);
 %>
 
 <div class="uiWikiPageInfo row-fluid" id="$uicomponent.id">
-	<div class="span6">
-	  <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoSummary.gtmpl"); %>
-	  
-	  <% uicomponent.renderChild(UIRelatedPagesContainer.class); %>
+  <div class="span6">
+    <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoSummary.gtmpl"); %>
+    <% uicomponent.renderChild(UIRelatedPagesContainer.class); %>
   </div>        
-	  <% 
-	    // _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoOutLink.gtmpl"); 
-	  %>
-	<div class="span6">         
-	  <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoHierarchy.gtmpl"); %>
-	  
-	  <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoChanges.gtmpl"); %>
-	</div>
+  <div class="span6">         
+    <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoHierarchy.gtmpl"); %>
+    <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoChanges.gtmpl"); %>
+  </div>
 </div>

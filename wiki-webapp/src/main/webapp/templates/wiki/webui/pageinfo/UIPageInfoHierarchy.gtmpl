@@ -2,15 +2,14 @@
   import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
   def pageImpl = (PageImpl) currentWikiPage;
   def parentPage = pageImpl.getParentPage();
-  def parentLink = parentPage != null ? uicomponent.getPageLink(parentPage) : "";
-  def parentTitle = parentPage != null ? parentPage.getTitle() : "";
+  def parentLink = (parentPage != null) ? uicomponent.getPageLink(parentPage) : "";
+  def parentTitle = (parentPage != null) ? parentPage.getTitle() : "";
 %>
 
 <div class="uiPageInfoItem uiPageInfoHierarchy">
-	<h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.hierarchy")%></h6>
+  <h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.hierarchy")%></h6>
   <div class="pageInfoItemBody">
-	
-		<% if (parentPage != null) { %>
+    <% if (parentPage != null) { %>
 	  <div><%= _ctx.appRes("UIWikiPageInfo.label.parent-page")%></div>
 	  <ul class="content">
 	    <li class="nodeLabel">
@@ -18,12 +17,12 @@
 	      <a href="$parentLink" rel="tooltip" data-placement="bottom" title="$parentTitle">$parentTitle</a>
 	    </li>
 	  </ul>
-	  <% } %>
-	  <div><%= _ctx.appRes("UIWikiPageInfo.label.child-pages")%></div>
-	  <ul>
-	    <li class="nodeLabel">
-	    	<a href="javascrip:void(0);">${uicomponent.renderHierarchy()}</a>
-	     </li>
-	  </ul>
-	</div>
+	<% } %>
+	<div><%= _ctx.appRes("UIWikiPageInfo.label.child-pages")%></div>
+	<ul>
+	  <li class="nodeLabel">
+	    <a href="javascrip:void(0);">${uicomponent.renderHierarchy();}</a>
+	  </li>
+	</ul>
+  </div>
 </div>

@@ -8,5 +8,6 @@ UIWikiPageInfo.prototype.init = function() {
 };
 
 eXo.wiki.UIWikiPageInfo = new UIWikiPageInfo();
+return eXo.wiki.UIWikiPageInfo;
 
 })(base, uiForm, webuiExt, $);

@@ -17,41 +17,22 @@
   def movelink = "";
 %>
 <div class="uiPageInfoItem uiPageInfoSummary">
-  
-	<table class="uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
-		<caption><h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.summary")%></h6></caption>
-		<tr>
-			<td><b><%= _ctx.appRes("UIWikiPageInfo.label.title")%></b></td>
-			<td>$title</td>
-		  <td class="time"><span></span></td>
-		</tr>       
+  <table class="uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+    <caption><h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.summary")%></h6></caption>
+    <tr>
+      <td><b><%= _ctx.appRes("UIWikiPageInfo.label.title")%></b></td>
+      <td>$title</td>
+      <td class="time"><span></span></td>
+    </tr>       
     <tr>
       <td><b><%= _ctx.appRes("UIWikiPageInfo.label.author")%></b></td>
       <td class="name">$author</td>
       <td class="time">$createdDate</td>
     </tr>
-    
     <tr>
       <td><b><%= _ctx.appRes("UIWikiPageInfo.label.last-changed-by")%></b></td>
       <td class="name">$editor</td>
       <td class="time">$updateDate</td>
     </tr>
-    
-    <!-- tr class="EvenClass">
-      <td  width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.link")%></td>
-      <td colspan="2"><a href="" >http:</a></td>
-    </tr -->
-    
-    <!-- tr class="OddClass">
-      <td  width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.export-as")%></td>
-      <td colspan="2"><a href="$wordlink"><%= _ctx.appRes("UIWikiPageInfo.label.word")%></a>&nbsp;|&nbsp;<a href="$pdflink"><%= _ctx.appRes("UIWikiPageInfo.label.pdf")%></a></td>
-    </tr -->
-    
-    <!-- tr class="EvenClass">
-    <td  width="30%"><%= _ctx.appRes("UIWikiPageInfo.label.operations")%></td>
-    <td colspan="2"><a href="$copylink" ><%= _ctx.appRes("UIWikiPageInfo.label.copy")%></a>&nbsp;|&nbsp;<a href="$movelink" ><%= _ctx.appRes("UIWikiPageInfo.label.move")%></a></td>
-  </tr -->
-	        
-	</table>
-
+  </table>
 </div>
