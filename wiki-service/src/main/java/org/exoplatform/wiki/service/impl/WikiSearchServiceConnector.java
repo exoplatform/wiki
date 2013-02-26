@@ -11,7 +11,6 @@ import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
@@ -20,11 +19,10 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
-import org.xwiki.rendering.syntax.Syntax;
 
 public class WikiSearchServiceConnector extends SearchServiceConnector {
   
@@ -34,16 +32,11 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
-  private static final int   EXCERPT_LENGTH    = 140;
-  
   private WikiService wikiService;
-  
-  private RenderingService renderingService;
   
   public WikiSearchServiceConnector(InitParams initParams) {
     super(initParams);
     wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    renderingService = (RenderingService) PortalContainer.getInstance().getComponentInstanceOfType(RenderingService.class);
   }
 
   @Override
@@ -72,10 +65,6 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     return searchResults;
   }
   
-  private String getResultIcon(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
-    return WIKI_PAGE_ICON;
-  }
-  
   private PageImpl getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
     PageImpl page = null;
     if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
@@ -85,10 +74,6 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       page = (PageImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
     }
     return page;
-  }
-  
-  private String getExcerptOfPage(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
-    return wikiSearchResult.getExcerpt();
   }
   
   private String getPageDetail(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
@@ -124,15 +109,26 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     return pageDetail.toString();
   }
   
+  private String getPagePermalink(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+    String permalink = "";
+    try {
+      PageImpl page = getPage(wikiSearchResult);
+      permalink = Utils.getPermanlink(new WikiPageParams(page.getWiki().getType(), page.getWiki().getOwner(), page.getName()));
+    } catch (Exception e) {
+      LOG.info("Can not create page permalink ", e);
+    }
+    return permalink;
+  }
+  
   private SearchResult buildResult(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     try {
       String title = wikiSearchResult.getTitle();
-      String url = wikiSearchResult.getUrl();
-      String excerpt = getExcerptOfPage(wikiSearchResult);
+      String url = getPagePermalink(wikiSearchResult);
+      String excerpt = wikiSearchResult.getExcerpt();
       String detail = getPageDetail(wikiSearchResult);
       long relevancy = wikiSearchResult.getJcrScore();
       long date = wikiSearchResult.getUpdatedDate().getTime().getTime();
-      String imageUrl = getResultIcon(wikiSearchResult);
+      String imageUrl = WIKI_PAGE_ICON;
       return new SearchResult(url, title, excerpt, detail, imageUrl, date, relevancy);
     } catch (Exception e) {
       LOG.info("Error when getting property from node ", e);
