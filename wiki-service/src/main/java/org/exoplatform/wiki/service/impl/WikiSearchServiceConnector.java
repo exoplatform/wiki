@@ -11,7 +11,6 @@ import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
@@ -20,11 +19,8 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
-import org.exoplatform.wiki.utils.Utils;
-import org.xwiki.rendering.syntax.Syntax;
 
 public class WikiSearchServiceConnector extends SearchServiceConnector {
   
@@ -34,20 +30,20 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
-  private static final int   EXCERPT_LENGTH    = 140;
-  
   private WikiService wikiService;
-  
-  private RenderingService renderingService;
   
   public WikiSearchServiceConnector(InitParams initParams) {
     super(initParams);
     wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    renderingService = (RenderingService) PortalContainer.getInstance().getComponentInstanceOfType(RenderingService.class);
   }
 
   @Override
   public Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
+    // When limit is 0 then return all search result
+    if (limit == 0) {
+      limit = Integer.MAX_VALUE;
+    }
+
     WikiSearchData searchData = new WikiSearchData(query, null, null, null, null, null);
     searchData.setOffset(offset);
     searchData.setLimit(limit);
