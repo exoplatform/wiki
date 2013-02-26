@@ -16,11 +16,14 @@
  */
 package org.exoplatform.wiki.webui;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -76,6 +79,14 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
   public static final String FROM_PARAM = "from";
   
   public static final String TO_PARAM = "to";
+  
+  private String fromVersionName;
+  private String fromVersionAuthor;
+  private String fromVersionUpdateDate;
+  
+  private String toVersionName;
+  private String toVersionAuthor;
+  private String toVersionUpdateDate;
 
   public UIWikiPageVersionsCompare() {
     super();
@@ -109,17 +120,51 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
   public NTVersion getFromVersion() {
     return fromVersion;
   }
-
-  public void setFromVersion(NTVersion fromVersion) {
+  
+  public void setFromVersion(NTVersion fromVersion) throws Exception {
+    fromVersionName = fromVersion.getName();
+    fromVersionAuthor = Utils.getFullName(fromVersion.getNTFrozenNode().getAuthor());
+    Locale currentLocale = Util.getPortalRequestContext().getLocale();
+    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
+    fromVersionUpdateDate = df.format(fromVersion.getNTFrozenNode().getUpdatedDate());
     this.fromVersion = fromVersion;
   }
-
+  
+  public String getFromVersionName() {
+    return fromVersionName;
+  }
+  
+  public String getFromVersionAuthor() {
+    return fromVersionAuthor;
+  }
+  
+  public String getFromVersionUpdateDate() {
+    return fromVersionUpdateDate;
+  }
+  
   public NTVersion getToVersion() {
     return toVersion;
   }
 
-  public void setToVersion(NTVersion toVersion) {
+  public void setToVersion(NTVersion toVersion) throws Exception {
+    toVersionName = toVersion.getName();
+    toVersionAuthor = Utils.getFullName(toVersion.getNTFrozenNode().getAuthor());
+    Locale currentLocale = Util.getPortalRequestContext().getLocale();
+    DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
+    toVersionUpdateDate = df.format(toVersion.getNTFrozenNode().getUpdatedDate());
     this.toVersion = toVersion;
+  }
+  
+  public String getToVersionName() {
+    return toVersionName;
+  }
+  
+  public String getToVersionAuthor() {
+    return toVersionAuthor;
+  }
+  
+  public String getToVersionUpdateDate() {
+    return toVersionUpdateDate;
   }
 
   public int getChanges() {   

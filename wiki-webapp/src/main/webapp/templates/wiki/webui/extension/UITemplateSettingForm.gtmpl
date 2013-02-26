@@ -14,7 +14,7 @@
 <div class="uiTemplateSettingForm uiWikiTemplateForm">
 	<%uiform.begin();%>
 	<div class="templateControl clearfix" style="overflow: hidden">		  		
-    <button type="button" class="pull-right btn" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%>" onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor');"><%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%></button>
+    <button type="button" class="pull-right btn" onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor');"><%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%></button>
     <a onclick="$addLink" id="$actionId" style="display:none;">&nbsp;</a>
 
     <div class="uiSearchInput" >	
