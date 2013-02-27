@@ -20,6 +20,7 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.ss.formula.functions.T;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.wiki.mow.api.DraftPage;
@@ -29,6 +30,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.Template;
 import org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
@@ -277,6 +279,13 @@ public interface WikiService {
    * @return The wiki
    */
   public Wiki getWiki(String wikiType, String owner);
+  
+  /**
+   * Get portal owner
+   * 
+   * @return portal owner
+   */
+  public String getPortalOwner();
   
   /**
    * Get the uri of wiki webapp

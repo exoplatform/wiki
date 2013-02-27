@@ -891,6 +891,16 @@ public class WikiServiceImpl implements WikiService, Startable {
     return getWiki(wikiType, owner, getModel());
   }
   
+  public String getPortalOwner() {
+    Model model = getModel();
+    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    List<Wiki> portalWikis = new ArrayList<Wiki>(wStore.getWikiContainer(WikiType.PORTAL).getAllWikis());
+    if (portalWikis.size() > 0) {
+      return portalWikis.get(0).getOwner();
+    }
+    return null;
+  }
+  
   private Wiki getWiki(String wikiType, String owner, Model model) {
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiImpl wiki = null;
@@ -1624,17 +1634,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     } else if (wikiId.startsWith("/user/")) {
       wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
       wiki = wikiService.getWiki(PortalConfig.USER_TYPE, wikiId);
-    } else if (wikiId.startsWith("/" + getPortalName())) {
+    } else if (wikiId.startsWith("/" + Utils.getPortalName())) {
       wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
       wiki = wikiService.getWiki(PortalConfig.PORTAL_TYPE, wikiId);
     }
     return wiki;
-  }
-  
-  private String getPortalName() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
-    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
-    return containerInfo.getContainerName();
   }
   
   public String getWikiNameById(String wikiId) throws Exception {
