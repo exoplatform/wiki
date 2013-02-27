@@ -1,7 +1,18 @@
 package org.exoplatform.wiki.utils;
 
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Stack;
+
 import javax.jcr.RepositoryException;
 import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
@@ -12,6 +23,7 @@ import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -81,6 +93,12 @@ public class Utils {
   private static Map<String, Map<String, WikiPageHistory>> editPageLogs = new HashMap<String, Map<String, WikiPageHistory>>();
   
   public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
+  
+  public static String getPortalName() {
+    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
+    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
+    return containerInfo.getContainerName();
+  }
   
   /**
    * Get resource bundle from given resource file
