@@ -48,7 +48,7 @@
     <org.gatein.portal.version>3.5.2.Final</org.gatein.portal.version>
     <org.exoplatform.commons.version>4.0.0-relooking-SNAPSHOT</org.exoplatform.commons.version>
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
-    <org.exoplatform.commons.version>4.0.0-stabilization-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.commons.version>4.0.0-relooking-SNAPSHOT</org.exoplatform.commons.version>
   </properties>
   <dependencyManagement>
     <dependencies>
