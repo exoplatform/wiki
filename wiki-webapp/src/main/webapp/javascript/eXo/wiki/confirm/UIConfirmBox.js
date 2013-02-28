@@ -56,7 +56,7 @@ UIConfirmBox.prototype.renderConfirmBox = function(componentId, titleMessage, me
 	  +   "<span class='PopupTitle popupTitle'>" + titleMessage + "</span>"
 	  + "</div>"
 	  + "<div class='PopupContent popupContent'>"
-	  +   "<div class='confirmMessage'><i class='uiIconNotification uiIconBlue'></i>" + message + "</div>"
+	  +   "<div class='confirmMessage'><i class='uiIconQuestion uiIconBlue'></i>" + message + "</div>"
 	  +   "<div class='uiAction uiActionBorder'></div>"
 	  + "</div>"
 	  + "<span class='uiIconResize pull-right' style='display: block;'></span>"));
