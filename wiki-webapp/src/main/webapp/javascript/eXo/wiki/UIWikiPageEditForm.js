@@ -191,8 +191,9 @@ UIWikiPageEditForm.prototype.onSaveDraftSuccess = function(data) {
 UIWikiPageEditForm.prototype.doCancelAction = function()  {
   var me = eXo.wiki.UIWikiPageEditForm;
   var action = document.getElementById("link_" + me.callBackComponentId);
-  if (action && action.href) {
-    window.location = action.href;
+  var href = action.getAttribute("href");
+  if (action && href) {
+    eval(href);
   }
 };
 
