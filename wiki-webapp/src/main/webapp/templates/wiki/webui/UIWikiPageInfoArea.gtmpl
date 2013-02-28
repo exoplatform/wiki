@@ -25,7 +25,7 @@
   String addedByLabel = _ctx.appRes("UIWikiPageInfoArea.label.AddedBy").replace("{0}", "<a>" + creator + "</a>").replace("{1}", createdDate);
   String lastModifiedByLabel = _ctx.appRes("UIWikiPageInfoArea.label.LastModifiedBy").replace("{0}", "<a>" + author + "</a>").replace("{1}", updatedDate);
 
-  String totalAttachmentsLabel = "<strong>" + attachmentsTotal + "</strong>";
+  String totalAttachmentsLabel = attachmentsTotal;
   String restrictLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.restrict-link");
   String publicLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.public-link");
   boolean isCurrentPagePublic = uicomponent.isCurrentPagePublic();
