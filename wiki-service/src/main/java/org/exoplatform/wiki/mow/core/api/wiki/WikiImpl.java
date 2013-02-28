@@ -28,6 +28,8 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.Property;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -40,6 +42,8 @@ import org.xwiki.rendering.syntax.Syntax;
  * @version $Revision$
  */
 public abstract class WikiImpl implements Wiki {
+
+  private static final Log LOG           = ExoLogger.getLogger(WikiImpl.class);
   
   @Create
   public abstract PageImpl createWikiPage();
@@ -72,14 +76,16 @@ public abstract class WikiImpl implements Wiki {
       AttachmentImpl content = home.getContent();
       home.setTitle(WikiNodeType.Definition.WIKI_HOME_TITLE);
       home.setSyntax(Syntax.XWIKI_2_0.toIdString());
-      StringBuilder sb = new StringBuilder("{{tip}}\nWelcome to Wiki Home of ");
-      sb.append(getOwner()).append(" ");
-      if (WikiType.PORTAL.equals(getWikiType())) {
-        sb.append("portal");
-      } else if (WikiType.GROUP.equals(getWikiType())) {
-        sb.append("group");
+      StringBuilder sb = new StringBuilder("= Welcome to ");
+      String spaceName = getOwner();
+      try{
+      spaceName = wService.getSpaceNameByGroupId(getOwner());
+      } catch (Exception e) {
+        if (LOG.isDebugEnabled()) {
+          LOG.debug("Can't get Space name by group ID : " + getOwner(), e);
+        }
       }
-      sb.append(".").append("\n* See **[[Sandbox space>>group:sandbox.WikiHome]]** for an example wiki with sample content.\n{{/tip}}");
+      sb.append(spaceName).append(" =");
       content.setText(sb.toString());
       try {
         initPermisionForWikiHome(home);

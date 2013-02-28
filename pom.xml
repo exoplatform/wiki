@@ -5,7 +5,7 @@
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>9-beta-1</version>
-    <relativePath />
+    <relativePath></relativePath>
   </parent>
   <groupId>org.exoplatform.wiki</groupId>
   <artifactId>wiki</artifactId>
@@ -24,8 +24,8 @@
   <scm>
     <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/wiki.git</developerConnection>
-    <url>https://fisheye.exoplatform.org/browse/wiki</url>
     <tag>HEAD</tag>
+    <url>https://fisheye.exoplatform.org/browse/wiki</url>
   </scm>
   <properties>
     <!-- **************************************** -->
@@ -39,14 +39,14 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-    <org.exoplatform.depmgt.version>2</org.exoplatform.depmgt.version>
-    <org.exoplatform.kernel.version>2.4.0-GA</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>2.5.0-GA</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>2.3.0-GA</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>1.15.0-GA</org.exoplatform.jcr.version>
-    <org.gatein.portal.version>3.5.0.Final</org.gatein.portal.version>
-    <org.exoplatform.commons.version>4.0.0-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.depmgt.version>3-SNAPSHOT</org.exoplatform.depmgt.version>
+    <org.exoplatform.kernel.version>2.4.2-GA</org.exoplatform.kernel.version>
+    <org.exoplatform.core.version>2.5.2-GA</org.exoplatform.core.version>
+    <org.exoplatform.ws.version>2.3.2-GA</org.exoplatform.ws.version>
+    <org.exoplatform.jcr.version>1.15.2-GA</org.exoplatform.jcr.version>
+    <org.gatein.portal.version>3.5.2.Final</org.gatein.portal.version>
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
+    <org.exoplatform.commons.version>4.0.0-SNAPSHOT</org.exoplatform.commons.version>
   </properties>
   <dependencyManagement>
     <dependencies>

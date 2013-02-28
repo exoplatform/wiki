@@ -6,20 +6,23 @@ Text formatting
 
 Headings
 {{{= level 1 =}}} Large heading
-{{{=== level 3 ===}}} Medium heading
-{{{===== level 5 =====}}} Small heading
+{{{== level 2 ==}}} Medium heading
+{{{=== level 3 ===}}} Small heading
 
 Lists
 {{{*}}} Bulleted list
-{{{#.}}} Numbered point
+{{{1.}}} Numbered point
 
 Tables
-{{{|=head1 |=head2 |
-| colA1 | colA2 |
-| colB1 | colB2 |}}}
+{{{|=head1 |=head2}}}
+{{{| colA1 | colA2}}}
+{{{| colB1 | colB2}}}
 
 Links
 {{{[[WebHome]]}}} Link a page
 {{{[[label>>WebHome]]}}} Link with a label
-{{{[[http://xwiki.org]]}}} Link to a URL
-{{{[[email>>mailto:abc@host.net]]}}} Link to an email
+{{{[[http://exoplatform.com]]}}} Link to a URL
+
+Images
+{{{[[image:myImage.jpg]]}}}
+

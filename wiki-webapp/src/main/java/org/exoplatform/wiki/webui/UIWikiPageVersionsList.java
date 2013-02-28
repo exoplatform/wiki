@@ -104,13 +104,12 @@ public class UIWikiPageVersionsList extends UIWikiForm {
     }
   }
   
-  public static class CompareRevisionActionListener extends
-                                                   org.exoplatform.wiki.webui.control.action.CompareRevisionActionListener {
+  public static class CompareRevisionActionListener extends org.exoplatform.wiki.webui.control.action.CompareRevisionActionListener {
     @Override
     public void execute(Event<UIComponent> event) throws Exception {
       UIWikiPageVersionsList uiForm = (UIWikiPageVersionsList) event.getSource();
       List<NTVersion> checkedVersions = new ArrayList<NTVersion>();
-      List<NTVersion> versions = uiForm.versionsList;
+      List<NTVersion> versions = Utils.getCurrentPageRevisions();
       for (NTVersion version : versions) {
         UICheckBoxInput uiCheckBox = uiForm.getUICheckBoxInput(VERSION_NAME_PREFIX + "_" + version.getName());
         if (uiCheckBox.isChecked()) {
@@ -118,14 +117,11 @@ public class UIWikiPageVersionsList extends UIWikiForm {
         }
       }
       if (checkedVersions.size() != 2) {
-        event.getRequestContext()
-             .getUIApplication()
-             .addMessage(new ApplicationMessage("UIWikiPageVersionsList.msg.checkGroup-required",
-                                                null,
-                                                ApplicationMessage.WARNING));   
+        event.getRequestContext().getUIApplication()
+          .addMessage(new ApplicationMessage("UIWikiPageVersionsList.msg.checkGroup-required", null, ApplicationMessage.WARNING));   
         return;
       } else {
-        this.setVersionToCompare(new ArrayList<NTVersion>(uiForm.versionsList));
+        this.setVersionToCompare(new ArrayList<NTVersion>(versions));
         String fromVersionName = checkedVersions.get(0).getName();
         String toVersionName = checkedVersions.get(1).getName();
         for (int i = 0; i < versions.size(); i++) {
