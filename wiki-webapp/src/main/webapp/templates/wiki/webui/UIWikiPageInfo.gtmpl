@@ -1,11 +1,5 @@
 <% 
   import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
-
-  def rcontext = _ctx.getRequestContext();
-  def requireJs = rcontext.getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/UIWikiPageInfo", "UIWikiPageInfo");
-  requireJs.addScripts("UIWikiPageInfo.init();");
-  
   def currentWikiPage = uicomponent.getCurrentPage();
   _ctx.put("currentWikiPage", currentWikiPage);
 %>
