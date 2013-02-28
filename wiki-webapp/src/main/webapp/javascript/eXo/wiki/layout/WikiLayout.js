@@ -154,7 +154,7 @@ WikiLayout.prototype.setWidthLayOut = function() {
     lWith = WikiLayout.leftArea.offsetWidth + WikiLayout.resizeBar.offsetWidth;
   }
   if (WikiLayout.rightArea) {
-    $(WikiLayout.rightArea).width((maxWith - lWith) + 'px'); //left and right padding
+    $(WikiLayout.rightArea).width((maxWith - lWith - 8) + 'px'); //left and right padding
   }
 };
 
