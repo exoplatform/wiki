@@ -158,7 +158,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     
     // Build message markup
     String messageMarkup = bundle.getString("DraftPage.msg.draft-version-outdated");
-    String messageHTML = "<div class='alert alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
+    String messageHTML = "<div class='alert alert-info'><i class='uiIconInformation uiIconBlue'></i>" + messageMarkup + "</div>";
     
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
@@ -167,9 +167,9 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String continueEdittingActionLink = event("ResumeDraft");
     String deleteDraftLabel = bundle.getString("DraftPage.label.delete");
     String deleteActionLink = event("DeleteDraft");
-    messageHTML = messageHTML.replace("{0}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\"><b>" + viewChangeDraftLabel + "</b></a>");
-    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ continueEdittingLabel + "\" href=\"" + continueEdittingActionLink + "\"><b>" + continueEdittingLabel + "</b></a>");
-    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\"><b>" + deleteDraftLabel + "</b></a>");
+    messageHTML = messageHTML.replace("{0}", "<a href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{1}", "<a href=\"" + continueEdittingActionLink + "\">" + continueEdittingLabel + "</a>");
+    messageHTML = messageHTML.replace("{2}", "<a href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
     return messageHTML;
   }
   
@@ -180,7 +180,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String messageMarkup = bundle.getString("DraftPage.msg.draft-exist-notification");
     String dateString = new SimpleDateFormat("MMM dd, yyyy HH:mm").format(draftUpdatedDate);
     messageMarkup = messageMarkup.replace("{0}", dateString);
-    String messageHTML = "<div class='alert alert-info'><i class='uiIconInfo'></i>" + messageMarkup + "</div>";
+    String messageHTML = "<div class='alert alert-info'><i class='uiIconInformation uiIconBlue'></i>" + messageMarkup + "</div>";
     
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
@@ -190,9 +190,9 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String deleteDraftLabel = bundle.getString("DraftPage.label.delete");
     String deleteActionLink = event("DeleteDraft");
     
-    messageHTML = messageHTML.replace("{1}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ viewChangeDraftLabel + "\" href=\"" + viewChangeActionLink + "\"><b>" + viewChangeDraftLabel + "</b></a>");
-    messageHTML = messageHTML.replace("{2}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ resumeDraftLabel + "\" href=\"" + resumeActionLink + "\"><b>" + resumeDraftLabel + "</b></a>");
-    messageHTML = messageHTML.replace("{3}", "<a rel=\"tooltip\" data-placement=\"bottom\" title=\""+ deleteDraftLabel + "\" href=\"" + deleteActionLink + "\"><b>" + deleteDraftLabel + "</b></a>");
+    messageHTML = messageHTML.replace("{1}", "<a href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{2}", "<a href=\"" + resumeActionLink + "\">" + resumeDraftLabel + "</a>");
+    messageHTML = messageHTML.replace("{3}", "<a href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
     return messageHTML; 
   }
   
