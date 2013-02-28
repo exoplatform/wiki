@@ -919,10 +919,9 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
       model.save();
     } catch (Exception e) {
-    	e.printStackTrace();
-      //if (log.isDebugEnabled()) {
+      if (log.isDebugEnabled()) {
         log.debug("[WikiService] Cannot get wiki " + wikiType + ":" + owner, e);
-      //}
+      }
     }
     return wiki;
   }
@@ -1575,9 +1574,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
       return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
     } catch (ClassNotFoundException e) {
-      Model model = getModel();
-      Wiki wiki = getWiki(PortalConfig.GROUP_TYPE, groupId.substring(1), model);
-      return wiki.getName();
+      return groupId.substring(groupId.lastIndexOf('/') + 1);
     }
   }
   

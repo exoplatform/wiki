@@ -28,6 +28,7 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.Property;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -78,11 +79,14 @@ public abstract class WikiImpl implements Wiki {
       home.setSyntax(Syntax.XWIKI_2_0.toIdString());
       StringBuilder sb = new StringBuilder("= Welcome to ");
       String spaceName = getOwner();
-      try{
-      spaceName = wService.getSpaceNameByGroupId(getOwner());
-      } catch (Exception e) {
-        if (LOG.isDebugEnabled()) {
-          LOG.debug("Can't get Space name by group ID : " + getOwner(), e);
+      
+      if (getType().equals(PortalConfig.GROUP_TYPE)) {
+        try{
+          spaceName = wService.getSpaceNameByGroupId(getOwner());
+        } catch (Exception e) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("Can't get Space name by group ID : " + getOwner(), e);
+          }
         }
       }
       sb.append(spaceName).append(" =");
