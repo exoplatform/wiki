@@ -1406,6 +1406,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
   
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public boolean isHiddenSpace(String groupId) throws Exception {
     try {
       Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");

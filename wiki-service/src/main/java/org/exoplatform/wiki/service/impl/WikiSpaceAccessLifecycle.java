@@ -47,14 +47,15 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
   public void onStartRequest(final Application app, final WebuiRequestContext context) throws Exception {
     PortalRequestContext pcontext = (PortalRequestContext) context;
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
-    if (pcontext.getSiteType().equals(SiteType.GROUP) && pcontext.getSiteName().startsWith("/spaces")  && (requestPath != null) && (requestPath.length() > 0)) {
+    String siteName = pcontext.getSiteName();
+    if (pcontext.getSiteType().equals(SiteType.GROUP) && siteName.startsWith("/spaces")  && (requestPath != null) && (requestPath.length() > 0)) {
       
       // Check if user want to access to wiki application
       String currentUser = Utils.getCurrentUser();
       String[] params = requestPath.split("/");
       if ((params.length > 1) && params[1].equals(WIKI_PORTLET_NAME)) {
         String spaceId = params[0];
-        String owner = "/spaces/" + spaceId;
+        String owner = siteName;
         String pageId = "WikiHome";
         if (params.length > 2) {
           pageId = params[2];
