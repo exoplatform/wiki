@@ -24,6 +24,8 @@ import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.Application;
 import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.RequestFailure;
@@ -41,6 +43,8 @@ import org.exoplatform.wiki.utils.Utils;
 public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
   private static final String WIKI_PORTLET_NAME = "wiki";
   
+  private static final Log      LOG               = ExoLogger.getLogger(WikiSpaceAccessLifecycle.class.toString());
+  
   public void onInit(Application app) {
   }
 
@@ -48,29 +52,33 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
     PortalRequestContext pcontext = (PortalRequestContext) context;
     String requestPath = pcontext.getControllerContext().getParameter(RequestNavigationData.REQUEST_PATH);
     String siteName = pcontext.getSiteName();
-    if (pcontext.getSiteType().equals(SiteType.GROUP) && siteName.startsWith("/spaces")  && (requestPath != null) && (requestPath.length() > 0)) {
-      
-      // Check if user want to access to wiki application
-      String currentUser = Utils.getCurrentUser();
-      String[] params = requestPath.split("/");
-      if ((params.length > 1) && params[1].equals(WIKI_PORTLET_NAME)) {
-        String spaceId = params[0];
-        String owner = siteName;
-        String pageId = "WikiHome";
-        if (params.length > 2) {
-          pageId = params[2];
-        }
+    try {
+      if (pcontext.getSiteType().equals(SiteType.GROUP) && siteName.startsWith("/spaces")  && (requestPath != null) && (requestPath.length() > 0)) {
         
-        // Get page
-        WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+        // Check if user want to access to wiki application
+        String currentUser = Utils.getCurrentUser();
+        String[] params = requestPath.split("/");
+        if ((params.length > 1) && params[1].equals(WIKI_PORTLET_NAME)) {
+          String spaceId = params[0];
+          String owner = siteName;
+          String pageId = "WikiHome";
+          if (params.length > 2) {
+            pageId = params[2];
+          }
+          
+          // Get page
+          WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
 
-        // If user is not member of space but has view permission
-        if (!wikiService.isHiddenSpace(owner) && !wikiService.isSpaceMember(spaceId, currentUser)) {
-          WikiPageParams wikiPageParams = new WikiPageParams(PortalConfig.GROUP_TYPE, owner, pageId);
-          String permalink = Utils.getPermanlink(wikiPageParams);
-          redirect(permalink);
+          // If user is not member of space but has view permission
+          if (!wikiService.isHiddenSpace(owner) && !wikiService.isSpaceMember(spaceId, currentUser)) {
+            WikiPageParams wikiPageParams = new WikiPageParams(PortalConfig.GROUP_TYPE, owner, pageId);
+            String permalink = Utils.getPermanlink(wikiPageParams);
+            redirect(permalink);
+          }
         }
       }
+    } catch(Exception ex) {
+      LOG.warn(String.format("Can not process url for request: site name = [%s], request path = [%s]", siteName, requestPath), ex);
     }
   }
   
