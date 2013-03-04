@@ -29,7 +29,7 @@ import org.exoplatform.webui.form.input.UIUploadInput;
  * May 19, 2010  
  */
 @ComponentConfig(
-   template = "app:/templates/wiki/webui/form/UIFormUploadInput.gtmpl", 
+   template = "app:/templates/wiki/webui/form/UIWikiFormUploadInput.gtmpl", 
    events = {
     @EventConfig(listeners = UIUploadInput.CreateUploadIdActionListener.class),
     @EventConfig(listeners = UIUploadInput.RemoveUploadIdActionListener.class) })

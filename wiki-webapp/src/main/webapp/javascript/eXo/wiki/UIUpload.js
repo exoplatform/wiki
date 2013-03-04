@@ -22,8 +22,15 @@ if(!eXo.wiki) eXo.wiki = {};
 function UIUpload() {
   this.listUpload = new Array();
   this.isAutoUpload = false;
-  //this.listLimitMB = new Array();
 };
+
+UIUpload.prototype.init = function(uploadId, isAutoUpload) {
+  $(window).ready(function(){
+    var me = eXo.wiki.UIUpload;
+    me.initUploadEntry(uploadId, isAutoUpload);
+  });
+}
+
 /**
  * Initialize upload and create a upload request to server
  * @param {String} uploadId identifier upload
@@ -33,7 +40,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isAutoUpload) {
   var url = eXo.env.server.context + "/upload?" ;
   url += "action=progress&uploadId="+uploadId ;
   var responseText = ajaxAsyncGetRequest(url, false);
-  
+
   try {        
     var response = eval("response = " + responseText);
   } catch (err) {
@@ -52,6 +59,9 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isAutoUpload) {
 UIUpload.prototype.createUploadEntry = function(uploadId, isAutoUpload) {
   var me = eXo.wiki.UIUpload;
   var iframe = document.getElementById(uploadId+'uploadFrame');
+  if (!iframe) {
+    return;
+  }
   var idoc = iframe.contentWindow.document ;
   if ($.browser.mozilla) {
     me.createUploadEntryForFF(idoc, uploadId, isAutoUpload);

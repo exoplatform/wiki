@@ -35,21 +35,21 @@ UIWikiPortlet.prototype.init = function(portletId, linkId) {
   var me = eXo.wiki.UIWikiPortlet;
   me.wikiportlet = document.getElementById(portletId);
   me.changeModeLink = document.getElementById(linkId);
-
-  window.onload = function(event) {
-    me.changeMode(event);
+  
+  $(window).ready(function(){
+    me.changeMode();
     
     // Init tooltip
     $("*[rel='tooltip']").tooltip();
     
     // Init page tree macro
     me.initMacros();
-  };
-  
-  window.onbeforeunload = function(event) {
-    me.changeMode(event);
-  };
+  });
 
+  $(window).bind('beforeunload', function() {
+    me.changeMode();
+  });
+  
   $(me.wikiportlet).mouseup(me.onMouseUp);
   $(me.wikiportlet).keyup(me.onKeyUp);
   
@@ -71,7 +71,7 @@ UIWikiPortlet.prototype.onMouseUp = function(evt) {
   }
   /*if (target.tagName == "A" || (target.tagName == "INPUT" && target.type == "button") || target.tagName == "SELECT"
       || target.tagName == "DIV" && target.className.indexOf("RefreshModeTarget") > 0) {
-    eXo.wiki.UIWikiPortlet.changeMode(evt);
+    eXo.wiki.UIWikiPortlet.changeMode();
   }*/
 }
 
@@ -80,10 +80,10 @@ UIWikiPortlet.prototype.onKeyUp = function(evt) {
   var target = evt.target || evt.srcElement;
   if (target.tagName == "INPUT" && target.type == "text")
     if (evt.keyCode == 13)
-      eXo.wiki.UIWikiPortlet.changeMode(evt);
+      eXo.wiki.UIWikiPortlet.changeMode();
 }
 
-UIWikiPortlet.prototype.changeMode = function(event) {
+UIWikiPortlet.prototype.changeMode = function() {
   setTimeout("eXo.wiki.UIWikiPortlet.timeChangeMode()", 200);
 };
 

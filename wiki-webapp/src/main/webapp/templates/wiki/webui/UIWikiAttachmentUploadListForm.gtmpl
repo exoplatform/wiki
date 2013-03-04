@@ -21,7 +21,7 @@
       </thead>
       <tbody>
     <%
-      attachments = uicomponent.getAttachmentsList();
+      def attachments = uicomponent.getAttachmentsList();
       int index = 0;
       String rowClass;
       DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
