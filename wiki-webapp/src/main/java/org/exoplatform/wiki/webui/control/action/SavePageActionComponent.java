@@ -48,6 +48,7 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
+import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.exoplatform.wiki.webui.EditMode;
 import org.exoplatform.wiki.webui.UIWikiPageControlArea;
@@ -117,6 +118,8 @@ public class SavePageActionComponent extends UIComponent {
       Page page = Utils.getCurrentWikiPage();
       Utils.setUpWikiContext(wikiPortlet);
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+      boolean isRenamedPage = false;
+      boolean isContentChange = false;
 
       try {
         WikiNameValidator.validate(titleInput.getValue());
@@ -179,7 +182,20 @@ public class SavePageActionComponent extends UIComponent {
                                                              page.getSyntax(),
                                                              wikiPortlet.getSectionIndex(),
                                                              markup);
+            isContentChange = true;
           }
+          
+          // Check if publish activity on activity stream
+          UICheckBoxInput publishActivityCheckBox = wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
+          page.setMinorEdit(!publishActivityCheckBox.isChecked());
+          pageEditForm.synPublishActivityStatus(false);
+          
+          // Check if the title is change or not
+          if (!page.getTitle().equals(title)) {
+            isRenamedPage = true;
+          }
+          
+          // Rename page if need
           if (!page.getName().equals(newPageId)) {
             wikiService.renamePage(pageParams.getType(),
                                    pageParams.getOwner(),
@@ -188,19 +204,17 @@ public class SavePageActionComponent extends UIComponent {
                                    title);
           }
 
-          // Check if publish activity on activity stream
-          UICheckBoxInput publishActivityCheckBox =
-              wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
-          page.setMinorEdit(!publishActivityCheckBox.isChecked());
-          pageEditForm.synPublishActivityStatus(false);
-
           synchronized (page.getJCRPageNode().getUUID()) {
             page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
             page.setSyntax(syntaxId);
             pageTitleControlForm.getUIFormInputInfo().setValue(title);
             pageParams.setPageId(page.getName());
             page.setURL(Utils.getURLFromParams(pageParams));
-            page.getContent().setText(markup);
+            
+            if (!page.getContent().getText().equals(markup)) {
+              page.getContent().setText(markup);
+              isContentChange = true;
+            }
  
             if (!pageEditForm.getTitle().equals(title)) {
               page.setTitle(title);
@@ -216,21 +230,30 @@ public class SavePageActionComponent extends UIComponent {
               wikiService.removeDraft(pageParams);
             }
            }
-         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
+          
+          // Post edit content activity
+          if (isRenamedPage && isContentChange) {
+            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
+          } else if (isRenamedPage) {
+            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
+          } else if (isContentChange) {
+            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_TYPE);
+          }
+        } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
           Page draftPage = Utils.getCurrentNewDraftWikiPage();
           Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
-          Page subPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
+          Page addedPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
           pageParams.setPageId(newPageId);
-          subPage.setURL(Utils.getURLFromParams(pageParams));
-          subPage.getContent().setText(markup);
-          subPage.setSyntax(syntaxId);
-          ((PageImpl) subPage).getAttachments().addAll(attachs);
-          ((PageImpl) subPage).checkin();
-          ((PageImpl) subPage).checkout();
+          addedPage.setURL(Utils.getURLFromParams(pageParams));
+          addedPage.getContent().setText(markup);
+          addedPage.setSyntax(syntaxId);
+          ((PageImpl) addedPage).getAttachments().addAll(attachs);
+          ((PageImpl) addedPage).checkin();
+          ((PageImpl) addedPage).checkout();
           draftPage.remove();
 
           // remove the draft for new page
-          Page parentPage = subPage.getParentPage();
+          Page parentPage = addedPage.getParentPage();
           DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
           if (contentDraftPage == null) {
             Map<String, WikiPageHistory> pageLogs = org.exoplatform.wiki.utils.Utils.getLogOfPage(parentPage.getName());
@@ -241,6 +264,9 @@ public class SavePageActionComponent extends UIComponent {
           } else {
             contentDraftPage.remove();
           }
+          
+          // Post add activity
+          wikiService.postAddPage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), addedPage);
         }
       } catch (Exception e) {
         log.error("An exception happens when saving the page with title:" + title, e);

@@ -267,6 +267,9 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
       
       session.save();
+      
+      // Post activity
+      postDeletePage(wikiType, wikiOwner, pageId, page);
     } catch (Exception e) {
       log.error("Can't delete page '" + pageId + "' ", e) ;
       return false;
@@ -276,9 +279,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void deleteTemplatePage(String wikiType, String wikiOwner, String templateId) throws Exception {
-
-   WikiPageParams params = new WikiPageParams(wikiType, wikiOwner, templateId);
-   getTemplatePage(params, templateId).remove();
+    WikiPageParams params = new WikiPageParams(wikiType, wikiOwner, templateId);
+    getTemplatePage(params, templateId).remove();
   }  
   
   public void deleteDraftNewPage(String newDraftPageId) throws Exception {
@@ -324,6 +326,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     currentPage.setName(newName);
     getModel().save();
     currentPage.setTitle(newTitle) ;
+    getModel().save();
     
     //update LinkRegistry
     WikiImpl wiki = (WikiImpl) parentPage.getWiki();
@@ -342,7 +345,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     } else {
       processCircularRename(entry, newEntry);
     }
-    parentPage.getChromatticSession().save() ;
+    parentPage.getChromatticSession().save();
     return true ;    
   }
 
@@ -370,6 +373,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       mix.setTargetPage(destPage);      
       WikiImpl destWiki = (WikiImpl) destPage.getWiki();
       movePage.setParentPage(destPage);
+      movePage.setMinorEdit(false);
       
       //update LinkRegistry
       if (!newLocationParams.getType().equals(currentLocationParams.getType())) {
@@ -390,6 +394,9 @@ public class WikiServiceImpl implements WikiService, Startable {
           processCircularRename(entry, newEntry);
         }
       }
+      
+      // Post activity
+      postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageWikiListener.MOVE_PAGE_TYPE);
     } catch (Exception e) {
       log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
       return false;
@@ -1564,6 +1571,51 @@ public class WikiServiceImpl implements WikiService, Startable {
     return jcrDataStorage.getWikiPageByUUID(wStore.getSession(), uuid);
   }
   
+  @Override
+  public void postUpdatePage(final String wikiType, final String wikiOwner, final String pageId, Page page, String wikiUpdateType) throws Exception {
+    List<PageWikiListener> listeners = getPageListeners();
+    for (PageWikiListener l : listeners) {
+      try {
+        l.postUpdatePage(wikiType, wikiOwner, pageId, page, wikiUpdateType);
+      } catch (Exception e) {
+        if (log.isWarnEnabled()) {
+          PageImpl pageImpl = (PageImpl) page;
+          log.warn(String.format("executing listener [%s] on [%s] failed", l.toString(), pageImpl.getPath()), e);
+        }
+      }
+    }
+  }
+  
+  @Override
+  public void postAddPage(final String wikiType, final String wikiOwner, final String pageId, Page page) throws Exception {
+    List<PageWikiListener> listeners = getPageListeners();
+    for (PageWikiListener l : listeners) {
+      try {
+        l.postAddPage(wikiType, wikiOwner, pageId, page);
+      } catch (Exception e) {
+        if (log.isWarnEnabled()) {
+          PageImpl pageImpl = (PageImpl) page;
+          log.warn(String.format("executing listener [%s] on [%s] failed", l.toString(), pageImpl.getPath()), e);
+        }
+      }
+    }
+  }
+  
+  @Override
+  public void postDeletePage(String wikiType, String wikiOwner, String pageId, Page page) throws Exception {
+    List<PageWikiListener> listeners = getPageListeners();
+    for (PageWikiListener l : listeners) {
+      try {
+        l.postDeletePage(wikiType, wikiOwner, pageId, page);
+      } catch (Exception e) {
+        if (log.isWarnEnabled()) {
+          PageImpl pageImpl = (PageImpl) page;
+          log.warn(String.format("executing listener [%s] on [%s] failed", l.toString(), pageImpl.getPath()), e);
+        }
+      }
+    }
+  }
+
   @SuppressWarnings({"rawtypes", "unchecked"})
   public String getSpaceNameByGroupId(String groupId) throws Exception {
     try {

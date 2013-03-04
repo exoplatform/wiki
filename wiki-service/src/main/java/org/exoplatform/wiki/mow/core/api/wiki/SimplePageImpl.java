@@ -249,4 +249,10 @@ public class SimplePageImpl implements Page {
     // TODO Auto-generated method stub
     
   }
+
+  @Override
+  public boolean isMinorEdit() {
+    // TODO Auto-generated method stub
+    return false;
+  }
 }
