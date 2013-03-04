@@ -7,8 +7,19 @@ if(eXo.wiki.UITreeExplorer ==  null) {
 function UITreeExplorer() {};
 
 UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, restrictedTitle) {
-	var me = eXo.wiki.UITreeExplorer;
+  $(window).ready(function(){
+    var me = eXo.wiki.UITreeExplorer;
+    me.initTree(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, restrictedTitle);
+  });
+};
+
+UITreeExplorer.prototype.initTree = function(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, restrictedTitle) {
+  var me = eXo.wiki.UITreeExplorer;
   var component = document.getElementById(componentid);
+  if (!component) {
+    return;
+  }
+  
   this.isRenderLink = isRenderLink;
   this.baseLink = baseLink;
   me.retrictedLabel = retrictedLabel;
@@ -16,7 +27,7 @@ UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, i
   var initNode = $(component).find('input')[0];
   initParam = me.cleanParam(initParam);
   me.render(initParam, initNode, isFullRender);
-};
+}
 
 UITreeExplorer.prototype.initMacros = function() {
   var me = eXo.wiki.UITreeExplorer;
@@ -145,12 +156,16 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
 	  var homeUL = $(wikiHome).parents("ul.nodeGroup:first")[0];
 	  var remain = $(homeUL).find("ul.nodeGroup:first")[0];
 	  var container = $(homeUL).parents("div.uiTreeExplorer")[0];
-	  var h5Container = $(container).prev();	  
-	  $(h5Container).append(aElement);
-	  if (homeUL) {
-	    homeUL.remove();
+	  if (aElement) {
+	    var h5Container = $(container).prev();	  
+	    $(h5Container).append(aElement);
 	  }
-	  $(container).append(remain);
+	  if (homeUL) {
+	    $(homeUL).remove();
+	  }
+	  if (remain) {
+	    $(container).append(remain);
+	  }
 	  if (eXo.wiki.WikiLayout) {
 	    eXo.wiki.WikiLayout.processWithHeight();
 	  }

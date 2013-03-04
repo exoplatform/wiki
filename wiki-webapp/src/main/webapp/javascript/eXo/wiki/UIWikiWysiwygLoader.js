@@ -187,6 +187,10 @@ if (!eXo.wiki.Wysiwyg) {
      */
     hookGwtOnLoad: function() {
         var iframe = document.getElementById('xwe');
+        if (!iframe) {
+          return;
+        }
+        
         var gwtOnLoad = iframe.contentWindow.gwtOnLoad;
         iframe.contentWindow.gwtOnLoad = function(errFn, modName, modBase) {
             gwtOnLoad(function() {

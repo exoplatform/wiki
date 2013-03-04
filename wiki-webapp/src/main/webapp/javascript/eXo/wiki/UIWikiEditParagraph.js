@@ -23,6 +23,9 @@ function UIWikiEditParagraph() {
 UIWikiEditParagraph.prototype.init = function(pageContentAreaId, editActionId) {
   var pageContentArea = document.getElementById(pageContentAreaId);
   var editAction = document.getElementById(editActionId);
+  if (!pageContentArea) {
+    return;
+  }
   var sections =  $(pageContentArea).find('span.EditSection');
   for ( var index = 0; index < sections.length; index++) {
     var editLink =  $(sections[index]).find('a')[0];

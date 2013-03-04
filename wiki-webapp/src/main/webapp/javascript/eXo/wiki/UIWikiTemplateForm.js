@@ -24,6 +24,9 @@ function UIWikiTemplateForm() {
 UIWikiTemplateForm.prototype.init = function(componentid, inputId, defaultText) {
   var me = eXo.wiki.UIWikiTemplateForm;
   me.component = document.getElementById(componentid);
+  if (!me.component) {
+    return;
+  }
   var input = $(me.component).find('#' + inputId)[0];
   $(input).attr('autocomplete', 'off');
   $(input).keyup(function(evt) {

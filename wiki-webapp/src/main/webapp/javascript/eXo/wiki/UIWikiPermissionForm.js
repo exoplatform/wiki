@@ -41,6 +41,9 @@ function UIWikiPermissionForm() {
 
 UIWikiPermissionForm.prototype.init = function(formId) {
   this.form = document.getElementById(formId);
+  if (!this.form) {
+    return;
+  }
   this.form.onclick = this.delegateFormClick;
   this.addChangeHandlers(this.form);
 };

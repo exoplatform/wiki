@@ -23,10 +23,19 @@ if (!eXo.wiki)
 function UIFieldEditableForm() {
 };
 
-UIFieldEditableForm.prototype.init = function(componentId, parentId, titleId,
-    inputId) {
+UIFieldEditableForm.prototype.init = function(componentId, parentId, titleId, inputId) {
+  $(window).ready(function(){
+    var me = eXo.wiki.UIFieldEditableForm;
+    me.initFieldEditable(componentId, parentId, titleId, inputId);
+  });
+}
+
+UIFieldEditableForm.prototype.initFieldEditable = function(componentId, parentId, titleId, inputId) {
   var me = eXo.wiki.UIFieldEditableForm;
   me.parentComponent = document.getElementById(parentId);
+  if (!me.parentComponent) {
+    return;
+  }
   me.component = $(me.parentComponent).find('#'+ componentId)[0];
   var titleControl = $(me.parentComponent).find('#'+ titleId)[0];
   if (titleControl) {

@@ -22,6 +22,9 @@ function UIWikiPageTitleControlArea() {
 
 UIWikiPageTitleControlArea.prototype.init = function(componentId, inputId, untitledLabel, isAddMode) {
   var component = document.getElementById(componentId);
+  if (!component) {
+    return;
+  }
   var input = $(component).find('#' + inputId)[0];
   if (input) {
     eXo.wiki.UIWikiPortlet.decorateInput(input, untitledLabel, isAddMode);

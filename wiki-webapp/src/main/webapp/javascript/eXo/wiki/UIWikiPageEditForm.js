@@ -25,6 +25,10 @@ function UIWikiPageEditForm() {
 
 UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoSave, pageRevision, isDraftForNewPage, autoSaveSequeneTime, untitledLabel) {
   var pageEditForm = document.getElementById(pageEditFormId);
+  if (!pageEditForm) {
+    return;
+  }
+  
   var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
   var titleInput = $(titleContainer).find('input')[0];
 

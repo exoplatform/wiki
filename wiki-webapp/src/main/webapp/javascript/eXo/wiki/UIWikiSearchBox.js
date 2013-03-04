@@ -28,9 +28,12 @@ function UIWikiSearchBox() {
 };
 
 UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLabel, wikiNodeURI) {
-
   this.wikiNodeURI = wikiNodeURI;
   var uiComponent = document.getElementById(componentId);
+  if (!uiComponent) {
+    return;
+  }
+  
   var restInput = uiComponent["restURL"];
   this.input = uiComponent[searchInputName];
   $(this.input).attr('autocomplete', 'off');

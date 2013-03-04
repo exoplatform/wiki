@@ -20,7 +20,6 @@
 if (!eXo.wiki) {
   eXo.wiki = {};
 };
- 
 
 function WikiLayout() {
   this.posX = 0;
@@ -36,7 +35,65 @@ function WikiLayout() {
   this.leftMinWidth  = 235;
   this.rightMinWidth = 250;
   this.userName      = "";
-   
+};
+
+WikiLayout.prototype.init = function(prtId, _userName) {
+  $(window).ready(function(){
+    var me = eXo.wiki.WikiLayout;
+    me.initWikiLayout(prtId, _userName);
+  });
+}
+
+WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
+  this.userName = _userName;
+  try {
+    if(String(typeof this.myBody) == "undefined" || !this.myBody) {
+      this.myBody = $("body")[0];
+      this.bodyClass = $(this.myBody).attr('class');
+      this.myHtml = $("html")[0];
+    }
+  } catch(e){};
+
+  try{
+    if(prtId.length > 0) this.portletId = prtId;
+    var isIE = ($.browser.msie != undefined)
+    var idPortal = (isIE) ? 'UIWorkingWorkspace' : 'UIPortalApplication';
+    this.portal = document.getElementById(idPortal);
+    var portlet = document.getElementById(this.portletId);
+    this.wikiLayout = $(portlet).find('div.uiWikiMiddleArea')[0];
+    this.resizeBar = $(this.wikiLayout).find('div.resizeBar')[0];
+    this.colapseLeftContainerButton = $(this.wikiLayout).find('div.resizeButton')[0];
+    var showLeftContainer = eXo.wiki.WikiLayout.getCookie(this.userName + "_ShowLeftContainer");
+	if (showLeftContainer) {
+      showLeftContainer = showLeftContainer=='true'?'none':'block';
+	} else {
+      showLeftContainer = 'none';
+	}
+    this.verticalLine = $(this.wikiLayout).find('div.VerticalLine')[0];
+    if (this.resizeBar) {
+      this.leftArea = $(this.resizeBar).prev('div')[0];
+      this.rightArea = $(this.resizeBar).next('div')[0];
+
+      var leftWidth = eXo.wiki.WikiLayout.getCookie(this.userName + "_leftWidth");
+      if (this.leftArea && this.rightArea && (leftWidth != null) && (leftWidth != "") && (leftWidth * 1 > 0)) {
+        $(this.leftArea).width(leftWidth + 'px');
+      }	  
+      $(this.resizeBar).mousedown(eXo.wiki.WikiLayout.exeRowSplit);
+      $(this.colapseLeftContainerButton).click(eXo.wiki.WikiLayout.showHideSideBar);
+    }
+
+	if(this.wikiLayout) {
+      this.processWithHeight();
+      eXo.core.Browser.addOnResizeCallback("WikiLayout", eXo.wiki.WikiLayout.processWithHeight);
+    }
+
+    if (this.leftArea) {
+      this.leftArea.style.display = showLeftContainer;
+	  this.showHideSideBar(null, true);
+    }
+  } catch(e) {
+   return;
+  };
 };
 
 $(window).resize(function() {
@@ -70,58 +127,6 @@ WikiLayout.prototype.setCookie = function (c_name, value, exdays) {
   var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
   document.cookie = c_name + "=" + c_value;
 }
-
-WikiLayout.prototype.init = function(prtId, _userName) {
-	this.userName = _userName;
-  try {
-    if(String(typeof this.myBody) == "undefined" || !this.myBody) {
-      this.myBody = $("body")[0];
-      this.bodyClass = $(this.myBody).attr('class');
-      this.myHtml = $("html")[0];
-    }
-  } catch(e){};
-
-  try{
-    if(prtId.length > 0) this.portletId = prtId;
-    var isIE = ($.browser.msie != undefined)
-    var idPortal = (isIE) ? 'UIWorkingWorkspace' : 'UIPortalApplication';
-    this.portal = document.getElementById(idPortal);
-    var portlet = document.getElementById(this.portletId);
-    this.wikiLayout = $(portlet).find('div.uiWikiMiddleArea')[0];
-    this.resizeBar = $(this.wikiLayout).find('div.resizeBar')[0];
-    this.colapseLeftContainerButton = $(this.wikiLayout).find('div.resizeButton')[0];
-    var showLeftContainer = eXo.wiki.WikiLayout.getCookie(this.userName + "_ShowLeftContainer");
-	  if (showLeftContainer) {
-      showLeftContainer = showLeftContainer=='true'?'none':'block';
-	  } else {
-      showLeftContainer = 'none';
-	  }
-    this.verticalLine = $(this.wikiLayout).find('div.VerticalLine')[0];
-    if (this.resizeBar) {
-      this.leftArea = $(this.resizeBar).prev('div')[0];
-      this.rightArea = $(this.resizeBar).next('div')[0];
-
-      var leftWidth = eXo.wiki.WikiLayout.getCookie(this.userName + "_leftWidth");
-      if (this.leftArea && this.rightArea && (leftWidth != null) && (leftWidth != "") && (leftWidth * 1 > 0)) {
-        $(this.leftArea).width(leftWidth + 'px');
-      }	  
-      $(this.resizeBar).mousedown(eXo.wiki.WikiLayout.exeRowSplit);
-      $(this.colapseLeftContainerButton).click(eXo.wiki.WikiLayout.showHideSideBar);
-    }
-
-	  if(this.wikiLayout) {
-      this.processWithHeight();
-      eXo.core.Browser.addOnResizeCallback("WikiLayout", eXo.wiki.WikiLayout.processWithHeight);
-    }
-
-    if (this.leftArea) {
-      this.leftArea.style.display = showLeftContainer;
-	    this.showHideSideBar(null, true);
-    }
-  } catch(e) {
-   return;
-  };
-};
 
 WikiLayout.prototype.setClassBody = function(clazz) {
   if(this.myBody && this.myHtml) {

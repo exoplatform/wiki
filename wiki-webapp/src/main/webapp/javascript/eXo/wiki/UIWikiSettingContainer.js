@@ -30,8 +30,10 @@ window.onresize = function() {
 
 UIWikiSettingContainer.prototype.init = function(id) {
   var uicomponent = document.getElementById(id);
+  if (!uicomponent) {
+    return;
+  }
   this.spliter = $(uicomponent).find('div.Spliter')[0];
-  
   eXo.wiki.UIWikiSettingContainer.setHeightLayOut();
 };
 

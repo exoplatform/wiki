@@ -21,8 +21,11 @@ function UIWikiAdvanceSearchForm(){
 };
 
 UIWikiAdvanceSearchForm.prototype.init = function(inputId) {
-
   var input = document.getElementById(inputId);
+  if (!input) {
+    return;
+  }
+  
   $(input).keyup(function(evt) {
     evt = window.event || evt;
     eXo.wiki.UIWikiAdvanceSearchForm.pressHandler(evt, this);

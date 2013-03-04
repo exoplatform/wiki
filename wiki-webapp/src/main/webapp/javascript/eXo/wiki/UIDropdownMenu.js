@@ -22,10 +22,12 @@ function UIDropdownMenu(){
 
 UIDropdownMenu.prototype.init = function(componentid){
   var component = document.getElementById(String(componentid));
-  $(component).mouseover(eXo.wiki.UIDropdownMenu.hover);
-  $(component).mouseout(eXo.wiki.UIDropdownMenu.hover);
-  $(component).focus(eXo.wiki.UIDropdownMenu.hover);
-  $(component).blur(eXo.wiki.UIDropdownMenu.hover);
+  if (component) {
+    $(component).mouseover(eXo.wiki.UIDropdownMenu.hover);
+    $(component).mouseout(eXo.wiki.UIDropdownMenu.hover);
+    $(component).focus(eXo.wiki.UIDropdownMenu.hover);
+    $(component).blur(eXo.wiki.UIDropdownMenu.hover);
+  }
 };
 
 UIDropdownMenu.prototype.hover = function(event){
