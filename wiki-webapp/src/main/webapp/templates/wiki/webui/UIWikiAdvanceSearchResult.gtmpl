@@ -9,6 +9,7 @@ import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
 import org.exoplatform.wiki.webui.UIWikiAdvanceSearchForm;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
+import org.apache.commons.lang.StringEscapeUtils;
 
 
   UIWikiPortlet wikiPortlet = uicomponent.getAncestorOfType(UIWikiPortlet.class);
@@ -24,7 +25,7 @@ import org.exoplatform.wiki.webui.UIWikiPortlet;
 			<div class="resultInfo">
 				<span class="resultNumber"><%=advanceSearchForm.getNumberOfSearchResult()%></span>&nbsp; 
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.ResultsFor");%>&nbsp;
-				<strong><%=uicomponent.getKeyword()%></strong>&nbsp;<span class="split"></span>&nbsp;
+				<strong><%=StringEscapeUtils.escapeHtml(uicomponent.getKeyword())%></strong>&nbsp;<span class="split"></span>&nbsp;
 				<%=_ctx.appRes("UIWikiAdvanceSearchResult.label.Show");%>&nbsp;
 				
 				<!--dropdownlist-->
@@ -130,7 +131,7 @@ import org.exoplatform.wiki.webui.UIWikiPortlet;
 		<div class="uiWikiAdvanceSearchResult" id="$uicomponent.id">
 			<h4 class="titleWithBorder"><%=_ctx.appRes("UIWikiAdvanceSearchResult.label.SearchResult");%></h4> 
 			<div class="resultInfo noResult">
-				<span class="resultNumber">0</span>&nbsp;<%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %>&nbsp;<strong><%=uicomponent.getKeyword()%></strong>
+				<span class="resultNumber">0</span>&nbsp;<%= _ctx.appRes("UIWikiAdvanceSearchResult.msg.there-is-no-search-result"); %>&nbsp;<strong><%=StringEscapeUtils.escapeHtml(uicomponent.getKeyword())%></strong>
 			</div>
 		</div>
 	<%} %>
