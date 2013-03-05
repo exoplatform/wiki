@@ -64,7 +64,7 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
 	    return false;
 	  }
 	  $(subGroup).toggle();
-	  $(element).toggleClass('uiIconExpand','uiIconCollapse');
+	  $(element).toggleClass('expandIcon','collapseIcon');
 	  return true;
 	}
 };
@@ -192,9 +192,9 @@ UITreeExplorer.prototype.buildNode = function(data) {
   // Change Type for CSS
   var nodeType = data.nodeType;
   var nodeTypeCSS = nodeType.toLowerCase();
-  var iconType = (data.expanded ==true)? "uiIconCollapse":"uiIconExpand" ;
-  var lastNodeClass = "";
-  var hoverClass = "node";
+  var iconType = (data.expanded ==true)? "collapseIcon":"expandIcon" ;
+  var lastNodeClass = "node";
+  var hoverClass = "";
   var excerptData = data.excerpt;
   var Re = new RegExp("\\/","g");
   var path = data.path.replace(Re, ".");
@@ -206,28 +206,28 @@ UITreeExplorer.prototype.buildNode = function(data) {
     param += "&current=" + data.extendParam.replace(Re, ".");
   
   if (data.lastNode == true) {
-    lastNodeClass = "lastNode node";
+    lastNodeClass += " lastNode";
   }
   if (data.hasChild == false) {
-    iconType = "uiIconEmpty";
+    iconType = "emptyIcon";
   }
   if (data.selected == true){
-    hoverClass = "selected";
+    hoverClass = "nodeSelected";
   }
   var childNode = "";
   childNode += " <li  class=\"" + lastNodeClass + "\" >";
   childNode += "   <div class=\""+iconType+"\" id=\"" + path + "\" onclick=\"event.cancelBubble=true;  if(eXo.wiki.UITreeExplorer.collapseExpand(this)) return;  eXo.wiki.UITreeExplorer.render('"+ param + "', this)\">";
   if (me.isRenderLink) {
     if (data.retricted == true) {
-      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\"uiIconWikiRestrictedFile treeNodeType node "+ hoverClass +" \">";
+      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ hoverClass +" \">";
     } else {
-      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ nodeTypeCSS +" treeNodeType node "+ hoverClass +" \">";
+      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ nodeTypeCSS +" "+ hoverClass +" \">";
     }
   } else {
     if (data.retricted == true) {
-      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\"uiIconWikiRestrictedFile treeNodeType node "+ hoverClass +" \">";
+      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ hoverClass +" \">";
     } else {
-      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +" treeNodeType node "+ hoverClass +" \">";
+      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +""+ hoverClass +" \">";
     }    
   }  
   
@@ -236,16 +236,16 @@ UITreeExplorer.prototype.buildNode = function(data) {
       var index = path.lastIndexOf("%2F"); // Find the index of character "/"
       var pageId = path.substring(index + 3);
       var link = me.baseLink + pageId;
-      childNode += "        <a href=\"" + link + "\">" + nodeName + "</a>";
+      childNode += "        <a href=\"" + link + "\"><i class=\"uiIconFile\"></i> " + nodeName + "</a>";
     } else {
-      childNode += "        <a>" + nodeName + "</a>";
+      childNode += "        <a><i class=\"uiIconFile\"></i> " + nodeName + "</a>";
     }
   } else {
     if (data.retricted == true) {
       nodeName = me.retrictedLabel;
-      childNode += "         <span style=\"cursor:auto\" title=\"" + me.restrictedTitle + "\"><em>" + nodeName + "</em></span>";
+      childNode += "         <span style=\"cursor:auto\" title=\"" + me.restrictedTitle + "\"><i class=\"uiIconWikiRestrictedFile uiIconFile\"></i> <em>" + nodeName + "</em></span>";
     } else if (data.selectable == false) {
-      childNode += "         <span style=\"cursor:auto\" title=\"" + nodeName + "\">" + nodeName + "</span>";
+      childNode += "         <span style=\"cursor:auto\" title=\"" + nodeName + "\"><i class=\"uiIconFile\"></i> " + nodeName + "</span>";
     }
   }
   
