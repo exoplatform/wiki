@@ -217,8 +217,7 @@ public class Utils {
     StringBuilder domainUrl = new StringBuilder();
     domainUrl.append(portalRequestContext.getRequest().getScheme());
     domainUrl.append("://");
-    
-    domainUrl.append(portalRequestContext.getRequest().getLocalName());
+    domainUrl.append(portalRequestContext.getRequest().getServerName());
     int port = portalRequestContext.getRequest().getLocalPort();
     if (port != 80) {
       domainUrl.append(":");
