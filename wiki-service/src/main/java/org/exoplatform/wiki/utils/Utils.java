@@ -94,6 +94,18 @@ public class Utils {
   
   public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
   
+  private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:\"-";
+  
+  public static String escapeIllegalCharacterInQuery(String query) {
+    String ret = query;
+    if (ret != null) {
+      for (char c : ILLEGAL_SEARCH_CHARACTERS.toCharArray()) {
+        ret = ret.replace(c + "", "\\" + c);
+      }
+    }
+    return ret;
+  }
+  
   public static String getPortalName() {
     ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
     PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);

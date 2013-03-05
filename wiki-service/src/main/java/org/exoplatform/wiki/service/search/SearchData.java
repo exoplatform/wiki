@@ -74,9 +74,9 @@ public class SearchData {
                     String wikiType,
                     String wikiOwner,
                     String pageId) {
-    this.text = text;
-    this.title = title;
-    this.content = content;
+    this.text = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(text);
+    this.title = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(title);
+    this.content = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(content);
     this.wikiType = wikiType;
     this.wikiOwner = Utils.validateWikiOwner(wikiType, wikiOwner);
     this.pageId = pageId;
@@ -102,7 +102,7 @@ public class SearchData {
   }
 
   public void setText(String text) {
-    this.text = text;
+    this.text = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(text);
   }
 
   public String getTitle() {
@@ -110,7 +110,7 @@ public class SearchData {
   }
 
   public void setTitle(String title) {
-    this.title = title;
+    this.title = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(title);
   }
 
   public String getContent() {
@@ -118,7 +118,7 @@ public class SearchData {
   }
 
   public void setContent(String content) {
-    this.content = content;
+    this.content = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(content);
   }
 
   public String getWikiType() {
