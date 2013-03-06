@@ -1325,7 +1325,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     return (UserWiki) getWiki(PortalConfig.USER_TYPE, username, model);
   }
   
-  
   @SuppressWarnings({"rawtypes", "unchecked"})
   public List<SpaceBean> searchSpaces(String keyword) throws Exception {
     List<SpaceBean> spaceBeans = new ArrayList<SpaceBean>();
@@ -1350,7 +1349,11 @@ public class WikiServiceImpl implements WikiService, Startable {
       for (Object space : spaces.load(0, spaces.getSize())) {
         String groupId = String.valueOf(spaceClass.getMethod("getGroupId").invoke(space));
         String spaceName = String.valueOf(spaceClass.getMethod("getDisplayName").invoke(space));
-        spaceBeans.add(new SpaceBean(groupId, spaceName, PortalConfig.GROUP_TYPE));
+        String avatarUrl = String.valueOf(spaceClass.getMethod("getAvatarUrl").invoke(space));
+        if (StringUtils.isEmpty(avatarUrl) || "null".equalsIgnoreCase(avatarUrl)) {
+          avatarUrl = getDefaultSpaceAvatarUrl();
+        }
+        spaceBeans.add(new SpaceBean(groupId, spaceName, PortalConfig.GROUP_TYPE, avatarUrl));
       }
     } catch (ClassNotFoundException e) {
       Collection<Wiki> wikis = Utils.getWikisByType(WikiType.GROUP);
@@ -1360,11 +1363,21 @@ public class WikiServiceImpl implements WikiService, Startable {
       
       for (Wiki wiki : wikis) {
         if (wiki.getName().contains(keyword)) {
-          spaceBeans.add(new SpaceBean(wiki.getOwner(), wiki.getName(), PortalConfig.GROUP_TYPE));
+          spaceBeans.add(new SpaceBean(wiki.getOwner(), wiki.getName(), PortalConfig.GROUP_TYPE, ""));
         }
       }
     }
     return spaceBeans;
+  }
+  
+  @SuppressWarnings("rawtypes")
+  private String getDefaultSpaceAvatarUrl() {
+    try {
+      Class linkProviderClass = Class.forName("org.exoplatform.social.core.service.LinkProvider");
+      return linkProviderClass.getDeclaredField("SPACE_DEFAULT_AVATAR_URL").get(null).toString();
+    } catch (Exception e) {
+      return "";
+    }
   }
 
   @Override

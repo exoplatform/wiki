@@ -26,11 +26,13 @@ public class SpaceBean {
   private String spaceId;
   private String name;
   private String type;
+  private String avatarUrl;
   
-  public SpaceBean(String spaceId, String name, String type) {
+  public SpaceBean(String spaceId, String name, String type, String avatarUrl) {
     this.spaceId = spaceId;
     this.name = name;
     this.type = type;
+    this.avatarUrl = avatarUrl;
   }
   
   public String getType() {
@@ -43,5 +45,9 @@ public class SpaceBean {
 
   public String getName() {
     return name;
+  }
+  
+  public String getAvatarUrl() {
+    return avatarUrl;
   }
 }
