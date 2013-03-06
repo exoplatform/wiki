@@ -383,30 +383,6 @@
   </module>
   
   <module>
-    <name>UIWikiSettingContainer</name>
-    <load-group>wikiView</load-group>
-    <script>
-      <path>/javascript/eXo/wiki/UIWikiSettingContainer.js</path>
-    </script>
-        
-    <depends>
-        <module>base</module>
-    </depends>
-    <depends>
-        <module>uiForm</module>
-    </depends>
-    <depends>
-        <module>webui-ext</module>
-    </depends> 
-    <depends>
-      <module>jquery</module>
-    </depends>
-    <depends>
-      <module>bootstrap_wiki</module>
-    </depends>   
-  </module>
-  
-  <module>
     <name>UIWikiTemplateForm</name>
     <load-group>wikiView</load-group>
     <script>

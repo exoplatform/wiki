@@ -4,51 +4,50 @@
   def rcontext = _ctx.getRequestContext();
   JavascriptManager jsManager = rcontext.getJavascriptManager();
   def requireJs = jsManager.getRequireJS();
-  requireJs.require("SHARED/UIWikiSettingContainer", "UIWikiSettingContainer");
-  requireJs.addScripts("UIWikiSettingContainer.init('" + uicomponent.id + "') ;");
+  requireJs.require("SHARED/WikiLayout", "WikiLayout");
+  requireJs.addScripts("WikiLayout.processWithHeight();");
   List<String> items  = uicomponent.getItems();
 %>
 
 <div class="uiWikiSettingContainer" id="$uicomponent.id">
-  	<div class="uiTabNormal uiTabInPage">
-		<ul class="nav nav-tabs" id="myTab">
-                <%
-     			for (int i=0;i< items.size();i++) {
-       				String selectedClass ="";
-       				if (items.get(i).equals(uicomponent.getActiveItem())){
-         				selectedClass = "class=\"active\"";
-       				}
-              String label = _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i));
-              String tabId = items.get(i) + "-tab";
-              String actionLink = "" + uicomponent.event("ActiveItem",items.get(i)) + "";
-	 		%>
-	       			<li $selectedClass onclick="$actionLink">
-								<a data-toggle="tab" href="#$tabId"><%= label %></a>
-		        	</li>
-			<%
-			}	
-    		%>		
-		</ul>
+  <div class="uiTabNormal uiTabInPage">
+    <ul class="nav nav-tabs" id="myTab">
+      <%
+        for (int i=0;i< items.size();i++) {
+       	  String selectedClass ="";
+       	  if (items.get(i).equals(uicomponent.getActiveItem())){
+            selectedClass = "class=\"active\"";
+       	  }
+          String label = _ctx.appRes("UIWikiSettingContainer.label."+ items.get(i));
+          String tabId = items.get(i) + "-tab";
+          String actionLink = "" + uicomponent.event("ActiveItem",items.get(i)) + "";
+	  %>
+	      <li $selectedClass onclick="$actionLink">
+		    <a data-toggle="tab" href="#$tabId"><%= label %></a>
+		  </li>
+	  <%
+		}	
+      %>		
+	</ul>
 
-                
-		<div class="tab-content" id="myTabContent">			
- 		<%
-			for (int i=0;i< items.size();i++) {
-				String link = uicomponent.event( uicomponent.ACTION, items.get(i)) ;                               
-       				String selectedClass ="";
-       				if (items.get(i).equals(uicomponent.getActiveItem())){
-         				selectedClass = " in active";
-       				}
-          		String tabId = items.get(i) + "-tab"
-			%>
-				<div id="$tabId" class="tab-pane fade$selectedClass"><div class="Content"> 
-					<%
-					  	uicomponent.renderChild(items.get(i));
-					%>
-				</div></div>
-			<%
-			}
-		%>             			
-		</div>					
-	</div>
+    <div class="tab-content" id="myTabContent">			
+    <%
+      for (int i=0;i< items.size();i++) {
+	    String link = uicomponent.event( uicomponent.ACTION, items.get(i)) ;                               
+        String selectedClass ="";
+        if (items.get(i).equals(uicomponent.getActiveItem())){
+          selectedClass = " in active";
+        }
+        String tabId = items.get(i) + "-tab"
+	%>
+		  <div id="$tabId" class="tab-pane fade$selectedClass">
+		    <div class="Content"> 
+			  <% uicomponent.renderChild(items.get(i)); %>
+			</div>
+		  </div>
+	<%
+	  }
+    %>             			
+	</div>					
+  </div>
 </div>

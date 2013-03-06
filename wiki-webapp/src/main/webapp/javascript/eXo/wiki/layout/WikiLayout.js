@@ -247,6 +247,18 @@ WikiLayout.prototype.setHeightRightContent = function() {
       eXo.wiki.WikiLayout.checkToShowGradientScroll();
     });
   }
+  
+  var settingContainer = $(WikiLayout.wikiLayout).find('div.UIWikiPageSettingContainer:first')[0];
+  if (settingContainer) {
+    var hdef = document.documentElement.clientHeight - WikiLayout.wikiLayout.offsetTop;
+    hdef -= 20; //Padding-bottom of wikiLayout
+    
+    var tabs = $(settingContainer).find("ul.nav-tabs:first")[0];
+    var contents = $(settingContainer).find("div.tab-content:first")[0];
+    if (contents && tabs) {
+      $(contents).height(hdef - tabs.offsetHeight + "px");
+    }
+  }
 };
 
 WikiLayout.prototype.checkToShowGradientScroll = function() {
