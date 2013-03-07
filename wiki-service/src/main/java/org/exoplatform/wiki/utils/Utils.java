@@ -20,6 +20,7 @@ import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -68,6 +69,7 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
+import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.xwiki.rendering.syntax.Syntax;
 
@@ -738,13 +740,10 @@ public class Utils {
   }
   
   public static long countSearchResult(WikiSearchData data) throws Exception {
-    MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MOWService.class);
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getModel().getWikiStore();
-
-    String statement = data.getStatementForSearchingTitle();
-    QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) wStore.getSession()).getDomainSession().getSessionWrapper()
-        .createQuery(statement);
-    QueryResult result = q.execute();
-    return result.getNodes().getSize();
+    data.setOffset(0);
+    data.setLimit(Integer.MAX_VALUE);
+    WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+    PageList<SearchResult> results = wikiservice.search(data);
+    return results.getAll().size();
   }
 }
