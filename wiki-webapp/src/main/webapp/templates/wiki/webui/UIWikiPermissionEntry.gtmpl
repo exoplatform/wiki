@@ -11,8 +11,8 @@
   def deleteLink = uiPermissionForm.event(uiPermissionForm.DELETE_ENTRY, uicomponent.id);
 %>
 <td>
-  <div rel='tooltip' data-placement='bottom' title="$fullName">$fullName</div>
-  <div rel='tooltip' data-placement='bottom' title="$id" class="Id">($id)</div>
+  <div>$fullName</div>
+  <div class="Id">($id)</div>
 </td>
 <%
   for(permission in permissions){

@@ -67,8 +67,8 @@ public class UIFormInputWithActions extends UIFormInputSet {
     }
     UIForm uiForm = getAncestorOfType(UIForm.class);
     Writer w = context.getWriter();
-    w.write("<div id=\"" + getId() + "\" class=\"uiFormInputSet  " + getId() + "\">");
-    w.write("<table class=\"uiFormGrid\">");
+    w.write("<div id='" + getId() + "' class='uiFormInputSet  " + getId() + "'>");
+    w.write("<table class='uiFormGrid'>");
     ResourceBundle res = context.getApplicationResourceBundle();
 
     for (UIComponent inputEntry : getChildren()) {
@@ -86,11 +86,11 @@ public class UIFormInputWithActions extends UIFormInputSet {
           LOG.error("\n " + uiForm.getId() + ".label." + inputEntry.getId() + " not found value");
         }
         w.write("<tr>");        
-        w.write("<td class=\"fieldInput\">");
+        w.write("<td class='fieldInput'>");
         renderUIComponent(inputEntry);
         List<ActionData> actions = actionField.get(inputEntry.getName());
         if (actions != null) {
-        w.write("<span class=\"groupPermissionBox\">");    	
+        w.write("<span class='groupPermissionBox'>");    	
           for (ActionData action : actions) {
             String actionLabel;
             try {
@@ -107,14 +107,14 @@ public class UIFormInputWithActions extends UIFormInputSet {
             }
             
             if (action.getActionType() == ActionData.TYPE_ICON) {
-              w.write("<a class=\"actionIcon\" title=\"" + actionLabel + "\" onclick=\"" + actionLink + "\" data-placement=\"bottom\" rel=\"tooltip\" >" 
-                + "<i class=\"" + action.getCssIconClass() + "\"></i></a>");
+              w.write("<a class='actionIcon' title='" + actionLabel + "' onclick=\"" + actionLink + "\" data-placement='bottom' rel='tooltip' >" 
+                + "<i class='" + action.getCssIconClass() + "'></i></a>");
               if (action.isShowLabel)
                 w.write(actionLabel);
             } else if (action.getActionType() == ActionData.TYPE_LINK) {
-              w.write("<a title=\"" + actionLabel + "\" href=\"" + actionLink + "\">" + actionLabel + "</a>");
+              w.write("<a href=\"" + actionLink + "\">" + actionLabel + "</a>");
             } else if (action.getActionType() == ActionData.TYPE_BUTTON) {
-              w.write("&nbsp;&nbsp;<button type=\"button\" class=\"btn\" title=\"" + actionLabel + "\" onclick=\"" + actionLink + "\">" + actionLabel + "</button>");
+              w.write("&nbsp;&nbsp;<button type='button' class='btn' onclick=\"" + actionLink + "\">" + actionLabel + "</button>");
             }
             w.write("&nbsp;");
             if (action.isBreakLine())

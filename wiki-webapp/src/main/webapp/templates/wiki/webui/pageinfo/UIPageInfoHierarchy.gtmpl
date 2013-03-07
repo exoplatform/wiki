@@ -14,7 +14,7 @@
 	  <ul class="content">
 	    <li class="nodeLabel">
 	      <i class="uiIconArrowRight"></i>
-	      <a href="$parentLink" rel="tooltip" data-placement="bottom" title="$parentTitle">$parentTitle</a>
+	      <a href="$parentLink">$parentTitle</a>
 	    </li>
 	  </ul>
 	<% } %>

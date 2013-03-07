@@ -40,7 +40,7 @@
 	    %>
 	      <tr>
 	        <td>
-	          <a href="#ViewRevision_<%=versionNumber%>"  rel="tooltip" data-placement="bottom" title="$versionLabel" >$versionLabel</a>
+	          <a href="#ViewRevision_<%=versionNumber%>" >$versionLabel</a>
 	          <a style="display: none;" id="$viewLinkId" onclick="<%=uicomponent.event("ViewRevision", versionNumber)%>">&nbsp;</a>
 	        </td>
 	        <td  class="Editor">$author</td>
@@ -51,7 +51,7 @@
 	     <td colspan="3" style="padding: 0px;">
            <% if (currentVersions.size() > 0) { %>
 		     <div class="actionCenter">
-			   <button type="button" class="btn" onclick="<%=uicomponent.event("ShowHistory")%>" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>
+			   <button type="button" class="btn" onclick="<%=uicomponent.event("ShowHistory")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>
 			 </div>
 		   <% } %>
 		 </td>

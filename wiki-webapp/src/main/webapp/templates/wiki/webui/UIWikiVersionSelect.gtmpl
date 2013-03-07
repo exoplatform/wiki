@@ -25,33 +25,33 @@
   <div class="DecorationVersion">
         <% if(uicomponent.isHasNextVersion()) { %>
           <span class="Label"><%= _ctx.appRes("UIWikiVersionSelect.label.viewing-old-version-info"); %></span>
-		  <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiVersionSelect.label.CurrentVersion"); %>" class="Title"><%= _ctx.appRes("UIWikiVersionSelect.label.CurrentVersion"); %></a>
+		  <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');" class="Title"><%= _ctx.appRes("UIWikiVersionSelect.label.CurrentVersion"); %></a>
         <% } else { %>
           <span class="Label"><%= _ctx.appRes("UIWikiVersionSelect.label.viewing-current-version-info"); %></span>
         <% } %>
   
 		<div class="ActionLink">
 		  <% if(uicomponent.isHasNextVersion()) { %>
-		    <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.COMPARE_ACTION');"  rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiVersionSelect.label.CompareWithCurrent"); %>"><%= _ctx.appRes("UIWikiVersionSelect.label.CompareWithCurrent"); %></a>&nbsp;|&nbsp;
+		    <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.COMPARE_ACTION');" ><%= _ctx.appRes("UIWikiVersionSelect.label.CompareWithCurrent"); %></a>&nbsp;|&nbsp;
 			<% if (uicomponent.renderRestoreRevisionActions()) { %>
 			  &nbsp;|&nbsp;
 			<% } %>
 		  <% } %>
 		  <a id="$compareLinkId" onclick="$compareLink" style="display:none"></a>
-		  <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.SHOW_HISTORY');"  rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiVersionSelect.label.ViewPageHistory"); %>"><%= _ctx.appRes("UIWikiVersionSelect.label.ViewPageHistory"); %></a>
+		  <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.SHOW_HISTORY');" ><%= _ctx.appRes("UIWikiVersionSelect.label.ViewPageHistory"); %></a>
 		  <a id="$viewHistoryLinkId" onclick="$viewHistoryLink" style="display:none"></a>
 		</div>
 	</div>
 	<div class="Breadcum">
 	  <% if(previousVersionsLink != null) { %>
-        <a class="BCBT" href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.VIEW_REVISION/$prevVersionNumber');"  rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiVersionSelect.label.Previous"); %>"><%= _ctx.appRes("UIWikiVersionSelect.label.Previous"); %></a>
+        <a class="BCBT" href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.VIEW_REVISION/$prevVersionNumber');" ><%= _ctx.appRes("UIWikiVersionSelect.label.Previous"); %></a>
         <a  id="$prevVersionLinkId" onclick="$previousVersionsLink"></a>
       <% } %>
       
 	  <span class="Label"><%= "&nbsp;&nbsp;" +  currentVersion + "&nbsp;&nbsp;" %></span> 
 	  
 	  <% if(uicomponent.isHasNextVersion()) { %>
-	    <a class="BCBT" href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.VIEW_REVISION/$nextVersionNumber');"  rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiVersionSelect.label.Next"); %>"><%= _ctx.appRes("UIWikiVersionSelect.label.Next"); %></a>
+	    <a class="BCBT" href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.VIEW_REVISION/$nextVersionNumber');" ><%= _ctx.appRes("UIWikiVersionSelect.label.Next"); %></a>
 	    <a id="$nextVersionNumberLinkId" onclick="$nextVersionsLink"></a>
 	  <% } %>
 	</div>
