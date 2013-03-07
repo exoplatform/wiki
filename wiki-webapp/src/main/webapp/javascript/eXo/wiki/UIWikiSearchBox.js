@@ -196,44 +196,35 @@ UIWikiSearchBox.prototype.renderMenu = function(data) {
   var me = eXo.wiki.UIWikiSearchBox;
   var searchBox = $(me.input).closest(".uiWikiSearchBox")[0];
   me.searchPopup = $(searchBox).find("ul.dropdown-menu")[0];
-  $(me.searchPopup).show();
-  $(me.searchPopup).mouseup(function(evt) {
-    $(me.searchPopup).hide();
-    evt.cancelBubble = true;
-    if (evt.stopPropagation())
-      evt.stopPropagation();
-  })
-  $(me.searchPopup).html('');
-  var textNode = document.createTextNode('');
-  $(me.searchPopup).append(textNode);
-
-  var searchItemNode = $('<li/>');
-  var linkNode = $('<a/>', {
-    'class': '',
-    'href' : 'javascript:eXo.wiki.UIWikiSearchBox.doAdvanceSearch();',
-    'text' : eXo.wiki.UIWikiSearchBox.searchMsg + " \'" + me.input.value + "\'",
-    'title': eXo.wiki.UIWikiSearchBox.searchMsg + " \'" + me.input.value + "\'"
-   });
-   
-  $(searchItemNode).append(linkNode);
-  $(searchItemNode).insertBefore(textNode);
-  me.shortenWord(linkNode[0], me.input);
-
   var resultLength = data.jsonList.length;
+  
+  if (resultLength > 0) {
+    $(me.searchPopup).show();
+    $(me.searchPopup).mouseup(function(evt) {
+      $(me.searchPopup).hide();
+      evt.cancelBubble = true;
+      if (evt.stopPropagation())
+        evt.stopPropagation();
+    })
+    $(me.searchPopup).html('');
+    var textNode = document.createTextNode('');
+    $(me.searchPopup).append(textNode);
+  }
+
   for ( var i = 0; i < resultLength; i++) {
     var itemNode = me.buildChild(data.jsonList[i]);
-    $(itemNode).insertBefore(searchItemNode);
+    $(itemNode).insertBefore(textNode);
     // Check if title is outside of the container
     var link = $(itemNode).find(':first')[0];
     var keyword = me.input.value.trim();    
     var origin =  $(link).html();    
     var shorten =  me.shortenWord(link, me.input);
-    if (origin!= shorten && keyword.length >= shorten.length-3)
+    if (origin!= shorten && keyword.length >= shorten.length-3) {
       $(link).html(me.doHighLight(shorten, shorten.substring(0,shorten.length-3)));
-    else
+    } else {
       $(link).html(me.doHighLight(shorten, keyword));
+    }
   }  
-  // $(me.searchPopup.lastChild).remove();
 };
 
 UIWikiSearchBox.prototype.buildChild = function(dataObject) {
