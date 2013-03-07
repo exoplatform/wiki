@@ -8,7 +8,7 @@
   requireJs.require("SHARED/UIUpload", "UIUpload");
   requireJs.addScripts("UIUpload.init('"+uploadId+"',"+isAutoUpload+");");
 %>
-<div id="$uicomponent.id">
+<div id="$uploadId">
   <input type="hidden" id="RemoveInputLabel" value="<%= _ctx.appRes("UIWikiFormUploadInput.label.RemoveInput"); %>"/>
   <div class="uiUploadInput" id="UploadInputContainer<%=uploadId%>">
     <div class="limitMessage" style="display: none;"><%= _ctx.appRes("UIWikiFormUploadInput.msg.limit"); %></div>
@@ -32,13 +32,15 @@
       <div class="removeFile" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIFormUploadInput.label.remove"); %>"></div>
     </div>
     
-    <iframe height="0" width="0" name="<%=uploadId%>uploadIFrame" id="<%=uploadId%>uploadIFrame" style="display: none;">
-      <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
-      <html xmlns='http://www.w3.org/1999/xhtml'>
-        <head></head>
-        <body></body>
-      </html>
-    </iframe>
+    <div id="<%=uploadId;%>UploadIframe" class="UploadIframe" title="<%=_ctx.appRes('UIWikiFormUploadInput.label.UploadLink');%>">
+      <iframe height="38px" width="80%" allowTransparency="true" scrolling="no" frameborder="0" framespacing="0" id="<%=uploadId;%>uploadFrame">
+        <!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Strict//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'>
+        <html xmlns='http://www.w3.org/1999/xhtml'>
+          <head></head>
+          <body></body>
+        </html>
+      </iframe>
+    </div>
     <div class="postUploadAction" style="display: none;" onclick="$postUploadActionLink"/></div>
   </div>
   <%if(uicomponent.isDynamicMode()) {%>

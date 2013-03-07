@@ -299,8 +299,13 @@ UIUpload.prototype.deleteUpload = function(id) {
  * @param {String} id
  */
 UIUpload.prototype.upload = function(clickEle, id) {
-  var container = parent.document.getElementById(id);  
-  var uploadFrame = parent.document.getElementById(id+"uploadFrame");
+  var parentDocument = document;
+  if (document.parentWindow) {
+    parentDocument = document.parentWindow.parent.document;
+  }
+  
+  var container = parentDocument.getElementById(id);  
+  var uploadFrame = parentDocument.getElementById(id+"uploadFrame");
   var form = uploadFrame.contentWindow.document.getElementById(id);
 
   var file  = $(form).find('#WikiUploadFile')[0];
