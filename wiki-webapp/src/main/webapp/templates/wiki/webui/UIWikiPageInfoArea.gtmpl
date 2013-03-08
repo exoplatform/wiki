@@ -43,11 +43,11 @@
     &nbsp;-&nbsp;
     <!-- Restrict or public -->
     <% if (isCurrentPagePublic) { %>
-      <i class='uiIconUnlockMini uiIconLightGray'></i><a rel="tooltip" data-placement="bottom" title="$publicLinkTitle" alt="$publicLinkTitle" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Public")%></a>
+      <a rel="tooltip" data-placement="bottom" title="$publicLinkTitle" alt="$publicLinkTitle" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>"><i class='uiIconUnlockMini uiIconLightGray'></i>&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Public")%></a>
     <% } else { %>
-      <i class='uiIconLockMini'></i><a rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" alt="$restrictLinkTitle" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>">&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
+      <a rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" alt="$restrictLinkTitle" href="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>"><i class='uiIconLockMini'></i>&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
     <% }%>
     &nbsp;-&nbsp;	  
-    <i class='uiIconAttach'></i>&nbsp;<a href="$togglelink"><%= totalAttachmentsLabel %></a>  
+    <a href="$togglelink"><i class='uiIconAttach'></i>&nbsp;<%= totalAttachmentsLabel %></a>  
 	</div>
 </div>
