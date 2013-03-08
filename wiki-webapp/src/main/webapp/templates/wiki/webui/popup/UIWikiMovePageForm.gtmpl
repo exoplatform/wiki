@@ -5,12 +5,12 @@
     uiform.renderChild(uiform.PAGENAME_INFO);
   %>
 
-  <div class="SpaceSwitcher ClearFix">
-    <div class="FL"><%=_ctx.appRes("UIWikiMovePageForm.label.select-the-destination")%></div>
+  <div class="clearfix">
+    <div class="pull-left labelForm"><%=_ctx.appRes("UIWikiMovePageForm.label.select-the-destination")%></div>
     <% uiform.renderChild(uiform.SPACE_SWITCHER);%>
   </div>
 
-  <div class="NotificationArea"><%=uiform.createDuplicatedPageNotification(); %></div>
+  <div class="notificationArea"><%=uiform.createDuplicatedPageNotification(); %></div>
 
   <div class="sideBarContent">
  	  <div class="barContent"><%=_ctx.appRes("UITreeExplorer.label.Destination")%></div>
