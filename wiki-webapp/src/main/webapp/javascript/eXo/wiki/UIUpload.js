@@ -32,13 +32,14 @@ function UIUpload() {
    * @param {String}
    *          uploadId identifier upload
    */
-UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode) {
+UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadText) {
     if (isDynamicMode && uploadId.length > 1) {
       isDynamicMode = true;
     } else {
       isDynamicMode = false;
     }
     
+    eXo.wiki.UIUpload.uploadText = uploadText;
     if (!eXo.wiki.UIUpload.progressURL) {
     	var context = eXo.env.server.context;
         eXo.wiki.UIUpload.progressURL = context + "/upload?action=progress&uploadId=";
@@ -83,14 +84,13 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode) {
   }; 
 
   UIUpload.prototype.createEntryUpload = function(id, isDynamicMode) {
-	var uploadText = "uploadfile";
     var div = document.getElementById('UploadInput' + id);
     var url = document.getElementById('RemoveInputUrl' + id).value;
     var label = document.getElementById('RemoveInputLabel').value;
     var inputHTML = "<input id='file" + id
         + "' class='file fileHidden' name='file' type='file' onkeypress='return false;'";
     inputHTML += "/>";
-    inputHTML += "<label for='file" + id + "' class='btn'>" + uploadText + "</label>";
+    inputHTML += "<label for='file" + id + "' class='btn'>" + eXo.wiki.UIUpload.uploadText + "</label>";
     if (isDynamicMode) {
       inputHTML += "<a class='actionLabel' href='javascript:void(0)' onclick=\""
           + url + "\">" + label + "</a>";

@@ -8,9 +8,9 @@
   addScripts("UIUpload.initUploadEntry(['"+uploadId+"'],"+isDynamicMode+");");
 %>
 <div id="<%=uicomponent.getId()%>">
-  <input type="hidden" id="RemoveInputLabel" value="<%= _ctx.appRes("UIFormUploadInput.label.RemoveInput"); %>"/>
+  <input type="hidden" id="RemoveInputLabel" value="<%= _ctx.appRes("UIWikiFormUploadInput.label.remove-input"); %>"/>
   <div class="uiUploadInput" id="UploadInputContainer<%=uploadId%>">
-    <div class="limitMessage" style="display: none;"><%= _ctx.appRes("UIFormUploadInput.msg.limit"); %></div>
+    <div class="limitMessage" style="display: none;"><%= _ctx.appRes("UIWikiFormUploadInput.msg.limit"); %></div>
     <input type="hidden" id="RemoveInputUrl<%=uploadId%>" value="<%=uicomponent.event('RemoveUploadId', uploadId);%>"/>
     <div id="UploadInput<%=uploadId%>" class="uploadInput"></div>
     <div id="ProgressIframe<%=uploadId%>" class="progressIframe" style="display: none;"></div>      
@@ -21,7 +21,7 @@
         </div>
       </div>
       <div class="deleteFileFrame">
-        <div class="deleteFileLable"><i class="uiIconStop"></i>&nbsp;<%=_ctx.appRes("UIFormUploadInput.label.Cancel")%></div>
+        <div class="deleteFileLable"><i class="uiIconStop"></i>&nbsp;<%=_ctx.appRes("UIWikiFormUploadInput.label.cancel")%></div>
       </div>
     </div>
 
@@ -29,7 +29,7 @@
       <div class="fileName">
         <div class="fileNameLabel"><span></span></div>
       </div>
-      <div class="removeFile" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIFormUploadInput.label.remove"); %>"></div>
+      <div class="removeFile" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiFormUploadInput.label.remove"); %>"></div>
     </div>
     
     <iframe height="0" width="0" name="UploadIFrame<%=uploadId%>" id="UploadIFrame<%=uploadId%>" style="display: none;">
@@ -42,7 +42,7 @@
     
     <div class="postUploadAction" style="display: none;" onclick="$postUploadActionLink"></div>
     <%if(uicomponent.isDynamicMode()) {%>
-      <a class='actionLabel' href="javascript:void(0);" onclick="<%=uicomponent.event('CreateUploadId')%>"><%= _ctx.appRes("UIFormUploadInput.label.AddInput"); %></a>
+      <a class='actionLabel' href="javascript:void(0);" onclick="<%=uicomponent.event('CreateUploadId')%>"><%= _ctx.appRes("UIWikiFormUploadInput.label.add-input"); %></a>
     <%}%>
   </div>
 </div>
