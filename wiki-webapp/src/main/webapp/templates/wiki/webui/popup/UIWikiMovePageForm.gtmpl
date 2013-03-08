@@ -1,24 +1,24 @@
 <div class="uiWikiMovePageForm">
- 
-  <%
-    uiform.begin(); 	 
-    uiform.renderChild(uiform.PAGENAME_INFO);
-  %>
+ <div class="resizable">
+	  <%
+		uiform.begin(); 	 
+		uiform.renderChild(uiform.PAGENAME_INFO);
+	  %>
 
-  <div class="clearfix">
-    <div class="pull-left labelForm"><%=_ctx.appRes("UIWikiMovePageForm.label.select-the-destination")%></div>
-    <% uiform.renderChild(uiform.SPACE_SWITCHER);%>
+	  <div class="clearfix">
+		<div class="pull-left labelForm"><%=_ctx.appRes("UIWikiMovePageForm.label.select-the-destination")%></div>
+		<% uiform.renderChild(uiform.SPACE_SWITCHER);%>
+	  </div>
+
+	  <div class="notificationArea"><%=uiform.createDuplicatedPageNotification(); %></div>
+
+	  <div class="sideBarContent">
+		  <div class="barContent"><%=_ctx.appRes("UITreeExplorer.label.Destination")%></div>
+		  <div class="sideContent"><%uiform.renderChild(uiform.UITREE);%></div>
+	  </div>
+
+	  <% uiform.renderChild(uiform.LOCATION_CONTAINER); %> 
   </div>
-
-  <div class="notificationArea"><%=uiform.createDuplicatedPageNotification(); %></div>
-
-  <div class="sideBarContent">
- 	  <div class="barContent"><%=_ctx.appRes("UITreeExplorer.label.Destination")%></div>
-	  <div class="sideContent"><%uiform.renderChild(uiform.UITREE);%></div>
-  </div>
-
-  <% uiform.renderChild(uiform.LOCATION_CONTAINER); %> 
-
   <div class="uiAction">
 	  <% String closeLink = uiform.event("Close");%>
 	  <button data-placement="bottom" rel="tooltip" class="btn btn-primary" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')" data-original-title="Save">
