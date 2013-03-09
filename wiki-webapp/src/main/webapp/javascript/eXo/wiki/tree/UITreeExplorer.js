@@ -195,10 +195,8 @@ UITreeExplorer.prototype.buildNode = function(data) {
   var nodeType = data.nodeType;
   var nodeTypeCSS = nodeType.toLowerCase();
   var iconClass = "uiIconFile";
-  console.log(nodeType);
   if (nodeType == "WIKIHOME") {
     iconClass = "uiIconWiki";
-    console.log(iconClass);
   }
   
   var iconType = (data.expanded ==true)? "collapseIcon":"expandIcon" ;

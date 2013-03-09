@@ -242,9 +242,14 @@ WikiLayout.prototype.setHeightRightContent = function() {
       }
     }
     
-    WikiLayout.checkToShowGradientScroll();
+    WikiLayout.checkToShowGradientScrollInRightArea();
     $(WikiLayout.rightArea).scroll(function() {
-      eXo.wiki.WikiLayout.checkToShowGradientScroll();
+      eXo.wiki.WikiLayout.checkToShowGradientScrollInRightArea();
+    });
+    
+    WikiLayout.checkToShowGradientScrollInLeftArea();
+    $(WikiLayout.leftArea).scroll(function() {
+      eXo.wiki.WikiLayout.checkToShowGradientScrollInLeftArea();
     });
   }
   
@@ -261,7 +266,51 @@ WikiLayout.prototype.setHeightRightContent = function() {
   }
 };
 
-WikiLayout.prototype.checkToShowGradientScroll = function() {
+WikiLayout.prototype.checkToShowGradientScrollInLeftArea = function() {
+  var WikiLayout = eXo.wiki.WikiLayout;
+  if (!WikiLayout.leftArea) {
+    return;
+  }
+  
+  var scrollTop = $(WikiLayout.leftArea).find('.uiScrollTop')[0];
+  var scrollBottom = $(WikiLayout.leftArea).find('.uiScrollBottom')[0];
+  
+  if (!scrollTop || !scrollBottom) {
+    return;
+  }
+  
+  var uiTreeExplorer = $(WikiLayout.leftArea).find("div.uiTreeExplorer:first")[0];
+  var relatedPage = $(WikiLayout.leftArea).find("div.uiRelatePages:first")[0];
+  var relatedPageHeight = 0;
+  if (relatedPage) {
+    relatedPageHeight = relatedPage.offsetHeight;
+  }
+  
+  if (uiTreeExplorer) {
+    var isShowGradientScroll = uiTreeExplorer.offsetHeight + relatedPageHeight + 37 > WikiLayout.leftArea.offsetHeight;
+    if (isShowGradientScroll) {
+      if (WikiLayout.leftArea.scrollTop > 0) {
+        $(scrollTop).css("display", "block");
+        $(scrollTop).css("width", WikiLayout.leftArea.offsetWidth + "px");
+      } else {
+        $(scrollTop).css("display", "none");
+      }
+    
+      if (WikiLayout.leftArea.scrollTop < uiTreeExplorer.offsetHeight + relatedPageHeight + 37 - WikiLayout.leftArea.offsetHeight) {
+        $(scrollBottom).css("display", "block");
+        $(scrollBottom).css("top", (WikiLayout.leftArea.offsetTop + WikiLayout.leftArea.offsetHeight - scrollBottom.offsetHeight) + "px");
+        $(scrollBottom).css("width", WikiLayout.leftArea.offsetWidth + "px");
+      } else {
+        $(scrollBottom).css("display", "none");
+      }
+    } else {
+      $(scrollTop).css("display", "none");
+      $(scrollBottom).css("display", "none");
+    }
+  }
+}
+
+WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
   var WikiLayout = eXo.wiki.WikiLayout;
   var scrollTop = $(WikiLayout.rightArea).find('.uiScrollTop')[0];
   var scrollBottom = $(WikiLayout.rightArea).find('.uiScrollBottom')[0];
@@ -272,26 +321,24 @@ WikiLayout.prototype.checkToShowGradientScroll = function() {
   
   var pageArea = $(WikiLayout.rightArea).find('div.UIWikiPageArea:first')[0];
   if (pageArea) {
-    if (WikiLayout.leftArea) {
-      var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
-      var isShowGradientScroll = pageContent.offsetHeight > WikiLayout.rightArea.offsetHeight;
-      if (isShowGradientScroll) {
-        if (WikiLayout.rightArea.scrollTop > 0) {
-          $(scrollTop).css("display", "block");
-        } else {
-          $(scrollTop).css("display", "none");
-        }
-        
-        if (WikiLayout.rightArea.scrollTop < WikiLayout.rightArea.offsetHeight - 10) {
-          $(scrollBottom).css("display", "block");
-          $(scrollBottom).css("top", (WikiLayout.rightArea.offsetTop + WikiLayout.rightArea.offsetHeight - scrollBottom.offsetHeight) + "px");
-        } else {
-          $(scrollBottom).css("display", "none");
-        }
+    var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
+    var isShowGradientScroll = pageContent.offsetHeight > WikiLayout.rightArea.offsetHeight;
+    if (isShowGradientScroll) {
+      if (WikiLayout.rightArea.scrollTop > 0) {
+        $(scrollTop).css("display", "block");
       } else {
         $(scrollTop).css("display", "none");
+      }
+    
+      if (WikiLayout.rightArea.scrollTop < WikiLayout.rightArea.offsetHeight - 10) {
+        $(scrollBottom).css("display", "block");
+        $(scrollBottom).css("top", (WikiLayout.rightArea.offsetTop + WikiLayout.rightArea.offsetHeight - scrollBottom.offsetHeight) + "px");
+      } else {
         $(scrollBottom).css("display", "none");
       }
+    } else {
+      $(scrollTop).css("display", "none");
+      $(scrollBottom).css("display", "none");
     }
   }
 };
