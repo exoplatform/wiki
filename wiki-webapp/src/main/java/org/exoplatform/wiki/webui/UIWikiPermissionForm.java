@@ -305,12 +305,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       if (!uiPermissionEntry.isImmutable()) {
         Permission[] permissions = permissionEntry.getPermissions();
         for (int i = 0; i < permissions.length; i++) {
-          UICheckBoxInput checkboxInput = ((UIWikiPermissionEntry) uiPermissionEntry).getChildById(permissions[i].getPermissionType()
-                                                                                                                 .name()
-              + permissionEntry.getId());
-          checkboxInput.setHTMLAttribute("title",
-                                         UIWikiPermissionEntry.getPermissionLabels().get(permissions[i].getPermissionType()
-                                                                                                       .name()));
+          UICheckBoxInput checkboxInput = ((UIWikiPermissionEntry) uiPermissionEntry).getChildById(permissions[i].getPermissionType().name() + permissionEntry.getId());
           permissions[i].setAllowed(checkboxInput.isChecked());
         }
       }

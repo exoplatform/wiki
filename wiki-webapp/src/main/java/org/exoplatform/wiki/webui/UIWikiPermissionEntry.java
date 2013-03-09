@@ -29,7 +29,6 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserHandler;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
-import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
@@ -82,12 +81,8 @@ public class UIWikiPermissionEntry extends UIContainer {
       return;
     }
     Permission[] permissions = this.permissionEntry.getPermissions();
-    UICheckBoxInput checkBoxInput;
     for (int i = 0; i < permissions.length; i++) {
-      checkBoxInput = new UICheckBoxInput(permissions[i].getPermissionType().name() + this.permissionEntry.getId(),
-                                          "", permissions[i].isAllowed());
-      checkBoxInput.setHTMLAttribute("title", getPermissionLabels().get(permissions[i].getPermissionType().name()));
-      addChild((UIComponent) checkBoxInput);
+      addChild(new UICheckBoxInput(permissions[i].getPermissionType().name() + this.permissionEntry.getId(), "", permissions[i].isAllowed()));
     }
   }
   

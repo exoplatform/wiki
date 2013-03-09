@@ -18,11 +18,11 @@
   for(permission in permissions){
     def checkboxField = uicomponent.getChildById(permission.getPermissionType().toString() + id) ;
     if (isImmutable) {
-     checkboxField.setDisabled(true);
+      checkboxField.setDisabled(true);
     }
     %>
     <td class="center"><% uicomponent.renderChild(checkboxField); %></td>
-<%  }
+<%}
 %>
 <td class="center">
    <% if (!isImmutable) { %>
