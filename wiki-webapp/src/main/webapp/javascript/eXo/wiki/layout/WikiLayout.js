@@ -217,7 +217,7 @@ WikiLayout.prototype.setHeightRightContent = function() {
   if (!me.wikiLayout) {
     me.init('');
   }
-
+  
   var pageArea = $(me.rightArea).find('div.UIWikiPageArea:first')[0];
   if (pageArea) {
     var bottomArea = $(me.rightArea).find('div.uiWikiBottomArea:first')[0];
@@ -315,6 +315,10 @@ WikiLayout.prototype.checkToShowGradientScrollInLeftArea = function() {
 
 WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
   var me = eXo.wiki.WikiLayout;
+  if (!me.rightArea) {
+    return;
+  }
+  
   var scrollTop = $(me.rightArea).find('.uiScrollTop')[0];
   var scrollBottom = $(me.rightArea).find('.uiScrollBottom')[0];
   
@@ -325,6 +329,10 @@ WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
   var pageArea = $(me.rightArea).find('div.UIWikiPageArea:first')[0];
   if (pageArea) {
     var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
+    if (!pageContent) {
+      return;
+    }
+    
     var isShowGradientScroll = pageContent.offsetHeight > me.rightArea.offsetHeight;
     if (isShowGradientScroll) {
       if (me.rightArea.scrollTop > 0) {
