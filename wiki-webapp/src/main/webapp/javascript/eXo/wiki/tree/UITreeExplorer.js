@@ -92,21 +92,19 @@ UITreeExplorer.prototype.selectNode = function(node, nodePath) {
   var param = "&objectId";
   var modeIndex = link.href.indexOf(param);
   if (endParamIndex > 0) {
-    if (modeIndex < 0)
-      link.href = link.href.substring(0, endParamIndex) + param + "="
-          + nodePath + "')";
-    else
-      link.href = link.href.substring(0, modeIndex) + param + "=" + nodePath
-          + "')";
+    if (modeIndex < 0) {
+      link.href = link.href.substring(0, endParamIndex) + param + "=" + nodePath + "')";
+    } else {
+      link.href = link.href.substring(0, modeIndex) + param + "=" + nodePath + "')";
+    }    
   } else {
-    if (modeIndex < 0)
-      link.href = link.href.substring(0, link.href.length) + param + "="
-          + nodePath;
-    else
+    if (modeIndex < 0) {
+      link.href = link.href.substring(0, link.href.length) + param + "=" + nodePath;
+    } else {
       link.href = link.href.substring(0, modeIndex) + param + "=" + nodePath;
+	}    
   }
   window.location = link.href;
-
 };
 
 UITreeExplorer.prototype.render = function(param, element, isFullRender) {
@@ -157,6 +155,10 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
 	  var remain = $(homeUL).find("ul.nodeGroup:first")[0];
 	  var container = $(homeUL).parents("div.uiTreeExplorer")[0];
 	  if (aElement) {
+        var iElement = $(aElement).find("i:first")[0];
+        if (iElement) {
+          $(iElement).remove();
+        }
 	    var h5Container = $(container).prev();	  
 	    $(h5Container).append(aElement);
 	  }
@@ -192,8 +194,15 @@ UITreeExplorer.prototype.buildNode = function(data) {
   // Change Type for CSS
   var nodeType = data.nodeType;
   var nodeTypeCSS = nodeType.toLowerCase();
+  var iconClass = "uiIconFile";
+  console.log(nodeType);
+  if (nodeType == "WIKIHOME") {
+    iconClass = "uiIconWiki";
+    console.log(iconClass);
+  }
+  
   var iconType = (data.expanded ==true)? "collapseIcon":"expandIcon" ;
-  var lastNodeClass = "node";
+  var nodeClass = "node";
   var hoverClass = "";
   var excerptData = data.excerpt;
   var Re = new RegExp("\\/","g");
@@ -202,12 +211,10 @@ UITreeExplorer.prototype.buildNode = function(data) {
   if (excerptData!=null) {
     param += "&excerpt=true";
   }
-  if (data.extendParam)
+  if (data.extendParam) {
     param += "&current=" + data.extendParam.replace(Re, ".");
+  }  
   
-  if (data.lastNode == true) {
-    lastNodeClass += " lastNode";
-  }
   if (data.hasChild == false) {
     iconType = "emptyIcon";
   }
@@ -215,19 +222,19 @@ UITreeExplorer.prototype.buildNode = function(data) {
     hoverClass = "nodeSelected";
   }
   var childNode = "";
-  childNode += " <li  class=\"" + lastNodeClass + "\" >";
-  childNode += "   <div class=\""+iconType+"\" id=\"" + path + "\" onclick=\"event.cancelBubble=true;  if(eXo.wiki.UITreeExplorer.collapseExpand(this)) return;  eXo.wiki.UITreeExplorer.render('"+ param + "', this)\">";
+  childNode += " <li  class='" + nodeClass + "'>";
+  childNode += "   <div class='" + iconType + "' id='" + path + "' onclick=\"event.cancelBubble=true;  if(eXo.wiki.UITreeExplorer.collapseExpand(this)) return;  eXo.wiki.UITreeExplorer.render('"+ param + "', this)\">";
   if (me.isRenderLink) {
     if (data.retricted == true) {
-      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ hoverClass +" \">";
+      childNode += "    <div id='iconTreeExplorer' onclick='event.cancelBubble=true' class='" + hoverClass + "'>";
     } else {
-      childNode += "    <div id=\"iconTreeExplorer\" onclick=\"event.cancelBubble=true\" class=\""+ nodeTypeCSS +" "+ hoverClass +" \">";
+      childNode += "    <div id='iconTreeExplorer' onclick='event.cancelBubble=true' class='" + nodeTypeCSS + " " + hoverClass + "'>";
     }
   } else {
     if (data.retricted == true) {
-      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ hoverClass +" \">";
+      childNode += "    <div id='iconTreeExplorer'  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'" + path + "', false)\" class='" + hoverClass + "'>";
     } else {
-      childNode += "    <div id=\"iconTreeExplorer\"  onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'"+path+"', false " + ")\""  + "class=\""+ nodeTypeCSS +""+ hoverClass +" \">";
+      childNode += "    <div id='iconTreeExplorer' onclick=\"event.cancelBubble=true; eXo.wiki.UITreeExplorer.onNodeClick(this,'" + path + "', false)\" class='" + nodeTypeCSS + " " + hoverClass + "'>";
     }    
   }  
   
@@ -236,16 +243,16 @@ UITreeExplorer.prototype.buildNode = function(data) {
       var index = path.lastIndexOf("%2F"); // Find the index of character "/"
       var pageId = path.substring(index + 3);
       var link = me.baseLink + pageId;
-      childNode += "        <a href=\"" + link + "\"><i class=\"uiIconFile\"></i> " + nodeName + "</a>";
+      childNode += "        <a href=\"" + link + "\"><i class='" + iconClass + "'></i> " + nodeName + "</a>";
     } else {
-      childNode += "        <a><i class=\"uiIconFile\"></i> " + nodeName + "</a>";
+      childNode += "        <a><i class='" + iconClass + "'></i> " + nodeName + "</a>";
     }
   } else {
     if (data.retricted == true) {
       nodeName = me.retrictedLabel;
-      childNode += "         <span style=\"cursor:auto\" title=\"" + me.restrictedTitle + "\"><i class=\"uiIconWikiRestrictedFile uiIconFile\"></i> <em>" + nodeName + "</em></span>";
+      childNode += "         <span style='cursor:auto' title='" + me.restrictedTitle + "'><i class='uiIconWikiRestrictedFile " + iconClass +  "'></i><em>" + nodeName + "</em></span>";
     } else if (data.selectable == false) {
-      childNode += "         <span style=\"cursor:auto\" title=\"" + nodeName + "\"><i class=\"uiIconFile\"></i> " + nodeName + "</span>";
+      childNode += "         <span style='cursor:auto' title='" + nodeName + "'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
     }
   }
   
