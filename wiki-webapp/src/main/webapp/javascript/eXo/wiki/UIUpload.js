@@ -87,13 +87,10 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     var div = document.getElementById('UploadInput' + id);
     var url = document.getElementById('RemoveInputUrl' + id).value;
     var label = document.getElementById('RemoveInputLabel').value;
-    var inputHTML = "<input id='file" + id
-        + "' class='file fileHidden' name='file' type='file' onkeypress='return false;'";
-    inputHTML += "/>";
+    var inputHTML = "<input id='file" + id + "' class='file fileHidden' style='width:130px' name='file' type='file' onkeypress='return false;'/>";
     inputHTML += "<button type='button'" + id + "' class='btn btn-primary'>" + eXo.wiki.UIUpload.uploadText + "</button>";
     if (isDynamicMode) {
-      inputHTML += "<a class='actionLabel' href='javascript:void(0)' onclick=\""
-          + url + "\">" + label + "</a>";
+      inputHTML += "<a class='actionLabel' href='javascript:void(0)' onclick=\""+ url + "\">" + label + "</a>";
     }
     div.style.display = 'block';
     div.innerHTML = inputHTML;

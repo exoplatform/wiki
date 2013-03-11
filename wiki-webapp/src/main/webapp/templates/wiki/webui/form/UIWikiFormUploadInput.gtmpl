@@ -2,10 +2,11 @@
   String uploadId = uicomponent.getUploadIds()[0];
   boolean isDynamicMode = uicomponent.isDynamicMode();
   String postUploadActionLink = uicomponent.getPostUploadActionLink();
-  def rcontext = _ctx.getRequestContext();  
+  def uploadText = _ctx.appRes("UIWikiFormUploadInput.label.UploadLink");
+  def rcontext = _ctx.getRequestContext();
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIUpload", "UIUpload").
-  addScripts("UIUpload.initUploadEntry(['"+uploadId+"'],"+isDynamicMode+");");
+  addScripts("UIUpload.initUploadEntry(['"+uploadId+"']," + isDynamicMode + ",'" + uploadText +  "');");
 %>
 <div id="<%=uicomponent.getId()%>">
   <input type="hidden" id="RemoveInputLabel" value="<%= _ctx.appRes("UIWikiFormUploadInput.label.remove-input"); %>"/>
