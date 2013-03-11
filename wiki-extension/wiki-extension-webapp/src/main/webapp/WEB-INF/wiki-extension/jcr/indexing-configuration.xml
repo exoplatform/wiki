@@ -1,9 +1,20 @@
 <?xml version="1.0"?>
 <!DOCTYPE configuration SYSTEM "http://www.exoplatform.org/dtd/indexing-configuration-1.0.dtd">
-<configuration xmlns:jcr="http://www.jcp.org/jcr/1.0" xmlns:nt="http://www.jcp.org/jcr/nt/1.0">
+<configuration xmlns:jcr="http://www.jcp.org/jcr/1.0" 
+			   xmlns:nt="http://www.jcp.org/jcr/nt/1.0"
+			   xmlns:wiki="http://exoplatform.org/wiki/1.0/">
 
   <index-rule nodeType="nt:resource">
        <property useInExcerpt="false">jcr:encoding</property>
        <property useInExcerpt="false">jcr:mimeType</property>
+       <!-- Wiki: page content -->
+       <property boost="2.0">jcr:content</property>
   </index-rule>
+  
+  <!-- Wiki pages -->
+  <index-rule nodeType="wiki:page">
+  	<!-- Wiki: page title -->
+  	<property boost="3.0">title</property>	
+  </index-rule>
+  	
 </configuration>
