@@ -90,7 +90,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     var inputHTML = "<input id='file" + id
         + "' class='file fileHidden' name='file' type='file' onkeypress='return false;'";
     inputHTML += "/>";
-    inputHTML += "<label for='file" + id + "' class='btn'>" + eXo.wiki.UIUpload.uploadText + "</label>";
+    inputHTML += "<button type='button'" + id + "' class='btn btn-primary'>" + eXo.wiki.UIUpload.uploadText + "</button>";
     if (isDynamicMode) {
       inputHTML += "<a class='actionLabel' href='javascript:void(0)' onclick=\""
           + url + "\">" + label + "</a>";
