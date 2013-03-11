@@ -21,6 +21,11 @@ UIRelated.prototype.initMacros = function() {
   for ( var i = 0; i < relatedBlocks.length; i++) {
     var relatedBlock = relatedBlocks[i];
     var infoElement = $(relatedBlock).find('input.info')[0];
+    
+    if (!infoElement) {
+      continue;
+    }
+    
     var restUrl = infoElement.getAttribute("restUrl");
     var redirectTempl = infoElement.getAttribute("redirectUrl");
     if ($(relatedBlock).find("div.TreeNodeType").length > 0) {
