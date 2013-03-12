@@ -28,11 +28,9 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   
   private static final Log LOG = ExoLogger.getLogger("org.exoplatform.wiki.service.impl.WikiSearchServiceConnector");
   
-  public static final String WIKI_PAGE_ICON = "/wiki/skin/DefaultSkin/webui/background/PageIcon.png";
+  public static final String WIKI_PAGE_ICON = "/wiki/skin/images/unified-search/PageIcon.png";
   
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
-  
-  public static final String PORTLET_NAME = "WikiPortlet";
   
   private WikiService wikiService;
   
