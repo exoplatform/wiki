@@ -4,8 +4,11 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
@@ -23,6 +26,8 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
+
+import com.google.gwt.uibinder.elementparsers.IsEmptyParser;
 
 public class WikiSearchServiceConnector extends SearchServiceConnector {
   
@@ -46,12 +51,14 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       limit = Integer.MAX_VALUE;
     }
 
+    // Prepare search data
     WikiSearchData searchData = new WikiSearchData(query, null, null, null, null, null);
     searchData.setOffset(offset);
     searchData.setLimit(limit);
     searchData.setSort(sort);
     searchData.setOrder(order);
     
+    // Execute the search
     List<SearchResult> searchResults = new ArrayList<SearchResult>();
     try {
       PageList<org.exoplatform.wiki.service.search.SearchResult> wikiSearchPageList = wikiService.search(searchData);
@@ -67,7 +74,56 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     } catch (Exception e) {
       LOG.info("Could not execute unified seach on wiki" , e) ; 
     }
+    
+    // Sort search result
+    sortSearchResult(searchResults, sort, order);
+    
+    // Return the result
     return searchResults;
+  }
+  
+  private void sortSearchResult(List<SearchResult> searchResults, String sort, String order) {
+    if (StringUtils.isEmpty(sort)) {
+      return;
+    }
+    
+    if (StringUtils.isEmpty(order)) {
+      order = "ASC";
+    }
+    final String orderValue = order;
+    
+    if ("title".equalsIgnoreCase(sort)) {
+      Collections.sort(searchResults, new Comparator<SearchResult>() {
+        @Override
+        public int compare(SearchResult o1, SearchResult o2) {
+          if ("ASC".equalsIgnoreCase(orderValue)) {
+            o1.getTitle().compareTo(o2.getTitle());
+          }
+          return o2.getTitle().compareTo(o1.getTitle());
+        }
+      });
+    } else if ("relevancy".equalsIgnoreCase(sort)) {
+      Collections.sort(searchResults, new Comparator<SearchResult>() {
+        @Override
+        public int compare(SearchResult o1, SearchResult o2) {
+          if ("ASC".equalsIgnoreCase(orderValue)) {
+            return (int) (o1.getRelevancy() - o2.getRelevancy());
+          }
+          return (int) (o2.getRelevancy() - o1.getRelevancy());
+        }
+      });
+      
+    } else if ("date".equalsIgnoreCase(sort)) {
+      Collections.sort(searchResults, new Comparator<SearchResult>() {
+        @Override
+        public int compare(SearchResult o1, SearchResult o2) {
+          if ("ASC".equalsIgnoreCase(orderValue)) {
+            return (int) (o1.getDate() - o2.getDate());
+          }
+          return (int) (o2.getDate() - o1.getDate());
+        }
+      });
+    } 
   }
   
   private String getResultIcon(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
