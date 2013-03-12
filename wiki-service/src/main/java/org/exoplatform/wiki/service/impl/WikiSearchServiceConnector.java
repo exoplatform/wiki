@@ -142,8 +142,10 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       } else {
         String portalContainerName = Utils.getPortalName();
         String url = page.getURL();
-        url = url.substring(url.indexOf("/" + portalContainerName + "/"));
-        permalink.append(url);
+        if (url != null) {
+          url = url.substring(url.indexOf("/" + portalContainerName + "/"));
+          permalink.append(url);
+        }
       }
     } catch (Exception ex) {
       LOG.info("Can not build the permalink for wiki page ", ex);
