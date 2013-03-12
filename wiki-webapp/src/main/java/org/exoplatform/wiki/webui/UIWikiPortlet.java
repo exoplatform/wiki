@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.application.WebuiApplication;
@@ -152,6 +153,13 @@ public class UIWikiPortlet extends UIPortletApplication {
           changeMode(WikiMode.VIEW);
         }
       }
+      
+      // Check if page url is null then create url for it
+      if (StringUtils.isEmpty(page.getURL())) {
+        page.setURL(Utils.getURLFromParams(new WikiPageParams(page.getWiki().getType(), page.getWiki().getOwner(), page.getName())));
+      }
+      
+      
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       if (WikiContext.ADDPAGE.equalsIgnoreCase(pageParams.getParameter(WikiContext.ACTION))) {
         AddPageActionComponent addPageComponent = this.findFirstComponentOfType(AddPageActionComponent.class);
