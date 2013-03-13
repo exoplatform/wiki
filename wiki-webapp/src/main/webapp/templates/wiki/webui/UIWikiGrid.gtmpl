@@ -61,11 +61,12 @@
             if (even) rowClass = "EvenRow";
             else rowClass = "OddRow";
             even = !even;
+            def beanId = uicomponent.getBeanIdFor(bean);
         %>
           <tr>
             <td class="center">
 	          <div class="uiRadio">
-	            <input type="radio" name="objectId" value="<%=uicomponent.getBeanIdFor(bean)%>"/>
+	            <input type="radio" name="objectId" value="$beanId"/>
 	            <span></span>
               </div>
 	        </td>
@@ -95,12 +96,7 @@
                 <td class="center">                  
                   <%
                      def beanIdField = uicomponent.getBeanIdField();
-                     def beanId = uicomponent.getBeanIdFor(bean);
                      for (action in beanActions) {
-                       if (action == null || !action.equals("PreviewTemplate")) {
-                        continue;
-                       }
-                       
                        String title = _ctx.appRes(uiParent.getName() + ".action.title." + action);
                        String actionLink = "";
                        if (uiForm != null) {
@@ -110,9 +106,13 @@
                        }
                        String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + action;
                        String anchor = "#" + action;
-                  %>
-                       <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIconPreview"></i></a>
-                  <% } %>                 
+                       if (Utils.getModeFromAction(action)){
+                   %>
+                         <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
+                   <%  } else { %>
+                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIconPreview"></i></a>
+                   <%  } 
+                  } %>                 
                </td>
              <% } %>
            </tr>

@@ -97,11 +97,6 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
       markupInput.setValue("");
       commentInput.setRendered(false);
 
-      String currentDefaultSyntaxt = Utils.getCurrentPreferences().getPreferencesSyntax().getDefaultSyntax();
-      if (currentDefaultSyntaxt == null) {
-        currentDefaultSyntaxt = wservice.getDefaultWikiSyntaxId();
-      }
-
       if (pageTitle != null && pageTitle.length() > 0) {
         titleInput.setValue(pageTitle);
         titleInput.setEditable(false);

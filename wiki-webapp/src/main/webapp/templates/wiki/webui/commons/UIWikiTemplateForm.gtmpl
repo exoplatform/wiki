@@ -2,8 +2,9 @@
   def rcontext = _ctx.getRequestContext(); 
   String inputId = uiform.TEMPLATE_SEARCHBOX;
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  String mode = uiform.getMode();
   requireJs.require("SHARED/UIWikiTemplateForm", "UIWikiTemplateForm");
-  requireJs.addScripts("UIWikiTemplateForm.init('"+ uicomponent.id+"', '" + inputId + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
+  requireJs.addScripts("UIWikiTemplateForm.init('" + uicomponent.id + "', '" + inputId + "', '" + mode + "', '" +  _ctx.appRes("UITemplateSettingForm.label.Search")  + "');");
   def selectLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_ADD);
   def cancelLabel = _ctx.appRes("UIWikiSelectTemplateForm.action.title." + uicomponent.ACTION_CANCEL);
 %>
@@ -22,7 +23,7 @@
 	  </div>
 	  
     <div class="uiAction uiActionBorder">
-      <a class="btn" href="javascript:void(0);" onclick="<%= uicomponent.event(uicomponent.ACTION_ADD) %>"><%=selectLabel%></a>
+      <a class="btn selectTemplateAction" href="javascript:void(0);"><%=selectLabel%></a>
       <a class="btn" href="javascript:void(0);" onclick="<%= uicomponent.event(uicomponent.ACTION_CANCEL) %>"><%=cancelLabel%></a>
     </div>			
   <%uiform.end();%>
