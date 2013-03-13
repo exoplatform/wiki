@@ -18,6 +18,7 @@ package org.exoplatform.wiki.webui.popup;
 
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -76,13 +77,16 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
     ((UIWikiGrid)grid.configure(TEMPLATE_ID, TEMPLATE_FIELD, USER_ACTION)).setUIGridMode(UIWikiGrid.TEMPLATE);
   }
   
+  protected String getMode() {
+    return UIWikiGrid.TEMPLATE;
+  }
+  
   static public class AddPageWithTemplateActionListener extends EventListener<UIWikiSelectTemplateForm> {
     public void execute(Event<UIWikiSelectTemplateForm> event) throws Exception {
       UIWikiSelectTemplateForm form = event.getSource();
       UIWikiPortlet wikiPortlet = form.getAncestorOfType(UIWikiPortlet.class);
       UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
-      UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class)
-                                                 .getUIStringInput();
+      UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
@@ -99,7 +103,8 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
 	      titleInput.setValue(template.getTitle());
 	      descriptionInput.setValue(template.getDescription());
 	      pageEditForm.setTitle(template.getTitle());
-	      markupInput.setValue(template.getContent().getText());      
+	      markupInput.setValue(template.getContent().getText());
+	      pageEditForm.setInitDraftName(StringUtils.EMPTY);
 	      popupContainer.deActivate();
 	      wikiPortlet.changeMode(WikiMode.ADDPAGE);
       }
@@ -113,9 +118,7 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       ResourceBundle res = context.getApplicationResourceBundle() ;
       UIWikiPortlet wikiPortlet = form.getAncestorOfType(UIWikiPortlet.class);
       UIWikiMaskWorkspace mask = wikiPortlet.findFirstComponentOfType(UIWikiMaskWorkspace.class);
-      UIWikiPagePreview wikiPagePreview = mask.createUIComponent(UIWikiPagePreview.class,
-                                                                 null,
-                                                                 null);
+      UIWikiPagePreview wikiPagePreview = mask.createUIComponent(UIWikiPagePreview.class, null, null);
 
       String templateId = event.getRequestContext().getRequestParameter(OBJECTID);
       Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(),

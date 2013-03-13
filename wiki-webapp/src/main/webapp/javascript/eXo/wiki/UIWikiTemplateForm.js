@@ -21,9 +21,10 @@
 function UIWikiTemplateForm() {
 };
 
-UIWikiTemplateForm.prototype.init = function(componentid, inputId, defaultText) {
+UIWikiTemplateForm.prototype.init = function(componentid, inputId, mode, defaultText) {
   var me = eXo.wiki.UIWikiTemplateForm;
   me.component = document.getElementById(componentid);
+  me.mode = mode;
   if (!me.component) {
     return;
   }
@@ -37,7 +38,32 @@ UIWikiTemplateForm.prototype.init = function(componentid, inputId, defaultText) 
   input.form.onsubmit = function() {
     return false;
   }
+  
+  if (mode == "Template") {
+    me.changeActionWhenChooseTemplate();
+  }
 };
+
+UIWikiTemplateForm.prototype.changeActionWhenChooseTemplate = function(){
+  var me = eXo.wiki.UIWikiTemplateForm;
+  var actionLink = $(me.component).find('a.selectTemplateAction')[0];
+  var radioContainers = $(me.component).find('div.uiRadio');
+  for (var i = 0; i < radioContainers.length; i++) {
+    var radio = $(radioContainers[i]).find('input:first')[0];
+    $(radio).click(function() {
+      actionLink.onclick = function() {
+        var me = eXo.wiki.UIWikiTemplateForm;
+        var radioContainers = $(me.component).find('div.uiRadio');
+        for (var i = 0; i < radioContainers.length; i++) {
+          var radio = $(radioContainers[i]).find('input:first')[0];
+          if (radio.checked) {
+            eXo.wiki.UIWikiAjaxRequest.makeNewHash('#AddPageWithTemplate/' + radio.value);
+          }
+        }
+      };
+    });
+  }
+}
 
 UIWikiTemplateForm.prototype.pressHandler = function(evt, textbox) {
   var me = eXo.wiki.UIWikiTemplateForm;
@@ -67,7 +93,6 @@ UIWikiTemplateForm.prototype.pressHandler = function(evt, textbox) {
 /**
  * Handler key press
  */
-
 UIWikiTemplateForm.prototype.enterHandler = function(evt){
     var me = eXo.wiki.UIWikiTemplateForm;
     me.doAdvanceSearch();

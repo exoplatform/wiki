@@ -79,7 +79,10 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
   public UITemplateSettingForm() throws Exception {
     super();
     ((UIWikiGrid)grid.configure(TEMPLATE_ID, TEMPLATE_FIELD, USER_ACTION)).setUIGridMode(UIWikiGrid.SETTING);
-    
+  }
+  
+  protected String getMode() {
+    return UIWikiGrid.SETTING;
   }
   
   public ResourceBundle getRes() {
