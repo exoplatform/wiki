@@ -14,10 +14,10 @@ import org.exoplatform.services.jcr.core.nodetype.NodeTypeDataManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
-public class NodeTypeUpgradePlugin extends UpgradeProductPlugin {
+public class WikiNodeTypeUpgradePlugin extends UpgradeProductPlugin {
   private Log log = ExoLogger.getLogger(this.getClass());
   
-  public NodeTypeUpgradePlugin(InitParams initParams){
+  public WikiNodeTypeUpgradePlugin(InitParams initParams){
     super(initParams);
   }
   
@@ -46,7 +46,7 @@ public class NodeTypeUpgradePlugin extends UpgradeProductPlugin {
   }
   
   @Override
-  public boolean shouldProceedToUpgrade(String previousVersion, String newVersion) {
+  public boolean shouldProceedToUpgrade(String newVersion, String previousVersion) {
     return VersionComparator.isAfter(newVersion, previousVersion);
   }
 }
