@@ -192,9 +192,9 @@ WikiLayout.prototype.setHeightLayOut = function() {
       if ((treeExplorer.offsetHeight + 37 + uiRelatedPagesHeight + titleHeader.offsetHeight ) < hct) {
         //Padding top/bottom inside tree, margin top of RelatedPages box = 35px
         if (uiRelatedPagesHeight > 0) {
-          $(treeExplorer).css("height", hct - titleHeader.offsetHeight - uiRelatedPagesHeight - 37 + "px"); 
+          $(treeExplorer).css("height", hct - titleHeader.offsetHeight - uiRelatedPagesHeight - 25 + "px"); 
         } else {
-          $(treeExplorer).css("height", hct - titleHeader.offsetHeight - uiRelatedPagesHeight - 20 + "px"); 
+          $(treeExplorer).css("height", hct - titleHeader.offsetHeight - uiRelatedPagesHeight - 10 + "px"); 
         }
       }
     }
@@ -236,7 +236,7 @@ WikiLayout.prototype.setHeightRightContent = function() {
           var pageAreaHeight = (me.leftArea.offsetHeight - bottomHeight);
           var poffsetHeight = pageContent.offsetHeight ? pageContent.offsetHeight : 0;
           if (poffsetHeight + bottomArea.offsetHeight < me.leftArea.offsetHeight) {
-            $(pageContent).height(pageAreaHeight - 2 + "px");
+            $(pageContent).height(pageAreaHeight - 9 + "px");
           }
           $(me.rightArea).height(me.leftArea.offsetHeight + 1 + "px");
         } else {
