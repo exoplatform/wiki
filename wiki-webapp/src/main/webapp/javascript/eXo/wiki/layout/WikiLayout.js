@@ -259,7 +259,7 @@ WikiLayout.prototype.setHeightRightContent = function() {
   var settingContainer = $(me.wikiLayout).find('div.UIWikiPageSettingContainer:first')[0];
   if (settingContainer) {
     var hdef = document.documentElement.clientHeight - me.wikiLayout.offsetTop;
-    hdef -= 30; //Padding-bottom of wikiLayout
+    hdef -= 35; //Padding-bottom of wikiLayout
     
     var tabs = $(settingContainer).find("ul.nav-tabs:first")[0];
     var contents = $(settingContainer).find("div.tab-content:first")[0];
