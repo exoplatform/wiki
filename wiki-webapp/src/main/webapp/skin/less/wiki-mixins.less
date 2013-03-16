@@ -100,37 +100,3 @@
 		}
 	}
 }
-
-
-/*==================== alert wiki macro because can't change name xwiki ==========================*/
-.uiWikiPortlet {
-	.uiWikiMiddleArea{
-		.warningmessage, .tipmessage, .infomessage, .errormessage, .notemessage {
-			.border-radius(3px 3px 3px 3px);
-			.box-shadow(0px 1px 1px #E2E3E3);
-			padding: 8px 13px 8px 45px;
-			margin: 10px 0;
-			border: 1px solid white;
-			color: @infoText;
-		}
-		.warningmessage, .notemessage {
-			border-color: @warningBorder;
-			background: @warningBackground url("/eXoResources/skin/images/Icons/warningIcon.png") no-repeat 12px center;
-		}
-
-		.tipmessage {
-			border-color: @successBorder;
-			background: @successBackground url("/eXoResources/skin/images/Icons/successIcon.png") no-repeat 12px center;
-		}
-
-		.infomessage{
-			border-color: @infoBorder;
-			background: @infoBackground url("/eXoResources/skin/images/Icons/infoIcon.png") no-repeat 12px center;
-		}
-
-		.errormessage{
-			border-color: @errorBorder;
-			background: @errorBackground url("/eXoResources/skin/images/Icons/errorIcon.png") no-repeat 12px center;
-		}
-	}
-}
