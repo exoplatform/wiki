@@ -20,6 +20,7 @@
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-extension</module>
+    <module>wiki-upgrade-plugins</module>
   </modules>
   <scm>
     <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
