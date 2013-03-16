@@ -14,10 +14,10 @@ import org.exoplatform.services.jcr.core.nodetype.NodeTypeDataManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
-public class NodeTypeUpgradePlugin extends UpgradeProductPlugin {
+public class WikiNodeTypeUpgradePlugin extends UpgradeProductPlugin {
   private Log log = ExoLogger.getLogger(this.getClass());
   
-  public NodeTypeUpgradePlugin(InitParams initParams){
+  public WikiNodeTypeUpgradePlugin(InitParams initParams){
     super(initParams);
   }
   

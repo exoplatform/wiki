@@ -8,9 +8,9 @@
   <external-component-plugins>
     <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
     <component-plugin>
-      <name>NodeTypeUpgradePlugin</name>
+      <name>WikiNodeTypeUpgradePlugin</name>
       <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.wiki.upgrade.nodetype.NodeTypeUpgradePlugin</type>
+      <type>org.exoplatform.wiki.upgrade.nodetype.WikiNodeTypeUpgradePlugin</type>
       <description>Upgrade node type definition for wiki</description>
       <init-params>
         <value-param>
