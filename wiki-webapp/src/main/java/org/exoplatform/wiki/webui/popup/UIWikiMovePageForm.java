@@ -148,7 +148,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       }
       
       // Convert message markup to html
-      String messageHTML = "<div class='warningmessage'>" + message + "</div>";
+      String messageHTML = "<div class='alert'> <i class='uiIconWarning'></i>" + message + "</div>";
       
       // Add actions to message html
       String renameActionLink = event(RENAME_ACTION, page.getName());
@@ -166,7 +166,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     // Check to add "and more" label
     if (duplicatedPages.size() > maxWarning) {
       String andMoreLabel = bundle.getString("UIWikiMovePageForm.msg.and-more");
-      andMoreLabel = "<div class='warningmessage'>" + andMoreLabel + "</div>";
+      andMoreLabel = "<div class='alert'> <i class='uiIconWarning'></i>" + andMoreLabel + "</div>";
       notifications.append(andMoreLabel);
     }
     
