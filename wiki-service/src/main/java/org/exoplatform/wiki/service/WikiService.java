@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.wiki.mow.api.DraftPage;
@@ -30,13 +29,11 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.Template;
 import org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.TitleSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
 
@@ -83,8 +80,6 @@ public interface WikiService {
 
   public Template getTemplatePage(WikiPageParams params, String templateId) throws Exception;
 
-  public PageList<SearchResult> searchContent(WikiSearchData data) throws Exception;
-
   public List<BreadcrumbData> getBreadcumb(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   public WikiPageParams getWikiPageParams(BreadcrumbData data) throws Exception;
@@ -95,8 +90,6 @@ public interface WikiService {
 
   public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws Exception;
 
-  public List<TitleSearchResult> searchDataByTitle(WikiSearchData data) throws Exception;
-  
   /**
    * Get a list of duppilcated page between all children pages of parentPage and targetWiki before execute moving page
    * 

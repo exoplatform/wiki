@@ -128,11 +128,7 @@ public class DefaultWikiService implements WikiService {
 
     try {
       WikiContext wikiContext = getWikiContext();
-      WikiSearchData data = new WikiSearchData(null,
-                                                     "",
-                                                     null,
-                                                     wikiContext.getType(),
-                                                     wikiContext.getOwner());
+      WikiSearchData data = new WikiSearchData("", null, wikiContext.getType(), wikiContext.getOwner());
       PageList<SearchResult> results = wservice.search(data);
       List<String> pagesNames = new ArrayList<String>();
       if(results != null) {
@@ -176,11 +172,7 @@ public class DefaultWikiService implements WikiService {
 
     try {
       WikiContext wikiContext = getWikiContext();
-      WikiSearchData data = new WikiSearchData(null,
-                                                     escapedKeyword,
-                                                     null,
-                                                     wikiContext.getType(),
-                                                     wikiContext.getOwner());
+      WikiSearchData data = new WikiSearchData(escapedKeyword, escapedKeyword, wikiContext.getType(), wikiContext.getOwner());
       data.setNodeType(WikiNodeType.WIKI_PAGE);
       PageList<SearchResult> results = wservice.search(data);
       List<DocumentReference> documentReferences = prepareDocumentReferenceList(results);

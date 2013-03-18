@@ -27,7 +27,6 @@ import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.utils.Utils;
 
-
 /**
  * Created by The eXo Platform SAS
  * Author : Lai Trung Hieu
@@ -35,8 +34,6 @@ import org.exoplatform.wiki.utils.Utils;
  * 28 Jan 2011  
  */
 public class SearchData {
-  public String text;
-
   public String title;
 
   public String content;
@@ -68,41 +65,27 @@ public class SearchData {
 
   protected String           USER_PATH   = "/Users/%/ApplicationData/" + WikiNodeType.Definition.WIKI_APPLICATION + "/";
 
-  public SearchData(String text,
-                    String title,
-                    String content,
-                    String wikiType,
-                    String wikiOwner,
-                    String pageId) {
-    this.text = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(text);
+  public SearchData(String title, String content, String wikiType, String wikiOwner, String pageId) {
     this.title = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(title);
     this.content = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(content);
     this.wikiType = wikiType;
     this.wikiOwner = Utils.validateWikiOwner(wikiType, wikiOwner);
     this.pageId = pageId;
     if (PortalConfig.USER_TYPE.equals(wikiType)) {
-      NodeHierarchyCreator nodeHierachyCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer()
-                                                                                           .getComponentInstanceOfType(NodeHierarchyCreator.class);
+      NodeHierarchyCreator nodeHierachyCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
       try {
         if (wikiOwner != null && wikiOwner.length() > 0) {
           Node userNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), wikiOwner);
           USER_PATH = userNode.getPath() + "/" + WikiNodeType.Definition.WIKI_APPLICATION + "/";
         }
       } catch (Exception e) {
-        if (e instanceof PathNotFoundException)
+        if (e instanceof PathNotFoundException) {
           throw new NoSuchNodeException(e);
-        else
+        } else {
           throw new UndeclaredRepositoryException(e.getMessage());
+        }
       }
     }
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(text);
   }
 
   public String getTitle() {

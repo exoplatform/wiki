@@ -40,7 +40,7 @@ public class TemplateSearchData extends SearchData {
   public static String GROUP_TEMPLATESPATH  = GROUP_PATH + TEMPLATE_PATH;
 
   public TemplateSearchData(String title, String wikiType, String wikiOwner) {
-    super(null, title, null, wikiType, wikiOwner, null);
+    super(title, null, wikiType, wikiOwner, null);
     createJcrQueryPath();
   }
  

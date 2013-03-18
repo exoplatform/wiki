@@ -52,11 +52,9 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     }
 
     // Prepare search data
-    WikiSearchData searchData = new WikiSearchData(query, null, null, null, null, null);
+    WikiSearchData searchData = new WikiSearchData(query, query, null, null);
     searchData.setOffset(offset);
     searchData.setLimit(limit);
-    searchData.setSort(sort);
-    searchData.setOrder(order);
     
     // Execute the search
     List<SearchResult> searchResults = new ArrayList<SearchResult>();

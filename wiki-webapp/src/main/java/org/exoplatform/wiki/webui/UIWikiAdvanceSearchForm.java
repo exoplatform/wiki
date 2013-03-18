@@ -203,7 +203,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
           wikiOwner = StringUtils.replace(path, wikiType + org.exoplatform.wiki.commons.Utils.SLASH, StringUtils.EMPTY);
       }
     }
-    return new WikiSearchData(null, text, null, wikiType, wikiOwner);
+    return new WikiSearchData(text, text, wikiType, wikiOwner);
   }
   
   private String getDefaultSelectWikiValue() throws Exception {

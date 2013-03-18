@@ -37,7 +37,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.CacheControl;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
@@ -53,7 +52,6 @@ import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.common.http.HTTPStatus;
-import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -91,6 +89,7 @@ import org.exoplatform.wiki.service.rest.model.PageSummary;
 import org.exoplatform.wiki.service.rest.model.Pages;
 import org.exoplatform.wiki.service.rest.model.Space;
 import org.exoplatform.wiki.service.rest.model.Spaces;
+import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.tree.JsonNodeData;
@@ -477,10 +476,14 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                              @QueryParam("wikiType") String wikiType,
                              @QueryParam("wikiOwner") String wikiOwner) throws Exception {
     try {
-      WikiSearchData data = new WikiSearchData(null, keyword.toLowerCase(), null, wikiType, wikiOwner);
+      WikiSearchData data = new WikiSearchData(keyword.toLowerCase(), null, wikiType, wikiOwner);
       data.setLimit(10);
-      List<TitleSearchResult> result = wikiService.searchDataByTitle(data);
-      return Response.ok(new BeanToJsons(result), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+      List<SearchResult> results = wikiService.search(data).getAll();
+      List<TitleSearchResult> titleSearchResults = new ArrayList<TitleSearchResult>();
+      for (SearchResult searchResult : results) {
+        titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), searchResult.getUrl()));
+      }
+      return Response.ok(new BeanToJsons(titleSearchResults), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
