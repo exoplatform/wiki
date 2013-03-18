@@ -35,7 +35,9 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
@@ -46,6 +48,9 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.url.navigation.NavigationResource;
+import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIComponent;
@@ -212,12 +217,27 @@ public class Utils {
     return (currentPage != null) && currentPage.hasPermission(PermissionType.VIEWPAGE, new Identity(IdentityConstants.ANONIM));
   }
   
+  public static String getSpaceHomeURL(String spaceGroupId) {
+    String permanentSpaceName = spaceGroupId.split("/")[2];
+    NodeURL nodeURL = RequestContext.getCurrentInstance().createURL(NodeURL.TYPE);
+    NavigationResource resource = new NavigationResource(SiteType.GROUP, spaceGroupId, permanentSpaceName);
+    return nodeURL.setResource(resource).toString();
+  }
+  
   public static String getURLFromParams(WikiPageParams params) throws Exception {
+    if (params.getType().equals(PortalConfig.GROUP_TYPE)) {
+      String spaceUrl = getSpaceHomeURL(params.getOwner());
+      if (!spaceUrl.endsWith("/")) {
+        spaceUrl += "/";
+      }
+      spaceUrl += "wiki";
+      return spaceUrl;
+    }
+    
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     String requestURL = portalRequestContext.getControllerContext().getRequest().getRequestURL().toString();
     String portalURI = portalRequestContext.getPortalURI();
     String domainURL = requestURL.substring(0, requestURL.indexOf(portalURI));
-
     UIPortal uiPortal = Util.getUIPortal();
     SiteKey siteKey = uiPortal.getSiteKey();
     UserNode userNode = uiPortal.getSelectedUserNode();
