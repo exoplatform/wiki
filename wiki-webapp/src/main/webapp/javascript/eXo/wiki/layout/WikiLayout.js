@@ -80,7 +80,8 @@ WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
         $(me.leftArea).width(leftWidth + 'px');
       }	  
       $(me.resizeBar).mousedown(me.exeRowSplit);
-      $(me.colapseLeftContainerButton).click(me.showHideSideBar);
+      $(me.colapseLeftContainerButton).unbind('click');
+      $(me.colapseLeftContainerButton).bind('click', me.showHideSideBar);
     }
 
 	if(me.wikiLayout) {
@@ -222,38 +223,47 @@ WikiLayout.prototype.setHeightRightContent = function() {
   if (pageArea) {
     var bottomArea = $(me.rightArea).find('div.uiWikiBottomArea:first')[0];
     var pageContainer = $(me.rightArea).find('div.UIWikiPageContainer:first')[0];
+    var bottomHeight = 0;
     if (bottomArea) {
-      var bottomHeight = bottomArea.offsetHeight;
+      bottomHeight = bottomArea.offsetHeight;
       if ($(bottomArea).children().size() <= 0) { //initial padding-top 15px
         $(bottomArea).css("display", "none");
         bottomHeight = 0;
       }
+    }      
       
-      if (me.leftArea) {
-        var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
-        if (me.leftArea.offsetHeight > 0) {
-          $(pageContent).css("height", "");
-          var pageAreaHeight = (me.leftArea.offsetHeight - bottomHeight);
-          var poffsetHeight = pageContent.offsetHeight ? pageContent.offsetHeight : 0;
-          if (poffsetHeight + bottomArea.offsetHeight < me.leftArea.offsetHeight) {
-            $(pageContent).height(pageAreaHeight - 9 + "px");
-          }
-          $(me.rightArea).height(me.leftArea.offsetHeight + 1 + "px");
-        } else {
-          $(pageContent).css("height", "");
+    if (me.leftArea) {
+      var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
+      if (me.leftArea.offsetHeight > 0) {
+        $(pageContent).css("height", "");
+        var pageAreaHeight = (me.leftArea.offsetHeight - bottomHeight);
+        var poffsetHeight = pageContent.offsetHeight ? pageContent.offsetHeight : 0;
+        if (poffsetHeight + bottomHeight < me.leftArea.offsetHeight) {
+          $(pageContent).height(pageAreaHeight - 9 + "px");
         }
+        $(me.rightArea).height(me.leftArea.offsetHeight + 1 + "px");
+      } else {
+        var layout = me.wikiLayout;
+        var hct = document.documentElement.clientHeight - layout.offsetTop;
+		hct -= 22; // Padding-bottom of wikiLayout
+        $(me.rightArea).css("height", hct + "px");
+        $(pageContent).height(hct - bottomHeight - 2 + "px");
       }
     }
     
-    me.checkToShowGradientScrollInRightArea();
-    $(me.rightArea).scroll(function() {
+    if (me.rightArea) {
       me.checkToShowGradientScrollInRightArea();
-    });
+      $(me.rightArea).scroll(function() {
+        me.checkToShowGradientScrollInRightArea();
+      });
+    }
     
-    me.checkToShowGradientScrollInLeftArea();
-    $(me.leftArea).scroll(function() {
+    if (me.leftArea) {
       me.checkToShowGradientScrollInLeftArea();
-    });
+      $(me.leftArea).scroll(function() {
+        me.checkToShowGradientScrollInLeftArea();
+      });
+    }
   }
   
   var settingContainer = $(me.wikiLayout).find('div.UIWikiPageSettingContainer:first')[0];
