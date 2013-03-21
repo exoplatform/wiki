@@ -50,8 +50,11 @@ public class RelatedMacro extends AbstractMacro<RelatedPagesMacroParameters>{
                              String content,
                              MacroTransformationContext context) throws MacroExecutionException {
     WikiContext params = getWikiContext();
-    Block block = null;
+    if (params == null) {
+      return Collections.emptyList();
+    }
     
+    Block block = null;
     try {
       block = new RawBlock(createRelationList(params), XHTML_SYNTAX);
       PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()

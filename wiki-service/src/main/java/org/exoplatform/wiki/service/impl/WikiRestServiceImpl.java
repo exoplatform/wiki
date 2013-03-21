@@ -296,15 +296,16 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     try {
       WikiPageParams params = TreeUtils.getPageParamsFromPath(path);
       PageImpl page = (PageImpl) wikiService.getPageById(params.getType(), params.getOwner(), params.getPageId());
-      
-      List<PageImpl> relatedPages = page.getRelatedPages();
-      List<JsonRelatedData> relatedData = RelatedUtil.pageImplToJson(relatedPages);
-      return Response.ok(new BeanToJsons<JsonRelatedData>(relatedData)).cacheControl(cc).build();
+      if (page != null) {
+        List<PageImpl> relatedPages = page.getRelatedPages();
+        List<JsonRelatedData> relatedData = RelatedUtil.pageImplToJson(relatedPages);
+        return Response.ok(new BeanToJsons<JsonRelatedData>(relatedData)).cacheControl(cc).build();
+      }
+      return Response.status(Status.NOT_FOUND).build();
     } catch (Exception e) {
       if (log.isErrorEnabled()) log.error(String.format("can not get related pages of [%s]", path), e);
       return Response.serverError().cacheControl(cc).build();
     }
-    
   }
   
   @GET
