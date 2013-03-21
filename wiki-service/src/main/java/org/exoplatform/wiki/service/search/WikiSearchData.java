@@ -84,7 +84,7 @@ public class WikiSearchData extends SearchData {
   
   public String getStatementForSearchingContent() {
     StringBuilder statement = new StringBuilder();
-    statement.append("SELECT jcr:content, jcr:primaryType, path, excerpt(.) ");
+    statement.append("SELECT jcr:primaryType, path, excerpt(.) ");
     statement.append("FROM nt:base ");
     statement.append("WHERE ");
     statement.append(searchContentCondition());

@@ -254,8 +254,7 @@ public class JCRDataStorage implements DataStorage{
     SearchResult result = new SearchResult() ;
     result.setPageName(node.getName()) ;
     String title = node.getProperty(WikiNodeType.Definition.TITLE).getString();
-    InputStream data = node.getNode(WikiNodeType.Definition.CONTENT).getNode(WikiNodeType.Definition.ATTACHMENT_CONTENT)
-    		.getProperty(WikiNodeType.Definition.DATA).getStream();
+    InputStream data = node.getNode(WikiNodeType.Definition.CONTENT).getNode(WikiNodeType.Definition.ATTACHMENT_CONTENT).getProperty(WikiNodeType.Definition.DATA).getStream();
     byte[] bytes = IO.getBytes(data);
     String content = new String(bytes, "UTF-8");
     if(content.length() > 100) content = content.substring(0, 100) + "...";
@@ -288,8 +287,7 @@ public class JCRDataStorage implements DataStorage{
       while (iter.hasNext()) {
         SearchResult child = iter.next();
         if (WikiNodeType.WIKI_ATTACHMENT.equals(child.getType()) || WikiNodeType.WIKI_PAGE_CONTENT.equals(child.getType())) {
-          AttachmentImpl tempAtt = (AttachmentImpl) Utils.getObject(child.getPath(),
-                                                                    WikiNodeType.WIKI_ATTACHMENT);
+          AttachmentImpl tempAtt = (AttachmentImpl) Utils.getObject(child.getPath(), WikiNodeType.WIKI_ATTACHMENT);
           if (att != null && att.equals(tempAtt)) {
             // Merge data
             if (child.getExcerpt()==null && result.getExcerpt()!=null ){
@@ -300,8 +298,7 @@ public class JCRDataStorage implements DataStorage{
           if (page != null && page.getName().equals(tempAtt.getParentPage())) {
             return true;
           }     
-        }
-        else if (WikiNodeType.WIKI_PAGE.equals(child.getType())) {
+        } else if (WikiNodeType.WIKI_PAGE.equals(child.getType())) {
           if (page != null && page.getPath().equals(child.getPath())) {
             iter.remove();
             return false;
