@@ -5,7 +5,7 @@
     <artifactId>maven-parent-pom</artifactId>
     <groupId>org.exoplatform</groupId>
     <version>9-SNAPSHOT</version>
-    <relativePath></relativePath>
+    <relativePath />
   </parent>
   <groupId>org.exoplatform.wiki</groupId>
   <artifactId>wiki</artifactId>
@@ -59,7 +59,7 @@
     <!-- * From top level to bottom projects -->
     <!-- * maven-depmgt-pom must be the first -->
     <!-- * Your own modules -->
-    <!-- * And projects below you -->	
+    <!-- * And projects below you -->
     <dependencies>
       <!-- Import versions of external dependencies to use -->
       <dependency>
@@ -126,7 +126,7 @@
         <version>${org.exoplatform.commons.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>			
+      </dependency>
       <!-- Import versions from platform-ui project -->
       <dependency>
         <groupId>org.exoplatform.platform-ui</groupId>
@@ -134,7 +134,7 @@
         <version>${org.exoplatform.platform-ui.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>					
+      </dependency>
       <!-- To be replaced by an import of GateIn Portal parent POM -->
       <dependency>
         <groupId>org.gatein.portal</groupId>
@@ -222,7 +222,7 @@
         <version>${org.exoplatform.kernel.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>			
+      </dependency>
     </dependencies>
   </dependencyManagement>
   <build>
