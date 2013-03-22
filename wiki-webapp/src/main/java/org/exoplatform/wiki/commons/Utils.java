@@ -211,7 +211,7 @@ public class Utils {
   
   public static boolean isCurrentPagePublic() throws Exception {
     Page currentPage = Utils.getCurrentWikiPage();
-    return (currentPage != null) && currentPage.hasPermission(PermissionType.VIEWPAGE, new Identity(IdentityConstants.ANONIM));
+    return (currentPage != null) && currentPage.hasPermission(PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
   }
   
   public static String getSpaceHomeURL(String spaceGroupId) {
@@ -227,7 +227,7 @@ public class Utils {
       if (!spaceUrl.endsWith("/")) {
         spaceUrl += "/";
       }
-      spaceUrl += "wiki";
+      spaceUrl += "wiki/";
       return spaceUrl;
     }
     return org.exoplatform.wiki.utils.Utils.getPermanlink(params);
