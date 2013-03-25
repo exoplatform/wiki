@@ -35,11 +35,13 @@ public class WikiNodeTypeUpgradePlugin extends UpgradeProductPlugin {
     log.info("\nTrying register node types from xml-file " + nodeTypeFilesName);
     ntManager.registerNodeTypes(nodetypeDefinition, alreadyExistsBehaviour, NodeTypeDataManager.TEXT_XML);
     log.info("\nNode types were registered from xml-file " + nodeTypeFilesName);
+    
   }
   
   private void checkToRegisterNodetype() {
     try {
-      registerNodeTypes("jar:/conf/portal/wiki-nodetypes.xml", ExtendedNodeTypeManager.REPLACE_IF_EXISTS);
+      registerNodeTypes("jar:/conf/portal/wiki-full-nodetypes.xml", ExtendedNodeTypeManager.IGNORE_IF_EXISTS);
+      registerNodeTypes("jar:/conf/portal/wiki-upgrade-nodetypes.xml", ExtendedNodeTypeManager.REPLACE_IF_EXISTS);
     } catch (Exception e) {
       log.warn("Can not check and register wiki's nodetype", e);
     }

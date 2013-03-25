@@ -18,7 +18,7 @@
   -->
 
 <nodeTypes xmlns:nt="http://www.jcp.org/jcr/nt/1.0" xmlns:mix="http://www.jcp.org/jcr/mix/1.0" xmlns:jcr="http://www.jcp.org/jcr/1.0">
- 
+
   <!-- Node type generated for the class org.exoplatform.wiki.mow.core.api.wiki.UserWiki -->
   <nodeType name="wiki:userwiki" isMixin="false" hasOrderableChildNodes="false">
     <supertypes>
