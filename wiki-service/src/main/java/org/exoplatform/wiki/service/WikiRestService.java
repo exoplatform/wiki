@@ -19,19 +19,23 @@ package org.exoplatform.wiki.service;
 import javax.ws.rs.core.Response;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 20, 2010  
+ *  The WikiRestService provide a service rest to get a Wiki page content.
+ *  And many internal rest services to manage a wiki.
+ *
+ * @LevelAPI Experimental
  */
 public interface WikiRestService {
 
-  /**
-   * 
-   * @param sessionKey key is used to retrieve the editor input value from the session.
-   * @param isMarkup if <em>true</em> then <em>markup content</em> is returned else <em>html content</em> is returned
-   * @return the instance of javax.ws.rs.core.Response
-   */
+    /**
+     * Return the wiki page content as html or markup.
+     * @param sessionKey key is used to retrieve the editor input value from the session.
+     * @param wikiContextKey  contain the context key which contain the syntax.
+     * @param isMarkup if <em>true</em> then <em>markup content</em> is returned else <em>html content</em> is returned
+     * @param data contain the data as html
+     * @return the instance of javax.ws.rs.core.Response
+     *
+     * @LevelAPI Experimental
+     */
   Response getWikiPageContent(String sessionKey,
                               String wikiContextKey,
                               boolean isMarkup,

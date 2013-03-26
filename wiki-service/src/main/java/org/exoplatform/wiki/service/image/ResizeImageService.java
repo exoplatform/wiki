@@ -19,10 +19,10 @@ package org.exoplatform.wiki.service.image;
 import java.io.InputStream;
 
 /**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 2 Jun 2011  
+ * The ResizeImageService provide different function to let you use some images
+ * by keeping the right ratio and optimize it.
+ *
+ * @LevelAPI Platform
  */
 public interface ResizeImageService {
 

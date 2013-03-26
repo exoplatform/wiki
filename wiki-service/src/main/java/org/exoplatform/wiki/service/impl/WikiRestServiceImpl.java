@@ -104,10 +104,7 @@ import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 20, 2010  
+ * {@inheritDoc}
  */
 @Path("/wiki")
 public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
@@ -187,6 +184,13 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     return Response.ok(data, MediaType.TEXT_HTML).cacheControl(cc).build();
   }
 
+  /**
+   * Upload an attachment to a wiki page
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param pageId Is the pageId used by the system
+   * @return the instance of javax.ws.rs.core.Response
+   */
   @POST
   @Path("/upload/{wikiType}/{wikiOwner:.+}/{pageId}/")
   public Response upload(@PathParam("wikiType") String wikiType,
@@ -238,6 +242,15 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     return Response.ok().build();
   }
 
+  /**
+   * Display the current tree of a wiki based on is path
+   * @param type It can be a Portal, Group, User type of wiki
+   * @param path Contains the path of the wiki page
+   * @param currentPath Contains the path of the current wiki page
+   * @param showExcerpt Boolean to display or not the excerpt
+   * @param depth Defined the depth of the children we want to display
+   * @return List of descendants including the page itself.
+   */
   @GET
   @Path("/tree/{type}")
   @Produces(MediaType.APPLICATION_JSON)
@@ -285,7 +298,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       return Response.serverError().entity(e.getMessage()).cacheControl(cc).build();
     }
   }
-  
+
+  /**
+   * Return the related pages of a Wiki page
+   * @param path Contains the path of the wiki page
+   * @return List of related pages
+   */
   @GET
   @Path("/related/")
   @Produces(MediaType.APPLICATION_JSON)
@@ -307,7 +325,15 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       return Response.serverError().cacheControl(cc).build();
     }
   }
-  
+
+  /**
+   * Return a list of wiki based on their type.
+   * @param uriInfo Uri of the wiki
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param start Not used
+   * @param number Not used
+   * @return List of wikis by type
+   */
   @GET
   @Path("/{wikiType}/spaces")
   @Produces("application/xml")
@@ -348,7 +374,14 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     T propertyValue = (T) spaceClass.getMethod(getterMethod).invoke(space);
     return propertyValue;
   }
-  
+
+  /**
+   * Return a list of last visited spaces by the user.
+   * @param uriInfo Uri of the wiki
+   * @param offset The offset to search
+   * @param limit Limit number to search
+   * @return List of spaces
+   */
   @GET
   @Path("/lastVisited/spaces")
   @Produces("application/xml")
@@ -372,7 +405,14 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     return spaces;
   }
-  
+
+  /**
+   * Return the space based on the uri
+   * @param uriInfo Uri of the wiki
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @return Space related to the uri
+   */
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/")
   @Produces("application/xml")
@@ -389,6 +429,16 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     return createSpace(objectFactory, uriInfo.getBaseUri(), wikiType, wikiOwner, page);
   }
 
+  /**
+   * Return a list of pages related to the space and uri
+   * @param uriInfo Uri of the wiki
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param start Not used
+   * @param number Not used
+   * @param parentFilterExpression
+   * @return List of pages
+   */
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/pages")
   @Produces("application/xml")
@@ -427,7 +477,15 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
     return pages;
   }
-  
+
+  /**
+   * Return a wiki page based on is uri and id
+   * @param uriInfo Uri of the wiki
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param pageId Id of the wiki page
+   * @return A wiki page
+   */
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/pages/{pageId}")
   @Produces("application/xml")
@@ -446,7 +504,17 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     return objectFactory.createPage();
   }
-  
+
+    /**
+     * Return a list of attachments attached to a wiki page
+     * @param uriInfo Uri of the wiki
+     * @param wikiType It can be a Portal, Group, User type of wiki
+     * @param wikiOwner Is the owner of the wiki
+     * @param pageId Id of the wiki page
+     * @param start Not used
+     * @param number Not used
+     * @return List of attachments
+     */
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/pages/{pageId}/attachments")
   @Produces("application/xml")
@@ -469,7 +537,15 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     return attachments;
   }
-  
+
+  /**
+   * Return a list of title based on a searched words.
+   * @param keyword Word to search
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @return List of title
+   * @throws Exception
+   */
   @GET
   @Path("contextsearch/")
   @Produces(MediaType.APPLICATION_JSON)
@@ -489,7 +565,17 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }
-  
+
+  /**
+   * Return an image attach to the wiki page and keep the size ratio of it.
+   * @param uriInfo Uri of the wiki
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param pageId Id of the wiki page
+   * @param imageId Id of the image attached to the wiki page
+   * @param width expected width of the image, it will keep the ratio
+   * @return The response with the image
+   */
   @GET
   @Path("/images/{wikiType}/space/{wikiOwner:.+}/page/{pageId}/{imageId}")
   @Produces("image")

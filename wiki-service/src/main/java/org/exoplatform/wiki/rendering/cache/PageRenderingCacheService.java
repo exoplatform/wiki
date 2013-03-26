@@ -22,10 +22,15 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 /**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 17, 2012  
+ * This service Manage the Rendering Cache of wiki pages.
+ * The cache storage store all html markup from page wiki markup. Therefore, it saves much time in rendering markup, especially with long content page.
+ * Generally, its workflow as:
+ * Open a page, does this page's html markup exist in the cache ?
+ * - Yes = reuse this one.
+ * - No = Render the page and add to the cache.
+ * Editing a page  = invalidating the cache page.
+ *
+ * @LevelAPI Experimental
  */
 public interface PageRenderingCacheService {
   

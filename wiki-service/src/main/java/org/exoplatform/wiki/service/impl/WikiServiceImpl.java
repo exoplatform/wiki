@@ -979,10 +979,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
     return aces;
   }
-  
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public boolean hasAdminSpacePermission(String wikiType, String owner) throws Exception {
     ConversationState conversationState = ConversationState.getCurrent();
@@ -1003,10 +1000,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     String []permission = new String[]{PermissionType.ADMINSPACE.toString()};
     return Utils.hasPermission(acl, permission, user);
   }
-  
-  /**
-   * {@inheritDoc}
-   */
+
   @Override
   public boolean hasAdminPagePermission(String wikiType, String owner) throws Exception {
     ConversationState conversationState = ConversationState.getCurrent();
