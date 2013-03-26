@@ -31,12 +31,6 @@ import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionCompone
 import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 import org.exoplatform.wiki.webui.control.listener.BrowseContainerActionListener;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * Sep 07, 2012  
- */
 @ComponentConfig(
     template = "app:/templates/wiki/webui/control/action/MyDraftsActionComponent.gtmpl",                
     events = {

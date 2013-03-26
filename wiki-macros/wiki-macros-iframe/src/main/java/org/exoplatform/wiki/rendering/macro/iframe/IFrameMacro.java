@@ -28,11 +28,6 @@ import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 
 /**
- * Created by The eXo Platform SAS
- * Author : Dimitri BAELI
- *          dbaeli@exoplatform.com
- * 7 Jan 2012
- * 
  * Manage an iframe node
  */
 @Component("iframe")

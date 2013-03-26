@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Jan 4, 2011  
- */
 public enum IDType {
 
   GROUP,

@@ -26,12 +26,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.WikiPortletPreference;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 7 Dec 2010  
- */
 @ComponentConfig(
                  lifecycle = Lifecycle.class,
                  template = "app:/templates/wiki/webui/UIWikiMiddleArea.gtmpl",

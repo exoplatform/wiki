@@ -23,12 +23,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.service.PermissionType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Jan 17, 2011  
- */
 public class AdminSpacePermissionFilter extends UIExtensionAbstractFilter {
 
   public AdminSpacePermissionFilter() {

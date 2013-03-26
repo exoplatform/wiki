@@ -34,13 +34,6 @@ import org.xwiki.rendering.macro.MacroExecutionException;
 import org.xwiki.rendering.macro.descriptor.DefaultContentDescriptor;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Dec 29, 2010  
- */
-
 @Component("float")
 public class FloatMacro extends AbstractMacro<FloatMacroParameters> {
   

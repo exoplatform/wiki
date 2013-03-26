@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui.control.listener;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Feb 10, 2011  
- */
 public abstract class UIRelatedPagesContainerActionListener<T extends UIComponent> extends UIPageToolBarActionListener<T> {
 
   @Override

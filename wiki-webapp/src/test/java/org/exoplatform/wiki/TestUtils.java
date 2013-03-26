@@ -18,12 +18,6 @@ package org.exoplatform.wiki;
 
 import junit.framework.TestCase;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 4, 2012  
- */
 public class TestUtils extends TestCase {
 
   public void testGetURLFromParams() throws Exception {

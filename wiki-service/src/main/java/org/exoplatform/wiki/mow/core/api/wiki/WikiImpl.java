@@ -37,9 +37,8 @@ import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.rendering.syntax.Syntax;
+
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 public abstract class WikiImpl implements Wiki {

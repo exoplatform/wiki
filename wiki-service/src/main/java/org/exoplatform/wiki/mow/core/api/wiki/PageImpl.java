@@ -67,12 +67,6 @@ import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Mar 26, 2010  
- */
 @PrimaryType(name = WikiNodeType.WIKI_PAGE)
 public abstract class PageImpl extends NTFolder implements Page {
   

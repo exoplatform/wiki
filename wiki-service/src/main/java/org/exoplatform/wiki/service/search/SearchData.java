@@ -27,12 +27,6 @@ import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 28 Jan 2011  
- */
 public class SearchData {
   public String title;
 

@@ -36,12 +36,6 @@ import org.exoplatform.wiki.webui.control.action.RestoreRevisionActionComponent;
 import org.exoplatform.wiki.webui.control.action.ViewRevisionActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 13, 2010  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiPageVersionsList.gtmpl",

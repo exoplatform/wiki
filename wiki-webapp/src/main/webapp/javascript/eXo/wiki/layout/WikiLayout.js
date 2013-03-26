@@ -122,7 +122,6 @@ WikiLayout.prototype.getCookie = function (c_name) {
 /**
  * @function   setCookie
  * @return     saved cookie with given name
- * @author     vinh_nguyen@exoplatform.com
  */
 WikiLayout.prototype.setCookie = function (c_name, value, exdays) {
   var exdate = new Date();
@@ -367,7 +366,6 @@ WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
 /**
  * Function      showHideSideBar
  * @purpose      Switch the visible of the leftcontainer
- * @author       vinh_nguyen@exoplatform.com
  */
 WikiLayout.prototype.showHideSideBar = function (e, savedValue) {
   var me = eXo.wiki.WikiLayout;

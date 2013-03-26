@@ -20,12 +20,6 @@ import java.util.HashMap;
 
 import org.exoplatform.webui.core.UIContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Jul 8, 2011  
- */
 public class UIExtensionContainer extends UIContainer {  
   
   private HashMap<String, Object> extContext = null;

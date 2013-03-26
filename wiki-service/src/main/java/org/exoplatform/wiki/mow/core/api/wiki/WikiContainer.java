@@ -30,8 +30,6 @@ import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.service.WikiService;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 public abstract class WikiContainer<T extends Wiki> {

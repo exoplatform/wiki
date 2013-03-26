@@ -44,13 +44,6 @@ import org.exoplatform.wiki.webui.commons.UIWikiGrid;
 import org.exoplatform.wiki.webui.commons.UIWikiTemplateForm;
 import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Feb 10, 2011  
- */
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
     template = "app:/templates/wiki/webui/commons/UIWikiTemplateForm.gtmpl",

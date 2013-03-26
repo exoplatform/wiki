@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui.control.listener;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.wiki.webui.control.UIEditorTabs;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Sep 7, 2011  
- */
 public class UIEditorTabsActionListener<T extends UIComponent> extends UIWikiPortletActionListener<T> {
 
   @Override

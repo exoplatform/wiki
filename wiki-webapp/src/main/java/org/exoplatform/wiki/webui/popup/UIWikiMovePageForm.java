@@ -57,12 +57,6 @@ import org.exoplatform.wiki.webui.UIWikiRichTextArea;
 import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 2, 2010  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class, 
   template = "app:/templates/wiki/webui/popup/UIWikiMovePageForm.gtmpl",

@@ -24,12 +24,6 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 31, 2010  
- */
 public class UIWikiForm extends UIForm {
   protected List<WikiMode> accept_Modes = new ArrayList<WikiMode>();
 

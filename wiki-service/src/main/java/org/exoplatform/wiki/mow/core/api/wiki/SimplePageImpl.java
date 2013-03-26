@@ -32,11 +32,6 @@ import org.exoplatform.wiki.service.PermissionType;
 /**
  * 
  * Simple {@link Page} implementation, includes only getter and setter methods.
- * <p> 
- * Created by The eXo Platform SAS
- * @Author <a href="mailto:quanglt@exoplatform.com">Le Thanh Quang</a>
- * Apr 25, 2011
- * </p>  
  */
 public class SimplePageImpl implements Page {
   private Collection<? extends Attachment> attachments;

@@ -23,12 +23,6 @@ import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 11, 2010  
- */
 @PrimaryType(name = WikiNodeType.LINK_REGISTRY)
 public abstract class LinkRegistry {
 

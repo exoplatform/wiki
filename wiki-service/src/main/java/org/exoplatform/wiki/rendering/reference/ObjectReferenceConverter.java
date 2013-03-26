@@ -18,12 +18,6 @@ package org.exoplatform.wiki.rendering.reference;
 
 import org.xwiki.component.annotation.Role;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Oct 17, 2011  
- */
 @Role
 public interface ObjectReferenceConverter {
   

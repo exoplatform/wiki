@@ -25,10 +25,7 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 
 /**
- * This filter is used to deny component if it is installed on Wiki home page. <br>
- * Author : Le Thanh Quang
- *          quang.le@exoplatform.com
- * Dec 9, 2010  
+ * This filter is used to deny component if it is installed on Wiki home page.
  */
 public class DeniedOnWikiHomePageFilter implements UIExtensionFilter {
 

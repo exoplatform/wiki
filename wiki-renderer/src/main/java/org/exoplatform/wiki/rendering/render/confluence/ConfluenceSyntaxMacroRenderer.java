@@ -21,13 +21,6 @@ import java.util.Map;
 import org.xwiki.rendering.internal.renderer.ParametersPrinter;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
-/**
  * Generates Confluence Syntax for a Macro Block.
  */
 public class ConfluenceSyntaxMacroRenderer {

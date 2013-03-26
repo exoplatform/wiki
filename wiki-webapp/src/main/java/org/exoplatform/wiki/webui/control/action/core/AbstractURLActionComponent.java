@@ -16,13 +16,6 @@
  */
 package org.exoplatform.wiki.webui.control.action.core;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 24 Mar 2011  
- */
 public abstract class AbstractURLActionComponent extends AbstractActionComponent {
 
   @Override

@@ -24,12 +24,6 @@ import org.xwiki.component.annotation.Component;
 import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.parser.ResourceReferenceParser;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Jan 17, 2012  
- */
 @Component("confluence/1.0/link")
 public class ConfluenceLinkReferenceParser implements ResourceReferenceParser {
   

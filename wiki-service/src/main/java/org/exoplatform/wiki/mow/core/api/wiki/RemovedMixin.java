@@ -27,7 +27,6 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Property;
 
 /**
- * @author <a href="mailto:</a>
  * @version $Revision$
  */
 @MixinType(name = "wiki:removed")

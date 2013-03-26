@@ -21,12 +21,6 @@ import org.exoplatform.wiki.rendering.macro.MacroUtils;
 import org.xwiki.properties.annotation.PropertyDescription;
 import org.xwiki.rendering.macro.MacroExecutionException;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 06, 2011  
- */
 public class PageTreeMacroParameters {
 
   /**

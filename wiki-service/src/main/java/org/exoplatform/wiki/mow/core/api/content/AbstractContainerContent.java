@@ -20,9 +20,7 @@ import org.exoplatform.wiki.mow.api.content.ContentItem;
 
 /**
  * Abstract class for container content items such as paragraphs
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public abstract class AbstractContainerContent extends AbstractContentItem {

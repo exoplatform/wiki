@@ -24,13 +24,6 @@ import org.xwiki.rendering.renderer.printer.LookaheadWikiPrinter;
 import org.xwiki.rendering.renderer.printer.WikiPrinter;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
-/**
  * A Wiki printer that knows how to escape characters that would otherwise mean something different in Confluence wiki
  * syntax. For example if we have "*" as special symbols (and not as a Bold Format block) we need to escape them to
  * "~*" as otherwise they'd be considered bold after being rendered.

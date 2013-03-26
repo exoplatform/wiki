@@ -24,12 +24,6 @@ import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 13, 2010  
- */
 @ComponentConfig(
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiHistorySpaceArea.gtmpl"

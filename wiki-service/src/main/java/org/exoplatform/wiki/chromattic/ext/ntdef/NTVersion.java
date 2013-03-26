@@ -25,12 +25,6 @@ import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 6, 2010  
- */
 @PrimaryType(name = "nt:version")
 public abstract class NTVersion {
 

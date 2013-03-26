@@ -25,12 +25,6 @@ import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.service.PermissionType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * October 27, 2011  
- */
 public abstract class Permission {
   protected MOWService mowService;
   

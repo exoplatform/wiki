@@ -29,12 +29,7 @@ import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * Aug 20, 2012  
- */
+
 @PrimaryType(name = WikiNodeType.WIKI_DRAFT_PAGE)
 public abstract class DraftPageImpl extends PageImpl implements DraftPage {
   @Property(name = WikiNodeType.Definition.DRAFT_TARGET_PAGE)

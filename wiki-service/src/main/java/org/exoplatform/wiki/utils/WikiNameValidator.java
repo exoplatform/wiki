@@ -20,12 +20,6 @@ import java.util.StringTokenizer;
 
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 28 Mar 2011  
- */
 public class WikiNameValidator {
   
   public static final String INVALID_CHARACTERS  = "% = : @ / \\ | ^ # ; [ ] { } < > * ' \" + ? &"; // and .

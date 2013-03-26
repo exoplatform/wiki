@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui.control.listener;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.wiki.webui.control.BrowseExtensionContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 25, 2010  
- */
 public abstract class BrowseContainerActionListener<T extends UIComponent> extends UIWikiPortletActionListener<T> {
 
   @Override

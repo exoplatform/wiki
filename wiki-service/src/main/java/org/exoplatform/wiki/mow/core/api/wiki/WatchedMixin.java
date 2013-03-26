@@ -25,12 +25,6 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Property;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 22 Dec 2010  
- */
 @MixinType(name = WikiNodeType.WIKI_WATCHED)
 public abstract class WatchedMixin {
 

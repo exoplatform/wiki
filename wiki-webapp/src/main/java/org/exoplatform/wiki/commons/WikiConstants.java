@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.commons;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Jul 29, 2011  
- */
 public interface WikiConstants {
 
   public static final String WIKI_MODE          = "mode";

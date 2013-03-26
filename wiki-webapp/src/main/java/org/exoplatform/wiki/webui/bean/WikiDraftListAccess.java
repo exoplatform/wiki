@@ -20,12 +20,6 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * 10 Sep 2012  
- */
 public class WikiDraftListAccess implements ListAccess<DraftBean> {
 
   private final List<DraftBean> list;

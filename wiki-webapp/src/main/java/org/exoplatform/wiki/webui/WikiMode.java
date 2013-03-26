@@ -16,14 +16,6 @@
  */
 package org.exoplatform.wiki.webui;
 
-
-
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 27, 2010  
- */
 public enum WikiMode {
   
   PORTLETPREFERENCES,

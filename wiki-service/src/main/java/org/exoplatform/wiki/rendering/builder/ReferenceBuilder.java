@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.builder;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.xwiki.component.annotation.Role;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Oct 27, 2011  
- */
 @Role
 public interface ReferenceBuilder {
 

@@ -18,12 +18,6 @@ package org.exoplatform.wiki.rendering.macro.section;
 
 import org.apache.commons.lang.StringUtils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 15 Mar 2011  
- */
 public class ColumnStyle {
   private static final String FLOAT_RULE = "float:left;";
 

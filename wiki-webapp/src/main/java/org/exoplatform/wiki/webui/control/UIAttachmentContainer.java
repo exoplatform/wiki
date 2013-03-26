@@ -20,12 +20,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 import org.exoplatform.wiki.webui.UIWikiAttachmentUploadListForm;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * Aug 31, 2011  
- */
 @ComponentConfig(lifecycle = UIContainerLifecycle.class)
 public class UIAttachmentContainer extends UIWikiExtensionContainer {
   public static final String EXTENSION_TYPE = "org.exoplatform.wiki.webui.control.UIAttachmentContainer";

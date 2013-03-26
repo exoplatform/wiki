@@ -21,13 +21,6 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.form.input.UIUploadInput;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 19, 2010  
- */
 @ComponentConfig(
    template = "app:/templates/wiki/webui/form/UIWikiFormUploadInput.gtmpl", 
    events = {

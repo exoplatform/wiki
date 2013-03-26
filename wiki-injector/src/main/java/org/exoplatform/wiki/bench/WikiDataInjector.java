@@ -34,12 +34,7 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiService;
 
 /**
- * <p>
  * Plugin for injecting Wiki data.
- * </p>
- * Created by The eXo Platform SAS
- * @Author : <a href="mailto:quanglt@exoplatform.com">Le Thanh Quang</a>
- * Jul 21, 2011  
  */
 public class WikiDataInjector extends DataInjector {
   

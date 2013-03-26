@@ -22,12 +22,6 @@ import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.renderer.reference.ResourceReferenceSerializer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 9 Mar 2011  
- */
 @Component("confluence/1.0/link")
 public class ConfluenceResourceReferenceSerializer implements ResourceReferenceSerializer {
   /**

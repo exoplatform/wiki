@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui.control.action.core;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 24 Mar 2011  
- */
 public abstract class AbstractFormActionComponent extends AbstractActionComponent {
 
   @Override

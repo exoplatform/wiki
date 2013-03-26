@@ -20,9 +20,7 @@ import java.util.Calendar;
 
 /**
  * Represents the status of an updated object
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public interface Updated {

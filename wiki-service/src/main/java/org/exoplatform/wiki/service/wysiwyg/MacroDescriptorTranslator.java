@@ -20,12 +20,6 @@ import org.xwiki.component.annotation.Role;
 import org.xwiki.gwt.wysiwyg.client.plugin.macro.MacroDescriptor;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 18, 2010  
- */
-/**
  * Translates a {@link MacroDescriptor} into the execution context language.
  */
 @Role

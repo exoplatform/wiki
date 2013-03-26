@@ -44,12 +44,6 @@ import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 14, 2010  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiAdvanceSearchForm.gtmpl",

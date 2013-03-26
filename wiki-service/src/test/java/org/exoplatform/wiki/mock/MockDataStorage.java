@@ -40,12 +40,6 @@ import org.exoplatform.services.log.Log;
 import org.mockito.Mockito;
 import org.picocontainer.Startable;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 3, 2012
- */
 public class MockDataStorage implements DataStorage,Startable {
 
   private static final Log      LOG                  = ExoLogger.getLogger(MockDataStorage.class);

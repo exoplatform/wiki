@@ -19,8 +19,6 @@ package org.exoplatform.wiki.mow.api.meta;
 import java.util.Calendar;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 public interface Moved {

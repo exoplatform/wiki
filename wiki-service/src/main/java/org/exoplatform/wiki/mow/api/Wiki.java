@@ -21,8 +21,6 @@ import java.util.List;
 import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 public interface Wiki {

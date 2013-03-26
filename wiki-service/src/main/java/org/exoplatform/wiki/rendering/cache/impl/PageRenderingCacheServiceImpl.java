@@ -37,12 +37,6 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 17, 2012  
- */
 public class PageRenderingCacheServiceImpl implements PageRenderingCacheService {
   
   public static final String              CACHE_NAME = "wiki.PageRenderingCache";

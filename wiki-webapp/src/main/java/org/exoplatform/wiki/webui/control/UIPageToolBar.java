@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui.control;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
- */
 @ComponentConfig(
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/control/UIPageToolBar.gtmpl"

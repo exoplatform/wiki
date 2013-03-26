@@ -44,12 +44,6 @@ import org.exoplatform.wiki.webui.control.listener.UIWikiPortletActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.form.UIWikiFormUploadInput;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiUploadAttachment.gtmpl",

@@ -36,12 +36,6 @@ import org.exoplatform.wiki.webui.control.action.RestoreRevisionActionComponent;
 import org.exoplatform.wiki.webui.control.action.ShowHistoryActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Sep 14, 2010  
- */
 @ComponentConfig(
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiVersionSelect.gtmpl",

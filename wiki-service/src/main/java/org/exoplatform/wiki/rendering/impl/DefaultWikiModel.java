@@ -47,10 +47,6 @@ import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.wiki.WikiModel;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Nov
- * 5, 2009
- */
 @Component
 public class DefaultWikiModel implements WikiModel {
   

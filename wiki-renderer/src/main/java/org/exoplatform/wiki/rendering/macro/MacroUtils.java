@@ -30,12 +30,6 @@ import org.xwiki.rendering.parser.Parser;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 import org.xwiki.rendering.util.ParserUtils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 12 Jan 2011  
- */
 public class MacroUtils {
   /**
    * Parse provided content with the parser of the current wiki syntax.

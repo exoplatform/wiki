@@ -23,13 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.xwiki.rendering.listener.chaining.BlockStateChainingListener;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
-/**
  * Escape characters that would be confused for Confluence wiki syntax if they were not escaped.
  */
 public class ConfluenceSyntaxEscapeHandler {

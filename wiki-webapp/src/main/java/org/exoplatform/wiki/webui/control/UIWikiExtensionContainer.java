@@ -29,12 +29,6 @@ import org.exoplatform.webui.ext.UIExtensionManager;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.core.UIExtensionContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 14 Mar 2011  
- */
 public abstract class UIWikiExtensionContainer extends UIExtensionContainer {
   
   protected int extensionSize;

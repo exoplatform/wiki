@@ -29,12 +29,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.junit.Assert;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 7, 2010  
- */
 public class TestVersioning extends AbstractMOWTestcase {
 
   public void testGetVersionHistory() throws Exception {

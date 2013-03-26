@@ -23,12 +23,6 @@ import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 import org.exoplatform.wiki.webui.popup.UIWikiSettingContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * 01 Aug 2011  
- */
 @ComponentConfig(lifecycle = UIContainerLifecycle.class)
 public class UIWikiPageSettingContainer extends UIWikiContainer {
   public static final String SETTING_CONTAINER = "UIWikiSettingContainer";

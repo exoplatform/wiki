@@ -24,12 +24,6 @@ import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 24, 2010  
- */
 public class SessionCreatedListener extends Listener<PortalContainer, HttpSessionEvent> {
 
   private static Log LOG = ExoLogger.getLogger("SessionCreatedListener");

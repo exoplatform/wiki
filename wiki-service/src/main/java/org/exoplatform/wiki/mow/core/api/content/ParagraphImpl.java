@@ -20,8 +20,6 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.wiki.mow.api.content.Paragraph;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 @PrimaryType(name = "wiki:paragraph")

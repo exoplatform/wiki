@@ -48,13 +48,6 @@ import org.xwiki.rendering.syntax.SyntaxType;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 import org.xwiki.rendering.wiki.WikiModel;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 11, 2011  
- */
-
 @Component("pagetree")
 public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
   private Log log = ExoLogger.getLogger(this.getClass());

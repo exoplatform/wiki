@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 26, 2010  
- */
 public class Relations {
 
   public static final String SELF            = "self";

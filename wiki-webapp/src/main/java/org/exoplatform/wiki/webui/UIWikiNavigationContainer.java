@@ -26,12 +26,6 @@ import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 7 Dec 2010  
- */
 @ComponentConfig(
                  lifecycle = UIFormLifecycle.class,
                  template = "app:/templates/wiki/webui/UIWikiNavigationContainer.gtmpl"

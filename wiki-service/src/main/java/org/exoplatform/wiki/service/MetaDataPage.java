@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Oct 26, 2011  
- */
 public enum MetaDataPage {
 
   EMOTION_ICONS_PAGE

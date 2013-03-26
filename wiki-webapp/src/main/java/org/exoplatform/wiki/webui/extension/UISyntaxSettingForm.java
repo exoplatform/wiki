@@ -33,13 +33,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.PreferencesSyntax;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiSyntaxPreferences;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 27 Jan 2011  
- */
-
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class, template = "app:/templates/wiki/webui/extension/UISyntaxSettingForm.gtmpl",
   events = {

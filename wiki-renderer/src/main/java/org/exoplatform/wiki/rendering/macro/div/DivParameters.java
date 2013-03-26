@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.macro.div;
 import org.apache.commons.lang.StringUtils;
 import org.xwiki.properties.annotation.PropertyDescription;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Jul 13, 2011  
- */
 public class DivParameters {
 
   /**

@@ -29,12 +29,6 @@ import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 17, 2012  
- */
 public final class TestPageRenderingCacheService extends AbstractRenderingTestCase {
   
   private PageRenderingCacheService renderingCacheService;

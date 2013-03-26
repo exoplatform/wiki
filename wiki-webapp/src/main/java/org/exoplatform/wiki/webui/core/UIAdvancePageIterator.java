@@ -28,12 +28,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.webui.UIWikiAdvanceSearchForm;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Oct 1, 2010  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/UIAdvancePageIterator.gtmpl",
   events = {

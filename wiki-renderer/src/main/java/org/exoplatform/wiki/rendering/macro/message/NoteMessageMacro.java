@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.macro.message;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.rendering.internal.macro.message.AbstractMessageMacro;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 23, 2010  
- */
 @Component("note")
 public class NoteMessageMacro extends AbstractMessageMacro {
 

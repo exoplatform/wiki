@@ -35,12 +35,6 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 10, 2010  
- */
 public class Injector implements LifeCycleListener, StateChangeListener {
   
   private final MOWService mowService;

@@ -26,7 +26,6 @@ import org.chromattic.api.annotations.Property;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 /**
- * @author <a href="mailto:</a>
  * @version $Revision$
  */
 @MixinType(name = "wiki:renamed")

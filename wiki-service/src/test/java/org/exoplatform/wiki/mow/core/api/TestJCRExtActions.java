@@ -24,12 +24,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 11, 2010  
- */
 public class TestJCRExtActions extends AbstractMOWTestcase {
 
   public void testUpdateWikiPageAction() throws Exception {

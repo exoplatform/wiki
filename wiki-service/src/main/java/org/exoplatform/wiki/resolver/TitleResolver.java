@@ -23,12 +23,6 @@ import java.util.StringTokenizer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 7, 2010  
- */
 public class TitleResolver {
   
   private static final Log      log               = ExoLogger.getLogger(TitleResolver.class);

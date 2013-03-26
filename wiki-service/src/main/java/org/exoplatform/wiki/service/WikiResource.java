@@ -18,12 +18,6 @@ package org.exoplatform.wiki.service;
 
 import org.chromattic.ext.ntdef.Resource;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 6, 2010  
- */
 public class WikiResource extends Resource {
 
   private String name;

@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.macro.panel;
 import org.apache.commons.lang.StringUtils;
 import org.xwiki.properties.annotation.PropertyDescription;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 26, 2010  
- */
 public class PanelMacroParameters {
 
   /**

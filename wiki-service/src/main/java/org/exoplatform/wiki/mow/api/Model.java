@@ -16,10 +16,6 @@
  */
 package org.exoplatform.wiki.mow.api;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Nov
- * 8, 2009
- */
 public interface Model {
 
   WikiStore getWikiStore();

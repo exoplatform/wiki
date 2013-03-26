@@ -24,12 +24,6 @@ import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiVersionSelect;
 import org.exoplatform.wiki.webui.WikiMode;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 14 Jun 2011  
- */
 public class ViewRevisionActionListener extends EventListener<UIComponent> {
 
   @Override

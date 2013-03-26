@@ -25,12 +25,6 @@ import java.util.Properties;
 
 import org.xwiki.configuration.ConfigurationSource;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Oct 25, 2011  
- */
 public class DefaultConfigurationSource implements ConfigurationSource {
 
   private Map<String, Object> properties = new HashMap<String, Object>();

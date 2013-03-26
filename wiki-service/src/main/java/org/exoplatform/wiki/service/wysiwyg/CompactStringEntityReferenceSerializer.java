@@ -25,12 +25,6 @@ import org.xwiki.model.internal.reference.DefaultStringEntityReferenceSerializer
 import org.xwiki.model.reference.EntityReference;
 import org.xwiki.model.reference.EntityReferenceValueProvider;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 16, 2010  
- */
 @Component("compact")
 public class CompactStringEntityReferenceSerializer extends DefaultStringEntityReferenceSerializer {
 

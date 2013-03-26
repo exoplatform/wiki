@@ -28,13 +28,6 @@ import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.renderer.reference.ResourceReferenceSerializer;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
-/**
  * Logic to render a Confluence Link into Confluence syntax.
  */
 public class ConfluenceSyntaxLinkRenderer {

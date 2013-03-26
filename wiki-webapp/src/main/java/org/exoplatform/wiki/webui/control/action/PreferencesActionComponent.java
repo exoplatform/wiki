@@ -32,12 +32,6 @@ import org.exoplatform.wiki.webui.control.filter.AdminSpacePermissionFilter;
 import org.exoplatform.wiki.webui.control.listener.BrowseContainerActionListener;
 import org.exoplatform.wiki.webui.popup.UIWikiSettingContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 25, 2010  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",                
   events = {

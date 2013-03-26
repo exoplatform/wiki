@@ -49,13 +49,6 @@ import org.exoplatform.wiki.webui.control.filter.IsEditAddTemplateModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UISubmitToolBarActionListener;
 import org.exoplatform.wiki.webui.extension.UITemplateSettingForm;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 9 Feb 2011  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/SaveTemplateActionComponent.gtmpl",                   
   events = {

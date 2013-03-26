@@ -33,12 +33,8 @@ import org.exoplatform.webui.form.UIFormInputBase;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-/**
- * Created by The eXo Platform SARL
- * Author : Dang Van Minh
- *          minh.dang@exoplatform.com
- * Sep 20, 2006
- */
+
+
 @Serialized
 public class UIFormInputWithActions extends UIFormInputSet {
 

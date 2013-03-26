@@ -21,12 +21,6 @@ import org.chromattic.api.annotations.Property;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 28 Jan 2011  
- */
 @PrimaryType(name = WikiNodeType.WIKI_TEMPLATE)
 public abstract class Template extends PageImpl {
   

@@ -31,12 +31,6 @@ import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * October 27, 2011  
- */
 public class PermissionImpl extends Permission {
   @Override
   public HashMap<String, String[]> getPermission(String jcrPath) throws Exception {

@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 7 Dec 2010  
- */
 @ComponentConfig(
                  template = "app:/templates/wiki/webui/UIWikiPageContainer.gtmpl"
                )

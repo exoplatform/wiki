@@ -20,9 +20,7 @@ import org.exoplatform.wiki.mow.api.Page;
 
 /**
  * Represents a link to another wiki page.
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public interface Link extends ContentItem {

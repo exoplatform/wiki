@@ -38,12 +38,6 @@ import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.filter.OwnerPagesOrAdminSpacePermissionFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Dec 29, 2010  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
   events = {

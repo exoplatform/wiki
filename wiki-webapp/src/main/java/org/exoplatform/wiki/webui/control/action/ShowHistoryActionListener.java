@@ -22,12 +22,6 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 14 Jun 2011  
- */
 public class ShowHistoryActionListener extends EventListener<UIComponent> {
 
   public static final String SHOW_HISTORY = "ShowHistory";

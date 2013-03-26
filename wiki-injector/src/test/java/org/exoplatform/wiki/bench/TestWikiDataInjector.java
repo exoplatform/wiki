@@ -38,12 +38,6 @@ import org.exoplatform.wiki.bench.WikiDataInjector.CONSTANTS;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiService;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 24, 2012  
- */
 public class TestWikiDataInjector extends TestCase {
 
   private static StandaloneContainer container;

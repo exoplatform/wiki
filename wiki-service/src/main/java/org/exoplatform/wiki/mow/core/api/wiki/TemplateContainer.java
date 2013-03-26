@@ -26,12 +26,6 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 26 Jan 2011  
- */
 @PrimaryType(name = WikiNodeType.WIKI_TEMPLATE_CONTAINER)
 public abstract class TemplateContainer {
   

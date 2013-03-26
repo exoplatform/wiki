@@ -30,8 +30,6 @@ import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.utils.Utils;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 @PrimaryType(name = WikiNodeType.PORTAL_WIKI_CONTAINER)

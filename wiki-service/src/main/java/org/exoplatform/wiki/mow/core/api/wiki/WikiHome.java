@@ -21,12 +21,6 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Mar 29, 2010  
- */
 @PrimaryType(name = WikiNodeType.WIKI_HOME)
 public abstract class WikiHome extends PageImpl {
 

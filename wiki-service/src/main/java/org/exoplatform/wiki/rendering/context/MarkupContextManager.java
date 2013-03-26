@@ -20,12 +20,6 @@ import org.exoplatform.wiki.service.WikiContext;
 import org.xwiki.component.annotation.Role;
 import org.xwiki.rendering.listener.reference.ResourceType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Oct 27, 2011  
- */
 @Role
 public interface MarkupContextManager {
   /**

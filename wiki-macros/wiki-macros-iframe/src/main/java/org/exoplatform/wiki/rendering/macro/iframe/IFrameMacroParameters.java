@@ -20,11 +20,6 @@ import org.apache.commons.lang.StringUtils;
 import org.xwiki.properties.annotation.PropertyDescription;
 
 /**
- * Created by The eXo Platform SAS
- * Author : Dimitri BAELI
- *          dbaeli@exoplatform.com
- * 7 Jan 2012
- * 
  * Manage an iframe node
  */
 public class IFrameMacroParameters {

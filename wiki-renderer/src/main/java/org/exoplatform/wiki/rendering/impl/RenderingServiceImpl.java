@@ -65,10 +65,6 @@ import org.xwiki.xml.html.HTMLCleaner;
 import org.xwiki.xml.html.HTMLCleanerConfiguration;
 import org.xwiki.xml.html.HTMLUtils;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Nov
- * 5, 2009
- */
 public class RenderingServiceImpl implements RenderingService, Startable {
   
   private String cssURL; 

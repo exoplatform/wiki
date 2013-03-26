@@ -34,12 +34,6 @@ import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
 import org.exoplatform.wiki.webui.control.listener.UIRelatedPagesContainerActionListener;
 import org.exoplatform.wiki.webui.popup.UIWikiSelectPageForm;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 30 Mar 2011  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/AddRelatedPageActionComponent.gtmpl",
   events = {

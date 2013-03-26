@@ -34,12 +34,6 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * Nov 16, 2012 
- */
 public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
   private static final String WIKI_PORTLET_NAME = "wiki";
   

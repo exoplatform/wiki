@@ -84,12 +84,6 @@ import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 22, 2010  
- */
 public class Utils {  
  
   public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;

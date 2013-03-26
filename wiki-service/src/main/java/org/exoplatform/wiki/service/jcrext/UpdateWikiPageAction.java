@@ -31,12 +31,6 @@ import org.exoplatform.services.jcr.observation.ExtendedEvent;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 10, 2010  
- */
 public class UpdateWikiPageAction implements Action {
   
   List<String> unSupportChangePageInfo = Arrays.asList(new String[] { WikiNodeType.Definition.WATCHER });

@@ -21,12 +21,6 @@ import java.util.ArrayList;
 
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 8, 2010  
- */
 public class WikiContext extends WikiPageParams implements Cloneable, Serializable {
   
   private static final long serialVersionUID = 1L;

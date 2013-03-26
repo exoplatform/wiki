@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.tree;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 11, 2010  
- */
 public enum TreeNodeType {
   ROOT, SPACE, WIKI, WIKIHOME, PAGE
 }

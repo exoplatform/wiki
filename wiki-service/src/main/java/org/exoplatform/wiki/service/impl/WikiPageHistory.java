@@ -18,12 +18,6 @@ package org.exoplatform.wiki.service.impl;
 
 import org.exoplatform.wiki.service.WikiPageParams;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * 07 Sep 2012  
- */
 public class WikiPageHistory {
   private WikiPageParams pageParams;
   

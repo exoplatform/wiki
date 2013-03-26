@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service.search;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Sep 22, 2010  
- */
 public class TitleSearchResult {
   private String title;
 

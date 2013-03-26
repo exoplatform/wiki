@@ -22,12 +22,6 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Mar 4, 2011  
- */
 @Path("/jcrwiki")
 public class WebDavServiceImpl extends org.exoplatform.services.jcr.webdav.WebDavServiceImpl implements WebDavService {
 

@@ -25,12 +25,6 @@ import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.renderer.reference.ResourceReferenceSerializer;
 import org.xwiki.rendering.transformation.icon.IconTransformationConfiguration;
 
-/**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * March 16, 2012  
- */
 public class DefaultXWikiSyntaxChainingRenderer extends org.xwiki.rendering.internal.renderer.xwiki20.XWikiSyntaxChainingRenderer {
 
   private XWikiSyntaxResourceRenderer imageResourceRenderer;

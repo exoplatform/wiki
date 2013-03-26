@@ -33,12 +33,6 @@ import org.exoplatform.portal.mop.page.PageState;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.mock.MockDataStorage;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 3, 2012
- */
 public class MockUserPortalConfigService extends UserPortalConfigService {
 
   /**

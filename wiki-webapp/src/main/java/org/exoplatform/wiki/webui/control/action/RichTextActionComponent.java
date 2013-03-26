@@ -43,12 +43,6 @@ import org.exoplatform.wiki.webui.control.filter.IsEditAddPageModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UIEditorTabsActionListener;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 31, 2010  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/RichTextActionComponent.gtmpl",               
   events = {

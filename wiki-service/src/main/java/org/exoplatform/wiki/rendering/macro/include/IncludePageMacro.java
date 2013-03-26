@@ -43,13 +43,6 @@ import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 import org.xwiki.rendering.wiki.WikiModel;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 06, 2011  
- */
-
 @Component("includepage")
 public class IncludePageMacro extends AbstractMacro<IncludePageMacroParameters> {
   /**

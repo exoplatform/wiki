@@ -18,9 +18,7 @@ package org.exoplatform.wiki.mow.api.content;
 
 /**
  * A piece of markup text.
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public interface Markup extends ContentItem {

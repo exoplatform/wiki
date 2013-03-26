@@ -18,12 +18,6 @@ package org.exoplatform.wiki.rendering.cache;
 
 import java.io.Serializable;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 16, 2012  
- */
 public interface CacheData<T> extends Serializable {
 
   /**

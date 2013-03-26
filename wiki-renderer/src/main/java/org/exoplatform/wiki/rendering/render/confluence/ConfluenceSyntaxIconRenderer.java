@@ -24,13 +24,6 @@ import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.transformation.icon.IconTransformationConfiguration;
 
 /**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Dec 2, 2011  
- */
-
-/**
  * Generate a Confluence syntax string representation of an {@icon ResourceReference}
  */
 public class ConfluenceSyntaxIconRenderer {

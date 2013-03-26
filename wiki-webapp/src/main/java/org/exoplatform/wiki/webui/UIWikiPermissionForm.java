@@ -56,12 +56,6 @@ import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions.ActionData;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Jan 5, 2011  
- */
 @ComponentConfigs({
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,

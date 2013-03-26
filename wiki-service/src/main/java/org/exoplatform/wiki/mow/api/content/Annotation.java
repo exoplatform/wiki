@@ -20,9 +20,7 @@ import java.util.Calendar;
 
 /**
  * A side note An annotation can be inserted anywhere in content.
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public interface Annotation extends ContentItem {

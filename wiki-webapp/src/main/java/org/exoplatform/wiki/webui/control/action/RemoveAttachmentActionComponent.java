@@ -39,12 +39,6 @@ import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.control.filter.RemoveAttachmentPermissionFilter;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * 28 Oct 2011  
- */
 @ComponentConfig(
     lifecycle = Lifecycle.class,
     template = "app:/templates/wiki/webui/control/action/RemoveAttachmentActionComponent.gtmpl",

@@ -49,11 +49,6 @@ import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
 import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Nov
- * 5, 2009
- */
-
 @ComponentConfig(
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiPortlet.gtmpl",

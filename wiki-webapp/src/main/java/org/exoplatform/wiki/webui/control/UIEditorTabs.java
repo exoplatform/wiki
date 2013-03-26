@@ -19,13 +19,6 @@ package org.exoplatform.wiki.webui.control;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Sep 6, 2011  
- */
 @ComponentConfig(
     lifecycle = Lifecycle.class,
     template = "app:/templates/wiki/webui/control/UIEditorTabs.gtmpl"

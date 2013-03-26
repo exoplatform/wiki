@@ -23,12 +23,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Oct 8, 2010  
- */
 public class JsonNodeData {  
 
   protected String           name;

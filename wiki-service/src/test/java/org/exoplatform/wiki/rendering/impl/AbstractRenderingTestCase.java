@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.impl;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.exoplatform.wiki.rendering.RenderingService;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 15, 2010  
- */
 public abstract class AbstractRenderingTestCase extends AbstractMOWTestcase {
 
   protected RenderingService renderingService;
