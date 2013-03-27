@@ -29,6 +29,13 @@ import org.exoplatform.wiki.utils.Utils;
 
 import com.google.gwt.uibinder.elementparsers.IsEmptyParser;
 
+
+/**
+ *  The WikiSearchServiceConnector provide a connector service for the common unified search.
+ *  It implements a direct search in the jcr based on several criteria
+ *
+ * @LevelAPI Experimental
+ */
 public class WikiSearchServiceConnector extends SearchServiceConnector {
   
   private static final Log LOG = ExoLogger.getLogger("org.exoplatform.wiki.service.impl.WikiSearchServiceConnector");
@@ -38,12 +45,20 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
   private WikiService wikiService;
-  
+
+  /**
+   * Initialise the wiki service connector
+   *
+   * @param initParams Parameters
+   */
   public WikiSearchServiceConnector(InitParams initParams) {
     super(initParams);
     wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
+  /**
+   * {@inheritDoc}
+   */
   @Override
   public Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
     // When limit is 0 then return all search result
@@ -79,7 +94,14 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     // Return the result
     return searchResults;
   }
-  
+
+  /**
+   * Sort the results based on the order and labels
+   *
+   * @param searchResults The list of results
+   * @param sort Can be orderred by title, relevancy or date
+   * @param order ASC or DESC
+   */
   private void sortSearchResult(List<SearchResult> searchResults, String sort, String order) {
     if (StringUtils.isEmpty(sort)) {
       return;
@@ -123,11 +145,24 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       });
     } 
   }
-  
+
+  /**
+   * Get the icon for the wiki pages
+   *
+   * @param wikiSearchResult A simple result from the search
+   * @return The url of the icon
+   */
   private String getResultIcon(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     return WIKI_PAGE_ICON;
   }
-  
+
+  /**
+   * Get all the information of the page result
+   *
+   * @param result A simple result from the search
+   * @return The page
+   * @throws Exception
+   */
   private PageImpl getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
     PageImpl page = null;
     if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
@@ -138,7 +173,13 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     }
     return page;
   }
-  
+
+  /**
+   * Return the detail of the page based on the result
+   *
+   * @param wikiSearchResult A simple result from the search
+   * @return The detail of the result
+   */
   private String getPageDetail(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer pageDetail = new StringBuffer();
     try {
@@ -171,7 +212,14 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     }
     return pageDetail.toString();
   }
-  
+
+  /**
+   * Return the permalink of the result from the search
+   *
+   * @param context Not Used
+   * @param wikiSearchResult A simple result from the search
+   * @return The permalink of the result
+   */
   private String getPagePermalink(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer permalink = new StringBuffer();
     try {
@@ -206,7 +254,14 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     }
     return permalink.toString();
   }
-  
+
+  /**
+   * Format the result as expected by the unified search
+   *
+   * @param context The context url
+   * @param wikiSearchResult A simple result from the search
+   * @return A result formated
+   */
   private SearchResult buildResult(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     try {
       String title = wikiSearchResult.getTitle();
