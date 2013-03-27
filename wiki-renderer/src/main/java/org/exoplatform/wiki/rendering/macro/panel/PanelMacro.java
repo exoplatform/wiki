@@ -39,12 +39,6 @@ import org.xwiki.rendering.parser.Parser;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 import org.xwiki.rendering.util.ParserUtils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 26, 2010  
- */
 @Component("panel")
 public class PanelMacro extends AbstractMacro<PanelMacroParameters> {
 

@@ -22,12 +22,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.WikiConstants;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 22, 2010  
- */
 public class IsMarkupModeFilter extends UIExtensionAbstractFilter {
 
   public IsMarkupModeFilter(){

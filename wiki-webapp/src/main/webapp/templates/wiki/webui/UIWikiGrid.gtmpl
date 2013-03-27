@@ -205,9 +205,13 @@
                        }
                        String actionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + action;
                        String anchor = "#" + action;
-                  %>
-                         
-                       <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$title"></i></a>
+                       if (Utils.getModeFromAction(action)) {
+                 %>
+                         <a onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$title"></i></a>
+                         <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
+                 <%    } else { %>
+                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$title"></i></a>
+                 <%    } %>
                    <%} %>                 
                </td>
              <% } %>

@@ -23,12 +23,6 @@ import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.ValuesParam;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Vu Duy Tu
- *          tu.duy@exoplatform.com
- * Jul 4, 2011  
- */
 public class WikiTemplatePagePlugin extends BaseComponentPlugin {
   List<String> sourcePaths = new ArrayList<String>();
 

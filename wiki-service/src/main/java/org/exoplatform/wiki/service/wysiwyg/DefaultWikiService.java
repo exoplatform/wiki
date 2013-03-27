@@ -49,12 +49,6 @@ import org.xwiki.gwt.wysiwyg.client.wiki.WikiPageReference;
 import org.xwiki.gwt.wysiwyg.client.wiki.WikiService;
 import org.xwiki.model.reference.DocumentReference;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 24, 2010  
- */
 @Component
 public class DefaultWikiService implements WikiService {
   /**
@@ -128,11 +122,7 @@ public class DefaultWikiService implements WikiService {
 
     try {
       WikiContext wikiContext = getWikiContext();
-      WikiSearchData data = new WikiSearchData(null,
-                                                     "",
-                                                     null,
-                                                     wikiContext.getType(),
-                                                     wikiContext.getOwner());
+      WikiSearchData data = new WikiSearchData("", null, wikiContext.getType(), wikiContext.getOwner());
       PageList<SearchResult> results = wservice.search(data);
       List<String> pagesNames = new ArrayList<String>();
       if(results != null) {
@@ -176,11 +166,7 @@ public class DefaultWikiService implements WikiService {
 
     try {
       WikiContext wikiContext = getWikiContext();
-      WikiSearchData data = new WikiSearchData(null,
-                                                     escapedKeyword,
-                                                     null,
-                                                     wikiContext.getType(),
-                                                     wikiContext.getOwner());
+      WikiSearchData data = new WikiSearchData(escapedKeyword, escapedKeyword, wikiContext.getType(), wikiContext.getOwner());
       data.setNodeType(WikiNodeType.WIKI_PAGE);
       PageList<SearchResult> results = wservice.search(data);
       List<DocumentReference> documentReferences = prepareDocumentReferenceList(results);

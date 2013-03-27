@@ -22,12 +22,6 @@ import java.util.Map;
 import org.exoplatform.portal.mop.Described.State;
 import org.exoplatform.portal.mop.description.DescriptionService;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 3, 2012
- */
 public class MockDescriptionService implements DescriptionService {
 
   /* (non-Javadoc)

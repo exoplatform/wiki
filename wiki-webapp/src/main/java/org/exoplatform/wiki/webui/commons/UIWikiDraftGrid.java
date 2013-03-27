@@ -36,12 +36,6 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * 11 Sep 2012  
- */
 @ComponentConfig(template = "app:/templates/wiki/webui/UIWikiDraftGrid.gtmpl")
 @Serialized
 public class UIWikiDraftGrid extends UIComponent {

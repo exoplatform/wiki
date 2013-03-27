@@ -42,12 +42,6 @@ import org.exoplatform.wiki.service.search.TemplateSearchResult;
 import org.exoplatform.wiki.webui.bean.TemplateBean;
 import org.exoplatform.wiki.webui.bean.WikiTemplateListAccess;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Feb 10, 2011  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/commons/UIWikiTemplateForm.gtmpl",

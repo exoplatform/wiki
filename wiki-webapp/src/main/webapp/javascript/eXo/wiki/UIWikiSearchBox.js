@@ -231,13 +231,9 @@ UIWikiSearchBox.prototype.buildChild = function(dataObject) {
   var me = eXo.wiki.UIWikiSearchBox;
   var menuItemNode = $('<li/>');
   var linkNode = $('<a/>');
-  if (dataObject.type == "wiki:attachment") {
-    $(linkNode).attr('href', dataObject.uri);
-  } else {
-    $(linkNode).attr('href', me.wikiNodeURI + dataObject.uri);
-  }
+  $(linkNode).attr('href', dataObject.url);
   var keyword = me.input.value.trim();
-  var labelResult = dataObject.fullTitle;
+  var labelResult = dataObject.title;
   $(linkNode).attr('title', labelResult);
   $(linkNode).html(labelResult);
   $(menuItemNode).append(linkNode);

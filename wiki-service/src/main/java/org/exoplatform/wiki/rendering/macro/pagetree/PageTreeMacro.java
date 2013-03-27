@@ -25,10 +25,12 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.TreeNode;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.xwiki.component.annotation.Component;
@@ -45,13 +47,6 @@ import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.syntax.SyntaxType;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 import org.xwiki.rendering.wiki.WikiModel;
-
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 11, 2011  
- */
 
 @Component("pagetree")
 public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
@@ -86,9 +81,7 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
   }
 
   @Override
-  public List<Block> execute(PageTreeMacroParameters parameters,
-                             String content,
-                             MacroTransformationContext context) throws MacroExecutionException {
+  public List<Block> execute(PageTreeMacroParameters parameters, String content, MacroTransformationContext context) throws MacroExecutionException {
     String documentName = parameters.getRoot();
     String startDepth = parameters.getStartDepth();
     excerpt = parameters.isExcerpt();
@@ -98,14 +91,26 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
     WikiPageParams params = markupContextManager.getMarkupContext(documentName, ResourceType.DOCUMENT);
     if (StringUtils.EMPTY.equals(documentName)) {
       WikiContext wikiContext = getWikiContext();
-      if (wikiContext != null)
+      if (wikiContext != null) {
         params = wikiContext;
+      }
     }
     Block root;
     try {
+      WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+      
+      // Check if root page exist
+      PageImpl wikiPage = (PageImpl) wikiService.getPageById(params.getType(), params.getOwner(), params.getPageId());
+      if (wikiPage == null) {
+        // if root page was renamed then find it
+        wikiPage = (PageImpl) wikiService.getRelatedPage(params.getType(), params.getOwner(), params.getPageId());
+        if (wikiPage != null) {
+          params = new WikiPageParams(wikiPage.getWiki().getType(), wikiPage.getWiki().getOwner(), wikiPage.getName());
+        }
+      }
+      
       root = generateTree(params, startDepth);
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
-                                                                                                       .getComponentInstanceOfType(PageRenderingCacheService.class);
+      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
       WikiContext wikiContext = getWikiContext();
       renderingCacheService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
                                         new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
@@ -118,7 +123,6 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
 
   @Override
   public boolean supportsInlineMode() {
-
     return true;
   }
   

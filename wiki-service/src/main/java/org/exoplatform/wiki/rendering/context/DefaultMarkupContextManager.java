@@ -34,12 +34,6 @@ import org.xwiki.model.reference.EntityReference;
 import org.xwiki.model.reference.ObjectReferenceResolver;
 import org.xwiki.rendering.listener.reference.ResourceType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Oct 27, 2011  
- */
 public class DefaultMarkupContextManager implements MarkupContextManager {
   
   private static final Log    LOG           = ExoLogger.getLogger(DefaultMarkupContextManager.class);

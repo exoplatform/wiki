@@ -42,12 +42,6 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
- */
 @ComponentConfig(
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiBreadCrumb.gtmpl",
@@ -198,8 +192,8 @@ public class UIWikiBreadCrumb extends UIContainer {
       Wiki wiki = wikiService.getWikiById(wikiId);
       if (wiki != null) {
         PageImpl wikiHome = (PageImpl) wiki.getWikiHome();
-        String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName()));
-        org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, permalink);
+        String link = org.exoplatform.wiki.commons.Utils.getURLFromParams(new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName()));
+        org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, link);
       } else {
         log.warn(String.format("Wrong wiki id: [%s], can not change space", wikiId));
       }

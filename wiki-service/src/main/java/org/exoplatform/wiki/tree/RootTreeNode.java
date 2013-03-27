@@ -18,13 +18,6 @@ package org.exoplatform.wiki.tree;
 
 import java.util.HashMap;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 9 Dec 2010  
- */
 public class RootTreeNode extends TreeNode {
 
   public RootTreeNode() {

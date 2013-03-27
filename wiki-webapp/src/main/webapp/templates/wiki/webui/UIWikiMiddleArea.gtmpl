@@ -9,7 +9,7 @@
       <% uicomponent.renderChild(UIWikiPageSettingContainer.class); %>       
     <% } else { %>
       <% if(uicomponent.isNavigationRender()) { %>
-        <div class="uiLeftContainerArea">
+        <div class="uiLeftContainerArea" style="height:550px">
           <i class="uiScrollTop" style="display:none"></i>
 		  <div class="wikiBox">
 		    <% uicomponent.renderChild(UIWikiNavigationContainer.class); %>       
@@ -25,7 +25,7 @@
 		</div>
       </div>
       
-      <div class="uiRightContainerArea">
+      <div class="uiRightContainerArea" style="height:550px; width:650px">
       	<i class="uiScrollTop" style="display:none"></i>
         <% uicomponent.renderChild(UIWikiPageContainer.class); %>
         <i class="uiScrollBottom" style="display:none"></i>

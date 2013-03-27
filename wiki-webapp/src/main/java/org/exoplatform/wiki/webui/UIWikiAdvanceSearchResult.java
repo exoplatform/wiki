@@ -37,12 +37,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.RenamedMixin;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 14, 2010  
- */
 @ComponentConfig(lifecycle = Lifecycle.class,
                  template = "app:/templates/wiki/webui/UIWikiAdvanceSearchResult.gtmpl",
                  events = {@EventConfig(listeners = UIWikiAdvanceSearchResult.ChangeMaxSizePageActionListener.class)})

@@ -28,12 +28,6 @@ import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddModeFilter;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 4, 2010  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/CancelActionComponent.gtmpl"
 )

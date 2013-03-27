@@ -55,18 +55,27 @@ UITreeExplorer.prototype.initMacros = function() {
 
 UITreeExplorer.prototype.collapseExpand = function(element) {
   if(element) {
-	  var node = element.parentNode;
-	  var subGroup = $(node).find('ul.nodeGroup')[0];
-	  if ($(element).hasClass('EmptyIcon'))
-	    return true;
-	  if (!subGroup) {
-	    $(element).addClass('uiIconCollapse');
-	    return false;
-	  }
-	  $(subGroup).toggle();
-	  $(element).toggleClass('expandIcon','collapseIcon');
+	var node = element.parentNode;
+	var subGroup = $(node).find('ul.nodeGroup')[0];
+	if ($(element).hasClass('EmptyIcon')) {
 	  return true;
+    }
+      
+	if ($(element).hasClass('expandIcon')) {
+	  $(element).toggleClass('expandIcon');
+	  $(element).addClass('collapseIcon');
+    } else {
+      $(element).toggleClass('collapseIcon');
+	  $(element).addClass('expandIcon');
+    }
+      
+    if (!subGroup) {
+      return false;
 	}
+	  
+	$(subGroup).toggle();
+	return true;
+  }
 };
 
 UITreeExplorer.prototype.onNodeClick = function(node, absPath) {

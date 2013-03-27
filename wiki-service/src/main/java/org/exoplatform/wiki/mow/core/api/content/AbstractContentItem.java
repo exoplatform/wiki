@@ -26,8 +26,6 @@ import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.content.ContentItem;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 @PrimaryType(name = WikiNodeType.WIKI_CONTENT_ITEM)

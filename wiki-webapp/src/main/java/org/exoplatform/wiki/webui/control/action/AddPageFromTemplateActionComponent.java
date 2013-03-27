@@ -33,12 +33,6 @@ import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.AddContainerActionListener;
 import org.exoplatform.wiki.webui.popup.UIWikiSelectTemplateForm;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Feb 10, 2011 
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
   events = {

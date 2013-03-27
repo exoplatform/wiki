@@ -22,12 +22,6 @@ import java.util.List;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.rendering.converter.ConversionException;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Oct 26, 2011  
- */
 @Component("confluence/1.0")
 public class ConfluenceMacroFilter implements MacroFilter {
   

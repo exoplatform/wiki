@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui.control.listener;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.wiki.webui.control.UIWikiToolBar;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 24 Mar 2011  
- */
 public abstract class UIWikiToolBarActionListener<T extends UIComponent> extends UIWikiPortletActionListener<T> {
 
   @Override

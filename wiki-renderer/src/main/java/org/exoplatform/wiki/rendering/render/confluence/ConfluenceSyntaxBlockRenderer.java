@@ -23,13 +23,6 @@ import org.xwiki.component.annotation.Component;
 import org.xwiki.rendering.internal.renderer.AbstractBlockRenderer;
 import org.xwiki.rendering.renderer.PrintRendererFactory;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
 @Component("confluence/1.0")
 public class ConfluenceSyntaxBlockRenderer extends AbstractBlockRenderer {
 

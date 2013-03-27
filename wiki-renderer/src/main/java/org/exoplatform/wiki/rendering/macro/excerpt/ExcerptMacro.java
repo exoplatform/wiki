@@ -33,13 +33,6 @@ import org.xwiki.rendering.macro.MacroExecutionException;
 import org.xwiki.rendering.macro.descriptor.DefaultContentDescriptor;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 12, 2011  
- */
-
 @Component("excerpt")
 public class ExcerptMacro extends AbstractMacro<ExcerptMacroParameters> {
   

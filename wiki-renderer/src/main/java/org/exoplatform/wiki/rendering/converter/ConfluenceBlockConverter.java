@@ -40,12 +40,6 @@ import org.xwiki.rendering.parser.Parser;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.util.ParserUtils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Jul 15, 2011  
- */
 @Component("confluence/1.0")
 public class ConfluenceBlockConverter implements BlockConverter {
   

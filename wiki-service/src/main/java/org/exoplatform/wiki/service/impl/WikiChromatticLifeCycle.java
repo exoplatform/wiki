@@ -23,12 +23,6 @@ import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 10, 2010  
- */
 public class WikiChromatticLifeCycle extends ChromatticLifeCycle {
 
   private MOWService mowService;

@@ -26,12 +26,6 @@ import org.xwiki.rendering.renderer.PrintRendererFactory;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.util.IdGenerator;
 
-/**
- * Created by The eXo Platform SAS
- * Author : haidd 
- *          haidd@exoplatform.com
- * Jan 14, 2012  
- */
 public class DefaultXWikiConfluenceGeneratorListener extends DefaultXWikiGeneratorListener {
   
   public DefaultXWikiConfluenceGeneratorListener(StreamParser parser,

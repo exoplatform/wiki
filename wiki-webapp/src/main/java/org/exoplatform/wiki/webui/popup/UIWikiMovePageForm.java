@@ -57,12 +57,6 @@ import org.exoplatform.wiki.webui.UIWikiRichTextArea;
 import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 2, 2010  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class, 
   template = "app:/templates/wiki/webui/popup/UIWikiMovePageForm.gtmpl",
@@ -148,7 +142,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       }
       
       // Convert message markup to html
-      String messageHTML = "<div class='warningmessage'>" + message + "</div>";
+      String messageHTML = "<div class='alert'> <i class='uiIconWarning'></i>" + message + "</div>";
       
       // Add actions to message html
       String renameActionLink = event(RENAME_ACTION, page.getName());
@@ -166,7 +160,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     // Check to add "and more" label
     if (duplicatedPages.size() > maxWarning) {
       String andMoreLabel = bundle.getString("UIWikiMovePageForm.msg.and-more");
-      andMoreLabel = "<div class='warningmessage'>" + andMoreLabel + "</div>";
+      andMoreLabel = "<div class='alert'> <i class='uiIconWarning'></i>" + andMoreLabel + "</div>";
       notifications.append(andMoreLabel);
     }
     

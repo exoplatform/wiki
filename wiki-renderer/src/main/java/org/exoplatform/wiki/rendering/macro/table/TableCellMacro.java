@@ -34,12 +34,6 @@ import org.xwiki.rendering.parser.ParseException;
 import org.xwiki.rendering.parser.Parser;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Sep 22, 2010  
- */
 @Component("table-cell")
 public class TableCellMacro extends AbstractMacro<Object> {
 

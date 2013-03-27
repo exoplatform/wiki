@@ -24,12 +24,6 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Mar 29, 2010  
- */
 @PrimaryType(name = WikiNodeType.WIKI_TRASH)
 public abstract class Trash {
 

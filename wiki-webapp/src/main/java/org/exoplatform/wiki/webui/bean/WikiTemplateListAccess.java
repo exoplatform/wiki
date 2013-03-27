@@ -20,10 +20,6 @@ import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
 
-/**
- * Created by The eXo Platform SAS Author : Lai Trung Hieu
- * hieu.lai@exoplatform.com 28 Jan 2011
- */
 public class WikiTemplateListAccess implements ListAccess<TemplateBean> {
 
   private final List<TemplateBean> list;

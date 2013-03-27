@@ -23,12 +23,6 @@ import org.exoplatform.wiki.mock.MockDataStorage;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.mockito.Mockito;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 3, 2012
- */
 public class AbstractResolverTestcase extends AbstractMOWTestcase {
 
   protected UserNode createUserNode(String pageRef, String URI) {

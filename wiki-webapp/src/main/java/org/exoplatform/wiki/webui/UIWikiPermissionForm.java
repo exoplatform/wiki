@@ -56,12 +56,6 @@ import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions.ActionData;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Jan 5, 2011  
- */
 @ComponentConfigs({
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -91,6 +85,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   private Scope scope;
 
   public final static String ANY = "any";
+  
+  public final static String ROOT = "root";
   
   public final static String ADD_ENTRY = "AddEntry";
   
@@ -349,7 +345,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       String permissionOwner = uiFormStringInput.getValue();
       if (permissionOwner != null && permissionOwner.length() > 0) {
         OrganizationService service = uiWikiPermissionForm.getApplicationComponent(OrganizationService.class);
-        StringBuilder sb = new StringBuilder();
+        StringBuilder notExistIds = new StringBuilder();
+        StringBuilder duplicateIds = new StringBuilder();
         IDType idType;
         String[] entries = permissionOwner.split(",");
         for (String entry : entries) {
@@ -387,21 +384,30 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
               permissionEntry.setId(entry);
               permissionEntry.setIdType(idType);
               uiWikiPermissionForm.permissionEntries.add(permissionEntry);
+            } else {
+              if (duplicateIds.length() == 0) {
+                duplicateIds.append(entry);
+              } else {
+                duplicateIds.append(", ").append(entry);
+              }
             }
           } else {
-            if (sb.length() == 0) {
-              sb.append(entry);
+            if (notExistIds.length() == 0) {
+              notExistIds.append(entry);
             } else {
-              sb.append(", ").append(entry);
+              notExistIds.append(", ").append(entry);
             }
           }
         }
-        uiFormStringInput.setValue("");
-        if (sb.length() > 0) {
-          String[] msgArg = { sb.toString() };
-          event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIWikiPermissionForm.msg.NonExistID",
-                                                                                         msgArg,
-                                                                                         ApplicationMessage.WARNING));          
+        
+        if (notExistIds.length() > 0) {
+          String[] msgArg = { notExistIds.toString() };
+          event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIWikiPermissionForm.msg.NonExistID", msgArg, ApplicationMessage.WARNING));          
+        }
+        
+        if (duplicateIds.length() > 0) {
+          String[] msgArg = { duplicateIds.toString() };
+          event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIWikiPermissionForm.msg.duplicate-id", msgArg, ApplicationMessage.WARNING));          
         }
       }
       uiWikiPermissionForm.setPermission(uiWikiPermissionForm.permissionEntries);
@@ -413,24 +419,26 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
 
     private boolean isExistId(String identityId, IDType idType, OrganizationService service) throws Exception {
       if (idType == IDType.USER) {
-        if (ANY.equalsIgnoreCase(identityId)) {
+        if (ANY.equalsIgnoreCase(identityId) || ROOT.equalsIgnoreCase(identityId)) {
           return true;
-        } else {
-          return service.getUserHandler().findUserByName(identityId) != null;
         }
-      } else if (idType == IDType.GROUP) {
+        return service.getUserHandler().findUserByName(identityId) != null;
+      } 
+      
+      if (idType == IDType.GROUP) {
         return service.getGroupHandler().findGroupById(identityId) != null;
-      } else {
-        String[] membership = identityId.split(":");
-        Group group = service.getGroupHandler().findGroupById(membership[1]);
-        if (group == null) {
-          return false;
-        }
-        if ("*".equals(membership[0])) {
-          return true;
-        }
-        return service.getMembershipTypeHandler().findMembershipType(membership[0]) != null;
       }
+      
+      
+      String[] membership = identityId.split(":");
+      Group group = service.getGroupHandler().findGroupById(membership[1]);
+      if (group == null) {
+        return false;
+      }
+      if ("*".equals(membership[0])) {
+        return true;
+      }
+      return service.getMembershipTypeHandler().findMembershipType(membership[0]) != null;
     }
 
     private boolean isNotExistEntry(String entry, List<PermissionEntry> entries) {

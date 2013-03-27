@@ -21,9 +21,7 @@ import java.util.List;
 /**
  * Represents a bit of the content of a page such as a paragraph, a text, a
  * link...
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public interface ContentItem {

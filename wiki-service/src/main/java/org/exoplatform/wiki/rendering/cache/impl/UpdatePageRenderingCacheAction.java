@@ -31,13 +31,6 @@ import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jul 13, 2012  
- */
-
 public class UpdatePageRenderingCacheAction implements Action {
 
   @Override

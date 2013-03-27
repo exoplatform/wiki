@@ -29,10 +29,6 @@ import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com Nov
- * 5, 2009
- */
 public class TestRenderingService extends AbstractRenderingTestCase {
 
   public void testRender() throws Exception {

@@ -23,12 +23,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.webui.WikiMode;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 9 Feb 2011  
- */
 public class IsEditAddPageModeFilter extends UIExtensionAbstractFilter {
 
   public IsEditAddPageModeFilter() {

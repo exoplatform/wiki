@@ -23,12 +23,6 @@ import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 9 Feb 2011  
- */
 @ComponentConfig(
                  template = "app:/templates/wiki/webui/UIWikiTemplateDescriptionContainer.gtmpl"
 )

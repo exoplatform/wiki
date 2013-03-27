@@ -21,12 +21,6 @@ import java.util.Map.Entry;
 import org.xwiki.gwt.wysiwyg.client.plugin.macro.MacroDescriptor;
 import org.xwiki.gwt.wysiwyg.client.plugin.macro.ParameterDescriptor;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 18, 2010  
- */
 public class WikiMacroDescriptorTranslator implements MacroDescriptorTranslator {
   /**
    * The name field.

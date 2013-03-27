@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.macro.floatmacro;
 import org.apache.commons.lang.StringUtils;
 import org.xwiki.properties.annotation.PropertyDescription;
 
-/**
- * Created by The eXo Platform SAS
- * Author : eXoPlatform
- *          exo@exoplatform.com
- * Dec 29, 2010  
- */
 public class FloatMacroParameters {
   
   /**

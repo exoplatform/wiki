@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.poi.ss.formula.functions.T;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.wiki.mow.api.DraftPage;
@@ -30,73 +29,234 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.Template;
 import org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.TitleSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
 
 /**
- * Created by The eXo Platform SARL.
- * <p>
  * WikiService is interface provide functions for processing database
  * with wikis and pages include: add, edit, remove and searching data
- * 
- * @author  exoplatform
- * @since   Mar 04, 2010
+ *
+ * @LevelAPI Provisional
  */
 public interface WikiService {
 
+  /**
+   * Create a new Wiki Page
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner The owner of the wiki
+   * @param title The title of the page
+   * @param parentId The parent Id of the new page
+   * @return The new page
+   * @throws Exception
+   */
   public Page createPage(String wikiType, String wikiOwner, String title, String parentId) throws Exception;
 
+  /**
+   * Create a new template Wiki Page
+   *
+   * @param title The title of the template
+   * @param params Parameters to create the new template
+   * @return the new template
+   * @throws Exception
+   */
   public Template createTemplatePage(String title, WikiPageParams params) throws Exception;
 
+  /**
+   * Initialise the default template page
+   *
+   * @param path the page to initialize the default template page
+   */
   public void initDefaultTemplatePage(String path) ;
 
+  /**
+   * Delete the Wiki Page
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param pageId Id of the wiki page
+   * @return True if the page is deleted, False if not
+   * @throws Exception
+   */
   public boolean deletePage(String wikiType, String wikiOwner, String pageId) throws Exception;
 
+  /**
+   * Delete the template
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param templateId Id of the template
+   * @throws Exception
+   */
   public void deleteTemplatePage(String wikiType, String wikiOwner, String templateId) throws Exception;
 
+  /**
+   * Delete the draft based on is Id
+   *
+   * @param draftNewPageId Id of the draft
+   * @throws Exception
+   */
   public void deleteDraftNewPage(String draftNewPageId) throws Exception;
 
+  /**
+   * Rename the wiki Page
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageName The old name of the page
+   * @param newName The new name of the page
+   * @param newTitle The new title of the page
+   * @return True if the page is renamed, False if not
+   * @throws Exception
+   */
   public boolean renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle) throws Exception;
 
+  /**
+   * Move a wiki Page
+   *
+   * @param currentLocationParams The current location of the page
+   * @param newLocationParams The new location of the page
+   * @return True if the page is moved, False if not
+   * @throws Exception
+   */
   public boolean movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws Exception;
 
+  /**
+   * Return a lists permissions for the wiki based on the type and the owner
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @return  List of permissions
+   * @throws Exception
+   */
   public List<PermissionEntry> getWikiPermission(String wikiType, String wikiOwner) throws Exception;
 
+  /**
+   * Add new permissions to the wiki
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param permissionEntries list of permissions
+   * @throws Exception
+   */
   public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws Exception;
 
+  /**
+   * Get a page based on is Id
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageId Is the pageId used by the system
+   * @return The page
+   * @throws Exception
+   */
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception;
-  
+
+  /**
+   * Return the wiki Home page with the root permissions
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageId Is the pageId used by the system
+   * @return The page
+   * @throws Exception
+   */
   public Page getPageByRootPermission(String wikiType, String wikiOwner, String pageId) throws Exception;
 
+  /**
+   * Return the related page based on is Id
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageId Is the pageId used by the system
+   * @return The related page
+   * @throws Exception
+   */
   public Page getRelatedPage(String wikiType, String wikiOwner, String pageId) throws Exception;
 
+  /**
+   * Return the page itself or is draft if one exist
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageId Is the pageId used by the system
+   * @return wiki Page
+   * @throws Exception
+   */
   public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId) throws Exception;
 
+  /**
+   * Retugn a wiki page based on is id
+   *
+   * @param uuid Id of the wiki page
+   * @return Wiki page
+   * @throws Exception
+   */
   public Page getPageByUUID(String uuid) throws Exception;
 
+  /**
+   * Return the template to use for the wiki page
+   * @param params
+   * @param templateId
+   * @return A wiki template
+   * @throws Exception
+   */
   public Template getTemplatePage(WikiPageParams params, String templateId) throws Exception;
 
-  public PageList<SearchResult> searchContent(WikiSearchData data) throws Exception;
-
+  /**
+   * Return a list of data to compose the breadcrumb
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageId Is the pageId used by the system
+   * @return List of {@link BreadcrumbData}
+   * @throws Exception
+   */
   public List<BreadcrumbData> getBreadcumb(String wikiType, String wikiOwner, String pageId) throws Exception;
 
+  /**
+   * Get a wiki page based on the data stored in the breadcrumb
+   *
+   * @param data A part of the breadcrumb
+   * @return  Wiki Page params
+   * @throws Exception
+   */
   public WikiPageParams getWikiPageParams(BreadcrumbData data) throws Exception;
 
+  /**
+   * Search in all wiki pages
+   *
+   * @param data The data to search
+   * @return List of results
+   * @throws Exception
+   */
   public PageList<SearchResult> search(WikiSearchData data) throws Exception;
 
+  /**
+   * Search in all template
+   *
+   * @param data The data to search
+   * @return List of results
+   * @throws Exception
+   */
   public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws Exception;
 
+  /**
+   * Search pages in the list of renamed pages
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageId Is the pageId used by the system
+   * @return List of results
+   * @throws Exception
+   */
   public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws Exception;
 
-  public List<TitleSearchResult> searchDataByTitle(WikiSearchData data) throws Exception;
-  
   /**
    * Get a list of duppilcated page between all children pages of parentPage and targetWiki before execute moving page
    * 
@@ -108,8 +268,21 @@ public interface WikiService {
    */
   public List<PageImpl> getDuplicatePages(PageImpl parentPage, Wiki targetWiki, List<PageImpl> resultList) throws Exception;
 
+  /**
+   * Find the fullpath based on the type and is relative path.
+   *
+   * @param path relative path to search
+   * @param objectNodeType Can be a page, attachment or template
+   * @return An object based on is path and type
+   * @throws Exception
+   */
   public Object findByPath(String path, String objectNodeType) throws Exception;
 
+  /**
+   * Get the default wiki syntax Id
+   *
+   * @return the default wiki syntax Id
+   */
   public String getDefaultWikiSyntaxId();
 
   /**
@@ -119,38 +292,105 @@ public interface WikiService {
    */
   public long getSaveDraftSequenceTime();
 
+  /**
+   * Get the page title of an attachment
+   *
+   * @param path Path of the attachment
+   * @return title of the page
+   * @throws Exception
+   */
   public String getPageTitleOfAttachment(String path) throws Exception;
 
+  /**
+   * Return an attachment as stream
+   *
+   * @param path Path to use to get the attachment
+   * @return Stream of the attachment
+   * @throws Exception
+   */
   public InputStream getAttachmentAsStream(String path) throws Exception;
 
+  /**
+   * Return the helps syntax page based on the syntax id
+   *
+   * @param syntaxId Id of the syntax
+   * @return Wiki Page
+   * @throws Exception
+   */
   public PageImpl getHelpSyntaxPage(String syntaxId) throws Exception;
-  
+
+  /**
+   * Return the a page of metadata
+   *
+   * @param metaPage the metadata to use, mainly emoticons
+   * @return page of metadata
+   * @throws Exception
+   */
   public Page getMetaDataPage(MetaDataPage metaPage) throws Exception;
 
+  /**
+   * Return a map of templates for the wiki page
+   *
+   * @param params The full params to get a page
+   * @return Map of templates
+   * @throws Exception
+   */
   public Map<String, Template> getTemplates(WikiPageParams params) throws Exception;
 
+  /**
+   * Return the template container
+   *
+   * @param params The full params to get a page
+   * @return  the template container
+   * @throws Exception
+   */
   public TemplateContainer getTemplatesContainer(WikiPageParams params) throws Exception;
 
+  /**
+   * Modify an existing template available
+   *
+   * @param params The full params to get a page
+   * @param template the template
+   * @param newName the new name for the template
+   * @param newDescription the new description for the template
+   * @param newContent the new description for the template
+   * @param newSyntaxId the new syntax for the template
+   * @throws Exception
+   */
   public void modifyTemplate(WikiPageParams params, Template template, String newName, String newDescription, String newContent, String newSyntaxId) throws Exception;
 
+  /**
+   * Return true if the page exist
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param pageId Is the pageId used by the system
+   * @return true if the page exist, false if not
+   * @throws Exception
+   */
   public boolean isExisting(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   /**
    * Get wiki default permission
-   * 
-   * @param wikiType The type of wiki
-   * @param wikiOwner The owner of wiki
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
    * @return The permisison list for wiki
    * @throws Exception
    */
   public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws Exception;
   
   /**
-   * register a {@link PageWikiListener} 
-   * @param listener
+   * register a {@link ComponentPlugin}
+   * @param plugin
    */
   public void addComponentPlugin(ComponentPlugin plugin);
 
+  /**
+   * Add the wiki page as plugin
+   *
+   * @param templatePlugin The template plugin to use
+   */
   public void addWikiTemplatePagePlugin(WikiTemplatePagePlugin templatePlugin);
 
   /**
@@ -158,10 +398,31 @@ public interface WikiService {
    */
   public List<PageWikiListener> getPageListeners();
 
+  /**
+   * Add a related page of the current wiki page
+   *
+   * @param orginaryPageParams Current wiki page param
+   * @param relatedPageParams Param of the related page
+   * @return true if it has been added or false if it's not possible
+   * @throws Exception
+   */
   public boolean addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
 
+  /**
+   * Return a list of related page based on its param
+   * @param pageParams Param of the wiki page
+   * @return List of related page
+   * @throws Exception
+   */
   public List<Page> getRelatedPage(WikiPageParams pageParams) throws Exception;
 
+  /**
+   * Remove a related page of the current wiki page
+   * @param orginaryPageParams Current wiki page param
+   * @param relatedPageParams Param of the related page
+   * @return true if it has been removed or false if it's not possible
+   * @throws Exception
+   */
   public boolean removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
   
   /**
@@ -178,7 +439,7 @@ public interface WikiService {
   /**
    * Create a draft page for a new wiki page which parent is specified by the wiki page param
    * 
-   * @param param parent wiki page param
+   * @param parentPageParam parent wiki page param
    * @param clientTime The time of client when save draft
    * @return draft page
    * @throws Exception if create draft not success
@@ -273,8 +534,8 @@ public interface WikiService {
   
   /**
    * Get a wiki that definds by wikiType and owner
-   * 
-   * @param wikiType The wiki type
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
    * @param owner Wiki owner
    * @return The wiki
    */
@@ -314,8 +575,8 @@ public interface WikiService {
    
   /** 
    * Check if the current user has addmin permission on the space
-   * 
-   * @param wikiType The wiki type of the space
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
    * @param owner The owner of the space
    * @return current user has addmin permisison on the space or not
    * @throws Exception
@@ -334,8 +595,8 @@ public interface WikiService {
   
   /**
    * Publish a update activity
-   * 
-   * @param wikiType The wiki type
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
    * @param wikiOwner The wiki owner
    * @param pageId The page id
    * @param page The wiki page
@@ -346,8 +607,8 @@ public interface WikiService {
   
   /**
    * Publish a add activity
-   * 
-   * @param wikiType The wiki type
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
    * @param wikiOwner The wiki owner
    * @param pageId The page id
    * @param page The wiki page
@@ -357,8 +618,8 @@ public interface WikiService {
   
   /**
    * Publish a delete page activity
-   * 
-   * @param wikiType The wiki type
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
    * @param wikiOwner The wiki owner
    * @param pageId The page id
    * @param page The wiki page
@@ -376,7 +637,7 @@ public interface WikiService {
   
   /**
    * Get wiki name by wiki id
-   * 
+   *
    * @param wikiId The wiki id
    * @return The wiki name
    * @throws Exception

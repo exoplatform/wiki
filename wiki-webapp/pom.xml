@@ -36,11 +36,11 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-webui-ext</artifactId>
+      <artifactId>commons-webui-component</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
-      <artifactId>commons-webui-component</artifactId>
+      <artifactId>commons-webui-ext</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.core</groupId>
@@ -185,6 +185,13 @@
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <!-- We want to be sure to use the right version in the dependency plugin but it's not required in the package -->
+    <dependency>
+      <groupId>org.exoplatform.platform-ui</groupId>
+      <artifactId>platform-ui-web-eXoResources</artifactId>
+      <type>war</type>
       <scope>provided</scope>
     </dependency>
     <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->

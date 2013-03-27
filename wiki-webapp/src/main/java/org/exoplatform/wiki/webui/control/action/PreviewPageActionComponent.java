@@ -42,12 +42,6 @@ import org.exoplatform.wiki.webui.control.listener.UIEditorTabsActionListener;
 import org.exoplatform.wiki.webui.popup.UIWikiPagePreview;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/PreviewActionComponent.gtmpl",          
   events = {

@@ -23,12 +23,6 @@ import org.exoplatform.webui.core.model.SelectItemOption;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 14 Mar 2011  
- */
 public class UISyntaxSelectBoxFactory {
 
   public static UIFormSelectBox newInstance() {

@@ -33,13 +33,6 @@ import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 15, 2010  
- */
 public class TestMacroRendering extends AbstractRenderingTestCase {  
   
   @Override

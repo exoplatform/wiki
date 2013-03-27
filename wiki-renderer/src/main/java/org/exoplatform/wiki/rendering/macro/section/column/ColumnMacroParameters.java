@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.rendering.macro.section.column;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 15 Mar 2011  
- */
 public class ColumnMacroParameters {
 
 }

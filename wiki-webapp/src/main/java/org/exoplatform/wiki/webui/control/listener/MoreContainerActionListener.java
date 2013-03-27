@@ -19,12 +19,6 @@ package org.exoplatform.wiki.webui.control.listener;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.wiki.webui.control.MoreExtensionContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
- */
 public abstract class MoreContainerActionListener<T extends UIComponent> extends UIPageToolBarActionListener<T> {
 
   @Override

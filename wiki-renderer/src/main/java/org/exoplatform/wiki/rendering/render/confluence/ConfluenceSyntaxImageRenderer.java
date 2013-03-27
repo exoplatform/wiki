@@ -23,13 +23,6 @@ import org.xwiki.rendering.internal.renderer.ParametersPrinter;
 import org.xwiki.rendering.listener.reference.ResourceReference;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
-/**
  * Generate a Confluence syntax string representation of an {@image ResourceReference}, using the format:
  * <code>(optional document name)^(attachment name)</code>.
  */

@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service.diff;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 10 Nov 2010  
- */
 public class DiffResult {
   private String diffHTML;
 

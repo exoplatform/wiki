@@ -24,12 +24,7 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 11, 2010  
- */
+
 @PrimaryType(name = WikiNodeType.LINK_ENTRY)
 public abstract class LinkEntry {
   

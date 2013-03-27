@@ -20,12 +20,6 @@ import java.io.Serializable;
 
 import org.exoplatform.wiki.service.WikiPageParams;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * May 16, 2012  
- */
 public class MarkupKey implements Serializable {
 
   private WikiPageParams pageParams;

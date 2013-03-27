@@ -56,13 +56,6 @@ import org.xwiki.rendering.macro.MacroExecutionException;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 06, 2011  
- */
-
 @Component("children")
 public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
   private static final Log    log         = ExoLogger.getLogger(ChildrenMacro.class);
@@ -98,10 +91,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
   }
 
   @Override
-  public List<Block> execute(ChildrenMacroParameters parameters,
-                             String content,
-                             MacroTransformationContext context) throws MacroExecutionException {
-    
+  public List<Block> execute(ChildrenMacroParameters parameters, String content, MacroTransformationContext context) throws MacroExecutionException {
     boolean descendant = parameters.isDescendant();
     excerpt = parameters.isExcerpt();
     String documentName = parameters.getParent();
@@ -131,8 +121,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
       }
       
       root = generateTree(params, descendant, childrenNum, depth, context);
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
-                                                                                                       .getComponentInstanceOfType(PageRenderingCacheService.class);
+      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
       WikiContext wikiContext = getWikiContext();
       renderingCacheService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
                                         new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
@@ -143,10 +132,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
     }
   }
 
-  private Block generateTree(WikiPageParams params,
-                             boolean descendant,
-                             String childrenNum,
-                             String depth,MacroTransformationContext context) throws Exception {
+  private Block generateTree(WikiPageParams params, boolean descendant, String childrenNum, String depth, MacroTransformationContext context) throws Exception {
     Block block = new GroupBlock();
     HashMap<String, Object> treeContext = new HashMap<String, Object>();
     treeContext.put(TreeNode.SHOW_DESCENDANT, descendant);
@@ -158,14 +144,11 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
   }
 
   public ListItemBlock trankformToBlock(TreeNode node, MacroTransformationContext context) throws Exception {
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer()
-                                                               .getComponentInstanceOfType(WikiService.class);
+    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     List<Block> blocks = new ArrayList<Block>();
     
     WikiPageParams params = TreeUtils.getPageParamsFromPath(node.getPath());
-    PageImpl page = (PageImpl) wikiService.getPageById(params.getType(),
-                                                       params.getOwner(),
-                                                       params.getPageId());
+    PageImpl page = (PageImpl) wikiService.getPageById(params.getType(), params.getOwner(), params.getPageId());
     DocumentResourceReference link = new DocumentResourceReference(getReferenceBuilder(context).build(params));
     List<Block> content = new ArrayList<Block>();
     content.add(new WordBlock(page.getTitle()));
@@ -202,8 +185,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
     try {
       return componentManager.getInstance(ReferenceBuilder.class, context.getSyntax().toIdString());
     } catch (ComponentLookupException e) {
-      throw new MacroExecutionException(String.format("Failed to find reference builder for syntax %s", context.getSyntax()
-                                                                                                               .toIdString()), e);
+      throw new MacroExecutionException(String.format("Failed to find reference builder for syntax %s", context.getSyntax().toIdString()), e);
     }
   }
   

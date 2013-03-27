@@ -28,12 +28,6 @@ import org.xwiki.rendering.block.MacroBlock;
 import org.xwiki.rendering.block.XDOM;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 12 Jan 2011  
- */
 public class ExcerptUtils {
   
   public static String getExcerpts(WikiPageParams params) throws Exception {

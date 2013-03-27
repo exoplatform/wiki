@@ -34,13 +34,6 @@ import org.xwiki.rendering.renderer.reference.ResourceReferenceSerializer;
 import org.xwiki.rendering.transformation.icon.IconTransformationConfiguration;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
-/**
  * Generates Confluence Syntax from {@link org.xwiki.rendering.block.XDOM}.
  */
 @Component("confluence/1.0")

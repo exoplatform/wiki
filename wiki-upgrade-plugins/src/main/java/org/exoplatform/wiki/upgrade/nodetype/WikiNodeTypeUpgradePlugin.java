@@ -39,14 +39,15 @@ public class WikiNodeTypeUpgradePlugin extends UpgradeProductPlugin {
   
   private void checkToRegisterNodetype() {
     try {
-      registerNodeTypes("jar:/conf/portal/wiki-nodetypes.xml", ExtendedNodeTypeManager.REPLACE_IF_EXISTS);
+      registerNodeTypes("jar:/conf/portal/wiki-full-nodetypes.xml", ExtendedNodeTypeManager.IGNORE_IF_EXISTS);
+      registerNodeTypes("jar:/conf/portal/wiki-upgrade-nodetypes.xml", ExtendedNodeTypeManager.REPLACE_IF_EXISTS);
     } catch (Exception e) {
       log.warn("Can not check and register wiki's nodetype", e);
     }
   }
   
   @Override
-  public boolean shouldProceedToUpgrade(String previousVersion, String newVersion) {
+  public boolean shouldProceedToUpgrade(String newVersion, String previousVersion) {
     return VersionComparator.isAfter(newVersion, previousVersion);
   }
 }

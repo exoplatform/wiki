@@ -20,12 +20,6 @@ import org.exoplatform.commons.serialization.api.annotations.Serialized;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIGrid;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 9 Feb 2011  
- */
 @ComponentConfig(template = "app:/templates/wiki/webui/UIWikiGrid.gtmpl")
 @Serialized
 public class UIWikiGrid extends UIGrid {

@@ -42,12 +42,6 @@ import org.exoplatform.wiki.webui.core.UIExtensionContainer;
 import org.exoplatform.wiki.webui.extension.UISyntaxSettingForm;
 import org.exoplatform.wiki.webui.extension.UITemplateSettingForm;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 27 Jan 2011  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/popup/UIWikiSettingContainer.gtmpl",
   events = {

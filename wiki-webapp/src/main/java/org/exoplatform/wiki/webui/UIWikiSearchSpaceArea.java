@@ -25,12 +25,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 14, 2010  
- */
 @ComponentConfig(
   lifecycle = UIContainerLifecycle.class,
   events = {

@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.reference;
 import org.apache.commons.lang.StringUtils;
 import org.xwiki.component.annotation.Component;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Oct 17, 2011  
- */
 @Component("confluence/1.0")
 public class ConfluenceObjectReferenceConverter implements ObjectReferenceConverter {
 

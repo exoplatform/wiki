@@ -22,12 +22,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * 07 Sep 2012  
- */
 @ComponentConfig(lifecycle = UIContainerLifecycle.class)
 public class UIWikiMyDraftContainer extends UIWikiContainer {
   public UIWikiMyDraftContainer() throws Exception {

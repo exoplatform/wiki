@@ -16,7 +16,6 @@
  */
 package org.exoplatform.wiki.commons;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -35,8 +34,8 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.mop.SiteKey;
-import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
@@ -46,6 +45,9 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.url.navigation.NavigationResource;
+import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIComponent;
@@ -82,12 +84,6 @@ import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 22, 2010  
- */
 public class Utils {  
  
   public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;
@@ -209,37 +205,26 @@ public class Utils {
   
   public static boolean isCurrentPagePublic() throws Exception {
     Page currentPage = Utils.getCurrentWikiPage();
-    return (currentPage != null) && currentPage.hasPermission(PermissionType.VIEWPAGE, new Identity(IdentityConstants.ANONIM));
+    return (currentPage != null) && currentPage.hasPermission(PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
+  }
+  
+  public static String getSpaceHomeURL(String spaceGroupId) {
+    String permanentSpaceName = spaceGroupId.split("/")[2];
+    NodeURL nodeURL = RequestContext.getCurrentInstance().createURL(NodeURL.TYPE);
+    NavigationResource resource = new NavigationResource(SiteType.GROUP, spaceGroupId, permanentSpaceName);
+    return nodeURL.setResource(resource).toString();
   }
   
   public static String getURLFromParams(WikiPageParams params) throws Exception {
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    String requestURL = portalRequestContext.getControllerContext().getRequest().getRequestURL().toString();
-    String portalURI = portalRequestContext.getPortalURI();
-    String domainURL = requestURL.substring(0, requestURL.indexOf(portalURI));
-
-    UIPortal uiPortal = Util.getUIPortal();
-    SiteKey siteKey = uiPortal.getSiteKey();
-    UserNode userNode = uiPortal.getSelectedUserNode();
-    String pageNodeSelected = userNode.getURI();
-    StringBuilder sb = new StringBuilder(domainURL);
-    sb.append(portalURI);
-    sb.append(pageNodeSelected);
-    sb.append("/");
-    if (params == null) {
-      return sb.toString();
+    if (params.getType().equals(PortalConfig.GROUP_TYPE)) {
+      String spaceUrl = getSpaceHomeURL(params.getOwner());
+      if (!spaceUrl.endsWith("/")) {
+        spaceUrl += "/";
+      }
+      spaceUrl += "wiki/";
+      return spaceUrl;
     }
-    if (!siteKey.getType().getName().equals(params.getType()) || !siteKey.getName().equals(params.getOwner())) {
-      sb.append(params.getType().toLowerCase());
-      sb.append("/");
-      sb.append(org.exoplatform.wiki.utils.Utils.validateWikiOwner(params.getType(), params.getOwner()));
-      sb.append("/");
-    }
-    
-    if (params.getPageId() != null) {
-      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
-    }
-    return sb.toString();
+    return org.exoplatform.wiki.utils.Utils.getPermanlink(params);
   }
   
   public static Page getCurrentNewDraftWikiPage() throws Exception {

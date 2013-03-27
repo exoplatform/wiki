@@ -40,12 +40,6 @@ import org.xwiki.rendering.parser.ParseException;
 import org.xwiki.rendering.parser.Parser;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 15 Mar 2011  
- */
 @Component("section")
 public class SectionMacro extends AbstractMacro<SectionMacroParameters> {
   private static final double TOTAL_WIDTH                = 99.900000000000006D;

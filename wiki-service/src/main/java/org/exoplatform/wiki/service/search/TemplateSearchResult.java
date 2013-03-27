@@ -18,12 +18,6 @@ package org.exoplatform.wiki.service.search;
 
 import java.util.Calendar;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 28 Jan 2011  
- */
 public class TemplateSearchResult extends SearchResult {
  
   protected String description;

@@ -24,8 +24,6 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiChromatticLifeCycle;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 public class MOWService {

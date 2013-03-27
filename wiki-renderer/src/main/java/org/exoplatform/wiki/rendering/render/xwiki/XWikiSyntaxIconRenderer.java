@@ -25,11 +25,6 @@ import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.transformation.icon.IconTransformationConfiguration;
 
 /**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * March 16, 2012  
- * 
  * Generate a Xwiki syntax string representation of an {@icon ResourceReference}
  */
 public class XWikiSyntaxIconRenderer {

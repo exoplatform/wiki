@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.mow.api;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Mar 31, 2010  
- */
 public interface WikiNodeType {
 
   public final static String WIKI_STORE              = "wiki:store";

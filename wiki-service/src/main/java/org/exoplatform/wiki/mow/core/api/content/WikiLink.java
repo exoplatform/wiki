@@ -25,8 +25,6 @@ import org.exoplatform.wiki.mow.api.content.Link;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 @PrimaryType(name = "wiki:link")

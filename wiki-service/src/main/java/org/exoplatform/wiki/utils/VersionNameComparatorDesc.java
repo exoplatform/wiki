@@ -21,12 +21,6 @@ import java.util.Comparator;
 
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 3, 2010  
- */
 public class VersionNameComparatorDesc implements Comparator<NTVersion>,Serializable {
 
   public int compare(NTVersion version1, NTVersion version2) {

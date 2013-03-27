@@ -84,7 +84,7 @@ UIWikiPortlet.prototype.onKeyUp = function(evt) {
 }
 
 UIWikiPortlet.prototype.changeMode = function() {
-  setTimeout("eXo.wiki.UIWikiPortlet.timeChangeMode()", 200);
+  // setTimeout("eXo.wiki.UIWikiPortlet.timeChangeMode()", 200);
 };
 
 UIWikiPortlet.prototype.timeChangeMode = function() {

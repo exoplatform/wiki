@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Sep 30, 2010  
- */
 public class WikiPortletPreference {
 
   public static String SHOW_BREADCRUMB = "showBreadcrumb";

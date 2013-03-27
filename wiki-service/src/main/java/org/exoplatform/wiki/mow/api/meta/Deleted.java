@@ -20,9 +20,7 @@ import java.util.Calendar;
 
 /**
  * Representation of a deleted object
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public interface Deleted {

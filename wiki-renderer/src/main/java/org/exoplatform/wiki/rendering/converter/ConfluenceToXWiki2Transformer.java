@@ -32,12 +32,6 @@ import org.xwiki.rendering.renderer.printer.WikiPrinter;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.transformation.TransformationContext;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * Feb 27, 2012
- */
 public class ConfluenceToXWiki2Transformer {
 
   private static Log logger = ExoLogger.getExoLogger(ConfluenceToXWiki2Transformer.class);

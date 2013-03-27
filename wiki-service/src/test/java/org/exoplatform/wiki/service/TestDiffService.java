@@ -25,13 +25,6 @@ import org.exoplatform.wiki.service.diff.DiffService;
 import org.suigeneris.jrcs.diff.delta.Chunk;
 import org.suigeneris.jrcs.diff.delta.Delta;
 
-
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 2, 2010  
- */
 public class TestDiffService extends TestCase {
 
   private DiffService diffService;

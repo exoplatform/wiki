@@ -41,12 +41,6 @@ import org.xwiki.rendering.macro.MacroManager;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.syntax.SyntaxFactory;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 18, 2010  
- */
 public class WikiMacroService implements MacroService {
 
   private static Log                log = ExoLogger.getLogger("wiki:WikiMacroService");

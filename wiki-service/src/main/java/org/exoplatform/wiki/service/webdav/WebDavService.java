@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service.webdav;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Mar 4, 2011  
- */
 public interface WebDavService {
 
 }

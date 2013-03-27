@@ -18,12 +18,6 @@ package org.exoplatform.wiki.rendering.macro.table;
 
 import org.xwiki.component.annotation.Component;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Sep 22, 2010  
- */
 @Component("thead")
 public class TableHeaderRowMacro extends TableRowMacro {
 

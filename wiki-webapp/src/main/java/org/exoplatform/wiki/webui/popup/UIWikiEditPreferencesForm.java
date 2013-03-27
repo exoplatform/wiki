@@ -34,12 +34,6 @@ import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.UIWikiSyntaxPreferences;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 25, 2010  
- */
 @ComponentConfig(lifecycle = UIFormLifecycle.class, template = "app:/templates/wiki/webui/popup/UIWikiEditPreferencesForm.gtmpl",
     events = {
     @EventConfig(listeners = UIWikiEditPreferencesForm.SaveActionListener.class),

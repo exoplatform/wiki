@@ -26,12 +26,6 @@ import org.exoplatform.wiki.webui.UIWikiPageVersionsCompare;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 14 Jun 2011  
- */
 public class CompareRevisionActionListener extends EventListener<UIComponent> {
   
   private int                  from             = 1;

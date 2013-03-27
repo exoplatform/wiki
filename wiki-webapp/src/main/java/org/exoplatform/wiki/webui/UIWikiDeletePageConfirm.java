@@ -36,12 +36,6 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiDeletePageConfirm.gtmpl",

@@ -37,12 +37,6 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiBreadCrumb;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 30 Mar 2011  
- */
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/UIRelatedPagesContainer.gtmpl"
 )

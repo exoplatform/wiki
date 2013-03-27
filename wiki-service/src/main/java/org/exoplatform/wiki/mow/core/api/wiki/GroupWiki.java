@@ -24,11 +24,6 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 
-/**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
- * @version $Revision$
- */
 @PrimaryType(name = WikiNodeType.GROUP_WIKI)
 public abstract class GroupWiki extends WikiImpl {
   

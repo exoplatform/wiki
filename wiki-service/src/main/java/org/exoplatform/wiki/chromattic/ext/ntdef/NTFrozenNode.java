@@ -30,12 +30,6 @@ import org.chromattic.api.annotations.Property;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 6, 2010  
- */
 @PrimaryType(name = "nt:frozenNode")
 public abstract class NTFrozenNode {
 

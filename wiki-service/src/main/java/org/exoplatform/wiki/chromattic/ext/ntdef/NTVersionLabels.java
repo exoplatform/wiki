@@ -21,12 +21,6 @@ import java.util.Map;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 6, 2010  
- */
 @PrimaryType(name = "nt:versionLabels")
 public abstract class NTVersionLabels {
 

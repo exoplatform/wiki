@@ -18,12 +18,6 @@ package org.exoplatform.wiki.service.impl;
 
 import java.util.Hashtable;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jun 24, 2010  
- */
 public class SessionManager extends Hashtable<String, String> {
 
   private Hashtable<String, Object> context = new Hashtable<String, Object>();

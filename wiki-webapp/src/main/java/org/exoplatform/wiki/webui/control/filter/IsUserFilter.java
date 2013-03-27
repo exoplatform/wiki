@@ -22,12 +22,6 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Apr 26, 2010  
- */
 public class IsUserFilter extends UIExtensionAbstractFilter {
 
   public IsUserFilter() {

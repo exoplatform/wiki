@@ -22,8 +22,6 @@ import java.util.HashMap;
 import org.exoplatform.wiki.service.PermissionType;
 
 /**
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
  * @version $Revision$
  */
 public interface Attachment {

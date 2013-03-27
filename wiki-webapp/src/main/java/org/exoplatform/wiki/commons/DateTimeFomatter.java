@@ -22,12 +22,6 @@ import java.util.Locale;
 
 import org.exoplatform.portal.webui.util.Util;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 5 Jan 2011  
- */
 public class DateTimeFomatter {
   public static String getLongFormatted(Date date) {
     Locale currentLocale = Util.getPortalRequestContext().getLocale();

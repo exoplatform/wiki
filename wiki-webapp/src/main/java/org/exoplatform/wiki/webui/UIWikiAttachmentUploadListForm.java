@@ -34,12 +34,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.webui.control.action.RemoveAttachmentActionComponent;
 import org.exoplatform.wiki.webui.control.filter.RemoveAttachmentPermissionFilter;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * Aug 30, 2011  
- */
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
     template = "app:/templates/wiki/webui/UIWikiAttachmentUploadListForm.gtmpl"

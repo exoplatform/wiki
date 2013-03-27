@@ -25,12 +25,6 @@ import org.xwiki.rendering.block.MacroBlock;
 import org.xwiki.rendering.transformation.TransformationContext;
 import org.xwiki.rendering.transformation.TransformationException;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * Feb 27, 2012
- */
 public class ConfluenceToXWiki2DeepTransformation {
   private static ConfluenceToXWiki2DeepTransformation instance;
   

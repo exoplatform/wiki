@@ -22,13 +22,13 @@ import org.xwiki.gwt.wysiwyg.client.wiki.EntityReference;
 import org.xwiki.gwt.wysiwyg.client.wiki.ResourceReference;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 12, 2010  
+ *  The LinkService manage 2 different type of link, the {@link EntityConfig} and the link reference.
+ *
+ * @LevelAPI Experimental
  */
 @Role
 public interface LinkService {
+
   /**
    * Creates an entity link configuration object (URL, link reference) for a link with the specified origin and
    * destination. The link reference in the returned {@link EntityConfig} is relative to the link origin.

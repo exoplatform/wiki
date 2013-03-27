@@ -26,12 +26,6 @@ import org.xwiki.model.ModelContext;
 import org.xwiki.model.internal.reference.DefaultEntityReferenceValueProvider;
 import org.xwiki.model.reference.EntityReference;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Aug 16, 2010  
- */
 @Component("current")
 public class CurrentEntityReferenceValueProvider extends DefaultEntityReferenceValueProvider {
 

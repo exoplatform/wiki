@@ -38,10 +38,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.service.image.ResizeImageService;
 
 /**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 31 May 2011  
+ * {@inheritDoc}
  */
 public class ResizeImageServiceImpl implements ResizeImageService {
 

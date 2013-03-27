@@ -38,9 +38,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 
 /**
  * A Wiki store for portal, group and user wikis
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 @PrimaryType(name = WikiNodeType.WIKI_STORE)

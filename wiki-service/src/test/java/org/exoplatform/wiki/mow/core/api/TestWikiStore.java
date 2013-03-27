@@ -28,12 +28,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet.nguyen
- *          viet.nguyen@exoplatform.com
- * Mar 29, 2010  
- */
 public class TestWikiStore extends AbstractMOWTestcase {
 
   public void testGetWikiStore() {

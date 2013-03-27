@@ -18,6 +18,14 @@
           <description>The groupId of the product</description>
           <value>org.exoplatform.wiki</value>
         </value-param>
+<<<<<<< HEAD
+=======
+	<value-param>
+          <name>old.product.group.id</name>
+          <description>The groupId of the old product</description>
+         <value>org.exoplatform.ks</value>
+        </value-param>
+>>>>>>> feature/relooking
         <value-param>
           <name>plugin.execution.order</name>
           <description>The plugin execution order</description>

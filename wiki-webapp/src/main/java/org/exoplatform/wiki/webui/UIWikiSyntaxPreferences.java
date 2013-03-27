@@ -25,12 +25,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UISyntaxSelectBoxFactory;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 26, 2010  
- */
 public class UIWikiSyntaxPreferences extends UIFormInputSet {
   public static final String FIELD_SYNTAX = "DefaultSyntax";
 

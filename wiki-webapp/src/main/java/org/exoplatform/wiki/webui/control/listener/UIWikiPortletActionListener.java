@@ -23,12 +23,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.UIExtensionEventListener;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 24 Mar 2011  
- */
 public abstract class UIWikiPortletActionListener<T extends UIComponent> extends UIExtensionEventListener<T> {
 
   @Override

@@ -21,12 +21,8 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.UIContainerLifecycle;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Sep 30, 2010  
+ * This class is used to avoid break UI when restoring wiki mode in the case of opening multi-tabs
  */
-// This class is used to avoid break UI when restoring wiki mode in the case of opening multi-tabs
 @ComponentConfig(lifecycle = UIContainerLifecycle.class)
 public class UIWikiEmptyAjaxBlock extends UIContainer {
 

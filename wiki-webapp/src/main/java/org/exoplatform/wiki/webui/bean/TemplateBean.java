@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.webui.bean;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 8 Feb 2011  
- */
 public class TemplateBean {
   
   public static final String TITLE       = "title";

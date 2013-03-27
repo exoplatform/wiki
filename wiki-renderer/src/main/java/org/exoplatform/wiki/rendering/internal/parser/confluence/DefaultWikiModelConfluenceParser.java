@@ -30,12 +30,6 @@ import org.xwiki.rendering.util.IdGenerator;
 import org.xwiki.rendering.wikimodel.IWikiParser;
 import org.xwiki.rendering.wikimodel.confluence.ConfluenceWikiParser;
 
-/**
- * Created by The eXo Platform SAS
- * Author : haidd 
- *          haidd@exoplatform.com
- * Jan 14, 2012  
- */
 @Component("confluence/1.0")
 public class DefaultWikiModelConfluenceParser extends ConfluenceParser {
   

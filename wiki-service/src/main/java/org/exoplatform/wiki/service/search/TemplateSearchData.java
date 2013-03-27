@@ -21,12 +21,6 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 28 Jan 2011  
- */
 public class TemplateSearchData extends SearchData {
   private Log log = ExoLogger.getLogger(this.getClass());
   
@@ -40,7 +34,7 @@ public class TemplateSearchData extends SearchData {
   public static String GROUP_TEMPLATESPATH  = GROUP_PATH + TEMPLATE_PATH;
 
   public TemplateSearchData(String title, String wikiType, String wikiOwner) {
-    super(null, title, null, wikiType, wikiOwner, null);
+    super(title, null, wikiType, wikiOwner, null);
     createJcrQueryPath();
   }
  

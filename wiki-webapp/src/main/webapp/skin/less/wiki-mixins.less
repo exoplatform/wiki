@@ -65,6 +65,7 @@
 		background: @white;
 		padding: 15px 25px 25px;
 		height: 1000px;
+		overflow: auto;
 		.uiWikiPageTitlePreview{
 			border-bottom: 1px dotted #C7C7C7;
 			font-size: 24px;
@@ -75,6 +76,28 @@
 		}
 		.uiWikiContentDisplay{
 			padding: 18px 0 0;
+		}
+	}
+}
+
+/*===============Wiki Select Page==========*/
+
+.uiWikiSelectPageForm{
+	.uiTreeExplorer{
+		.selected{
+			font-weight: bold;
+		}
+		.nodeSelected{
+			color: aaa;
+		}
+	}
+	.uiSpaceSwitcher_UIWikiSelectPageForm{
+		cursor: pointer;
+		float: left;
+		margin-left: 10px;
+		.spaceChooserPopup{
+			top: 74px;
+			left: 129px;
 		}
 	}
 }

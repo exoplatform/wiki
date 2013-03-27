@@ -38,10 +38,7 @@ import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * May, 2010  
- */
+
 @PrimaryType(name = WikiNodeType.WIKI_ATTACHMENT)
 public abstract class AttachmentImpl extends NTFile implements Attachment, Comparable<AttachmentImpl> {
 

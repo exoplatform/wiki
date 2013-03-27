@@ -19,11 +19,6 @@ package org.exoplatform.wiki.mow.core.api.wiki;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-/**
- * Created by The eXo Platform SAS
- * @Author <a href="mailto:quanglt@exoplatform.com">Le Thanh Quang</a>
- * Apr 26, 2011  
- */
 @PrimaryType(name = WikiNodeType.WIKI_HELP_PAGE)
 public abstract class HelpPage extends PageImpl {
 

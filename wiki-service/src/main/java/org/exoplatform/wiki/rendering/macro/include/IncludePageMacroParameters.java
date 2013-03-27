@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.macro.include;
 import org.apache.commons.lang.StringUtils;
 import org.xwiki.properties.annotation.PropertyDescription;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 06, 2011  
- */
 public class IncludePageMacroParameters {
 
   /**

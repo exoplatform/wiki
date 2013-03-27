@@ -29,26 +29,17 @@ public class WikiSearchData extends SearchData {
   
   private String nodeType = null;
   
-  public WikiSearchData(String text,
-                           String title,
-                           String content,
-                           String wikiType,
-                           String wikiOwner,
-                           String pageId) {
-    super(text, title, content, wikiType, wikiOwner, pageId);
+  public WikiSearchData(String title, String content, String wikiType, String wikiOwner, String pageId) {
+    super(title, content, wikiType, wikiOwner, pageId);
     createJcrQueryPath();
   }
 
   public WikiSearchData(String wikiType, String wikiOwner, String pageId) {
-    this(null, null, null, wikiType, wikiOwner, pageId);
+    this(null, null, wikiType, wikiOwner, pageId);
   }
 
-  public WikiSearchData(String text,
-                           String title,
-                           String content,
-                           String wikiType,
-                           String wikiOwner) {
-    this(text, title, content, wikiType, wikiOwner, null);
+  public WikiSearchData(String title, String content, String wikiType, String wikiOwner) {
+    this(title, content, wikiType, wikiOwner, null);
   }
   
   public void setNodeType(String nodeType) {
@@ -56,45 +47,26 @@ public class WikiSearchData extends SearchData {
   }
 
   public void createJcrQueryPath() {
-
     if (wikiType == null && wikiOwner == null) {
       pagePath = ALL_PAGESPATH;
-    }
-    if (wikiType != null) {
+    } else if (wikiType != null) {
       if (wikiType.equals(PortalConfig.USER_TYPE)){
         pagePath = USER_PATH + WIKIHOME_PATH;
-      }
-      else {
+      } else {
         if (wikiType.equals(PortalConfig.PORTAL_TYPE)) {
           pagePath = PORTAL_PAGESPATH;
-        } else if (wikiType.equals(PortalConfig.GROUP_TYPE))
+        } else if (wikiType.equals(PortalConfig.GROUP_TYPE)) {
           pagePath = GROUP_PAGESPATH;
+        }  
+         
         if (wikiOwner != null && wikiOwner.length() > 0) {
           pagePath = pagePath.replaceFirst("%", wikiOwner);
         }
       }
     }
-    this.jcrQueryPath = "jcr:path LIKE '" + pagePath + "/%'";
+    jcrQueryPath = "(jcr:path LIKE '" + pagePath + "/%')";
   }
 
-  public String getStatementForTitle(boolean onlyHomePages) {
-    StringBuilder statement = new StringBuilder();
-    String queryPath = jcrQueryPath;
-    if (onlyHomePages) {
-      queryPath = queryPath.substring(0, queryPath.length() - 3) + "'";
-    }
-    statement.append("SELECT jcr:primaryType, jcr:path, jcr:score, title, fileType ")
-             .append("FROM nt:base ")
-             .append("WHERE ")
-             .append(queryPath)
-             .append(" AND ")
-             .append("LOWER(title) LIKE '%")
-             .append(title)
-             .append("%' ")
-             .append("ORDER BY jcr:score DESC");
-    return statement.toString();
-  }
-  
   public String getStatementForSearchingTitle() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT title, jcr:primaryType, path, excerpt(.) ");
@@ -112,8 +84,8 @@ public class WikiSearchData extends SearchData {
   
   public String getStatementForSearchingContent() {
     StringBuilder statement = new StringBuilder();
-    statement.append("SELECT jcr:content, jcr:primaryType, path, excerpt(.) ");
-    statement.append("FROM " + WikiNodeType.WIKI_ATTACHMENT + " ");
+    statement.append("SELECT jcr:primaryType, path, excerpt(.) ");
+    statement.append("FROM nt:base ");
     statement.append("WHERE ");
     statement.append(searchContentCondition());
     statement.append(createOrderClause());
@@ -123,7 +95,7 @@ public class WikiSearchData extends SearchData {
   public String getStatementForRenamedPage() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT * ").append("FROM wiki:renamed ").append("WHERE ");
-    statement.append(this.jcrQueryPath);
+    statement.append(jcrQueryPath);
     if (getPageId() != null && getPageId().length() > 0) {
       statement.append(" AND ");
       statement.append(" oldPageIds = '").append(getPageId()).append("'");
@@ -198,12 +170,10 @@ public class WikiSearchData extends SearchData {
   
   private String searchContentCondition() {
     StringBuilder clause = new StringBuilder();
-    String queryPath = this.jcrQueryPath;
-    clause.append(queryPath);
-    
-    if (text != null && text.length() > 0) {
+    clause.append(jcrQueryPath);
+    if (content != null && content.length() > 0) {
       clause.append(" AND (");
-      Collection<String> inputs = parseSearchText(text) ;
+      Collection<String> inputs = parseSearchText(content) ;
       int inputCount = 0 ;
       for(String keyword : inputs){
         if(inputCount > 0) clause.append(" OR ");
@@ -211,35 +181,23 @@ public class WikiSearchData extends SearchData {
         inputCount ++ ;
       }
       clause.append(")");
-    } else {
-      if (content != null && content.length() > 0) {
-        clause.append(" AND ");
-        clause.append(" CONTAINS(*, '").append(content).append("') ");
-      }
     }
     return clause.toString();
   }
   
   private String searchTitleCondition() {
     StringBuilder clause = new StringBuilder();
-    String queryPath = this.jcrQueryPath;
-    clause.append(queryPath);
-    
-    if (text != null && text.length() > 0) {
+    clause.append(jcrQueryPath);
+    if (title != null && title.length() > 0) {
       clause.append(" AND (");
-      Collection<String> inputs = parseSearchText(text) ;
+      Collection<String> inputs = parseSearchText(title) ;
       int inputCount = 0 ;
       for(String keyword : inputs){
         if(inputCount > 0) clause.append(" OR ");
-        clause.append(" CONTAINS(*, '").append(keyword).append("')");
+        clause.append(" CONTAINS(title, '").append(keyword).append("')");
         inputCount ++ ;
       }
       clause.append(")");
-    } else {
-      if (title != null && title.length() > 0) {
-        clause.append(" AND ");
-        clause.append(" CONTAINS(title, '").append(title).append("') ");
-      }
     }
     return clause.toString();
   }

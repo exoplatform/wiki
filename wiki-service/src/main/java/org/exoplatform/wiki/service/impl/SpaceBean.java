@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * Oct 24, 2012  
- */
 public class SpaceBean {
   private String spaceId;
   private String name;

@@ -22,12 +22,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * Nov 06, 2012  
- */
 public class OwnerPagesOrAdminSpacePermissionFilter extends UIExtensionAbstractFilter {
 
   public OwnerPagesOrAdminSpacePermissionFilter() {

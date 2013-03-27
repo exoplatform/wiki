@@ -28,12 +28,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.commons.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Aug 6, 2010  
- */
 @ComponentConfig(
                  lifecycle = Lifecycle.class, 
                  template = "app:/templates/wiki/webui/tree/UITreeExplorer.gtmpl",

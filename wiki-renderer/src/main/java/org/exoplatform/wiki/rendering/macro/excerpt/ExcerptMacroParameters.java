@@ -18,12 +18,6 @@ package org.exoplatform.wiki.rendering.macro.excerpt;
 
 import org.xwiki.properties.annotation.PropertyDescription;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * Jan 12, 2011  
- */
 public class ExcerptMacroParameters {
 
   /**

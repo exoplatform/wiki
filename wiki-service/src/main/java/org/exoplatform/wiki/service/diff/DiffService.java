@@ -31,10 +31,9 @@ import org.suigeneris.jrcs.diff.delta.Delta;
 import org.suigeneris.jrcs.util.ToString;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 30, 2010  
+ * This service provide different methods to be able to compare and make a diff list between content.
+ *
+ * @LevelAPI Experimental
  */
 public class DiffService {
 
@@ -267,6 +266,11 @@ public class DiffService {
     return new DiffResult(html.toString(), changes);
   }
 
+  /**
+   * Return a list of delta based on a wiki page revision
+   * @param rev
+   * @return list of delta
+   */
   protected List getDeltas(Revision rev) {
     ArrayList list = new ArrayList();
     for (int i = 0; i < rev.size(); i++) {
@@ -275,6 +279,11 @@ public class DiffService {
     return list;
   }
 
+  /**
+   * Escape string by using a common filter
+   * @param text the text to escape
+   * @return string
+   */
   protected String escape(String text) {
     Filter filter = new CharacterFilter();
     String scontent = filter.process(text);

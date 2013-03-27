@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.filter;
 import org.xwiki.component.annotation.Role;
 import org.xwiki.rendering.converter.ConversionException;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieult@exoplatform.com
- * Oct 26, 2011  
- */
 @Role
 public interface MacroFilter {
   

@@ -24,12 +24,6 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Property;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 6, 2010  
- */
 @MixinType(name = "mix:versionable")
 public abstract class VersionableMixin {
 

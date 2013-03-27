@@ -19,12 +19,6 @@ package org.exoplatform.wiki.rendering.macro.iframe;
 import org.junit.runner.RunWith;
 import org.xwiki.rendering.test.integration.RenderingTestSuite;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Dimitri BAELI
- *          dbaeli@exoplatform.com
- * 7 Jan 2012
- */
 @RunWith(RenderingTestSuite.class)
 public class IFrameMacroTest {
 }

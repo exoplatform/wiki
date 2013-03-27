@@ -23,13 +23,6 @@ import org.xwiki.rendering.listener.chaining.ListenerChain;
 import org.xwiki.rendering.listener.chaining.LookaheadChainingListener;
 
 /**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * Jul 2, 2010  
- */
-
-/**
  * Provides convenient access to listeners in the chain used for
  * {@link org.exoplatform.wiki.rendering.render.confluence.ConfluenceSyntaxListenerChain}.
  */

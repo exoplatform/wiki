@@ -18,9 +18,7 @@ package org.exoplatform.wiki.mow.api.content;
 
 /**
  * Represents a paragraph of text. It's a container for content items.
- * 
- * @author <a href="mailto:patrice.lamarque@exoplatform.com">Patrice
- *         Lamarque</a>
+ *
  * @version $Revision$
  */
 public interface Paragraph extends ContentItem {

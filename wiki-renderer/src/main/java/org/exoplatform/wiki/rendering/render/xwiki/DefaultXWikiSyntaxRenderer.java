@@ -28,12 +28,6 @@ import org.xwiki.rendering.listener.chaining.ListenerChain;
 import org.xwiki.rendering.renderer.reference.ResourceReferenceSerializer;
 import org.xwiki.rendering.transformation.icon.IconTransformationConfiguration;
 
-/**
- * Created by The eXo Platform SAS
- * Author : phongth
- *          phongth@exoplatform.com
- * March 16, 2012  
- */
 @Component
 @Named("xwiki/2.0")
 @InstantiationStrategy(ComponentInstantiationStrategy.PER_LOOKUP)

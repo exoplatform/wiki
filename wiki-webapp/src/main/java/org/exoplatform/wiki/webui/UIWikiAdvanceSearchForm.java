@@ -44,12 +44,6 @@ import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
 
-/**
- * Created by The eXo Platform SAS
- * Author : viet nguyen
- *          viet.nguyen@exoplatform.com
- * May 14, 2010  
- */
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiAdvanceSearchForm.gtmpl",
@@ -203,7 +197,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
           wikiOwner = StringUtils.replace(path, wikiType + org.exoplatform.wiki.commons.Utils.SLASH, StringUtils.EMPTY);
       }
     }
-    return new WikiSearchData(null, text, null, wikiType, wikiOwner);
+    return new WikiSearchData(text, text, wikiType, wikiOwner);
   }
   
   private String getDefaultSelectWikiValue() throws Exception {

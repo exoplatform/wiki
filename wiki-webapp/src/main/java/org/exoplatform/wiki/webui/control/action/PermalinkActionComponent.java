@@ -33,12 +33,6 @@ import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Tran Hung Phong
- *          phongth@exoplatform.com
- * Oct 04, 2012  
- */
 @ComponentConfig(
     template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",                
     events = {

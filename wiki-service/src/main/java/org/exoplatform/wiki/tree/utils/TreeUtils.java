@@ -39,12 +39,6 @@ import org.exoplatform.wiki.tree.WikiHomeTreeNode;
 import org.exoplatform.wiki.tree.WikiTreeNode;
 import org.exoplatform.wiki.utils.Utils;
 
-/**
- * Created by The eXo Platform SAS
- * Author : Lai Trung Hieu
- *          hieu.lai@exoplatform.com
- * 7 Jan 2011  
- */
 public class TreeUtils {
   
   /**
