@@ -39,9 +39,15 @@ import com.google.gwt.uibinder.elementparsers.IsEmptyParser;
 public class WikiSearchServiceConnector extends SearchServiceConnector {
   
   private static final Log LOG = ExoLogger.getLogger("org.exoplatform.wiki.service.impl.WikiSearchServiceConnector");
-  
+
+  /**
+   * URL of the icon used in the unified search to represent the results
+   */
   public static final String WIKI_PAGE_ICON = "/wiki/skin/images/unified-search/PageIcon.png";
-  
+
+  /**
+   * Date format expected by the unified search
+   */
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
   private WikiService wikiService;
@@ -56,9 +62,18 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
-  /**
-   * {@inheritDoc}
-   */
+    /**
+     * The connectors must implement this search method, with the following parameters and return a collection of SearchResult
+     *
+     * @param context Search context
+     * @param query The user-input query to search for
+     * @param sites Search on these specified sites only (e.g acme, intranet...)
+     * @param offset Start offset of the result set
+     * @param limit Maximum size of the result set
+     * @param sort The field to sort the result set
+     * @param order Sort order (ASC, DESC)
+     * @return a collection of SearchResult
+     */
   @Override
   public Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
     // When limit is 0 then return all search result
