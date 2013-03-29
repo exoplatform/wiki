@@ -142,13 +142,11 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
       if (uiWikiPermalinkForm.canPublicAndRetrictPage()) {
         Page currentPage = Utils.getCurrentWikiPage();
         HashMap<String, String[]> permissions = currentPage.getPermission();
-        if (permissions.get(IdentityConstants.ANY) == null) {
-          permissions.put(IdentityConstants.ANY, new String[] {
-              org.exoplatform.services.jcr.access.PermissionType.READ, 
-              org.exoplatform.services.jcr.access.PermissionType.ADD_NODE,
-              org.exoplatform.services.jcr.access.PermissionType.REMOVE,
-              org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY});
-        }
+        permissions.put(IdentityConstants.ANY, new String[] {
+            org.exoplatform.services.jcr.access.PermissionType.READ, 
+            org.exoplatform.services.jcr.access.PermissionType.ADD_NODE,
+            org.exoplatform.services.jcr.access.PermissionType.REMOVE,
+            org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY});
         currentPage.setPermission(permissions);
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
