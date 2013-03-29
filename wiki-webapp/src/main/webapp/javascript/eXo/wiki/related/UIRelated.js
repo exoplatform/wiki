@@ -42,7 +42,7 @@ UIRelated.prototype.initMacros = function() {
         for ( var i = 0; i < data.jsonList.length; i++) {
           var relatedItem = data.jsonList[i];
           var href = redirectTempl + "&objectId=" + encodeURIComponent(relatedItem.identity);
-          $(relatedBlock).append("<a href='" + href + "' class='relateItem'><i class='uiIconFile'></i>" + relatedItem.title + "</a>");
+          $(relatedBlock).append("<a href='" + href + "' class='relateItem'><i class='uiIconFileMini'></i>" + relatedItem.title + "</a>");
         }
         
         // Recalculate width height
