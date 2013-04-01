@@ -10,6 +10,7 @@
 %>
 
 <div class="uiWikiSettingContainer" id="$uicomponent.id">
+  <h4 class="titleInfo">Wiki Settings</h4>
   <div class="uiTabNormal uiTabInPage">
     <ul class="nav nav-tabs" id="myTab">
       <%
