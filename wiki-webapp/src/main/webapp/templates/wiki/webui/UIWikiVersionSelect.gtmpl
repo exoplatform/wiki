@@ -23,6 +23,7 @@
     String compareLinkId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.COMPARE_ACTION;
   %>
   <div class="DecorationVersion">
+    <h4 class="titleInfo"><%= _ctx.appRes("UIWikiVersionSelect.label.view-revision") %></h4>
         <% if(uicomponent.isHasNextVersion()) { %>
           <span class="Label"><%= _ctx.appRes("UIWikiVersionSelect.label.viewing-old-version-info"); %></span>
 		  <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');" class="Title"><%= _ctx.appRes("UIWikiVersionSelect.label.CurrentVersion"); %></a>

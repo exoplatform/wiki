@@ -72,8 +72,7 @@ public class UIFieldEditableForm extends UIWikiForm {
   }
   
   public UIFieldEditableForm() {
-    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.HELP,
-        WikiMode.VIEWREVISION });
+    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.HELP });
     UIFormStringInput titleInput = new UIFormStringInput(FIELD_TITLEINPUT, FIELD_TITLEINPUT, null);
     addChild(titleInput);
     titleInput.setRendered(false);
