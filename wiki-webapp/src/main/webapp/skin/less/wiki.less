@@ -71,7 +71,7 @@
 
 .uiLeftContainerArea {
 	width: 273px;
-	padding: 4px;
+	padding: 4px 0 4px 4px;
 	float:left;
 	overflow: auto;
 }
@@ -150,7 +150,8 @@
 .uiWikiMiddleArea {
 	.resizeBar {
 		float: left;
-		width: 22px;
+		width: 26px;
+		margin-top: 5px;
 		
 		.resizeBarContent {
 			width: 15px;
@@ -179,9 +180,13 @@
 			margin-top: 7px;
 				
 				[class^="uiIcon"] {
-					margin: 3px 0px 0px -2px;
+					margin: 2px 0px 0px -2px;
 					width: 10px;
 				}
+		}
+		
+		.resizeButton:hover .uiIconMiniArrowLeft{
+			background-image: url("/eXoResources/skin/images/Icons/uiIconsBlue.png");
 		}
 		
 		.showLeftContent {
