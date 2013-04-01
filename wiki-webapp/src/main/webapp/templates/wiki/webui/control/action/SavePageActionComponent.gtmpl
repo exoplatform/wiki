@@ -15,6 +15,7 @@
   requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");
   requireJs.require("SHARED/UIForm", "UIForm");
 %>
-<button type="button" id="$uicomponent.id" href="$link" onclick="if(eXo.wiki.UIWikiSavePage.confirm('$uicomponent.id', $isNewMode, '$pageTitleInputId', '$untitledMessage','$titleMessage',  '$addMessage',  'SavePage Icon',  '$confirmLabel','$cancelLabel')) $link;" class="btn btn-primary">
+<a style="display:none" id="link_$uicomponent.id" href="$link"></a>
+<button type="button" id="$uicomponent.id" onclick="if(eXo.wiki.UIWikiSavePage.confirm('$uicomponent.id', $isNewMode, '$pageTitleInputId', '$untitledMessage','$titleMessage',  '$addMessage',  'SavePage Icon',  '$confirmLabel','$cancelLabel')) $link;" class="btn btn-primary">
     <%=_ctx.appRes("UISubmitToolBar.action.SavePage");%>
 </button>
