@@ -73,6 +73,27 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   me.autoSaveSequeneTime = autoSaveSequeneTime;
 };
 
+UIWikiPageEditForm.prototype.checkToRemoveEditorMenu = function() {
+  var me = eXo.wiki.UIWikiPageEditForm;
+  var pageEditForm = document.getElementById(me.pageEditFormId);
+  var menuItems = $(pageEditForm).find("div.gwt-MenuItemLabel");
+  var found = false;
+  if (menuItems) {
+    for (var i = 0; i < menuItems.length; i++) {
+      if (menuItems[i].innerHTML == "Import") {
+      	var parent = menuItems[i].parentNode;
+      	parent.parentNode.removeChild(parent);
+      	found = true;
+      	break;
+      }
+    }
+  }
+  
+  if (!found) {
+  	setTimeout(me.checkToRemoveEditorMenu, 200);
+  }
+};
+
 UIWikiPageEditForm.prototype.setMessageResource = function(saveDraftSuccessMessage, discardDraftConfirmMessage) {
   var me = eXo.wiki.UIWikiPageEditForm;
   me.saveDraftSuccessMessage = saveDraftSuccessMessage;
