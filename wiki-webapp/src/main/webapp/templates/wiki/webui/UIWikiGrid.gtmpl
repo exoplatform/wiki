@@ -50,7 +50,7 @@
              
         <% if (uicomponent.getUIPageIterator().getAvailable() < 1) { %>
           <tr>
-      	    <td class="center empty" colspan="<%=colnum%>">
+      	    <td class="center empty" colspan="<%=colnum + 1%>">
               <%=_ctx.appRes("UIGrid.msg.empty")%>
             </td>
           </tr>

@@ -15,6 +15,7 @@
 	    <div class="templateControl">
 	      <div class="uiSearchInput" >	
 	        <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
+	        <button type="button" class="btn TemplateSearchButton" style="display:none" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></button>
 	      </div>
 	    </div>
 		
