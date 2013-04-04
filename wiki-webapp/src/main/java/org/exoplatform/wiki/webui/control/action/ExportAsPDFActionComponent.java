@@ -26,6 +26,7 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
 import org.exoplatform.wiki.webui.control.filter.AdminPagesPermissionFilter;
+import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 import org.xhtmlrenderer.pdf.ITextRenderer;
@@ -45,7 +46,7 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
   public static final String ACTION  = "ExportAsPDF";
   private static final Log LOG  = ExoLogger.getLogger(ExportAsPDFActionComponent.class.getName());
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] {
-      new IsViewModeFilter(), new AdminPagesPermissionFilter() });
+      new IsViewModeFilter(), new IsUserFilter() });
   
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
