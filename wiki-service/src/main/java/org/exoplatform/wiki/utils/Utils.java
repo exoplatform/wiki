@@ -229,7 +229,7 @@ public class Utils {
     domainUrl.append(portalRequestContext.getRequest().getScheme());
     domainUrl.append("://");
     domainUrl.append(portalRequestContext.getRequest().getServerName());
-    int port = portalRequestContext.getRequest().getLocalPort();
+    int port = portalRequestContext.getRequest().getServerPort();
     if (port != 80) {
       domainUrl.append(":");
       domainUrl.append(port);
