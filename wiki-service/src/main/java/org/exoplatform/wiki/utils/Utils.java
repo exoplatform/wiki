@@ -14,12 +14,10 @@ import java.util.ResourceBundle;
 import java.util.Stack;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -35,7 +33,6 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.mail.MailService;
@@ -96,7 +93,7 @@ public class Utils {
   
   public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
   
-  private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:\"-";
+  private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-";
   
   public static String escapeIllegalCharacterInQuery(String query) {
     String ret = query;
