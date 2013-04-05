@@ -219,4 +219,11 @@
          <% }
           }        
     }%>	
-</table> 	 
+</table>
+
+<%
+   if (uicomponent.getUIPageIterator().getAvailablePage() > 1)
+   {
+      _ctx.renderUIComponent(uicomponent.getUIPageIterator());
+   }
+%>
