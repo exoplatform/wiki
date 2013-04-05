@@ -1,8 +1,9 @@
 <%
-	def rcontext = _ctx.getRequestContext() ;
-	def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  def rcontext = _ctx.getRequestContext();
+  def userName = rcontext.getRemoteUser();
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/WikiLayout", "WikiLayout");
-  requireJs.addScripts("WikiLayout.setHeightRightContent() ;") ; 
+  requireJs.addScripts("WikiLayout.setHeightRightContent('', '" + userName + "') ;") ; 
 %>
 
 <div class="uiWikiPageContainer" id="$uicomponent.id">

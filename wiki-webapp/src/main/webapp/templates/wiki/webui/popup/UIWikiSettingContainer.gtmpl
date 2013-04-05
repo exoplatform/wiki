@@ -2,10 +2,11 @@
   import org.exoplatform.web.application.JavascriptManager;
   
   def rcontext = _ctx.getRequestContext();
+  def userName = rcontext.getRemoteUser();
   JavascriptManager jsManager = rcontext.getJavascriptManager();
   def requireJs = jsManager.getRequireJS();
   requireJs.require("SHARED/WikiLayout", "WikiLayout");
-  requireJs.addScripts("WikiLayout.processWithHeight();");
+  requireJs.addScripts("WikiLayout.processWithHeight('', '" + userName + "');");
   List<String> items  = uicomponent.getItems();
 %>
 
