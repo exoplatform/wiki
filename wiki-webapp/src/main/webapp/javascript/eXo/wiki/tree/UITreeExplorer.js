@@ -258,9 +258,9 @@ UITreeExplorer.prototype.buildNode = function(data) {
   } else {
     if (data.retricted == true) {
       nodeName = me.retrictedLabel;
-      childNode += "         <span style='cursor:auto' title='" + me.restrictedTitle + "'><i class='uiIconWikiRestrictedFile " + iconClass +  "'></i><em>" + nodeName + "</em></span>";
+      childNode += "         <span style='cursor:auto' rel='tooltip' data-placement='right' title=\"" + me.restrictedTitle + "\"><i class='uiIconWikiRestrictedFile " + iconClass +  "'></i><em>" + nodeName + "</em></span>";
     } else if (data.selectable == false) {
-      childNode += "         <span style='cursor:auto' title='" + nodeName + "'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
+      childNode += "         <span style='cursor:auto'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
     }
   }
   
