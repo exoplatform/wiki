@@ -23,7 +23,6 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.PortalContainerInfo;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
@@ -220,21 +219,7 @@ public class Utils {
       sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
     }
     
-    return getDomainUrl() + fillPortalName(sb.toString());
-  }
-  
-  private static String getDomainUrl() {
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    StringBuilder domainUrl = new StringBuilder();
-    domainUrl.append(portalRequestContext.getRequest().getScheme());
-    domainUrl.append("://");
-    domainUrl.append(portalRequestContext.getRequest().getServerName());
-    int port = portalRequestContext.getRequest().getServerPort();
-    if (port != 80) {
-      domainUrl.append(":");
-      domainUrl.append(port);
-    }
-    return domainUrl.toString();
+    return fillPortalName(sb.toString());
   }
   
   private static String fillPortalName(String url) {
