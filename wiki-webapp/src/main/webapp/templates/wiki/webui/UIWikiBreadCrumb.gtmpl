@@ -15,7 +15,9 @@
       String note = "LeftBlock"; %>
       <% if (uicomponent.isAllowChooseSpace()) {
         uicomponent.renderChild(uicomponent.SPACE_SWITCHER);
-      } else { %>
+      %>
+        <span class="uiIconMiniArrowRight">&nbsp;</span>
+      <% } else { %>
         <li>
 	      <a>
             <% if (uicomponent.isShowWikiName()) { %>
