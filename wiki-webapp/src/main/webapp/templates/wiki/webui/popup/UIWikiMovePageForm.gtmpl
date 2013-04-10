@@ -19,12 +19,12 @@
 
 	  <% uiform.renderChild(uiform.LOCATION_CONTAINER); %> 
   </div>
-  <div class="uiAction">
+  <div class="uiAction uiActionBorder">
 	  <% String closeLink = uiform.event("Close");%>
-	  <button data-placement="bottom" rel="tooltip" class="btn btn-primary" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')" data-original-title="Save">
+	  <button class="btn btn-primary" onclick="eXo.wiki.UIForm.submitPageEvent('$uiform.id','$uiform.MOVE','&objectId=$uiform.MOVE')" >
 		  <%=_ctx.appRes("UIWikiMovePageForm.action.Move")%>
 	  </button>
-	  <button data-placement="bottom" rel="tooltip" class="btn" onclick="$closeLink" data-original-title="Cancel">
+	  <button class="btn" onclick="$closeLink" >
 		  <%=_ctx.appRes("UIWikiMovePageForm.action.Cancel")%>
 	  </button>
   </div>

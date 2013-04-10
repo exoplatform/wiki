@@ -71,9 +71,19 @@
 
 .uiLeftContainerArea {
 	width: 273px;
-	padding: 4px;
+	padding: 4px 0 4px 4px;
 	float:left;
 	overflow: auto;
+	.wikiBox {
+		h6.titleWikiBox {
+			a {
+				display: block;
+			    overflow: hidden;
+			    text-overflow: ellipsis;
+			    white-space: nowrap;
+			}
+		}
+	}
 }
 
 .uiRightContainerArea {
@@ -150,7 +160,8 @@
 .uiWikiMiddleArea {
 	.resizeBar {
 		float: left;
-		width: 22px;
+		width: 26px;
+		margin-top: 5px;
 		
 		.resizeBarContent {
 			width: 15px;
@@ -179,9 +190,13 @@
 			margin-top: 7px;
 				
 				[class^="uiIcon"] {
-					margin: 3px 0px 0px -2px;
+					margin: 2px 0px 0px -2px;
 					width: 10px;
 				}
+		}
+		
+		.resizeButton:hover .uiIconMiniArrowLeft{
+			background-image: url("/eXoResources/skin/images/Icons/uiIconsBlue.png");
 		}
 		
 		.showLeftContent {
@@ -202,7 +217,7 @@
 	}
 	
 	.resizeNoneBorder {
-		width: 25px;
+		width: 20px;
 		
 		&:hover {
 		cursor: default;
@@ -253,7 +268,7 @@
 	}
 	.uiWikiPageTitle {
 		margin-right: 300px;
-		padding-top: 8px;
+		padding-top: 3px;
 	}
 }
 
@@ -276,6 +291,11 @@
 	.introduce {
 		margin: 0 0 15px 0;
 	}
+	.uiWikiDraftGrid{
+		th .uiIconArrowDown, .uiIconArrowUp{
+			margin: 3px -6px 0 0;
+		}
+	}
 }
 /*uiPermissionGrid*/
 
@@ -291,7 +311,6 @@
 }
 
 .uiWikiDeletePageConfirm{
-	padding: 10px 10px 0 10px;
 	.WikiDeleteContent{
 		padding: 0 0 20px 0;
 		ul{
@@ -309,6 +328,7 @@
 		}
 		.node{
 			margin-left: 30px;
+			font-style: italic;
 		}
 	}
 }
@@ -320,7 +340,7 @@
 	}
 }
 
-.uiWikiPageVersionsList{
+.uiWikiHistorySpaceArea{
 	padding: 8px 15px 15px;
 }
 

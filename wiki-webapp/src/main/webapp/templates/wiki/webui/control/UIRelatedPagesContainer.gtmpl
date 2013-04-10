@@ -8,7 +8,7 @@
     def currentWikiPage = uicomponent.getCurrentPage();
     def relatedPages = currentWikiPage.getRelatedPages(); 
   %>
-  <table class="uiGrid table table-hover table-striped" width="100%" cellspacing="0" cellpadding="0">
+  <table class="uiGrid table table-hover table-striped" >
     <caption><h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.related-pages") %></h6></caption>
 	<thead>
       <tr>
@@ -47,7 +47,7 @@
 	   
 	 <% if (relatedPages.size() == 0) { %>
 	   <tr>
-	    <td colspan="3"></td>
+	    <td class="empty center" colspan="3"><%=_ctx.appRes("UIGrid.msg.empty")%></td>
 	   </tr>
 	 <% } %>
 	   <tr>

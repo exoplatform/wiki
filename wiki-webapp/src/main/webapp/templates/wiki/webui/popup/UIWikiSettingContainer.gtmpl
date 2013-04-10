@@ -2,14 +2,16 @@
   import org.exoplatform.web.application.JavascriptManager;
   
   def rcontext = _ctx.getRequestContext();
+  def userName = rcontext.getRemoteUser();
   JavascriptManager jsManager = rcontext.getJavascriptManager();
   def requireJs = jsManager.getRequireJS();
   requireJs.require("SHARED/WikiLayout", "WikiLayout");
-  requireJs.addScripts("WikiLayout.processWithHeight();");
+  requireJs.addScripts("WikiLayout.processWithHeight('', '" + userName + "');");
   List<String> items  = uicomponent.getItems();
 %>
 
 <div class="uiWikiSettingContainer" id="$uicomponent.id">
+  <h4 class="titleInfo"><%= _ctx.appRes("UIWikiSettingContainer.label.wiki-setting") %></h4>
   <div class="uiTabNormal uiTabInPage">
     <ul class="nav nav-tabs" id="myTab">
       <%

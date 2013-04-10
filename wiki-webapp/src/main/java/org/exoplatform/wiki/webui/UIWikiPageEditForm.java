@@ -304,6 +304,11 @@ public class UIWikiPageEditForm extends UIWikiForm {
     return isRunAutoSave;
   }
   
+  protected boolean isInRichTextEditor() {
+    UIWikiRichTextArea wikiRichTextArea = getChild(UIWikiRichTextArea.class);
+    return wikiRichTextArea.isRendered();
+  }
+  
   protected String getCancelDraftEvent() throws Exception {
     return org.exoplatform.wiki.commons.Utils.createFormActionLink(this, "CancelDraft", null);
   }

@@ -46,7 +46,10 @@ WikiLayout.prototype.init = function(prtId, _userName) {
 
 WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
   var me = eXo.wiki.WikiLayout;
-  me.userName = _userName;
+  if (_userName) {
+    me.userName = _userName;
+  }
+  
   try {
     if(String(typeof me.myBody) == "undefined" || !me.myBody) {
       me.myBody = $("body")[0];
@@ -143,14 +146,14 @@ WikiLayout.prototype.setClassBody = function(clazz) {
   }
 };
 
-WikiLayout.prototype.processWithHeight = function() {
+WikiLayout.prototype.processWithHeight = function(prtId, _userName) {
   var me = eXo.wiki.WikiLayout;
   if (me.wikiLayout) {
     me.setClassBody(me.wikiBodyClass);
     me.setHeightLayOut();
     me.setWidthLayOut();
   } else {
-    me.init('');
+    me.init(prtId, _userName);
   }
 };
 
@@ -212,10 +215,10 @@ WikiLayout.prototype.setHeightLayOut = function() {
   me.setHeightRightContent();
 };
 
-WikiLayout.prototype.setHeightRightContent = function() {
+WikiLayout.prototype.setHeightRightContent = function(prtId, _userName) {
   var me = eXo.wiki.WikiLayout;
   if (!me.wikiLayout) {
-    me.init('');
+    me.init(prtId, _userName);
   }
   
   var pageArea = $(me.rightArea).find('div.UIWikiPageArea:first')[0];

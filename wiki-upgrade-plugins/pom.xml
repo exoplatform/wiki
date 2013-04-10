@@ -17,6 +17,20 @@
       <version>${org.exoplatform.commons.version}</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-service</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-core</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-common</artifactId>
+      <version>${org.exoplatform.social.version}</version>
+    </dependency>
   </dependencies>
   <build>
     <resources>

@@ -15,14 +15,14 @@
 	    <div class="templateControl">
 	      <div class="uiSearchInput" >	
 	        <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
-	        <button type="button" class="btn TemplateSearchButton" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></button>
+	        <button type="button" class="btn TemplateSearchButton" style="display:none" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></button>
 	      </div>
 	    </div>
 		
 	    <% uiform.renderChild(uiform.TEMPLATE_GRID);	%>
 	  </div>
 	  
-    <div class="uiAction uiActionBorder">
+    <div class="uiAction">
       <a class="btn selectTemplateAction" href="javascript:void(0);"><%=selectLabel%></a>
       <a class="btn" href="javascript:void(0);" onclick="<%= uicomponent.event(uicomponent.ACTION_CANCEL) %>"><%=cancelLabel%></a>
     </div>			

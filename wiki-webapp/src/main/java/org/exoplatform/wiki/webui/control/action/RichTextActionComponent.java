@@ -107,9 +107,8 @@ public class RichTextActionComponent extends UIComponent {
         wikiSidePanelArea.setRendered(false);
         bottomArea.setRendered(false);
       }
-      super.processEvent(event);
       event.getRequestContext().addUIComponentToUpdateByAjax(pageCotainer.getAncestorOfType(UIWikiPortlet.class));
+      super.processEvent(event);
     }
   }
-  
 }

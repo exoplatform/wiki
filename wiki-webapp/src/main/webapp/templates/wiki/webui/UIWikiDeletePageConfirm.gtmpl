@@ -17,7 +17,7 @@
 		 <ul>
 		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo3"); %></li>
 		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo4"); %></li> 
-		   <li class="breadcrumb"><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5").replace("{0}", uicomponent.getWiki() + " <span class='uiIconMiniArrowRight'>&nbsp;</span> " + "<strong class='active'>"  + page.getParentPage().getTitle() + "</strong>."); %></li>
+		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5").replace("{0}", uicomponent.getWiki() + " <span class='uiIconMiniArrowRight'>&nbsp;</span> " + "<strong class='active'>"  + page.getParentPage().getTitle() + "</strong>."); %></li>
 		 </ul>
 	   </div>
 	   

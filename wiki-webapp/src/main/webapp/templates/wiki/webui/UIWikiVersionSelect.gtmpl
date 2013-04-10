@@ -1,7 +1,7 @@
 <%
   import org.exoplatform.wiki.webui.UIWikiPortlet;  
 %>
-
+<h4 class="titleInfo"><%= _ctx.appRes("UIWikiVersionSelect.label.view-revision") %></h4>
 <div class="UIWikiVersionSelect" id="$uicomponent.id">
   <%
     String viewCurrentVersionLink = uicomponent.event(uicomponent.VIEW_CURRENT_VERSION);
@@ -23,6 +23,7 @@
     String compareLinkId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.COMPARE_ACTION;
   %>
   <div class="DecorationVersion">
+    
         <% if(uicomponent.isHasNextVersion()) { %>
           <span class="Label"><%= _ctx.appRes("UIWikiVersionSelect.label.viewing-old-version-info"); %></span>
 		  <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');" class="Title"><%= _ctx.appRes("UIWikiVersionSelect.label.CurrentVersion"); %></a>

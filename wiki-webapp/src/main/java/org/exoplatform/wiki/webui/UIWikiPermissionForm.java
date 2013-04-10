@@ -222,6 +222,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     uiPopup.setUIComponent(component);
     uiPopup.setShow(true);
     uiPopup.setWindowSize(550, 0);
+    uiPopup.setResizable(true);
     WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
     rcontext.addUIComponentToUpdateByAjax(uiPopup);
   }

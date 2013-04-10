@@ -41,6 +41,10 @@
     String defaultDescriptionOfTemplate = _ctx.appRes("UIWikiPageEditForm.label.Description");
     requireJs.addScripts("UIWikiPageEditForm.decorateInputOfTemplate('" + defaultTitleOfTemplate + "', '" + defaultDescriptionOfTemplate + "');");
   }
+  
+  if (uicomponent.isInRichTextEditor()) {
+    requireJs.addScripts("UIWikiPageEditForm.checkToRemoveEditorMenu();");
+  }
 %>
 <div class="uiWikiPageEditForm">
 <% uiform.begin();%>

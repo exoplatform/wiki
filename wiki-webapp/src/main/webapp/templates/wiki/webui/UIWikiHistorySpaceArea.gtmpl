@@ -1,4 +1,4 @@
-<div id="$uicomponent.id" class="uiWikiHistorySpaceArea">
+<div id="$uicomponent.id" class="uiWikiHistorySpaceArea wikiBox">
 <%
  if(!uicomponent.isShowVersion()) {
 %>

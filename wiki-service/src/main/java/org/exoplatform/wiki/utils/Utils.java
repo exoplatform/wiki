@@ -14,18 +14,15 @@ import java.util.ResourceBundle;
 import java.util.Stack;
 
 import javax.jcr.RepositoryException;
-import javax.jcr.query.QueryResult;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.xml.PortalContainerInfo;
-import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
@@ -35,7 +32,6 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.ext.app.SessionProviderService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.mail.MailService;
@@ -96,7 +92,7 @@ public class Utils {
   
   public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
   
-  private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:\"-";
+  private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-";
   
   public static String escapeIllegalCharacterInQuery(String query) {
     String ret = query;
@@ -223,21 +219,7 @@ public class Utils {
       sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
     }
     
-    return getDomainUrl() + fillPortalName(sb.toString());
-  }
-  
-  private static String getDomainUrl() {
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    StringBuilder domainUrl = new StringBuilder();
-    domainUrl.append(portalRequestContext.getRequest().getScheme());
-    domainUrl.append("://");
-    domainUrl.append(portalRequestContext.getRequest().getServerName());
-    int port = portalRequestContext.getRequest().getLocalPort();
-    if (port != 80) {
-      domainUrl.append(":");
-      domainUrl.append(port);
-    }
-    return domainUrl.toString();
+    return fillPortalName(sb.toString());
   }
   
   private static String fillPortalName(String url) {

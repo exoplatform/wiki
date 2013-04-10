@@ -157,10 +157,11 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
   }
   $(node).html(str);
   if (this.isRenderLink) {
-	var wikiHome = $(node).find("div.wikihome");
-	if (wikiHome) {
-	  var aElement = $(wikiHome).find("a:first")[0];
-	  var homeUL = $(wikiHome).parents("ul.nodeGroup:first")[0];
+	var wikiHome = $(node).find("i.uiIconWiki");
+	if (wikiHome && wikiHome.length > 0) {
+	  var aElement = $(wikiHome)[0].parentNode;
+	  var divParent = aElement.parentNode;
+	  var homeUL = $(divParent).parents("ul.nodeGroup:first")[0];
 	  var remain = $(homeUL).find("ul.nodeGroup:first")[0];
 	  var container = $(homeUL).parents("div.uiTreeExplorer")[0];
 	  if (aElement) {
@@ -257,9 +258,9 @@ UITreeExplorer.prototype.buildNode = function(data) {
   } else {
     if (data.retricted == true) {
       nodeName = me.retrictedLabel;
-      childNode += "         <span style='cursor:auto' title='" + me.restrictedTitle + "'><i class='uiIconWikiRestrictedFile " + iconClass +  "'></i><em>" + nodeName + "</em></span>";
+      childNode += "         <span style='cursor:auto' rel='tooltip' data-placement='right' title=\"" + me.restrictedTitle + "\"><i class='uiIconWikiRestrictedFile " + iconClass +  "'></i><em>" + nodeName + "</em></span>";
     } else if (data.selectable == false) {
-      childNode += "         <span style='cursor:auto' title='" + nodeName + "'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
+      childNode += "         <span style='cursor:auto'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
     }
   }
   

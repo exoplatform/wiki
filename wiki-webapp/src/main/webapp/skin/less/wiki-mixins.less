@@ -14,7 +14,7 @@
 }
 
 .uiWikiUpperArea{
-	padding: 14px 24px;
+	padding: 14px 25px 14px 24px;
 }
 
 /*===========Relate page==========*/
@@ -24,10 +24,13 @@
 		.relateItem{
 			display: block;
 			padding: 4px 0;
-			.uiIconFile{
+			color: @grayDark;
+			.uiIconFileMini{
 				margin: 0px 4px 0px 0px;
-				color: @grayDark;
 			}
+		}
+		.relateItem:hover{
+			color: @linkColorHover;
 		}
 	}
 	.wikiBox{
@@ -42,6 +45,8 @@
 			font-size: 24px;
 			font-weight: bold;
 			color: @linkColor;
+			line-height: 30px;
+			word-wrap: break-word;
 		}
 	}
 }
@@ -100,4 +105,9 @@
 			left: 129px;
 		}
 	}
+}
+
+.UIWikiPortletPreferences{
+	padding: 10px;
+	background: white;
 }

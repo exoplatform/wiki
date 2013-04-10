@@ -42,6 +42,11 @@ UIWikiTemplateForm.prototype.init = function(componentid, inputId, mode, default
   if (mode == "Template") {
     me.changeActionWhenChooseTemplate();
   }
+  
+  $(window).ready(function(){
+    // Init tooltip
+    $("*[rel='tooltip']").tooltip();
+  });
 };
 
 UIWikiTemplateForm.prototype.changeActionWhenChooseTemplate = function(){

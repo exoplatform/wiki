@@ -50,8 +50,8 @@
              
         <% if (uicomponent.getUIPageIterator().getAvailable() < 1) { %>
           <tr>
-      	    <td class="center" colspan="<%=colnum%>">
-              <i class="noticeEmpty"><%=_ctx.appRes("UIGrid.msg.empty")%></i>
+      	    <td class="center empty" colspan="<%=colnum + 1%>">
+              <%=_ctx.appRes("UIGrid.msg.empty")%>
             </td>
           </tr>
         <% } else {
@@ -152,8 +152,8 @@
       
       <% if (uicomponent.getUIPageIterator().getAvailable() < 1) { %>
         <tr>
-      	  <td class="center" colspan="<%=colnum%>">
-            <i class="noticeEmpty"><%=_ctx.appRes("UIGrid.msg.empty")%></i>
+      	  <td class="center empty" colspan="<%=colnum%>">
+            <%=_ctx.appRes("UIGrid.msg.empty")%>
           </td>
         </tr>
       <% } else {
@@ -187,7 +187,7 @@
                    fieldValue = "";
                  }
                  String value = fieldValue.toString();
-                 println "<td><div class='" + cssClass + "' title='$fieldValue'>" + fieldValue + "</div></td>";
+                 println "<td><div class='" + cssClass + "'>" + fieldValue + "</div></td>";
               }
               
               if (beanActions != null && beanActions.length > 0) { %>
@@ -219,4 +219,11 @@
          <% }
           }        
     }%>	
-</table> 	 
+</table>
+
+<%
+   if (uicomponent.getUIPageIterator().getAvailablePage() > 1)
+   {
+      _ctx.renderUIComponent(uicomponent.getUIPageIterator());
+   }
+%>

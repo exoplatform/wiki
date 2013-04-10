@@ -217,12 +217,15 @@ public class Utils {
   
   public static String getURLFromParams(WikiPageParams params) throws Exception {
     if (params.getType().equals(PortalConfig.GROUP_TYPE)) {
-      String spaceUrl = getSpaceHomeURL(params.getOwner());
-      if (!spaceUrl.endsWith("/")) {
-        spaceUrl += "/";
+      StringBuilder spaceUrl = new StringBuilder(getSpaceHomeURL(params.getOwner()));
+      if (!spaceUrl.toString().endsWith("/")) {
+        spaceUrl.append("/");
       }
-      spaceUrl += "wiki/";
-      return spaceUrl;
+      spaceUrl.append("wiki/");
+      if (!StringUtils.isEmpty(params.getPageId())) {
+        spaceUrl.append(params.getPageId());
+      }
+      return spaceUrl.toString();
     }
     return org.exoplatform.wiki.utils.Utils.getPermanlink(params);
   }

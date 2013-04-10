@@ -17,21 +17,21 @@
         uicomponent.renderChild(uicomponent.SPACE_SWITCHER);
       } else { %>
         <li>
-			    <a>
+	      <a>
             <% if (uicomponent.isShowWikiName()) { %>
               <% if (uicomponent.isShowWikiType()) { %>
                 <%= uicomponent.getWikiType(); %> : 
               <% } %>
               <%= uicomponent.getWikiName(); %>
             <% } %>
-			    </a>
-		    </li>
+	      </a>
+	      
+	      <% if (uicomponent.isShowWikiName()) { %>
+            <span class="uiIconMiniArrowRight">&nbsp;</span>
+          <% } %>
+	    </li>
       <% } %>
 		
-      <% if (uicomponent.isShowWikiName()) { %>
-        <span class="uiIconMiniArrowRight">&nbsp;</span>
-      <% } %>
-
      <% for(i in 0 .. breadCumbs.size()-1) {
 	   def liClass = (i == breadCumbs.size()-1) && (uicomponent.getActionLabel()==null || "".equals(uicomponent.getActionLabel()))?"active":"";
 	   %>
@@ -43,9 +43,9 @@
           if(uicomponent.isLink && i == breadCumbs.size()-1) note = "Selected";
      %>
        <% if (uicomponent.isLink && !"active".equals(liClass)) {%>
-             <a href="<%=(breadcumbData.getId() == null) ? "#" : actionLink%>">$title</a>
+         <a href="<%=(breadcumbData.getId() == null) ? "#" : actionLink%>">$title</a>
        <% } else {%>
-         $title
+         <a >$title</a>
        <% } %>
          <%      
           if(i != breadCumbs.size()-1) {
