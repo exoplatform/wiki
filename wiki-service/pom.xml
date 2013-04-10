@@ -323,12 +323,6 @@
       <groupId>net.sourceforge.cssparser</groupId>
       <artifactId>cssparser</artifactId>
       <scope>runtime</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>sac</artifactId>
-          <groupId>org.w3c.css</groupId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <!-- To replace the transitive dep of com.lowagie:itext which is in conflict with exo.core.component.document dependencies -->
     <dependency>
