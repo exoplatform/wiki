@@ -106,7 +106,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
    */
   protected static String getPermanlink() throws Exception {
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    return org.exoplatform.wiki.utils.Utils.getPermanlink(params);
+    return org.exoplatform.wiki.utils.Utils.getPermanlink(params, true);
   }
   
   public static class RestrictActionListener extends EventListener<UIWikiPermalinkForm> {

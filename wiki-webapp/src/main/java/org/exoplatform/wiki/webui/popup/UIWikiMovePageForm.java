@@ -266,7 +266,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       UIPopupContainer popupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);    
       popupContainer.cancelPopupAction();
       newLocationParams.setPageId(currentLocationParams.getPageId());
-      String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams);
+      String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams, false);
       org.exoplatform.wiki.commons.Utils.redirect(permalink);
     }
   }

@@ -66,7 +66,7 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
           // If user is not member of space but has view permission
           if (!wikiService.isHiddenSpace(owner) && !wikiService.isSpaceMember(spaceId, currentUser)) {
             WikiPageParams wikiPageParams = new WikiPageParams(PortalConfig.GROUP_TYPE, owner, pageId);
-            String permalink = Utils.getPermanlink(wikiPageParams);
+            String permalink = Utils.getPermanlink(wikiPageParams, true);
             redirect(permalink);
           }
         }
