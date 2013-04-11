@@ -227,7 +227,7 @@ public class Utils {
       }
       return spaceUrl.toString();
     }
-    return org.exoplatform.wiki.utils.Utils.getPermanlink(params);
+    return org.exoplatform.wiki.utils.Utils.getPermanlink(params, false);
   }
   
   public static Page getCurrentNewDraftWikiPage() throws Exception {
