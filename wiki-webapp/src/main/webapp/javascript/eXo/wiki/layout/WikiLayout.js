@@ -44,6 +44,19 @@ WikiLayout.prototype.init = function(prtId, _userName) {
   });
 }
 
+WikiLayout.prototype.initHeightForPreview = function() {
+  $(window).ready(function(){
+    var me = eXo.wiki.WikiLayout;
+    var mask = document.getElementById("UIWikiMaskWorkspace");
+    if (mask) {
+      var uiWikiPagePreview = $(mask).find("div.uiWikiPagePreview")[0];
+      if (uiWikiPagePreview) {
+        $(uiWikiPagePreview).css("height", document.documentElement.clientHeight + "px");
+      }
+    }
+  });
+}
+
 WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
   var me = eXo.wiki.WikiLayout;
   if (_userName) {
