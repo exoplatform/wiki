@@ -232,8 +232,7 @@ public class Utils {
   
   public static Page getCurrentNewDraftWikiPage() throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-    return wikiService.getExsitedOrNewDraftPageById(null, null, sessionId);
+    return wikiService.getExsitedOrNewDraftPageById(null, null, org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
   }
   
   public static String getExtension(String filename)throws Exception {
@@ -335,13 +334,11 @@ public class Utils {
       }
     }
     if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-      String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-      wikiContext.setPageId(sessionId);
+      wikiContext.setPageId(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
     } else {
       wikiContext.setPageId(params.getPageId());
     }
     wikiContext.setBaseUrl(getBaseUrl());
-
     return wikiContext;
   }
   

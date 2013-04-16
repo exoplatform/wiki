@@ -95,6 +95,8 @@ public class Utils {
   
   private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-";
   
+  public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
+  
   public static String escapeIllegalCharacterInQuery(String query) {
     String ret = query;
     if (ret != null) {
@@ -224,6 +226,12 @@ public class Utils {
       return getDomainUrl() + fillPortalName(sb.toString());
     }
     return fillPortalName(sb.toString());
+  }
+  
+  public static String getPageNameForAddingPage() {
+    String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
+    String username = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    return username + SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE + sessionId;
   }
   
   private static String getDomainUrl() {
@@ -431,10 +439,13 @@ public class Utils {
   
   public static String getCurrentUser() {
     try {
+      return PortalRequestContext.getCurrentInstance().getRemoteUser();
+    } catch(Exception e){
       ConversationState conversationState = ConversationState.getCurrent();
-      return conversationState.getIdentity().getUserId();
-    }catch(Exception e){
-      return "system" ;
+      if (conversationState != null) {
+        return ConversationState.getCurrent().getIdentity().getUserId();
+      }
+      return null;
     }    
   }
   
