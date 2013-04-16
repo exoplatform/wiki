@@ -537,7 +537,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public Page getPageByRootPermission(String wikiType, String wikiOwner, String pageId) throws Exception {
     PageImpl page = null;
-
     if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageId) || pageId == null) {
       page = getWikiHome(wikiType, wikiOwner);
     } else {
@@ -545,11 +544,14 @@ public class WikiServiceImpl implements WikiService, Startable {
       if (statement != null) {
         Model model = getModel();
         WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-        page = searchPage(statement, wStore.getSession());
-        if (page == null && (page = getWikiHome(wikiType, wikiOwner)) != null) {
-          String wikiHomeId = TitleResolver.getId(page.getTitle(), true);
-          if (!wikiHomeId.equals(pageId)) {
-            page = null;
+        ChromatticSession session = wStore.getSession();
+        if (session != null) {
+          page = searchPage(statement, session);
+          if (page == null && (page = getWikiHome(wikiType, wikiOwner)) != null) {
+            String wikiHomeId = TitleResolver.getId(page.getTitle(), true);
+            if (!wikiHomeId.equals(pageId)) {
+              page = null;
+            }
           }
         }
       }
@@ -602,7 +604,8 @@ public class WikiServiceImpl implements WikiService, Startable {
      }
     
     // if this is ANONIM then use draft in DraftNewPagesContainer 
-    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+    String username = Utils.getCurrentUser();
+    if (IdentityConstants.ANONIM.equals(username)) {
       Model model = getModel();
       WikiStore wStore = model.getWikiStore();
       PageImpl draftNewPagesContainer = wStore.getDraftNewPagesContainer();
@@ -612,19 +615,41 @@ public class WikiServiceImpl implements WikiService, Startable {
         draftPage.setName(pageId);
         draftNewPagesContainer.addPublicPage(draftPage);
       }
-      
       return draftPage;
     }
     
-    // Get draft page
-    DraftPageImpl draftPage = (DraftPageImpl) getDraft(pageId);
-    if (draftPage != null) {
-      return draftPage;
+    // check to get draft if exist
+    Model model = getModel();
+    UserWiki userWiki = null;
+    DraftPageImpl draftPage = null;
+    
+    // Check if in the case that access to wiki page by rest service of xwiki
+    if ((username == null) && (pageId.indexOf(Utils.SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE) > -1)) {
+      String[] texts = pageId.split(Utils.SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE);
+      username = texts[0];
+      WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+      WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
+      userWiki = userWikiContainer.getWiki(username, true);
+      Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildrenByRootPermission().values();
+      
+      // Change collection to List
+      for (PageImpl pageImpl : childPages) {
+        if (pageImpl.getName().equals(pageId)) {
+          return pageImpl;
+        }
+      }
+    } else {
+      // Get draft page
+      draftPage = (DraftPageImpl) getDraft(pageId);
+      if (draftPage != null) {
+        return draftPage;
+      }
     }
     
     // Get draft page container
-    Model model = getModel();
-    UserWiki userWiki = (UserWiki) getWiki(PortalConfig.USER_TYPE, Utils.getCurrentUser(), model);
+    if (userWiki == null) {
+      userWiki = (UserWiki) getWiki(PortalConfig.USER_TYPE, username, model);
+    }
     PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
     
     // Create new draft
@@ -634,6 +659,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     draftPage.setNewPage(true);
     draftPage.setTargetPage(null);
     draftPage.setTargetRevision("1");
+    
+    // Put any permisison to access by xwiki rest service
+    HashMap<String, String[]> permissions = draftPage.getPermission();
+    permissions.put(IdentityConstants.ANY, new String[] { org.exoplatform.services.jcr.access.PermissionType.READ });
+    draftPage.setPermission(permissions);
     return draftPage;
   }
   

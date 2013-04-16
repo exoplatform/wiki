@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.webui;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -81,10 +80,8 @@ public class UIWikiRichTextArea extends UIContainer {
     }
     UIWikiPortlet wikiPortlet = this.getAncestorOfType(UIWikiPortlet.class);
     if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-      String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-      wikiPageParams.setPageId(sessionId);
+      wikiPageParams.setPageId(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
     }
     return wikiPageParams;
   }
-  
 }
