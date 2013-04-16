@@ -69,11 +69,8 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
       PageImpl page = (PageImpl) wikiService.getPageById(param.getType(), param.getOwner(), param.getPageId());
       boolean supportSectionEdit = page.hasPermission(PermissionType.EDITPAGE);
       String markup = page.getContent().getText();
-      MarkupKey key = new MarkupKey(new WikiPageParams(param.getType(), param.getOwner(), param.getPageId()),
-                                    markup,
-                                    page.getSyntax(),
-                                    targetSyntax,
-                                    supportSectionEdit);
+      WikiPageParams wikiPageParams = new WikiPageParams(param.getType(), param.getOwner(), param.getPageId());
+      MarkupKey key = new MarkupKey(wikiPageParams, page.getSyntax(), targetSyntax, supportSectionEdit);
       MarkupData cachedData = renderingCache.get(key);
       if (cachedData != null) {
         return cachedData.build();
@@ -116,11 +113,7 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
       for (WikiPageParams wikiPageParams : linkedPages) {
         try {
           Page page = wikiService.getPageById(wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId());
-          MarkupKey key = new MarkupKey(wikiPageParams,
-                                        page.getContent().getText(),
-                                        page.getSyntax(),
-                                        Syntax.XHTML_1_0.toIdString(),
-                                        false);
+          MarkupKey key = new MarkupKey(wikiPageParams, page.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
           getRenderingCache().remove(key);
           key.setSupportSectionEdit(true);
           getRenderingCache().remove(key);
@@ -133,5 +126,4 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
       }
     }
   }
-
 }

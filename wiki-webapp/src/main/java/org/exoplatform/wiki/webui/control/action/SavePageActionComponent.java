@@ -136,6 +136,9 @@ public class SavePageActionComponent extends UIComponent {
         return;
       }
 
+      // Invaliding cache for current page
+      Utils.invalidCacheForCurrentPage();
+      
       String title = titleInput.getValue().trim();
       if (wikiRichTextArea.isRendered()) {
         String htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();

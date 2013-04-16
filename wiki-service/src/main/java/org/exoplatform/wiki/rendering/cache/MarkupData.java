@@ -18,6 +18,7 @@ package org.exoplatform.wiki.rendering.cache;
 
 public class MarkupData implements CacheData<String> {
 
+  private static final long serialVersionUID = 4024500794943104643L;
   private final String markup;
   
   public MarkupData(final String markup) {
@@ -28,5 +29,4 @@ public class MarkupData implements CacheData<String> {
   public String build() {
     return this.markup;
   }
-
 }
