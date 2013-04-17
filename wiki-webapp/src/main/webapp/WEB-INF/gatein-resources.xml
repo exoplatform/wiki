@@ -581,20 +581,43 @@
       <path>/javascript/eXo/wiki/UIWikiPageNotFound.js</path>
     </script>
     <depends>
-        <module>base</module>
+      <module>base</module>
     </depends>
     <depends>
-        <module>uiForm</module>
+      <module>uiForm</module>
     </depends>
     <depends>
-        <module>webui-ext</module>
+      <module>webui-ext</module>
     </depends> 
     <depends>
       <module>jquery</module>
     </depends>
     <depends>
       <module>bootstrap_wiki</module>
-    </depends>   
+    </depends>
+  </module>
+  
+  <module>
+    <name>UIWikiMovePageForm</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <path>/javascript/eXo/wiki/UIWikiMovePageForm.js</path>
+    </script>
+    <depends>
+      <module>base</module>
+    </depends>
+    <depends>
+      <module>uiForm</module>
+    </depends>
+    <depends>
+      <module>webui-ext</module>
+    </depends> 
+    <depends>
+      <module>jquery</module>
+    </depends>
+    <depends>
+      <module>bootstrap_wiki</module>
+    </depends>
   </module>
   
   <module>
