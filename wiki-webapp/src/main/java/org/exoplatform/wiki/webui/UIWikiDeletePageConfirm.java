@@ -75,7 +75,9 @@ public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent 
     PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
     PageImpl parent = page.getParentPage();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    breadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), parent.getName()));
+    if (params != null) {
+      breadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), parent.getName()));
+    }
     super.processRender(context);
   }
 
