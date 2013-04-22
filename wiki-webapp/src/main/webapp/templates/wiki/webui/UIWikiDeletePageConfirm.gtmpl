@@ -17,7 +17,7 @@
 		 <ul>
 		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo3"); %></li>
 		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo4"); %></li> 
-		   <li class="clearfix">
+		   <li>
 		     <div class="pull-left"><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo5"); %></div>
 		     <% uicomponent.renderChild(uicomponent.BREADCRUM_NAME);%>
 		   </li>
