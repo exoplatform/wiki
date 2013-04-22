@@ -21,6 +21,7 @@ import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
@@ -48,21 +49,34 @@ public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent 
   public static final String OK_ACTION = "OK";
   public static final String CANCEL_ACTION = "Cancel";
   
-  private WikiService wservice;
+  private static final String BREADCRUM_NAME = "uiWikiDeletePageConfirm_UIWikiBreadcrum"; 
+  
   private String pageID;
   private String owner;
 
   public UIWikiDeletePageConfirm() throws Exception {
-    wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+    addChild(UIWikiBreadCrumb.class, null, BREADCRUM_NAME).setLink(false).setShowWikiType(false);
   }
 
   protected List<SearchResult> getRelativePages() {
     try {
       WikiPageParams params = Utils.getCurrentWikiPageParams();
+      WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
       return wservice.searchRenamedPage(params.getType(), params.getOwner(), params.getPageId());
     } catch (Exception e) {
       return new ArrayList<SearchResult>();
     }
+  }
+  
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+    UIWikiBreadCrumb breadCrumb = getChild(UIWikiBreadCrumb.class);
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
+    PageImpl parent = page.getParentPage();
+    WikiPageParams params = Utils.getCurrentWikiPageParams();
+    breadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), parent.getName()));
+    super.processRender(context);
   }
 
   protected PageImpl getCurrentPage() {
@@ -70,6 +84,7 @@ public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent 
       WikiPageParams params = Utils.getCurrentWikiPageParams();
       pageID = params.getPageId();
       owner = params.getOwner();
+      WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
       return (PageImpl) wservice.getPageById(params.getType(), params.getOwner(), params.getPageId());
     } catch (Exception e) {
       return null;

@@ -29,12 +29,12 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 
 @ComponentConfig(
-                 lifecycle = Lifecycle.class,
-                 template = "app:/templates/wiki/webui/UIWikiLocationContainer.gtmpl",
-                 events = {
-                     @EventConfig(listeners = UIWikiLocationContainer.ChangeNewLocationActionListener.class)                  
-                   }
-               )
+  lifecycle = Lifecycle.class,
+  template = "app:/templates/wiki/webui/UIWikiLocationContainer.gtmpl",
+  events = {
+    @EventConfig(listeners = UIWikiLocationContainer.ChangeNewLocationActionListener.class)                  
+  }
+)
 public class UIWikiLocationContainer extends UIContainer {
   final static public String CURRENT_LOCATION   = "currentLocation";
 
@@ -49,16 +49,13 @@ public class UIWikiLocationContainer extends UIContainer {
   
   static public class ChangeNewLocationActionListener extends EventListener<UIWikiLocationContainer> {
     public void execute(Event<UIWikiLocationContainer> event) throws Exception {
-
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       UIWikiLocationContainer container = event.getSource();
       UIWikiBreadCrumb newlocation = container.getChildById(NEW_LOCATION);
       String value = event.getRequestContext().getRequestParameter(OBJECTID);
       value = TitleResolver.getId(value, false);
       WikiPageParams params = TreeUtils.getPageParamsFromPath(value);
-      newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(),
-                                                         params.getOwner(),
-                                                         params.getPageId()));
+      newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
       event.getRequestContext().addUIComponentToUpdateByAjax(newlocation);
     }
   }
