@@ -58,9 +58,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
   public UIWikiSelectPageForm() throws Exception {
     setId(FORM_ID);
     UITreeExplorer uiTree = addChild(UITreeExplorer.class, null, UI_TREE_ID);
-    EventUIComponent eventComponent = new EventUIComponent(FORM_ID,
-                                                           "SetCurrentPage",
-                                                           EVENTTYPE.EVENT);
+    EventUIComponent eventComponent = new EventUIComponent(FORM_ID, "SetCurrentPage", EVENTTYPE.EVENT);
     StringBuilder initURLSb = new StringBuilder(Utils.getCurrentRestURL());
     initURLSb.append("/wiki/tree/").append(TREETYPE.ALL.toString());
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
@@ -70,6 +68,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     // Init space switcher
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(Utils.getCurrentSpaceName()));
+    uiWikiSpaceSwitcher.setAutoResize(true);
     EventUIComponent eventComponent1 = new EventUIComponent(FORM_ID, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }
@@ -135,7 +134,9 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
           service.addRelatedPage(Utils.getCurrentWikiPageParams(), params);
         }
       } catch (Exception e) {
-         if (log.isWarnEnabled()) log.warn("can not execute 'SelectPage' action", e);
+         if (log.isWarnEnabled()) {
+           log.warn("can not execute 'SelectPage' action", e);
+         }
       }
       UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
       popupContainer.cancelPopupAction();
@@ -147,7 +148,6 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
   }
   
   static public class CancelActionListener extends EventListener<UIWikiSelectPageForm> {
-
     @Override
     public void execute(Event<UIWikiSelectPageForm> event) throws Exception {
       UIWikiSelectPageForm uiform = event.getSource();

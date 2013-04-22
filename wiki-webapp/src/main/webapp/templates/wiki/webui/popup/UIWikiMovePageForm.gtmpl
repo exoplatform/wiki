@@ -1,9 +1,3 @@
-<% 
-  def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
-  requireJs.require("SHARED/UIWikiMovePageForm", "UIWikiMovePageForm");
-  requireJs.addScripts("UIWikiMovePageForm.init('" + uicomponent.SPACE_SWITCHER + "');");
-%>
-
 <% uiform.begin();%>
 <div id="$uicomponent.id" class="uiWikiMovePageForm">
   <div class="resizable">

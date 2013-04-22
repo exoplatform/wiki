@@ -58,7 +58,7 @@
     
     
     <component-plugin>
-      <name>WikiNodeTypeUpgradePlugin</name>
+      <name>RemoveDomainInActivityUpgradePlugin</name>
       <set-method>addUpgradePlugin</set-method>
       <type>org.exoplatform.wiki.upgrade.domain.RemoveDomainInActivityUpgradePlugin</type>
       <description>Remove domain name in wiki activity</description>
