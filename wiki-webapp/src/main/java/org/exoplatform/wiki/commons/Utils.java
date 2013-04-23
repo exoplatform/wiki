@@ -66,7 +66,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.resolver.PageResolver;
 import org.exoplatform.wiki.service.Permission;
@@ -101,12 +100,6 @@ public class Utils {
   public static String getCurrentSpaceName() throws Exception {
     Wiki currentSpace = Utils.getCurrentWiki();
     return getSpaceName(currentSpace);
-  }
-  
-  public static void invalidCacheForCurrentPage() throws Exception {
-    PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) PortalContainer.getComponent(PageRenderingCacheService.class);
-    WikiPageParams params = getCurrentWikiPageParams();
-    renderingCacheService.invalidateCache(params);
   }
   
   public static String getSpaceName(Wiki space) throws Exception {
