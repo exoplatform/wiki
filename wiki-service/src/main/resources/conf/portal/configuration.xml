@@ -82,6 +82,11 @@
   </component>
   
   <component>
+    <key>org.exoplatform.wiki.service.image.ResizeImageService</key>
+    <type>org.exoplatform.wiki.service.image.impl.ResizeImageServiceImpl</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.commons.api.search.SearchServiceConnector</key>
     <type>org.exoplatform.wiki.service.impl.WikiSearchServiceConnector</type>
   </component>

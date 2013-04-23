@@ -216,6 +216,10 @@ public class Utils {
   }
   
   public static String getURLFromParams(WikiPageParams params) throws Exception {
+    if (StringUtils.isEmpty(params.getType()) || StringUtils.isEmpty(params.getOwner())) {
+      return StringUtils.EMPTY;
+    }
+    
     if (params.getType().equals(PortalConfig.GROUP_TYPE)) {
       StringBuilder spaceUrl = new StringBuilder(getSpaceHomeURL(params.getOwner()));
       if (!spaceUrl.toString().endsWith("/")) {
@@ -247,8 +251,8 @@ public class Utils {
   public static Wiki getCurrentWiki() throws Exception {
     MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
     WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
-    String wikiType=  Utils.getCurrentWikiPageParams().getType();
-    String owner=  Utils.getCurrentWikiPageParams().getOwner();
+    String wikiType = Utils.getCurrentWikiPageParams().getType();
+    String owner = Utils.getCurrentWikiPageParams().getOwner();
     return store.getWiki(WikiType.valueOf(wikiType.toUpperCase()), owner);    
   }
 

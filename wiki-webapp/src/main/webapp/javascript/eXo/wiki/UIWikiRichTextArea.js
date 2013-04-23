@@ -20,8 +20,7 @@
 function UIWikiRichTextArea() {
 };
 
-UIWikiRichTextArea.prototype.init = function(hookId, inputURL, syntax, wiki,
-    space, page) {  
+UIWikiRichTextArea.prototype.init = function(hookId, inputURL, syntax, wiki, space, page) {  
   var me = eXo.wiki.UIWikiRichTextArea;
   me.hookId = hookId;
   me.inputURL = inputURL;
@@ -33,9 +32,6 @@ UIWikiRichTextArea.prototype.init = function(hookId, inputURL, syntax, wiki,
     try{
       eXo.wiki.WysiwygEditor.release();
     }catch(e){
-      if(window.console){
-        window.console.error(e);
-      }
     }
   };
   

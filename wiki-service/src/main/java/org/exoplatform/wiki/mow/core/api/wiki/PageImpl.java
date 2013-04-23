@@ -336,11 +336,32 @@ public abstract class PageImpl extends NTFolder implements Page {
     return atts;
   }
   
+  public Collection<AttachmentImpl> getAttachmentsExcludeContentByRootPermisison() throws Exception {
+    Collection<AttachmentImpl> attachments = getAttachmentsByChromattic();
+    List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>(attachments.size());
+    for (AttachmentImpl attachment : attachments) {
+      if (!WikiNodeType.Definition.CONTENT.equals(attachment.getName())) {
+        atts.add(attachment);
+      }
+    }
+    Collections.sort(atts);
+    return atts;
+  }
+  
   public AttachmentImpl getAttachment(String attachmentId) throws Exception {
     for (AttachmentImpl attachment : getAttachments()) {
       if (attachment.getName().equals(attachmentId)
           && (attachment.hasPermission(PermissionType.VIEW_ATTACHMENT)
           || attachment.hasPermission(PermissionType.EDIT_ATTACHMENT))) {
+        return attachment;
+      }
+    }
+    return null;
+  }
+  
+  public AttachmentImpl getAttachmentByRootPermisison(String attachmentId) throws Exception {
+    for (AttachmentImpl attachment : getAttachments()) {
+      if (attachment.getName().equals(attachmentId)) {
         return attachment;
       }
     }
