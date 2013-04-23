@@ -125,10 +125,7 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
           key.setSupportSectionEdit(true);
           getRenderingCache().remove(key);
         } catch (Exception e) {
-          LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]",
-                                 wikiPageParams.getType(),
-                                 wikiPageParams.getOwner(),
-                                 wikiPageParams.getPageId()));
+          LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
         }
       }
     }

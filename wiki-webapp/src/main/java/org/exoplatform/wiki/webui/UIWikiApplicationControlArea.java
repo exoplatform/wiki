@@ -46,12 +46,7 @@ public class UIWikiApplicationControlArea extends UIContainer {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     String currentActionLabel = getCurrentActionLabel();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(),
-                                                          params.getOwner(),
-                                                          params.getPageId()));
-    
-    UISpacesSwitcher uiWikiSpaceSwitcher = wikiBreadCrumb.getChildById(UIWikiBreadCrumb.SPACE_SWITCHER);
-    uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(Utils.getCurrentSpaceName()));
+    wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);
   }

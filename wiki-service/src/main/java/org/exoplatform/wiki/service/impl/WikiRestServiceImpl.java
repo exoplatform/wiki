@@ -223,15 +223,13 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           if (attachfile != null) {
             WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
             Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
-            if (page != null && page.hasPermission(PermissionType.EDITPAGE)) {
-              AttachmentImpl att = ((PageImpl) page).createAttachment(attachfile.getName(), attachfile);
-              ConversationState conversationState = ConversationState.getCurrent();
-              String creator = null;
-              if (conversationState != null && conversationState.getIdentity() != null) {
-                creator = conversationState.getIdentity().getUserId();
-              }
-              att.setCreator(creator);
+            AttachmentImpl att = ((PageImpl) page).createAttachment(attachfile.getName(), attachfile);
+            ConversationState conversationState = ConversationState.getCurrent();
+            String creator = null;
+            if (conversationState != null && conversationState.getIdentity() != null) {
+              creator = conversationState.getIdentity().getUserId();
             }
+            att.setCreator(creator);
           }
         }
       } catch (Exception e) {
@@ -587,20 +585,20 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                            @QueryParam("width") Integer width) {
     InputStream result = null;
     try {
-      ResizeImageService resizeImgService = (ResizeImageService) ExoContainerContext.getCurrentContainer()
-                                                                                    .getComponentInstanceOfType(ResizeImageService.class);
-      PageImpl page = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
-      AttachmentImpl att = page.getAttachment(imageId);
+      ResizeImageService resizeImgService = (ResizeImageService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
+      PageImpl page = (PageImpl) wikiService.getPageByRootPermission(wikiType, wikiOwner, pageId);
+      AttachmentImpl att = page.getAttachmentByRootPermisison(imageId);
       ByteArrayInputStream bis = new ByteArrayInputStream(att.getContentResource().getData());
       if (width != null) {
         result = resizeImgService.resizeImageByWidth(imageId, bis, width);
       } else {
         result = bis;
-      }      
+      }
       return Response.ok(result, "image").cacheControl(cc).build();
     } catch (Exception e) {
-      if (log.isDebugEnabled())
+      if (log.isDebugEnabled()) {
         log.debug(String.format("Can't get image name: %s of page %s", imageId, pageId), e);
+      }
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }

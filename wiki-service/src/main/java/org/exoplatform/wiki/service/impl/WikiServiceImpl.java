@@ -598,13 +598,15 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
-     Page existedPage = getPageById(wikiType, wikiOwner, pageId);
-     if (existedPage != null) {
-       return existedPage;
-     }
+    String username = Utils.getCurrentUser();
+    Page existedPage = getPageByRootPermission(wikiType, wikiOwner, pageId);
+    if (existedPage != null) {
+      if (username == null || existedPage.hasPermission(PermissionType.EDITPAGE)) {
+        return existedPage;
+      }
+    }
     
     // if this is ANONIM then use draft in DraftNewPagesContainer 
-    String username = Utils.getCurrentUser();
     if (IdentityConstants.ANONIM.equals(username)) {
       Model model = getModel();
       WikiStore wStore = model.getWikiStore();
