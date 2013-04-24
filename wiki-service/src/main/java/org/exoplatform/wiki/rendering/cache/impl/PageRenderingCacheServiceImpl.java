@@ -26,7 +26,6 @@ import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
@@ -47,10 +46,9 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
 
   private WikiService                     wikiService;
 
-  private ExoCache<MarkupKey, MarkupData> renderingCache;
+  private ExoCache<Integer, MarkupData> renderingCache;
   
   private Map<WikiPageParams, List<WikiPageParams>> pageLinksMap = new ConcurrentHashMap<WikiPageParams, List<WikiPageParams>>();
-
 
   /**
    * Initialize rendering cache service 
@@ -69,31 +67,24 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
       PageImpl page = (PageImpl) wikiService.getPageById(param.getType(), param.getOwner(), param.getPageId());
       boolean supportSectionEdit = page.hasPermission(PermissionType.EDITPAGE);
       String markup = page.getContent().getText();
-      MarkupKey key = new MarkupKey(new WikiPageParams(param.getType(), param.getOwner(), param.getPageId()),
-                                    markup,
-                                    page.getSyntax(),
-                                    targetSyntax,
-                                    supportSectionEdit);
-      MarkupData cachedData = renderingCache.get(key);
+      MarkupKey key = new MarkupKey(new WikiPageParams(param.getType(), param.getOwner(), param.getPageId()), page.getSyntax(), targetSyntax, supportSectionEdit);
+      MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
       if (cachedData != null) {
         return cachedData.build();
       }
       renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
-      renderingCache.put(key, new MarkupData(renderedContent));
+      renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
-      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s",
-                              param.getType(),
-                              param.getOwner(),
-                              param.getPageId(),
-                              targetSyntax), e);
+      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", param.getType(), param.getOwner(), param.getPageId(), targetSyntax), e);
     }
     return renderedContent;
   }
 
   @Override
-  public final ExoCache<MarkupKey, MarkupData> getRenderingCache() {
+  public final ExoCache<Integer, MarkupData> getRenderingCache() {
     return renderingCache;
   }
+  
   @Override
   public Map<WikiPageParams, List<WikiPageParams>> getPageLinksMap() {
     return pageLinksMap;
@@ -112,23 +103,27 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
   @Override
   public void invalidateCache(WikiPageParams param) {
     List<WikiPageParams> linkedPages = pageLinksMap.get(param);
-    if (linkedPages != null && linkedPages.size() != 0) {
-      for (WikiPageParams wikiPageParams : linkedPages) {
-        try {
-          Page page = wikiService.getPageById(wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId());
-          MarkupKey key = new MarkupKey(wikiPageParams,
-                                        page.getContent().getText(),
-                                        page.getSyntax(),
-                                        Syntax.XHTML_1_0.toIdString(),
-                                        false);
-          getRenderingCache().remove(key);
-          key.setSupportSectionEdit(true);
-          getRenderingCache().remove(key);
-        } catch (Exception e) {
-          LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
-        }
+    if (linkedPages == null) {
+      linkedPages = new ArrayList<WikiPageParams>();
+    } else {
+      linkedPages = new ArrayList<WikiPageParams>(linkedPages);
+    }
+    linkedPages.add(param);
+    
+    for (WikiPageParams wikiPageParams : linkedPages) {
+      try {
+        MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        renderingCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        renderingCache.remove(new Integer(key.hashCode()));
+        
+        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        renderingCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        renderingCache.remove(new Integer(key.hashCode()));
+      } catch (Exception e) {
+        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
       }
     }
   }
-
 }

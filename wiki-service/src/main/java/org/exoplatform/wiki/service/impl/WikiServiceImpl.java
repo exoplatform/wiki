@@ -75,6 +75,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
+import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.IDType;
@@ -348,6 +349,10 @@ public class WikiServiceImpl implements WikiService, Startable {
       processCircularRename(entry, newEntry);
     }
     parentPage.getChromatticSession().save();
+    
+    // Invaliding cache
+    PageRenderingCacheService pageRenderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
+    pageRenderingCacheService.invalidateCache(new WikiPageParams(wikiType, wikiOwner, pageName));
     return true ;    
   }
 

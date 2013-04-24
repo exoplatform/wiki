@@ -24,8 +24,6 @@ public class MarkupKey implements Serializable {
 
   private WikiPageParams pageParams;
 
-  private String         source;
-
   private String         sourceSyntax;
 
   private String         targetSyntax;
@@ -41,9 +39,8 @@ public class MarkupKey implements Serializable {
    * @param targetSyntax the target syntax
    * @param supportSectionEdit the content supports section editing or not
    */
-  public MarkupKey(WikiPageParams pageParams, String source, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) {
+  public MarkupKey(WikiPageParams pageParams, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) {
     this.pageParams = pageParams;
-    this.source = source;
     this.sourceSyntax = sourceSyntax;
     this.targetSyntax = targetSyntax;
     this.supportSectionEdit = supportSectionEdit;
@@ -57,7 +54,6 @@ public class MarkupKey implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((pageParams == null) ? 0 : pageParams.hashCode());
-    result = prime * result + ((source == null) ? 0 : source.hashCode());
     result = prime * result + ((sourceSyntax == null) ? 0 : sourceSyntax.hashCode());
     result = prime * result + (supportSectionEdit ? 1231 : 1237);
     result = prime * result + ((targetSyntax == null) ? 0 : targetSyntax.hashCode());
@@ -80,11 +76,6 @@ public class MarkupKey implements Serializable {
       if (other.pageParams != null)
         return false;
     } else if (!pageParams.equals(other.pageParams))
-      return false;
-    if (source == null) {
-      if (other.source != null)
-        return false;
-    } else if (!source.equals(other.source))
       return false;
     if (sourceSyntax == null) {
       if (other.sourceSyntax != null)
@@ -114,6 +105,4 @@ public class MarkupKey implements Serializable {
   public void setSupportSectionEdit(boolean supportSectionEdit) {
     this.supportSectionEdit = supportSectionEdit;
   }
-
-  
 }
