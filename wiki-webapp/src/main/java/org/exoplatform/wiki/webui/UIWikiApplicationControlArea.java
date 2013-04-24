@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.commons.UISpacesSwitcher;
@@ -46,6 +47,11 @@ public class UIWikiApplicationControlArea extends UIContainer {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     String currentActionLabel = getCurrentActionLabel();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
+    UISpacesSwitcher uiWikiSpaceSwitcher = wikiBreadCrumb.getChildById(UIWikiBreadCrumb.SPACE_SWITCHER);
+    String currentSpaceName = Utils.getCurrentSpaceName();
+    if (!StringUtils.isEmpty(currentSpaceName)) {
+      uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(currentSpaceName));
+    }
     wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);

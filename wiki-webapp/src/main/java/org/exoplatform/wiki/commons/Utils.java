@@ -99,6 +99,9 @@ public class Utils {
   
   public static String getCurrentSpaceName() throws Exception {
     Wiki currentSpace = Utils.getCurrentWiki();
+    if (currentSpace == null) {
+      return StringUtils.EMPTY;
+    }
     return getSpaceName(currentSpace);
   }
   
@@ -251,14 +254,19 @@ public class Utils {
   public static Wiki getCurrentWiki() throws Exception {
     MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
     WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
-    String wikiType = Utils.getCurrentWikiPageParams().getType();
-    String owner = Utils.getCurrentWikiPageParams().getOwner();
-    return store.getWiki(WikiType.valueOf(wikiType.toUpperCase()), owner);    
+    WikiPageParams params = Utils.getCurrentWikiPageParams();
+    if (params != null) {
+      String wikiType = params.getType();
+      String owner = params.getOwner();
+      if (!StringUtils.isEmpty(wikiType) && !StringUtils.isEmpty(owner)) {
+        return store.getWiki(WikiType.valueOf(wikiType.toUpperCase()), owner);
+      }
+    }
+    return null;
   }
 
   public static WikiContext setUpWikiContext(UIWikiPortlet wikiPortlet) throws Exception {
-    RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
-                                                                              .getComponentInstanceOfType(RenderingService.class);
+    RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RenderingService.class);
     Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
     if (ec.getContext() == null) {
       ec.setContext(new ExecutionContext());
