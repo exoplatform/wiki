@@ -672,19 +672,10 @@
   
   <!-- XWiki Explorer JS -->
   <module>
-    <name>xwiki</name>
+    <name>XWiki</name>
     <script>      
-      <path>/javascript/xwiki/xwiki.js</path>
+      <path>/javascript/eXo/xwiki/xwikiexplorer/xwikiexplorer.js</path>
     </script>
-  </module>
-  <module>
-    <name>xwikiexplorer</name>
-    <script>      
-      <path>/javascript/xwiki/xwikiexplorer/xwikiexplorer.js</path>
-    </script>
-    <depends>
-      <module>xwiki</module>
-    </depends>
   </module>
   
 </gatein-resources>
