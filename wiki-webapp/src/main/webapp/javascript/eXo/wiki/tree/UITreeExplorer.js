@@ -247,13 +247,17 @@ UITreeExplorer.prototype.buildNode = function(data) {
   }  
   
   if (data.selectable == true && data.retricted == false) {
-    if (me.isRenderLink) {
-      var index = path.lastIndexOf("%2F"); // Find the index of character "/"
-      var pageId = path.substring(index + 3);
-      var link = me.baseLink + pageId;
-      childNode += "        <a href=\"" + link + "\"><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+    if (data.selected) {
+      childNode += "         <span style='cursor:auto'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
     } else {
-      childNode += "        <a><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+      if (me.isRenderLink) {
+        var index = path.lastIndexOf("%2F"); // Find the index of character "/"
+        var pageId = path.substring(index + 3);
+        var link = me.baseLink + pageId;
+        childNode += "        <a href=\"" + link + "\"><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+      } else {
+        childNode += "        <a><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+      }
     }
   } else {
     if (data.retricted == true) {
