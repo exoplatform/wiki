@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.0.0</version>
+    <version>4.0.x-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-injector</artifactId>
   <name>eXo Wiki Data Injector</name>
