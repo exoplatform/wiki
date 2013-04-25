@@ -38,7 +38,7 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   me.firstChanged = false;
   me.defaultTitle = untitledLabel;
 
-  $(titleInput).change(function() {
+  $(titleInput).keyup(function() {
     me.firstChanged = true;
     if (me.changed == false) {
       setTimeout("eXo.wiki.UIWikiPageEditForm.saveDraft()", me.autoSaveSequeneTime);
