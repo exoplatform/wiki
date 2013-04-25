@@ -29,23 +29,18 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
     return;
   }
   
-  var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
-  var titleInput = $(titleContainer).find('input')[0];
-
   var me = eXo.wiki.UIWikiPageEditForm;
   me.pageEditFormId = pageEditFormId;
   me.changed = false;
   me.firstChanged = false;
   me.defaultTitle = untitledLabel;
+  me.restURL = restURL;
+  me.isRunAutoSave = isRunAutoSave;
+  me.pageRevision = pageRevision;
+  me.isDraftForNewPage = isDraftForNewPage;
+  me.autoSaveSequeneTime = autoSaveSequeneTime;
 
-  $(titleInput).keyup(function() {
-    me.firstChanged = true;
-    if (me.changed == false) {
-      setTimeout("eXo.wiki.UIWikiPageEditForm.saveDraft()", me.autoSaveSequeneTime);
-      me.changed = true;
-    }
-  });
-
+  // Declare the function to handle change to create draft
   var func = function() {
     var me = eXo.wiki.UIWikiPageEditForm;
     me.firstChanged = true;
@@ -54,23 +49,25 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
       me.changed = true;
     }
   }
-
-  // Get page content
+  
+  // Find title input
+  var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
+  var titleInput = $(titleContainer).find('input')[0];
+  
+  // Find textarea
   var textAreaContainer = $(pageEditForm).find('div.uiWikiPageContentInputContainer')[0];
-  if (textAreaContainer != null) {
-    pageContent = $(textAreaContainer).find('textarea')[0].onkeyup = func;
-  } else {
-    var textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
-    if (textAreaContainer) {
-      $(textAreaContainer).find('textarea')[0].onkeyup = func;
-    }
+  if (!textAreaContainer) {
+    textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
   }
-
-  me.restURL = restURL;
-  me.isRunAutoSave = isRunAutoSave;
-  me.pageRevision = pageRevision;
-  me.isDraftForNewPage = isDraftForNewPage;
-  me.autoSaveSequeneTime = autoSaveSequeneTime;
+  
+  // Bind event for text area and title input
+  $(titleInput).keyup(func);
+  $(titleInput).change(func);
+  if (textAreaContainer) {
+    var textarea = $(textAreaContainer).find('textarea');
+    textarea.keyup(func);
+    textarea.change(func);
+  }
 };
 
 UIWikiPageEditForm.prototype.checkToRemoveEditorMenu = function() {
