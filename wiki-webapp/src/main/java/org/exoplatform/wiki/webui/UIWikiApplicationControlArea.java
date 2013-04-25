@@ -78,6 +78,8 @@ public class UIWikiApplicationControlArea extends UIContainer {
       return "UIWikiPortlet.label.Compare-Revision";
     case SPACESETTING:
       return "UIWikiPortlet.label.Setting";
+    case PAGEINFO:
+      return "UIWikiPageInfo.label.Page-Info";
     default:
       return "";
     }
