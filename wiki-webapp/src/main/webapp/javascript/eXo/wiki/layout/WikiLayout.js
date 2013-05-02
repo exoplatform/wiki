@@ -257,12 +257,6 @@ WikiLayout.prototype.setHeightRightContent = function(prtId, _userName) {
           $(pageContent).height(pageAreaHeight - 9 + "px");
         }
         $(me.rightArea).height(me.leftArea.offsetHeight + 1 + "px");
-      } else {
-        var layout = me.wikiLayout;
-        var hct = document.documentElement.clientHeight - layout.offsetTop;
-		hct -= 22; // Padding-bottom of wikiLayout
-        $(me.rightArea).css("height", hct + "px");
-        $(pageContent).height(hct - bottomHeight - 2 + "px");
       }
     }
     
