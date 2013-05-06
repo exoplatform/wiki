@@ -581,20 +581,20 @@
       <path>/javascript/eXo/wiki/UIWikiPageNotFound.js</path>
     </script>
     <depends>
-        <module>base</module>
+      <module>base</module>
     </depends>
     <depends>
-        <module>uiForm</module>
+      <module>uiForm</module>
     </depends>
     <depends>
-        <module>webui-ext</module>
+      <module>webui-ext</module>
     </depends> 
     <depends>
       <module>jquery</module>
     </depends>
     <depends>
       <module>bootstrap_wiki</module>
-    </depends>   
+    </depends>
   </module>
   
   <module>
@@ -670,7 +670,7 @@
   </module>
   
   
-  <!-- XWiki Explorer JS -->  
+  <!-- XWiki Explorer JS -->
   <module>
     <name>XWiki</name>
     <script>      

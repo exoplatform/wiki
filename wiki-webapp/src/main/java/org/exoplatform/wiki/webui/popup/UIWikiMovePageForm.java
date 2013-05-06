@@ -81,7 +81,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
   
   private static final String SWITCH_SPACE_ACTION = "SwitchSpace";
   
-  private static final String SPACE_SWITCHER = "uiSpaceSwitcher_UIWikiMovePageForm";
+  protected static final String SPACE_SWITCHER = "uiSpaceSwitcher_UIWikiMovePageForm";
   
   private static final String RENAME_ACTION = "Rename";
   
@@ -94,9 +94,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     addChild(UIWikiLocationContainer.class, null, LOCATION_CONTAINER);
     UITreeExplorer uiTree = addChild(UITreeExplorer.class, null, UITREE);
 
-    EventUIComponent eventComponent = new EventUIComponent(LOCATION_CONTAINER,
-                                                           UIWikiLocationContainer.CHANGE_NEWLOCATION,
-                                                           EVENTTYPE.EVENT);
+    EventUIComponent eventComponent = new EventUIComponent(LOCATION_CONTAINER, UIWikiLocationContainer.CHANGE_NEWLOCATION, EVENTTYPE.EVENT);
     StringBuilder initURLSb = new StringBuilder(Utils.getCurrentRestURL());
     initURLSb.append("/wiki/tree/").append(TREETYPE.ALL.toString());
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
@@ -106,6 +104,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     // Init space switcher
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(Utils.getCurrentSpaceName()));
+    uiWikiSpaceSwitcher.setAutoResize(true);
     EventUIComponent eventComponent1 = new EventUIComponent(MOVE_PAGE_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }

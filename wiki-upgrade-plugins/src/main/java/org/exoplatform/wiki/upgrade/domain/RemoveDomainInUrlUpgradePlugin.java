@@ -66,20 +66,20 @@ public class RemoveDomainInUrlUpgradePlugin extends UpgradeProductPlugin {
     int checkedPage=0;
     while (pageIterator.hasNext()) {
       PageImpl page = pageIterator.next();
+      String oldPageURL = page.getURL();
       try {
-        String oldPageURL = page.getURL();
-        LOG.info("\nOld wiki Page URL:", oldPageURL);
         if(oldPageURL !=null){
           URL oldURL = new URL(oldPageURL);
-          //remove all domain name in page url
           String newURL = oldURL.getPath();
          page.setURL(newURL);
-          LOG.info("\nNew URL:", newURL);
         }
-       checkedPage++;
-        LOG.info("\nFixed page: {}/{}\n", checkedPage, pageIterator.size());
+        checkedPage++;
+        
+        if (checkedPage % 500 == 0 || checkedPage == pageIterator.size()) {
+          LOG.info("\nFixed page: {}/{}\n", checkedPage, pageIterator.size());
+        }
       } catch (Exception e) {
-        LOG.warn(String.format("cannot repair the hostname for page's url %s", page.getName()), e);
+        LOG.info("An error appears with this URL {} and cannot be updated.", oldPageURL);
       }
     }
     RequestLifeCycle.end();

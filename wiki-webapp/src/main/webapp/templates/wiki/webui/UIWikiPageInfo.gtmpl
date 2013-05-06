@@ -4,6 +4,7 @@
   _ctx.put("currentWikiPage", currentWikiPage);
 %>
 
+<h4><%=_ctx.appRes("UIWikiPageInfo.label.Page-Info")%></h4>
 <div class="uiWikiPageInfo row-fluid" id="$uicomponent.id">
   <div class="span6">
     <% _ctx.include("app:/templates/wiki/webui/pageinfo/UIPageInfoSummary.gtmpl"); %>

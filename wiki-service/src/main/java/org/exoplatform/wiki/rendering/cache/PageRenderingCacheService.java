@@ -46,7 +46,7 @@ public interface PageRenderingCacheService {
    * Get the rendering cache
    * @return the rendering cache
    */
-  public ExoCache<MarkupKey, MarkupData> getRenderingCache();
+  public ExoCache<Integer, MarkupData> getRenderingCache();
   
   /**
    * Return the collection of connections of page. In details, a connections is

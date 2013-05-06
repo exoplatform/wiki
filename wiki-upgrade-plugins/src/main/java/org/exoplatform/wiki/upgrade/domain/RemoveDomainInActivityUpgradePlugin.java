@@ -57,7 +57,6 @@ public class RemoveDomainInActivityUpgradePlugin extends UpgradeProductPlugin {
   }
 
   private void removeDomainNameInActivityParams() {
-    LOG.info("removing hostname of page url in activity param ....");
     RequestLifeCycle.begin(PortalContainer.getInstance());
     ChromatticSession session = getSocialChromatticLifeCycle().getSession();
     QueryResult<ActivityParameters> activityParamIterator = session.createQueryBuilder(ActivityParameters.class).where("page_url IS NOT NULL").get().objects();
@@ -68,19 +67,19 @@ public class RemoveDomainInActivityUpgradePlugin extends UpgradeProductPlugin {
       ActivityParameters param = activityParamIterator.next();
       Map<String, String> templateParams = param.getParams();
       String oldActivityURL = templateParams.get(URL_KEY);
-      LOG.info("Old wiki activity url:", oldActivityURL);
       if (oldActivityURL != null) {
         URL oldURL;
         try {
           oldURL = new URL(oldActivityURL);
-          // remove all domain name in page url
           String newURL = oldURL.getPath();
-          LOG.info("new wiki activity url:", newURL);
           templateParams.put(URL_KEY, newURL);
           count++;
-          LOG.info("\nFixed activity: {}/{}\n", count, nbOfParam);
+          
+          if ((count % 500 == 0) || (count == nbOfParam)) {
+            LOG.info("\nFixed activity: {}/{}\n", count, nbOfParam);
+          }
         } catch (MalformedURLException e) {
-          LOG.info("exception when parsing url in removeDomainNameInActivityParams", e);
+          LOG.info("An error appears with this URL {} and cannot be updated.", oldActivityURL);
         }
       }
     }

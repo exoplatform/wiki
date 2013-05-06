@@ -89,8 +89,7 @@ public class UpdatePageRenderingCacheAction implements Action {
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
               PageImpl desPage = page.getMovedMixin().getTargetPage();
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), desPage.getName()));
-              pRenderingCacheService.getPageLinksMap()
-                                    .remove(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
+              pRenderingCacheService.getPageLinksMap().remove(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
             }            
           }
         }

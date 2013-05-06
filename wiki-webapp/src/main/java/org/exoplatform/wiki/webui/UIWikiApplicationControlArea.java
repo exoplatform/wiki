@@ -16,8 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ResourceBundle;
-
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.commons.UISpacesSwitcher;
@@ -25,9 +24,6 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.control.UIWikiToolBar;
@@ -46,11 +42,15 @@ public class UIWikiApplicationControlArea extends UIContainer {
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-
     UIWikiBreadCrumb wikiBreadCrumb = findFirstComponentOfType(UIWikiBreadCrumb.class);
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     String currentActionLabel = getCurrentActionLabel();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
+    UISpacesSwitcher uiWikiSpaceSwitcher = wikiBreadCrumb.getChildById(UIWikiBreadCrumb.SPACE_SWITCHER);
+    String currentSpaceName = Utils.getCurrentSpaceName();
+    if (!StringUtils.isEmpty(currentSpaceName)) {
+      uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(currentSpaceName));
+    }
     wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);
@@ -77,6 +77,8 @@ public class UIWikiApplicationControlArea extends UIContainer {
       return "UIWikiPortlet.label.Compare-Revision";
     case SPACESETTING:
       return "UIWikiPortlet.label.Setting";
+    case PAGEINFO:
+      return "UIWikiPageInfo.label.Page-Info";
     default:
       return "";
     }

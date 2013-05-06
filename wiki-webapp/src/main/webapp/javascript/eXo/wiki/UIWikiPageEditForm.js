@@ -29,23 +29,18 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
     return;
   }
   
-  var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
-  var titleInput = $(titleContainer).find('input')[0];
-
   var me = eXo.wiki.UIWikiPageEditForm;
   me.pageEditFormId = pageEditFormId;
   me.changed = false;
   me.firstChanged = false;
   me.defaultTitle = untitledLabel;
+  me.restURL = restURL;
+  me.isRunAutoSave = isRunAutoSave;
+  me.pageRevision = pageRevision;
+  me.isDraftForNewPage = isDraftForNewPage;
+  me.autoSaveSequeneTime = autoSaveSequeneTime;
 
-  $(titleInput).change(function() {
-    me.firstChanged = true;
-    if (me.changed == false) {
-      setTimeout("eXo.wiki.UIWikiPageEditForm.saveDraft()", me.autoSaveSequeneTime);
-      me.changed = true;
-    }
-  });
-
+  // Declare the function to handle change to create draft
   var func = function() {
     var me = eXo.wiki.UIWikiPageEditForm;
     me.firstChanged = true;
@@ -54,44 +49,61 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
       me.changed = true;
     }
   }
-
-  // Get page content
+  
+  // Find title input
+  var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
+  var titleInput = $(titleContainer).find('input')[0];
+  
+  // Find textarea
   var textAreaContainer = $(pageEditForm).find('div.uiWikiPageContentInputContainer')[0];
-  if (textAreaContainer != null) {
-    pageContent = $(textAreaContainer).find('textarea')[0].onkeyup = func;
-  } else {
-    var textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
-    if (textAreaContainer) {
-      $(textAreaContainer).find('textarea')[0].onkeyup = func;
-    }
+  if (!textAreaContainer) {
+    textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
   }
-
-  me.restURL = restURL;
-  me.isRunAutoSave = isRunAutoSave;
-  me.pageRevision = pageRevision;
-  me.isDraftForNewPage = isDraftForNewPage;
-  me.autoSaveSequeneTime = autoSaveSequeneTime;
+  
+  // Bind event for text area and title input
+  $(titleInput).keyup(func);
+  $(titleInput).change(func);
+  if (textAreaContainer) {
+    var textarea = $(textAreaContainer).find('textarea');
+    textarea.keyup(func);
+    textarea.change(func);
+  }
 };
 
 UIWikiPageEditForm.prototype.checkToRemoveEditorMenu = function() {
   var me = eXo.wiki.UIWikiPageEditForm;
   var pageEditForm = document.getElementById(me.pageEditFormId);
+  
+  // Try to delete Import menu
   var menuItems = $(pageEditForm).find("div.gwt-MenuItemLabel");
-  var found = false;
   if (menuItems) {
     for (var i = 0; i < menuItems.length; i++) {
       if (menuItems[i].innerHTML == "Import") {
       	var parent = menuItems[i].parentNode;
       	parent.parentNode.removeChild(parent);
-      	found = true;
       	break;
       }
     }
   }
   
-  if (!found) {
-  	setTimeout(me.checkToRemoveEditorMenu, 200);
+  // Try to delete "My recent changes" when add link to wiki page
+  var portalApp = document.getElementById("UIPortalApplication");
+  if (portalApp) {
+    var bodyTag = portalApp.parentNode;
+    var tabLabels = $(bodyTag).find("div.gwt-Label");
+    if (tabLabels) {
+      for (var i = 0; i < tabLabels.length; i++) {
+        if (tabLabels[i].innerHTML == "My recent changes") {
+      	  var parent = tabLabels[i].parentNode.parentNode;
+      	  parent.parentNode.removeChild(parent);
+      	  break;
+        }
+      }
+    }
   }
+  
+  // set timeout to run sequently
+  setTimeout(me.checkToRemoveEditorMenu, 200);
 };
 
 UIWikiPageEditForm.prototype.setMessageResource = function(saveDraftSuccessMessage, discardDraftConfirmMessage) {

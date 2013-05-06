@@ -1,6 +1,13 @@
+<% 
+  def rcontext = _ctx.getRequestContext();
+  def requireJs = rcontext.getJavascriptManager().getRequireJS();
+  requireJs.require("SHARED/WikiLayout", "WikiLayout");  
+  requireJs.addScripts("WikiLayout.initHeightForPreview();") ; 
+%>
+
 <div class="uiWikiPagePreview">
-    <div class="uiWikiPageTitlePreview">
-      ${uicomponent.pageTitle}
-    </div>
-    <% uicomponent.renderChildren(); %>
+  <div class="uiWikiPageTitlePreview">
+    ${uicomponent.pageTitle}
+  </div>
+  <% uicomponent.renderChildren(); %>
 </div>

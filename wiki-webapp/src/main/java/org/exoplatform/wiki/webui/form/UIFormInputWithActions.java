@@ -104,7 +104,7 @@ public class UIFormInputWithActions extends UIFormInputSet {
             
             if (action.getActionType() == ActionData.TYPE_ICON) {
               w.write("<a class='actionIcon' title='" + actionLabel + "' onclick=\"" + actionLink + "\" data-placement='bottom' rel='tooltip' >" 
-                + "<i class='" + action.getCssIconClass() + "'></i></a>");
+                + "<i class='" + action.getCssIconClass() + " uiIconLightGray'></i></a>");
               if (action.isShowLabel)
                 w.write(actionLabel);
             } else if (action.getActionType() == ActionData.TYPE_LINK) {

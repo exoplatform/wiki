@@ -39,7 +39,8 @@
   } else {
     toVersionName = "Current";
   }
-  
+
+  String titleCompare = _ctx.appRes("UIWikiPortlet.label.Compare-Revision");
   String fromChangeVersionInfoLabel = _ctx.appRes("UIWikiPageVersionsCompare.label.ChangeVersionInfo");
   fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{0}", fromVersionName +  "</b>");
   fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{1}", "<b class=\"admin\">" + fromVersionAuthor + "</b>");
@@ -53,7 +54,7 @@
   wordAddedRemovedLabel = wordAddedRemovedLabel.replace("{3}", "</span>");
 %>
 	<div class="comparedForm clearfix">
-		<h4>Compare Versions</h4>
+		<h4><%= titleCompare %></h4>
 		<pre class="changeVersionForm pull-left">
 			<b class="changeVersionInfo"><%= fromChangeVersionInfoLabel %>
 			<span class="dateChange"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.DateChange").replace("{0}", fromUpdatedDate); %>.</span>

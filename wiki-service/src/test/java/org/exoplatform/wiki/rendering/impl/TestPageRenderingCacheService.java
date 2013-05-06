@@ -66,7 +66,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
   cladicHome.getContent().setText("Another text");
   renderingCacheService.getRenderedContent(new WikiPageParams(PortalConfig.PORTAL_TYPE, "cladic", "WikiHome"),
                                                      Syntax.XHTML_1_0.toIdString());
-  assertEquals(1, renderingCacheService.getRenderingCache().getCacheHit());
+  assertEquals(2, renderingCacheService.getRenderingCache().getCacheHit());
   
   PageImpl cladicChild = (PageImpl) wikiService.createPage(PortalConfig.PORTAL_TYPE, "cladic","cladicChild" , "WikiHome");
   cladicHome.getContent().setText("{{children/}}");

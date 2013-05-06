@@ -313,7 +313,19 @@ public class Utils {
   }
 
   public static List<NTVersion> getCurrentPageRevisions(Page wikipage) throws Exception {
-    Iterator<NTVersion> iter = wikipage.getVersionableMixin().getVersionHistory().iterator();
+    List<NTVersion> versionsList = getPageRevisions((PageImpl) wikipage);
+    if (versionsList.size() == 0) {
+      PageImpl pageImpl = (PageImpl) wikipage;
+      pageImpl.checkin();
+      pageImpl.checkout();
+      pageImpl.getJCRSession().save();
+      versionsList = getPageRevisions((PageImpl) wikipage);
+    }
+    return versionsList;
+  }
+  
+  private static List<NTVersion> getPageRevisions(PageImpl pageImpl) throws Exception {
+    Iterator<NTVersion> iter = pageImpl.getVersionableMixin().getVersionHistory().iterator();
     List<NTVersion> versionsList = new ArrayList<NTVersion>();
     while (iter.hasNext()) {
       NTVersion version = iter.next();

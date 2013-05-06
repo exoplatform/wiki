@@ -35,8 +35,8 @@
     <component-plugin>
       <name>RemoveDomainInUrlUpgradePlugin</name>
       <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.wiki.upgrade.nodetype.WikiNodeTypeUpgradePlugin</type>
-      <description>Upgrade node type definition for wiki</description>
+      <type>org.exoplatform.wiki.upgrade.domain.RemoveDomainInUrlUpgradePlugin</type>
+      <description>Remove domain name in url of wiki page</description>
       <init-params>
         <value-param>
           <name>product.group.id</name>
@@ -51,17 +51,17 @@
         <value-param>
           <name>plugin.execution.order</name>
           <description>The plugin execution order</description>
-          <value>2</value>
+          <value>3</value>
         </value-param>
       </init-params>
     </component-plugin>
     
     
     <component-plugin>
-      <name>WikiNodeTypeUpgradePlugin</name>
+      <name>RemoveDomainInActivityUpgradePlugin</name>
       <set-method>addUpgradePlugin</set-method>
-      <type>org.exoplatform.wiki.upgrade.nodetype.WikiNodeTypeUpgradePlugin</type>
-      <description>Upgrade node type definition for wiki</description>
+      <type>org.exoplatform.wiki.upgrade.domain.RemoveDomainInActivityUpgradePlugin</type>
+      <description>Remove domain name in wiki activity</description>
       <init-params>
         <value-param>
           <name>product.group.id</name>
@@ -76,7 +76,7 @@
         <value-param>
           <name>plugin.execution.order</name>
           <description>The plugin execution order</description>
-          <value>2</value>
+          <value>4</value>
         </value-param>
       </init-params>
     </component-plugin>

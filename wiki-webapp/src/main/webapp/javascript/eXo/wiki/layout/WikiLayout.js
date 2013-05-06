@@ -44,6 +44,19 @@ WikiLayout.prototype.init = function(prtId, _userName) {
   });
 }
 
+WikiLayout.prototype.initHeightForPreview = function() {
+  $(window).ready(function(){
+    var me = eXo.wiki.WikiLayout;
+    var mask = document.getElementById("UIWikiMaskWorkspace");
+    if (mask) {
+      var uiWikiPagePreview = $(mask).find("div.uiWikiPagePreview")[0];
+      if (uiWikiPagePreview) {
+        $(uiWikiPagePreview).css("height", document.documentElement.clientHeight + "px");
+      }
+    }
+  });
+}
+
 WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
   var me = eXo.wiki.WikiLayout;
   if (_userName) {
@@ -244,12 +257,6 @@ WikiLayout.prototype.setHeightRightContent = function(prtId, _userName) {
           $(pageContent).height(pageAreaHeight - 9 + "px");
         }
         $(me.rightArea).height(me.leftArea.offsetHeight + 1 + "px");
-      } else {
-        var layout = me.wikiLayout;
-        var hct = document.documentElement.clientHeight - layout.offsetTop;
-		hct -= 22; // Padding-bottom of wikiLayout
-        $(me.rightArea).css("height", hct + "px");
-        $(pageContent).height(hct - bottomHeight - 2 + "px");
       }
     }
     

@@ -204,7 +204,7 @@ UITreeExplorer.prototype.buildNode = function(data) {
   // Change Type for CSS
   var nodeType = data.nodeType;
   var nodeTypeCSS = nodeType.toLowerCase();
-  var iconClass = "uiIconFile";
+  var iconClass = "uiIconFileMini uiIconLightGray";
   if (nodeType == "WIKIHOME") {
     iconClass = "uiIconWiki";
   }
@@ -247,13 +247,17 @@ UITreeExplorer.prototype.buildNode = function(data) {
   }  
   
   if (data.selectable == true && data.retricted == false) {
-    if (me.isRenderLink) {
-      var index = path.lastIndexOf("%2F"); // Find the index of character "/"
-      var pageId = path.substring(index + 3);
-      var link = me.baseLink + pageId;
-      childNode += "        <a href=\"" + link + "\"><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+    if (data.selected) {
+      childNode += "         <span style='cursor:auto'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
     } else {
-      childNode += "        <a><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+      if (me.isRenderLink) {
+        var index = path.lastIndexOf("%2F"); // Find the index of character "/"
+        var pageId = path.substring(index + 3);
+        var link = me.baseLink + pageId;
+        childNode += "        <a href=\"" + link + "\"><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+      } else {
+        childNode += "        <a><i class='" + iconClass + "'></i> " + nodeName + "</a>";
+      }
     }
   } else {
     if (data.retricted == true) {
