@@ -1,12 +1,5 @@
 package org.exoplatform.wiki.service.search;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
@@ -156,31 +149,12 @@ public class WikiSearchData extends SearchData {
     return constraint.toString();
   }
   
-  private List<String> parseSearchText(String searchText) {
-    List<String> terms = new LinkedList<String>();
-    Matcher matcher = Pattern.compile("\"([^\"]+)\"").matcher(searchText);
-    while (matcher.find()) {
-      String founds = matcher.group(1);
-      terms.add(founds);
-    }
-    String remain = matcher.replaceAll("").replaceAll("\"", "").trim(); //remove all remaining double quotes
-    if(!remain.isEmpty()) terms.addAll(Arrays.asList(remain.split("\\s+")));
-    return terms;
-  }
-  
   private String searchContentCondition() {
     StringBuilder clause = new StringBuilder();
     clause.append(jcrQueryPath);
     if (content != null && content.length() > 0) {
-      clause.append(" AND (");
-      Collection<String> inputs = parseSearchText(content) ;
-      int inputCount = 0 ;
-      for(String keyword : inputs){
-        if(inputCount > 0) clause.append(" OR ");
-        clause.append(" CONTAINS(*, '").append(keyword).append("')");
-        inputCount ++ ;
-      }
-      clause.append(")");
+      clause.append(" AND ");
+      clause.append(" CONTAINS(*, '").append(content).append("')");
     }
     return clause.toString();
   }
@@ -189,15 +163,8 @@ public class WikiSearchData extends SearchData {
     StringBuilder clause = new StringBuilder();
     clause.append(jcrQueryPath);
     if (title != null && title.length() > 0) {
-      clause.append(" AND (");
-      Collection<String> inputs = parseSearchText(title) ;
-      int inputCount = 0 ;
-      for(String keyword : inputs){
-        if(inputCount > 0) clause.append(" OR ");
-        clause.append(" CONTAINS(title, '").append(keyword).append("')");
-        inputCount ++ ;
-      }
-      clause.append(")");
+      clause.append(" AND ");
+      clause.append(" CONTAINS(title, '").append(title).append("')");
     }
     return clause.toString();
   }
