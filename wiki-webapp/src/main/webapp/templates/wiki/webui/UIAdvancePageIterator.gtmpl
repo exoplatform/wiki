@@ -40,7 +40,7 @@
     }   
   }
   
-  for( i = 1 ; i <= 9; i++) {     
+  for( i = 1 ; i <= totalPage; i++) {     
       if (i == 1 && min > 1) render(1);
       else if (i == min) {
          for (j = min; j <= max; j++) {
@@ -48,7 +48,7 @@
          }
       } else if (i == dot1 || i == dot2) {
         print """ <li class="disabled"><a href="#">...</a></li> """;     
-      } else if (i == 9 && max < totalPage) render(totalPage);
+      } else if (i == totalPage && max < totalPage) render(totalPage);
   }%>   
   <% if(currentPage < totalPage) { %>
   <li><a href="<%=uicomponent.event(uicomponent.GOPAGE,"${currentPage + 1}")%>" rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIPageIterator.label.next")%>"><i class="uiIconNextArrow"></i></a></li>
