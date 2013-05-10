@@ -3,6 +3,8 @@ package org.exoplatform.wiki.service.impl;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -94,6 +96,8 @@ import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.utils.Utils;
 import org.picocontainer.Startable;
 import org.xwiki.rendering.syntax.Syntax;
+
+import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 
 public class WikiServiceImpl implements WikiService, Startable {
 
@@ -561,7 +565,25 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
       }
     }
+    
+    // Check to remove the domain in page url
+    checkToRemoveDomainInUrl(page);
     return page;
+  }
+  
+  private void checkToRemoveDomainInUrl(PageImpl page) {
+    if (page == null) {
+      return;
+    }
+    
+    String url = page.getURL();
+    if (url != null) {
+      try {
+        URL oldURL = new URL(url);
+        page.setURL(oldURL.getPath());
+      } catch (MalformedURLException ex) {
+      }
+    }
   }
 
   @Override
