@@ -43,6 +43,7 @@ UITreeExplorer.prototype.initMacros = function() {
   for ( var i = 0; i < pageTreeBlocks.length; i++) {
     var pageTreeBlock = pageTreeBlocks[i];
     var initNode = $(pageTreeBlock).find('input')[0];
+    if (!$(pageTreeBlock).find('input.BaseURL')[0]) continue;
     this.baseLink = $(pageTreeBlock).find('input.BaseURL')[0].value;
     var initParam = $(pageTreeBlock).find('input.InitParams')[0].value;
     initParam = me.cleanParam(initParam);
