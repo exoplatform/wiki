@@ -269,10 +269,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <dependency>
-      <groupId>xml-apis</groupId>
-      <artifactId>xml-apis</artifactId>
-    </dependency>
     <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
