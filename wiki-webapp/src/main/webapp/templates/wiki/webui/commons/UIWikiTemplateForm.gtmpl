@@ -22,7 +22,7 @@
 	    <% uiform.renderChild(uiform.TEMPLATE_GRID);	%>
 	  </div>
 	  
-    <div class="uiAction">
+    <div class="uiAction uiActionBorder">
       <a class="btn selectTemplateAction" href="javascript:void(0);"><%=selectLabel%></a>
       <a class="btn" href="javascript:void(0);" onclick="<%= uicomponent.event(uicomponent.ACTION_CANCEL) %>"><%=cancelLabel%></a>
     </div>			
