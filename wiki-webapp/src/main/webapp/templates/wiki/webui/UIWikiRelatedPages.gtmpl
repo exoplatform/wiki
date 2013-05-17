@@ -12,7 +12,7 @@
 <div id="$uicomponent.id" class="Related uiRelatePages">
 	<% if (relatedPages.size() > 0) { %>
 	<div class="wikiBox">
-	  <h5 class="titleWikiBox"><%= _ctx.appRes("UIWikiMiddleArea.label.related-pages") %></h5>
+	  <h6 class="titleWikiBox"><%= _ctx.appRes("UIWikiMiddleArea.label.related-pages") %></h6>
 	  <div class="relateContent">
 		<%= org.exoplatform.wiki.commons.Utils.renderMacroToXHtml(uicomponent, "{{related}}", org.xwiki.rendering.syntax.Syntax.XWIKI_2_0.toIdString()); %>
 	  </div>
