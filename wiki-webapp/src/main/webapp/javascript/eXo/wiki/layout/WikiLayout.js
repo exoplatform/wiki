@@ -162,7 +162,6 @@ WikiLayout.prototype.setClassBody = function(clazz) {
 WikiLayout.prototype.processWithHeight = function(prtId, _userName) {
   var me = eXo.wiki.WikiLayout;
   if (me.wikiLayout) {
-    me.setClassBody(me.wikiBodyClass);
     me.setHeightLayOut();
     me.setWidthLayOut();
   } else {
