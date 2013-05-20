@@ -162,6 +162,7 @@ WikiLayout.prototype.setClassBody = function(clazz) {
 WikiLayout.prototype.processWithHeight = function(prtId, _userName) {
   var me = eXo.wiki.WikiLayout;
   if (me.wikiLayout) {
+    me.setClassBody(me.wikiBodyClass);
     me.setHeightLayOut();
     me.setWidthLayOut();
   } else {
@@ -184,7 +185,11 @@ WikiLayout.prototype.setWidthLayOut = function() {
 WikiLayout.prototype.setHeightLayOut = function() {
   var me = eXo.wiki.WikiLayout;
   var layout = me.wikiLayout;
-  var hdef = document.documentElement.clientHeight - layout.offsetTop;
+  var leftNavigationDiv = $('#LeftNavigation')[0];
+  var platformAdmintc = $("#PlatformAdminToolbarContainer")[0];
+  var hdef = (leftNavigationDiv && platformAdmintc) ? 
+		     leftNavigationDiv.clientHeight - layout.offsetTop + platformAdmintc.clientHeight :
+		     document.documentElement.clientHeight - layout.offsetTop; 	 
   var hct = hdef * 1;
   $(layout).css('height', hdef + 'px');
   var delta = me.heightDelta();

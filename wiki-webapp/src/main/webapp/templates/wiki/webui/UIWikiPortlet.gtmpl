@@ -58,7 +58,7 @@
 
 <style type="text/css">
 .wiki-body {
-  overflow: hidden;
+  overflow-x: hidden;
 }
 </style>
 

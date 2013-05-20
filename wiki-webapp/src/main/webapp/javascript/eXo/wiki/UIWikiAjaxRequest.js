@@ -70,8 +70,11 @@ UIWikiAjaxRequest.prototype.urlHasActionParameters = function() {
 UIWikiAjaxRequest.prototype.checkAnchor = function() {
   // reset document.body.style.height to solve problem ui broken.
   if (this.scrollToTop) {
-	document.documentElement.scrollTop = 0;//firefox case
-	$(document.body).scrollTop(0);//chrome case
+	try {
+		$(document.body).scrollTop(0);//chrome case
+	} catch (e) {
+		document.documentElement.scrollTop = 0;//firefox case
+  	}
 	this.scrollToTop = false;
   } 
   // Check if it has changes
