@@ -24,7 +24,6 @@ function UIWikiAjaxRequest() {
   this.defaultAction = false;
   this.currentAnchor = null;
   this.isEnableCheck = true;
-  this.scrollToTop = false;
 };
 
 UIWikiAjaxRequest.prototype.init = function(actionPrefix, defaultAction) {
@@ -68,15 +67,6 @@ UIWikiAjaxRequest.prototype.urlHasActionParameters = function() {
 };
 
 UIWikiAjaxRequest.prototype.checkAnchor = function() {
-  // reset document.body.style.height to solve problem ui broken.
-  if (this.scrollToTop) {
-	try {
-		$(document.body).scrollTop(0);//chrome case
-	} catch (e) {
-		document.documentElement.scrollTop = 0;//firefox case
-  	}
-	this.scrollToTop = false;
-  } 
   // Check if it has changes
   if (this.currentAnchor != this.getCurrentHash()) {
     this.currentAnchor = this.getCurrentHash();
@@ -90,7 +80,6 @@ UIWikiAjaxRequest.prototype.checkAnchor = function() {
       // Get the action name
       action = splits[0];
       if(action && action.length > 0 && action.charAt(0) == 'H'){
-    	  this.scrollToTop = true;
         // This is an anchor in the document, so skip.
         return;
       }
