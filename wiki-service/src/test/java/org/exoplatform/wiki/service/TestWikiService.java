@@ -353,16 +353,16 @@ public class TestWikiService extends AbstractMOWTestcase {
     // fulltext search
     WikiSearchData data = new WikiSearchData(null, "suite", "portal", "classic");
     PageList<SearchResult> result = wService.search(data);
-    assertEquals(2, result.getAll().size());
+    assertEquals(0, result.getAll().size());
 
     data = new WikiSearchData("suite", "suite", "portal", null);
 
     result = wService.search(data);
-    assertEquals(2, result.getAll().size());
+    assertEquals(3, result.getAll().size());
 
     data = new WikiSearchData("suite", "suite", null, null);
     result = wService.search(data);
-    assertEquals(2, result.getAll().size());
+    assertEquals(4, result.getAll().size());
 
     // title search
     data = new WikiSearchData("knowledge", null, "portal", "classic");

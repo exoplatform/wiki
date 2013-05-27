@@ -65,7 +65,7 @@ public class WikiSearchData extends SearchData {
     statement.append("SELECT title, jcr:primaryType, path, excerpt(.) ");
     
     if (nodeType == null) {
-      statement.append("FROM nt:base ");
+      statement.append("FROM wiki:page ");
     } else {
       statement.append("FROM " + nodeType + " ");
     }
@@ -81,6 +81,7 @@ public class WikiSearchData extends SearchData {
     statement.append("FROM nt:base ");
     statement.append("WHERE ");
     statement.append(searchContentCondition());
+    statement.append(" AND NOT (jcr:primaryType = 'wiki:page') ");
     statement.append(createOrderClause());
     return statement.toString();
   }
