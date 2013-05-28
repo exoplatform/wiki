@@ -188,7 +188,7 @@ WikiLayout.prototype.setHeightLayOut = function() {
   var leftNavigationDiv = $('#LeftNavigation')[0];
   var platformAdmintc = $("#PlatformAdminToolbarContainer")[0];
   var hdef = (leftNavigationDiv && platformAdmintc) ? 
-		     leftNavigationDiv.clientHeight - layout.offsetTop + platformAdmintc.clientHeight : 0;
+		     leftNavigationDiv.parentNode.clientHeight - layout.offsetTop + platformAdmintc.clientHeight : 0;
   hdef = Math.max(hdef, document.documentElement.clientHeight - layout.offsetTop); 	 
   var hct = hdef * 1;
   $(layout).css('height', hdef + 'px');
