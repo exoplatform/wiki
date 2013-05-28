@@ -27,8 +27,6 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 
-import com.google.gwt.uibinder.elementparsers.IsEmptyParser;
-
 
 /**
  *  The WikiSearchServiceConnector provide a connector service for the common unified search.
@@ -241,7 +239,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       PageImpl page = getPage(wikiSearchResult);
       if (page.getWiki().getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
         String portalContainerName = Utils.getPortalName();
-        String portalOwner = wikiService.getPortalOwner();
+        String portalOwner = context.getSiteName();
         String wikiWebappUri = wikiService.getWikiWebappUri();
         String spaceGroupId = page.getWiki().getOwner();
         
