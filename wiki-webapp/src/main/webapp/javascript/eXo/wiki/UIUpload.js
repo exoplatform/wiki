@@ -23,7 +23,7 @@ if(!eXo.wiki) eXo.wiki = {};
 function UIUpload() {
 	this.listUpload = [];
 	this.refreshTime = 1000;
-	this.delayTime = 5000;  
+	this.delayTime = 1000;  
 };
 
   /**
@@ -175,7 +175,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
       var percent = response.upload[id].percent;
       var bar = jCont.find(".bar").first();
       bar.css("width", percent + "%");
-      var label = bar.children(".label").first();
+      var label = bar.children(".percent").first();
       label.html(percent + "%");
 
       if(percent == 100) {
