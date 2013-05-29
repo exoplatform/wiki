@@ -130,7 +130,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
         @Override
         public int compare(SearchResult o1, SearchResult o2) {
           if ("ASC".equalsIgnoreCase(orderValue)) {
-            o1.getTitle().compareTo(o2.getTitle());
+            return o1.getTitle().compareTo(o2.getTitle());
           }
           return o2.getTitle().compareTo(o1.getTitle());
         }
@@ -140,9 +140,9 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
         @Override
         public int compare(SearchResult o1, SearchResult o2) {
           if ("ASC".equalsIgnoreCase(orderValue)) {
-            return (int) (o1.getRelevancy() - o2.getRelevancy());
+            return  Long.valueOf(o1.getRelevancy()).compareTo(Long.valueOf(o2.getRelevancy()));
           }
-          return (int) (o2.getRelevancy() - o1.getRelevancy());
+          return Long.valueOf(o2.getRelevancy()).compareTo(Long.valueOf(o1.getRelevancy()));
         }
       });
       
@@ -151,9 +151,9 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
         @Override
         public int compare(SearchResult o1, SearchResult o2) {
           if ("ASC".equalsIgnoreCase(orderValue)) {
-            return (int) (o1.getDate() - o2.getDate());
+            return Long.valueOf(o1.getDate()).compareTo(Long.valueOf(o2.getDate()));
           }
-          return (int) (o2.getDate() - o1.getDate());
+          return Long.valueOf(o2.getDate()).compareTo(Long.valueOf(o1.getDate()));
         }
       });
     } 
