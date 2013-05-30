@@ -45,6 +45,7 @@ import org.exoplatform.wiki.utils.Utils;
 
 public class JCRDataStorage implements DataStorage{
   private static final Log log = ExoLogger.getLogger(JCRDataStorage.class);
+  private static final int MAX_EXCERPT_LENGTH = 430;
   
   private WikiTemplatePagePlugin templatePlugin; 
   
@@ -245,13 +246,16 @@ public class JCRDataStorage implements DataStorage{
   private String getExcerpt(Row row, String type) throws ItemNotFoundException, RepositoryException {
     StringBuilder ret = new StringBuilder();
     String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type)) ? 
-                          new String[]{"title", "url", "jcr:data"} :
+                          new String[]{"."} :
                           new String[]{"title", "url"};
     for (String prop : properties) {
       Value excerptValue = row.getValue("rep:excerpt(" + prop + ")");
       if (excerptValue != null) {
-        ret.append(excerptValue.getString());
+        ret.append(excerptValue.getString()).append("...");
       }
+    }
+    if (ret.length() > MAX_EXCERPT_LENGTH) {
+      return ret.substring(0, MAX_EXCERPT_LENGTH) + "...";
     }
     return ret.toString();
   }
