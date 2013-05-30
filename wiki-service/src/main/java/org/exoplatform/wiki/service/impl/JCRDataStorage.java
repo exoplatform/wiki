@@ -8,8 +8,10 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.jcr.ImportUUIDBehavior;
+import javax.jcr.ItemNotFoundException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
@@ -219,11 +221,9 @@ public class JCRDataStorage implements DataStorage{
       return null;
     }
     
-    Value excerptValue = row.getValue("rep:excerpt(.)");
-    if (excerptValue != null) {
-      excerpt = excerptValue.getString();
-    }
-    
+    //get the excerpt from row result
+    excerpt = getExcerpt(row, type);
+
     if (page == null || !page.hasPermission(PermissionType.VIEWPAGE) || page.getName().equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
       return null;
     }
@@ -232,6 +232,28 @@ public class JCRDataStorage implements DataStorage{
     result.setUrl(page.getURL());
     result.setJcrScore(jcrScore);
     return result;
+  }
+
+  /**
+   * gets except of row result based on specific properties, but all to get nice excerpt
+   * @param row the result row
+   * @param type the result type
+   * @return the excerpt
+   * @throws ItemNotFoundException
+   * @throws RepositoryException
+   */
+  private String getExcerpt(Row row, String type) throws ItemNotFoundException, RepositoryException {
+    StringBuilder ret = new StringBuilder();
+    String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type)) ? 
+                          new String[]{"title", "url", "jcr:data"} :
+                          new String[]{"title", "url"};
+    for (String prop : properties) {
+      Value excerptValue = row.getValue("rep:excerpt(" + prop + ")");
+      if (excerptValue != null) {
+        ret.append(excerptValue.getString());
+      }
+    }
+    return ret.toString();
   }
   
   public List<SearchResult> searchRenamedPage(ChromatticSession session, WikiSearchData data) throws Exception {
