@@ -18,15 +18,18 @@ package org.exoplatform.wiki.webui;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -47,6 +50,8 @@ public class UIWikiPermissionEntry extends UIContainer {
   private static final Log log = ExoLogger.getLogger(UIWikiPermissionEntry.class);
 
   private PermissionEntry permissionEntry;
+  
+  private static final String MANAGER_SPACE_PATTERN = "manager:/spaces";
   
   private static Map<String, String>permissionLabels = new HashMap<String, String>();
 
@@ -130,14 +135,39 @@ public class UIWikiPermissionEntry extends UIContainer {
     return permissionEntry.getFullName();
   }
   
-  public boolean isImmutable() {
-    Iterator<Entry<String, IDType>> iter = org.exoplatform.wiki.utils.Utils.getACLForAdmins().entrySet().iterator();
-    while (iter.hasNext()) {
-      Entry<String, IDType> entry = iter.next();
-      if (permissionEntry.getId().equals(entry.getKey()) && permissionEntry.getIdType() == entry.getValue()) {
-        return true;
+  @SuppressWarnings({ "rawtypes", "unchecked" })
+	public boolean isImmutable() {
+  	try{    
+  		if(permissionEntry.getId().indexOf(MANAGER_SPACE_PATTERN) >= 0) {
+  			boolean isSpaceManager = true;
+      	Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+  	    Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+  	    
+      	String groupId = permissionEntry.getId();
+      	groupId = groupId.substring(groupId.lastIndexOf(":") + 1, groupId.length());
+      	Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
+      	ConversationState conversationState = ConversationState.getCurrent();
+      	String userId = conversationState.getIdentity().getUserId();
+      	
+      	isSpaceManager = (Boolean) spaceServiceClass.getDeclaredMethod("isManager", space.getClass(), String.class).
+      			invoke(spaceService, space, userId); 
+      	return !isSpaceManager;
       }
-    }
-    return false;
+  		
+	    Iterator<Entry<String, IDType>> iter = org.exoplatform.wiki.utils.Utils.getACLForAdmins().entrySet().iterator();	    
+	    while (iter.hasNext()) {				
+	      Entry<String, IDType> entry = iter.next();	      
+	      if (permissionEntry.getId().equals(entry.getKey()) && permissionEntry.getIdType() == entry.getValue()) {
+	        return true;
+	      }
+	    }
+	    return false;
+	  
+	  }catch(Exception ex) {
+	  	if (log.isDebugEnabled()) {
+        log.debug("Exception when checking isImmutable", ex);
+      }
+	  }
+  	return false;
   }
 }
