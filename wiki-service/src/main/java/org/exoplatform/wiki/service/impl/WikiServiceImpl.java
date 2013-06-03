@@ -1392,13 +1392,18 @@ public class WikiServiceImpl implements WikiService, Startable {
       Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
       ListAccess spaces = null;
       if (StringUtils.isEmpty(keyword)) {
-        spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesWithListAccess", String.class).invoke(spaceService, currentUser);
-      } else {
-        keyword = keyword.trim();
-        Class spaceFilterClass = Class.forName("org.exoplatform.social.core.space.SpaceFilter");
-        Object spaceFilter = spaceFilterClass.getConstructor(String.class).newInstance(keyword);
-        spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesByFilter", String.class, spaceFilterClass).invoke(spaceService, currentUser, spaceFilter);
+        //spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesWithListAccess", String.class).invoke(spaceService, currentUser);
+        keyword = "*";
       }
+      keyword = keyword.trim();
+      //search by keyword
+      Class spaceFilterClass = Class.forName("org.exoplatform.social.core.space.SpaceFilter");
+      Object spaceFilter = spaceFilterClass.getConstructor(String.class).newInstance(keyword);
+      //search by userId
+      spaceFilterClass.getDeclaredMethod("setRemoteId", String.class).invoke(spaceFilter, currentUser);
+      //search by appId(wiki)
+      spaceFilterClass.getDeclaredMethod("setAppId", String.class).invoke(spaceFilter, "Wiki");
+      spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesByFilter", String.class, spaceFilterClass).invoke(spaceService, currentUser, spaceFilter);
       
       for (Object space : spaces.load(0, spaces.getSize())) {
         String groupId = String.valueOf(spaceClass.getMethod("getGroupId").invoke(space));
