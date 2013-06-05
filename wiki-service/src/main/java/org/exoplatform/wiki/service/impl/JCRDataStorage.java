@@ -71,7 +71,7 @@ public class JCRDataStorage implements DataStorage{
         long position = data.getOffset();
         while (iter.hasNext()) {
           if ((data.getLimit() == Integer.MAX_VALUE) || (position < data.getOffset() + data.getLimit())) {
-            SearchResult tempResult = getResult(iter.nextRow());
+            SearchResult tempResult = getResult(iter.nextRow(), data);
             // If contains, merges with the exist
             if (tempResult != null && !isContains(resultList, tempResult)) {
               resultList.add(tempResult);
@@ -112,7 +112,7 @@ public class JCRDataStorage implements DataStorage{
       QueryResult result = q.execute();
       RowIterator iter = result.getRows();
       while (iter.hasNext()) {
-        SearchResult tempResult = getResult(iter.nextRow());
+        SearchResult tempResult = getResult(iter.nextRow(), data);
         // If contains, merges with the exist
         if (tempResult != null && !isContains(resultList, tempResult) && !isDuplicateTitle(resultList, tempResult)) {
           resultList.add(tempResult);
@@ -179,7 +179,7 @@ public class JCRDataStorage implements DataStorage{
     }
   }
   
-  private SearchResult getResult(Row row) throws Exception {
+  private SearchResult getResult(Row row, WikiSearchData data) throws Exception {
     String type = row.getValue(WikiNodeType.Definition.PRIMARY_TYPE).getString();
     String path = row.getValue(WikiNodeType.Definition.PATH).getString();
     
@@ -212,7 +212,13 @@ public class JCRDataStorage implements DataStorage{
       updateDate = searchAtt.getUpdatedDate();
       page = searchAtt.getParentPage();
       createdDate.setTime(page.getCreatedDate());
-      title = page.getTitle();
+      if ("nt:base".equals(data.getNodeType())) {
+        try  {
+          title = row.getValue(WikiNodeType.Definition.TITLE).getString();
+        } catch (RepositoryException e) { title = StringUtils.EMPTY; }
+      } else {
+        title = page.getTitle();
+      }
     } else if (WikiNodeType.WIKI_PAGE.equals(type)) {
       page = (PageImpl) Utils.getObject(path, type);
       updateDate.setTime(page.getUpdatedDate());
