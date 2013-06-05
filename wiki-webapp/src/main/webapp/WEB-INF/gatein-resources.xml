@@ -669,13 +669,4 @@
     </depends>  
   </module>
   
-  
-  <!-- XWiki Explorer JS -->
-  <module>
-    <name>XWiki</name>
-    <script>      
-      <path>/javascript/eXo/xwiki/xwikiexplorer/xwikiexplorer.js</path>
-    </script>
-  </module>
-  
 </gatein-resources>

@@ -3,7 +3,7 @@
  * TODO: move everything in it.
  *
  * @type object
- */(function() {
+ */
 
 if (typeof XWiki == "undefined") {
  
@@ -1571,5 +1571,3 @@ document.observe('xwiki:wysiwyg:loaded', function() {
   }
   eXo.wiki.UIWikiPageEditForm.init();
 });
-
-})();
