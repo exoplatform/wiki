@@ -234,6 +234,10 @@ UIWikiSearchBox.prototype.buildChild = function(dataObject) {
   var menuItemNode = $('<li/>');
   var linkNode = $('<a/>');
   $(linkNode).attr('href', dataObject.url);
+  $(linkNode).attr('rel', 'tooltip');
+  $(linkNode).attr('data-placement', 'bottom');
+  $(linkNode).attr('title', dataObject.title);
+  $(linkNode).tooltip();
   var keyword = me.input.value.trim();
   var labelResult = dataObject.title;
   $(linkNode).html(labelResult);
