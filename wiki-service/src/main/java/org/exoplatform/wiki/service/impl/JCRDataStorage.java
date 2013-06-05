@@ -213,9 +213,7 @@ public class JCRDataStorage implements DataStorage{
       page = searchAtt.getParentPage();
       createdDate.setTime(page.getCreatedDate());
       if ("nt:base".equals(data.getNodeType())) {
-        try  {
-          title = row.getValue(WikiNodeType.Definition.TITLE).getString();
-        } catch (RepositoryException e) { title = StringUtils.EMPTY; }
+        title = searchAtt.getFullTitle();
       } else {
         title = page.getTitle();
       }
