@@ -196,7 +196,8 @@ UIWikiSearchBox.prototype.renderMenu = function(data) {
   var me = eXo.wiki.UIWikiSearchBox;
   var searchBox = $(me.input).closest(".uiWikiSearchBox")[0];
   me.searchPopup = $(searchBox).find("ul.dropdown-menu")[0];
-  $(me.searchPopup).attr('style', "width:" + me.input.offsetWidth + "px;");
+  $(me.searchPopup).attr('style', "min-width:" + me.input.offsetWidth + "px;");
+
   
   var resultLength = data.jsonList.length;
   
@@ -234,11 +235,15 @@ UIWikiSearchBox.prototype.buildChild = function(dataObject) {
   var menuItemNode = $('<li/>');
   var linkNode = $('<a/>');
   $(linkNode).attr('href', dataObject.url);
+  $(linkNode).attr('rel', 'tooltip');
+  $(linkNode).attr('data-placement', 'bottom');
+  $(linkNode).attr('title', dataObject.title);
+  $(linkNode).tooltip();
   var keyword = me.input.value.trim();
   var labelResult = dataObject.title;
   $(linkNode).html(labelResult);
   $(menuItemNode).append(linkNode);
-  $(menuItemNode).attr('style', "width:" + me.input.offsetWidth + "px;");
+  $(menuItemNode).attr('style', "min-width:" + me.input.offsetWidth + "px;");
   return menuItemNode;
 };
 
