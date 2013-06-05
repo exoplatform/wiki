@@ -3,7 +3,7 @@
  * TODO: move everything in it.
  *
  * @type object
- */(function() {
+ */
 
 if (typeof XWiki == "undefined") {
  
@@ -1570,5 +1570,3 @@ document.observe('xwiki:wysiwyg:loaded', function() {
     doc.getElementsByTagName("head")[0].appendChild(css);
   }
 });
-
-})();
