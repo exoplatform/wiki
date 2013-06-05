@@ -71,7 +71,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.DraftPageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
-import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.Relations;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -558,11 +557,19 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                              @QueryParam("wikiOwner") String wikiOwner) throws Exception {
     try {
       WikiSearchData data = new WikiSearchData(keyword.toLowerCase(), null, wikiType, wikiOwner);
+      data.setNodeType("nt:base");
       data.setLimit(10);
       List<SearchResult> results = wikiService.search(data).getAll();
       List<TitleSearchResult> titleSearchResults = new ArrayList<TitleSearchResult>();
       for (SearchResult searchResult : results) {
-        titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), searchResult.getUrl()));
+        String url = null;
+        if (WikiNodeType.WIKI_ATTACHMENT.equals(searchResult.getType())) {
+          url = ((AttachmentImpl)Utils.getObject(searchResult.getPath(), searchResult.getType())).getDownloadURL();
+        } else {
+          url = searchResult.getUrl();
+        }
+        
+        titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), url));
       }
       return Response.ok(new BeanToJsons(titleSearchResults), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {

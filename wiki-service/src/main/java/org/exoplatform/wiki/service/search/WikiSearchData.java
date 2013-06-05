@@ -38,6 +38,10 @@ public class WikiSearchData extends SearchData {
   public void setNodeType(String nodeType) {
     this.nodeType = nodeType;
   }
+  
+  public String getNodeType() {
+    return this.nodeType;
+  }
 
   public void createJcrQueryPath() {
     if (wikiType == null && wikiOwner == null) {
