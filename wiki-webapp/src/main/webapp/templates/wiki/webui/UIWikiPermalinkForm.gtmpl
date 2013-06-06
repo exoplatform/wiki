@@ -16,7 +16,9 @@
   
   def requireJs = _ctx.getRequestContext().getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiPermalinkForm", "UIWikiPermalinkForm");
-  requireJs.addScripts("UIWikiPermalinkForm.init('" + uicomponent.id + "');");  
+  requireJs.addScripts("UIWikiPermalinkForm.init('" + uicomponent.id + "');");
+  requireJs.require("SHARED/jquery", "gj")
+           .addScripts("gj(document).ready(function() { gj(\"*[rel='tooltip']\").tooltip();});");  
 %>
 <%uiform.begin();%>
 <div id="$uicomponent.id" class="uiWikiPermalinkForm">
