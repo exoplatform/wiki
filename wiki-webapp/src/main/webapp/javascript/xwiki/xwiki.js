@@ -1569,6 +1569,7 @@ document.observe('xwiki:wysiwyg:loaded', function() {
     css.setAttribute("href", "/wiki/skin/DefaultSkin/webui/Stylesheet.css");
     doc.getElementsByTagName("head")[0].appendChild(css);
   }
+  eXo.wiki.UIWikiPageEditForm.init();
 });
 
 })();

@@ -24,21 +24,23 @@ function UIWikiPageEditForm() {
 };
 
 UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoSave, pageRevision, isDraftForNewPage, autoSaveSequeneTime, untitledLabel) {
-  var pageEditForm = document.getElementById(pageEditFormId);
+	
+  var me = eXo.wiki.UIWikiPageEditForm;
+  me.pageEditFormId = pageEditFormId || me.pageEditFormId;
+  me.changed = false;
+  me.firstChanged = false;
+  me.defaultTitle = untitledLabel || me.defaultTitle;
+  me.restURL = restURL || me.restURL;
+  me.isRunAutoSave = isRunAutoSave || me.isRunAutoSave;
+  me.pageRevision = pageRevision || me.pageRevision;
+  me.isDraftForNewPage = isDraftForNewPage || me.isDraftForNewPage;
+  me.autoSaveSequeneTime = autoSaveSequeneTime || me.autoSaveSequeneTime;
+	
+  var pageEditForm = document.getElementById(me.pageEditFormId);
   if (!pageEditForm) {
     return;
   }
   
-  var me = eXo.wiki.UIWikiPageEditForm;
-  me.pageEditFormId = pageEditFormId;
-  me.changed = false;
-  me.firstChanged = false;
-  me.defaultTitle = untitledLabel;
-  me.restURL = restURL;
-  me.isRunAutoSave = isRunAutoSave;
-  me.pageRevision = pageRevision;
-  me.isDraftForNewPage = isDraftForNewPage;
-  me.autoSaveSequeneTime = autoSaveSequeneTime;
 
   // Declare the function to handle change to create draft
   var func = function() {
@@ -67,6 +69,12 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
     var textarea = $(textAreaContainer).find('textarea');
     textarea.keyup(func);
     textarea.change(func);
+    
+    textarea = $(textAreaContainer).find('iframe')[0];
+    if (textarea) {
+    	$(textarea.contentWindow.document).bind('keyup', func);
+    }
+//    textarea = $(textAreaContainer).find('iframe').bind('change',func);
   }
 };
 
