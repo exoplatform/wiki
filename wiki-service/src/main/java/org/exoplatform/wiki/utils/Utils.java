@@ -18,6 +18,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -768,5 +769,18 @@ public class Utils {
     WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
     PageList<SearchResult> results = wikiservice.search(data);
     return results.getAll().size();
+  }
+  
+  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) {
+    StringBuilder cssClass = new StringBuilder();
+    cssClass.append(append);
+    cssClass.append("FileDefault");
+    cssClass.append(" ");
+    cssClass.append(append);
+    cssClass.append("nt_file");
+    cssClass.append(" ");
+    cssClass.append(append);
+    cssClass.append(new MimeTypeResolver().getMimeType(attachment.getFullTitle().toLowerCase()).replaceAll("/|\\.", ""));
+    return cssClass.toString();
   }
 }
