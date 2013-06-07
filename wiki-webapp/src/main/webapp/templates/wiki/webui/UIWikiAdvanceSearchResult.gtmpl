@@ -87,7 +87,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 						}
 						%>				 
 						<li>
-							<h6><i class="<%=org.exoplatform.wiki.utils.Utils.getNodeTypeCssClass(att,"uiIcon16x16")%>"></i><a href="$downloadlink"><%=att.getFullTitle()%></a></h6>
+							<h6><i class="<%=org.exoplatform.wiki.utils.Utils.getNodeTypeCssClass(att,"uiIcon16x16")%>"></i>&nbsp;<a href="$downloadlink"><%=att.getFullTitle()%></a></h6>
 							<% if (result.getExcerpt()!=null){ %>						
 							<%=result.getExcerpt()%>
 							<% } %>
