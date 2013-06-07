@@ -16,6 +16,9 @@
  */
 package org.exoplatform.wiki.rendering.macro.iframe;
 
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Collections;
 import java.util.List;
 
@@ -33,6 +36,7 @@ import org.xwiki.rendering.transformation.MacroTransformationContext;
 @Component("iframe")
 public class IFrameMacro extends AbstractMacro<IFrameMacroParameters> {
   public static final String MACRO_CATEGORY_OTHER = "Other";
+  private static final String URL_INVALID = "/wiki/templates/wiki/webui/info/UrlInvalid.html";
 
   /**
    * The description of the macro.
@@ -62,10 +66,29 @@ public class IFrameMacro extends AbstractMacro<IFrameMacroParameters> {
       rawContent.append("height=\"100%\"");
     }
 
-    rawContent.append("src=\"").append(parameters.getSrc()).append("\"");
+    rawContent.append("src=\"").
+    append(valid(parameters.getSrc()) ? parameters.getSrc() : URL_INVALID).
+    append("\"");
     rawContent.append("></iframe>");
     RawBlock panelBlock = new RawBlock(rawContent.toString(), Syntax.XHTML_1_0);
     return Collections.singletonList((Block) panelBlock);
+  }
+  
+  /**
+   * checks if the url is valid.
+   * @param urlValue the url
+   * @return the validity of the url
+   */
+  private boolean valid(String urlValue) {
+    try {
+      URL url = new URL(urlValue);
+      url.toURI();
+    } catch ( MalformedURLException e ) {
+      return false;
+    } catch (URISyntaxException e) {
+      return false;
+    }
+    return true;
   }
 
   public boolean supportsInlineMode() {
