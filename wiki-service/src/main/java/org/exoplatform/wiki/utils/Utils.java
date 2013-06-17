@@ -1,5 +1,6 @@
 package org.exoplatform.wiki.utils;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +19,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -29,6 +29,7 @@ import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
@@ -771,7 +772,7 @@ public class Utils {
     return results.getAll().size();
   }
   
-  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) {
+  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) throws IOException {
     StringBuilder cssClass = new StringBuilder();
     cssClass.append(append);
     cssClass.append("FileDefault");
@@ -780,7 +781,7 @@ public class Utils {
     cssClass.append("nt_file");
     cssClass.append(" ");
     cssClass.append(append);
-    cssClass.append(new MimeTypeResolver().getMimeType(attachment.getFullTitle().toLowerCase()).replaceAll("/|\\.", ""));
+    cssClass.append(DMSMimeTypeResolver.getInstance().getMimeType(attachment.getFullTitle().toLowerCase()).replaceAll("/|\\.", ""));
     return cssClass.toString();
   }
 }
