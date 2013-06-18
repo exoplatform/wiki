@@ -1,6 +1,5 @@
 package org.exoplatform.wiki.utils;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +28,6 @@ import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
@@ -770,9 +768,17 @@ public class Utils {
     WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
     PageList<SearchResult> results = wikiservice.search(data);
     return results.getAll().size();
+
   }
   
-  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) throws IOException {
+  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) throws Exception {
+    Class<?> dmsMimeTypeResolverClass = Class.forName("org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver");
+    Object dmsMimeTypeResolverObject =
+        dmsMimeTypeResolverClass.getDeclaredMethod("getInstance", null).invoke(null, null);
+    Object mimeType = dmsMimeTypeResolverClass
+      .getMethod("getMimeType", new Class[] { String.class})
+      .invoke(dmsMimeTypeResolverObject, new Object[]{new String(attachment.getFullTitle().toLowerCase())});
+
     StringBuilder cssClass = new StringBuilder();
     cssClass.append(append);
     cssClass.append("FileDefault");
@@ -781,7 +787,7 @@ public class Utils {
     cssClass.append("nt_file");
     cssClass.append(" ");
     cssClass.append(append);
-    cssClass.append(DMSMimeTypeResolver.getInstance().getMimeType(attachment.getFullTitle().toLowerCase()).replaceAll("/|\\.", ""));
+    cssClass.append(((String)mimeType).replaceAll("/|\\.", ""));
     return cssClass.toString();
   }
 }

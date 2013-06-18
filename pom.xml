@@ -128,12 +128,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <!-- Import versions from ecms project -->
-      <dependency>
-        <groupId>org.exoplatform.ecms</groupId>
-        <artifactId>ecms-core-services</artifactId>
-        <version>${project.version}</version>
-      </dependency>
       <!-- Import versions from platform-ui project -->
       <dependency>
         <groupId>org.exoplatform.platform-ui</groupId>
