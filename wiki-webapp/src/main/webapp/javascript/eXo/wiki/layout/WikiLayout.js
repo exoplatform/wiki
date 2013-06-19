@@ -337,6 +337,7 @@ WikiLayout.prototype.checkToShowGradientScrollInLeftArea = function() {
 }
 
 WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
+  var isShowGradientScroll = false;
   var me = eXo.wiki.WikiLayout;
   if (!me.rightArea) {
     return;
@@ -353,10 +354,14 @@ WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
   if (pageArea) {
     var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
     if (!pageContent) {
-      return;
+      if ($(pageArea).find("div.uiWikiPageEditForm:first")[0])
+        isShowGradientScroll = true;
+      else 
+        return;
+    } else {
+      isShowGradientScroll = pageContent.offsetHeight > me.rightArea.offsetHeight;
     }
     
-    var isShowGradientScroll = pageContent.offsetHeight > me.rightArea.offsetHeight;
     if (isShowGradientScroll) {
       if (me.rightArea.scrollTop > 0) {
         $(scrollTop).css("display", "block");
