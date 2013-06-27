@@ -1,6 +1,5 @@
 package org.exoplatform.wiki.utils;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -219,7 +218,7 @@ public class Utils {
     }
     
     if (params.getPageId() != null) {
-      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
+      sb.append(params.getPageId());
     }
     
     if (hasDowmainUrl) {
