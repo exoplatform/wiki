@@ -91,6 +91,13 @@ public class UIWikiMyDraftsForm extends UIForm {
         if (pageImpl == null) {
           continue;
         }
+        
+        // Check if target page was deleted
+        if (pageImpl.getWiki() == null) {
+          draftPage.remove();
+          continue;
+        }
+        
         List<BreadcrumbData> breadcrumbDatas = wService.getBreadcumb(pageImpl.getWiki().getType(), pageImpl.getWiki().getOwner(), pageImpl.getName());
         grid.putBreadCrumbDatas(draftPage.getName(), breadcrumbDatas);
         String draftTitle = draftPage.getTitle();
