@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.commons;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -376,6 +377,10 @@ public class Utils {
   public static void redirect(WikiPageParams pageParams, WikiMode mode, Map<String, String[]> params) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
+    if (PortalConfig.GROUP_TYPE.equals(Utils.getCurrentWiki().getType())) {
+      pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+    }
+    
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }
   
