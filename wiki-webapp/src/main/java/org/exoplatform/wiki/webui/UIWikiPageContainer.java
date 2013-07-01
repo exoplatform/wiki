@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 
@@ -30,6 +31,9 @@ public class UIWikiPageContainer extends UIContainer {
     addChild(UIWikiSearchSpaceArea.class, null, null);
     addChild(UIWikiHistorySpaceArea.class, null, null);
     addChild(UIWikiPageInfo.class, null, null);
-    addChild(UIWikiMyDraftContainer.class, null, null);
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    if (currentUser != null && !IdentityConstants.ANONIM.equals(currentUser)) { 
+      addChild(UIWikiMyDraftContainer.class, null, null);
+    }
   }
 }
