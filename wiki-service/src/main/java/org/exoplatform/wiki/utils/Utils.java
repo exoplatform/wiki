@@ -449,15 +449,11 @@ public class Utils {
   }
   
   public static String getCurrentUser() {
-    try {
-      return PortalRequestContext.getCurrentInstance().getRemoteUser();
-    } catch(Exception e){
-      ConversationState conversationState = ConversationState.getCurrent();
-      if (conversationState != null) {
-        return ConversationState.getCurrent().getIdentity().getUserId();
-      }
-      return null;
-    }    
+    ConversationState conversationState = ConversationState.getCurrent();
+    if (conversationState != null) {
+      return ConversationState.getCurrent().getIdentity().getUserId();
+    }
+    return null; 
   }
   
   public static Collection<Wiki> getWikisByType(WikiType wikiType) {
