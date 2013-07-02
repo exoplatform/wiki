@@ -197,7 +197,6 @@
                      def beanId = uicomponent.getBeanIdFor(bean);
                      for (action in beanActions) {
                        String title = _ctx.appRes(uiParent.getName() + ".action.title." + action);
-                       String actionName = action.replace("Template",""); 
                        String actionLink = "";
                        if (uiForm != null) {
                          actionLink = uiForm.event(action, uiParent.getId(), beanId);
@@ -208,10 +207,10 @@
                        String anchor = "#" + action;
                        if (Utils.getModeFromAction(action)) {
                  %>
-                         <a onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$actionName"></i></a>
+                         <a onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$action"></i></a>
                          <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
                  <%    } else { %>
-                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$actionName"></i></a>
+                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$action"></i></a>
                  <%    } %>
                    <%} %>                 
                </td>
