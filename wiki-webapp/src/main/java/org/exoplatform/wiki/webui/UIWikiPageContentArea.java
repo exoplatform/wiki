@@ -59,10 +59,6 @@ public class UIWikiPageContentArea extends UIWikiContainer {
   }
 
   private void renderVersion() throws Exception {
-    // Check to remove temp draft
-    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    wikiService.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
-
     String currentVersionName= this.getChild(UIWikiVersionSelect.class).getVersionName();
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     WikiMode currentMode= wikiPortlet.getWikiMode();
