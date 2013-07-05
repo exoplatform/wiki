@@ -51,7 +51,11 @@ WikiLayout.prototype.initHeightForPreview = function() {
     if (mask) {
       var uiWikiPagePreview = $(mask).find("div.uiWikiPagePreview")[0];
       if (uiWikiPagePreview) {
-        $(uiWikiPagePreview).css("height", document.documentElement.clientHeight + "px");
+      	h=document.documentElement.clientHeight - $('.wikiPreviewHeader').outerHeight();
+		pdt=parseInt($('.uiWikiPagePreview').css('paddingTop'));
+		pdb=parseInt($('.uiWikiPagePreview').css('paddingBottom'));
+		h=h-pdt-pdb;
+        $(uiWikiPagePreview).css("height", h + "px");
       }
     }
   });
