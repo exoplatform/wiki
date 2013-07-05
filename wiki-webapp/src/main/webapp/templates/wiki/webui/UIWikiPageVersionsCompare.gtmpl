@@ -53,25 +53,29 @@
   wordAddedRemovedLabel = wordAddedRemovedLabel.replace("{2}", "</span><span class=\"lineAdded\">");
   wordAddedRemovedLabel = wordAddedRemovedLabel.replace("{3}", "</span>");
 %>
-	<div class="comparedForm clearfix">
+	<div class="comparedForm ">
 		<h4><%= titleCompare %></h4>
-		<pre class="changeVersionForm pull-left">
-			<b class="changeVersionInfo"><%= fromChangeVersionInfoLabel %>
-			<span class="dateChange"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.DateChange").replace("{0}", fromUpdatedDate); %>.</span>
-			<a class="changes" href="$previousCompareLink"><%= previousCompare %></a>
-		</pre>
-		<div class="comparedWith pull-left"> <%= _ctx.appRes("UIWikiPageVersionsCompare.label.ComparedWith"); %> </div>
-		<pre class="changeVersionForm pull-left">
-			<b class="changeVersionInfo"><%= toChangeVersionInfoLabel %>
-			<span class="dateChange"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.DateChange").replace("{0}", toUpdatedDate); %>.</span>
-			<a class="changes" href="$nextCompareLink"><%= nextCompare %></a>
-		</pre>
-		<pre class="changeVersionForm pull-right">
-			<b class="changeVersionInfo"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Key"); %></b><br />
-			<span class="lineRemoved"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.this-line-was-removed"); %></span><br />
-			<span><%= wordAddedRemovedLabel %><br />
-			<span class="lineAdded"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.this-line-was-added"); %></span>
-		</pre>
+		<div class="clearfix">
+			<pre class="changeVersionForm pull-left">
+				<b class="changeVersionInfo"><%= fromChangeVersionInfoLabel %>
+				<span class="dateChange"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.DateChange").replace("{0}", fromUpdatedDate); %>.</span>
+				<a class="changes" href="$previousCompareLink"><%= previousCompare %></a>
+			</pre>
+			<div class="comparedWith pull-left"> <%= _ctx.appRes("UIWikiPageVersionsCompare.label.ComparedWith"); %> </div>
+			<pre class="changeVersionForm pull-left">
+				<b class="changeVersionInfo"><%= toChangeVersionInfoLabel %>
+				<span class="dateChange"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.DateChange").replace("{0}", toUpdatedDate); %>.</span>
+				<a class="changes" href="$nextCompareLink"><%= nextCompare %></a>
+			</pre>
+		</div>
+		<div class="clearfix">
+			<pre class="changeVersionForm pull-right">
+				<b class="changeVersionInfo"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Key"); %></b><br />
+				<span class="lineRemoved"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.this-line-was-removed"); %></span><br />
+				<span><%= wordAddedRemovedLabel %><br />
+				<span class="lineAdded"><%= _ctx.appRes("UIWikiPageVersionsCompare.label.this-line-was-added"); %></span>
+			</pre>
+		</div>
 	</div>
 	<div class="changedForm">
 		<h6><%= _ctx.appRes("UIWikiPageVersionsCompare.label.Changes").replace("{0}",  String.valueOf(uicomponent.changes)); %></h6>
