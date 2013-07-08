@@ -274,6 +274,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       context.put(TreeNode.PATH, path);
       WikiPageParams pageParam = TreeUtils.getPageParamsFromPath(path);
       PageImpl page = (PageImpl) wikiService.getPageById(pageParam.getType(), pageParam.getOwner(), pageParam.getPageId());
+      if (page == null) {
+        log.warn("User [{}] can not get wiki path [{}]. Wiki Home is used instead",
+                 ConversationState.getCurrent().getIdentity().getUserId(), path);
+        page = (PageImpl) wikiService.getPageById(pageParam.getType(), pageParam.getOwner(), pageParam.WIKI_HOME);
+      }
+      
       context.put(TreeNode.SELECTED_PAGE, page);
       
       context.put(TreeNode.SHOW_EXCERPT, showExcerpt);
@@ -291,7 +297,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
       if (log.isErrorEnabled()) {
-        log.error("Failed for get tree data by rest service.", e);
+        log.error("Failed for get tree data by rest service.", e.getMessage());
       }
       return Response.serverError().entity(e.getMessage()).cacheControl(cc).build();
     }
