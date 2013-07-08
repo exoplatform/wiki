@@ -130,14 +130,19 @@ UIWikiPageEditForm.prototype.setCancelDraftAction = function(removeDraftRestUrl,
   me.noLabel = noLabel;
 };
 
-UIWikiPageEditForm.prototype.setRestParam = function(wikiType, wikiOwner, pageId, draftName) {
+UIWikiPageEditForm.prototype.setRestParam = function(wikiType, wikiOwner, pageId) {
   var me = eXo.wiki.UIWikiPageEditForm;
   me.wikiType = wikiType;
   me.wikiOwner = wikiOwner;
   me.pageId = pageId;
-  me.draftName = draftName;
   me.createRestParam();
 };
+
+UIWikiPageEditForm.prototype.setDraftName = function(draftName) {
+  var me = eXo.wiki.UIWikiPageEditForm;
+  me.draftName = draftName;
+};
+
 
 UIWikiPageEditForm.prototype.decorateInputOfTemplate = function(defaultTitleOfTemplate, defaultDescriptionOfTemplate) {
   var me = eXo.wiki.UIWikiPageEditForm;
@@ -316,6 +321,25 @@ UIWikiPageEditForm.prototype.synPublishActivityCheckboxesStatus = function(check
   $(checkBox2).click(function() {
     $(checkBox1).attr("checked", !$(checkBox1).attr("checked"));
   });
+};
+
+UIWikiPageEditForm.prototype.fixWikiNotificationTimeZone = function(){
+  var uiWikiNotificationContainer = $(".uiWikiNotificationContainer")[0];
+  if (uiWikiNotificationContainer) {
+    innerHTML = uiWikiNotificationContainer.innerHTML;
+    var i1 = innerHTML.indexOf("{");
+    var i2 = innerHTML.indexOf("}");
+    if (i1 && i2) {
+      var timeLong = innerHTML.substring(i1+1, i2);
+      if (timeLong) {
+        var oldSt = "{" + timeLong +  "}";
+        var date = new Date(parseInt(timeLong));
+        timeLong = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+        innerHTML = innerHTML.replace(oldSt, timeLong);
+        $(uiWikiNotificationContainer).html(innerHTML);
+      }
+    }
+  }
 };
 
 eXo.wiki.UIWikiPageEditForm = new UIWikiPageEditForm();
