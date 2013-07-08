@@ -93,6 +93,8 @@ public class UIWikiPageEditForm extends UIWikiForm {
   private List<String> notificationMessages = new ArrayList<String>();
 
   private String initDraftName = StringUtils.EMPTY;
+  
+  private boolean isFirstTimeRenderEdit = true;
 
   private boolean isRunAutoSave = true;
   
@@ -223,6 +225,14 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   public void setInitDraftName(String initDraftName) {
     this.initDraftName = initDraftName;
+    this.isFirstTimeRenderEdit = true; 
+  }
+  
+  //only set the initDraftName at the first time when page is created or edited 
+  public boolean isFirstTimeRenderEdit() { return isFirstTimeRenderEdit; }
+  
+  public void setFirstTimeRenderEdit(boolean value) {
+    this.isFirstTimeRenderEdit = value;
   }
   
   public boolean isInTemplateMode() {

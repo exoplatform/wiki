@@ -129,14 +129,19 @@ UIWikiPageEditForm.prototype.setCancelDraftAction = function(removeDraftRestUrl,
   me.noLabel = noLabel;
 };
 
-UIWikiPageEditForm.prototype.setRestParam = function(wikiType, wikiOwner, pageId, draftName) {
+UIWikiPageEditForm.prototype.setRestParam = function(wikiType, wikiOwner, pageId) {
   var me = eXo.wiki.UIWikiPageEditForm;
   me.wikiType = wikiType;
   me.wikiOwner = wikiOwner;
   me.pageId = pageId;
-  me.draftName = draftName;
   me.createRestParam();
 };
+
+UIWikiPageEditForm.prototype.setDraftName = function(draftName) {
+  var me = eXo.wiki.UIWikiPageEditForm;
+  me.draftName = draftName;
+};
+
 
 UIWikiPageEditForm.prototype.decorateInputOfTemplate = function(defaultTitleOfTemplate, defaultDescriptionOfTemplate) {
   var me = eXo.wiki.UIWikiPageEditForm;
