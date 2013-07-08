@@ -19,7 +19,9 @@ package org.exoplatform.wiki.webui;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -93,6 +95,8 @@ public class UIWikiPageEditForm extends UIWikiForm {
   private List<String> notificationMessages = new ArrayList<String>();
 
   private String initDraftName = StringUtils.EMPTY;
+  
+  private boolean isFirstTimeRenderEdit = true;
 
   private boolean isRunAutoSave = true;
   
@@ -169,11 +173,12 @@ public class UIWikiPageEditForm extends UIWikiForm {
   
   private String createDraftExistNotification(Date draftUpdatedDate) throws Exception {
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
-    
+    Calendar calendar = new GregorianCalendar();
+    calendar.setTime(draftUpdatedDate);
     // Build message markup
     String messageMarkup = bundle.getString("DraftPage.msg.draft-exist-notification");
-    String dateString = new SimpleDateFormat("MMM dd, yyyy HH:mm").format(draftUpdatedDate);
-    messageMarkup = messageMarkup.replace("{0}", dateString);
+    StringBuffer dateString = new StringBuffer().append("{").append(calendar.getTimeInMillis()).append("}");
+    messageMarkup = messageMarkup.replace("{0}", dateString.toString());
     String messageHTML = "<div class='alert alert-info'><i class='uiIconInformation uiIconBlue'></i>" + messageMarkup + "</div>";
     
     // Add actions to message html
@@ -223,6 +228,14 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   public void setInitDraftName(String initDraftName) {
     this.initDraftName = initDraftName;
+    this.isFirstTimeRenderEdit = true; 
+  }
+  
+  //only set the initDraftName at the first time when page is created or edited 
+  public boolean isFirstTimeRenderEdit() { return isFirstTimeRenderEdit; }
+  
+  public void setFirstTimeRenderEdit(boolean value) {
+    this.isFirstTimeRenderEdit = value;
   }
   
   public boolean isInTemplateMode() {

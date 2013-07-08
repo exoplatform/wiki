@@ -19,6 +19,8 @@
   def wikiOwner = uicomponent.getWikiOwner();
   def pageId = uicomponent.getCurrentPageId();
   def initDraftName = uicomponent.getInitDraftName();
+  def isFirstTimeRenderEdit = uicomponent.isFirstTimeRenderEdit();
+  uicomponent.setFirstTimeRenderEdit(false);
   def pageRevision = uicomponent.getCurrentPageRevision();
   boolean isRunAutoSave = uicomponent.isRunAutoSave();
   boolean isDraftForNewPage = uicomponent.isNewPage();
@@ -33,7 +35,10 @@
   requireJs.addScripts("UIWikiPageEditForm.init('" + uicomponent.id + "', '" + saveDraftRestUrl + "', " + isRunAutoSave + ", '" + pageRevision + "', " + isDraftForNewPage + ", " + getAutoSaveSequenceTime + ", '" + untitledLabel + "');");
   requireJs.addScripts("UIWikiPageEditForm.setMessageResource('" + saveDraftSuccessMessage + "', '" + discardDraftConfirmMessage + "');");
   requireJs.addScripts("UIWikiPageEditForm.setCancelDraftAction('" + removeDraftRestUrl + "', '" + cancelDraftConfirmTitle + "', '" + cancelDraftConfirmMessage + "', '" + yesButtonLabel + "', '" + noButtonLabel + "');");
-  requireJs.addScripts("UIWikiPageEditForm.setRestParam('" + wikiType + "', '" + wikiOwner + "', '" + pageId + "', '" + initDraftName + "');");
+  if (isFirstTimeRenderEdit) {
+    requireJs.addScripts("UIWikiPageEditForm.setDraftName('" + initDraftName + "');");
+  }
+  requireJs.addScripts("UIWikiPageEditForm.setRestParam('" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
   requireJs.addScripts("UIWikiPageEditForm.synPublishActivityCheckboxesStatus('" + uiform.FIELD_PUBLISH_ACTIVITY_UPPER + "','" + uiform.FIELD_PUBLISH_ACTIVITY_BOTTOM + "');");
 
   if (uicomponent.isInTemplateMode()) {
@@ -45,6 +50,7 @@
   if (uicomponent.isInRichTextEditor()) {
     requireJs.addScripts("UIWikiPageEditForm.checkToRemoveEditorMenu();");
   }
+  requireJs.addScripts("UIWikiPageEditForm.fixWikiNotificationTimeZone();");
 %>
 <div class="uiWikiPageEditForm">
 <% uiform.begin();%>
