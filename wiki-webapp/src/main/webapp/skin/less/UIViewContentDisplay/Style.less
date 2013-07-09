@@ -2,10 +2,11 @@
 	.uiWikiContentDisplay{
 		padding: 10px 0;
 			span.EditSection {
-				display: none !important;
+				visibility: hidden;
 				a{
 					position: absolute;
 					right: 10px;
+					background-position: -9999px;
 				}
 			}
 	}
@@ -49,8 +50,7 @@
 		 .wikiexternallink{
 			 .wikimodel-freestanding {
 				 margin: 0 6px 0 0;
-				 width: 18px;
-				 height: 18px;
+				 .square(18px);				
 			}
 		}
 	}
@@ -67,8 +67,12 @@
 	 .EditSectionHover {
 		background-color: @tableBackgroundAccent;
 		span.EditSection {
-			display: block !important;
+			visibility: visible;
+			a{					
+				background-position: -40px 0;
+			}
 		}
+		
 	}
 
 	 .DecorationVersion {
