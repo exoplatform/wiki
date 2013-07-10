@@ -35,6 +35,7 @@ function WikiLayout() {
   this.leftMinWidth  = 235;
   this.rightMinWidth = 250;
   this.userName      = "";
+  this.mouseDown = false;
 };
 
 WikiLayout.prototype.init = function(prtId, _userName) {
@@ -78,6 +79,7 @@ WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
     me.portal = document.getElementById(idPortal);
     var portlet = document.getElementById(me.portletId);
     me.wikiLayout = $(portlet).find('div.uiWikiMiddleArea')[0];
+    $(me.wikiLayout).css("overflow", "hidden");
     me.resizeBar = $(me.wikiLayout).find('div.resizeBar')[0];
     me.colapseLeftContainerButton = $(me.wikiLayout).find('div.resizeButton')[0];
     var showLeftContainer = me.getCookie(me.userName + "_ShowLeftContainer");
@@ -187,8 +189,12 @@ WikiLayout.prototype.setHeightLayOut = function() {
   var layout = me.wikiLayout;
   var leftNavigationDiv = $('#LeftNavigation')[0];
   var platformAdmintc = $("#PlatformAdminToolbarContainer")[0];
-  var hdef = (leftNavigationDiv && platformAdmintc) ? 
-		     leftNavigationDiv.parentNode.clientHeight - layout.offsetTop + platformAdmintc.clientHeight : 0;
+  var hdef = 0;
+  if (leftNavigationDiv && platformAdmintc) {
+    var parentHeightPx = leftNavigationDiv.parentNode.style.height;
+    var parentHeight = parentHeightPx.substring(0, parentHeightPx.length-2);
+    hdef = parentHeight - layout.offsetTop + platformAdmintc.clientHeight;
+  }
   hdef = Math.max(hdef, document.documentElement.clientHeight - layout.offsetTop); 	 
   var hct = hdef * 1;
   $(layout).css('height', hdef + 'px');
@@ -424,6 +430,8 @@ WikiLayout.prototype.showHideSideBar = function (e, savedValue) {
 WikiLayout.prototype.exeRowSplit = function(e) {
   _e = (window.event) ? window.event : e;
   var me = eXo.wiki.WikiLayout;
+  me.mouseDown = true;
+  
   var portlet = document.getElementById(me.portletId);
   var wikiMiddleArea = $(portlet).find('div.uiWikiMiddleArea')[0];
   $(wikiMiddleArea).addClass("uiWikiPortletNoSelect");
@@ -456,6 +464,7 @@ WikiLayout.prototype.adjustHorizon = function() {
 WikiLayout.prototype.adjustWidth      = function(evt) {
   evt = (window.event) ? window.event : evt;
   var me = eXo.wiki.WikiLayout;
+  if (!me.mouseDown) return;
   var portlet = document.getElementById(me.portletId);
   var wikiMiddleArea = $(portlet).find('div.uiWikiMiddleArea')[0];
   var allowedWidth = wikiMiddleArea.offsetWidth - 50; //Substract the padding
@@ -477,11 +486,12 @@ WikiLayout.prototype.adjustWidth      = function(evt) {
 
 WikiLayout.prototype.clear = function() {
   var me = eXo.wiki.WikiLayout;
+  me.mouseDown = false;
   var portlet = document.getElementById(me.portletId);
   var wikiMiddleArea = $(portlet).find('div.uiWikiMiddleArea')[0];
   $(wikiMiddleArea).removeClass("uiWikiPortletNoSelect");
   if(me.leftArea) {
-    me.setCookie(me.userName + "_leftWidth", me.leftArea.offsetWidth, 1);   
+    me.setCookie(me.userName + "_leftWidth", me.leftArea.offsetWidth, 1);
     $(document).off('mousemove');
     if (me.resizeBar) {
       $(me.resizeBar).removeClass("resizeBarDisplay");

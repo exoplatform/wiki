@@ -16,9 +16,6 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -26,6 +23,9 @@ import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.commons.EventUIComponent;
 import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
 import org.exoplatform.webui.commons.UISpacesSwitcher;
@@ -41,6 +41,9 @@ import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -184,6 +187,17 @@ public class UIWikiBreadCrumb extends UIContainer {
     sb.append(breadCumbData.getId());
     return sb.toString();
   }
+  
+  /* (non-Javadoc)
+   * @see org.exoplatform.webui.core.UIComponent#processRender(org.exoplatform.webui.application.WebuiRequestContext)
+   */
+  @Override
+  public void processRender(WebuiRequestContext context) throws Exception {
+	  if(IdentityConstants.ANONIM.equals(ConversationState.getCurrent().getIdentity().getUserId())) {
+		  this.setAllowChooseSpace(false);
+	  }
+    super.processRender(context);
+  }  
   
   public static class SwitchSpaceActionListener extends EventListener<UIWikiBreadCrumb> {
     public void execute(Event<UIWikiBreadCrumb> event) throws Exception {
