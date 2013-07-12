@@ -1,6 +1,5 @@
 package org.exoplatform.wiki.utils;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -18,7 +17,6 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -220,7 +218,7 @@ public class Utils {
     }
     
     if (params.getPageId() != null) {
-      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
+      sb.append(params.getPageId());
     }
     
     if (hasDowmainUrl) {
@@ -451,15 +449,11 @@ public class Utils {
   }
   
   public static String getCurrentUser() {
-    try {
-      return PortalRequestContext.getCurrentInstance().getRemoteUser();
-    } catch(Exception e){
-      ConversationState conversationState = ConversationState.getCurrent();
-      if (conversationState != null) {
-        return ConversationState.getCurrent().getIdentity().getUserId();
-      }
-      return null;
-    }    
+    ConversationState conversationState = ConversationState.getCurrent();
+    if (conversationState != null) {
+      return ConversationState.getCurrent().getIdentity().getUserId();
+    }
+    return null; 
   }
   
   public static Collection<Wiki> getWikisByType(WikiType wikiType) {
@@ -769,9 +763,17 @@ public class Utils {
     WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
     PageList<SearchResult> results = wikiservice.search(data);
     return results.getAll().size();
+
   }
   
-  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) {
+  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) throws Exception {
+    Class<?> dmsMimeTypeResolverClass = Class.forName("org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver");
+    Object dmsMimeTypeResolverObject =
+        dmsMimeTypeResolverClass.getDeclaredMethod("getInstance", null).invoke(null, null);
+    Object mimeType = dmsMimeTypeResolverClass
+      .getMethod("getMimeType", new Class[] { String.class})
+      .invoke(dmsMimeTypeResolverObject, new Object[]{new String(attachment.getFullTitle().toLowerCase())});
+
     StringBuilder cssClass = new StringBuilder();
     cssClass.append(append);
     cssClass.append("FileDefault");
@@ -780,7 +782,7 @@ public class Utils {
     cssClass.append("nt_file");
     cssClass.append(" ");
     cssClass.append(append);
-    cssClass.append(new MimeTypeResolver().getMimeType(attachment.getFullTitle().toLowerCase()).replaceAll("/|\\.", ""));
+    cssClass.append(((String)mimeType).replaceAll("/|\\.", ""));
     return cssClass.toString();
   }
   

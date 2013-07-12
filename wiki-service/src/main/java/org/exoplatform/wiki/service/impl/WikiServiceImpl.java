@@ -1593,7 +1593,8 @@ public class WikiServiceImpl implements WikiService, Startable {
       return null;
     }
     
-    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    if (currentUser == null || IdentityConstants.ANONIM.equals(currentUser)) {
       return null;
     }
     
@@ -1624,17 +1625,15 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public List<DraftPage> getDrafts(String username) throws Exception {
-    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
-      return null;
-    }
-    
-    // Get all draft of user
-    Collection<PageImpl> childPages = getDraftContainerOfCurrentUser().getChildPages().values();
-    
-    // Change collection to List
     List<DraftPage> draftPages = new ArrayList<DraftPage>();
-    for (PageImpl pageImpl : childPages) {
-      draftPages.add((DraftPageImpl) pageImpl);
+    if (!IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+      // Get all draft of user
+      Collection<PageImpl> childPages = getDraftContainerOfCurrentUser().getChildPages().values();
+      
+      // Change collection to List
+      for (PageImpl pageImpl : childPages) {
+        draftPages.add((DraftPageImpl) pageImpl);
+      }
     }
     return draftPages;
   }

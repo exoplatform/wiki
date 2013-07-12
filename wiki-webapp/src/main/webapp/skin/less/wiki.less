@@ -361,6 +361,14 @@
 	padding: 8px 15px 15px;
 }
 
+.uiIconEditTemplate{
+  background-position: -40px 0px;
+}
+
+.uiIconDeleteTemplate{
+  background-position: -20px 0px;
+}
+
 /******* wiki space-switcher ************/
 
 .uiWikiPortlet {
@@ -480,6 +488,49 @@
 	margin: 0;
 }
 
+/*====== page not found =========*/
 
+.uiWikiPageNotFound {
+    margin: auto;
+    padding-top: 25px;
+    width: 614px;
+	.errorBlock {
+		background: url("/wiki/skin/css/../images/warningIcon.png") no-repeat scroll center top transparent;
+		display: block;
+		height: 160px;
+		margin: 0 auto;
+		text-align: center;
+		width: 160px;
+	}
+	p {
+		margin: 0;
+	}
+	.uiIconFileMini{
+		margin-left: -3px;
+	}
+	 h3 {
+		color: #737373;
+		text-align: center;
+	}
+	.titleWarning {
+		color: #999999;
+		font-size: 18px;
+		margin: 3px 0 17px;
+		text-align: center;
+	}
+	.pageContent {
+		background: none repeat scroll 0 0 white;
+		border: 1px solid @tableBorder;
+		border-radius: @baseBorderRadius;
+		padding: 20px 26px;
+	}
+}
+.progressBarFrame .percent {
+	line-height: 20px;
+}
 
-
+.macro-output, .uiWikiPagePreview, .uiWikiContentDisplay{
+	span.box{
+		display: block;
+	}
+}

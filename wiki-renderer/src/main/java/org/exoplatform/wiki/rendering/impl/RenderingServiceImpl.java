@@ -250,10 +250,10 @@ public class RenderingServiceImpl implements RenderingService, Startable {
         linkParameters.put("class", "uiIconEdit uiIconLightGray");
         linkParameters.put("title", editSectionLabel + renderXDOM(new XDOM(block.getChildren()), sourceSyntax));
         linkParameters.put("rel", "tooltip");
-        linkParameters.put("data-placement", "bottom");
+        linkParameters.put("data-placement", "left");
         LinkBlock linkBlock = new LinkBlock(emtyList, link, true, linkParameters);
         Map<String, String> spanParameters = new LinkedHashMap<String, String>();
-        spanParameters.put("class", "EditSection uiIconEdit pull-right");
+        spanParameters.put("class", "EditSection pull-right");
         FormatBlock spanBlock = new FormatBlock(Collections.singletonList((Block) linkBlock), Format.NONE, spanParameters);
         
         Map<String, String> params = new HashMap<String, String>();

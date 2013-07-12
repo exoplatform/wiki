@@ -19,12 +19,14 @@ package org.exoplatform.wiki.webui.control.action;
 import java.util.Arrays;
 import java.util.List;
 
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
@@ -64,7 +66,11 @@ public class AddPageFromTemplateActionComponent extends AbstractEventActionCompo
   public static class AddPageFromTemplateActionListener extends AddContainerActionListener<AddPageFromTemplateActionComponent> {
     @Override
     protected void processEvent(Event<AddPageFromTemplateActionComponent> event) throws Exception {
+      WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+      // Check to remove temp draft
+      wservice.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
+      
       UIPopupContainer uiPopupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
       UIWikiSelectTemplateForm templateForm = uiPopupContainer.activate(UIWikiSelectTemplateForm.class, 800);
       templateForm.grid.getUIPageIterator().setId(UIWikiSelectTemplateForm.SELECT_TEMPLATE_ITER);

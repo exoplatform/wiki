@@ -93,7 +93,7 @@
 			font-weight: bold;
 		}
 		.nodeSelected{
-			color: aaa;
+			color: #aaa;
 		}
 	}
 	.uiSpaceSwitcher_UIWikiSelectPageForm{
@@ -103,6 +103,20 @@
 		.spaceChooserPopup{
 			top: 74px;
 			left: 129px;
+			.uiIconWikiWiki:hover {
+				background-image: url("/wiki/skin/images/Icons/uiIconsWikiWhite.png");
+			}
+		}
+	}
+}
+
+.uiWikiSpaceSwitcher_CreateWiki, .uiSpaceSwitcher_UIWikiSelectPageForm{
+	.spaceChooserPopup{
+		a:hover i {
+			background-image: url("/wiki/skin/images/Icons/uiIconsWikiWhite.png");
+		}
+		a i{
+			margin-right: 4px;
 		}
 	}
 }

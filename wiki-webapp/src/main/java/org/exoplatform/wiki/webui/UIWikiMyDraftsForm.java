@@ -8,6 +8,7 @@ import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -70,7 +71,8 @@ public class UIWikiMyDraftsForm extends UIForm {
   }
   
   public void initGrid() throws Exception {
-    if ("__anonim".equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    if (currentUser == null || IdentityConstants.ANONIM.equals(currentUser)) { 
       return;
     }
     
@@ -91,6 +93,13 @@ public class UIWikiMyDraftsForm extends UIForm {
         if (pageImpl == null) {
           continue;
         }
+        
+        // Check if target page was deleted
+        if (pageImpl.getWiki() == null) {
+          draftPage.remove();
+          continue;
+        }
+        
         List<BreadcrumbData> breadcrumbDatas = wService.getBreadcumb(pageImpl.getWiki().getType(), pageImpl.getWiki().getOwner(), pageImpl.getName());
         grid.putBreadCrumbDatas(draftPage.getName(), breadcrumbDatas);
         String draftTitle = draftPage.getTitle();
@@ -182,7 +191,7 @@ public class UIWikiMyDraftsForm extends UIForm {
             UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
             String title = draftPage.getTitle();
             String content = draftPage.getContent().getText();
-            titleInput.setEditable(true);
+            titleInput.setReadOnly(false);
             titleInput.setValue(title);
             pageEditForm.setTitle(title);
             markupInput.setValue(content);

@@ -181,8 +181,11 @@ public class UIWikiPortlet extends UIPortletApplication {
                                                                                              .setValue(page.getTitle());      
       } catch (Exception e) {
         context.setAttribute("wikiPage", null);
-        UIWikiContentDisplay contentDisplay = findFirstComponentOfType(UIWikiPageContentArea.class).getChildById(UIWikiPageContentArea.VIEW_DISPLAY);
-        contentDisplay.setHtmlOutput(("Exceptions occur when rendering content!"));
+        UIWikiPageContentArea wikiPageContentArea = findFirstComponentOfType(UIWikiPageContentArea.class);
+        if (wikiPageContentArea != null) {
+          UIWikiContentDisplay contentDisplay = wikiPageContentArea.getChildById(UIWikiPageContentArea.VIEW_DISPLAY);
+          contentDisplay.setHtmlOutput(("Exceptions occur when rendering content!"));
+        }
         if (log.isWarnEnabled()) {
           log.warn("An exception happens when resolving URL: " + requestURL, e);
         }
