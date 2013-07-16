@@ -4,7 +4,9 @@
   JavascriptManager jsmanager = _ctx.getRequestContext().getJavascriptManager();
   def requireJs = jsmanager.getRequireJS();
   requireJs.require("SHARED/UIWikiPermissionForm", "UIWikiPermissionForm");
-  requireJs.addScripts("UIWikiPermissionForm.init('" + uicomponent.id + "') ;");   
+  requireJs.require("SHARED/jquery", "gj");
+  requireJs.addScripts("UIWikiPermissionForm.init('" + uicomponent.id + "') ;");
+  requireJs.addScripts("gj('#uiWikiPermissionOwner').ready(function() { gj(\"*[rel='tooltip']\").tooltip();});");
   uicomponent.renderChild(uicomponent.createIdByScope(uicomponent.USER_PERMISSION_POPUP_SELECTOR)) ;
 %>
 <div class="uiWikiPagePermission">
