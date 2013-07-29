@@ -218,10 +218,10 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     rcontext.addUIComponentToUpdateByAjax(uiPopupWindow);
   }
 
-  private static void openPopupAction(UIPopupWindow uiPopup, UIComponent component) {
+  private static void openPopupAction(UIPopupWindow uiPopup, UIComponent component, int width) {
     uiPopup.setUIComponent(component);
     uiPopup.setShow(true);
-    uiPopup.setWindowSize(550, 0);
+    uiPopup.setWindowSize(width, 0);
     uiPopup.setResizable(true);
     WebuiRequestContext rcontext = WebuiRequestContext.getCurrentInstance();
     rcontext.addUIComponentToUpdateByAjax(uiPopup);
@@ -480,7 +480,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       uiUserSelector.setShowSearch(true);
       uiUserSelector.setShowSearchUser(true);
       uiUserSelector.setShowSearchGroup(false);
-      openPopupAction(uiPopup, uiUserSelector);
+      openPopupAction(uiPopup, uiUserSelector, 650);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
     }
   }
 
@@ -507,7 +508,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       uiWikiPermissionForm.closeAllPopupAction();
       UIGroupSelector uiGroupSelector = uiWikiPermissionForm.createUIComponent(UIGroupSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
-      openPopupAction(uiPopup, uiGroupSelector);
+      openPopupAction(uiPopup, uiGroupSelector, 550);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
     }
   }
 
@@ -530,7 +532,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       uiWikiPermissionForm.closeAllPopupAction();
       UIGroupMembershipSelector uiGroupMembershipSelector = uiWikiPermissionForm.createUIComponent(UIGroupMembershipSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
-      openPopupAction(uiPopup, uiGroupMembershipSelector);
+      openPopupAction(uiPopup, uiGroupMembershipSelector, 550);
+      event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
     }
   }
 
