@@ -507,10 +507,12 @@
 
 .xMacroFilter .xSearchBox {
   width: 215px;
+  margin-top: 5px;
 }
 
 .xMacroCategoryList {
   margin-right: 6px;
+  margin-bottom: 5px;
   text-transform: capitalize;
   width: 215px;
 }
