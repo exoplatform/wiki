@@ -60,9 +60,10 @@
             NTFrozenNode frozenNode = version.getNTFrozenNode();
             String versionNumber = version.getName();
             String vertionId = uicomponent.VERSION_NAME_PREFIX + "_" + versionNumber;
-            String versionLabel = "v. " + versionNumber;
+            String versionLabel = _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase()+"." + versionNumber;
+            
             if(isCurrentVersion){
-              versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " (v. " + versionNumber + ")";
+              versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " ( " + _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase()+"." + versionNumber + ")";
             }
             String author = Utils.getFullName(frozenNode.getAuthor());
             String comment = frozenNode.getComment();
