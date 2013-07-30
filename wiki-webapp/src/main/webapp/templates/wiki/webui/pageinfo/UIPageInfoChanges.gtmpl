@@ -29,9 +29,9 @@
 	      def versionNumber= versionLabel;
 	      if(isCurrentVersion){
 	    	isCurrentVersion = false;
-	        versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " (v. " + versionLabel + ")";
+	        versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " (" + _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase() +"." + versionLabel + ")";
 	      } else {
-	        versionLabel = "v. " + versionLabel;
+	        versionLabel = _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase() +"." + versionLabel;
 	      }
 	      def viewLinkId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + "ViewRevision_"+versionNumber;
 	      def viewLink = uicomponent.event("ViewRevision", version.getName());
