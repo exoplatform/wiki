@@ -193,10 +193,12 @@ WikiLayout.prototype.setHeightLayOut = function() {
   var layout = me.wikiLayout;
   var leftNavigationDiv = $('#LeftNavigation')[0];
   var platformAdmintc = $("#PlatformAdminToolbarContainer")[0];
-  var parentHeightPx = leftNavigationDiv.parentNode.style.height;
-  var parentHeight = parentHeightPx.substring(0, parentHeightPx.length-2);
-  var hdef = (leftNavigationDiv && platformAdmintc) ? 
-		     parentHeight - layout.offsetTop + platformAdmintc.clientHeight : 0;
+  var hdef = 0;
+  if (leftNavigationDiv && platformAdmintc) {
+    var parentHeightPx = leftNavigationDiv.parentNode.style.height;
+    var parentHeight = parentHeightPx.substring(0, parentHeightPx.length-2);
+    hdef = parentHeight - layout.offsetTop + platformAdmintc.clientHeight;
+  }
   hdef = Math.max(hdef, document.documentElement.clientHeight - layout.offsetTop); 	 
   var hct = hdef * 1;
   $(layout).css('height', hdef + 'px');
