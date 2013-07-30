@@ -45,8 +45,15 @@
   fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{0}", fromVersionName +  "</b>");
   fromChangeVersionInfoLabel = fromChangeVersionInfoLabel.replace("{1}", "<b class=\"admin\">" + fromVersionAuthor + "</b>");
   String toChangeVersionInfoLabel = _ctx.appRes("UIWikiPageVersionsCompare.label.ChangeVersionInfo");
-  toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{0}", toVersionName +  "</b>");
-  toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{1}", "<b class=\"admin\">" + toVersionAuthor + "</b>");
+  if(toVersionName.equals("Current")){
+  	String currentVersion= _ctx.appRes("UIWikiPageVersionsCompare.label.CurrentVersion");
+  	toChangeVersionInfoLabel = currentVersion.replace("{0}", "" +  "</b>");
+  	toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{1}", "<b class=\"admin\">" + toVersionAuthor + "</b>");
+  }
+  else{
+  	toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{0}", toVersionName +  "</b>");
+  	toChangeVersionInfoLabel = toChangeVersionInfoLabel.replace("{1}", "<b class=\"admin\">" + toVersionAuthor + "</b>");
+  }
   String wordAddedRemovedLabel = _ctx.appRes("UIWikiPageVersionsCompare.label.this-word-was-added-removed");
   wordAddedRemovedLabel = wordAddedRemovedLabel.replace("{0}", "</span><span class=\"lineRemoved\">");
   wordAddedRemovedLabel = wordAddedRemovedLabel.replace("{1}", "</span><span>");
