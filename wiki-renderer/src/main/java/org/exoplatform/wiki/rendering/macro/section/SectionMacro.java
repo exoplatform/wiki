@@ -22,9 +22,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentManager;
@@ -36,6 +38,7 @@ import org.xwiki.rendering.block.Block.Axes;
 import org.xwiki.rendering.block.match.ClassBlockMatcher;
 import org.xwiki.rendering.macro.AbstractMacro;
 import org.xwiki.rendering.macro.MacroExecutionException;
+import org.xwiki.rendering.macro.descriptor.DefaultContentDescriptor;
 import org.xwiki.rendering.parser.ParseException;
 import org.xwiki.rendering.parser.Parser;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
@@ -57,12 +60,15 @@ public class SectionMacro extends AbstractMacro<SectionMacroParameters> {
   private static final String DESCRIPTION                = "A macro to enclose columned text";
 
   private static final String MACRO_NAME                 = "Section";
+  
+  private static final String COLUMN_PATTERN = "(\\{\\{column/\\}\\})*(\\{\\{column\\}\\}.*\\{\\{/column\\}\\})*";
 
   @Inject
   private ComponentManager    componentManager;
 
   public SectionMacro() {
-    super(MACRO_NAME, DESCRIPTION, SectionMacroParameters.class);
+    super(MACRO_NAME, DESCRIPTION, new DefaultContentDescriptor("Content", false), SectionMacroParameters.class);
+    setDefaultCategory(DEFAULT_CATEGORY_FORMATTING);
   }
 
   public List<Block> execute(SectionMacroParameters parameters,
@@ -70,6 +76,12 @@ public class SectionMacro extends AbstractMacro<SectionMacroParameters> {
                              MacroTransformationContext context) throws MacroExecutionException {
     Parser parser = getSyntaxParser(context.getSyntax().toIdString());
     XDOM parsedDom;
+    //add an empty ColumnMacro which is mandatory for SectionMacro
+    if (StringUtils.isBlank(content)) {
+      content = "{{column}} {{/column}}";
+    } else if (!content.matches(COLUMN_PATTERN)) {
+      content = "{{column}}" + content + " {{/column}}";
+    }
     try {
       parsedDom = parser.parse(new StringReader(content));
     } catch (ParseException e) {
