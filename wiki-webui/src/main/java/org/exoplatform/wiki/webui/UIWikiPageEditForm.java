@@ -197,10 +197,9 @@ public class UIWikiPageEditForm extends UIWikiForm {
     StringBuilder usernameList = new StringBuilder();
     OrganizationService organizationService = (OrganizationService) PortalContainer.getComponent(OrganizationService.class);
     for (String user : users) {
-      usernameList.append("**");
       User userObject = organizationService.getUserHandler().findUserByName(user);
       usernameList.append(userObject.getFullName());
-      usernameList.append("**, ");
+      usernameList.append(", ");
     }
     
     // Remove 2 last chars
