@@ -1232,7 +1232,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     LinkEntry checkEntry = newEntry;
     while (!checkEntry.equals(entry) && circularFlag > 0) {
       checkEntry = checkEntry.getNewLink();
-      if (checkEntry.getNewLink().equals(checkEntry) && !checkEntry.equals(entry)) {
+      if (checkEntry == null || (checkEntry.equals(checkEntry.getNewLink()) && !checkEntry.equals(entry))) {
         isCircular = false;
         break;
       }
