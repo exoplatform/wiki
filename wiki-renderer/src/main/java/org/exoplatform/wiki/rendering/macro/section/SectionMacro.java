@@ -61,7 +61,8 @@ public class SectionMacro extends AbstractMacro<SectionMacroParameters> {
 
   private static final String MACRO_NAME                 = "Section";
   
-  private static final String COLUMN_PATTERN = "(\\{\\{column/\\}\\})*(\\{\\{column\\}\\}.*\\{\\{/column\\}\\})*";
+  private static final Pattern COLUMN_PATTERN 
+                                  = Pattern.compile("[(\\{\\{column/\\}\\})(\\{\\{column\\}\\}.*\\{\\{/column\\}\\})]");
 
   @Inject
   private ComponentManager    componentManager;
@@ -79,7 +80,7 @@ public class SectionMacro extends AbstractMacro<SectionMacroParameters> {
     //add an empty ColumnMacro which is mandatory for SectionMacro
     if (StringUtils.isBlank(content)) {
       content = "{{column}} {{/column}}";
-    } else if (!content.matches(COLUMN_PATTERN)) {
+    } else if (!COLUMN_PATTERN.matcher(content).find()) {
       content = "{{column}}" + content + " {{/column}}";
     }
     try {
