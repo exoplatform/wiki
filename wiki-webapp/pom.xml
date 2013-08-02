@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.1.x-wiki-xwiki-upgrade-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-webapp</artifactId>
   <packaging>war</packaging>
@@ -152,6 +152,10 @@
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-context</artifactId>
     </dependency>
+    <!--dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-environment-standard</artifactId>
+    </dependency-->    
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.xwiki.platform</groupId>
@@ -173,9 +177,43 @@
       <artifactId>xwiki-platform-wysiwyg-plugin-api</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-chart-macro</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>
+      </exclusions>      
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-rendering-macro-rss</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-formula-macro</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-rendering-transformation-macro</artifactId>
+    </dependency>        
+    <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-api</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-macro-footnotes</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-macro-html</artifactId>
+    </dependency>    
+    <!--dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-office-macro</artifactId>
+    </dependency-->
     <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
     <dependency>
       <groupId>com.google.gwt</groupId>
