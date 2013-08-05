@@ -508,6 +508,7 @@
 .xMacroFilter .xSearchBox {
   width: 215px;
   margin-top: 5px;
+  padding-left: 20px;
 }
 
 .xMacroCategoryList {
