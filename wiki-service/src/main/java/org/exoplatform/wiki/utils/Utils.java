@@ -21,6 +21,8 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.RootContainer;
+import org.exoplatform.container.definition.PortalContainerConfig;
 import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
@@ -107,9 +109,7 @@ public class Utils {
   }
   
   public static String getPortalName() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
-    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
-    return containerInfo.getContainerName();
+    return org.exoplatform.wiki.rendering.util.Utils.getPortalName();
   }
   
   /**
@@ -785,4 +785,13 @@ public class Utils {
     cssClass.append(((String)mimeType).replaceAll("/|\\.", ""));
     return cssClass.toString();
   }
+  
+  /**
+   * gets rest context name
+   * @return rest context name
+   */
+  public static String getRestContextName() {
+    return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
+  }
+
 }
