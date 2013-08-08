@@ -254,7 +254,7 @@ eXo.wiki.Wysiwyg.onModuleLoad(function() {
     }
     var WysiwygEditorAspect = function() {
         WysiwygEditorAspect.base.constructor.apply(this, arguments);
-//        if (this.getRichTextArea()) {
+        if (this.getRichTextArea()) {
             // Register action listeners.
             var onAction = function(actionName) {
                 document.fire('xwiki:wysiwyg:' + actionName, {'instance': this});
@@ -281,7 +281,7 @@ eXo.wiki.Wysiwyg.onModuleLoad(function() {
             }
             // Update the list of WYSIWYG editor instances.
             eXo.wiki.Wysiwyg.instances[this.getParameter('hookId')] = this;
-//        }
+        }
     }
     WysiwygEditorAspect.prototype = new WysiwygEditor;
     WysiwygEditorAspect.base = WysiwygEditor.prototype;
