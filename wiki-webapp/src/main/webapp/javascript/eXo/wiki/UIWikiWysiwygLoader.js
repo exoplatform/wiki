@@ -231,7 +231,8 @@ if (!eXo.wiki.Wysiwyg) {
 eXo.wiki.Wysiwyg.onModuleLoad(function() {
     // Declare the functions that will ensure the selection is preserved whenever we switch to fullscreen editing and back.
     WysiwygEditor.prototype._beforeToggleFullScreen = function(event) {
-        if (event.memo.target.down('.gwt-RichTextArea') == this.getRichTextArea()) {
+        if (event && event.memo && event.memo.target && 
+        	event.memo.target.down('.gwt-RichTextArea') == this.getRichTextArea()) {
             // Save the current selection range.
             this._selectionRange = this.getSelectionRange();
             // Disable the rich text area.
@@ -239,7 +240,8 @@ eXo.wiki.Wysiwyg.onModuleLoad(function() {
         }
     }
     WysiwygEditor.prototype._afterToggleFullScreen = function(event) {
-        if (event.memo.target.down('.gwt-RichTextArea') == this.getRichTextArea()) {
+        if (event && event.memo && event.memo.target &&
+    		event.memo.target.down('.gwt-RichTextArea') == this.getRichTextArea()) {
             // Re-enable the rich text area.
             this.getCommandManager().execute('enable', 'true');
             // Restore the selection range.
@@ -252,7 +254,7 @@ eXo.wiki.Wysiwyg.onModuleLoad(function() {
     }
     var WysiwygEditorAspect = function() {
         WysiwygEditorAspect.base.constructor.apply(this, arguments);
-        if (this.getRichTextArea()) {
+//        if (this.getRichTextArea()) {
             // Register action listeners.
             var onAction = function(actionName) {
                 document.fire('xwiki:wysiwyg:' + actionName, {'instance': this});
@@ -263,16 +265,23 @@ eXo.wiki.Wysiwyg.onModuleLoad(function() {
             }
 
             // Preserve rich text area selection when switching to fullscreen editing and back. See XWIKI-6003.
-            document.observe('xwiki:fullscreen:enter', this._beforeToggleFullScreen.bindAsEventListener(this));
-            document.observe('xwiki:fullscreen:entered', this._afterToggleFullScreen.bindAsEventListener(this));
-            document.observe('xwiki:fullscreen:exit', this._beforeToggleFullScreen.bindAsEventListener(this));
-            document.observe('xwiki:fullscreen:exited', this._afterToggleFullScreen.bindAsEventListener(this));
-
-            // If the editor was successfully created then fire a custom event.
-            document.fire('xwiki:wysiwyg:created', {'instance': this});
+            try {
+	            document.observe('xwiki:fullscreen:enter', this._beforeToggleFullScreen.bindAsEventListener(this));
+	            document.observe('xwiki:fullscreen:entered', this._afterToggleFullScreen.bindAsEventListener(this));
+	            document.observe('xwiki:fullscreen:exit', this._beforeToggleFullScreen.bindAsEventListener(this));
+	            document.observe('xwiki:fullscreen:exited', this._afterToggleFullScreen.bindAsEventListener(this));
+            } catch (e) { 
+              console.log("e1: " + e.stack);
+            }
+	            // If the editor was successfully created then fire a custom event.
+            try {
+	            document.fire('xwiki:wysiwyg:created', {'instance': this});
+            } catch (e) { 
+              console.log("e2: " + e.stack);
+            }
             // Update the list of WYSIWYG editor instances.
             eXo.wiki.Wysiwyg.instances[this.getParameter('hookId')] = this;
-        }
+//        }
     }
     WysiwygEditorAspect.prototype = new WysiwygEditor;
     WysiwygEditorAspect.base = WysiwygEditor.prototype;
