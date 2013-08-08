@@ -91,6 +91,29 @@ UIWikiAjaxRequest.prototype.checkAnchor = function() {
       }
       if (action) {
         var ajaxGetLink = action.getAttributeNode('onclick').value.replace('&ajaxRequest=true', queryParams + '&ajaxRequest=true');
+        if ($.browser.msie != undefined) {
+        	var q = ajaxGetLink.indexOf('?');
+        	var s1 = "";
+        	var s2 = "";
+        	if (q > -1) {
+        		s1 = ajaxGetLink.substring(0, q);
+        		s2 = ajaxGetLink.substring(q);
+        	} else {
+        		q1 = ajaxGetLink.indexOf('#');
+        		if (q1 > -1) {
+            		s1 = ajaxGetLink.substring(0, q1);
+            		s2 = ajaxGetLink.substring(q1);
+        		} else {
+        			s1 = ajaxGetLink;
+        			s2 = "";
+        		}
+        	}
+    		var slash = s1.lastIndexOf('/');
+    		if (slash > -1) {
+    			var pageName = s1.substring(slash + 1);
+    			ajaxGetLink = s1.substring(0, slash) +'/' + encodeURIComponent(pageName) + s2;
+    		}
+        }
         action.onclick = function() {
           eval(ajaxGetLink);
         };
