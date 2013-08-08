@@ -36,11 +36,9 @@ UIWikiRichTextArea.prototype.init = function(hookId, inputURL, syntax, wiki, spa
   };
   
   try{
-    if(WysiwygEditor){
-      me.createWysiwygEditor();
-    }
+	eXo.wiki.Wysiwyg.onModuleLoad(me.createWysiwygEditor);
   }catch(e){
-    eXo.wiki.Wysiwyg.onModuleLoad(me.createWysiwygEditor);
+    console.log(e);
   }
 };
 

@@ -1824,6 +1824,17 @@ Ajax.PeriodicalUpdater = Class.create(Ajax.Base, {
 });
 
 
+function elem(element) {
+  if (arguments.length > 1) {
+    for (var i = 0, elements = [], length = arguments.length; i < length; i++)
+      elements.push($(arguments[i]));
+    return elements;
+  }
+  if (Object.isString(element))
+    element = document.getElementById(element);
+  return Element.extend(element);
+}
+
 function $(element) {
   if (arguments.length > 1) {
     for (var i = 0, elements = [], length = arguments.length; i < length; i++)
@@ -5644,7 +5655,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   }
 
   function observe(element, eventName, handler) {
-    element = $(element);
+    element = elem(element);
 
     var responder = _createResponder(element, eventName, handler);
 
@@ -5723,7 +5734,7 @@ Form.EventObserver = Class.create(Abstract.EventObserver, {
   }
 
   function fire(element, eventName, memo, bubble) {
-    element = $(element);
+    element = elem(element);
 
     if (Object.isUndefined(bubble))
       bubble = true;
