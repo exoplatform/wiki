@@ -29,6 +29,18 @@ $(document).ready(function(){
     if(selected) {
       document.title = $(selected).text();
     }
+    
+    // Using scrolling when clicking to anchor link
+    $(".wikilink > a").click(function(e) 
+    { 
+      var href = $(this).attr('href');
+      if (href.lastIndexOf("#", 0) == 0) {
+        e.preventDefault();
+        var destLink = $(href);
+        $('.uiRightContainerArea').scrollTop(0);
+        $('.uiRightContainerArea').animate({scrollTop: destLink.position().top}, 50);
+      }
+    });
 });
 
 UIWikiPortlet.prototype.init = function(portletId, linkId) {
@@ -356,7 +368,7 @@ UIWikiPortlet.prototype.getKeynum = function(event) {
   return keynum ;
 };
 UIWikiPortlet.prototype.ajaxRedirect = function(url) {
-  url =	url.replace(/&amp;/g, "&") ;
+  url =  url.replace(/&amp;/g, "&") ;
   window.location.href = url ;
 }
 
