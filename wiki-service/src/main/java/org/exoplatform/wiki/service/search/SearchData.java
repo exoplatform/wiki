@@ -16,9 +16,13 @@
  */
 package org.exoplatform.wiki.service.search;
 
+import java.util.List;
+import java.util.ArrayList;
+
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 
+import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.NoSuchNodeException;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.exoplatform.container.ExoContainerContext;
@@ -45,6 +49,8 @@ public class SearchData {
   protected String sort;
   
   protected String order;
+  
+  protected List<String> propertyConstraints = new ArrayList<String>();;
     
   public int limit = Integer.MAX_VALUE;
   
@@ -59,7 +65,7 @@ public class SearchData {
 
   protected String           USER_PATH   = "/Users/%/ApplicationData/" + WikiNodeType.Definition.WIKI_APPLICATION + "/";
 
-  public SearchData(String title, String content, String wikiType, String wikiOwner, String pageId) {
+  public SearchData(String title, String content, String wikiType, String wikiOwner, String pageId, List<String> constraints) {
     this.title = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(title);
     this.content = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInQuery(content);
     this.wikiType = wikiType;
@@ -80,6 +86,14 @@ public class SearchData {
         }
       }
     }
+    this.propertyConstraints = new ArrayList<String>();
+    if (constraints != null) {
+      this.propertyConstraints.addAll(constraints);
+    }
+  }
+  
+  public SearchData(String title, String content, String wikiType, String wikiOwner, String pageId) {
+    this(title, content, wikiType, wikiOwner, pageId, null);
   }
 
   public String getTitle() {
@@ -165,4 +179,21 @@ public class SearchData {
   public void setOrder(String order) {
     this.order = order;
   }
+  
+  public List<String> getPropertyConstraints() { 
+    return new ArrayList<String>(this.propertyConstraints);
+  }
+  
+  public void addPropertyConstraints(List<String> value) {
+    if (value != null) {
+      propertyConstraints.addAll(value);
+    }
+  }
+  
+  public void addPropertyConstraint(String value) {
+    if (StringUtils.isNotBlank(value)) {
+      propertyConstraints.add(value);
+    }
+  }
+  
 }

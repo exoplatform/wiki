@@ -54,6 +54,7 @@ import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Permission;
@@ -212,6 +213,11 @@ public abstract class PageImpl extends NTFolder implements Page {
   @Owner
   public abstract RenamedMixin getRenamedMixin();
   public abstract void setRenamedMixin(RenamedMixin mix);
+
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract UncachedMixin getUncachedMixin();
+  public abstract void setUncachedMixin(UncachedMixin mix);
   
   @OneToOne(type = RelationshipType.EMBEDDED)
   @Owner

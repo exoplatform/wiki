@@ -64,7 +64,7 @@
               <collection type="java.util.ArrayList">
                 <value>
                   <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
-                    <field  name="eventTypes"><string>addNode,checkin</string></field>
+                    <field  name="eventTypes"><string>addNode,checkin,checkout</string></field>
                     <field  name="nodeTypes"><string>wiki:page</string></field>
                     <field  name="actionClassName"><string>org.exoplatform.wiki.rendering.cache.impl.UpdatePageRenderingCacheAction</string></field>
                   </object>
@@ -125,5 +125,20 @@
     </component-plugin>
   </external-component-plugins>
   
-  
+  <external-component-plugins>
+    <target-component>org.exoplatform.wiki.rendering.cache.PageRenderingCacheService</target-component>
+    <component-plugin>
+      <name>addUnCachedMacro</name>
+      <set-method>addUnCachedMacro</set-method>
+      <type>org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin</type>
+      <description>Add the uncached macro list</description>
+      <init-params>
+      <values-param>
+        <name>uncachedMacroes</name>
+        <value>rss</value>
+        <value>jira</value>
+      </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>  
 </configuration>
