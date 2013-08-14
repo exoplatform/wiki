@@ -1,7 +1,6 @@
 package org.exoplatform.wiki.service.impl;
 
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -26,7 +25,6 @@ import org.chromattic.common.IO;
 import org.chromattic.core.api.ChromatticSessionImpl;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
@@ -248,26 +246,16 @@ public class JCRDataStorage implements DataStorage{
    * @return the excerpt
    * @throws ItemNotFoundException
    * @throws RepositoryException
-   * @throws ClassNotFoundException 
-   * @throws NoSuchMethodException 
-   * @throws InvocationTargetException 
-   * @throws IllegalAccessException 
-   * @throws SecurityException 
-   * @throws IllegalArgumentException 
    */
-  private String getExcerpt(Row row, String type) throws ItemNotFoundException, RepositoryException, ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+  private String getExcerpt(Row row, String type) throws ItemNotFoundException, RepositoryException {
     StringBuilder ret = new StringBuilder();
     String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type)) ? 
                           new String[]{"."} :
                           new String[]{"title", "url"};
-    Class sanitizeUtils = Class.forName("org.exoplatform.wcm.webui.Utils");
-    Object sanitize = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(sanitizeUtils);    
     for (String prop : properties) {
       Value excerptValue = row.getValue("rep:excerpt(" + prop + ")");
       if (excerptValue != null) {
-        String excerptStr = excerptValue.getString();
-        excerptStr = (String) sanitizeUtils.getDeclaredMethod("sanitize", String.class).invoke(sanitize, excerptStr);
-        ret.append(excerptStr).append("...");
+        ret.append(excerptValue.getString()).append("...");
       }
     }
     if (ret.length() > MAX_EXCERPT_LENGTH) {
