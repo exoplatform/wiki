@@ -32,6 +32,7 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.webui.EditorMode;
 import org.exoplatform.wiki.webui.UIWikiBottomArea;
 import org.exoplatform.wiki.webui.UIWikiPageContainer;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
@@ -86,8 +87,9 @@ public class RichTextActionComponent extends UIComponent {
     protected void processEvent(Event<RichTextActionComponent> event) throws Exception {
       RichTextActionComponent component = event.getSource();
       UIWikiPageEditForm wikiPageEditForm = component.getAncestorOfType(UIWikiPageEditForm.class);
-      UIWikiPageContainer pageCotainer = wikiPageEditForm.getAncestorOfType(UIWikiPageContainer.class);
-      UIWikiBottomArea bottomArea = pageCotainer.getChild(UIWikiBottomArea.class);
+      UIWikiPageContainer pageContainer = wikiPageEditForm.getAncestorOfType(UIWikiPageContainer.class);
+      UIWikiPortlet wikiPortlet = pageContainer.getAncestorOfType(UIWikiPortlet.class);
+      UIWikiBottomArea bottomArea = pageContainer.getChild(UIWikiBottomArea.class);
       UIWikiRichTextArea wikiRichTextArea = wikiPageEditForm.getChild(UIWikiRichTextArea.class);
       UIWikiSidePanelArea wikiSidePanelArea = wikiPageEditForm.getChild(UIWikiSidePanelArea.class);
       boolean isSourceTextRendered = wikiRichTextArea.isRendered();
@@ -102,13 +104,15 @@ public class RichTextActionComponent extends UIComponent {
         wikiPageEditForm.getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT).setValue(markupContent);        
         wikiSidePanelArea.setRendered(true);
         bottomArea.setRendered(true);
+        wikiPortlet.changeEditorMode(EditorMode.SOURCE);
       } else {
         Utils.feedDataForWYSIWYGEditor(wikiPageEditForm,null);
         wikiSidePanelArea.setRendered(false);
         bottomArea.setRendered(false);
+        wikiPortlet.changeEditorMode(EditorMode.RICHTEXT);
       }
       super.processEvent(event);
-      event.getRequestContext().addUIComponentToUpdateByAjax(pageCotainer.getAncestorOfType(UIWikiPortlet.class));
+      event.getRequestContext().addUIComponentToUpdateByAjax(pageContainer.getAncestorOfType(UIWikiPortlet.class));
     }
   }
 }

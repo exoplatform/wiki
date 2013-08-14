@@ -63,6 +63,8 @@ public class UIWikiPortlet extends UIPortletApplication {
   private WikiMode              mode                       = WikiMode.VIEW;
 
   private EditMode              editmode                   = EditMode.ALL;
+  
+  private EditorMode editorMode_ = EditorMode.RICHTEXT;
 
   private String                sectionIndex               = "";
 
@@ -220,6 +222,14 @@ public class UIWikiPortlet extends UIPortletApplication {
     return editmode;
   }
   
+  /**
+   * gets the mode of wiki editor
+   * @return the editor mode
+   */
+  public EditorMode getEditorMode() {
+    return editorMode_;
+  }
+  
   public String getSectionIndex() {
     return sectionIndex;
   }
@@ -246,18 +256,27 @@ public class UIWikiPortlet extends UIPortletApplication {
       bottomArea.getChild(UIWikiPageVersionsList.class).setRendered(false);
     }
     if (newMode.equals(WikiMode.EDITPAGE)||newMode.equals(WikiMode.ADDPAGE)) {
-      findFirstComponentOfType(UIWikiSidePanelArea.class).setRendered(false);
-      findFirstComponentOfType(UIWikiBottomArea.class).setRendered(false);
       findFirstComponentOfType(UIAttachmentContainer.class).setRendered(true);
-      findFirstComponentOfType(UIWikiRichTextArea.class).setRendered(true);
+      
+      findFirstComponentOfType(UIWikiSidePanelArea.class).setRendered(EditorMode.SOURCE.equals(editorMode_));
+      findFirstComponentOfType(UIWikiBottomArea.class).setRendered(EditorMode.SOURCE.equals(editorMode_));
       findFirstComponentOfType(UIWikiPageEditForm.class).getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT)
-                                                        .setRendered(false);
+                                                        .setRendered(EditorMode.SOURCE.equals(editorMode_));
+      findFirstComponentOfType(UIWikiRichTextArea.class).setRendered(EditorMode.RICHTEXT.equals(editorMode_));
     }
     mode = newMode;
   }
   
   public void changeEditMode(EditMode newEditMode) {
     editmode = newEditMode;
+  }
+  
+  /**
+   * changes the mode of wiki editor
+   * @param newMode the new mode
+   */
+  public void changeEditorMode(EditorMode newMode) {
+    editorMode_ = newMode;
   }
 
   private void loadPreferences() {
