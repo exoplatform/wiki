@@ -246,11 +246,12 @@ public class UIWikiPortlet extends UIPortletApplication {
       bottomArea.getChild(UIWikiPageVersionsList.class).setRendered(false);
     }
     if (newMode.equals(WikiMode.EDITPAGE)||newMode.equals(WikiMode.ADDPAGE)) {
-      findFirstComponentOfType(UIWikiSidePanelArea.class).setRendered(true);
-      findFirstComponentOfType(UIWikiBottomArea.class).setRendered(true);
+      findFirstComponentOfType(UIWikiSidePanelArea.class).setRendered(false);
+      findFirstComponentOfType(UIWikiBottomArea.class).setRendered(false);
       findFirstComponentOfType(UIAttachmentContainer.class).setRendered(true);
-      findFirstComponentOfType(UIWikiRichTextArea.class).setRendered(false);
-      findFirstComponentOfType(UIWikiPageEditForm.class).getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT).setRendered(true);
+      findFirstComponentOfType(UIWikiRichTextArea.class).setRendered(true);
+      findFirstComponentOfType(UIWikiPageEditForm.class).getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT)
+                                                        .setRendered(false);
     }
     mode = newMode;
   }

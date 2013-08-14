@@ -28,6 +28,7 @@ import java.util.ResourceBundle;
 
 import javax.jws.WebResult;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -154,6 +155,9 @@ public class RenderingServiceImpl implements RenderingService, Startable {
 
   private String clean(String dirtyHTML)
   {
+    if (dirtyHTML == null) {
+      dirtyHTML = StringUtils.EMPTY;
+    }
     HTMLCleaner cleaner = getComponent(HTMLCleaner.class);
     HTMLCleanerConfiguration config = cleaner.getDefaultConfiguration();
     Document document = cleaner.clean(new StringReader(dirtyHTML), config);
