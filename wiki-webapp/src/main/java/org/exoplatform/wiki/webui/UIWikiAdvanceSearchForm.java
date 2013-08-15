@@ -156,6 +156,15 @@ public class UIWikiAdvanceSearchForm extends UIForm {
   public void setItemsPerPage(int value) {
     itemPerPage = value;
   }
+  
+  /**
+   * Get number of items per page
+   * 
+   * @return the itemPerPage
+   */
+  public int getItemPerPage() {
+    return itemPerPage;
+  }
 
   public void gotoSearchPage(int pageIndex) throws Exception {
     pageIndex = (int) Math.min(pageIndex, getPageAvailable());
