@@ -58,8 +58,9 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
   }
   
   public int getItemsPerPage() {
-    if (results == null) { return 0; }
-    return results.getPageSize();
+    UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
+    UIWikiAdvanceSearchForm advanceSearchForm = wikiPortlet.findFirstComponentOfType(UIWikiAdvanceSearchForm.class);
+    return advanceSearchForm.getItemPerPage();
   }
   
   public String getKeyword() {
