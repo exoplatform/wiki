@@ -380,12 +380,12 @@ public class WikiServiceImpl implements WikiService, Startable {
         movePage.setMovedMixin(session.create(MovedMixin.class));
         mix = movePage.getMovedMixin();
         mix.setTargetPage(movePage.getParentPage());
-        session.save();
       }
       mix.setTargetPage(destPage);      
       WikiImpl destWiki = (WikiImpl) destPage.getWiki();
       movePage.setParentPage(destPage);
       movePage.setMinorEdit(false);
+      session.save();
       
       //update LinkRegistry
       if (!newLocationParams.getType().equals(currentLocationParams.getType())) {
