@@ -42,16 +42,16 @@ import org.xwiki.rendering.syntax.Syntax;
   template = "app:/templates/wiki/webui/UIWikiPageContentArea.gtmpl"
 )
 public class UIWikiPageContentArea extends UIWikiContainer {
-  
+
   public static final String VIEW_DISPLAY = "UIViewContentDisplay";
-  
+
   public UIWikiPageContentArea() throws Exception{
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.HELP, WikiMode.VIEWREVISION });
     this.addChild(UIWikiPageControlArea.class, null, null);
     this.addChild(UIWikiVersionSelect.class, null, null);
     this.addChild(UIWikiContentDisplay.class, null, VIEW_DISPLAY);
   }
-  
+
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
     renderVersion();
@@ -68,9 +68,9 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     WikiMode currentMode= wikiPortlet.getWikiMode();
     RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
     UIWikiContentDisplay contentDisplay = this.getChildById(VIEW_DISPLAY);
-    
+
     PageImpl wikipage = (PageImpl) Utils.getCurrentWikiPage();
-    
+
     //Setup wiki context
     Utils.setUpWikiContext(wikiPortlet);
     try{
@@ -89,11 +89,13 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     // Render select version content
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
         NTVersion version = wikipage.getVersionableMixin().getVersionHistory().getVersion(currentVersionName);
-        NTFrozenNode frozenNode = version.getNTFrozenNode();
-        AttachmentImpl content = (AttachmentImpl) (frozenNode.getChildren().get(WikiNodeType.Definition.CONTENT));
-        String pageContent = content.getText();
-        String pageSyntax = wikipage.getSyntax();
-        contentDisplay.setHtmlOutput(renderingService.render(pageContent, pageSyntax, Syntax.XHTML_1_0.toIdString(), false));
+        if (version != null) {
+          NTFrozenNode frozenNode = version.getNTFrozenNode();
+          AttachmentImpl content = (AttachmentImpl) (frozenNode.getChildren().get(WikiNodeType.Definition.CONTENT));
+          String pageContent = content.getText();
+          String pageSyntax = wikipage.getSyntax();
+          contentDisplay.setHtmlOutput(renderingService.render(pageContent, pageSyntax, Syntax.XHTML_1_0.toIdString(), false));
+        }
       }
     }catch(ConversionException e){
       contentDisplay.setHtmlOutput("Bad syntax in content! Cannot generate HTML content!");
