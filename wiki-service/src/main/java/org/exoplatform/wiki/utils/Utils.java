@@ -207,9 +207,7 @@ public class Utils {
     String wikiWebappUri = wikiService.getWikiWebappUri();
     
     // Create permalink
-    StringBuilder sb = new StringBuilder(wikiWebappUri);
-    sb.append("/");
-    
+    StringBuilder sb = new StringBuilder();    
     if (!params.getType().equalsIgnoreCase(WikiType.PORTAL.toString())) {
       sb.append(params.getType().toLowerCase());
       sb.append("/");
@@ -218,7 +216,7 @@ public class Utils {
     }
     
     if (params.getPageId() != null) {
-      sb.append(params.getPageId());
+      sb.append(params.getPageId()).append("/");
     }
     
     if (hasDowmainUrl) {
