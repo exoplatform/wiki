@@ -291,6 +291,13 @@ public interface WikiService {
    * @return The save draft sequence time
    */
   public long getSaveDraftSequenceTime();
+  
+  /**
+   * Get the living time of edited page
+   * 
+   * @return The living time of edited page
+   */
+  public long getEditPageLivingTime();
 
   /**
    * Get the page title of an attachment
