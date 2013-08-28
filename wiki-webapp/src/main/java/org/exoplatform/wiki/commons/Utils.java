@@ -231,7 +231,7 @@ public class Utils {
       }
       spaceUrl.append("wiki/");
       if (!StringUtils.isEmpty(params.getPageId())) {
-        spaceUrl.append(params.getPageId());
+        spaceUrl.append(params.getPageId()).append("/");
       }
       return spaceUrl.toString();
     }
@@ -357,7 +357,8 @@ public class Utils {
   
   public static String getBaseUrl() throws Exception {
     WikiPageParams params = getCurrentWikiPageParams();
-    params.setPageId(null);
+    String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();
+    params.setPageId(pageURI);
     return getURLFromParams(params);
   }
   
