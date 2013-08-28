@@ -1,10 +1,8 @@
 package org.exoplatform.wiki.service.search;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Calendar;
-
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.services.deployment.Utils;
 
 public class SearchResult {
   protected String excerpt ;
@@ -49,10 +47,8 @@ public class SearchResult {
     this.excerpt = text;
   }
 
-  public String getExcerpt() throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-    Class sanitizeUtils = Class.forName("org.exoplatform.wcm.webui.Utils");
-    Object sanitize = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(sanitizeUtils); 
-    return (String) sanitizeUtils.getDeclaredMethod("sanitize", String.class).invoke(sanitize, excerpt);
+  public String getExcerpt() throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchMethodException {
+    return Utils.sanitize(excerpt);
   }
 
   public void setType(String type) {
