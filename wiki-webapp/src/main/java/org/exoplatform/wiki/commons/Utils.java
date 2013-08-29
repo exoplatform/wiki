@@ -379,9 +379,15 @@ public class Utils {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     if (PortalConfig.GROUP_TYPE.equals(Utils.getCurrentWiki().getType())) {
-      pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+      String pageId = pageParams.getPageId();
+      if(pageId.indexOf("/") >= 0) {
+        String pageName = pageId.substring(pageId.lastIndexOf("/")+1, pageId.length());
+        pageName = URLEncoder.encode(pageName, "UTF-8");
+        pageId = new StringBuffer().append(pageId.substring(0, pageId.lastIndexOf("/")+1)).append(pageName).toString();
+      }
+      else pageId = URLEncoder.encode(pageId, "UTF-8");
+      pageParams.setPageId(pageId);
     }
-    
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }
   
