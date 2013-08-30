@@ -81,37 +81,22 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
 UIWikiPageEditForm.prototype.checkToRemoveEditorMenu = function() {
   var me = eXo.wiki.UIWikiPageEditForm;
   var pageEditForm = document.getElementById(me.pageEditFormId);
-  
-  // Try to delete Import menu
   var menuItems = $(pageEditForm).find("div.gwt-MenuItemLabel");
+  var found = false;
   if (menuItems) {
     for (var i = 0; i < menuItems.length; i++) {
       if (menuItems[i].innerHTML == "Import") {
       	var parent = menuItems[i].parentNode;
       	parent.parentNode.removeChild(parent);
+      	found = true;
       	break;
       }
     }
   }
   
-  // Try to delete "My recent changes" when add link to wiki page
-  var portalApp = document.getElementById("UIPortalApplication");
-  if (portalApp) {
-    var bodyTag = portalApp.parentNode;
-    var tabLabels = $(bodyTag).find("div.gwt-Label");
-    if (tabLabels) {
-      for (var i = 0; i < tabLabels.length; i++) {
-        if (tabLabels[i].innerHTML == "My recent changes") {
-      	  var parent = tabLabels[i].parentNode.parentNode;
-      	  parent.parentNode.removeChild(parent);
-      	  break;
-        }
-      }
-    }
+  if (!found) {
+  	setTimeout(me.checkToRemoveEditorMenu, 200);
   }
-  
-  // set timeout to run sequently
-  setTimeout(me.checkToRemoveEditorMenu, 200);
 };
 
 UIWikiPageEditForm.prototype.setMessageResource = function(saveDraftSuccessMessage, discardDraftConfirmMessage) {

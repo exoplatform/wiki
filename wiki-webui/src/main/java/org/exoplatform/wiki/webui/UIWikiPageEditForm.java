@@ -23,8 +23,12 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.web.application.RequestContext;
@@ -42,6 +46,7 @@ import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.impl.SessionManager;
 import org.exoplatform.wiki.webui.control.UIEditorTabs;
 import org.exoplatform.wiki.webui.control.UISubmitToolBar;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
@@ -56,20 +61,20 @@ import org.exoplatform.wiki.webui.popup.UIWikiPagePreview;
       @EventConfig(listeners = UIWikiPageEditForm.ResumeDraftActionListener.class),
       @EventConfig(listeners = UIWikiPageEditForm.ViewDraftChangeActionListener.class),
       @EventConfig(listeners = UIWikiPageEditForm.CancelDraftActionListener.class)
-  }  
+  }
 )
 public class UIWikiPageEditForm extends UIWikiForm {
-  
+
   public static final String UNTITLED                  = "Untitled";
 
   public static final String FIELD_CONTENT             = "Markup";
 
   public static final String FIELD_COMMENT             = "Comment";
-  
+
   public static final String FIELD_PUBLISH_ACTIVITY_UPPER    = "PublishActivityUpper";
-  
+
   public static final String FIELD_PUBLISH_ACTIVITY_BOTTOM    = "PublishActivityBottom";
-  
+
   public static final String TITLE_CONTROL             = "UIWikiPageTitleControlForm_PageEditForm";
 
   public static final String EDITOR_TABS               = "UIEditorTabs";
@@ -83,23 +88,23 @@ public class UIWikiPageEditForm extends UIWikiForm {
   public static final String RICHTEXT_AREA             = "UIWikiRichTextArea";
 
   public static final String FIELD_TEMPLATEDESCTIPTION = "UIWikiTemplateDescriptionContainer";
-  
+
   private boolean            isTemplate        = false;
 
   private String             templateId        = StringUtils.EMPTY;
 
   private String             title;
-  
+
   private List<String> notificationMessages = new ArrayList<String>();
 
   private String initDraftName = StringUtils.EMPTY;
-  
+
   private boolean isFirstTimeRenderEdit = true;
 
   private boolean isRunAutoSave = true;
-  
+
   public static final String CLOSE = "Close";
-  
+
   public UIWikiPageEditForm() throws Exception {
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.EDITPAGE, WikiMode.ADDPAGE, WikiMode.EDITTEMPLATE, WikiMode.ADDTEMPLATE });
     addChild(UIWikiPageTitleControlArea.class, null, TITLE_CONTROL).toInputMode();
@@ -122,7 +127,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
       isRunAutoSave = false;
       return;
     }
-    
+
     // Check to display info message if the draft for this page exist
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
@@ -141,21 +146,21 @@ public class UIWikiPageEditForm extends UIWikiForm {
           }
         }
       }
-      
+
       List<String> edittingUsers = org.exoplatform.wiki.utils.Utils.getListOfUserEditingPage(pageParams.getPageId());
       if (edittingUsers.size() > 0) {
         notificationMessages.add(createCocurrentEdittingNotification(edittingUsers));
       }
     }
   }
-  
+
   private String createDraftOutdateNotification() throws Exception {
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
-    
+
     // Build message markup
     String messageMarkup = bundle.getString("DraftPage.msg.draft-version-outdated");
     String messageHTML = "<div class='alert alert-info'><i class='uiIconInformation uiIconBlue'></i>" + messageMarkup + "</div>";
-    
+
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
     String viewChangeActionLink = event("ViewDraftChange");
@@ -168,16 +173,16 @@ public class UIWikiPageEditForm extends UIWikiForm {
     messageHTML = messageHTML.replace("{2}", "<a href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
     return messageHTML;
   }
-  
+
   private String createDraftExistNotification(Date draftUpdatedDate) throws Exception {
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
-    
+
     // Build message markup
     String messageMarkup = bundle.getString("DraftPage.msg.draft-exist-notification");
     String dateString = new SimpleDateFormat("MMM dd, yyyy HH:mm").format(draftUpdatedDate);
     messageMarkup = messageMarkup.replace("{0}", dateString);
     String messageHTML = "<div class='alert alert-info'><i class='uiIconInformation uiIconBlue'></i>" + messageMarkup + "</div>";
-    
+
     // Add actions to message html
     String viewChangeDraftLabel = bundle.getString("DraftPage.label.view-your-change");
     String viewChangeActionLink = event("ViewDraftChange");
@@ -185,13 +190,13 @@ public class UIWikiPageEditForm extends UIWikiForm {
     String resumeActionLink = event("ResumeDraft");
     String deleteDraftLabel = bundle.getString("DraftPage.label.delete");
     String deleteActionLink = event("DeleteDraft");
-    
+
     messageHTML = messageHTML.replace("{1}", "<a href=\"" + viewChangeActionLink + "\">" + viewChangeDraftLabel + "</a>");
     messageHTML = messageHTML.replace("{2}", "<a href=\"" + resumeActionLink + "\">" + resumeDraftLabel + "</a>");
     messageHTML = messageHTML.replace("{3}", "<a href=\"" + deleteActionLink + "\">" + deleteDraftLabel + "</a>");
-    return messageHTML; 
+    return messageHTML;
   }
-  
+
   private String createCocurrentEdittingNotification(List<String> users) throws Exception {
     // Concat all user name
     StringBuilder usernameList = new StringBuilder();
@@ -201,20 +206,20 @@ public class UIWikiPageEditForm extends UIWikiForm {
       usernameList.append(userObject.getFullName());
       usernameList.append(", ");
     }
-    
+
     // Remove 2 last chars
     usernameList.setLength(usernameList.length() - 2);
-    
+
     // Build message markup
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
     String messageMarkup = bundle.getString("DraftPage.msg.concurrent-editing");
     messageMarkup = messageMarkup.replace("{0}", "<b>" + usernameList.toString() + "</b>");
     messageMarkup = "<div class='alert'><i class='uiIconWarning'></i>" + messageMarkup + "</div>";;
-    
+
     // Render to message html and return
     return messageMarkup;
   }
- 
+
   public void setTitle(String title){ this.title = title ;}
   public String getTitle(){ return title ;}
 
@@ -224,26 +229,26 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   public void setInitDraftName(String initDraftName) {
     this.initDraftName = initDraftName;
-    this.isFirstTimeRenderEdit = true; 
+    this.isFirstTimeRenderEdit = true;
   }
-  
-  //only set the initDraftName at the first time when page is created or edited 
+
+  //only set the initDraftName at the first time when page is created or edited
   public boolean isFirstTimeRenderEdit() { return isFirstTimeRenderEdit; }
-  
+
   public void setFirstTimeRenderEdit(boolean value) {
     this.isFirstTimeRenderEdit = value;
   }
-  
+
   public boolean isInTemplateMode() {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     return (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE) || (wikiPortlet.getWikiMode() == WikiMode.EDITTEMPLATE);
   }
-  
+
   public boolean isNewPage() {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     return wikiPortlet.getWikiMode() != WikiMode.EDITPAGE;
   }
-  
+
   public long getAutoSaveSequenceTime() {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     return wikiService.getSaveDraftSequenceTime();
@@ -254,28 +259,28 @@ public class UIWikiPageEditForm extends UIWikiForm {
     childrenURLSb.append("/wiki/saveDraft/");
     return childrenURLSb.toString();
   }
-  
+
   protected String getRemoveDraftRestUrl() {
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
     childrenURLSb.append("/wiki/removeDraft/");
     return childrenURLSb.toString();
   }
-  
+
   protected String getWikiType() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
     return pageParams.getType();
   }
-  
+
   protected String getWikiOwner() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
     return pageParams.getOwner();
   }
-  
+
   protected String getCurrentPageId() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
     return pageParams.getPageId();
   }
-  
+
   protected String getCurrentPageRevision() throws Exception {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
@@ -284,11 +289,11 @@ public class UIWikiPageEditForm extends UIWikiForm {
     }
     return StringUtils.EMPTY;
   }
-  
+
   public List getNotificationMessages() {
     return notificationMessages;
   }
- 
+
   public boolean isTemplate() {
     return isTemplate;
   }
@@ -312,29 +317,29 @@ public class UIWikiPageEditForm extends UIWikiForm {
   public boolean isRunAutoSave() {
     return isRunAutoSave;
   }
-  
+
   protected boolean isInRichTextEditor() {
     UIWikiRichTextArea wikiRichTextArea = getChild(UIWikiRichTextArea.class);
     return wikiRichTextArea.isRendered();
   }
-  
+
   protected String getCancelDraftEvent() throws Exception {
     return org.exoplatform.wiki.commons.Utils.createFormActionLink(this, "CancelDraft", null);
   }
-  
+
   public void synPublishActivityStatus(boolean isChecked) {
-    UICheckBoxInput publishActivityUpperCheckBox = 
+    UICheckBoxInput publishActivityUpperCheckBox =
         this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
-    UICheckBoxInput publishActivityBottomCheckBox = 
+    UICheckBoxInput publishActivityBottomCheckBox =
         this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_BOTTOM);
     publishActivityUpperCheckBox.setChecked(isChecked);
     publishActivityBottomCheckBox.setChecked(isChecked);
   }
 
   private void checkRenderOfPublishActivityCheckBoxes() {
-    UICheckBoxInput publishActivityUpperCheckBox = 
+    UICheckBoxInput publishActivityUpperCheckBox =
         this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
-    UICheckBoxInput publishActivityBottomCheckBox = 
+    UICheckBoxInput publishActivityBottomCheckBox =
         this.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_BOTTOM);
     if (WikiMode.EDITPAGE == this.getCurrentMode()) {
       publishActivityUpperCheckBox.setRendered(true);
@@ -344,9 +349,15 @@ public class UIWikiPageEditForm extends UIWikiForm {
       publishActivityBottomCheckBox.setRendered(false);
     }
   }
-  
+
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
+    // Store wikiContext for wikiRemoteServiceServlet to use later
+    HttpSession session = Util.getPortalRequestContext().getRequest().getSession(false);
+    SessionManager sessionManager = (SessionManager)PortalContainer.getComponent(SessionManager.class);
+    sessionManager.addSessionContext(session.getId(),
+                                     Utils.createWikiContext(this.getAncestorOfType(UIWikiPortlet.class)));
+
     this.checkRenderOfPublishActivityCheckBoxes();
     super.processRender(context);
   }
@@ -360,13 +371,13 @@ public class UIWikiPageEditForm extends UIWikiForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource());
     }
   }
-  
+
   public static class ResumeDraftActionListener extends EventListener<UIWikiPageEditForm> {
     @Override
     public void execute(Event<UIWikiPageEditForm> event) throws Exception {
       UIWikiPageEditForm pageEditForm = event.getSource();
       UIWikiPortlet wikiPortlet = pageEditForm.getAncestorOfType(UIWikiPortlet.class);
-      
+
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
@@ -374,7 +385,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
         if (draftPage != null) {
           UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
           UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
-          
+
           String title = draftPage.getTitle();
           String content = draftPage.getContent().getText();
           titleInput.setEditable(true);
@@ -391,13 +402,13 @@ public class UIWikiPageEditForm extends UIWikiForm {
       event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource());
     }
   }
-  
+
   public static class ViewDraftChangeActionListener extends EventListener<UIWikiPageEditForm> {
     @Override
     public void execute(Event<UIWikiPageEditForm> event) throws Exception {
       UIWikiPageEditForm pageEditForm = event.getSource();
       UIWikiPortlet wikiPortlet = pageEditForm.getAncestorOfType(UIWikiPortlet.class);
-      
+
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
@@ -417,7 +428,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
       }
     }
   }
-  
+
   public static class CancelDraftActionListener extends EventListener<UIWikiPageEditForm> {
     @Override
     public void execute(Event<UIWikiPageEditForm> event) throws Exception {
@@ -425,7 +436,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
       UIWikiPortlet wikiPortlet = pageEditForm.getAncestorOfType(UIWikiPortlet.class);
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-      
+
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
         wikiService.removeDraft(pageParams);
       } else {

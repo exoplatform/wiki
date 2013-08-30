@@ -21,6 +21,8 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.IdentityRegistry;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.service.WikiContext;
@@ -44,11 +46,11 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see RemoteServiceServlet#processCall(String)
    */
   public String processCall(String payload) throws SerializationException {
-    
+
     String result;
     PortalContainer portalContainer;
     SessionManager sessionManager;
@@ -66,15 +68,22 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
 
     try {
       RPCRequest req = RPC.decodeRequest(payload, null, this);
-      RenderingServiceImpl renderingService = (RenderingServiceImpl) portalContainer.getComponentInstanceOfType(RenderingService.class);
+      RenderingServiceImpl renderingService =
+          (RenderingServiceImpl) portalContainer.getComponentInstanceOfType(RenderingService.class);
       WikiContext wikiContext = (WikiContext) sessionManager.getSessionContext(sessionId);
       Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
-      if (ec.getContext() == null) {
-        ec.setContext(new ExecutionContext());
-        ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
+      ec.setContext(new ExecutionContext());
+      ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
+
+      if (ConversationState.getCurrent() == null)
+      {
+        IdentityRegistry identityRegistry = (IdentityRegistry) portalContainer.getComponentInstanceOfType(IdentityRegistry.class);
+        ConversationState.setCurrent(
+          new ConversationState(identityRegistry.getIdentity(getThreadLocalRequest().getRemoteUser())));
       }
+
       RemoteService service = (RemoteService) renderingService.getComponent(req.getMethod().getDeclaringClass());
-      result = RPC.invokeAndEncodeResponse(service, req.getMethod(), req.getParameters(), req.getSerializationPolicy());      
+      result = RPC.invokeAndEncodeResponse(service, req.getMethod(), req.getParameters(), req.getSerializationPolicy());
     } catch (IncompatibleRemoteServiceException ex) {
       log("IncompatibleRemoteServiceException in the processCall(String) method.", ex);
       result = RPC.encodeResponseForFailure(null, ex);
