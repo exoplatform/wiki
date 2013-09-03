@@ -23,6 +23,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -166,7 +167,7 @@ public class SavePageActionComponent extends UIComponent {
         Utils.redirect(pageParams, wikiPortlet.getWikiMode());
         return;
       }
-
+      String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();
       try {
         if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
           if (wikiPortlet.getEditMode() == EditMode.SECTION) {
@@ -202,7 +203,7 @@ public class SavePageActionComponent extends UIComponent {
             page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
             page.setSyntax(syntaxId);
             pageTitleControlForm.getUIFormInputInfo().setValue(title);
-            pageParams.setPageId(page.getName());
+            pageParams.setPageId(new StringBuffer().append(pageURI).append("/").append(newPageId).toString()); 
             page.setURL(Utils.getURLFromParams(pageParams));
             
             if (!page.getContent().getText().equals(markup)) {
@@ -214,7 +215,7 @@ public class SavePageActionComponent extends UIComponent {
               page.setTitle(title);
               ((PageImpl) page).checkin();
               ((PageImpl) page).checkout();
-              pageParams.setPageId(newPageId);
+              pageParams.setPageId(new StringBuffer().append(pageURI).append("/").append(newPageId).toString()); 
             } else {
               ((PageImpl) page).checkin();
               ((PageImpl) page).checkout();
@@ -237,7 +238,7 @@ public class SavePageActionComponent extends UIComponent {
           Page draftPage = Utils.getCurrentNewDraftWikiPage();
           Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
           Page addedPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
-          pageParams.setPageId(newPageId);
+          pageParams.setPageId(new StringBuffer().append(pageURI).append("/").append(newPageId).toString());
           addedPage.setURL(Utils.getURLFromParams(pageParams));
           addedPage.getContent().setText(markup);
           addedPage.setSyntax(syntaxId);
