@@ -8,9 +8,15 @@
   requireJs.addScripts("UIWikiPortlet.initMacros();");
   
   String msg = _ctx.appRes("UIWikiContentDisplay.msg.invalid-characters-in-link");
-  msg = msg.replace("{0}",uicomponent.INVALID_CHARACTERS);  
+  msg = msg.replace("{0}",uicomponent.INVALID_CHARACTERS);
+  
 %>
 <div class="uiWikiContentDisplay" id="$uicomponent.id">
   <div class="invalidChars" style="display:none">$msg</div>
   ${uicomponent.htmlOutput}
 </div>
+<script type="text/javascript" src="../../../../wiki/javascript/xwiki/xwiki.js"></script>
+<script type="text/javascript">
+  XWiki.contextaction = 'preview';
+  XWiki.fixLinksTargetAttribute(undefined);
+</script>

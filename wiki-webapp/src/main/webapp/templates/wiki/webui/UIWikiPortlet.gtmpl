@@ -2,6 +2,7 @@
   import org.exoplatform.wiki.mow.api.Page;
   import org.exoplatform.container.PortalContainer;
   import org.exoplatform.web.application.JavascriptManager;
+  import org.exoplatform.wiki.webui.WikiMode;
   
   def rcontext = _ctx.getRequestContext() ;
   def userName = rcontext.getRemoteUser();
@@ -54,6 +55,14 @@
 <script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Forms.js"></script>
 <script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_DataBinding.js"></script>
 <script type="text/javascript" src="/wiki/javascript/xwiki/xwiki.js"></script>
+<% } %>
+
+<% if (uicomponent.mode.equals(WikiMode.VIEW)) {%>
+  <script type="text/javascript" src="../../../../wiki/javascript/xwiki/xwiki.js"></script>
+  <script type="text/javascript">
+    XWiki.contextaction = 'view';
+    XWiki.fixLinksTargetAttribute(undefined);
+  </script>
 <% } %>
 
 <style type="text/css">
