@@ -61,6 +61,7 @@ import org.exoplatform.wiki.webui.control.filter.IsEditAddModeFilter;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddPageModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UISubmitToolBarActionListener;
 import org.xwiki.rendering.syntax.Syntax;
+import org.exoplatform.portal.webui.util.Util;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/SavePageActionComponent.gtmpl",
@@ -102,6 +103,7 @@ public class SavePageActionComponent extends UIComponent {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       Page page = Utils.getCurrentWikiPage();
+      String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();
       if (page != null) {
         UIWikiPageTitleControlArea pageTitleControlForm = wikiPortlet.findComponentById(UIWikiPageControlArea.TITLE_CONTROL);
         UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
@@ -115,7 +117,7 @@ public class SavePageActionComponent extends UIComponent {
         String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
         boolean isRenamedPage = false;
         boolean isContentChange = false;
-  
+        
         try {
           WikiNameValidator.validate(titleInput.getValue());
         } catch (IllegalNameException ex) {
@@ -150,6 +152,7 @@ public class SavePageActionComponent extends UIComponent {
         markup = markup.trim();
   
         String newPageId = TitleResolver.getId(title, false);
+        pageParams.setPageId(new StringBuffer().append(pageURI).append("/").append(newPageId).toString()); 
         if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
           // as wiki home page has fixed name (never edited anymore), every title changing is accepted.
           ;
@@ -167,7 +170,6 @@ public class SavePageActionComponent extends UIComponent {
           Utils.redirect(pageParams, wikiPortlet.getWikiMode());
           return;
         }
-  
         try {
           if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
             if (wikiPortlet.getEditMode() == EditMode.SECTION) {
@@ -203,7 +205,7 @@ public class SavePageActionComponent extends UIComponent {
               page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
               page.setSyntax(syntaxId);
               pageTitleControlForm.getUIFormInputInfo().setValue(title);
-              pageParams.setPageId(page.getName());
+              pageParams.setPageId(new StringBuffer().append(pageURI).append("/").append(newPageId).toString()); 
               page.setURL(Utils.getURLFromParams(pageParams));
               
               if (!page.getContent().getText().equals(markup)) {
@@ -215,7 +217,7 @@ public class SavePageActionComponent extends UIComponent {
                 page.setTitle(title);
                 ((PageImpl) page).checkin();
                 ((PageImpl) page).checkout();
-                pageParams.setPageId(newPageId);
+                pageParams.setPageId(new StringBuffer().append(pageURI).append("/").append(newPageId).toString()); 
               } else {
                 ((PageImpl) page).checkin();
                 ((PageImpl) page).checkout();
@@ -238,7 +240,7 @@ public class SavePageActionComponent extends UIComponent {
             Page draftPage = Utils.getCurrentNewDraftWikiPage();
             Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
             Page addedPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
-            pageParams.setPageId(newPageId);
+            pageParams.setPageId(new StringBuffer().append(pageURI).append("/").append(newPageId).toString());
             addedPage.setURL(Utils.getURLFromParams(pageParams));
             addedPage.getContent().setText(markup);
             addedPage.setSyntax(syntaxId);
