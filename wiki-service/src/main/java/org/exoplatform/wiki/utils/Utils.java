@@ -228,7 +228,9 @@ public class Utils {
     }
     
     if (params.getPageId() != null) {
-      sb.append(params.getPageId()).append("/");
+      if(params.getPageId().contains("/"))
+        sb.append(params.getPageId()).append("/");
+      else sb.append(wikiWebappUri).append("/").append(params.getPageId());
     }
     
     if (hasDowmainUrl) {

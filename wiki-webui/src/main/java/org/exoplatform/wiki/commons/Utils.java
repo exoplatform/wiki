@@ -357,8 +357,7 @@ public class Utils {
   
   public static String getBaseUrl() throws Exception {
     WikiPageParams params = getCurrentWikiPageParams();
-    String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();
-    params.setPageId(pageURI);
+    params.setPageId(Utils.getPageURI());
     return getURLFromParams(params);
   }
   
@@ -373,6 +372,10 @@ public class Utils {
 
   public static void redirect(WikiPageParams pageParams, WikiMode mode) throws Exception {
     redirect(pageParams, mode, null);
+  }
+  
+  public static String getPageURI() throws Exception {
+    return Util.getUIPortal().getSelectedUserNode().getURI();
   }
 
   public static void redirect(WikiPageParams pageParams, WikiMode mode, Map<String, String[]> params) throws Exception {
