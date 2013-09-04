@@ -59,6 +59,7 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
 	var node = element.parentNode;
 	var subGroup = $(node).find('ul.nodeGroup')[0];
 	if ($(element).hasClass('EmptyIcon')) {
+          eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);
 	  return true;
     }
       
@@ -71,9 +72,10 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
     }
       
     if (!subGroup) {
+      eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);
       return false;
-	}
-	  
+    }
+	eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);  
 	$(subGroup).toggle();
 	return true;
   }
