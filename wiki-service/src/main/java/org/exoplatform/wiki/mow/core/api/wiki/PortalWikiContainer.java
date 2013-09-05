@@ -38,8 +38,18 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
   @OneToOne
   @MappedBy(WikiNodeType.Definition.PORTAL_WIKI_CONTAINER_NAME)
   public abstract WikiStoreImpl getMultiWiki();
-
+  
   public PortalWiki addWiki(String wikiOwner) {
+    return getWikiObject(wikiOwner, true);
+  }
+  
+  /**
+   * Gets the portal wiki in current PortalWikiContainer by specified wiki owner
+   * @param wikiOwner the wiki owner
+   * @param createIfNonExist if true, create the wiki when it does not exist
+   * @return the wiki object
+   */
+  protected PortalWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
     //Portal wikis is stored in /exo:applications/eXoWiki/wikis/$wikiOwner/WikiHome
     wikiOwner = validateWikiOwner(wikiOwner);
     if(wikiOwner == null){
@@ -52,9 +62,13 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
       try {
         wikiNode = wikisNode.getNode(wikiOwner);
       } catch (PathNotFoundException e) {
-        wikiNode = wikisNode.addNode(wikiOwner, WikiNodeType.PORTAL_WIKI);
-        //wikiNode.addNode(WikiNodeType.Definition.TRASH_NAME, WikiNodeType.WIKI_TRASH) ;
-        wikisNode.save();
+        if (createIfNonExist) {
+          wikiNode = wikisNode.addNode(wikiOwner, WikiNodeType.PORTAL_WIKI);
+          //wikiNode.addNode(WikiNodeType.Definition.TRASH_NAME, WikiNodeType.WIKI_TRASH) ;
+          wikisNode.save();
+        } else {
+          return null;
+        }
       }
     } catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

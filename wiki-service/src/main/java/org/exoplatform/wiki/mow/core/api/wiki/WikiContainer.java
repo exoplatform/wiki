@@ -80,18 +80,26 @@ public abstract class WikiContainer<T extends Wiki> {
     return getWikis();
   }
   
+  /**
+   * Checks if current WikiContainer contains the wiki with specified wiki owner
+   * @param wikiOwner the wiki owner
+   * @return the wiki if it exists, otherwise null
+   */
   public T contains(String wikiOwner) {
     wikiOwner = validateWikiOwner(wikiOwner);
     if (wikiOwner == null) {
       return null;
     }
-    for (T wiki : getWikis()) {
-      if (wiki.getOwner().equals(wikiOwner)) {
-        return wiki;
-      }
-    }
-    return null;
+    return getWikiObject(wikiOwner, false);
   }
+  
+  /**
+   * Gets the wiki in current WikiContainer by specified wiki owner
+   * @param wikiOwner the wiki owner
+   * @param createIfNonExist if true, create the wiki when it does not exist
+   * @return the wiki object
+   */
+  abstract protected T getWikiObject(String wikiOwner, boolean createIfNonExist);
   
   public void initDefaultPermisisonForWiki(Wiki wiki) {
     WikiService wikiService = getwService(); 
