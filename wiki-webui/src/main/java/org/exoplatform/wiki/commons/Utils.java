@@ -231,7 +231,7 @@ public class Utils {
       }
       spaceUrl.append("wiki/");
       if (!StringUtils.isEmpty(params.getPageId())) {
-        spaceUrl.append(params.getPageId()).append("/");
+        spaceUrl.append(params.getPageId());
       }
       return spaceUrl.toString();
     }
@@ -357,7 +357,7 @@ public class Utils {
   
   public static String getBaseUrl() throws Exception {
     WikiPageParams params = getCurrentWikiPageParams();
-    params.setPageId(Utils.getPageURI());
+    params.setPageId(null);
     return getURLFromParams(params);
   }
   
@@ -382,14 +382,7 @@ public class Utils {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     if (PortalConfig.GROUP_TYPE.equals(Utils.getCurrentWiki().getType())) {
-      String pageId = pageParams.getPageId();
-      if(pageId.indexOf("/") >= 0) {
-        String pageName = pageId.substring(pageId.lastIndexOf("/")+1, pageId.length());
-        pageName = URLEncoder.encode(pageName, "UTF-8");
-        pageId = new StringBuffer().append(pageId.substring(0, pageId.lastIndexOf("/")+1)).append(pageName).toString();
-      }
-      else pageId = URLEncoder.encode(pageId, "UTF-8");
-      pageParams.setPageId(pageId);
+      pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
     }
     
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
