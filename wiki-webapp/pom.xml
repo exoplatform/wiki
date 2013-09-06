@@ -56,7 +56,15 @@
         <exclusion>
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>
+        </exclusion>     
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
         </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
       </exclusions>
     </dependency>
     <dependency>
