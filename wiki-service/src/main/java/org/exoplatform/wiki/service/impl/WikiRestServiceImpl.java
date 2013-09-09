@@ -105,6 +105,7 @@ import org.xwiki.rendering.syntax.Syntax;
 /**
  * {@inheritDoc}
  */
+@SuppressWarnings("deprecation")
 @Path("/wiki")
 public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
@@ -231,8 +232,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
             att.setCreator(creator);
           }
         }
+      } catch (IllegalArgumentException e) {
+        log.error("Special characters are not allowed in the name of an attachment.");
+        return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
       } catch (Exception e) {
-        log.error(e.getMessage(), e);
+        log.error(e.getMessage());
         return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
       }
     }
