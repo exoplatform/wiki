@@ -54,11 +54,12 @@ UITreeExplorer.prototype.initMacros = function() {
   }
 };
 
-UITreeExplorer.prototype.collapseExpand = function(element) {
+UITreeExplorer.prototype.collapseExpand = function(element) {  
   if(element) {
 	var node = element.parentNode;
 	var subGroup = $(node).find('ul.nodeGroup')[0];
 	if ($(element).hasClass('EmptyIcon')) {
+          eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);
 	  return true;
     }
       
@@ -71,10 +72,12 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
     }
       
     if (!subGroup) {
+      eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);
       return false;
-	}
-	  
+    }
+	eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);  
 	$(subGroup).toggle();
+	
 	return true;
   }
 };
@@ -248,17 +251,13 @@ UITreeExplorer.prototype.buildNode = function(data) {
   }  
   
   if (data.selectable == true && data.retricted == false) {
-    if (data.selected) {
-      childNode += "         <span style='cursor:auto'><i class='" + iconClass + "'></i>" + nodeName + "</span>";
+    if (me.isRenderLink) {
+      var index = path.lastIndexOf("%2F"); // Find the index of character "/"
+      var pageId = path.substring(index + 3);
+      var link = me.baseLink + pageId;
+      childNode += "        <a href=\"" + link + "\"><i class='" + iconClass + "'></i> " + nodeName + "</a>";
     } else {
-      if (me.isRenderLink) {
-        var index = path.lastIndexOf("%2F"); // Find the index of character "/"
-        var pageId = path.substring(index + 3);
-        var link = me.baseLink + pageId;
-        childNode += "        <a href=\"" + link + "\"><i class='" + iconClass + "'></i> " + nodeName + "</a>";
-      } else {
-        childNode += "        <a><i class='" + iconClass + "'></i> " + nodeName + "</a>";
-      }
+      childNode += "        <a><i class='" + iconClass + "'></i> " + nodeName + "</a>";
     }
   } else {
     if (data.retricted == true) {

@@ -125,7 +125,15 @@
         <exclusion>
           <artifactId>jgroups</artifactId>
           <groupId>jgroups</groupId>
+        </exclusion>     
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
         </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
       </exclusions>
     </dependency>
     <dependency>
@@ -147,6 +155,16 @@
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.component.command</artifactId>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.kernel</groupId>
@@ -179,6 +197,16 @@
     <dependency>
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.gatein.wci</groupId>
@@ -250,6 +278,16 @@
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-api</artifactId>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
@@ -363,6 +401,16 @@
       <groupId>dom4j</groupId>
       <artifactId>dom4j</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>junit</groupId>

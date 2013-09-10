@@ -24,8 +24,10 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.macro.excerpt.ExcerptMacro;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.xwiki.rendering.block.Block.Axes;
 import org.xwiki.rendering.block.MacroBlock;
 import org.xwiki.rendering.block.XDOM;
+import org.xwiki.rendering.block.match.ClassBlockMatcher;
 import org.xwiki.rendering.syntax.Syntax;
 
 public class ExcerptUtils {
@@ -46,7 +48,7 @@ public class ExcerptUtils {
     StringBuilder sb = new StringBuilder();
     if (markup != null) {
       XDOM xdom = renderingService.parse(markup, sourceSyntax);
-      List<MacroBlock> mBlocks = xdom.getChildrenByType(MacroBlock.class, true);
+      List<MacroBlock> mBlocks = xdom.getBlocks(new ClassBlockMatcher(MacroBlock.class), Axes.DESCENDANT);
       for (MacroBlock block : mBlocks) {
 
         if (block.getId().equals(ExcerptMacro.MACRO_ID)) {

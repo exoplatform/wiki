@@ -303,6 +303,21 @@
   color: #666;
 }
 
+ .xImageConfig .gwt-RadioButton input {
+  margin: 0 5px;
+  vertical-align: text-bottom;
+}
+
+.xImageConfig .gwt-RadioButton {
+  margin-right: 20px;
+}
+
+.xImageConfig .gwt-RadioButton label {
+  display: inline;
+  margin: 0;
+  vertical-align: middle;
+}
+
 .xMacroParameter textarea,.xImporterClipboardTabEditor {
   width: 433px;
   border: 1px solid #AAA;
@@ -507,10 +522,13 @@
 
 .xMacroFilter .xSearchBox {
   width: 215px;
+  margin-top: 5px;
+  padding-left: 20px;
 }
 
 .xMacroCategoryList {
   margin-right: 6px;
+  margin-bottom: 5px;
   text-transform: capitalize;
   width: 215px;
 }

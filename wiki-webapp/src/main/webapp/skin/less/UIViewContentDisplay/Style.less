@@ -2,10 +2,11 @@
 	.uiWikiContentDisplay{
 		padding: 10px 0;
 			span.EditSection {
-				display: none !important;
+				visibility: hidden;
 				a{
 					position: absolute;
 					right: 10px;
+					background-position: -9999px;
 				}
 			}
 	}
@@ -19,7 +20,7 @@
 
 	 th {
 		 border-right: 1px solid @tableBorder;
-		 background: @formActionsBackground;
+		 background: @grayWhiteSmoke;
 		 text-align: center;
 		 padding: 5px;
 	}
@@ -49,8 +50,7 @@
 		 .wikiexternallink{
 			 .wikimodel-freestanding {
 				 margin: 0 6px 0 0;
-				 width: 18px;
-				 height: 18px;
+				 .square(18px);				
 			}
 		}
 	}
@@ -65,12 +65,16 @@
 	}
 
 	 .EditSectionHover {
-		background-color: @tableBackgroundAccent;
+		background-color: @grayLighter;
 		span.EditSection {
-			display: block !important;
+			visibility: visible;
+			a{					
+				background-position: -40px 0;
+			}
 		}
+		
 	}
-
+/*********
 	 .DecorationVersion {
 		 background: @grayLighter;
 		 border-radius: 3px;
@@ -126,4 +130,5 @@
 		 font-weight: bold;
 		 margin-top: 8px;
 	}
+	*/
 }

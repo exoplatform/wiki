@@ -20,10 +20,13 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 
 import org.apache.commons.chain.Context;
+import org.chromattic.api.ChromatticSession;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.command.action.Action;
 import org.exoplatform.services.ext.action.InvocationContext;
 import org.exoplatform.services.jcr.observation.ExtendedEvent;
+import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
@@ -38,8 +41,10 @@ public class UpdatePageRenderingCacheAction implements Action {
     Object item = context.get("currentItem");
     Object eventObj = context.get(InvocationContext.EVENT);
     int eventCode = Integer.parseInt(eventObj.toString());
-    PageRenderingCacheService pRenderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
-                                                                                                      .getComponentInstanceOfType(PageRenderingCacheService.class);
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    PageRenderingCacheService pRenderingCacheService = (PageRenderingCacheService)
+                        container.getComponentInstanceOfType(PageRenderingCacheService.class);
+    
     switch (eventCode) {
     case ExtendedEvent.NODE_ADDED:
       if (item instanceof Node) {
@@ -101,14 +106,60 @@ public class UpdatePageRenderingCacheAction implements Action {
         PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
         Wiki wiki = page.getWiki();
         if (wiki != null) {
+          //invalidate cache
           pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
         }
       }
       break;
+    case ExtendedEvent.CHECKOUT:
+      node = (Node) item;
+      if (node.isNodeType(WikiNodeType.WIKI_PAGE)) {
+        PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
+        Wiki wiki = page.getWiki();
+        if (wiki != null) {
+          checkUncachedMacroesInPage(page);
+        }
+      }
+      break;
+      
     default:
       break;
     }
     return CONTINUE_PROCESSING;
+  }
+  
+  /**
+   * checks if page contains uncached macroes
+   * @param page
+   */
+  private void checkUncachedMacroesInPage(PageImpl page) {
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    PageRenderingCacheService pRenderingCacheService = (PageRenderingCacheService)
+                        container.getComponentInstanceOfType(PageRenderingCacheService.class);
+    
+    String content = page.getContent().getText();
+    boolean found = false;
+    for (String macro : pRenderingCacheService.getUncachedMacroes()) {
+      String m1 = new StringBuilder().append("{{").append(macro).append("}}").toString();
+      String m2 = new StringBuilder().append("{{").append(macro).append("/}}").toString();
+      String m3 = new StringBuilder().append("{{").append(macro).append(" ").toString();
+      if (content.contains(m1) || content.contains(m2) || content.contains(m3)) {
+        found = true;
+        break;
+      }
+    }
+    
+    ChromatticSession session = page.getMOWService().getSession();
+    if (found) {
+      if (page.getUncachedMixin() == null) {
+        UncachedMixin uncachedMix = session.create(UncachedMixin.class);
+        session.setEmbedded(page, UncachedMixin.class, uncachedMix);
+      }
+    } else {
+      if (page.getUncachedMixin() != null) {
+        session.setEmbedded(page, UncachedMixin.class, null);
+      }
+    }
   }
 
 }

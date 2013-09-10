@@ -129,6 +129,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private long                  autoSaveInterval;
   
+  private long editPageLivingTime_;
+  
   private String wikiWebappUri;
 
   public WikiServiceImpl(ConfigurationManager configManager,
@@ -153,6 +155,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (StringUtils.isEmpty(wikiWebappUri)) {
       wikiWebappUri = DEFAULT_WIKI_NAME;
     }
+    editPageLivingTime_ = Long.parseLong(initParams.getValueParam("wiki.editPage.livingTime").getValue());
   }
   
   @Override
@@ -380,12 +383,12 @@ public class WikiServiceImpl implements WikiService, Startable {
         movePage.setMovedMixin(session.create(MovedMixin.class));
         mix = movePage.getMovedMixin();
         mix.setTargetPage(movePage.getParentPage());
-        session.save();
       }
       mix.setTargetPage(destPage);      
       WikiImpl destWiki = (WikiImpl) destPage.getWiki();
       movePage.setParentPage(destPage);
       movePage.setMinorEdit(false);
+      session.save();
       
       //update LinkRegistry
       if (!newLocationParams.getType().equals(currentLocationParams.getType())) {
@@ -891,6 +894,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
   
   @Override
+  public long getEditPageLivingTime() {
+    return editPageLivingTime_;
+  }
+  
+  @Override
   public WikiPageParams getWikiPageParams(BreadcrumbData data) {
     if (data != null) {
       return new WikiPageParams(data.getWikiType(), data.getWikiOwner(), data.getId());
@@ -1232,7 +1240,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     LinkEntry checkEntry = newEntry;
     while (!checkEntry.equals(entry) && circularFlag > 0) {
       checkEntry = checkEntry.getNewLink();
-      if (checkEntry.getNewLink().equals(checkEntry) && !checkEntry.equals(entry)) {
+      if (checkEntry == null || (checkEntry.equals(checkEntry.getNewLink()) && !checkEntry.equals(entry))) {
         isCircular = false;
         break;
       }
@@ -1593,7 +1601,8 @@ public class WikiServiceImpl implements WikiService, Startable {
       return null;
     }
     
-    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    if (currentUser == null || IdentityConstants.ANONIM.equals(currentUser)) {
       return null;
     }
     
@@ -1624,17 +1633,15 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public List<DraftPage> getDrafts(String username) throws Exception {
-    if (IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
-      return null;
-    }
-    
-    // Get all draft of user
-    Collection<PageImpl> childPages = getDraftContainerOfCurrentUser().getChildPages().values();
-    
-    // Change collection to List
     List<DraftPage> draftPages = new ArrayList<DraftPage>();
-    for (PageImpl pageImpl : childPages) {
-      draftPages.add((DraftPageImpl) pageImpl);
+    if (!IdentityConstants.ANONIM.equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
+      // Get all draft of user
+      Collection<PageImpl> childPages = getDraftContainerOfCurrentUser().getChildPages().values();
+      
+      // Change collection to List
+      for (PageImpl pageImpl : childPages) {
+        draftPages.add((DraftPageImpl) pageImpl);
+      }
     }
     return draftPages;
   }

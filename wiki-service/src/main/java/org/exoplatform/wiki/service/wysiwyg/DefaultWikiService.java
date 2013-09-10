@@ -22,10 +22,12 @@ import java.util.List;
 
 import javax.inject.Inject;
 
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
@@ -77,7 +79,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#isMultiWiki()
    */
   @Override
@@ -87,7 +89,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getVirtualWikiNames()
    */
   @Override
@@ -98,7 +100,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getSpaceNames(String)
    */
   @Override
@@ -113,7 +115,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getPageNames(String, String)
    */
   @Override
@@ -143,17 +145,37 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getRecentlyModifiedPages(int, int)
    */
   public List<WikiPage> getRecentlyModifiedPages(String wikiName, int start, int count) {
-    // TODO: implement wiki search service by author and sort by date to get recently modified pages
-    return new ArrayList<WikiPage>();
+    WikiContext wikiContext = getWikiContext();
+    org.exoplatform.wiki.service.WikiService wservice =
+        (org.exoplatform.wiki.service.WikiService) PortalContainer.getComponent(org.exoplatform.wiki.service.WikiService.class);
+
+    // Create search condition by current user and recently
+    WikiSearchData data = new WikiSearchData(StringUtils.EMPTY, "*", wikiContext.getType(), wikiContext.getOwner());
+    data.addPropertyConstraint(String.format(" AND (  ( exo:lastModifier='%s' ) )",
+                               ConversationState.getCurrent().getIdentity().getUserId()));
+    data.setSort("exo:lastModifiedDate");
+    data.setOrder("DESC");
+    data.setNodeType(WikiNodeType.WIKI_PAGE);
+    data.setLimit(count);
+
+    // Call wiki service to execute search
+    try {
+      PageList<SearchResult> results = wservice.search(data);
+      List<DocumentReference> documentReferences = prepareDocumentReferenceList(results);
+      return getWikiPages(documentReferences);
+    } catch (Exception e) {
+      log.error("Exception happened when searching pages", e);
+      throw new RuntimeException("Failed to search Wiki pages.", e);
+    }
   }
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getMatchingPages(String, int, int)
    */
   public List<WikiPage> getMatchingPages(String wikiName, String keyword, int start, int count) {
@@ -178,7 +200,7 @@ public class DefaultWikiService implements WikiService {
   /**
    * Helper function to create a list of {@link WikiPage}s from a list of
    * document references.
-   * 
+   *
    * @param documentReferences a list of document references
    * @return the list of {@link WikiPage}s corresponding to the given document
    *         references
@@ -204,7 +226,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getEntityConfig(org.xwiki.gwt.wysiwyg.client.wiki.EntityReference,
    *      ResourceReference)
    */
@@ -214,7 +236,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getAttachment(AttachmentReference)
    */
   @Override
@@ -249,7 +271,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getImageAttachments(WikiPageReference)
    */
   public List<Attachment> getImageAttachments(WikiPageReference reference) {
@@ -265,7 +287,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getAttachments(WikiPageReference)
    */
   @Override
@@ -299,7 +321,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#getUploadURL(org.xwiki.gwt.wysiwyg.client.wiki.EntityReference)
    */
   @Override
@@ -314,7 +336,7 @@ public class DefaultWikiService implements WikiService {
 
   /**
    * {@inheritDoc}
-   * 
+   *
    * @see WikiService#parseLinkReference(String,
    *      org.xwiki.gwt.wysiwyg.client.wiki.EntityReference)
    */
@@ -325,7 +347,7 @@ public class DefaultWikiService implements WikiService {
   /**
    * Helper function to prepare a list of {@link WikiPage} (with full name,
    * title, etc) from a list of search results.
-   * 
+   *
    * @param results the list of the search results
    * @return the list of {@link WikiPage}s corresponding to the passed names
    * @throws Exception if anything goes wrong retrieving the documents

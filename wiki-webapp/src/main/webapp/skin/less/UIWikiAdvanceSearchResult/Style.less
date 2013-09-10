@@ -1,6 +1,6 @@
 .uiWikiAdvanceSearchResult {
 	> .resultInfo { 
-		border-bottom: 1px dotted @wikiBorder;
+		border-bottom: 1px dotted @borderColor;
 		padding: 17px 0;
 		
 		> .resultNumber {
@@ -9,7 +9,7 @@
 			color: @linkColor;
 		}
 		> .split {
-			border-left: 1px solid @wikiBorder;
+			border-left: 1px solid @borderColor;
 		    display: inline-block;
 		    height: 27px;
 		    margin: 0 15px;
@@ -44,7 +44,7 @@
 }
 
 .uiWikiAdvanceSearchForm {
-	background: #f1f1f1;
+	background: @grayWhiteSmoke;
 	margin: -20px -20px 20px -20px;
 	padding: 20px;
 	border-radius: 4px 4px 0 0;
@@ -63,6 +63,7 @@
 
 .UIWikiSearchSpaceArea {
 	padding: 20px;
-	border: 1px solid @tableBorder;
+	border: 1px solid @borderColor;
 	border-radius: 4px;
+	background: @white;
 }

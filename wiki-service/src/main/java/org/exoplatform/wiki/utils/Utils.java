@@ -1,6 +1,5 @@
 package org.exoplatform.wiki.utils;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -22,6 +21,8 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.RootContainer;
+import org.exoplatform.container.definition.PortalContainerConfig;
 import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
@@ -108,9 +109,7 @@ public class Utils {
   }
   
   public static String getPortalName() {
-    ExoContainer container = ExoContainerContext.getCurrentContainer() ; 
-    PortalContainerInfo containerInfo = (PortalContainerInfo)container.getComponentInstanceOfType(PortalContainerInfo.class);
-    return containerInfo.getContainerName();
+    return org.exoplatform.wiki.rendering.util.Utils.getPortalName();
   }
   
   /**
@@ -141,13 +140,25 @@ public class Utils {
     if (logByPage == null) {
       logByPage = new HashMap<String, WikiPageHistory>();
       editPageLogs.put(pageId, logByPage);
-    } else {
-      WikiPageHistory logByUsername = logByPage.get(username);
-      if (logByUsername == null) {
-        logByUsername = new WikiPageHistory(pageParams, username, draftName, isNewPage);
-        logByPage.put(username, logByUsername);
-      }
-      logByUsername.setEditTime(updateTime);
+    }
+    WikiPageHistory logByUsername = logByPage.get(username);
+    if (logByUsername == null) {
+      logByUsername = new WikiPageHistory(pageParams, username, draftName, isNewPage);
+      logByPage.put(username, logByUsername);
+    }
+    logByUsername.setEditTime(updateTime);
+  }
+  
+  /**
+   * removes the log of user editing page.
+   * @param pageParams
+   * @param user
+   */
+  public static void removeLogEditPage(WikiPageParams pageParams, String user) {
+    String pageId = pageParams.getPageId();
+    Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
+    if (logByPage != null) {
+      logByPage.remove(user);
     }
   }
   
@@ -168,7 +179,7 @@ public class Utils {
       // Find all the user that editting this page
       for (String username : logByPage.keySet()) {
         WikiPageHistory log = logByPage.get(username);
-        if (System.currentTimeMillis() - log.getEditTime() < wikiService.getSaveDraftSequenceTime()) {
+        if (System.currentTimeMillis() - log.getEditTime() < wikiService.getEditPageLivingTime()) {
           if (!username.equals(currentUser) && !log.isNewPage()) {
             edittingUsers.add(username);
           }
@@ -210,7 +221,6 @@ public class Utils {
     // Create permalink
     StringBuilder sb = new StringBuilder(wikiWebappUri);
     sb.append("/");
-    
     if (!params.getType().equalsIgnoreCase(WikiType.PORTAL.toString())) {
       sb.append(params.getType().toLowerCase());
       sb.append("/");
@@ -219,7 +229,7 @@ public class Utils {
     }
     
     if (params.getPageId() != null) {
-      sb.append(URLEncoder.encode(params.getPageId(), "UTF-8"));
+      sb.append(params.getPageId());
     }
     
     if (hasDowmainUrl) {
@@ -450,15 +460,11 @@ public class Utils {
   }
   
   public static String getCurrentUser() {
-    try {
-      return PortalRequestContext.getCurrentInstance().getRemoteUser();
-    } catch(Exception e){
-      ConversationState conversationState = ConversationState.getCurrent();
-      if (conversationState != null) {
-        return ConversationState.getCurrent().getIdentity().getUserId();
-      }
-      return null;
-    }    
+    ConversationState conversationState = ConversationState.getCurrent();
+    if (conversationState != null) {
+      return ConversationState.getCurrent().getIdentity().getUserId();
+    }
+    return null; 
   }
   
   public static Collection<Wiki> getWikisByType(WikiType wikiType) {
@@ -790,4 +796,13 @@ public class Utils {
     cssClass.append(((String)mimeType).replaceAll("/|\\.", ""));
     return cssClass.toString();
   }
+  
+  /**
+   * gets rest context name
+   * @return rest context name
+   */
+  public static String getRestContextName() {
+    return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
+  }
+
 }

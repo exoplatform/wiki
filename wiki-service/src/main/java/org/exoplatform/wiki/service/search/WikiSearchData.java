@@ -1,5 +1,7 @@
 package org.exoplatform.wiki.service.search;
 
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
@@ -22,9 +24,14 @@ public class WikiSearchData extends SearchData {
   
   private String nodeType = null;
   
-  public WikiSearchData(String title, String content, String wikiType, String wikiOwner, String pageId) {
-    super(title, content, wikiType, wikiOwner, pageId);
+  public WikiSearchData(String title, String content, String wikiType, 
+                        String wikiOwner, String pageId, List<String> propConstraints) {
+    super(title, content, wikiType, wikiOwner, pageId, propConstraints);
     createJcrQueryPath();
+  }
+  
+  public WikiSearchData(String title, String content, String wikiType, String wikiOwner, String pageId) {
+    this(title, content, wikiType, wikiOwner, pageId, null);
   }
 
   public WikiSearchData(String wikiType, String wikiOwner, String pageId) {
@@ -86,6 +93,9 @@ public class WikiSearchData extends SearchData {
     statement.append("WHERE ");
     statement.append(searchContentCondition());
     statement.append(" AND NOT (jcr:primaryType = 'wiki:page') ");
+    for (String propConstraint : this.propertyConstraints) {
+      statement.append(" ").append(propConstraint);
+    }
     statement.append(createOrderClause());
     return statement.toString();
   }
@@ -157,7 +167,7 @@ public class WikiSearchData extends SearchData {
   private String searchContentCondition() {
     StringBuilder clause = new StringBuilder();
     clause.append(jcrQueryPath);
-    if (content != null && content.length() > 0) {
+    if (content != null && content.length() > 0 && !"*".equals(content)) {
       clause.append(" AND ");
       clause.append(" CONTAINS(*, '").append(content).append("')");
     }

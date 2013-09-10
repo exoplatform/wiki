@@ -95,7 +95,10 @@ public abstract class WikiImpl implements Wiki {
         home.checkin();
         home.checkout();
       } catch (Exception e) {
-        throw new UndeclaredRepositoryException("Can't create new version for WikiHome");
+        if (LOG.isErrorEnabled()) {
+          LOG.error(e);
+        }
+        return home;
       }
     }
     return home;

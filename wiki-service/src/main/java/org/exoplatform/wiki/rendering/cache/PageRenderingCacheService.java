@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.rendering.cache;
 
 import java.util.Map;
+import java.util.Set;
 
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -68,4 +69,16 @@ public interface PageRenderingCacheService {
    * @param param specify identity of a page
    */
   public void invalidateCache(WikiPageParams param);
+  
+  /**
+   * adds plugin containing uncached macro list
+   * @param plugin the plugin
+   */
+  public void addUnCachedMacro(UnCachedMacroPlugin plugin);
+  
+  /**
+   * gets the list of uncached macroes
+   * @return the uncached macroes
+   */
+  public Set<String> getUncachedMacroes();
 }

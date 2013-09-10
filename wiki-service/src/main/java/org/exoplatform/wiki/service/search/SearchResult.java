@@ -1,8 +1,8 @@
 package org.exoplatform.wiki.service.search;
 
 import java.util.Calendar;
-
 import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.services.deployment.Utils;
 
 public class SearchResult {
   protected String excerpt ;
@@ -14,6 +14,8 @@ public class SearchResult {
   protected long   jcrScore;
   protected Calendar updatedDate;  
   protected Calendar createdDate;
+  
+  
   
   public SearchResult() {}
   
@@ -45,8 +47,8 @@ public class SearchResult {
     this.excerpt = text;
   }
 
-  public String getExcerpt() {
-    return excerpt;
+  public String getExcerpt() throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchMethodException {
+    return Utils.sanitize(excerpt);
   }
 
   public void setType(String type) {

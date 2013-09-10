@@ -26,6 +26,16 @@
     <dependency>
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
@@ -73,8 +83,20 @@
         <exclusion>
           <artifactId>ant</artifactId>
           <groupId>org.apache.ant</groupId>
+        </exclusion>      
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
         </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
       </exclusions>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.commons</groupId>
+      <artifactId>xwiki-commons-environment-standard</artifactId>
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
@@ -106,6 +128,10 @@
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-syntax-confluence</artifactId>
     </dependency>
+    <dependency>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-syntax-annotatedxhtml</artifactId>
+    </dependency>    
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-syntax-plain</artifactId>
@@ -144,6 +170,50 @@
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-wikimodel</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-bridge</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-cache-infinispan</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-chart-macro</artifactId>
+      <exclusions>
+        <exclusion>
+          <artifactId>commons-logging</artifactId>
+          <groupId>commons-logging</groupId>
+        </exclusion>     
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
+    </dependency>    
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-formula-macro</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.xwiki.platform</groupId>
+      <artifactId>xwiki-platform-formula-renderer</artifactId>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>picocontainer</groupId>

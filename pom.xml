@@ -19,6 +19,7 @@
     <module>wiki-macros</module>
     <module>wiki-service</module>
     <module>wiki-webapp</module>
+    <module>wiki-webui</module>
     <module>wiki-extension</module>
     <module>wiki-upgrade-plugins</module>
   </modules>
@@ -40,7 +41,7 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-    <org.exoplatform.depmgt.version>7</org.exoplatform.depmgt.version>
+    <org.exoplatform.depmgt.version>8</org.exoplatform.depmgt.version>
     <!-- JCR Project Dependencies -->
     <org.exoplatform.kernel.version>2.4.4-GA</org.exoplatform.kernel.version>
     <org.exoplatform.core.version>2.5.4-GA</org.exoplatform.core.version>
@@ -106,6 +107,11 @@
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-upgrade-plugins</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-webui</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

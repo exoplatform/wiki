@@ -11,9 +11,8 @@
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiRichTextArea", "UIWikiRichTextArea");
   requireJs.addScripts("UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
+  requireJs.addScripts("window.require([\"/wiki/javascript/xwiki/xwiki.js\"], function(xwiki) {window.require([\"/wiki/javascript/xwiki/xwikiexplorer/xwikiexplorer.js\"], function(xwikiexplorer) {});});");
 %>
-<script type="text/javascript" src="../../../../wiki/javascript/xwiki/xwiki.js"></script>
-<script type="text/javascript" src="../../../../wiki/javascript/xwiki/xwikiexplorer/xwikiexplorer.js"></script>
 <div class="UIWikiRichTextEditor">
   <% uicomponent.renderChild(uicomponent.RICHTEXT_AREA_INPUT); %>
 </div>

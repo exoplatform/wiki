@@ -33,7 +33,7 @@ import org.exoplatform.wiki.commons.DateTimeFomatter;
 		%>
 			
 				<p>It may have renamed or moved to another space, or the name you requested maybe incomplete. </br>
-				<strong>Note :</strong>he page you were looking for may bave been remaed or moved to the following location</p>			
+				<strong>Note :</strong>The page you were looking for may have been renamed or moved to the following location</p>			
 				<div class="blockResultFeed">
 				  <a href="$url"><i class="uiIconFileMini uiIconLightGray"></i><%=relatedPage.getTitle()%></a>
 					<div class="txtDetail"><%=summaryContent%></div>
