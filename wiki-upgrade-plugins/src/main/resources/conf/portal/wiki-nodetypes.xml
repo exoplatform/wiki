@@ -514,6 +514,9 @@
         <valueConstraints/>
       </propertyDefinition>                  
     </propertyDefinitions>
-  </nodeType>    
+  </nodeType>
+
+  <nodeType name="wiki:uncached" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+  </nodeType>
 </nodeTypes>
   

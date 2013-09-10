@@ -17,8 +17,10 @@
 package org.exoplatform.wiki.rendering.cache.impl;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.lang.StringUtils;
@@ -31,6 +33,7 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
 import org.exoplatform.wiki.rendering.cache.MarkupKey;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
+import org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -49,6 +52,8 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
   private ExoCache<Integer, MarkupData> renderingCache;
   
   private Map<WikiPageParams, List<WikiPageParams>> pageLinksMap = new ConcurrentHashMap<WikiPageParams, List<WikiPageParams>>();
+  
+  private Set<String> uncachedMacroes = new HashSet<String>();
 
   /**
    * Initialize rendering cache service 
@@ -66,12 +71,15 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
     try {
       PageImpl page = (PageImpl) wikiService.getPageById(param.getType(), param.getOwner(), param.getPageId());
       boolean supportSectionEdit = page.hasPermission(PermissionType.EDITPAGE);
-      String markup = page.getContent().getText();
       MarkupKey key = new MarkupKey(new WikiPageParams(param.getType(), param.getOwner(), param.getPageId()), page.getSyntax(), targetSyntax, supportSectionEdit);
-      MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
-      if (cachedData != null) {
-        return cachedData.build();
+      //get content from cache only when page is not uncached mixin
+      if (page.getUncachedMixin() == null) {
+        MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
+        if (cachedData != null) {
+          return cachedData.build();
+        }
       }
+      String markup = page.getContent().getText();
       renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
       renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
@@ -125,5 +133,16 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
         LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
       }
     }
+  }
+
+  @Override
+  public void addUnCachedMacro(UnCachedMacroPlugin plugin) {
+    for (String name : plugin.getUncachedMacroes())
+      uncachedMacroes.add(name);
+  }
+
+  @Override
+  public Set<String> getUncachedMacroes() {
+    return new HashSet<String>(uncachedMacroes);
   }
 }

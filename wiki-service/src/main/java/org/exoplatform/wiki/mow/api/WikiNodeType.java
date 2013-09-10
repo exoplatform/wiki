@@ -187,5 +187,9 @@ public interface WikiNodeType {
     public final static String DRAFT_TARGET_REVISION      = "exo:targetRevision";
     
     public final static String DRAFT_IS_NEW_PAGE          = "exo:isNewPage";
+    
+    public static final String EXO_LAST_MODIFIER = "exo:lastModifier";
+    
+    public static final String EXO_LAST_MODIFIED_DATE = "exo:lastModifiedDate";
   }
 }

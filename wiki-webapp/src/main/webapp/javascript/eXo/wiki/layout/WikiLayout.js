@@ -36,6 +36,7 @@ function WikiLayout() {
   this.rightMinWidth = 250;
   this.userName      = "";
   this.mouseDown = false;
+  this.leftHeight = 0;
 };
 
 WikiLayout.prototype.init = function(prtId, _userName) {
@@ -193,10 +194,12 @@ WikiLayout.prototype.setHeightLayOut = function() {
   var layout = me.wikiLayout;
   var leftNavigationDiv = $('#LeftNavigation')[0];
   var platformAdmintc = $("#PlatformAdminToolbarContainer")[0];
-  var parentHeightPx = leftNavigationDiv.parentNode.style.height;
-  var parentHeight = parentHeightPx.substring(0, parentHeightPx.length-2);
-  var hdef = (leftNavigationDiv && platformAdmintc) ? 
-		     parentHeight - layout.offsetTop + platformAdmintc.clientHeight : 0;
+  var hdef = 0;
+  if (leftNavigationDiv && platformAdmintc) {
+    var parentHeightPx = leftNavigationDiv.parentNode.style.height;
+    var parentHeight = parentHeightPx.substring(0, parentHeightPx.length-2);
+    hdef = parentHeight - layout.offsetTop + platformAdmintc.clientHeight;
+  }
   hdef = Math.max(hdef, document.documentElement.clientHeight - layout.offsetTop); 	 
   var hct = hdef * 1;
   $(layout).css('height', hdef + 'px');
@@ -261,15 +264,17 @@ WikiLayout.prototype.setHeightRightContent = function(prtId, _userName) {
       
     if (me.leftArea) {
       var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
-      if (me.leftArea.offsetHeight > 0) {
+      if (me.leftArea.offsetHeight > 0) me.leftHeight = me.leftArea.offsetHeight;
+      else me.leftHeight = 550;
+      //if (me.leftArea.offsetHeight > 0) {
         $(pageContent).css("height", "");
-        var pageAreaHeight = (me.leftArea.offsetHeight - bottomHeight);
+        var pageAreaHeight = (me.leftHeight - bottomHeight);
         var poffsetHeight = pageContent.offsetHeight ? pageContent.offsetHeight : 0;
-        if (poffsetHeight + bottomHeight < me.leftArea.offsetHeight) {
+        if (poffsetHeight + bottomHeight < me.leftHeight) {
           $(pageContent).height(pageAreaHeight - 9 + "px");
         }
-        $(me.rightArea).height(me.leftArea.offsetHeight + 1 + "px");
-      }
+        $(me.rightArea).height(me.leftHeight + 1 + "px");
+      //}
     }
     
     if (me.rightArea) {

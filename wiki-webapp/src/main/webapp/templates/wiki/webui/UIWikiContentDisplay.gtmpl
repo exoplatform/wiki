@@ -3,12 +3,20 @@
   
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiPortlet", "UIWikiPortlet");
+  requireJs.require("SHARED/XWikiUtil", "XWikiUtil");
+
   requireJs.addScripts("UIWikiPortlet.makeRenderingErrorsExpandable('"+uicomponent.id+ "');");
   requireJs.addScripts("UIWikiPortlet.decorateSpecialLink('"+uicomponent.id+ "');");
   requireJs.addScripts("UIWikiPortlet.initMacros();");
   
   String msg = _ctx.appRes("UIWikiContentDisplay.msg.invalid-characters-in-link");
   msg = msg.replace("{0}",uicomponent.INVALID_CHARACTERS);  
+  
+ if (uicomponent.id == "UIPreviewContentDisplay") {
+   requireJs.addScripts("XWiki.fixLinksTargetAttribute(undefined, 'PREVIEW') ;");
+ } else if (uicomponent.id == "UIViewContentDisplay") {
+   requireJs.addScripts("XWiki.fixLinksTargetAttribute(undefined, 'VIEW') ;");
+ }
 %>
 <div class="uiWikiContentDisplay" id="$uicomponent.id">
   <div class="invalidChars" style="display:none">$msg</div>

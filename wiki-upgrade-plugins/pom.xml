@@ -16,6 +16,16 @@
       <artifactId>commons-component-upgrade</artifactId>
       <version>${org.exoplatform.commons.version}</version>
       <scope>provided</scope>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
@@ -25,6 +35,16 @@
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-core</artifactId>
       <version>${org.exoplatform.social.version}</version>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>

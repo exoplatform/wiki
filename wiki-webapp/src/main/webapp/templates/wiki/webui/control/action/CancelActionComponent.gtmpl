@@ -4,7 +4,7 @@
   String titleMessage = _ctx.appRes("UIConfirmBox.label.Confirmation");
   String exitMessage = _ctx.appRes("UIConfirmBox.label.ConfirmExit");
   String okLabel = _ctx.appRes("UIConfirmBox.label.Ok");
-  String cancelLink = "window.location.href='" + uicomponent.getCurrentPageURL() + "'";
+  String cancelLink = uicomponent.getActionLink();
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");
   requireJs.addScripts("UIConfirmBox.init();");  

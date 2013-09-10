@@ -26,6 +26,16 @@
     <dependency>
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.webui.portal</artifactId>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>
@@ -73,7 +83,15 @@
         <exclusion>
           <artifactId>ant</artifactId>
           <groupId>org.apache.ant</groupId>
+        </exclusion>      
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
         </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
       </exclusions>
     </dependency>
     <dependency>
@@ -168,7 +186,15 @@
         <exclusion>
           <artifactId>commons-logging</artifactId>
           <groupId>commons-logging</groupId>
+        </exclusion>     
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
         </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
       </exclusions>
     </dependency>    
     <dependency>
@@ -178,6 +204,16 @@
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-formula-renderer</artifactId>
+      <exclusions>
+        <exclusion>          
+          <groupId>xml-apis</groupId>
+          <artifactId>xml-apis</artifactId>
+        </exclusion>
+        <exclusion>
+		  <groupId>xml-apis</groupId>
+          <artifactId>xml-apis-ext</artifactId>          
+        </exclusion>        
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>picocontainer</groupId>

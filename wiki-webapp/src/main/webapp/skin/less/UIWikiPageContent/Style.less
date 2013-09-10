@@ -20,7 +20,7 @@
 	}
 
 	hr {
-		border-color: #CCCCCC;
+		border-color: @borderColor;
 		border-style: solid;
 		border-width: 1px 0 0;
 		clear: both;
@@ -36,8 +36,8 @@
 		padding-left: 1em;
 	}
 	blockquote {
-		background: none repeat scroll 0 0 #FAFAF6;
-		border-left: 2px solid #DDDDCC;
+		background: none repeat scroll 0 0 @grayLighter;
+		border-left: 2px solid @borderColor;
 		display: block;
 		margin: 0.3ex 1em;
 		padding: 0.3ex 1em;
@@ -51,7 +51,7 @@
 		-moz-border-left-colors: none;
 		-moz-border-right-colors: none;
 		-moz-border-top-colors: none;
-		border-color: #DDDDDD -moz-use-text-color #DDDDDD #DDDDDD;
+		border-color: @borderColor -moz-use-text-color @borderColor @borderColor;
 		border-image: none;
 		border-spacing: 0;
 		border-style: solid none solid solid;
@@ -60,14 +60,14 @@
 		width: auto;
 	}
 	th {
-		background: none repeat scroll 0 0 #F5F5F5;
-		border-right: 1px solid #DDDDDD;
+		background: none repeat scroll 0 0 @grayWhiteSmoke;
+		border-right: 1px solid @borderColor;
 		padding: 5px;
 		text-align: center;
 	}
 	td {
-		border-right: 1px solid #DDDDDD;
-		border-top: 1px solid #DDDDDD;
+		border-right: 1px solid @borderColor;
+		border-top: 1px solid @borderColor;
 		padding: 5px;
 	}
 }

@@ -191,8 +191,7 @@ public class WikiMacroService implements MacroService {
         for (MacroId macroId : categoryManager.getMacroIds(category, syntax)) {
           if (!"table".equals(macroId.getId()) && !"thead".equals(macroId.getId())
               && !"th".equals(macroId.getId()) && !"table-row".equals(macroId.getId())
-              && !"table-cell".equals(macroId.getId()) && !"section".equals(macroId.getId())
-              && !"column".equals(macroId.getId())) {
+              && !"table-cell".equals(macroId.getId()) && !"column".equals(macroId.getId())) {
             boolean isSupported = true;
             try {
               MacroFilter macroFilter = componentManager.getInstance(MacroFilter.class, syntaxId);

@@ -19,6 +19,7 @@
     <module>wiki-macros</module>
     <module>wiki-service</module>
     <module>wiki-webapp</module>
+    <module>wiki-webui</module>
     <module>wiki-extension</module>
     <module>wiki-upgrade-plugins</module>
   </modules>
@@ -106,6 +107,11 @@
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-upgrade-plugins</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-webui</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

@@ -41,8 +41,19 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
   @OneToOne
   @MappedBy(WikiNodeType.Definition.USER_WIKI_CONTAINER_NAME )
   public abstract WikiStoreImpl getMultiWiki();
+  
 
   public UserWiki addWiki(String wikiOwner) {
+    return getWikiObject(wikiOwner, true);
+  }
+  
+  /**
+   * Gets the user wiki in current UserWikiContainer by specified wiki owner
+   * @param wikiOwner the wiki owner
+   * @param createIfNonExist if true, create the wiki when it does not exist
+   * @return the wiki object
+   */
+  protected UserWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
     NodeHierarchyCreator nodeHierachyCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer()
                                                                                          .getComponentInstanceOfType(NodeHierarchyCreator.class);    
     wikiOwner = validateWikiOwner(wikiOwner);
@@ -66,8 +77,12 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
       try {
         wikiNode = userDataNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
       } catch (PathNotFoundException e) {
-        wikiNode = userDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.USER_WIKI);
-        userDataNode.save();
+        if (createIfNonExist) {
+          wikiNode = userDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.USER_WIKI);
+          userDataNode.save();
+        } else {
+          return null;
+        }
       }
     } catch (Exception e) {
       if (e instanceof PathNotFoundException)
