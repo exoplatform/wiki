@@ -91,6 +91,10 @@ public class Utils {
   
   public static final String SLASH = "/";
   
+  //ThreadLocal object storing the currentWikiPage, 
+  //it helps reduce the cost of always getting current Page from JCR.
+  private static ThreadLocal<Page> currentWikiPageKeeper_ = new ThreadLocal<Page>();
+  
   public static String upperFirstCharacter(String str) {
     if (StringUtils.isEmpty(str)) {
       return str;
@@ -154,11 +158,37 @@ public class Utils {
     return params;
   }
   
-  public static Page getCurrentWikiPage() throws Exception {
+  /**
+   * Gets current wiki page directly from data base
+   * @return current wiki page
+   * @throws Exception
+   */
+  public static Page getCurrentWikiPageFromJCR() throws Exception {
     String requestURL = Utils.getCurrentRequestURL();
     PageResolver pageResolver = (PageResolver) PortalContainer.getComponent(PageResolver.class);
     Page page = pageResolver.resolve(requestURL, Util.getUIPortal().getSelectedUserNode());
     return page;
+  }
+  
+  /**
+   * Gets current wiki page using ThreadLocal as cache to avoid getting page from database too many times
+   * @return current wiki page
+   * @throws Exception
+   */
+  public static Page getCurrentWikiPage() throws Exception {
+    Page currentPage = currentWikiPageKeeper_.get();
+    if (currentPage == null) {
+      currentWikiPageKeeper_.set(getCurrentWikiPageFromJCR());
+      currentPage = currentWikiPageKeeper_.get();
+    }
+    return currentPage;
+  }
+  
+  /**
+   * Clears current wiki page object ThreadLocal 
+   */
+  public static void clearCurrentWikiPage() {
+    currentWikiPageKeeper_.remove();
   }
   
   public static boolean canModifyPagePermission() throws Exception {

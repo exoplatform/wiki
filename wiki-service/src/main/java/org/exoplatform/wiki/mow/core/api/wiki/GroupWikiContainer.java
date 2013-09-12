@@ -42,8 +42,12 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
   @OneToOne
   @MappedBy(WikiNodeType.Definition.GROUP_WIKI_CONTAINER_NAME)
   public abstract WikiStoreImpl getMultiWiki();
-
+  
   public GroupWiki addWiki(String wikiOwner) {
+    return getWikiObject(wikiOwner, true);
+  }
+  
+  protected GroupWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
     //Group wikis is stored in /Groups/$wikiOwner/ApplicationData/eXoWiki/WikiHome
     wikiOwner = validateWikiOwner(wikiOwner);
     if(wikiOwner == null){
@@ -66,8 +70,12 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
       try {
         wikiNode = groupDataNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
       } catch (PathNotFoundException e) {
-        wikiNode = groupDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.GROUP_WIKI);
-        groupDataNode.save();
+        if (createIfNonExist) {
+          wikiNode = groupDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.GROUP_WIKI);
+          groupDataNode.save();
+        } else {
+          return null;
+        }
       }
     } catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);

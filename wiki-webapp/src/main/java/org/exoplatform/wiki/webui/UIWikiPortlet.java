@@ -125,6 +125,8 @@ public class UIWikiPortlet extends UIPortletApplication {
   }
 
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
+    //for each new request, remove the currentWikiPage in cache
+    Utils.clearCurrentWikiPage();
     PortletRequestContext portletReqContext = (PortletRequestContext) context;
     redirectURL = this.url(this.REDIRECT_ACTION);
     loadPreferences();
@@ -137,8 +139,8 @@ public class UIWikiPortlet extends UIPortletApplication {
                                      .getChild(UIWikiBreadCrumb.class)
                                      .setRendered(portletPreferences.isShowBreadcrumb());     
       String requestURL = Utils.getCurrentRequestURL();
-      PageResolver pageResolver = (PageResolver) PortalContainer.getComponent(PageResolver.class);
-      Page page = pageResolver.resolve(requestURL, Util.getUIPortal().getSelectedUserNode());
+      Page page = Utils.getCurrentWikiPage();
+      
       if (page == null) {
         changeMode(WikiMode.PAGE_NOT_FOUND);
         super.processRender(app, context);
@@ -202,6 +204,34 @@ public class UIWikiPortlet extends UIPortletApplication {
     } else {
       super.processRender(app, context);
     }
+    Utils.clearCurrentWikiPage();
+  }
+  
+  /**
+   * Overrides processRender, clear TheadLocal cache containing current Wiki Page Object
+   */
+  public void processRender(WebuiRequestContext context) throws Exception {
+    Utils.clearCurrentWikiPage();
+    super.processRender(context);
+    Utils.clearCurrentWikiPage();
+  }
+  
+  /**
+   * Overrides processAction, clear TheadLocal cache containing current Wiki Page Object
+   */
+  public void processAction(WebuiRequestContext context) throws Exception {
+    Utils.clearCurrentWikiPage();
+    super.processAction(context);
+    Utils.clearCurrentWikiPage();
+  }
+  
+  /**
+   * Overrides processDecode, clear TheadLocal cache containing current Wiki Page Object
+   */
+  public void processDecode(WebuiRequestContext context) throws Exception {
+    Utils.clearCurrentWikiPage();
+    super.processDecode(context);
+    Utils.clearCurrentWikiPage();
   }
 
   public UIPopupContainer getPopupContainer(PopupLevel level) {

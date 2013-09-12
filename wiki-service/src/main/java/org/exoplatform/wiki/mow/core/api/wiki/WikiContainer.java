@@ -85,13 +85,10 @@ public abstract class WikiContainer<T extends Wiki> {
     if (wikiOwner == null) {
       return null;
     }
-    for (T wiki : getWikis()) {
-      if (wiki.getOwner().equals(wikiOwner)) {
-        return wiki;
-      }
-    }
-    return null;
+    return getWikiObject(wikiOwner, false);
   }
+  
+  abstract protected T getWikiObject(String wikiOwner, boolean createIfNonExist);
   
   public void initDefaultPermisisonForWiki(Wiki wiki) {
     WikiService wikiService = getwService(); 
