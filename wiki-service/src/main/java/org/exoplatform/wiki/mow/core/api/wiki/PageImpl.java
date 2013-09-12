@@ -324,7 +324,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   public Collection<AttachmentImpl> getAttachmentsExcludeContent() throws Exception {
     Collection<AttachmentImpl> attachments = getAttachmentsByChromattic();
-    List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>(attachments.size());
+    List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>();
     for (AttachmentImpl attachment : attachments) {
       if ((attachment.hasPermission(PermissionType.VIEW_ATTACHMENT)
           || attachment.hasPermission(PermissionType.EDIT_ATTACHMENT))
