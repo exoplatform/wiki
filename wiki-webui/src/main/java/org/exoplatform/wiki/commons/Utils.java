@@ -372,10 +372,23 @@ public class Utils {
 
   public static void redirect(WikiPageParams pageParams, WikiMode mode) throws Exception {
     redirect(pageParams, mode, null);
-  }
-  
-  public static String getPageURI() throws Exception {
-    return Util.getUIPortal().getSelectedUserNode().getURI();
+  }  
+  /**
+   * Get the full path for current wiki page   
+  */
+  public static String getPageLink() throws Exception {    
+    StringBuilder sb = new StringBuilder();    
+    sb.append(Utils.getBaseUrl());
+    
+    String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();    
+    String pageName = Util.getUIPortal().getSelectedUserNode().getName();
+    if(!WikiContext.WIKI.equalsIgnoreCase(pageName)) {
+      if(pageURI.contains(WikiContext.WIKI)) {
+        pageURI = pageURI.substring(pageURI.indexOf(WikiContext.WIKI) + WikiContext.WIKI.length() + 1, pageURI.length());
+      }
+      sb.append(pageURI).append("/");
+    } 
+    return sb.toString();
   }
 
   public static void redirect(WikiPageParams pageParams, WikiMode mode, Map<String, String[]> params) throws Exception {
@@ -410,7 +423,10 @@ public class Utils {
                                          WikiMode mode,
                                          Map<String, String[]> params) throws Exception {
     StringBuffer sb = new StringBuffer();
-    sb.append(getURLFromParams(pageParams));
+    sb.append(getPageLink());
+    if (!StringUtils.isEmpty(pageParams.getPageId())) {
+      sb.append(pageParams.getPageId());
+    }    
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));
     }
