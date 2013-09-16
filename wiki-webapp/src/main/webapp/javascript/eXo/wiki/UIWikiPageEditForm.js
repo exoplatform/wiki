@@ -301,6 +301,28 @@ UIWikiPageEditForm.prototype.synPublishActivityCheckboxesStatus = function(check
   });
 };
 
+/**
+ * Fixes the time in uiWikiNotificationContainer, convert timeInMillis to readable local time
+ */
+UIWikiPageEditForm.prototype.fixWikiNotificationTimeZone = function(){
+  var uiWikiNotificationContainer = $(".uiWikiNotificationContainer")[0];
+  if (uiWikiNotificationContainer) {
+    innerHTML = uiWikiNotificationContainer.innerHTML;
+    var i1 = innerHTML.indexOf("{");
+    var i2 = innerHTML.indexOf("}");
+    if (i1 && i2) {
+      var timeLong = innerHTML.substring(i1+1, i2);
+      if (timeLong) {
+        var oldSt = "{" + timeLong +  "}";
+        var date = new Date(parseInt(timeLong));
+        timeLong = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+        innerHTML = innerHTML.replace(oldSt, timeLong);
+        $(uiWikiNotificationContainer).html(innerHTML);
+      }
+    }
+  }
+};
+
 eXo.wiki.UIWikiPageEditForm = new UIWikiPageEditForm();
 return eXo.wiki.UIWikiPageEditForm;
 

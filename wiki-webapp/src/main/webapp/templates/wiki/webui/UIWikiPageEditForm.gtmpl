@@ -50,6 +50,7 @@
   if (uicomponent.isInRichTextEditor()) {
     requireJs.addScripts("UIWikiPageEditForm.checkToRemoveEditorMenu();");
   }
+  requireJs.addScripts("UIWikiPageEditForm.fixWikiNotificationTimeZone();");
 %>
 <div class="uiWikiPageEditForm">
 <% uiform.begin();%>
