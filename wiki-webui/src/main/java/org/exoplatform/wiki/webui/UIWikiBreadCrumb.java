@@ -16,9 +16,6 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -44,6 +41,9 @@ import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -194,7 +194,9 @@ public class UIWikiBreadCrumb extends UIContainer {
    */
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    this.setAllowChooseSpace(!IdentityConstants.ANONIM.equals(ConversationState.getCurrent().getIdentity().getUserId()));
+	  if(IdentityConstants.ANONIM.equals(ConversationState.getCurrent().getIdentity().getUserId())) {
+		  this.setAllowChooseSpace(false);
+	  }
     super.processRender(context);
   }
   
