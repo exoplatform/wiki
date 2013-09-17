@@ -669,12 +669,4 @@
     </depends>  
   </module>
   
-  <module>
-    <name>XWikiUtil</name>
-    <load-group>wikiView</load-group>
-    <script>      
-     <path>/javascript/xwiki/xwiki.js</path>
-    </script>
-  </module>
-  
 </gatein-resources>

@@ -154,6 +154,9 @@ public class UIWikiUploadAttachment extends UIWikiForm {
           }
           att.setCreator(event.getRequestContext().getRemoteUser());
           input.removeUploadId(id);
+          event.getRequestContext().getJavascriptManager().
+                                    require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm").
+                                    addScripts("UIWikiPageEditForm.handleSaveDraftTiming();");
         } catch (Exception e) {
           log.error("An exception happens when saving attach file:" + attachfile.getName(), e);
           event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIApplication.msg.unknown-error",

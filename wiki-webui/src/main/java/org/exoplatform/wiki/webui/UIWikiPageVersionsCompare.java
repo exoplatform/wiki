@@ -29,8 +29,10 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
+import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.service.diff.DiffResult;
@@ -177,24 +179,35 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
       from = temp;
     }
     this.versions = versions;
+    //-----------------------------------------------
     NTVersion toVersion = versions.get(to);
-    String toVersionContent = ((AttachmentImpl) toVersion.getNTFrozenNode()
-                                                         .getChildren()
-                                                         .get(WikiNodeType.Definition.CONTENT)).getText();
+    NTFrozenNode toFrozen = toVersion.getNTFrozenNode();
+    Attachment toContent = (Attachment) toFrozen.getChildren()
+                                                .get(WikiNodeType.Definition.CONTENT);
+    String toVersionTitle = toFrozen.getTitle();
+    String toVersionContent = toContent.getText();
+    //-----------------------------------------------
     NTVersion fromVersion = versions.get(from);
-    String fromVersionContent = ((AttachmentImpl) fromVersion.getNTFrozenNode()
-                                                             .getChildren()
-                                                             .get(WikiNodeType.Definition.CONTENT)).getText();
+    NTFrozenNode fromFrozen = fromVersion.getNTFrozenNode();
+    Attachment fromContent = (Attachment) fromFrozen.getChildren()
+                                                    .get(WikiNodeType.Definition.CONTENT);
+    String fromVersionTitle = fromFrozen.getTitle();
+    String fromVersionContent = fromContent.getText();
+    //-----------------------------------------------
     DiffService diffService = this.getApplicationComponent(DiffService.class);
     this.setRendered(true);
     this.setFromVersion(fromVersion);
     this.setToVersion(toVersion);
     this.setCurrentVersionIndex(String.valueOf(versions.size()));
-    DiffResult diffResult = diffService.getDifferencesAsHTML(fromVersionContent,
+    DiffResult diffResultTitle = diffService.getDifferencesAsHTML(fromVersionTitle,
+                                                                  toVersionTitle, true);
+    DiffResult diffResultContent = diffService.getDifferencesAsHTML(fromVersionContent,
                                                              toVersionContent,
                                                              true);
-    this.setDifferencesAsHTML(diffResult.getDiffHTML());
-    this.setChanges(diffResult.getChanges());
+    StringBuilder diff = new StringBuilder("<h6>").append(diffResultTitle.getDiffHTML()).append("</h6><br/>").
+                                                   append(diffResultContent.getDiffHTML());
+    this.setDifferencesAsHTML(diff.toString());
+    this.setChanges(diffResultTitle.getChanges() + diffResultContent.getChanges());
   }
   
   static public class CompareActionListener extends CompareRevisionActionListener {
