@@ -68,7 +68,6 @@ WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
     if(String(typeof me.myBody) == "undefined" || !me.myBody) {
       me.myBody = $("body")[0];
       me.bodyClass = $(me.myBody).attr('class');
-      me.myHtml = $("html")[0];
     }
   } catch(e){};
 
@@ -150,13 +149,11 @@ WikiLayout.prototype.setCookie = function (c_name, value, exdays) {
 
 WikiLayout.prototype.setClassBody = function(clazz) {
   var me = eXo.wiki.WikiLayout;
-  if(me.myBody && me.myHtml) {
+  if (me.myBody) {
     if (String(clazz) != me.bodyClass) {
       $(me.myBody).attr('class', clazz + " " + me.bodyClass);
-      $(me.myHtml).attr('class', clazz);
     } else {
       $(me.myBody).attr('class', clazz);
-      $(me.myHtml).attr('class', '');
     }
   }
 };
