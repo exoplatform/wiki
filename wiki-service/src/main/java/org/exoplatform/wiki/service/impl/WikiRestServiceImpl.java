@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import javax.jcr.Workspace;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
@@ -105,6 +106,7 @@ import org.xwiki.rendering.syntax.Syntax;
 /**
  * {@inheritDoc}
  */
+@SuppressWarnings("deprecation")
 @Path("/wiki")
 public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
@@ -231,8 +233,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
             att.setCreator(creator);
           }
         }
+      } catch (IllegalArgumentException e) {
+        log.error("Special characters are not allowed in the name of an attachment.");
+        return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
       } catch (Exception e) {
-        log.error(e.getMessage(), e);
+        log.error(e.getMessage());
         return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
       }
     }
@@ -972,6 +977,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
    * @param title draft title
    * @param content draft content
    * @param isMarkup content is markup or html. True if is markup.
+   * @param uuid the real page uuid
    * @return {@link Response} with status HTTPStatus.ACCEPTED if saving process is performed successfully
    *                          with status HTTPStatus.INTERNAL_ERROR if there is any unknown error in the saving process
    */                          
@@ -986,7 +992,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                             @QueryParam("clientTime") long clientTime,
                             @FormParam("title") String title,
                             @FormParam("content") String content,
-                            @FormParam("isMarkup") String isMarkup) {
+                            @FormParam("isMarkup") String isMarkup,
+                            @FormParam("uuid") String uuid) {
     try {
       if ("__anonim".equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
         return Response.status(HTTPStatus.BAD_REQUEST).cacheControl(cc).build();
@@ -1035,6 +1042,17 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         draftPage.setTitle(title);
       }
       draftPage.getContent().setText(content);
+      ((DraftPageImpl) draftPage).getChromatticSession().save();
+      //copy attachment to draft page
+      if (isNewPage) {
+        Page realPage = wikiService.getPageByUUID(uuid);
+        Workspace workspace = draftPage.getJCRPageNode().getSession().getWorkspace();
+        draftPage.getAttachments().clear();
+        Collection<AttachmentImpl> atts = ((PageImpl) realPage).getAttachmentsExcludeContent();
+        for (AttachmentImpl att : atts) {
+          workspace.copy(att.getPath(), draftPage.getJCRPageNode().getPath() + "/" + att.getName());
+        }
+      }
       ((DraftPageImpl) draftPage).getChromatticSession().save();
       
       // Log the editting time for current user

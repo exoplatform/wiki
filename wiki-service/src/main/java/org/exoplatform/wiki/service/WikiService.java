@@ -117,6 +117,21 @@ public interface WikiService {
   public boolean renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle) throws Exception;
 
   /**
+   * Rename the wiki Page
+   *
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wik
+   * @param pageName The old name of the page
+   * @param newName The new name of the page
+   * @param newTitle The new title of the page
+   * @param createNewVersion Indicate if new version is created 
+   * @return True if the page is renamed, False if not
+   * @throws Exception
+   */
+  public boolean renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle,
+                            boolean createNewVersion) throws Exception;
+
+  /**
    * Move a wiki Page
    *
    * @param currentLocationParams The current location of the page

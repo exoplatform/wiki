@@ -19,14 +19,17 @@ package org.exoplatform.wiki.webui;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
@@ -176,11 +179,12 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   private String createDraftExistNotification(Date draftUpdatedDate) throws Exception {
     ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
-
+    Calendar calendar = new GregorianCalendar();
+    calendar.setTime(draftUpdatedDate);
     // Build message markup
     String messageMarkup = bundle.getString("DraftPage.msg.draft-exist-notification");
-    String dateString = new SimpleDateFormat("MMM dd, yyyy HH:mm").format(draftUpdatedDate);
-    messageMarkup = messageMarkup.replace("{0}", dateString);
+    StringBuffer dateString = new StringBuffer().append("{").append(calendar.getTimeInMillis()).append("}");
+    messageMarkup = messageMarkup.replace("{0}", dateString.toString());
     String messageHTML = "<div class='alert alert-info'><i class='uiIconInformation uiIconBlue'></i>" + messageMarkup + "</div>";
 
     // Add actions to message html
@@ -279,6 +283,24 @@ public class UIWikiPageEditForm extends UIWikiForm {
   protected String getCurrentPageId() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
     return pageParams.getPageId();
+  }
+  
+  /**
+   * Gets the uuid of real current edited page node
+   * @return the page node uuid
+   * @throws UnsupportedRepositoryOperationException
+   * @throws RepositoryException
+   * @throws Exception
+   */
+  protected String getCurrentPageUUID() throws UnsupportedRepositoryOperationException, RepositoryException, Exception{
+    Page page = null;
+    UIWikiPortlet wikiPortlet = this.getAncestorOfType(UIWikiPortlet.class);
+    if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
+      page = Utils.getCurrentNewDraftWikiPage();
+    } else {
+      page = Utils.getCurrentWikiPage();
+    }
+    return page.getJCRPageNode().getUUID();
   }
 
   protected String getCurrentPageRevision() throws Exception {
