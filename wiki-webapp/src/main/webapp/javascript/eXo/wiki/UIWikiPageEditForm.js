@@ -41,17 +41,6 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
     return;
   }
   
-
-  // Declare the function to handle change to create draft
-  var func = function() {
-    var me = eXo.wiki.UIWikiPageEditForm;
-    me.firstChanged = true;
-    if (me.changed == false) {
-      setTimeout("eXo.wiki.UIWikiPageEditForm.saveDraft()", me.autoSaveSequeneTime);
-      me.changed = true;
-    }
-  }
-  
   // Find title input
   var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
   var titleInput = $(titleContainer).find('input')[0];
@@ -63,20 +52,35 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   }
   
   // Bind event for text area and title input
-  $(titleInput).keyup(func);
-  $(titleInput).change(func);
+  $(titleInput).keyup(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
+  $(titleInput).change(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
   if (textAreaContainer) {
     var textarea = $(textAreaContainer).find('textarea');
-    textarea.keyup(func);
-    textarea.change(func);
+    textarea.keyup(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
+    textarea.change(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
     
     textarea = $(textAreaContainer).find('iframe')[0];
     if (textarea) {
-    	$(textarea.contentWindow.document).bind('keyup', func);
+    	$(textarea.contentWindow.document).bind('keyup', eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
     }
 //    textarea = $(textAreaContainer).find('iframe').bind('change',func);
   }
 };
+
+// sets current edited page uuid
+UIWikiPageEditForm.prototype.setRealPageUUID = function(uuid) {
+  eXo.wiki.UIWikiPageEditForm.uuid = uuid;
+}
+
+// Declare the function to handle change to create draft
+UIWikiPageEditForm.prototype.handleSaveDraftTiming = function() {
+  var me = eXo.wiki.UIWikiPageEditForm;
+  me.firstChanged = true;
+  if (me.changed == false) {
+    setTimeout("eXo.wiki.UIWikiPageEditForm.saveDraft()", me.autoSaveSequeneTime);
+    me.changed = true;
+  }
+}
 
 UIWikiPageEditForm.prototype.checkToRemoveEditorMenu = function() {
   var me = eXo.wiki.UIWikiPageEditForm;
@@ -177,10 +181,11 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
       pageContent = $(textAreaContainer).find('textarea')[0].value;
     }
   }
+  var uuid = me.uuid;
   
   // Create rest request
   if (me.restParam) {
-    var dataString = {'title': pageTitle, 'content': pageContent, 'isMarkup': isMarkup}
+    var dataString = {'title': pageTitle, 'content': pageContent, 'isMarkup': isMarkup, 'uuid': uuid}
     $.ajax({
     async : false,
     url : me.restURL + me.restParam,
@@ -299,6 +304,28 @@ UIWikiPageEditForm.prototype.synPublishActivityCheckboxesStatus = function(check
   $(checkBox2).click(function() {
     $(checkBox1).attr("checked", !$(checkBox1).attr("checked"));
   });
+};
+
+/**
+ * Fixes the time in uiWikiNotificationContainer, convert timeInMillis to readable local time
+ */
+UIWikiPageEditForm.prototype.fixWikiNotificationTimeZone = function(){
+  var uiWikiNotificationContainer = $(".uiWikiNotificationContainer")[0];
+  if (uiWikiNotificationContainer) {
+    innerHTML = uiWikiNotificationContainer.innerHTML;
+    var i1 = innerHTML.indexOf("{");
+    var i2 = innerHTML.indexOf("}");
+    if (i1 && i2) {
+      var timeLong = innerHTML.substring(i1+1, i2);
+      if (timeLong) {
+        var oldSt = "{" + timeLong +  "}";
+        var date = new Date(parseInt(timeLong));
+        timeLong = date.toLocaleDateString() + " " + date.toLocaleTimeString();
+        innerHTML = innerHTML.replace(oldSt, timeLong);
+        $(uiWikiNotificationContainer).html(innerHTML);
+      }
+    }
+  }
 };
 
 eXo.wiki.UIWikiPageEditForm = new UIWikiPageEditForm();

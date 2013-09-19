@@ -4,52 +4,13 @@
  *
  * @type object
  */
-(function() {
+
 if (typeof XWiki == "undefined") {
  
    // This is very unlikely not to be the case, since xwiki.js is the first JS file in the stream,
    // but it might not be the case with custom skins, so let's not take the risk to erase other code.
-   XWiki = {};
+   var XWiki = {};
 }
-
-/**
- * Make links marked with rel="external" in an external window and sets the target attribute to any
- * rel attribute starting with "_". Note that We need to do this in Javascript
- * as opposed to using target="_blank" since the target attribute is not valid XHTML.
- * Apply this on links found in the passed content if any, or on the document's all body otherwise.
- */
-XWiki.fixLinksTargetAttribute = function(content, contextaction) {
-	  // apply this transformation only in the view mode, to not apply transformation on the content in edit mode to
-	  // avoid having it saved by the wysiwyg afterwards. Actually it should be anything different from edit or inline,
-	  // but like this is consistent with the next function, for section editing.
-	  if (typeof contextaction != "undefined") {
-	    
-	  var action = contextaction.toUpperCase();
-	  if (action == "VIEW" || action == "PREVIEW") {
-	    if (typeof content == "undefined") {
-	      content = document.body;
-	    }
-	    var anchors = content.select("a[rel]");
-	    for (var i = 0; i < anchors.length; i++) {
-	        var anchor = anchors[i];
-	       if (anchor.getAttribute("href") && anchor.getAttribute("rel")) {
-	            // Since the rel attribute can have other values we need to only take into account the ones
-	            // starting with "_"
-	            var values = anchor.getAttribute("rel").split(" ");
-	            for (var j = 0; j < values.length; j++) {
-	                if (values[j].charAt(0) == "_") {
-	                    anchor.target = values[j].substring(1);
-	                    break;
-	                } else if (values[j] == "external") {
-	                    anchor.target = "_blank";
-	                    break;
-	                }
-	            }
-	        }
-	    }
-	  }
-	}
-	},
 
 Object.extend(XWiki, {
 
@@ -365,7 +326,7 @@ Object.extend(XWiki, {
    * as opposed to using target="_blank" since the target attribute is not valid XHTML.
    * Apply this on links found in the passed content if any, or on the document's all body otherwise.
    */
-  /*fixLinksTargetAttribute: function(content) {
+  fixLinksTargetAttribute: function(content) {
     // apply this transformation only in the view mode, to not apply transformation on the content in edit mode to
     // avoid having it saved by the wysiwyg afterwards. Actually it should be anything different from edit or inline,
     // but like this is consistent with the next function, for section editing.
@@ -392,7 +353,7 @@ Object.extend(XWiki, {
           }
       }
     }
-  },*/
+  },
 
   /**
    * Insert a link for editing sections.
@@ -1610,4 +1571,3 @@ document.observe('xwiki:wysiwyg:loaded', function() {
   }
   eXo.wiki.UIWikiPageEditForm.init();
 });
-})();
