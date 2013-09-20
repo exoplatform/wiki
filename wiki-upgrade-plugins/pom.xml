@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.0.x-SNAPSHOT</version>
+    <version>4.0.2-CP02-INTERNAL</version>
   </parent>
   <artifactId>wiki-upgrade-plugins</artifactId>
   <packaging>jar</packaging>
