@@ -51,7 +51,7 @@
     <org.gatein.portal.version>3.5.6.Final</org.gatein.portal.version>
     <!-- Platform Project Dependencies -->
     <org.exoplatform.commons.version>4.0.2</org.exoplatform.commons.version>
-    <org.exoplatform.social.version>4.0.2-CP01</org.exoplatform.social.version>
+    <org.exoplatform.social.version>4.0.2-CP02-INTERNAL</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>4.0.2</org.exoplatform.platform-ui.version>
     <!-- Platform Project 3rd party Dependencies -->
   </properties>
