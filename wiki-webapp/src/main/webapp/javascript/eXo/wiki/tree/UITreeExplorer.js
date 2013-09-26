@@ -137,10 +137,16 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
 	    me.innerDoc = null;
 	  }
 	  $(childBlock).addClass('nodeGroup');
-	  $(childBlock).html(me.loading);
+	  
+	  // Message loading first load or expand node
+	  if ('UITreeExplorer' == $(node).attr('id')) {
+	    $(childBlock).html('<span style="margin: 4px 4px 4px 35%; display:block" class="uiIconLoadingTree">'+ me.loading + '</span>');
+	  } else {
+	    $(childBlock).html('<span class="uiIconLoadingTree">'+ me.loading + '</span>');
+	  }
 	  $(node).append(childBlock);
 	  $.ajax({
-	    async : false,
+	    async : true,
 	    url : restURL,
 	    type : 'GET',
 	    data : '',
