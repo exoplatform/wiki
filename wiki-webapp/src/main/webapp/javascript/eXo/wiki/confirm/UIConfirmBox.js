@@ -58,8 +58,7 @@ UIConfirmBox.prototype.renderConfirmBox = function(componentId, titleMessage, me
 	  + "<div class='PopupContent popupContent'>"
 	  +   "<div class='confirmMessage'><i class='uiIconQuestion uiIconBlue'></i>" + message + "</div>"
 	  +   "<div class='uiAction uiActionBorder'></div>"
-	  + "</div>"
-	  + "<span class='uiIconResize pull-right' style='display: block;'></span>"));
+	  + "</div>"));
 	  
 	// Create buttons
     var actionContainer = $(me.confirmBox).find('div.uiAction')[0];
