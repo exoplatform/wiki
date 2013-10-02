@@ -4,7 +4,7 @@
   import org.exoplatform.wiki.webui.UIWikiPageSettingContainer
   import org.exoplatform.wiki.webui.UIWikiRelatedPages;
 %>
-  <div class="uiWikiMiddleArea wikiLayout ClearFix" id="$uicomponent.id">
+  <div class="uiWikiMiddleArea wikiLayout clearfix" id="$uicomponent.id">
     <% if(uicomponent.isPageSettingContainerRender()) { %>
       <% uicomponent.renderChild(UIWikiPageSettingContainer.class); %>       
     <% } else { %>
