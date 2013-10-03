@@ -23,85 +23,85 @@ import org.xwiki.context.Execution;
 import org.xwiki.rendering.block.XDOM;
 
 /**
- * The RenderingService is used to render a wiki page from its markup to something readable such as html
- * It used a specific syntax to be able to read the markup
+ * Renders a wiki page from its markup to something readable, such as HTML.
+ * It uses a specific syntax to read the markup.
  *
  * @LevelAPI Experimental
  */
 public interface RenderingService {
 
   /**
-   * Get the current execution instance
+   * Gets the current execution instance.
    *
-   * @return The execution instance
+   * @return The execution instance.
    * @throws ComponentLookupException
    * @throws ComponentRepositoryException
    */
   public Execution getExecution() throws ComponentLookupException, ComponentRepositoryException;
 
   /**
-   * Get the Component Manager
+   * Gets the Component Manager which provides ways to access and modify components (service) in the system.
    *
-   * @return The Component Manager
+   * @return The Component Manager.
    */
   public ComponentManager getComponentManager();
 
   /**
-   * Render a wiki page from its markup to html by using the right syntax
+   * Renders a wiki page from its markup to HTML by using the right syntax.
    *
-   * @param markup The markup of the page
-   * @param sourceSyntax The syntax used by the wiki page
-   * @param targetSyntax The target syntax to apply
-   * @param supportSectionEdit True if we support the section edit or false if not
-   * @return The result rendered
+   * @param markup The wiki page markup.
+   * @param sourceSyntax The syntax used by the wiki page.
+   * @param targetSyntax The target syntax to apply.
+   * @param supportSectionEdit If "true", the "Edit section" function is supported. Otherwise, this function is not supported.
+   * @return The readable content of the rendered wiki page.
    * @throws Exception
    */
   public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) throws Exception;
 
   /**
-   * Get the content of a section
+   * Gets content of a section.
    *
-   * @param markup The markup of the page
-   * @param sourceSyntax The syntax used by the wiki page
-   * @param sectionIndex The index of the section
-   * @return The content as string
+   * @param markup The wiki page markup.
+   * @param sourceSyntax The syntax used by the wiki page.
+   * @param sectionIndex The index of the section.
+   * @return The section content.
    * @throws Exception
    */
   public String getContentOfSection(String markup, String sourceSyntax, String sectionIndex) throws Exception;
 
   /**
-   * Update the content of the selected section
+   * Updates content of the selected section.
    *
-   * @param markup The markup of the page
-   * @param sourceSyntax The syntax used by the wiki page
-   * @param sectionIndex The index of the section
-   * @param newSectionContent The new content of the section
-   * @return The content as string
+   * @param markup The wiki page markup.
+   * @param sourceSyntax The syntax used by the wiki page.
+   * @param sectionIndex The section index.
+   * @param newSectionContent New content of the section.
+   * @return Content of the page which includes the modified section.
    * @throws Exception
    */
   public String updateContentOfSection(String markup, String sourceSyntax, String sectionIndex, String newSectionContent) throws Exception;
 
   /**
-   * Parse the markup of the page based on the syntax
+   * Parses a wiki page markup based on the syntax.
    *
-   * @param markup The markup to parse
-   * @param sourceSyntax The syntax to use
-   * @return The XDOM to display
+   * @param markup The markup to parse.
+   * @param sourceSyntax The syntax to use.
+   * @return The XDOM object.
    * @throws Exception
    */
   public XDOM parse(String markup, String sourceSyntax) throws Exception;
 
     /**
-     * Get the CSS url
+     * Gets a CSS URL.
      *
-     * @return the CSS url
+     * @return The CSS URL.
      */
   public String getCssURL();
 
     /**
-     * Set the CSS url
+     * Sets a CSS URL.
      *
-     * @param cssURL CSS url to set
+     * @param cssURL The CSS URL.
      */
   public void setCssURL(String cssURL);
 

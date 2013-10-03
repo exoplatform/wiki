@@ -1,5 +1,5 @@
 /**
- * Wiki service WYSIWYG handles all actions within the xwiki WYSIWYG and
- * related wiki services.
+ * Handles all actions within the XWiki WYSIWYG and
+ * related Wiki services.
  */
 package org.exoplatform.wiki.service.wysiwyg;

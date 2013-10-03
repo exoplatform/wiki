@@ -19,22 +19,22 @@ package org.exoplatform.wiki.service.image;
 import java.io.InputStream;
 
 /**
- * The ResizeImageService provide different function to let you use some images
- * by keeping the right ratio and optimize it.
+ * Provides different methods which handle images 
+ * with the right ratio and optimize them.
  *
  * @LevelAPI Platform
  */
 public interface ResizeImageService {
 
   /**
-   * Resize the given image input stream to the specified dimensions.
+   * Resizes a given image to the specified dimensions.
    * 
-   * @param imageName is the name of image to be resized
-   * @param is is the input stream of image
-   * @param requestWidth the new image width
-   * @param requestHeight the new image height
-   * @param keepAspectRatio keep the aspect ratio or not
-   * @return the resized input stream
+   * @param imageName Name of the image to be resized.
+   * @param is The input stream of the image.
+   * @param requestWidth The new width.
+   * @param requestHeight The new height.
+   * @param keepAspectRatio Keeps the aspect ratio or not.
+   * @return The input stream of the resized image.
    */
   public InputStream resizeImage(String imageName,
                                  InputStream is,
@@ -43,23 +43,24 @@ public interface ResizeImageService {
                                  boolean keepAspectRatio);
 
   /**
-   * Resize the given image input stream to the adapt requested width and keep
+   * Resizes a given image to adapt with the desired width and keep
    * the aspect ratio.
    * 
-   * @param imageName is the name of image to be resized
-   * @param is is the input stream of image
-   * @param requestWidth the new image width
+   * @param imageName Name of the image to be resized.
+   * @param is The input stream of the image.
+   * @param requestWidth The desired width.
+   * @return The input stream of the resized image.
    */
   public InputStream resizeImageByWidth(String imageName, InputStream is, int requestWidth);
 
   /**
-   * Resize the given image input stream to the adapt requested height and keep
+   * Resizes a given image input stream to adapt with the desired height and keep
    * the aspect ratio.
    * 
-   * @param imageName is the name of image to be resized
-   * @param is is the input stream of image
-   * @param requestHeight the new image height
-   * @return the resized input stream
+   * @param imageName Name of the resized image.
+   * @param is The input stream of the image.
+   * @param requestHeight The desired height.
+   * @return The input stream of the resized image.
    */
   public InputStream resizeImageByHeight(String imageName, InputStream is, int requestHeight);
 }

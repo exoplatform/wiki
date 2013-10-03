@@ -29,8 +29,8 @@ import org.exoplatform.wiki.utils.Utils;
 
 
 /**
- *  The WikiSearchServiceConnector provide a connector service for the common unified search.
- *  It implements a direct search in the jcr based on several criteria
+ *  Provides a connector service for the unified search.
+ *  It implements a direct search in the JCR based on several criteria.
  *
  * @LevelAPI Experimental
  */
@@ -39,21 +39,21 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   private static final Log LOG = ExoLogger.getLogger("org.exoplatform.wiki.service.impl.WikiSearchServiceConnector");
 
   /**
-   * URL of the icon used in the unified search to represent the results
+   * URL pointing to the icon representing the wiki pages in the unified search results.
    */
   public static final String WIKI_PAGE_ICON = "/wiki/skin/images/unified-search/PageIcon.png";
 
   /**
-   * Date format expected by the unified search
+   * Date and time format used in the unified search.
    */
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
   private WikiService wikiService;
 
   /**
-   * Initialise the wiki service connector
+   * Initializes the Wiki search service.
    *
-   * @param initParams Parameters
+   * @param initParams The params object which is used for initializing the Wiki search service.
    */
   public WikiSearchServiceConnector(InitParams initParams) {
     super(initParams);
@@ -61,16 +61,16 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
 
     /**
-     * The connectors must implement this search method, with the following parameters and return a collection of SearchResult
+     * Implements the search method by given criteria.
      *
-     * @param context Search context
-     * @param query The user-input query to search for
-     * @param sites Search on these specified sites only (e.g acme, intranet...)
-     * @param offset Start offset of the result set
-     * @param limit Maximum size of the result set
-     * @param sort The field to sort the result set
-     * @param order Sort order (ASC, DESC)
-     * @return a collection of SearchResult
+     * @param context The search context.
+     * @param query The query statement.
+     * @param sites Specified sites where the search is performed (for example Acme, or Intranet).
+     * @param offset The start point from which the search results are returned.
+     * @param limit The limitation number of search results.
+     * @param sort The sorting criteria (title, relevancy and date).
+     * @param order The sorting order (ascending and descending).
+     * @return Search results.
      */
   @Override
   public Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
@@ -109,11 +109,11 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
 
   /**
-   * Sort the results based on the order and labels
+   * Sorts search results by order and sorting criteria.
    *
-   * @param searchResults The list of results
-   * @param sort Can be orderred by title, relevancy or date
-   * @param order ASC or DESC
+   * @param searchResults The list of search results.
+   * @param sort The sorting criteria, including title, relevancy and date.
+   * @param order The sorting order, including ascending and descending.
    */
   private void sortSearchResult(List<SearchResult> searchResults, String sort, String order) {
     if (StringUtils.isEmpty(sort)) {
@@ -160,20 +160,21 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
 
   /**
-   * Get the icon for the wiki pages
+   * Gets an URL to the icon representing the wiki pages.
    *
-   * @param wikiSearchResult A simple result from the search
-   * @return The url of the icon
+   * @param wikiSearchResult The search result of Wiki.
+   * @return The icon URL.
+   * @return URL of the icon.
    */
   private String getResultIcon(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     return WIKI_PAGE_ICON;
   }
 
   /**
-   * Get all the information of the page result
+   * Gets a wiki page by a given search result.
    *
-   * @param result A simple result from the search
-   * @return The page
+   * @param result The search result of Wiki.
+   * @return The wiki page.
    * @throws Exception
    */
   private PageImpl getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
@@ -188,10 +189,12 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
 
   /**
-   * Return the detail of the page based on the result
+   * Gets a string which represents the wiki page containing the search result.
+   * 
+   * The string format is: <b>PageOwner - UpdateDate</b>.
    *
-   * @param wikiSearchResult A simple result from the search
-   * @return The detail of the result
+   * @param wikiSearchResult The search result of Wiki.
+   * @return The string.
    */
   private String getPageDetail(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer pageDetail = new StringBuffer();
@@ -227,11 +230,11 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
 
   /**
-   * Return the permalink of the result from the search
+   * Gets a permalink of the wiki page by a given search result.
    *
-   * @param context Not Used
-   * @param wikiSearchResult A simple result from the search
-   * @return The permalink of the result
+   * @param context The search context.
+   * @param wikiSearchResult The search result of Wiki.
+   * @return The wiki page permalink.
    */
   private String getPagePermalink(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer permalink = new StringBuffer();
@@ -269,11 +272,11 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   }
 
   /**
-   * Format the result as expected by the unified search
+   * Formats a search result which is used for the unified search.
    *
-   * @param context The context url
-   * @param wikiSearchResult A simple result from the search
-   * @return A result formated
+   * @param context The context URL.
+   * @param wikiSearchResult The search result of Wiki.
+   * @return The formated search result.
    */
   private SearchResult buildResult(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     try {
