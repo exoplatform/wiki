@@ -139,13 +139,25 @@ public class Utils {
     if (logByPage == null) {
       logByPage = new HashMap<String, WikiPageHistory>();
       editPageLogs.put(pageId, logByPage);
-    } else {
-      WikiPageHistory logByUsername = logByPage.get(username);
-      if (logByUsername == null) {
-        logByUsername = new WikiPageHistory(pageParams, username, draftName, isNewPage);
-        logByPage.put(username, logByUsername);
-      }
-      logByUsername.setEditTime(updateTime);
+    }
+    WikiPageHistory logByUsername = logByPage.get(username);
+    if (logByUsername == null) {
+      logByUsername = new WikiPageHistory(pageParams, username, draftName, isNewPage);
+      logByPage.put(username, logByUsername);
+    }
+    logByUsername.setEditTime(updateTime);
+  }
+  
+  /**
+   * removes the log of user editing page.
+   * @param pageParams
+   * @param user
+   */
+  public static void removeLogEditPage(WikiPageParams pageParams, String user) {
+    String pageId = pageParams.getPageId();
+    Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
+    if (logByPage != null) {
+      logByPage.remove(user);
     }
   }
   
@@ -166,7 +178,7 @@ public class Utils {
       // Find all the user that editting this page
       for (String username : logByPage.keySet()) {
         WikiPageHistory log = logByPage.get(username);
-        if (System.currentTimeMillis() - log.getEditTime() < wikiService.getSaveDraftSequenceTime()) {
+        if (System.currentTimeMillis() - log.getEditTime() < wikiService.getEditPageLivingTime()) {
           if (!username.equals(currentUser) && !log.isNewPage()) {
             edittingUsers.add(username);
           }

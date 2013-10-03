@@ -129,6 +129,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private long                  autoSaveInterval;
   
+  private long editPageLivingTime_;
+  
   private String wikiWebappUri;
 
   public WikiServiceImpl(ConfigurationManager configManager,
@@ -153,6 +155,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (StringUtils.isEmpty(wikiWebappUri)) {
       wikiWebappUri = DEFAULT_WIKI_NAME;
     }
+    editPageLivingTime_ = Long.parseLong(initParams.getValueParam("wiki.editPage.livingTime").getValue());
   }
   
   @Override
@@ -911,6 +914,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public long getSaveDraftSequenceTime() {
     return autoSaveInterval;
+  }
+  
+  @Override
+  public long getEditPageLivingTime() {
+    return editPageLivingTime_;
   }
   
   @Override

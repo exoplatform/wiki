@@ -303,6 +303,13 @@ public interface WikiService {
    * @return The interval. Its default value is 30 seconds.
    */
   public long getSaveDraftSequenceTime();
+  
+  /**
+   * Get the living time of edited page
+   * 
+   * @return The living time of edited page
+   */
+  public long getEditPageLivingTime();
 
   /**
    * Gets title of a wiki attachment.
