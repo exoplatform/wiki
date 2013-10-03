@@ -44,6 +44,11 @@
     <key>org.exoplatform.wiki.service.WikiService</key>
     <type>org.exoplatform.wiki.service.impl.WikiServiceImpl</type>
     <init-params>
+      <value-param>
+        <name>wiki.editPage.livingTime</name>
+        <value>${wiki.editPage.livingTime:1800000}</value>
+        <!-- 30m * 60s * 1000ms -->
+      </value-param>
       <values-param>
         <name>xwiki/2.0</name>
         <value>jar:/wikisyntax/help/xWiki2.0_Short.txt</value>

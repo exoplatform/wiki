@@ -101,171 +101,176 @@ public class SavePageActionComponent extends UIComponent {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-      UIWikiPageTitleControlArea pageTitleControlForm = wikiPortlet.findComponentById(UIWikiPageControlArea.TITLE_CONTROL);
-      UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
-      UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
-      UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
-      UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
-      UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
-      String syntaxId = Utils.getDefaultSyntax();
-      RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
       Page page = Utils.getCurrentWikiPage();
-      Utils.setUpWikiContext(wikiPortlet);
-      String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-      boolean isRenamedPage = false;
-      boolean isContentChange = false;
-
-      try {
-        WikiNameValidator.validate(titleInput.getValue());
-      } catch (IllegalNameException ex) {
-        String msg = ex.getMessage();
-        ApplicationMessage appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
-                                                           null,
-                                                           ApplicationMessage.WARNING);
-        if (msg != null) {
-          Object[] arg = { msg };
-          appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",
-                                          arg,
-                                          ApplicationMessage.WARNING);
+      if (page != null) {
+        UIWikiPageTitleControlArea pageTitleControlForm = wikiPortlet.findComponentById(UIWikiPageControlArea.TITLE_CONTROL);
+        UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
+        UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
+        UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
+        UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
+        UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
+        String syntaxId = Utils.getDefaultSyntax();
+        RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
+        Utils.setUpWikiContext(wikiPortlet);
+        String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+        boolean isRenamedPage = false;
+        boolean isContentChange = false;
+  
+        try {
+          WikiNameValidator.validate(titleInput.getValue());
+        } catch (IllegalNameException ex) {
+          String msg = ex.getMessage();
+          ApplicationMessage appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
+                                                             null,
+                                                             ApplicationMessage.WARNING);
+          if (msg != null) {
+            Object[] arg = { msg };
+            appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",
+                                            arg,
+                                            ApplicationMessage.WARNING);
+          }
+          event.getRequestContext().getUIApplication().addMessage(appMsg);
+          event.getRequestContext().setProcessRender(true);
         }
-        event.getRequestContext().getUIApplication().addMessage(appMsg);
-        event.getRequestContext().setProcessRender(true);
-      }
-      if (event.getRequestContext().getProcessRender()) {
-        Utils.redirect(pageParams, wikiPortlet.getWikiMode());
-        return;
-      }
-
-      String title = titleInput.getValue().trim();
-      if (wikiRichTextArea.isRendered()) {
-        String htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
-        String markupContent = renderingService.render(htmlContent,
-                                                       Syntax.XHTML_1_0.toIdString(),
-                                                       syntaxId,
-                                                       false);
-        markupInput.setValue(markupContent);
-      }
-      String markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
-      markup = markup.trim();
-
-      String newPageId = TitleResolver.getId(title, false);
-      if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        // as wiki home page has fixed name (never edited anymore), every title changing is accepted.
-        ;
-      } else if (newPageId.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        // if page title is not changed in editing phase, do not need to check its existence.
-        ;
-      } else if (wikiService.isExisting(pageParams.getType(), pageParams.getOwner(), newPageId)) {
-        // if new page title is duplicated with existed page's.
-        if (log.isDebugEnabled()) log.debug("The title '" + title + "' is already existing!");
-        event.getRequestContext()
-             .getUIApplication()
-             .addMessage(new ApplicationMessage("SavePageAction.msg.warning-page-title-already-exist",
-                                                null,
-                                                ApplicationMessage.WARNING));
-        Utils.redirect(pageParams, wikiPortlet.getWikiMode());
-        return;
-      }
-
-      try {
-        if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-          if (wikiPortlet.getEditMode() == EditMode.SECTION) {
-            newPageId = page.getName();
-            title = page.getTitle();
-            markup = renderingService.updateContentOfSection(page.getContent().getText(),
-                                                             page.getSyntax(),
-                                                             wikiPortlet.getSectionIndex(),
-                                                             markup);
-            isContentChange = true;
-          }
-          
-          // Check if publish activity on activity stream
-          UICheckBoxInput publishActivityCheckBox = wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
-          page.setMinorEdit(!publishActivityCheckBox.isChecked());
-          pageEditForm.synPublishActivityStatus(false);
-          
-          // Check if the title is change or not
-          if (!page.getTitle().equals(title)) {
-            isRenamedPage = true;
-          }
-          
-          // Rename page if need
-          if (!page.getName().equals(newPageId)) {
-            wikiService.renamePage(pageParams.getType(),
-                                   pageParams.getOwner(),
-                                   page.getName(),
-                                   newPageId,
-                                   title);
-          }
-
-          synchronized (page.getJCRPageNode().getUUID()) {
-            page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
-            page.setSyntax(syntaxId);
-            pageTitleControlForm.getUIFormInputInfo().setValue(title);
-            pageParams.setPageId(page.getName());
-            page.setURL(Utils.getURLFromParams(pageParams));
-            
-            if (!page.getContent().getText().equals(markup)) {
-              page.getContent().setText(markup);
+        if (event.getRequestContext().getProcessRender()) {
+          Utils.redirect(pageParams, wikiPortlet.getWikiMode());
+          return;
+        }
+  
+        String title = titleInput.getValue().trim();
+        if (wikiRichTextArea.isRendered()) {
+          String htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
+          String markupContent = renderingService.render(htmlContent,
+                                                         Syntax.XHTML_1_0.toIdString(),
+                                                         syntaxId,
+                                                         false);
+          markupInput.setValue(markupContent);
+        }
+        String markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
+        markup = markup.trim();
+  
+        String newPageId = TitleResolver.getId(title, false);
+        if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
+          // as wiki home page has fixed name (never edited anymore), every title changing is accepted.
+          ;
+        } else if (newPageId.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
+          // if page title is not changed in editing phase, do not need to check its existence.
+          ;
+        } else if (wikiService.isExisting(pageParams.getType(), pageParams.getOwner(), newPageId)) {
+          // if new page title is duplicated with existed page's.
+          if (log.isDebugEnabled()) log.debug("The title '" + title + "' is already existing!");
+          event.getRequestContext()
+               .getUIApplication()
+               .addMessage(new ApplicationMessage("SavePageAction.msg.warning-page-title-already-exist",
+                                                  null,
+                                                  ApplicationMessage.WARNING));
+          Utils.redirect(pageParams, wikiPortlet.getWikiMode());
+          return;
+        }
+  
+        try {
+          if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
+            if (wikiPortlet.getEditMode() == EditMode.SECTION) {
+              newPageId = page.getName();
+              title = page.getTitle();
+              markup = renderingService.updateContentOfSection(page.getContent().getText(),
+                                                               page.getSyntax(),
+                                                               wikiPortlet.getSectionIndex(),
+                                                               markup);
               isContentChange = true;
             }
- 
-            if (!pageEditForm.getTitle().equals(title)) {
-              page.setTitle(title);
-              ((PageImpl) page).checkin();
-              ((PageImpl) page).checkout();
-              pageParams.setPageId(newPageId);
+            
+            // Check if publish activity on activity stream
+            UICheckBoxInput publishActivityCheckBox = wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
+            page.setMinorEdit(!publishActivityCheckBox.isChecked());
+            pageEditForm.synPublishActivityStatus(false);
+            
+            // Check if the title is change or not
+            if (!page.getTitle().equals(title)) {
+              isRenamedPage = true;
+            }
+            // Rename page if need
+            if (!page.getName().equals(newPageId)) {
+              wikiService.renamePage(pageParams.getType(),
+                                     pageParams.getOwner(),
+                                     page.getName(),
+                                     newPageId,
+                                     title);
+            }
+  
+            synchronized (page.getJCRPageNode().getUUID()) {
+              page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
+              page.setSyntax(syntaxId);
+              pageTitleControlForm.getUIFormInputInfo().setValue(title);
+              pageParams.setPageId(page.getName());
+              page.setURL(Utils.getURLFromParams(pageParams));
+              
+              if (!page.getContent().getText().equals(markup)) {
+                page.getContent().setText(markup);
+                isContentChange = true;
+              }
+   
+              if (!pageEditForm.getTitle().equals(title)) {
+                page.setTitle(title);
+                ((PageImpl) page).checkin();
+                ((PageImpl) page).checkout();
+                pageParams.setPageId(newPageId);
+              } else {
+                ((PageImpl) page).checkin();
+                ((PageImpl) page).checkout();
+              }
+              
+              if (!"__anonim".equals(currentUser)) {
+                wikiService.removeDraft(pageParams);
+              }
+             }
+            
+            // Post edit content activity
+            if (isRenamedPage && isContentChange) {
+              wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
+            } else if (isRenamedPage) {
+              wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
+            } else if (isContentChange) {
+              wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_TYPE);
+            }
+          } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
+            Page draftPage = Utils.getCurrentNewDraftWikiPage();
+            Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
+            Page addedPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
+            pageParams.setPageId(newPageId);
+            addedPage.setURL(Utils.getURLFromParams(pageParams));
+            addedPage.getContent().setText(markup);
+            addedPage.setSyntax(syntaxId);
+            ((PageImpl) addedPage).getAttachments().addAll(attachs);
+            ((PageImpl) addedPage).checkin();
+            ((PageImpl) addedPage).checkout();
+            draftPage.remove();
+  
+            // remove the draft for new page
+            Page parentPage = addedPage.getParentPage();
+            DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
+            if (contentDraftPage == null) {
+              Map<String, WikiPageHistory> pageLogs = org.exoplatform.wiki.utils.Utils.getLogOfPage(parentPage.getName());
+              WikiPageHistory log = pageLogs.get(currentUser);
+              if ((log != null) && log.isNewPage()) {
+                wikiService.removeDraft(log.getDraftName());
+              }
             } else {
-              ((PageImpl) page).checkin();
-              ((PageImpl) page).checkout();
+              contentDraftPage.remove();
             }
             
-            if (!"__anonim".equals(currentUser)) {
-              wikiService.removeDraft(pageParams);
-            }
-           }
-          
-          // Post edit content activity
-          if (isRenamedPage && isContentChange) {
-            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
-          } else if (isRenamedPage) {
-            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
-          } else if (isContentChange) {
-            wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_TYPE);
+            // Post add activity
+            wikiService.postAddPage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), addedPage);
           }
-        } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-          Page draftPage = Utils.getCurrentNewDraftWikiPage();
-          Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
-          Page addedPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
-          pageParams.setPageId(newPageId);
-          addedPage.setURL(Utils.getURLFromParams(pageParams));
-          addedPage.getContent().setText(markup);
-          addedPage.setSyntax(syntaxId);
-          ((PageImpl) addedPage).getAttachments().addAll(attachs);
-          ((PageImpl) addedPage).checkin();
-          ((PageImpl) addedPage).checkout();
-          draftPage.remove();
-
-          // remove the draft for new page
-          Page parentPage = addedPage.getParentPage();
-          DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
-          if (contentDraftPage == null) {
-            Map<String, WikiPageHistory> pageLogs = org.exoplatform.wiki.utils.Utils.getLogOfPage(parentPage.getName());
-            WikiPageHistory log = pageLogs.get(currentUser);
-            if ((log != null) && log.isNewPage()) {
-              wikiService.removeDraft(log.getDraftName());
-            }
-          } else {
-            contentDraftPage.remove();
-          }
-          
-          // Post add activity
-          wikiService.postAddPage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), addedPage);
+          org.exoplatform.wiki.utils.Utils.removeLogEditPage(pageParams, currentUser);
+        } catch (Exception e) {
+          log.error("An exception happens when saving the page with title:" + title, e);
+          event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIPageToolBar.msg.Exception", null, ApplicationMessage.ERROR));
+        } finally {
+          wikiPortlet.changeMode(WikiMode.VIEW);
+          Utils.redirect(pageParams, WikiMode.VIEW);
         }
-      } catch (Exception e) {
-        log.error("An exception happens when saving the page with title:" + title, e);
-        event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIPageToolBar.msg.Exception", null, ApplicationMessage.ERROR));
-      } finally {
+      } else {
         wikiPortlet.changeMode(WikiMode.VIEW);
         Utils.redirect(pageParams, WikiMode.VIEW);
       }
