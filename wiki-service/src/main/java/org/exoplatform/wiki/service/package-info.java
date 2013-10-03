@@ -1,4 +1,4 @@
 /**
- * Wiki Services classes to handle all actions on the wiki.
+ * Handles all actions in Wiki.
  */
 package org.exoplatform.wiki.service;

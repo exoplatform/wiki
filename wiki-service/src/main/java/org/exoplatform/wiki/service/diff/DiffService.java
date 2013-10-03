@@ -31,17 +31,17 @@ import org.suigeneris.jrcs.diff.delta.Delta;
 import org.suigeneris.jrcs.util.ToString;
 
 /**
- * This service provide different methods to be able to compare and make a diff list between content.
+ * Provides different methods which are used for comparing and making a list of differences between content.
  *
  * @LevelAPI Experimental
  */
 public class DiffService {
 
   /**
-   * Return a list of Delta objects representing line differences in text1 and text2
-   * @param text1 original content
-   * @param text2 revised content
-   * @return list of Delta objects
+   * Gets a list of Delta objects representing line differences between text1 and text2.
+   * @param text1 The original content.
+   * @param text2 The revised content.
+   * @return The list of Delta objects.
    * @throws DifferentiationFailedException 
    */
   public List getDifferencesAsList(String text1, String text2) throws DifferentiationFailedException {
@@ -53,10 +53,10 @@ public class DiffService {
   }
 
   /**
-   * Return a list of Delta objects representing word differences in text1 and text2
-   * @param text1 original content
-   * @param text2 revised content
-   * @return list of Delta objects
+   * Gets a list of Delta objects representing word differences between text1 and text2.
+   * @param text1 The original content.
+   * @param text2 The revised content.
+   * @return The list of Delta objects.
    * @throws DifferentiationFailedException 
    */
   public List getWordDifferencesAsList(String text1, String text2) throws DifferentiationFailedException {
@@ -66,10 +66,10 @@ public class DiffService {
   }
 
   /**
-   * Return a DiffResult object representing word diffs between text1 and text2
-   * @param text1 original content
-   * @param text2 revised content
-   * @return list of Delta objects
+   * Gets a Delta object containing word differences between text1 and text2.
+   * @param text1 The original content.
+   * @param text2 The revised content.
+   * @return The Delta object.
    * @throws DifferentiationFailedException 
    */
   public DiffResult getWordDifferencesAsHTML(String text1, String text2) throws DifferentiationFailedException {
@@ -145,11 +145,11 @@ public class DiffService {
   }
   
   /**
-   * Return a DiffResult object representing line diffs between text1 and text2
-   * @param text1 original content
-   * @param text2 revised content
-   * @param allDoc show all document
-   * @return list of Delta objects
+   * Gets a Delta object containing line differences in the HTML format between text1 and text2.
+   * @param text1 The original content.
+   * @param text2 The revised content.
+   * @param allDoc Shows the whole content.
+   * @return The Delta object.
    * @throws DifferentiationFailedException 
    */
   public DiffResult getDifferencesAsHTML(String text1, String text2, boolean allDoc) throws DifferentiationFailedException {
@@ -267,9 +267,9 @@ public class DiffService {
   }
 
   /**
-   * Return a list of delta based on a wiki page revision
-   * @param rev
-   * @return list of delta
+   * Gets a list of Delta objects by a wiki page revision.
+   * @param rev The wiki page revision.
+   * @return The list of Delta objects.
    */
   protected List getDeltas(Revision rev) {
     ArrayList list = new ArrayList();
@@ -280,9 +280,9 @@ public class DiffService {
   }
 
   /**
-   * Escape string by using a common filter
-   * @param text the text to escape
-   * @return string
+   * Escapes a string by a common filter.
+   * @param text The text to escape.
+   * @return The string.
    */
   protected String escape(String text) {
     Filter filter = new CharacterFilter();

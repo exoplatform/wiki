@@ -22,50 +22,55 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 /**
- * This service Manage the Rendering Cache of wiki pages.
- * The cache storage store all html markup from page wiki markup. Therefore, it saves much time in rendering markup, especially with long content page.
- * Generally, its workflow as:
- * Open a page, does this page's html markup exist in the cache ?
- * - Yes = reuse this one.
- * - No = Render the page and add to the cache.
- * Editing a page  = invalidating the cache page.
+ * Manages the Rendering Cache of wiki pages.
+ * The cache stores all HTML markups from the wiki page markups. Therefore, it saves much time in rendering markups, especially with a long content page.
+ * Generally, its workflow is as follows:
+ * <ul>
+ * <li>Open a page, does the page HTML markup exist in the cache?
+ * <ul>
+ * <li>Yes = Reuses this one. </li>
+ * <li> No = Renders the page and adds the page HTML markup to the cache.</li>
+ * </ul>
+ * </li>
+ * <li>Editing a page  = Invalidates the page HTML markup in the cache.</li>
+ * </ul>
  *
  * @LevelAPI Experimental
  */
 public interface PageRenderingCacheService {
   
   /**
-   * Get rendered content of a wiki page
-   * @param param the parameter to specify the wiki page
-   * @param targetSyntax the syntax to be display
-   * @return the rendered content
+   * Gets the rendered content of a wiki page.
+   * @param param The parameter which specifies the wiki page.
+   * @param targetSyntax The syntax to be displayed.
+   * @return The rendered content.
    */
   public String getRenderedContent(WikiPageParams param, String targetSyntax);
   
   /**
-   * Get the rendering cache
-   * @return the rendering cache
+   * Gets the rendering cache.
+   * @return The rendering cache.
    */
   public ExoCache<Integer, MarkupData> getRenderingCache();
   
   /**
-   * Return the collection of connections of page. In details, a connections is
-   * built if in content of a page, there is a link to another page
+   * Returns a collection of connections of a wiki page. In details, a connection is
+   * built if there is a link to another page in the page content.
    * 
-   * @return the map of connection
+   * @return The map of connections.
    */
   public Map<WikiPageParams, java.util.List<WikiPageParams>> getPageLinksMap();
   
   /**
-   * Record a link between two pages
-   * @param param identity parameter of a page to add
-   * @param entity identity parameter of page to be added
+   * Adds a link between two pages.
+   * @param param The identity parameter of the wiki page to add.
+   * @param entity The identity parameter of the wiki page to be added.
    */
   public void addPageLink(WikiPageParams param, WikiPageParams entity);
   
   /**
-   * Invalidate all cache entries link to a page in case this page is removed, changed or renamed...
-   * @param param specify identity of a page
+   * Invalidates all cache entries linking to a page in case this page is removed, changed or renamed.
+   * @param param The parameter which specifies the wiki page identity.
    */
   public void invalidateCache(WikiPageParams param);
 }
