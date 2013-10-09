@@ -47,6 +47,7 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
+import org.exoplatform.wiki.webui.UIWikiPermissionForm.Scope;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
 import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
 
@@ -193,6 +194,14 @@ public class UIWikiPortlet extends UIPortletApplication {
         }
       }
 
+      // Check to close wikiPagePermissionForm
+      if (!WikiMode.VIEW.equals(this.getWikiMode())) {
+        UIWikiPermissionForm wikiPermissionForm = this.findComponentById("UIWikiPagePermissionForm");
+        if (wikiPermissionForm != null && Scope.PAGE.equals(wikiPermissionForm.getScope())) {
+          this.getPopupContainer(wikiPermissionForm.getPopupLevel()).deActivate();
+        }
+      }
+      
       super.processRender(app, context);
 
       if (getWikiMode() == WikiMode.HELP) {
