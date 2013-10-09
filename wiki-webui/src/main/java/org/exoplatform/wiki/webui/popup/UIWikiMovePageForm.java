@@ -44,6 +44,7 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.tree.TreeNode;
 import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
@@ -260,6 +261,17 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
              .addMessage(new ApplicationMessage("UIWikiMovePageForm.msg.no-permission-at-destination", null, ApplicationMessage.WARNING));
         return;
       }
+      
+      
+      // Update Page URL
+      movepage.setURL(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
+      
+      // Post activity
+      wservice.postUpdatePage(newLocationParams.getType(),
+                              newLocationParams.getOwner(),
+                              movepage.getName(),
+                              movepage,
+                              PageWikiListener.MOVE_PAGE_TYPE);
       
       // Redirect to new location
       UIPopupContainer popupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);    
