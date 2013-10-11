@@ -22,7 +22,7 @@ import org.xwiki.gwt.wysiwyg.client.wiki.EntityReference;
 import org.xwiki.gwt.wysiwyg.client.wiki.ResourceReference;
 
 /**
- *  The LinkService manage 2 different type of link, the {@link EntityConfig} and the link reference.
+ * Manages 2 different link types: EntityConfig and EntityReference.
  *
  * @LevelAPI Experimental
  */
@@ -30,22 +30,22 @@ import org.xwiki.gwt.wysiwyg.client.wiki.ResourceReference;
 public interface LinkService {
 
   /**
-   * Creates an entity link configuration object (URL, link reference) for a link with the specified origin and
-   * destination. The link reference in the returned {@link EntityConfig} is relative to the link origin.
+   * Creates an EntityConfig (URL and reference) for a link with the specified origin and
+   * destination. The link reference in the returned EntityConfig is relative to the link origin.
    * 
-   * @param origin the origin of the link
-   * @param destination the destination of the link
-   * @return the link configuration object that can be used to insert the link in the origin page
+   * @param origin Origin of the link.
+   * @param destination Destination of the link.
+   * @return The entity link that can be used to insert the link in the origin.
    */
   EntityConfig getEntityConfig(EntityReference origin, ResourceReference destination);
 
   /**
-   * Parses the given link reference and extracts a reference to the linked entity. The returned entity reference is
-   * resolved relative to the given base entity reference.
+   * Parses a given link reference and extracts a reference to the linked entity. The returned entity reference is
+   * resolved that is relative to the given base entity reference.
    * 
-   * @param linkReference a link reference pointing to an entity of the specified type
-   * @param baseReference the entity reference used to resolve the linked entity reference
-   * @return a reference to the linked entity
+   * @param linkReference The link reference pointing to the entity.
+   * @param baseReference The entity reference which is used for resolving the linked entity reference.
+   * @return The link reference to the entity.
    */
   ResourceReference parseLinkReference(String linkReference, EntityReference baseReference);
 
