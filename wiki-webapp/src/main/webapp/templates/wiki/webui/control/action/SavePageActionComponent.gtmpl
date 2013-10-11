@@ -1,5 +1,5 @@
 <%  
-  String link = uicomponent.getActionLink(); 
+  String link = "eXo.wiki.UIWikiPageEditForm.setPageSaved();" + uicomponent.getActionLink(); 
   String titleMessage = _ctx.appRes("UIConfirmBox.label.Confirmation");
   String addMessage = _ctx.appRes("UIConfirmBox.label.ConfirmAdd");
   String untitledMessage = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
@@ -14,6 +14,7 @@
   requireJs.require("SHARED/UIWikiSavePage", "UIWikiSavePage");
   requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");
   requireJs.require("SHARED/UIForm", "UIForm");
+  requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
 %>
 <a style="display:none" id="link_$uicomponent.id" href="$link"></a>
 <button type="button" id="$uicomponent.id" onclick="if(eXo.wiki.UIWikiSavePage.confirm('$uicomponent.id', $isNewMode, '$pageTitleInputId', '$untitledMessage','$titleMessage',  '$addMessage',  'SavePage Icon',  '$confirmLabel','$cancelLabel')) $link;" class="btn btn-primary">
