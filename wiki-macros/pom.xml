@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>4.1.x-wiki-stabilization-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-macros</artifactId>
   <packaging>pom</packaging>
