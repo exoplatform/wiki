@@ -49,6 +49,7 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
   
   protected GroupWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
     //Group wikis is stored in /Groups/$wikiOwner/ApplicationData/eXoWiki/WikiHome
+    boolean isCreatedWikiObject = false;
     wikiOwner = validateWikiOwner(wikiOwner);
     if(wikiOwner == null){
       return null;
@@ -73,6 +74,7 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
         if (createIfNonExist) {
           wikiNode = groupDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.GROUP_WIKI);
           groupDataNode.save();
+          isCreatedWikiObject = true;
         } else {
           return null;
         }
@@ -85,7 +87,9 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
     gwiki.setOwner(wikiOwner);
     gwiki.setGroupWikis(this);
     gwiki.getPreferences();
-    initDefaultPermisisonForWiki(gwiki);
+    if(isCreatedWikiObject) {
+      initDefaultPermisisonForWiki(gwiki);
+    }
     session.save();
     return gwiki;
   }
