@@ -126,8 +126,7 @@ public class UIWikiPortlet extends UIPortletApplication {
   }
 
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
-    //for each new request, remove the currentWikiPage in cache
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
     PortletRequestContext portletReqContext = (PortletRequestContext) context;
     redirectURL = this.url(this.REDIRECT_ACTION);
     loadPreferences();
@@ -141,7 +140,7 @@ public class UIWikiPortlet extends UIPortletApplication {
                                      .setRendered(portletPreferences.isShowBreadcrumb());     
       String requestURL = Utils.getCurrentRequestURL();
       Page page = Utils.getCurrentWikiPage();
-      
+
       if (page == null) {
         changeMode(WikiMode.PAGE_NOT_FOUND);
         super.processRender(app, context);
@@ -206,34 +205,34 @@ public class UIWikiPortlet extends UIPortletApplication {
     } else {
       super.processRender(app, context);
     }
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
   }
   
   /**
    * Overrides processRender, clear TheadLocal cache containing current Wiki Page Object
    */
   public void processRender(WebuiRequestContext context) throws Exception {
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
     super.processRender(context);
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
   }
   
   /**
    * Overrides processAction, clear TheadLocal cache containing current Wiki Page Object
    */
   public void processAction(WebuiRequestContext context) throws Exception {
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
     super.processAction(context);
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
   }
   
   /**
    * Overrides processDecode, clear TheadLocal cache containing current Wiki Page Object
    */
   public void processDecode(WebuiRequestContext context) throws Exception {
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
     super.processDecode(context);
-    Utils.clearCurrentWikiPage();
+    Utils.clearWikiPagesCache();
   }
 
   public UIPopupContainer getPopupContainer(PopupLevel level) {
