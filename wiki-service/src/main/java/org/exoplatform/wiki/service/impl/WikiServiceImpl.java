@@ -284,11 +284,10 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
       }
       session.save();
-      
+
       org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
       .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, pageId));
-      // Post activity
-      postDeletePage(wikiType, wikiOwner, pageId, page);
+   
     } catch (Exception e) {
       log.error("Can't delete page '" + pageId + "' ", e) ;
       return false;
