@@ -51,8 +51,8 @@
     <org.gatein.wci.version>2.3.0.Final</org.gatein.wci.version>
     <org.gatein.portal.version>3.5.8.Final-SNAPSHOT</org.gatein.portal.version>
     <!-- Platform Project Dependencies -->
-    <org.exoplatform.commons.version>4.1.x-commons-search-selector-SNAPSHOT</org.exoplatform.commons.version>
-    <org.exoplatform.social.version>4.1.x-soc-search-selector-SNAPSHOT</org.exoplatform.social.version>
+    <org.exoplatform.commons.version>4.1.0-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.social.version>4.1.0-SNAPSHOT</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>4.1.0-SNAPSHOT</org.exoplatform.platform-ui.version>
     <!-- Platform Project 3rd party Dependencies -->
   </properties>
