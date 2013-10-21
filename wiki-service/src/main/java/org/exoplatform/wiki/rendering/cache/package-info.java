@@ -1,5 +1,5 @@
 /**
- * Wiki Rendering Cache handles different parts of the cache organization.
- * The cache storage store all html markup from page wiki markup.
+ * Handles different parts of the cache organization.
+ * The cache stores all HTML markups from the page wiki markup.
  */
 package org.exoplatform.wiki.rendering.cache;

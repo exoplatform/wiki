@@ -270,12 +270,20 @@ public class WikiServiceImpl implements WikiService, Startable {
       LinkRegistry linkRegistry = wiki.getLinkRegistry();
       if (linkRegistry.getLinkEntries().get(getLinkEntryName(wikiType, wikiOwner, pageId)) != null) {
         linkRegistry.getLinkEntries().get(getLinkEntryName(wikiType, wikiOwner, pageId)).setNewLink(null);
+      }     
+      // Post delete activity for all children pages
+      Queue<PageImpl> queue = new LinkedList<PageImpl>();
+      queue.add(page);
+      PageImpl tempPage = null;
+      while(!queue.isEmpty()) {
+        tempPage = queue.poll();
+        postDeletePage(wikiType, wikiOwner, tempPage.getName(), tempPage);
+        Iterator<PageImpl> iter = tempPage.getChildPages().values().iterator();
+        while(iter.hasNext()) {
+          queue.add(iter.next());
+        }
       }
-      
       session.save();
-      
-      // Post activity
-      postDeletePage(wikiType, wikiOwner, pageId, page);
     } catch (Exception e) {
       log.error("Can't delete page '" + pageId + "' ", e) ;
       return false;

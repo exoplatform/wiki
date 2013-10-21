@@ -35,6 +35,7 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   me.pageRevision = pageRevision || me.pageRevision;
   me.isDraftForNewPage = isDraftForNewPage || me.isDraftForNewPage;
   me.autoSaveSequeneTime = autoSaveSequeneTime || me.autoSaveSequeneTime;
+  me.pageSaved = false;
 	
   var pageEditForm = document.getElementById(me.pageEditFormId);
   if (!pageEditForm) {
@@ -152,10 +153,16 @@ UIWikiPageEditForm.prototype.createRestParam = function() {
     + "&lastDraftName=" + me.draftName + "&pageRevision=" + me.pageRevision + "&isNewPage=" + me.isDraftForNewPage
     + "&clientTime=" + clientTime;
 };
+
+// sets status of page as saved to avoid running autosave after click 'save' button but before page is reloaded
+UIWikiPageEditForm.prototype.setPageSaved = function() {
+  var me = eXo.wiki.UIWikiPageEditForm;
+  me.pageSaved = true;
+}
  
 UIWikiPageEditForm.prototype.saveDraft = function() {
   var me = eXo.wiki.UIWikiPageEditForm;
-  if (!me.isRunAutoSave) {
+  if (!me.isRunAutoSave || me.pageSaved) {
     return;
   }
   
@@ -187,7 +194,7 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
   if (me.restParam) {
     var dataString = {'title': pageTitle, 'content': pageContent, 'isMarkup': isMarkup, 'uuid': uuid}
     $.ajax({
-    async : false,
+    async : true,
     url : me.restURL + me.restParam,
     contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
     type : 'POST',
@@ -242,7 +249,7 @@ UIWikiPageEditForm.prototype.onNotKeepDraftFunction = function()  {
   
   // Call rest request to remove draft
   $.ajax({
-    async : false,
+    async : true,
     url : me.removeDraftRestUrl + "?draftName=" + me.draftName,
     type : 'GET'
   });
