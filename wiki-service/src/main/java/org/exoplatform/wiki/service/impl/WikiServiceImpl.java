@@ -689,7 +689,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     String username = Utils.getCurrentUser();
     Page existedPage = getPageByRootPermission(wikiType, wikiOwner, pageId);
     if (existedPage != null) {
-      if (username == null || existedPage.hasPermission(PermissionType.EDITPAGE)) {
+      if (username == null || existedPage.hasPermission(PermissionType.EDITPAGE) || existedPage.hasPermission(PermissionType.VIEW_ATTACHMENT)) {
         return existedPage;
       }
     }
