@@ -371,7 +371,11 @@ public class WikiServiceImpl implements WikiService, Startable {
       newEntry.setAlias(newEntryAlias);
       newEntry.setNewLink(newEntry);
       newEntry.setTitle(newTitle);
-      entry.setNewLink(newEntry);
+      if (entry != null) {
+        entry.setNewLink(newEntry);
+      }
+    } else if (entry == null) {
+      newEntry.setNewLink(newEntry);
     } else {
       processCircularRename(entry, newEntry);
     }
@@ -431,27 +435,41 @@ public class WikiServiceImpl implements WikiService, Startable {
       // Set permission to page
       movePage.setPermission(pagePermission);
       
-      session.save();
       
       //update LinkRegistry
-      if (!newLocationParams.getType().equals(currentLocationParams.getType())) {
+      if (!newLocationParams.getType().equals(currentLocationParams.getType())
+          || (PortalConfig.GROUP_TYPE.equals(currentLocationParams.getType())
+              && !currentLocationParams.getOwner().equals(newLocationParams.getOwner()))) {
         LinkRegistry sourceLinkRegistry = sourceWiki.getLinkRegistry();
         LinkRegistry destLinkRegistry = destWiki.getLinkRegistry();
-        String newEntryName = getLinkEntryName(newLocationParams.getType(), newLocationParams.getOwner(), currentLocationParams.getPageId());
-        String newEntryAlias = getLinkEntryAlias(newLocationParams.getType(), newLocationParams.getOwner(), currentLocationParams.getPageId());
+        String newEntryName = getLinkEntryName(newLocationParams.getType(),
+                newLocationParams.getOwner(),
+                currentLocationParams.getPageId());
+        String newEntryAlias = getLinkEntryAlias(newLocationParams.getType(),
+                newLocationParams.getOwner(),
+                currentLocationParams.getPageId());
         LinkEntry newEntry = destLinkRegistry.getLinkEntries().get(newEntryName);
-        LinkEntry entry = sourceLinkRegistry.getLinkEntries().get(getLinkEntryName(currentLocationParams.getType(), currentLocationParams.getOwner(), currentLocationParams.getPageId()));
+        LinkEntry entry =
+                sourceLinkRegistry.getLinkEntries().get(
+                        getLinkEntryName(currentLocationParams.getType(),
+                                currentLocationParams.getOwner(),
+                                currentLocationParams.getPageId()));
         if (newEntry == null) {
           newEntry = destLinkRegistry.createLinkEntry();
           destLinkRegistry.getLinkEntries().put(newEntryName, newEntry);
           newEntry.setAlias(newEntryAlias);
           newEntry.setNewLink(newEntry);
           newEntry.setTitle(destPage.getTitle());
-          entry.setNewLink(newEntry);
+          if (entry != null) {
+            entry.setNewLink(newEntry);
+          }
+        } else if (entry == null) {
+          newEntry.setNewLink(newEntry);
         } else {
           processCircularRename(entry, newEntry);
         }
       }
+      session.save();
     } catch (Exception e) {
       log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
       return false;
