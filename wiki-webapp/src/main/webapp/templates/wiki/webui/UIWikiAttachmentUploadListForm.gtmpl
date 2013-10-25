@@ -38,7 +38,7 @@
     %>
         <tr>
           <td>
-            <i class="uiIconFile uiIcon$extension"></i>&nbsp;
+            <i class="uiIcon16x16FileDefault uiIcon16x16File$extension"></i>&nbsp;
           	<a rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.DownloadAttachment"); %>" href="$downloadLink" onclick="window.open(this.href); return false;"><%= attachment.getFullTitle() %></a>
           </td>
           <td><%= creator %></td>
