@@ -178,13 +178,9 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
     }
     this.versions = versions;
     NTVersion toVersion = versions.get(to);
-    String toVersionContent = ((AttachmentImpl) toVersion.getNTFrozenNode()
-                                                         .getChildren()
-                                                         .get(WikiNodeType.Definition.CONTENT)).getText();
+    String toVersionContent = toVersion.getNTFrozenNode().getContentString();
     NTVersion fromVersion = versions.get(from);
-    String fromVersionContent = ((AttachmentImpl) fromVersion.getNTFrozenNode()
-                                                             .getChildren()
-                                                             .get(WikiNodeType.Definition.CONTENT)).getText();
+    String fromVersionContent = fromVersion.getNTFrozenNode().getContentString();
     DiffService diffService = this.getApplicationComponent(DiffService.class);
     this.setRendered(true);
     this.setFromVersion(fromVersion);

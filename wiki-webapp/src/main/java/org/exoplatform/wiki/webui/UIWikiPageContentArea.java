@@ -19,20 +19,16 @@ package org.exoplatform.wiki.webui;
 import java.util.Arrays;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
@@ -85,11 +81,12 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     // Render select version content
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
         NTVersion version = wikipage.getVersionableMixin().getVersionHistory().getVersion(currentVersionName);
-        NTFrozenNode frozenNode = version.getNTFrozenNode();
-        AttachmentImpl content = (AttachmentImpl) (frozenNode.getChildren().get(WikiNodeType.Definition.CONTENT));
-        String pageContent = content.getText();
-        String pageSyntax = wikipage.getSyntax();
-        contentDisplay.setHtmlOutput(renderingService.render(pageContent, pageSyntax, Syntax.XHTML_1_0.toIdString(), false));
+        if (version!= null) {
+          NTFrozenNode frozenNode = version.getNTFrozenNode();
+          String pageContent = frozenNode.getContentString();
+          String pageSyntax = wikipage.getSyntax();
+          contentDisplay.setHtmlOutput(renderingService.render(pageContent, pageSyntax, Syntax.XHTML_1_0.toIdString(), false));
+        }
       }
     }catch(ConversionException e){
       contentDisplay.setHtmlOutput("Bad syntax in content! Cannot generate HTML content!");
