@@ -22,19 +22,31 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
+import javax.jcr.Node;
+import javax.jcr.version.Version;
+
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.Destroy;
 import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.Name;
+import org.chromattic.api.annotations.OneToOne;
+import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.utils.Utils;
 
@@ -176,4 +188,70 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
   public int compareTo(AttachmentImpl o) {
     return getName().toLowerCase().compareTo(o.getName().toLowerCase());
   }
+  
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract VersionableMixin getVersionableMixinByChromattic();
+  protected abstract void setVersionableMixinByChromattic(VersionableMixin mix);
+  @Create
+  protected abstract VersionableMixin createVersionableMixin();
+  
+  public VersionableMixin getVersionableMixin() {
+    VersionableMixin versionableMixin = getVersionableMixinByChromattic();
+    if (versionableMixin == null) {
+      versionableMixin = createVersionableMixin();
+      setVersionableMixinByChromattic(versionableMixin);
+    }
+    return versionableMixin;
+  }
+  
+  public void makeVersionable() {
+    getVersionableMixin();
+  }
+  
+  //TODO: replace by @Checkin when Chromattic support
+  public NTVersion checkin() throws Exception {
+    getChromatticSession().save();
+    Node pageNode = getJCRNode();
+    Version newVersion = pageNode.checkin();
+    NTVersion ntVersion = getChromatticSession().findByNode(NTVersion.class, newVersion);
+    return ntVersion;
+  }
+  
+  //TODO: replace by @Checkout when Chromattic support
+  public void checkout() throws Exception {
+    Node pageNode = getJCRNode();
+    pageNode.checkout();
+  }
+  
+  //TODO: replace by @Restore when Chromattic support
+  public void restore(String versionName, boolean removeExisting) throws Exception {
+    Node attNode = getJCRNode();
+    attNode.restore(versionName, removeExisting);
+  }
+  
+  public ChromatticSession getChromatticSession() {
+    return org.exoplatform.wiki.rendering.util.Utils.getService(MOWService.class).getSession();
+  }
+  
+  public Node getJCRNode() throws Exception {
+    return (Node) getChromatticSession().getJCRSession().getItem(getPath());
+  }
+  
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract PageDescriptionMixin getPageDescriptionMixinByChromattic();
+  protected abstract void setPageDescriptionMixinByChromattic(PageDescriptionMixin mix);
+  @Create
+  protected abstract PageDescriptionMixin createPageDescriptionMixin();
+  
+  public PageDescriptionMixin getPageDescriptionMixin() {
+    PageDescriptionMixin pageDescriptionMixin = getPageDescriptionMixinByChromattic();
+    if (pageDescriptionMixin == null) {
+      pageDescriptionMixin = createPageDescriptionMixin();
+      setPageDescriptionMixinByChromattic(pageDescriptionMixin);
+    }
+    return pageDescriptionMixin;
+  }
+  
 }

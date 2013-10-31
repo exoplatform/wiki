@@ -52,7 +52,12 @@ public abstract class NTFrozenNode {
     if (value != null) {
       return value.getString();
     } else {
-      return null;
+      value = getPropertyValue("exo:lastModifier");
+      if (value != null) {
+        return value.getString();
+      } else {
+        return null;
+      }
     }
   }
 
@@ -61,12 +66,28 @@ public abstract class NTFrozenNode {
     if (value != null) {
       return value.getDate().getTime();
     } else {
-      return null;
+      value = getPropertyValue(WikiNodeType.Definition.UPDATED);
+      if (value != null) {
+        return value.getDate().getTime();
+      } else {
+        return null;
+      }
     }
   }
   
   public String getComment() throws Exception {
     Value value = getPropertyValue(WikiNodeType.Definition.COMMENT);
+    if (value != null) {
+      return value.getString();
+    } else {
+      return null;
+    }
+  }
+  
+  public String getContentString() throws Exception {
+    StringBuilder st = new StringBuilder(WikiNodeType.Definition.ATTACHMENT_CONTENT);
+    st.append("/").append(WikiNodeType.Definition.DATA);
+    Value value = getPropertyValue(st.toString());
     if (value != null) {
       return value.getString();
     } else {
@@ -82,7 +103,7 @@ public abstract class NTFrozenNode {
   protected abstract String getPath();
 
   private Value getPropertyValue(String propertyName) throws Exception {
-    Node pageNode = getJCRPageNode();
+    Node pageNode = getJCRNode();
     if (pageNode.hasProperty(propertyName)) {
       javax.jcr.Property property = pageNode.getProperty(propertyName);
       Value value = property.getValue();
@@ -92,7 +113,7 @@ public abstract class NTFrozenNode {
     }
   }
 
-  private Node getJCRPageNode() throws Exception {
+  public Node getJCRNode() throws Exception {
     return (Node) mowService.getSession().getJCRSession().getItem(getPath());
   }
 

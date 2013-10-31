@@ -74,7 +74,12 @@ public interface WikiNodeType {
 
   public final static String WIKI_WATCHED            = "wiki:watched";
   
-  public final static String WIKI_HELP_PAGE            = "wiki:helppage";
+  public final static String WIKI_HELP_PAGE          = "wiki:helppage";
+  
+  public static final String WIKI_PAGE_DESCRIPTION   = "wiki:pageDescription";
+  
+  public static final String MIX_VERSIONABLE = "mix:versionable";
+  public static final String JCR_FROZEN_NODE = "jcr:frozenNode";
   
   public interface Definition {
 

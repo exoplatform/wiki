@@ -41,6 +41,7 @@ import org.exoplatform.wiki.WikiPortletPreference;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.resolver.PageResolver;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
@@ -140,6 +141,7 @@ public class UIWikiPortlet extends UIPortletApplication {
                                      .setRendered(portletPreferences.isShowBreadcrumb());     
       String requestURL = Utils.getCurrentRequestURL();
       Page page = Utils.getCurrentWikiPage();
+      ((PageImpl)page).migrateLegacyData();
       
       if (page == null) {
         changeMode(WikiMode.PAGE_NOT_FOUND);

@@ -97,7 +97,8 @@ public class UpdatePageRenderingCacheAction implements Action {
       break;
     case ExtendedEvent.CHECKIN:
       Node node = (Node) item;
-      if (node.isNodeType(WikiNodeType.WIKI_PAGE)) {
+      if (node.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {
+        node = node.getParent();
         PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
         Wiki wiki = page.getWiki();
         if (wiki != null) {
