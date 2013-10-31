@@ -71,7 +71,7 @@
   <external-component-plugins>
     <target-component>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</target-component>
     <component-plugin>
-      <name>Update rendering cache when page is add or content change</name>
+      <name>Update rendering cache when page is added</name>
       <set-method>addPlugin</set-method>
       <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
       <description>Update rendering cache when page is add or content change</description>
@@ -83,7 +83,7 @@
               <collection type="java.util.ArrayList">
                 <value>
                   <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
-                    <field  name="eventTypes"><string>addNode,checkin,checkout</string></field>
+                    <field  name="eventTypes"><string>addNode</string></field>
                     <field  name="nodeTypes"><string>wiki:page</string></field>
                     <field  name="actionClassName"><string>org.exoplatform.wiki.rendering.cache.impl.UpdatePageRenderingCacheAction</string></field>
                   </object>
@@ -94,6 +94,32 @@
         </object-param>
       </init-params>
     </component-plugin>
+    
+    <component-plugin>
+      <name>Update rendering cache when content changes</name>
+      <set-method>addPlugin</set-method>
+      <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
+      <description>Update rendering cache when page is add or content change</description>
+      <init-params>
+        <object-param>
+          <name>actions</name>
+          <object type="org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin$ActionsConfig">
+            <field  name="actions">
+              <collection type="java.util.ArrayList">
+                <value>
+                  <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
+                    <field  name="eventTypes"><string>checkin,checkout</string></field>
+                    <field  name="nodeTypes"><string>wiki:attachment</string></field>
+                    <field  name="actionClassName"><string>org.exoplatform.wiki.rendering.cache.impl.UpdatePageRenderingCacheAction</string></field>
+                  </object>
+                </value>
+              </collection>
+            </field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    
     <component-plugin>
       <name>Update rendering cache when page is removed</name>
       <set-method>addPlugin</set-method>

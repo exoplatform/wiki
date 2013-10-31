@@ -19,6 +19,7 @@ package org.exoplatform.wiki.mow.core.api;
 import java.util.Collection;
 import java.util.Iterator;
 
+import org.chromattic.ext.ntdef.NTResource;
 import org.exoplatform.services.organization.GroupHandler;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
@@ -62,20 +63,14 @@ public class TestVersioning extends AbstractMOWTestcase {
     version = iter.next();
     NTFrozenNode frozenNode = version.getNTFrozenNode();
     assertEquals("testCreateVersionHistoryTree-ver1.0",
-                 ((AttachmentImpl) (frozenNode.getChildren().get(WikiNodeType.Definition.CONTENT))).getText());
-    assertNotNull(frozenNode.getUpdatedDate());
-    assertNotNull(frozenNode.getAuthor());
+                 frozenNode.getContentString());
     version = iter.next();
     frozenNode = version.getNTFrozenNode();
     assertEquals("testCreateVersionHistoryTree-ver2.0",
-                 ((AttachmentImpl) (frozenNode.getChildren().get(WikiNodeType.Definition.CONTENT))).getText());
-    assertNotNull(frozenNode.getUpdatedDate());
-    assertNotNull(frozenNode.getAuthor());
+                 frozenNode.getContentString());
     version = iter.next();
     frozenNode = version.getNTFrozenNode();
     assertEquals("testCreateVersionHistoryTree-ver3.0",
-                 ((AttachmentImpl) (frozenNode.getChildren().get(WikiNodeType.Definition.CONTENT))).getText());
-    assertNotNull(frozenNode.getUpdatedDate());
-    assertNotNull(frozenNode.getAuthor());
+                 frozenNode.getContentString());
   }
 }
