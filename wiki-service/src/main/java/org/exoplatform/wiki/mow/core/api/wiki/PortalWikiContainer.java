@@ -50,6 +50,8 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
    * @return the wiki object
    */
   protected PortalWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
+    //check if wiki object is created
+    boolean isCreatedWikiObject = false;
     //Portal wikis is stored in /exo:applications/eXoWiki/wikis/$wikiOwner/WikiHome
     wikiOwner = validateWikiOwner(wikiOwner);
     if(wikiOwner == null){
@@ -66,6 +68,7 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
           wikiNode = wikisNode.addNode(wikiOwner, WikiNodeType.PORTAL_WIKI);
           //wikiNode.addNode(WikiNodeType.Definition.TRASH_NAME, WikiNodeType.WIKI_TRASH) ;
           wikisNode.save();
+          isCreatedWikiObject = true;
         } else {
           return null;
         }
@@ -75,10 +78,12 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
     }
     PortalWiki pwiki = session.findByNode(PortalWiki.class, wikiNode);
     pwiki.setWikiService(getwService());
-    pwiki.setOwner(wikiOwner);
     pwiki.setPortalWikis(this);
-    pwiki.getPreferences();
-    session.save();
+    if (isCreatedWikiObject) {
+      pwiki.setOwner(wikiOwner);
+      pwiki.getPreferences();
+      session.save();
+    }
     return pwiki;
   }
 }

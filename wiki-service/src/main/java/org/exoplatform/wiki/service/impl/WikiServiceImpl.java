@@ -1080,7 +1080,6 @@ public class WikiServiceImpl implements WikiService, Startable {
         WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
         wiki = userWikiContainer.getWiki(owner, true);
       }
-      model.save();
     } catch (Exception e) {
       if (log.isDebugEnabled()) {
         log.debug("[WikiService] Cannot get wiki " + wikiType + ":" + owner, e);

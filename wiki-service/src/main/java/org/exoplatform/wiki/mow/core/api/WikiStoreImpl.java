@@ -161,6 +161,7 @@ public abstract class WikiStoreImpl implements WikiStore {
     if (portalWikiContainer == null) {
       portalWikiContainer = createPortalWikiContainer();
       setPortalWikiContainerByChromattic(portalWikiContainer);
+      getSession().save();
     }
     return portalWikiContainer;
   }
@@ -170,6 +171,7 @@ public abstract class WikiStoreImpl implements WikiStore {
     if (groupWikiContainer == null) {
       groupWikiContainer = createGroupWikiContainer();
       setGroupWikiContainerByChromattic(groupWikiContainer);
+      getSession().save();      
     }
     return groupWikiContainer;
   }
@@ -179,6 +181,7 @@ public abstract class WikiStoreImpl implements WikiStore {
     if (userWikiContainer == null) {
       userWikiContainer = createUserWikiContainer();
       setUserWikiContainerByChromattic(userWikiContainer);
+      getSession().save();      
     }
     return userWikiContainer;
   }
