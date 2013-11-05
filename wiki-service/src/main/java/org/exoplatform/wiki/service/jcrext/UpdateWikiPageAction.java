@@ -25,11 +25,17 @@ import javax.jcr.Node;
 import javax.jcr.Property;
 
 import org.apache.commons.chain.Context;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.command.action.Action;
 import org.exoplatform.services.ext.action.InvocationContext;
 import org.exoplatform.services.jcr.observation.ExtendedEvent;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
+import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.utils.Utils;
 
 public class UpdateWikiPageAction implements Action {
   
@@ -40,8 +46,16 @@ public class UpdateWikiPageAction implements Action {
     Object item = context.get("currentItem");
     Object eventObj = context.get(InvocationContext.EVENT);
     int eventCode = Integer.parseInt(eventObj.toString());
-    
     Node wikiPageNode = (item instanceof Property) ? ((Property) item).getParent() : (Node) item;
+    
+    if (wikiPageNode.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {
+      PageRenderingCacheService pRenderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
+          .getComponentInstanceOfType(PageRenderingCacheService.class);
+      PageImpl parentPage = (PageImpl) Utils.getObject(wikiPageNode.getParent().getPath(), WikiNodeType.WIKI_PAGE);
+      Wiki wiki = parentPage.getWiki();
+      pRenderingCacheService.invalidateAttachmentCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));
+    }
+    
     if (wikiPageNode.isNodeType(WikiNodeType.WIKI_PAGE_CONTENT) || wikiPageNode.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {
       wikiPageNode = wikiPageNode.getParent();
     }

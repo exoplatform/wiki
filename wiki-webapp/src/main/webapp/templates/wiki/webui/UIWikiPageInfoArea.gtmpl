@@ -4,6 +4,8 @@
   import org.exoplatform.portal.webui.util.Util;
   import org.exoplatform.wiki.webui.UIWikiPortlet;
   import org.exoplatform.wiki.commons.Utils;
+  import org.exoplatform.container.ExoContainerContext;
+  import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
   
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
@@ -13,7 +15,11 @@
   String author = Utils.getFullName(currentWikiPage.getAuthor());
   def createdDate = df.format(currentWikiPage.getCreatedDate());
   def updatedDate = df.format(currentWikiPage.getUpdatedDate());
-  int attachmentsTotal =  currentWikiPage.getAttachmentsExcludeContent().size();
+  PageRenderingCacheService cacheService = 
+      (PageRenderingCacheService)ExoContainerContext.getCurrentContainer()
+        .getComponentInstanceOfType(PageRenderingCacheService.class);
+  
+  int attachmentsTotal =  cacheService.getAttachmentCount(currentWikiPage);
   int versionsTotal = currentWikiPage.getVersionableMixin().getVersionHistory().getChildren().size() -1 ;
   
   String viewChangeSufix = "_changes";
