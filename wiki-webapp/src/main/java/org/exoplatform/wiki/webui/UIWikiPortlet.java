@@ -141,13 +141,13 @@ public class UIWikiPortlet extends UIPortletApplication {
                                      .setRendered(portletPreferences.isShowBreadcrumb());     
       String requestURL = Utils.getCurrentRequestURL();
       Page page = Utils.getCurrentWikiPage();
-      ((PageImpl)page).migrateLegacyData();
       
       if (page == null) {
         changeMode(WikiMode.PAGE_NOT_FOUND);
         super.processRender(app, context);
         return;
       } else {
+        ((PageImpl)page).migrateLegacyData();
         if (mode.equals(WikiMode.PAGE_NOT_FOUND)) {
           changeMode(WikiMode.VIEW);
         }
