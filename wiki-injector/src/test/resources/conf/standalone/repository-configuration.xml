@@ -23,6 +23,9 @@
       <session-max-age>1h</session-max-age>
       <authentication-policy>org.exoplatform.services.jcr.impl.core.access.JAASAuthenticator</authentication-policy>
       <workspaces>
+       
+       
+      
         <workspace name="${gatein.jcr.workspace.default}">
           <container class="org.exoplatform.services.jcr.impl.storage.jdbc.optimisation.CQJDBCWorkspaceDataContainer">
             <properties>
@@ -60,7 +63,8 @@
             <properties>
               <property name="index-dir" value="target/temp/index/repository/${gatein.jcr.workspace.default}" />
               <property name="support-highlighting" value="true" />
-              <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />                           
+              <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />
+              <property name="indexing-configuration-path" value="jar:/conf/standalone/indexing-configuration.xml" />                                         
             </properties>
             
           </query-handler>          
