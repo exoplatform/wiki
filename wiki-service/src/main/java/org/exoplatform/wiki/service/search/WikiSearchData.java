@@ -89,13 +89,9 @@ public class WikiSearchData extends SearchData {
   public String getStatementForSearchingContent() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT jcr:primaryType, path, excerpt(.) ");
-    statement.append("FROM nt:base ");
+    statement.append("FROM wiki:attachment ");
     statement.append("WHERE ");
     statement.append(searchContentCondition());
-    statement.append(" AND NOT (jcr:primaryType = 'wiki:page') ");
-    for (String propConstraint : this.propertyConstraints) {
-      statement.append(" ").append(propConstraint);
-    }
     statement.append(createOrderClause());
     return statement.toString();
   }
