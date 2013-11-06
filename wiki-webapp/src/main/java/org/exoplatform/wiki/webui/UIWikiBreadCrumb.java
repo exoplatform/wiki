@@ -69,10 +69,17 @@ public class UIWikiBreadCrumb extends UIContainer {
   
   private static final Log     log               = ExoLogger.getLogger(UIWikiBreadCrumb.class);
   
+  private PortalRequestContext portalRequestContext = null;
+  private String portalURI                          = null;
+  private UIPortal uiPortal                         = null;
+  private String pageNodeSelected                   = null;
+  
+  
+  
   public UIWikiBreadCrumb() throws Exception {
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     EventUIComponent eventComponent = new EventUIComponent(BREAD_CRUMB_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
-    uiWikiSpaceSwitcher.init(eventComponent);
+    uiWikiSpaceSwitcher.init(eventComponent);   
   }
 
   private boolean              isShowWikiType = true;
@@ -172,16 +179,16 @@ public class UIWikiBreadCrumb extends UIContainer {
   }
 
   public String createActionLink(BreadcrumbData breadCumbData) throws Exception {  
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    StringBuilder sb = new StringBuilder(portalRequestContext.getPortalURI());
-    UIPortal uiPortal = Util.getUIPortal();
-    String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
-    sb.append(pageNodeSelected);
+    StringBuilder sb = new StringBuilder(portalURI);
+    sb.append(pageNodeSelected);    
     sb.append("/");
-    if (!PortalConfig.PORTAL_TYPE.equalsIgnoreCase(breadCumbData.getWikiType())) {
-      sb.append(breadCumbData.getWikiType());
+    String wikiType = breadCumbData.getWikiType();
+    String wikiOwner = breadCumbData.getWikiOwner();
+    
+    if (!PortalConfig.PORTAL_TYPE.equalsIgnoreCase(wikiType)) {
+      sb.append(wikiType);
       sb.append("/");
-      sb.append(Utils.validateWikiOwner(breadCumbData.getWikiType(), breadCumbData.getWikiOwner()));
+      sb.append(Utils.validateWikiOwner(wikiType, wikiOwner));
       sb.append("/");
     }
     sb.append(breadCumbData.getId());
@@ -196,6 +203,12 @@ public class UIWikiBreadCrumb extends UIContainer {
 	  if(IdentityConstants.ANONIM.equals(ConversationState.getCurrent().getIdentity().getUserId())) {
 		  this.setAllowChooseSpace(false);
 	  }
+	  // Initiate objects to get portal uri and page selected
+    portalRequestContext = Util.getPortalRequestContext();
+    portalURI = portalRequestContext.getPortalURI();
+    uiPortal = Util.getUIPortal();
+    pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
+
     super.processRender(context);
   }  
   
