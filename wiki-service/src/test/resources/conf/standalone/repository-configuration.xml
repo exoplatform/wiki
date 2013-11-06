@@ -60,9 +60,9 @@
             <properties>
               <property name="index-dir" value="target/temp/index/repository/${gatein.jcr.workspace.default}" />
               <property name="support-highlighting" value="true" />
-              <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />                           
-            </properties>
-            
+              <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />
+              <property name="indexing-configuration-path" value="jar:/conf/standalone/indexing-configuration.xml" />                         
+            </properties>            
           </query-handler>          
           <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
             <properties>

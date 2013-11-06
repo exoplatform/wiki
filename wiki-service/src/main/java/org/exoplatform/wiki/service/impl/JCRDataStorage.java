@@ -55,31 +55,27 @@ public class JCRDataStorage implements DataStorage{
   
   public PageList<SearchResult> search(ChromatticSession session, WikiSearchData data) throws Exception {
     List<SearchResult> resultList = new ArrayList<SearchResult>();
-    
     long numberOfSearchForTitleResult = 0;
     if (!StringUtils.isEmpty(data.getTitle())) {
       // Search for title
       String statement = data.getStatementForSearchingTitle();
       QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
+      if(data.getOffset() > 0) {
+        q.setOffset(data.getOffset());
+      }
+      if(data.getLimit() > 0) {
+        q.setLimit(data.getLimit());
+      }
       QueryResult result = q.execute();
       RowIterator iter = result.getRows();
       numberOfSearchForTitleResult = iter.getSize();
-      if (numberOfSearchForTitleResult > data.getOffset()) {
-        if (data.getOffset() > 0) {
-          iter.skip(data.getOffset());
-        }
-        long position = data.getOffset();
+      if (numberOfSearchForTitleResult > 0) {       
         while (iter.hasNext()) {
-          if ((data.getLimit() == Integer.MAX_VALUE) || (position < data.getOffset() + data.getLimit())) {
-            SearchResult tempResult = getResult(iter.nextRow(), data);
-            // If contains, merges with the exist
-            if (tempResult != null && !isContains(resultList, tempResult)) {
-              resultList.add(tempResult);
-            }
-          } else {
-            iter.nextRow();
+          SearchResult tempResult = getResult(iter.nextRow(), data);
+          // If contains, merges with the exist
+          if (tempResult != null && !isContains(resultList, tempResult)) {
+            resultList.add(tempResult);
           }
-          position++;
         }
       }
     }
@@ -88,20 +84,11 @@ public class JCRDataStorage implements DataStorage{
     if ((resultList.size() >= data.getLimit()) || StringUtils.isEmpty(data.getContent())) {
       return new ObjectPageList<SearchResult>(resultList, resultList.size());
     }
-    
     // Search for wiki content
-    long searchForContentOffset = 0;
-    long searchForContentLimit = 0;
-    if (numberOfSearchForTitleResult >= data.getOffset()) {
-      searchForContentOffset = 0;
-      searchForContentLimit = data.getLimit() - (numberOfSearchForTitleResult - data.getOffset());
-    } else {
-      searchForContentOffset = data.getOffset() - numberOfSearchForTitleResult;
-      if (data.getLimit() == Integer.MAX_VALUE) {
-        searchForContentLimit = Integer.MAX_VALUE;
-      } else {
-        searchForContentLimit = searchForContentOffset + data.getLimit();
-      }
+    long searchForContentOffset = data.getOffset();
+    long searchForContentLimit = data.getLimit() - numberOfSearchForTitleResult;
+    if (data.getLimit() == Integer.MAX_VALUE) {
+      searchForContentLimit = Integer.MAX_VALUE;
     }
     
     if (searchForContentOffset >= 0 && searchForContentLimit > 0) {
@@ -119,7 +106,6 @@ public class JCRDataStorage implements DataStorage{
         }
       }
     }
-    
     // Return all the result
     return new ObjectPageList<SearchResult>(resultList, resultList.size());
   }
@@ -235,7 +221,7 @@ public class JCRDataStorage implements DataStorage{
    */
   private String getExcerpt(Row row, String type) throws ItemNotFoundException, RepositoryException {
     StringBuilder ret = new StringBuilder();
-    String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type)) ? 
+    String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type) || WikiNodeType.WIKI_ATTACHMENT.equals(type)) ? 
                           new String[]{"."} :
                           new String[]{"title", "url"};
     for (String prop : properties) {
