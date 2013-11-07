@@ -55,7 +55,6 @@ public class JCRDataStorage implements DataStorage{
   
   public PageList<SearchResult> search(ChromatticSession session, WikiSearchData data) throws Exception {
     List<SearchResult> resultList = new ArrayList<SearchResult>();
-    long t1 = System.currentTimeMillis();
     long numberOfSearchForTitleResult = 0;
     if (!StringUtils.isEmpty(data.getTitle())) {
       // Search for title
@@ -85,9 +84,6 @@ public class JCRDataStorage implements DataStorage{
     if ((resultList.size() >= data.getLimit()) || StringUtils.isEmpty(data.getContent())) {
       return new ObjectPageList<SearchResult>(resultList, resultList.size());
     }
-    long t2 = System.currentTimeMillis();
-    System.out.println(" ============ TIME SEARCHING 1 = " + (t2-t1));
-    t1 = System.currentTimeMillis();
     // Search for wiki content
     long searchForContentOffset = data.getOffset();
     long searchForContentLimit = data.getLimit() - numberOfSearchForTitleResult;
@@ -110,8 +106,6 @@ public class JCRDataStorage implements DataStorage{
         }
       }
     }
-    t2 = System.currentTimeMillis();
-    System.out.println(" ============ TIME SEARCHING 2 = " + (t2-t1));
     // Return all the result
     return new ObjectPageList<SearchResult>(resultList, resultList.size());
   }

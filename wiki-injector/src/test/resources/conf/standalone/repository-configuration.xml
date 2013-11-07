@@ -64,7 +64,11 @@
               <property name="index-dir" value="target/temp/index/repository/${gatein.jcr.workspace.default}" />
               <property name="support-highlighting" value="true" />
               <property name="excerptprovider-class" value="org.exoplatform.services.jcr.impl.core.query.lucene.DefaultHTMLExcerpt" />
-              <property name="indexing-configuration-path" value="jar:/conf/standalone/indexing-configuration.xml" />                                         
+              <property name="indexing-configuration-path" value="jar:/conf/standalone/indexing-configuration.xml" />
+              <property name="rdbms-reindexing" value="true" />
+						  <property name="reindexing-page-size" value="1000" />
+						  <property name="indexing-thread-pool-size" value="16" />
+						  <property name="async-reindexing" value="true" />	                                         
             </properties>
             
           </query-handler>          
