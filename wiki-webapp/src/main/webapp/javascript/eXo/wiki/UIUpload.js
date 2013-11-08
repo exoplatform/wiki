@@ -161,11 +161,11 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     } catch (err) {
       return;
     }
-
     for (id in response.upload) {
       var container = parent.document.getElementById('UploadInputContainer'
           + id);
       var jCont = $(container);
+      
       if (response.upload[id].status == "failed") {
         eXo.wiki.UIUpload.abortUpload(id);
         var message = jCont.children(".limitMessage").first().html();
@@ -178,7 +178,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
       var percent = response.upload[id].percent;
       var bar = jCont.find(".bar").first();
       bar.css("width", percent + "%");
-      var label = bar.children(".percent").first();
+      var label = jCont.find(".percent").first();
       label.html(percent + "%");
 
       if(percent == 100) {
@@ -220,7 +220,6 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     eXo.wiki.UIUpload.remove(id);
     var url = eXo.wiki.UIUpload.abortURL + id;
     ajaxRequest('GET', url, false);
-    
     var container = parent.document.getElementById('UploadInputContainer' + id);
     var jCont = $(container);
     var progressIframe = jCont.find('#ProgressIframe' + id);
@@ -313,3 +312,4 @@ eXo.wiki.UIUpload = new UIUpload();
 return eXo.wiki.UIUpload;
 
 })(base, uiForm, webuiExt, $);
+
