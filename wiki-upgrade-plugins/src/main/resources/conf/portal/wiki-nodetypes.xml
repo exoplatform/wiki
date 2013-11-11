@@ -514,6 +514,21 @@
         <valueConstraints/>
       </propertyDefinition>                  
     </propertyDefinitions>
-  </nodeType>    
+  </nodeType>
+  
+  <nodeType name="wiki:pageDescription" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+    <propertyDefinitions>
+      <propertyDefinition name="author" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="updatedDate" requiredType="Date" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+      <propertyDefinition name="comment" requiredType="String" autoCreated="true" mandatory="false" onParentVersion="COPY" protected="false" multiple="false">
+        <valueConstraints/>
+      </propertyDefinition>
+    </propertyDefinitions>
+  </nodeType>
+
 </nodeTypes>
   

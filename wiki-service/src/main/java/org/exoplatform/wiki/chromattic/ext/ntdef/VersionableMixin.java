@@ -22,15 +22,15 @@ import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Property;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 
 @MixinType(name = "mix:versionable")
 public abstract class VersionableMixin {
 
   @OneToOne(type = RelationshipType.EMBEDDED)
-  public abstract PageImpl getEntity();
+  public abstract AttachmentImpl getEntity();
 
-  public abstract void setEntity(PageImpl page);
+  public abstract void setEntity(AttachmentImpl page);
 
   @ManyToOne(type = RelationshipType.REFERENCE)
   @MappedBy("jcr:versionHistory")
