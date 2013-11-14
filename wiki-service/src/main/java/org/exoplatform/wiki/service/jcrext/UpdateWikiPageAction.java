@@ -53,7 +53,9 @@ public class UpdateWikiPageAction implements Action {
           .getComponentInstanceOfType(PageRenderingCacheService.class);
       PageImpl parentPage = (PageImpl) Utils.getObject(wikiPageNode.getParent().getPath(), WikiNodeType.WIKI_PAGE);
       Wiki wiki = parentPage.getWiki();
-      pRenderingCacheService.invalidateAttachmentCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));
+      if (wiki != null) {//null when new wiki page is created, not saved yet
+        pRenderingCacheService.invalidateAttachmentCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));
+      }
     }
     
     if (wikiPageNode.isNodeType(WikiNodeType.WIKI_PAGE_CONTENT) || wikiPageNode.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {

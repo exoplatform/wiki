@@ -97,11 +97,9 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
                                     page.getSyntax(), Syntax.XHTML_1_0.toIdString(), supportSectionEdit);
       AttachmentCountData cachedData = attachmentCountCache.get(new Integer(key.hashCode()));
       if (cachedData != null) {
-        System.out.println("Cache hit!");
         return cachedData.build();
       }
       attachmentCount = page.getAttachmentsExcludeContent().size();
-      System.out.println("Put to cache!");
       attachmentCountCache.put(new Integer(key.hashCode()), new AttachmentCountData(attachmentCount));
     } catch (Exception e) {
       LOG.error(String.format("Failed to get attachment count of page [%s:%s:%s]", 
