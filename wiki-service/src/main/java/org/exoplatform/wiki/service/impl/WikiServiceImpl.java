@@ -284,6 +284,11 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
       }
       session.save();
+      
+      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, pageId));
+      // Post activity
+      postDeletePage(wikiType, wikiOwner, pageId, page);
     } catch (Exception e) {
       log.error("Can't delete page '" + pageId + "' ", e) ;
       return false;
@@ -382,8 +387,10 @@ public class WikiServiceImpl implements WikiService, Startable {
     parentPage.getChromatticSession().save();
     
     // Invaliding cache
-    PageRenderingCacheService pageRenderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
-    pageRenderingCacheService.invalidateCache(new WikiPageParams(wikiType, wikiOwner, pageName));
+    org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateCache(new WikiPageParams(wikiType, wikiOwner, pageName));
+    org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, pageName));
     return true ;    
   }
 
@@ -470,6 +477,11 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
       }
       session.save();
+      
+      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateUUIDCache(currentLocationParams);
+      // Post activity
+      postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageWikiListener.MOVE_PAGE_TYPE);
     } catch (Exception e) {
       log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
       return false;
@@ -595,8 +607,15 @@ public class WikiServiceImpl implements WikiService, Startable {
     updateAllPagesPermissions(wikiType, wikiOwner, permMap);
   }
 
+  
   @Override
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
+    return org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+       .getPageByParams(new WikiPageParams(wikiType, wikiOwner, pageId));
+  }
+  
+  @Override
+  public Page getPageByIdJCRQuery(String wikiType, String wikiOwner, String pageId) throws Exception {
     Page page = getPageByRootPermission(wikiType, wikiOwner, pageId);
     if (page != null && page.hasPermission(PermissionType.VIEWPAGE)) {
       return page;

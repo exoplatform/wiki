@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 /**
@@ -47,6 +48,13 @@ public interface PageRenderingCacheService {
    * @return The rendered content.
    */
   public String getRenderedContent(WikiPageParams param, String targetSyntax);
+  
+  /**
+   * Gets the wiki page object by params
+   * @param param the wiki page param
+   * @return the wiki page
+   */
+  public Page getPageByParams(WikiPageParams param);
   
   /**
    * Gets the rendering cache.
@@ -86,4 +94,10 @@ public interface PageRenderingCacheService {
    * @return the uncached macroes
    */
   public Set<String> getUncachedMacroes();
+  
+  /**
+   * Invalidates the cache entry containing given wiki page param
+   * @param param
+   */
+  public void invalidateUUIDCache(WikiPageParams param);
 }

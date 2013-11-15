@@ -171,6 +171,17 @@ public interface WikiService {
    * @throws Exception
    */
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception;
+  
+  /**
+   * Gets a wiki page by a given Id using JCR query
+   *
+   * @param wikiType It can be Portal, Group, or User.
+   * @param wikiOwner The Wiki owner.
+   * @param pageId Id of the wiki page.
+   * @return The wiki page if the current user has the read permission. Otherwise, it is "null".
+   * @throws Exception
+   */
+  public Page getPageByIdJCRQuery(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   /**
    * Gets a wiki page regardless of the current user's permission.

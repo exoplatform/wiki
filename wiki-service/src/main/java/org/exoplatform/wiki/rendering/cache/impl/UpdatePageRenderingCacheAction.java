@@ -84,6 +84,7 @@ public class UpdatePageRenderingCacheAction implements Action {
             Wiki wiki = page.getWiki();
             if (wiki != null) {
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
+              pRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
             }
           }
         } else if (WikiNodeType.Definition.TARGET_PAGE.equals(currentProperty.getName())) {
@@ -93,7 +94,7 @@ public class UpdatePageRenderingCacheAction implements Action {
             if (wiki != null) {
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
               PageImpl desPage = page.getMovedMixin().getTargetPage();
-              pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), desPage.getName()));
+              pRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), desPage.getName()));
               pRenderingCacheService.getPageLinksMap().remove(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
             }            
           }
