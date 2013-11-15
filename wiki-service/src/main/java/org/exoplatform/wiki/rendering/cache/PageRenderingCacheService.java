@@ -19,6 +19,7 @@ package org.exoplatform.wiki.rendering.cache;
 import java.util.Map;
 
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 /**
@@ -48,6 +49,13 @@ public interface PageRenderingCacheService {
   public String getRenderedContent(WikiPageParams param, String targetSyntax);
   
   /**
+   * Gets the wiki page object by params
+   * @param param the wiki page param
+   * @return the wiki page
+   */
+  public Page getPageByParams(WikiPageParams param);
+  
+  /**
    * Gets the rendering cache.
    * @return The rendering cache.
    */
@@ -73,4 +81,10 @@ public interface PageRenderingCacheService {
    * @param param The parameter which specifies the wiki page identity.
    */
   public void invalidateCache(WikiPageParams param);
+  
+  /**
+   * Invalidates the cache entry containing given wiki page param
+   * @param param
+   */
+  public void invalidateUUIDCache(WikiPageParams param);
 }
