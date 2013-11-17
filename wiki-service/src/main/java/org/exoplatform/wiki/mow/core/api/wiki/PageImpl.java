@@ -31,8 +31,10 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.query.Query;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
 
@@ -320,13 +322,22 @@ public abstract class PageImpl extends NTFolder implements Page {
   }
   
   public Collection<AttachmentImpl> getAttachmentsExcludeContent() throws Exception {
-    Collection<AttachmentImpl> attachments = getAttachmentsByChromattic();
     List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>();
-    for (AttachmentImpl attachment : attachments) {
-      if ((attachment.hasPermission(PermissionType.VIEW_ATTACHMENT)
-          || attachment.hasPermission(PermissionType.EDIT_ATTACHMENT))
-          && !WikiNodeType.Definition.CONTENT.equals(attachment.getName())) {
-        atts.add(attachment);
+    String path = this.getPath();
+    StringBuilder statement = new StringBuilder("SELECT * FROM ");
+    statement.append(WikiNodeType.WIKI_ATTACHMENT)
+             .append(" WHERE jcr:path LIKE '").append(path)
+             .append("/%' AND NOT jcr:path LIKE '").append(path).append("/%/%'");
+    NodeIterator iter = getChromatticSession().getJCRSession().getWorkspace()
+      .getQueryManager().createQuery(statement.toString(), Query.SQL)
+      .execute().getNodes();
+    while (iter.hasNext()) {
+      Node node = iter.nextNode();
+      AttachmentImpl att = this.getChromatticSession().findByNode(AttachmentImpl.class, node);
+      if ((att.hasPermission(PermissionType.VIEW_ATTACHMENT)
+          || att.hasPermission(PermissionType.EDIT_ATTACHMENT))
+          && !WikiNodeType.Definition.CONTENT.equals(att.getName())) {
+        atts.add(att);
       }
     }
     Collections.sort(atts);

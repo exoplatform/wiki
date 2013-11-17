@@ -19,6 +19,7 @@ package org.exoplatform.wiki.rendering.cache;
 import java.util.Map;
 
 import org.exoplatform.services.cache.ExoCache;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 /**
@@ -73,4 +74,19 @@ public interface PageRenderingCacheService {
    * @param param The parameter which specifies the wiki page identity.
    */
   public void invalidateCache(WikiPageParams param);
+  
+  /**
+   * Invalidate cache storing attachment size of a wiki page
+   * @param param specify identity of a page
+   */
+  public void invalidateAttachmentCache(WikiPageParams param);
+  
+  /**
+   * Get number of attachment of a wiki page
+   * @param param the parameter to specify the wiki page
+   * @param targetSyntax the syntax to be display
+   * @return the attachment size
+   */
+  public int getAttachmentCount(PageImpl page);
+  
 }
