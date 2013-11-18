@@ -1,5 +1,25 @@
 package org.exoplatform.wiki.service.impl;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Queue;
+import java.util.ResourceBundle;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.ChromatticSession;
@@ -67,7 +87,6 @@ import org.exoplatform.wiki.service.PermissionEntry;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.service.cache.GetPageByIdCacheService;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
@@ -78,25 +97,7 @@ import org.exoplatform.wiki.utils.Utils;
 import org.picocontainer.Startable;
 import org.xwiki.rendering.syntax.Syntax;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Queue;
-import java.util.ResourceBundle;
+import com.sun.org.apache.xerces.internal.util.URI.MalformedURIException;
 
 public class WikiServiceImpl implements WikiService, Startable {
 
@@ -116,8 +117,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private JCRDataStorage        jcrDataStorage;
 
-  private GetPageByIdCacheService getPageByIdCacheService;
-
   private Iterator<ValuesParam> syntaxHelpParams;
 
   private PropertiesParam           preferencesParams;
@@ -134,7 +133,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   public WikiServiceImpl(ConfigurationManager configManager,
                          JCRDataStorage jcrDataStorage,
-                         GetPageByIdCacheService getPageByIdCacheService,
                          InitParams initParams) {
 
     String autoSaveIntervalProperty = System.getProperty("wiki.autosave.interval");
@@ -155,7 +153,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (StringUtils.isEmpty(wikiWebappUri)) {
       wikiWebappUri = DEFAULT_WIKI_NAME;
     }
-    this.getPageByIdCacheService = getPageByIdCacheService;
   }
   
   @Override
@@ -539,15 +536,11 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
-    Page  page = getPageByIdCacheService.get(wikiType, wikiOwner, pageId);
-    if (page == null) {
-      page = getPageByRootPermission(wikiType, wikiOwner, pageId);
-      if (page != null && !page.hasPermission(PermissionType.VIEWPAGE)) {
-        page = null;
-      }
-      page = getPageByIdCacheService.putInCache(wikiType, wikiOwner, pageId, page);
+    Page page = getPageByRootPermission(wikiType, wikiOwner, pageId);
+    if (page != null && page.hasPermission(PermissionType.VIEWPAGE)) {
+      return page;
     }
-    return page;
+    return null;
   }
   
   @Override

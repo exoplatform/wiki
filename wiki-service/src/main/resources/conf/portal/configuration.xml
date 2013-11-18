@@ -55,11 +55,6 @@
       </properties-param> 
     </init-params>
   </component>
-  
-  <component>
-    <key>org.exoplatform.wiki.service.cache.GetPageByIdCacheService</key>
-    <type>org.exoplatform.wiki.service.cache.impl.GetPageByIdCacheServiceImpl</type>
-  </component>
     
   <component>
     <key>org.exoplatform.wiki.service.WikiRestService</key>
