@@ -1169,7 +1169,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       try {
         ValuesParam syntaxhelpParam = syntaxHelpParams.next();
         String syntaxName = syntaxhelpParam.getName();
-        ArrayList<String> syntaxValues = syntaxhelpParam.getValues();
+        List<String> syntaxValues = syntaxhelpParam.getValues();
         String shortFile = syntaxValues.get(0);
         String fullFile = syntaxValues.get(1);
         HelpPage syntaxPage = addSyntaxPage(wStore, helpPage, syntaxName, shortFile, " Short help Page");

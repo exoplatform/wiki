@@ -54,11 +54,12 @@
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
     </dependency>
+    <!-- Chromattic -->
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.api</artifactId>
+      <artifactId>chromattic.api</artifactId>      
     </dependency>
-    <!-- Chromattic -->
+    
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.apt</artifactId>
@@ -189,6 +190,12 @@
     <dependency>
       <groupId>org.gatein.portal</groupId>
       <artifactId>exo.portal.component.portal</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.gatein.portal</groupId>
+      <artifactId>exo.portal.component.portal</artifactId>
+      <type>test-jar</type>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.gatein.portal</groupId>
