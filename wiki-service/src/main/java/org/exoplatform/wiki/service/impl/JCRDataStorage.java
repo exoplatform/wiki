@@ -237,7 +237,7 @@ public class JCRDataStorage implements DataStorage{
    */
   private String getExcerpt(Row row, String type) throws ItemNotFoundException, RepositoryException {
     StringBuilder ret = new StringBuilder();
-    String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type)) ? 
+    String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type) || WikiNodeType.WIKI_ATTACHMENT.equals(type)) ? 
                           new String[]{"."} :
                           new String[]{"title", "url"};
     for (String prop : properties) {
