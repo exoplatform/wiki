@@ -26,9 +26,11 @@ import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
 import org.exoplatform.wiki.rendering.cache.MarkupKey;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
@@ -41,6 +43,8 @@ import org.xwiki.rendering.syntax.Syntax;
 public class PageRenderingCacheServiceImpl implements PageRenderingCacheService {
   
   public static final String              CACHE_NAME = "wiki.PageRenderingCache";
+
+  public static final String              ATT_CACHE_NAME = "wiki.PageRenderingCache.attachment";
   
   public static final String              UUID_CACHE_NAME = "wiki.PageRenderingCache.pageUuid";
   
@@ -51,6 +55,7 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
   private WikiService                     wikiService;
 
   private ExoCache<Integer, MarkupData> renderingCache;
+  private ExoCache<Integer, AttachmentCountData> attachmentCountCache;
   private ExoCache<Integer, String> uuidCache;
   
   private Map<WikiPageParams, List<WikiPageParams>> pageLinksMap = new ConcurrentHashMap<WikiPageParams, List<WikiPageParams>>();
@@ -63,6 +68,7 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
     this.renderingService = renderingService;
     this.wikiService = wikiService;
     this.renderingCache = cacheService.getCacheInstance(CACHE_NAME);
+    this.attachmentCountCache = cacheService.getCacheInstance(ATT_CACHE_NAME);
     this.uuidCache = cacheService.getCacheInstance(UUID_CACHE_NAME);
   }
   
@@ -72,12 +78,12 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
     try {
       PageImpl page = (PageImpl) wikiService.getPageById(param.getType(), param.getOwner(), param.getPageId());
       boolean supportSectionEdit = page.hasPermission(PermissionType.EDITPAGE);
-      String markup = page.getContent().getText();
       MarkupKey key = new MarkupKey(new WikiPageParams(param.getType(), param.getOwner(), param.getPageId()), page.getSyntax(), targetSyntax, supportSectionEdit);
       MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
       if (cachedData != null) {
         return cachedData.build();
       }
+      String markup = page.getContent().getText();
       renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
       renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
@@ -110,6 +116,28 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
                               param.getType(), param.getOwner(), param.getPageId()), e);
     }
     return page;
+  }
+
+  @Override
+  public int getAttachmentCount(PageImpl page) {
+    int attachmentCount = 0;
+    Wiki wiki = page.getWiki();
+    try {
+      boolean supportSectionEdit = page.hasPermission(PermissionType.EDITPAGE);
+//      PageImpl page = (PageImpl) wikiService.getPageById(param.getType(), param.getOwner(), param.getPageId());
+      MarkupKey key = new MarkupKey(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()), 
+                                    page.getSyntax(), Syntax.XHTML_1_0.toIdString(), supportSectionEdit);
+      AttachmentCountData cachedData = attachmentCountCache.get(new Integer(key.hashCode()));
+      if (cachedData != null) {
+        return cachedData.build();
+      }
+      attachmentCount = page.getAttachmentsExcludeContent().size();
+      attachmentCountCache.put(new Integer(key.hashCode()), new AttachmentCountData(attachmentCount));
+    } catch (Exception e) {
+      LOG.error(String.format("Failed to get attachment count of page [%s:%s:%s]", 
+                              wiki.getType(), wiki.getOwner(), page.getName()), e);
+    }
+    return attachmentCount;
   }
 
   @Override
@@ -163,5 +191,32 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
     MarkupKey key = new MarkupKey(param, 
                                   "", Syntax.XHTML_1_0.toIdString(), true);
     uuidCache.remove(new Integer(key.hashCode()));
+  }
+
+  @Override
+  public void invalidateAttachmentCache(WikiPageParams param) {
+    List<WikiPageParams> linkedPages = pageLinksMap.get(param);
+    if (linkedPages == null) {
+      linkedPages = new ArrayList<WikiPageParams>();
+    } else {
+      linkedPages = new ArrayList<WikiPageParams>(linkedPages);
+    }
+    linkedPages.add(param);
+    
+    for (WikiPageParams wikiPageParams : linkedPages) {
+      try {
+        MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+        
+        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+      } catch (Exception e) {
+        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
+      }
+    }
   }
 }
