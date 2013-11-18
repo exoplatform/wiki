@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2012 eXo Platform SAS.
+ * Copyright (C) 2003-2013 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -16,21 +16,29 @@
  */
 package org.exoplatform.wiki.rendering.cache;
 
-public class MarkupData implements CacheData<String> {
+/**
+ * This class stores the number of attachment of a wiki page.
+ * 
+ * Created by The eXo Platform SAS
+ * Author : eXoPlatform
+ *          exo@exoplatform.com
+ * Oct 22, 2013  
+ */
+public class AttachmentCountData implements CacheData<Integer>{
 
+  private int count_ = -1;
   /**
    * 
    */
-  private static final long serialVersionUID = 4024500794943104643L;
-  private final String markup;
+  private static final long serialVersionUID = 7871302414513113604L;
   
-  public MarkupData(final String markup) {
-    this.markup = markup;
+  public AttachmentCountData(int count) {
+    this.count_ = count;
   }
-  
+
   @Override
-  public String build() {
-    return this.markup;
+  public Integer build() {
+    return count_;
   }
 
 }
