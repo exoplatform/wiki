@@ -94,7 +94,10 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
                                     "", Syntax.XHTML_1_0.toIdString(), true);
       String uuid  = uuidCache.get(new Integer(key.hashCode()));
       if (uuid != null) {
-        return wikiService.getPageByUUID(uuid);
+        page = wikiService.getPageByUUID(uuid);
+        if (page != null) {
+          return page;
+        }
       }
       
       page = wikiService.getPageByIdJCRQuery(param.getType(), param.getOwner(), param.getPageId());
