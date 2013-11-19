@@ -20,14 +20,15 @@ import javax.ws.rs.Path;
 
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+import org.exoplatform.services.jcr.ext.app.ThreadLocalSessionProviderService;
+
 
 @Path("/jcrwiki")
 public class WebDavServiceImpl extends org.exoplatform.services.jcr.webdav.WebDavServiceImpl implements WebDavService {
 
   public WebDavServiceImpl(InitParams params,
                            RepositoryService repositoryService,
-                           SessionProviderService sessionProviderService) throws Exception {
+                           ThreadLocalSessionProviderService sessionProviderService) throws Exception {
     super(params, repositoryService, sessionProviderService);
   }
 
