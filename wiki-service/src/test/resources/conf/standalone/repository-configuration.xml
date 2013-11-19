@@ -70,7 +70,6 @@
               <property name="time-out" value="15m" />
               <property name="path" value="../temp/lock/gadgets" />
               <property name="jbosscache-configuration" value="exo.portal.component.test.jcr-jbosscache-lock-config.xml" />
-              <property name="jbosscache-cl-cache.jdbc.datasource" value="jdbcidm"/>
             </properties>
           </lock-manager>
         </workspace>
