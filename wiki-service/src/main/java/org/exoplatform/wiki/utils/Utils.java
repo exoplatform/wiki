@@ -1,21 +1,5 @@
 package org.exoplatform.wiki.utils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Stack;
-
-import javax.jcr.RepositoryException;
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
@@ -71,6 +55,21 @@ import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.xwiki.rendering.syntax.Syntax;
 
+import javax.jcr.RepositoryException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Stack;
+
 public class Utils {
   public static final String SLASH = "SLASH";
   
@@ -94,7 +93,7 @@ public class Utils {
   
   public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
   
-  private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-";
+  private static final String ILLEGAL_SEARCH_CHARACTERS= "!^()+{}[]:-";
   
   public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
   
