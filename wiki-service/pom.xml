@@ -54,11 +54,12 @@
       <groupId>org.apache.lucene</groupId>
       <artifactId>lucene-core</artifactId>
     </dependency>
+    <!-- Chromattic -->
     <dependency>
       <groupId>org.chromattic</groupId>
-      <artifactId>chromattic.api</artifactId>
+      <artifactId>chromattic.api</artifactId>      
     </dependency>
-    <!-- Chromattic -->
+    
     <dependency>
       <groupId>org.chromattic</groupId>
       <artifactId>chromattic.apt</artifactId>

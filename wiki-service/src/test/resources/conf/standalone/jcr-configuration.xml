@@ -39,7 +39,7 @@
         <description>JCR configuration file</description>
         <value>jar:/conf/standalone/repository-configuration.xml</value>
       </value-param>
-    </init-params>
+    </init-params>    
   </component>
 
   <component>

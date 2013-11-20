@@ -71,10 +71,12 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
   	List<String> accessPermissions = null;
   	if(page.getAccessPermissions() !=null)
   		accessPermissions = Arrays.asList(page.getAccessPermissions());
-  	PageState pageSate = new PageState(page.getTitle(), page.getDescription(), page.isShowMaxWindow(),page.getFactoryId(), 
-  			accessPermissions, page.getEditPermission());  	
-  	PageContext pageContext = new PageContext(pageRef,pageSate);  	
-  	return pageContext;
+      PageState pageSate = new PageState(page.getTitle(), page.getDescription(), page.isShowMaxWindow(),page.getFactoryId(),
+              accessPermissions, page.getEditPermission());
+      PageContext pageContext = new PageContext(pageRef,pageSate);
+
+
+      return pageContext;
   }
 
 }

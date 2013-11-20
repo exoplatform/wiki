@@ -104,6 +104,8 @@
     <type>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</type>
   </component>
   
+  
+  
   <component>
     <key>org.exoplatform.wiki.service.webdav.WebDavService</key>
     <type>org.exoplatform.wiki.service.webdav.WebDavServiceImpl</type>
