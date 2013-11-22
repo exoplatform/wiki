@@ -22,7 +22,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
-
+import javax.jcr.RepositoryException;
+import javax.jcr.UnsupportedRepositoryOperationException;
+import javax.servlet.http.HttpSession;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.organization.OrganizationService;
@@ -267,6 +269,24 @@ public class UIWikiPageEditForm extends UIWikiForm {
     return pageParams.getPageId();
   }
   
+  /**
+   * Gets the uuid of real current edited page node
+   * @return the page node uuid
+   * @throws UnsupportedRepositoryOperationException
+   * @throws RepositoryException
+   * @throws Exception
+   */
+  protected String getCurrentPageUUID() throws UnsupportedRepositoryOperationException, RepositoryException, Exception{
+    Page page = null;
+    UIWikiPortlet wikiPortlet = this.getAncestorOfType(UIWikiPortlet.class);
+    if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
+      page = Utils.getCurrentNewDraftWikiPage();
+    } else {
+      page = Utils.getCurrentWikiPage();
+    }
+    return page.getJCRPageNode().getUUID();
+  }
+
   protected String getCurrentPageRevision() throws Exception {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
