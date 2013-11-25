@@ -553,8 +553,12 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
-    return org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+    Page page = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
        .getPageByParams(new WikiPageParams(wikiType, wikiOwner, pageId));
+    if (page != null && !page.hasPermission(PermissionType.VIEWPAGE)) {
+      page = null;
+    }
+    return page;
   }
   
   @Override
