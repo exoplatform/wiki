@@ -54,10 +54,10 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
     String result;
     PortalContainer portalContainer;
     SessionManager sessionManager;
-    String sessionId = getThreadLocalRequest().getSession(false).getId();
+    String userId = getThreadLocalRequest().getRemoteUser();
     try {
       sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
-      portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(sessionId));
+      portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId));
     } catch (Exception e) {
       return RPC.encodeResponseForFailure(null, e);
     }
@@ -70,7 +70,7 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
       RPCRequest req = RPC.decodeRequest(payload, null, this);
       RenderingServiceImpl renderingService =
           (RenderingServiceImpl) portalContainer.getComponentInstanceOfType(RenderingService.class);
-      WikiContext wikiContext = (WikiContext) sessionManager.getSessionContext(sessionId);
+      WikiContext wikiContext = (WikiContext) sessionManager.getSessionContext(userId);
       Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
       ec.setContext(new ExecutionContext());
       ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);

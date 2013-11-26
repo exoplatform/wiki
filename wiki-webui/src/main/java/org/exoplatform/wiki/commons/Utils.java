@@ -324,7 +324,11 @@ public class Utils {
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
     SessionManager sessionManager = (SessionManager) ExoContainerContext.getCurrentContainer()
                                                                         .getComponentInstanceOfType(SessionManager.class);
-    sessionManager.addSessionContext(session.getId(), Utils.createWikiContext(wikiPortlet));
+    sessionManager.addSessionContext(ConversationState.getCurrent().getIdentity().getUserId(), 
+                                     Utils.createWikiContext(wikiPortlet));
+    sessionManager.addSessionContainer(ConversationState.getCurrent().getIdentity().getUserId(), 
+                                     sessionManager.getSessionContainer(session.getId()));
+
   }
 
   public static String getCurrentWikiPagePath() throws Exception {
