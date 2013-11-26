@@ -15,7 +15,7 @@
   <div class="invalidChars" style="display:none">$msg</div>
   ${uicomponent.htmlOutput}
 </div>
-<script type="text/javascript" src="../../../../wiki/javascript/xwiki/xwiki.js"></script>
+<script type="text/javascript" src="/wiki/javascript/xwiki/xwiki.js"></script>
 <script type="text/javascript">
   XWiki.contextaction = 'preview';
   XWiki.fixLinksTargetAttribute(undefined);
