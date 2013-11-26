@@ -1149,6 +1149,7 @@ public class WikiServiceImpl implements WikiService, Startable {
           String fullFile = syntaxValues.get(1);
           HelpPage syntaxPage = addSyntaxPage(wStore, helpPage, syntaxName, shortFile, " Short help Page");
           addSyntaxPage(wStore, syntaxPage, syntaxName, fullFile, " Full help Page");
+          wStore.getSession().save();
         } catch (Exception e) {
           log.error("Can not create Help page", e);
         }
