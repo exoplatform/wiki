@@ -111,7 +111,7 @@ UIWikiAjaxRequest.prototype.checkAnchor = function() {
     		var slash = s1.lastIndexOf('/');
     		if (slash > -1) {
     			var pageName = s1.substring(slash + 1);
-    			ajaxGetLink = s1.substring(0, slash) +'/' + encodeURIComponent(pageName) + s2;
+    			ajaxGetLink = s1.substring(0, slash) +'/' + pageName + s2;
     		}
         }
         action.onclick = function() {
