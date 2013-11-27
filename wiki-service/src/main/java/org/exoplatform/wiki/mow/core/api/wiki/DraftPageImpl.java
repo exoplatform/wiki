@@ -83,7 +83,7 @@ public abstract class DraftPageImpl extends PageImpl implements DraftPage {
       PageImpl targetPage = (PageImpl) getTargetWikiPage();
       if (targetPage != null) {
         NTVersion lastestRevision = Utils.getLastRevisionOfPage(targetPage);
-        targetContent = ((AttachmentImpl) lastestRevision.getNTFrozenNode().getChildren().get(WikiNodeType.Definition.CONTENT)).getText();
+        targetContent = lastestRevision.getNTFrozenNode().getContentString();
         if (targetContent == null) {
           targetContent = StringUtils.EMPTY;
         }
