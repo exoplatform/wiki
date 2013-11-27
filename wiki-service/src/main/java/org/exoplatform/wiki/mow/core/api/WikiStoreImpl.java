@@ -145,7 +145,7 @@ public abstract class WikiStoreImpl implements WikiStore {
   @OneToOne
   @Owner
   @MappedBy(WikiNodeType.Definition.HELP_PAGES)
-  protected abstract HelpPage getHelpPageByChromattic();
+  public abstract HelpPage getHelpPageByChromattic();
   
   protected abstract void setHelpPageByChromattic(HelpPage page);
   
