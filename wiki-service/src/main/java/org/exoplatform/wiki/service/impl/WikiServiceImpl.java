@@ -874,7 +874,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   public PageImpl getHelpSyntaxPage(String syntaxId) throws Exception {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    if (wStore.getHelpPagesContainer().getChildPages().size() == 0) {
+    if (wStore.getHelpPageByChromattic() == null ||
+        wStore.getHelpPagesContainer().getChildPages().size() == 0) {
       createHelpPages(wStore);
     }
     Iterator<PageImpl> syntaxPageIterator = wStore.getHelpPagesContainer()
