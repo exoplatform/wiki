@@ -573,9 +573,7 @@ public class Utils {
     String pageTitle = page.getTitle();
     String currentVersionContent = content.getText();
     NTVersion previousVersion = page.getVersionableMixin().getBaseVersion();    
-    String previousVersionContent = ((AttachmentImpl) previousVersion.getNTFrozenNode()
-                                                                  .getChildren()
-                                                                  .get(WikiNodeType.Definition.CONTENT)).getText();
+    String previousVersionContent = previousVersion.getNTFrozenNode().getContentString();
     DiffResult diffResult = diffService.getDifferencesAsHTML(previousVersionContent,
                                                              currentVersionContent,
                                                              false);
