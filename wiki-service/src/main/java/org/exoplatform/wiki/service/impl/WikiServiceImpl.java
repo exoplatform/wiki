@@ -881,7 +881,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   public PageImpl getHelpSyntaxPage(String syntaxId) throws Exception {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    if (wStore.getHelpPagesContainer().getChildPages().size() == 0) {
+    if (wStore.getHelpPageByChromattic() == null ||
+        wStore.getHelpPagesContainer().getChildPages().size() == 0) {
       createHelpPages(wStore);
     }
     Iterator<PageImpl> syntaxPageIterator = wStore.getHelpPagesContainer()
@@ -1149,19 +1150,22 @@ public class WikiServiceImpl implements WikiService, Startable {
     return list;
   }
 
-  private void createHelpPages(WikiStoreImpl wStore) {
+  private synchronized void createHelpPages(WikiStoreImpl wStore) throws Exception {
     PageImpl helpPage = wStore.getHelpPagesContainer();
-    while (syntaxHelpParams.hasNext()) {
-      try {
-        ValuesParam syntaxhelpParam = syntaxHelpParams.next();
-        String syntaxName = syntaxhelpParam.getName();
-        ArrayList<String> syntaxValues = syntaxhelpParam.getValues();
-        String shortFile = syntaxValues.get(0);
-        String fullFile = syntaxValues.get(1);
-        HelpPage syntaxPage = addSyntaxPage(wStore, helpPage, syntaxName, shortFile, " Short help Page");
-        addSyntaxPage(wStore, syntaxPage, syntaxName, fullFile, " Full help Page");
-      } catch (Exception e) {
-        log.error("Can not create Help page", e);
+    if (helpPage.getChildPages().size() == 0) {
+      while (syntaxHelpParams.hasNext()) {
+        try {
+          ValuesParam syntaxhelpParam = syntaxHelpParams.next();
+          String syntaxName = syntaxhelpParam.getName();
+          ArrayList<String> syntaxValues = syntaxhelpParam.getValues();
+          String shortFile = syntaxValues.get(0);
+          String fullFile = syntaxValues.get(1);
+          HelpPage syntaxPage = addSyntaxPage(wStore, helpPage, syntaxName, shortFile, " Short help Page");
+          addSyntaxPage(wStore, syntaxPage, syntaxName, fullFile, " Full help Page");
+          wStore.getSession().save();
+        } catch (Exception e) {
+          log.error("Can not create Help page", e);
+        }
       }
     }
   }
