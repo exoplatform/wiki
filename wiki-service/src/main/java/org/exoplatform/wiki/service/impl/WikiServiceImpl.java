@@ -320,23 +320,13 @@ public class WikiServiceImpl implements WikiService, Startable {
       draftPage.remove();
     }
   }
-  
-  @Override
-  public boolean renamePage(String wikiType,
-                            String wikiOwner,
-                            String pageName,
-                            String newName,
-                            String newTitle) throws Exception {
-    return renamePage(wikiType, wikiOwner, pageName, newName, newTitle, false);
-  }
 
   @Override
   public boolean renamePage(String wikiType,
                             String wikiOwner,
                             String pageName,
                             String newName,
-                            String newTitle, 
-                            boolean createNewVersion) throws Exception {
+                            String newTitle) throws Exception {
     if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageName) || pageName == null)
       return false;
     PageImpl currentPage = (PageImpl) getPageById(wikiType, wikiOwner, pageName);
@@ -358,10 +348,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     getModel().save();
     currentPage.setTitle(newTitle) ;
     getModel().save();
-    if (createNewVersion) {
-      ((PageImpl) currentPage).checkin();
-      ((PageImpl) currentPage).checkout();
-    }
     
     //update LinkRegistry
     WikiImpl wiki = (WikiImpl) parentPage.getWiki();

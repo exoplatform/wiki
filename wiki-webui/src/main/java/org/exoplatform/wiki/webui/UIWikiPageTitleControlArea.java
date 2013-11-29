@@ -127,7 +127,7 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
                              pageParams.getOwner(),
                              pageParams.getPageId(),
                              newName,
-                             newTitle, true);
+                             newTitle);
       
       // Post activity
       Page renamedPage = wikiService.getPageById(pageParams.getType(), pageParams.getOwner(), newName);

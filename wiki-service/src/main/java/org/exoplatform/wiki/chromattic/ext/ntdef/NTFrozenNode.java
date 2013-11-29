@@ -37,7 +37,7 @@ public abstract class NTFrozenNode {
 
   @Property(name = "jcr:frozenUuid")
   public abstract String getFrozenUuid();
-  
+
   public abstract void setFrozenUuid(String frozenUuid);
 
   @OneToMany
@@ -56,20 +56,6 @@ public abstract class NTFrozenNode {
     }
   }
 
-  /**
-   * Gets 'title' of NTFrozenNode
-   * @return the node title
-   * @throws Exception
-   */
-  public String getTitle() throws Exception {
-    Value value = getPropertyValue(WikiNodeType.Definition.TITLE);
-    if (value != null) {
-      return value.getString();
-    } else {
-      return null;
-    }
-  }
-  
   public Date getUpdatedDate() throws Exception {
     Value value = getPropertyValue(WikiNodeType.Definition.UPDATED_DATE);
     if (value != null) {
