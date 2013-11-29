@@ -41,7 +41,6 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
     try {
       SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
       sessionManager.removeSessionContainer(sessionId);
-      sessionManager.removeSessionContainer(ConversationState.getCurrent().getIdentity().getUserId());
     } catch (Exception e) {
       LOG.warn("Can't remove the key: " + sessionId, e);
     }
