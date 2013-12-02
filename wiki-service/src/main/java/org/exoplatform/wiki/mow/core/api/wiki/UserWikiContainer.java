@@ -54,6 +54,7 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
    * @return the wiki object
    */
   protected UserWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
+    //check if wiki object is created
     boolean isCreatedWikiObject = false;
     NodeHierarchyCreator nodeHierachyCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer()
                                                                                          .getComponentInstanceOfType(NodeHierarchyCreator.class);    
@@ -94,13 +95,13 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
     }
     UserWiki uwiki = session.findByNode(UserWiki.class, wikiNode);
     uwiki.setWikiService(getwService());
-    uwiki.setOwner(wikiOwner);
     uwiki.setUserWikis(this);
-    uwiki.getPreferences();
-    if(isCreatedWikiObject) {
+    if (isCreatedWikiObject) {
+      uwiki.setOwner(wikiOwner);
+      uwiki.getPreferences();
       initDefaultPermisisonForWiki(uwiki);
+      session.save();
     }
-    session.save();
     return uwiki;
   }
 }

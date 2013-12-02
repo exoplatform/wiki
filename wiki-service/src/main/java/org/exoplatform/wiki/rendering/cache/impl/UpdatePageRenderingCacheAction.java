@@ -84,6 +84,7 @@ public class UpdatePageRenderingCacheAction implements Action {
             Wiki wiki = page.getWiki();
             if (wiki != null) {
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
+              pRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
             }
           }
         } else if (WikiNodeType.Definition.TARGET_PAGE.equals(currentProperty.getName())) {
@@ -93,7 +94,7 @@ public class UpdatePageRenderingCacheAction implements Action {
             if (wiki != null) {
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
               PageImpl desPage = page.getMovedMixin().getTargetPage();
-              pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), desPage.getName()));
+              pRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), desPage.getName()));
               pRenderingCacheService.getPageLinksMap().remove(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
             }            
           }
@@ -102,7 +103,8 @@ public class UpdatePageRenderingCacheAction implements Action {
       break;
     case ExtendedEvent.CHECKIN:
       Node node = (Node) item;
-      if (node.isNodeType(WikiNodeType.WIKI_PAGE)) {
+      if (node.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {
+        node = node.getParent();
         PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
         Wiki wiki = page.getWiki();
         if (wiki != null) {
@@ -113,8 +115,8 @@ public class UpdatePageRenderingCacheAction implements Action {
       break;
     case ExtendedEvent.CHECKOUT:
       node = (Node) item;
-      if (node.isNodeType(WikiNodeType.WIKI_PAGE)) {
-        PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
+      if (node.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {
+        PageImpl page = (PageImpl) Utils.getObject(node.getParent().getPath(), WikiNodeType.WIKI_PAGE);
         Wiki wiki = page.getWiki();
         if (wiki != null) {
           checkUncachedMacroesInPage(page);
