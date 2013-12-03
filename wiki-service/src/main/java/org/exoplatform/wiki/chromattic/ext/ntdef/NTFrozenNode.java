@@ -37,7 +37,7 @@ public abstract class NTFrozenNode {
 
   @Property(name = "jcr:frozenUuid")
   public abstract String getFrozenUuid();
-  
+
   public abstract void setFrozenUuid(String frozenUuid);
 
   @OneToMany
@@ -52,17 +52,31 @@ public abstract class NTFrozenNode {
     if (value != null) {
       return value.getString();
     } else {
-      return null;
+      value = getPropertyValue("exo:lastModifier");
+      if (value != null) {
+        return value.getString();
+      } else {
+        return null;
+      }
     }
   }
 
-  /**
-   * Gets 'title' of NTFrozenNode
-   * @return the node title
-   * @throws Exception
-   */
-  public String getTitle() throws Exception {
-    Value value = getPropertyValue(WikiNodeType.Definition.TITLE);
+  public Date getUpdatedDate() throws Exception {
+    Value value = getPropertyValue(WikiNodeType.Definition.UPDATED_DATE);
+    if (value != null) {
+      return value.getDate().getTime();
+    } else {
+      value = getPropertyValue(WikiNodeType.Definition.UPDATED);
+      if (value != null) {
+        return value.getDate().getTime();
+      } else {
+        return null;
+      }
+    }
+  }
+  
+  public String getComment() throws Exception {
+    Value value = getPropertyValue(WikiNodeType.Definition.COMMENT);
     if (value != null) {
       return value.getString();
     } else {
@@ -70,17 +84,10 @@ public abstract class NTFrozenNode {
     }
   }
   
-  public Date getUpdatedDate() throws Exception {
-    Value value = getPropertyValue(WikiNodeType.Definition.UPDATED_DATE);
-    if (value != null) {
-      return value.getDate().getTime();
-    } else {
-      return null;
-    }
-  }
-  
-  public String getComment() throws Exception {
-    Value value = getPropertyValue(WikiNodeType.Definition.COMMENT);
+  public String getContentString() throws Exception {
+    StringBuilder st = new StringBuilder(WikiNodeType.Definition.ATTACHMENT_CONTENT);
+    st.append("/").append(WikiNodeType.Definition.DATA);
+    Value value = getPropertyValue(st.toString());
     if (value != null) {
       return value.getString();
     } else {
@@ -96,7 +103,7 @@ public abstract class NTFrozenNode {
   protected abstract String getPath();
 
   private Value getPropertyValue(String propertyName) throws Exception {
-    Node pageNode = getJCRPageNode();
+    Node pageNode = getJCRNode();
     if (pageNode.hasProperty(propertyName)) {
       javax.jcr.Property property = pageNode.getProperty(propertyName);
       Value value = property.getValue();
@@ -106,7 +113,7 @@ public abstract class NTFrozenNode {
     }
   }
 
-  private Node getJCRPageNode() throws Exception {
+  public Node getJCRNode() throws Exception {
     return (Node) mowService.getSession().getJCRSession().getItem(getPath());
   }
 

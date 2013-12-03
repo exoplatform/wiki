@@ -134,21 +134,7 @@ public class JCRDataStorage implements DataStorage{
   }
   
   public Page getWikiPageByUUID(ChromatticSession session, String uuid) throws Exception {
-    StringBuilder statement = new StringBuilder();
-    statement.append("SELECT path ");
-    statement.append("FROM ").append(WikiNodeType.WIKI_PAGE).append(" ");
-    statement.append("WHERE jcr:uuid = '").append(uuid).append("'");
-    
-    Query q = ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement.toString());
-    QueryResult result = q.execute();
-    RowIterator iter = result.getRows();
-    if (iter.hasNext()) {
-      Row row = iter.nextRow();
-      String path = row.getValue(WikiNodeType.Definition.PATH).getString();
-      Page page = (Page) Utils.getObject(path, WikiNodeType.WIKI_PAGE);
-      return page;
-    }
-    return null;
+    return session.findById(Page.class, uuid);
   }
   
   public void initDefaultTemplatePage(ChromatticSession crmSession, ConfigurationManager configurationManager, String path) {

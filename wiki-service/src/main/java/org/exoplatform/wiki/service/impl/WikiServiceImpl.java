@@ -284,6 +284,10 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
       }
       session.save();
+
+      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, pageId));
+   
     } catch (Exception e) {
       log.error("Can't delete page '" + pageId + "' ", e) ;
       return false;
@@ -315,23 +319,13 @@ public class WikiServiceImpl implements WikiService, Startable {
       draftPage.remove();
     }
   }
-  
-  @Override
-  public boolean renamePage(String wikiType,
-                            String wikiOwner,
-                            String pageName,
-                            String newName,
-                            String newTitle) throws Exception {
-    return renamePage(wikiType, wikiOwner, pageName, newName, newTitle, false);
-  }
 
   @Override
   public boolean renamePage(String wikiType,
                             String wikiOwner,
                             String pageName,
                             String newName,
-                            String newTitle, 
-                            boolean createNewVersion) throws Exception {
+                            String newTitle) throws Exception {
     if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageName) || pageName == null)
       return false;
     PageImpl currentPage = (PageImpl) getPageById(wikiType, wikiOwner, pageName);
@@ -353,10 +347,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     getModel().save();
     currentPage.setTitle(newTitle) ;
     getModel().save();
-    if (createNewVersion) {
-      ((PageImpl) currentPage).checkin();
-      ((PageImpl) currentPage).checkout();
-    }
     
     //update LinkRegistry
     WikiImpl wiki = (WikiImpl) parentPage.getWiki();
@@ -382,8 +372,10 @@ public class WikiServiceImpl implements WikiService, Startable {
     parentPage.getChromatticSession().save();
     
     // Invaliding cache
-    PageRenderingCacheService pageRenderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
-    pageRenderingCacheService.invalidateCache(new WikiPageParams(wikiType, wikiOwner, pageName));
+    org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateCache(new WikiPageParams(wikiType, wikiOwner, pageName));
+    org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, pageName));
     return true ;    
   }
 
@@ -470,6 +462,11 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
       }
       session.save();
+      
+      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+      .invalidateUUIDCache(currentLocationParams);
+      // Post activity
+      postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageWikiListener.MOVE_PAGE_TYPE);
     } catch (Exception e) {
       log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
       return false;
@@ -595,8 +592,19 @@ public class WikiServiceImpl implements WikiService, Startable {
     updateAllPagesPermissions(wikiType, wikiOwner, permMap);
   }
 
+  
   @Override
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
+    Page page = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+       .getPageByParams(new WikiPageParams(wikiType, wikiOwner, pageId));
+    if (page != null && !page.hasPermission(PermissionType.VIEWPAGE)) {
+      page = null;
+    }
+    return page;
+  }
+  
+  @Override
+  public Page getPageByIdJCRQuery(String wikiType, String wikiOwner, String pageId) throws Exception {
     Page page = getPageByRootPermission(wikiType, wikiOwner, pageId);
     if (page != null && page.hasPermission(PermissionType.VIEWPAGE)) {
       return page;
@@ -689,7 +697,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     String username = Utils.getCurrentUser();
     Page existedPage = getPageByRootPermission(wikiType, wikiOwner, pageId);
     if (existedPage != null) {
-      if (username == null || existedPage.hasPermission(PermissionType.EDITPAGE)) {
+      if (username == null || existedPage.hasPermission(PermissionType.EDITPAGE) || existedPage.hasPermission(PermissionType.VIEW_ATTACHMENT)) {
         return existedPage;
       }
     }
@@ -912,7 +920,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   public PageImpl getHelpSyntaxPage(String syntaxId) throws Exception {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    if (wStore.getHelpPagesContainer().getChildPages().size() == 0) {
+    if (wStore.getHelpPageByChromattic() == null ||
+        wStore.getHelpPagesContainer().getChildPages().size() == 0) {
       createHelpPages(wStore);
     }
     Iterator<PageImpl> syntaxPageIterator = wStore.getHelpPagesContainer()
@@ -1071,7 +1080,6 @@ public class WikiServiceImpl implements WikiService, Startable {
         WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
         wiki = userWikiContainer.getWiki(owner, true);
       }
-      model.save();
     } catch (Exception e) {
       if (log.isDebugEnabled()) {
         log.debug("[WikiService] Cannot get wiki " + wikiType + ":" + owner, e);
@@ -1181,19 +1189,24 @@ public class WikiServiceImpl implements WikiService, Startable {
     return list;
   }
 
-  private void createHelpPages(WikiStoreImpl wStore) {
-    PageImpl helpPage = wStore.getHelpPagesContainer();
-    while (syntaxHelpParams.hasNext()) {
-      try {
-        ValuesParam syntaxhelpParam = syntaxHelpParams.next();
-        String syntaxName = syntaxhelpParam.getName();
-        ArrayList<String> syntaxValues = syntaxhelpParam.getValues();
-        String shortFile = syntaxValues.get(0);
-        String fullFile = syntaxValues.get(1);
-        HelpPage syntaxPage = addSyntaxPage(wStore, helpPage, syntaxName, shortFile, " Short help Page");
-        addSyntaxPage(wStore, syntaxPage, syntaxName, fullFile, " Full help Page");
-      } catch (Exception e) {
-        log.error("Can not create Help page", e);
+  private synchronized void createHelpPages(WikiStoreImpl wStore) throws Exception {
+    if (wStore.getHelpPageByChromattic() == null) {
+      PageImpl helpPage = wStore.getHelpPagesContainer();
+      if (helpPage.getChildPages().size() == 0) {
+        while (syntaxHelpParams.hasNext()) {
+          try {
+            ValuesParam syntaxhelpParam = syntaxHelpParams.next();
+            String syntaxName = syntaxhelpParam.getName();
+            ArrayList<String> syntaxValues = syntaxhelpParam.getValues();
+            String shortFile = syntaxValues.get(0);
+            String fullFile = syntaxValues.get(1);
+            HelpPage syntaxPage = addSyntaxPage(wStore, helpPage, syntaxName, shortFile, " Short help Page");
+            addSyntaxPage(wStore, syntaxPage, syntaxName, fullFile, " Full help Page");
+            wStore.getSession().save();
+          } catch (Exception e) {
+            log.error("Can not create Help page", e);
+          }
+        }
       }
     }
   }

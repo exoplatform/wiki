@@ -117,22 +117,7 @@ public interface WikiService {
   public boolean renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle) throws Exception;
 
   /**
-   * Renames a wiki page.
-   *
-   * @param wikiType It can be Portal, Group, or User.
-   * @param wikiOwner The Wiki owner.
-   * @param pageName Old name of the wiki page.
-   * @param newName New name of the wiki page.
-   * @param newTitle New title of the wiki page.
-   * @param createNewVersion Indicates if a new version is created.
-   * @return "True" if renaming the wiki page is successful, or "false" if not.
-   * @throws Exception
-   */
-  public boolean renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle,
-                            boolean createNewVersion) throws Exception;
-
-  /**
-   * Moves a wiki page.
+   * Move a wiki Page
    *
    * @param currentLocationParams The current location of the wiki page.
    * @param newLocationParams The new location of the wiki page.
@@ -171,6 +156,17 @@ public interface WikiService {
    * @throws Exception
    */
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception;
+  
+  /**
+   * Gets a wiki page by a given Id using JCR query
+   *
+   * @param wikiType It can be Portal, Group, or User.
+   * @param wikiOwner The Wiki owner.
+   * @param pageId Id of the wiki page.
+   * @return The wiki page if the current user has the read permission. Otherwise, it is "null".
+   * @throws Exception
+   */
+  public Page getPageByIdJCRQuery(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   /**
    * Gets a wiki page regardless of the current user's permission.

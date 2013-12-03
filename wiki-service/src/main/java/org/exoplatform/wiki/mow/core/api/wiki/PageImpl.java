@@ -17,10 +17,12 @@
 package org.exoplatform.wiki.mow.core.api.wiki;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -29,9 +31,12 @@ import java.util.Map.Entry;
 import java.util.TreeMap;
 
 import javax.jcr.Node;
+import javax.jcr.NodeIterator;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.query.Query;
 import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.DuplicateNameException;
@@ -51,6 +56,8 @@ import org.chromattic.api.annotations.Property;
 import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.ext.ntdef.NTFolder;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
@@ -70,6 +77,8 @@ import org.xwiki.rendering.syntax.Syntax;
 
 @PrimaryType(name = WikiNodeType.WIKI_PAGE)
 public abstract class PageImpl extends NTFolder implements Page {
+  
+  private static final Log      LOG               = ExoLogger.getLogger(PageImpl.class.getName());
   
   private MOWService mowService;
   
@@ -146,6 +155,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     if (content == null) {
       content = createContent();
       setContentByChromattic(content);
+      content.setText("");
     } else {
       String syntax = getSyntax();
       if (Syntax.CONFLUENCE_1_0.toIdString().equals(syntax)) {
@@ -235,46 +245,34 @@ public abstract class PageImpl extends NTFolder implements Page {
     }
   }
   
-  
-  @OneToOne(type = RelationshipType.EMBEDDED)
-  @Owner
-  public abstract VersionableMixin getVersionableMixinByChromattic();
-  protected abstract void setVersionableMixinByChromattic(VersionableMixin mix);
-  @Create
-  protected abstract VersionableMixin createVersionableMixin();
-  
   public VersionableMixin getVersionableMixin() {
-    VersionableMixin versionableMixin = getVersionableMixinByChromattic();
-    if (versionableMixin == null) {
-      versionableMixin = createVersionableMixin();
-      setVersionableMixinByChromattic(versionableMixin);
-    }
-    return versionableMixin;
+    return getContent().getVersionableMixin();
   }
 
   public void makeVersionable() {
-    getVersionableMixin();
+    this.getContent().makeVersionable();
   }
+  
   
   //TODO: replace by @Checkin when Chromattic support
   public NTVersion checkin() throws Exception {
-    getChromatticSession().save();
-    Node pageNode = getJCRPageNode();
-    Version newVersion = pageNode.checkin();
-    NTVersion ntVersion = getChromatticSession().findByNode(NTVersion.class, newVersion);
-    return ntVersion;
+    PageDescriptionMixin description = getContent().getPageDescriptionMixin();
+    description.setAuthor(ConversationState.getCurrent().getIdentity().getUserId());
+    description.setUpdatedDate(GregorianCalendar.getInstance().getTime());
+    description.setComment(this.getComment());
+    //create new version only for the page content node, but whole wiki page to improve performance.
+    NTVersion ret = getContent().checkin();
+    return ret;
   }
 
   //TODO: replace by @Checkout when Chromattic support
   public void checkout() throws Exception {
-    Node pageNode = getJCRPageNode();
-    pageNode.checkout();
+    getContent().checkout();
   }
 
   //TODO: replace by @Restore when Chromattic support
   public void restore(String versionName, boolean removeExisting) throws Exception {
-    Node pageNode = getJCRPageNode();
-    pageNode.restore(versionName, removeExisting);
+    getContent().restore(versionName, removeExisting);
   }
   
   @Create
@@ -329,13 +327,22 @@ public abstract class PageImpl extends NTFolder implements Page {
   }
   
   public Collection<AttachmentImpl> getAttachmentsExcludeContent() throws Exception {
-    Collection<AttachmentImpl> attachments = getAttachmentsByChromattic();
     List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>();
-    for (AttachmentImpl attachment : attachments) {
-      if ((attachment.hasPermission(PermissionType.VIEW_ATTACHMENT)
-          || attachment.hasPermission(PermissionType.EDIT_ATTACHMENT))
-          && !WikiNodeType.Definition.CONTENT.equals(attachment.getName())) {
-        atts.add(attachment);
+    String path = this.getPath();
+    StringBuilder statement = new StringBuilder("SELECT * FROM ");
+    statement.append(WikiNodeType.WIKI_ATTACHMENT)
+             .append(" WHERE jcr:path LIKE '").append(path)
+             .append("/%' AND NOT jcr:path LIKE '").append(path).append("/%/%'");
+    NodeIterator iter = getChromatticSession().getJCRSession().getWorkspace()
+      .getQueryManager().createQuery(statement.toString(), Query.SQL)
+      .execute().getNodes();
+    while (iter.hasNext()) {
+      Node node = iter.nextNode();
+      AttachmentImpl att = this.getChromatticSession().findByNode(AttachmentImpl.class, node);
+      if ((att.hasPermission(PermissionType.VIEW_ATTACHMENT)
+          || att.hasPermission(PermissionType.EDIT_ATTACHMENT))
+          && !WikiNodeType.Definition.CONTENT.equals(att.getName())) {
+        atts.add(att);
       }
     }
     Collections.sort(atts);
@@ -634,5 +641,106 @@ public abstract class PageImpl extends NTFolder implements Page {
     myJcrNode.save();
     // clear related pages in cache.
     if (relatedPages != null) relatedPages.clear();
+  }
+  
+  /**
+   * Migrates old page history data on the fly: 1.create version history of content child node <br/>
+   * based on the history of page node, 2.remove the mix:versionable from page node. 
+   * @throws Exception
+   */
+  public void migrateLegacyData() throws Exception {
+    //migrate only when the current Page Node is mix:versionable
+    if (this.getJCRPageNode().isNodeType(WikiNodeType.MIX_VERSIONABLE)) {
+      Node pageNode = this.getJCRPageNode();
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Migrating history for wiki page: " + pageNode.getPath());
+      }
+      //get history: author list, content list and updatedDate list
+      List<VersionData> versions = new ArrayList<VersionData>();
+      VersionIterator iter = pageNode.getVersionHistory().getAllVersions();
+      while (iter.hasNext()) {
+        Version v = iter.nextVersion();
+        if (v.hasNode(WikiNodeType.JCR_FROZEN_NODE))  {
+          String name = v.getName();
+          Node frozenNode = v.getNode(WikiNodeType.JCR_FROZEN_NODE);
+          String author = (frozenNode.hasProperty(WikiNodeType.Definition.AUTHOR) ?
+                              frozenNode.getProperty(WikiNodeType.Definition.AUTHOR).getString() : "");
+          Calendar calendar = (frozenNode.hasProperty(WikiNodeType.Definition.UPDATED_DATE) ? 
+                                frozenNode.getProperty(WikiNodeType.Definition.UPDATED_DATE).getDate() : 
+                        GregorianCalendar.getInstance());
+          String content = (frozenNode.getNode(WikiNodeType.Definition.CONTENT)
+                                      .getNode(WikiNodeType.Definition.ATTACHMENT_CONTENT)
+                                      .getProperty(WikiNodeType.Definition.DATA).getString());
+          String comment = (frozenNode.hasProperty(WikiNodeType.Definition.COMMENT) ?
+                                 frozenNode.getProperty(WikiNodeType.Definition.COMMENT).getString() : "");
+          versions.add(new VersionData(name, author, calendar, content, comment));
+        }
+      }
+      Collections.sort(versions);
+      //remove mix:versionable of the page itself
+      pageNode.removeMixin(WikiNodeType.MIX_VERSIONABLE);
+      pageNode.save();
+      this.makeVersionable();
+      AttachmentImpl content = this.getContent();
+      //save the current content
+      String currentContent = content.getText();
+      //create version history for content node
+      for (int i = 0; i < versions.size(); i++) {
+        PageDescriptionMixin description = content.getPageDescriptionMixin();
+        description.setAuthor(versions.get(i).getAuthor());
+        description.setUpdatedDate(versions.get(i).getCalendar().getTime());
+        content.setText(versions.get(i).getContent());
+        description.setComment(versions.get(i).getComment());
+        content.checkin();
+        content.checkout();
+      }
+      //restore the current content
+      content.setText(currentContent);
+    }
+  }
+  
+  public class VersionData implements Comparable<VersionData>{
+    private String name;
+    private String author;
+    private Calendar calendar;
+    private String content;
+    private String comment;
+    
+    public String getName() { return name; }
+
+    public void setName(String name) { this.name = name; }
+
+    public String getAuthor() { return author; }
+
+    public void setAuthor(String author) { this.author = author; }
+
+    public Calendar getCalendar() { return calendar; }
+
+    public void setCalendar(Calendar calendar) { this.calendar = calendar; }
+
+    public String getContent() { return content; }
+
+    public void setContent(String content) { this.content = content; }
+
+    public String getComment() { return comment; }
+
+    public void setComment(String comment) { this.comment = comment; }
+
+    
+    public VersionData(String name, String author, Calendar calendar, String content, String comment) {
+      this.name = name;
+      this.author = author;
+      this.calendar = calendar;
+      this.content = content;
+      this.comment = comment;
+    }
+
+    @Override
+    public int compareTo(VersionData arg0) {
+      return name.length() != arg0.name.length() ? 
+                          new Integer(name.length()).compareTo(arg0.name.length()) :
+                          name.compareTo(arg0.name);
+    }
+
   }
 }
