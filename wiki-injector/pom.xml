@@ -62,6 +62,12 @@
       <artifactId>chromattic.spi</artifactId>
     </dependency>
     <dependency>
+        <groupId>org.gatein.portal</groupId>
+        <artifactId>exo.portal.component.portal</artifactId>
+        <version>${org.gatein.portal.version}</version>
+        <type>test-jar</type>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-common</artifactId>
     </dependency>

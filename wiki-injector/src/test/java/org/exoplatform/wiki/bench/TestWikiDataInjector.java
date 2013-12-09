@@ -58,7 +58,7 @@ public class TestWikiDataInjector extends TestCase {
 
   protected void setUp() throws Exception {
     initContainer();
-    initJCR();
+    //initJCR();
     begin();
     Identity systemIdentity = new Identity(IdentityConstants.SYSTEM);
     ConversationState.setCurrent(new ConversationState(systemIdentity));
