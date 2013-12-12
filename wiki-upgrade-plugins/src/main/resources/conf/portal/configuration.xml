@@ -30,5 +30,28 @@
         </value-param>
       </init-params>
     </component-plugin>
+    <component-plugin>
+      <name>RemoveSandboxPageUpgradePlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.wiki.upgrade.RemoveSandboxPageUpgradePlugin</type>
+      <description>RemoveSandboxPageUpgradePlugin</description>
+      <init-params>
+          <value-param>
+              <name>product.group.id</name>
+              <description>The groupId of the product</description>
+              <value>org.exoplatform.wiki</value>
+          </value-param>
+          <value-param>
+              <name>old.product.group.id</name>
+              <description>The groupId of the old product</description>
+              <value>org.exoplatform.ks</value>
+          </value-param>
+          <value-param>
+              <name>plugin.execution.order</name>
+              <description>The plugin execution order</description>
+              <value>2</value>
+          </value-param>
+      </init-params>
+    </component-plugin>
   </external-component-plugins>
 </configuration>
