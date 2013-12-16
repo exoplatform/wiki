@@ -512,7 +512,7 @@
     <propertyDefinitions>
       <propertyDefinition name="watcher" requiredType="String" autoCreated="false" mandatory="false" onParentVersion="COPY" protected="false" multiple="true">
         <valueConstraints/>
-      </propertyDefinition>                  
+      </propertyDefinition>
     </propertyDefinitions>
   </nodeType>
   
@@ -528,6 +528,9 @@
         <valueConstraints/>
       </propertyDefinition>
     </propertyDefinitions>
+  </nodeType>
+  
+  <nodeType name="wiki:migrating" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
   </nodeType>
 
 </nodeTypes>

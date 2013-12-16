@@ -530,5 +530,8 @@
     </propertyDefinitions>
   </nodeType>
   
+  <nodeType name="wiki:migrating" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+  </nodeType>
+  
 </nodeTypes>
   
