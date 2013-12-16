@@ -28,6 +28,7 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.MigratingMixin;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WatchedMixin;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
@@ -124,7 +125,8 @@ public class Injector implements LifeCycleListener, StateChangeListener {
           try {
             PageImpl page = content.getParentPage();
             WatchedMixin mixin = page.getWatchedMixin();
-            if (mixin != null) {
+            MigratingMixin migrateMix = page.getMigratingMixin();
+            if (mixin != null && migrateMix == null) {
               boolean isWatched = !mixin.getWatchers().isEmpty();
               Wiki wiki = page.getWiki();
               boolean isMinorEdit = page.isMinorEdit();

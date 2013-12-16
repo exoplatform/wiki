@@ -231,6 +231,14 @@ public abstract class PageImpl extends NTFolder implements Page {
   @Create
   protected abstract WatchedMixin createWatchedMixin();
   
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract MigratingMixin getMigratingMixin();
+  public abstract void setMigratingMixin(MigratingMixin mix);
+
+  @Create
+  protected abstract MigratingMixin createMigratingMixin();
+  
   public void makeWatched() {
     WatchedMixin watchedMixin = getWatchedMixin();
     if (watchedMixin == null) {
@@ -674,6 +682,10 @@ public abstract class PageImpl extends NTFolder implements Page {
       //remove mix:versionable of the page itself
       pageNode.removeMixin(WikiNodeType.MIX_VERSIONABLE);
       pageNode.save();
+      //add mix wiki:migrating to avoid sending email when migrating
+      MigratingMixin migrateMix = this.createMigratingMixin();
+      this.setMigratingMixin(migrateMix);
+      
       this.makeVersionable();
       AttachmentImpl content = this.getContent();
       //save the current content
@@ -690,6 +702,8 @@ public abstract class PageImpl extends NTFolder implements Page {
       }
       //restore the current content
       content.setText(currentContent);
+      this.getChromatticSession().setEmbedded(this, MigratingMixin.class, null);
+      pageNode.save();
     }
   }
   

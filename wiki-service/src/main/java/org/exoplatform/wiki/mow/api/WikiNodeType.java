@@ -78,6 +78,8 @@ public interface WikiNodeType {
   
   public static final String WIKI_PAGE_DESCRIPTION   = "wiki:pageDescription";
   
+  public static final String WIKI_MIGRATING          = "wiki:migrating";
+
   public static final String MIX_VERSIONABLE = "mix:versionable";
   public static final String JCR_FROZEN_NODE = "jcr:frozenNode";
   
