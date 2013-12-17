@@ -30,8 +30,11 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
+import javax.jcr.LoginException;
+import javax.jcr.NoSuchWorkspaceException;
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
+import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
 import javax.jcr.query.Query;
@@ -56,6 +59,8 @@ import org.chromattic.api.annotations.Property;
 import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.ext.ntdef.NTFolder;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.services.jcr.RepositoryService;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
@@ -68,6 +73,7 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.rendering.converter.ConfluenceToXWiki2Transformer;
+import org.exoplatform.wiki.rendering.util.Utils;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiService;
@@ -652,13 +658,15 @@ public abstract class PageImpl extends NTFolder implements Page {
    */
   public void migrateLegacyData() throws Exception {
     //migrate only when the current Page Node is mix:versionable
-    if (this.getJCRPageNode().isNodeType(WikiNodeType.MIX_VERSIONABLE)) {
+    if (this.getJCRPageNode().isNodeType(WikiNodeType.MIX_VERSIONABLE) && 
+        (this.getContent().getVersionableMixinByChromattic() == null)) {
       Node pageNode = this.getJCRPageNode();
       if (LOG.isInfoEnabled()) {
         LOG.info("Migrating history for wiki page: " + pageNode.getPath());
       }
       //get history: author list, content list and updatedDate list
       List<VersionData> versions = new ArrayList<VersionData>();
+//      List<Version> versionNodeList = new ArrayList<Version>();
       VersionIterator iter = pageNode.getVersionHistory().getAllVersions();
       while (iter.hasNext()) {
         Version v = iter.nextVersion();
@@ -679,9 +687,6 @@ public abstract class PageImpl extends NTFolder implements Page {
         }
       }
       Collections.sort(versions);
-      //remove mix:versionable of the page itself
-      pageNode.removeMixin(WikiNodeType.MIX_VERSIONABLE);
-      pageNode.save();
       //add mix wiki:migrating to avoid sending email when migrating
       MigratingMixin migrateMix = this.createMigratingMixin();
       this.setMigratingMixin(migrateMix);
@@ -692,6 +697,9 @@ public abstract class PageImpl extends NTFolder implements Page {
       String currentContent = content.getText();
       //create version history for content node
       for (int i = 0; i < versions.size(); i++) {
+        if (LOG.isInfoEnabled()) {
+          LOG.info("Creating new version :" + i);
+        }
         PageDescriptionMixin description = content.getPageDescriptionMixin();
         description.setAuthor(versions.get(i).getAuthor());
         description.setUpdatedDate(versions.get(i).getCalendar().getTime());
@@ -704,8 +712,60 @@ public abstract class PageImpl extends NTFolder implements Page {
       content.setText(currentContent);
       this.getChromatticSession().setEmbedded(this, MigratingMixin.class, null);
       pageNode.save();
+      //remove mix:versionable of the page itself
+      removeMixVersionable(pageNode);
     }
   }
+  
+  private void removeMixVersionable(Node node) {
+    (new Thread(new RemoveMixVersionable(node))).start();    
+  }
+  
+  public class RemoveMixVersionable implements Runnable {
+    private String ws;
+    private String nodePath;
+    
+    public RemoveMixVersionable(Node node) {
+      try {
+        ws = node.getSession().getWorkspace().getName();
+        nodePath = node.getPath();
+      } catch (RepositoryException e) {
+        ws = "";
+        nodePath = "";
+      }
+    }
+
+    public void run() {
+      if (LOG.isInfoEnabled()) {
+        LOG.info("Removing " + WikiNodeType.MIX_VERSIONABLE + " from " + ws + ":" + nodePath);
+      }
+      SessionProvider provider = SessionProvider.createSystemProvider();
+      try {
+        Session session = provider.getSession(ws, Utils.getService(RepositoryService.class).getCurrentRepository());
+        Node node = (Node)session.getItem(nodePath);
+        node.removeMixin(WikiNodeType.MIX_VERSIONABLE);
+        node.save();
+        if (LOG.isInfoEnabled()) {
+          LOG.info(WikiNodeType.MIX_VERSIONABLE + " removed from " + ws + ":" + nodePath);
+        }
+      } catch (LoginException e) {
+        if (LOG.isWarnEnabled()) {
+          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " can not be removed from " + ws + ":" + nodePath);
+        }
+      } catch (NoSuchWorkspaceException e) {
+        if (LOG.isWarnEnabled()) {
+          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " can not be removed from " + ws + ":" + nodePath);
+        }
+      } catch (RepositoryException e) {
+        if (LOG.isWarnEnabled()) {
+          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " can not be removed from " + ws + ":" + nodePath);
+        }
+      }
+      provider.close();
+    }
+
+
+}
   
   public class VersionData implements Comparable<VersionData>{
     private String name;
