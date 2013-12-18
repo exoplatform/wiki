@@ -666,7 +666,6 @@ public abstract class PageImpl extends NTFolder implements Page {
       }
       //get history: author list, content list and updatedDate list
       List<VersionData> versions = new ArrayList<VersionData>();
-//      List<Version> versionNodeList = new ArrayList<Version>();
       VersionIterator iter = pageNode.getVersionHistory().getAllVersions();
       while (iter.hasNext()) {
         Version v = iter.nextVersion();
@@ -697,8 +696,8 @@ public abstract class PageImpl extends NTFolder implements Page {
       String currentContent = content.getText();
       //create version history for content node
       for (int i = 0; i < versions.size(); i++) {
-        if (LOG.isInfoEnabled()) {
-          LOG.info("Creating new version :" + i);
+        if ((i % 10 == 0) && LOG.isInfoEnabled()) {
+          LOG.info("Creating new version: " + i);
         }
         PageDescriptionMixin description = content.getPageDescriptionMixin();
         description.setAuthor(versions.get(i).getAuthor());
@@ -737,7 +736,7 @@ public abstract class PageImpl extends NTFolder implements Page {
 
     public void run() {
       if (LOG.isInfoEnabled()) {
-        LOG.info("Removing " + WikiNodeType.MIX_VERSIONABLE + " from " + ws + ":" + nodePath);
+        LOG.info("Removing " + WikiNodeType.MIX_VERSIONABLE + " from " + ws + ": " + nodePath);
       }
       SessionProvider provider = SessionProvider.createSystemProvider();
       try {
@@ -746,19 +745,19 @@ public abstract class PageImpl extends NTFolder implements Page {
         node.removeMixin(WikiNodeType.MIX_VERSIONABLE);
         node.save();
         if (LOG.isInfoEnabled()) {
-          LOG.info(WikiNodeType.MIX_VERSIONABLE + " removed from " + ws + ":" + nodePath);
+          LOG.info(WikiNodeType.MIX_VERSIONABLE + " was removed from " + ws + ": " + nodePath);
         }
       } catch (LoginException e) {
         if (LOG.isWarnEnabled()) {
-          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " can not be removed from " + ws + ":" + nodePath);
+          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " cannot be removed from " + ws + ": " + nodePath);
         }
       } catch (NoSuchWorkspaceException e) {
         if (LOG.isWarnEnabled()) {
-          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " can not be removed from " + ws + ":" + nodePath);
+          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " cannot be removed from " + ws + ": " + nodePath);
         }
       } catch (RepositoryException e) {
         if (LOG.isWarnEnabled()) {
-          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " can not be removed from " + ws + ":" + nodePath);
+          LOG.warn(WikiNodeType.MIX_VERSIONABLE + " cannot be removed from " + ws + ": " + nodePath);
         }
       }
       provider.close();
