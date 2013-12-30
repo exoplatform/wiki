@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.commons;
 
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -330,9 +331,9 @@ public class Utils {
     List<WikiMode> editModes = Arrays.asList(new WikiMode[] { WikiMode.EDITPAGE, WikiMode.ADDPAGE, WikiMode.EDITTEMPLATE,
         WikiMode.ADDTEMPLATE });
     UIPortal uiPortal = Util.getUIPortal();
-    String requestURL = portalRequestContext.getRequest().getRequestURL().toString();
     String portalURI = portalRequestContext.getPortalURI();
-    String domainURL = requestURL.substring(0, requestURL.indexOf(portalURI));
+    URL requestURL = new URL(portalRequestContext.getRequest().getRequestURL().toString());
+    String domainURL = requestURL.getPath();
     String portalURL = domainURL + portalURI;
     String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
     String treeRestURL = getCurrentRestURL().concat("/wiki/tree/children/");
