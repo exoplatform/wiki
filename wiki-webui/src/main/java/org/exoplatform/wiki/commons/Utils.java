@@ -331,7 +331,6 @@ public class Utils {
     List<WikiMode> editModes = Arrays.asList(new WikiMode[] { WikiMode.EDITPAGE, WikiMode.ADDPAGE, WikiMode.EDITTEMPLATE,
         WikiMode.ADDTEMPLATE });
     UIPortal uiPortal = Util.getUIPortal();
-//    String requestURL = portalRequestContext.getRequest().getRequestURL().toString();
     String portalURI = portalRequestContext.getPortalURI();
     URL requestURL = new URL(portalRequestContext.getRequest().getRequestURL().toString());
     String domainURL = requestURL.getPath();
