@@ -74,7 +74,7 @@ public class UIWikiApplicationControlArea extends UIContainer {
     case ADDTEMPLATE:
       return "UIWikiPortlet.label.Add-Template";
     case COMPAREREVISION:
-      return "UIWikiPortlet.label.Compare-Revision";
+      return "UIWikiPortlet.label.Compare-Version";
     case SPACESETTING:
       return "UIWikiPortlet.label.Setting";
     case PAGEINFO:

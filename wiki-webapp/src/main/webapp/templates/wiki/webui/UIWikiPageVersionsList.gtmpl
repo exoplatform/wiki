@@ -40,7 +40,7 @@
       <thead >
         <tr>
           <th ></th>
-          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Revision"); %></th>
+          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Version"); %></th>
           <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Date"); %></th>
           <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Author"); %></th>
           <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Summary"); %></th>
