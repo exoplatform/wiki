@@ -29,7 +29,7 @@
        action = component.event(action);
 	   }
 	%>
-		<a href="$action" class="actionIcon pull-right"><i class="uiIconClose"></i></a>
+		<a href="javascript:void(0);" onclick="$action" class="actionIcon pull-right"><i class="uiIconClose"></i></a>
 		<div class="popupTitle"><%=uicomponent.getPopupTitle();%></div>
 	</div>
 	<%uicomponent.renderChildren();%>

@@ -4,8 +4,8 @@
   boolean isWatched = uicomponent.detectWatched(false);
 %>
 <% if (!isWatched){ %>
-	<a href="$link"><i class="uiIconWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.WatchPage"); %></a>
+	<a href="javascript:void(0);" onclick="$link"><i class="uiIconWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.WatchPage"); %></a>
 <% } else { %>
-	<a href="$link"><i class="uiIconUnWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.UnWatchPage"); %></a>
+	<a href="javascript:void(0);" onclick="$link"><i class="uiIconUnWatchPage"></i><%= _ctx.appRes("MoreExtensionContainer.action.UnWatchPage"); %></a>
 <% } %>
 	
