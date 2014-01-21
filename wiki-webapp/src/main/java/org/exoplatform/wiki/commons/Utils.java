@@ -235,8 +235,14 @@ public class Utils {
         spaceUrl.append("/");
       }
       UIPortal uiPortal = Util.getUIPortal();
-      String [] resultsList =uiPortal.getSelectedUserNode().getURI().split(SLASH);
-      spaceUrl.append(resultsList[1]+"/");
+      String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
+      if(pageNodeSelected !=null){
+      	 String [] resultsList =pageNodeSelected.split(SLASH);
+         spaceUrl.append(resultsList[1]+"/");
+      }
+      else{
+      	spaceUrl.append("wiki/");
+      }
       if (!StringUtils.isEmpty(params.getPageId())) {
         spaceUrl.append(params.getPageId());
       }
