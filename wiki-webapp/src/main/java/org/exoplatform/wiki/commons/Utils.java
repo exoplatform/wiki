@@ -234,7 +234,15 @@ public class Utils {
       if (!spaceUrl.toString().endsWith("/")) {
         spaceUrl.append("/");
       }
-      spaceUrl.append("wiki/");
+      UIPortal uiPortal = Util.getUIPortal();
+      String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
+      if(pageNodeSelected !=null){
+      	 String [] resultsList =pageNodeSelected.split(SLASH);
+         spaceUrl.append(resultsList[1]+"/");
+      }
+      else{
+      	spaceUrl.append("wiki/");
+      }
       if (!StringUtils.isEmpty(params.getPageId())) {
         spaceUrl.append(params.getPageId());
       }
@@ -335,7 +343,7 @@ public class Utils {
     String domainURL = requestURL.substring(0, requestURL.indexOf(portalURI));
     String portalURL = domainURL + portalURI;
     String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
-    String treeRestURL = getCurrentRestURL().concat("/wiki/tree/children/");
+    String treeRestURL = getCurrentRestURL().concat("/"+pageNodeSelected+"/tree/children/");
     
     WikiContext wikiContext = new WikiContext();
     wikiContext.setPortalURL(portalURL);

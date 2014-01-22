@@ -372,6 +372,20 @@ UIWikiPortlet.prototype.ajaxRedirect = function(url) {
   window.location.href = url ;
 }
 
+UIWikiPortlet.prototype.fixImageUrl = function(lastUpdated) {
+    var content = $(".uiWikiContentDisplay", document.body)[0];
+    if (content) {
+	  $("img", content).each(function(index, elem) {
+		var src = elem.getAttribute("src");
+		if (src.indexOf("?lastUpdated=")==-1) {
+			elem.setAttribute("src", src + "?lastUpdated=" + lastUpdated);
+		}
+      });
+    }
+},
+
+
+
 eXo.wiki.UIWikiPortlet = new UIWikiPortlet();
 return eXo.wiki.UIWikiPortlet;
 

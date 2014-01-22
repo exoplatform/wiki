@@ -70,6 +70,9 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
       
       uploadCont.on("change", ".file", (function(id) {
     	  return function() {
+    	      $(".saveWikiPage", document.body).each(function(index, elem) {
+    	      	$(elem).attr("disabled", "");
+  	          });
     		  eXo.wiki.UIUpload.upload(id);    		  
     	  };
       })(uploadId[i]));
@@ -189,8 +192,12 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
         }
     }
 
-    if (eXo.wiki.UIUpload.listUpload.length < 1)
+    if (eXo.wiki.UIUpload.listUpload.length < 1) {
+      $(".saveWikiPage", document.body).each(function(index, elem) {
+    	$(elem).removeAttr("disabled");
+      });
       return;
+    }
 
     if (element) {
       element.innerHTML = "Uploaded " + percent + "% "
@@ -223,6 +230,11 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     progressBarFrame.hide();
 
     eXo.wiki.UIUpload.createEntryUpload(id, isDynamicMode);
+    if (eXo.wiki.UIUpload.listUpload.length < 1) {
+	    $(".saveWikiPage", document.body).each(function(index, elem) {
+	  	$(elem).removeAttr("disabled");
+    });
+  }
   };
 
   /**

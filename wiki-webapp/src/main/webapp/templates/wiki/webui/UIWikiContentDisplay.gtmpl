@@ -6,6 +6,7 @@
   requireJs.addScripts("UIWikiPortlet.makeRenderingErrorsExpandable('"+uicomponent.id+ "');");
   requireJs.addScripts("UIWikiPortlet.decorateSpecialLink('"+uicomponent.id+ "');");
   requireJs.addScripts("UIWikiPortlet.initMacros();");
+  requireJs.addScripts("UIWikiPortlet.fixImageUrl(" + uicomponent.getUpdatedDate() + ");");
   
   String msg = _ctx.appRes("UIWikiContentDisplay.msg.invalid-characters-in-link");
   msg = msg.replace("{0}",uicomponent.INVALID_CHARACTERS);

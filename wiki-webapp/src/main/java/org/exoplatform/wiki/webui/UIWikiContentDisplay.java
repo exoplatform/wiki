@@ -19,6 +19,8 @@ package org.exoplatform.wiki.webui;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
+import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 
 @ComponentConfig(
@@ -37,4 +39,10 @@ public class UIWikiContentDisplay extends UIContainer {
   public void setHtmlOutput(String htmlOutput) {
     this.htmlOutput = htmlOutput;
   }
+  
+  protected long getUpdatedDate() throws Exception {
+    Page page = Utils.getCurrentWikiPage();
+    return page.getUpdatedDate().getTime();
+  }
+ 
 }
