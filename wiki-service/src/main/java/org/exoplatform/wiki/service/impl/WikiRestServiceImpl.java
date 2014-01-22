@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.Stack;
 import java.util.StringTokenizer;
 
+import javax.annotation.security.RolesAllowed;
 import javax.jcr.Workspace;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -136,6 +137,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @POST
   @Path("/content/")
   @Produces(MediaType.TEXT_HTML)
+  @RolesAllowed("users")
   public Response getWikiPageContent(@QueryParam("sessionKey") String sessionKey,
                                      @QueryParam("wikiContext") String wikiContextKey,
                                      @QueryParam("markup") boolean isMarkup,
@@ -194,6 +196,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
    */
   @POST
   @Path("/upload/{wikiType}/{wikiOwner:.+}/{pageId}/")
+  @RolesAllowed("users")
   public Response upload(@PathParam("wikiType") String wikiType,
                          @PathParam("wikiOwner") String wikiOwner,
                          @PathParam("pageId") String pageId) {
@@ -256,6 +259,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/tree/{type}")
   @Produces(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
   public Response getTreeData(@PathParam("type") String type,
                               @QueryParam(TreeNode.PATH) String path,
                               @QueryParam(TreeNode.CURRENT_PATH) String currentPath,
@@ -315,6 +319,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/related/")
   @Produces(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
   public Response getRelated(@QueryParam(TreeNode.PATH) String path) {
     if (path == null) {
       return Response.status(Status.NOT_FOUND).build();
@@ -345,6 +350,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/{wikiType}/spaces")
   @Produces("application/xml")
+  @RolesAllowed("users")
   public Spaces getSpaces(@Context UriInfo uriInfo,
                           @PathParam("wikiType") String wikiType,
                           @QueryParam("start") Integer start,
@@ -394,6 +400,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @Path("/lastVisited/spaces")
   @Produces("application/xml")
   @SuppressWarnings("rawtypes")
+  @RolesAllowed("users")
   public Spaces getLastVisitedSpaces(@Context UriInfo uriInfo,
                                      @QueryParam("offset") Integer offset,
                                      @QueryParam("limit") Integer limit) {
@@ -424,6 +431,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/")
   @Produces("application/xml")
+  @RolesAllowed("users")
   public Space getSpace(@Context UriInfo uriInfo,
                         @PathParam("wikiType") String wikiType,
                         @PathParam("wikiOwner") String wikiOwner) {
@@ -450,6 +458,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/pages")
   @Produces("application/xml")
+  @RolesAllowed("users")
   public Pages getPages(@Context UriInfo uriInfo,
                         @PathParam("wikiType") String wikiType,
                         @PathParam("wikiOwner") String wikiOwner,
@@ -497,6 +506,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/pages/{pageId}")
   @Produces("application/xml")
+  @RolesAllowed("users")
   public org.exoplatform.wiki.service.rest.model.Page getPage(@Context UriInfo uriInfo,
                                                               @PathParam("wikiType") String wikiType,
                                                               @PathParam("wikiOwner") String wikiOwner,
@@ -526,6 +536,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/{wikiType}/spaces/{wikiOwner:.+}/pages/{pageId}/attachments")
   @Produces("application/xml")
+  @RolesAllowed("users")
   public Attachments getAttachments(@Context UriInfo uriInfo,
                                     @PathParam("wikiType") String wikiType,
                                     @PathParam("wikiOwner") String wikiOwner,
@@ -557,6 +568,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("contextsearch/")
   @Produces(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
   public Response searchData(@QueryParam("keyword") String keyword,
                              @QueryParam("wikiType") String wikiType,
                              @QueryParam("wikiOwner") String wikiOwner) throws Exception {
@@ -595,6 +607,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/images/{wikiType}/space/{wikiOwner:.+}/page/{pageId}/{imageId}")
   @Produces("image")
+  @RolesAllowed("users")
   public Response getImage(@Context UriInfo uriInfo,
                            @PathParam("wikiType") String wikiType,
                            @PathParam("wikiOwner") String wikiOwner,
@@ -883,6 +896,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/help/{syntaxId}")
   @Produces(MediaType.TEXT_HTML)
+  @RolesAllowed("users")
   public Response getHelpSyntaxPage(@PathParam("syntaxId") String syntaxId, @QueryParam("portalUrl") String portalUrl) {
     CacheControl cacheControl = new CacheControl();
     
@@ -953,6 +967,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/spaces/accessibleSpaces/")
   @Produces(MediaType.APPLICATION_JSON)
+  @RolesAllowed("users")
   public Response searchAccessibleSpaces(@QueryParam("keyword") String keyword) {
     try {
       List<SpaceBean> spaceBeans = wikiService.searchSpaces(keyword);
@@ -983,6 +998,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
    */                          
   @POST
   @Path("/saveDraft/")
+  @RolesAllowed("users")
   public Response saveDraft(@QueryParam("wikiType") String wikiType,
                             @QueryParam("wikiOwner") String wikiOwner,
                             @QueryParam("pageId") String pageId,
@@ -1085,6 +1101,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
    */
   @GET
   @Path("/removeDraft/")
+  @RolesAllowed("users")
   public Response removeDraft(@QueryParam("draftName") String draftName) {
     if (StringUtils.isEmpty(draftName)) {
       return Response.status(HTTPStatus.BAD_REQUEST).cacheControl(cc).build();

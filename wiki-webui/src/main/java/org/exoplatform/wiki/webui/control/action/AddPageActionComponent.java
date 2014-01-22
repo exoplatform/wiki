@@ -76,6 +76,9 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
     @Override
     protected void processEvent(Event<AddPageActionComponent> event) throws Exception {
       WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+      // Check to remove temp draft
+      wservice.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
+      
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       ResourceBundle res = context.getApplicationResourceBundle();

@@ -118,7 +118,7 @@ public class DefaultWikiModel implements WikiModel {
       WikiContext wikiMarkupContext = markupContextManager.getMarkupContext(imageName, resourceType);
       String portalContainerName = PortalContainer.getCurrentPortalContainerName();
       String portalURL = wikiMarkupContext.getPortalURL();
-      String domainURL = portalURL.substring(0, portalURL.indexOf(portalContainerName) - 1);
+      String domainURL = portalURL.substring(0, portalURL.indexOf("/"+portalContainerName));
       sb.append(domainURL).append(Utils.getCurrentRepositoryWebDavUri());
       WikiContext context =getWikiContext();
       renderingCacheService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageId()),
