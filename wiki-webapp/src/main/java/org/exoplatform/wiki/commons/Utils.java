@@ -235,9 +235,8 @@ public class Utils {
         spaceUrl.append("/");
       }
       UIPortal uiPortal = Util.getUIPortal();
-      String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
-      if(pageNodeSelected !=null){
-      	String [] resultsList =pageNodeSelected.split(SLASH);
+      if(uiPortal.getSelectedUserNode() !=null){
+      	String [] resultsList =uiPortal.getSelectedUserNode().getURI().split(SLASH);
       	spaceUrl.append(resultsList[1]+"/");
       }
       else{
