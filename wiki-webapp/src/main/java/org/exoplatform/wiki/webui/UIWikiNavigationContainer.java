@@ -48,7 +48,7 @@ public class UIWikiNavigationContainer extends UIWikiForm {
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
 
-    String initParam = getInitParam();
+    String initParam = getEncodedInitParam();
     if (initParam != null) {
       this.getChild(UITreeExplorer.class).setInitParam(initParam);
     }
