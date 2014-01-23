@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
+import java.net.URLEncoder;
 import java.util.Arrays;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -41,15 +42,15 @@ public class UIWikiNavigationContainer extends UIWikiForm {
     initURLSb.append("/wiki/tree/").append(TREETYPE.ALL.toString());
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
     childrenURLSb.append("/wiki/tree/").append(TREETYPE.CHILDREN.toString());
-    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(), null, true);
+    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getEncodedInitParam(), null, true);
   }
   
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
 
-    String initParam = getInitParam();
+    String initParam = getEncodedInitParam();
     if (initParam != null) {
-      this.getChild(UITreeExplorer.class).setInitParam(initParam);
+      this.getChild(UITreeExplorer.class).setInitParam(intParam);
     }
     super.processRender(context);
   }
@@ -64,4 +65,13 @@ public class UIWikiNavigationContainer extends UIWikiForm {
     return null;
   }
   
+  private String getEncodedInitParam() throws Exception {
+    StringBuilder initParamSb = new StringBuilder();
+    String currentPath = Utils.getCurrentWikiPagePath();
+    if (currentPath != null) {    
+      initParamSb.append("?").append(TreeNode.PATH).append("=").append(URLEncoder.encode(currentPath,"utf-8"));
+      return initParamSb.toString();
+    }
+    return null;
+  }
 }
