@@ -50,7 +50,7 @@ public class UIWikiNavigationContainer extends UIWikiForm {
 
     String initParam = getInitParam();
     if (initParam != null) {
-      this.getChild(UITreeExplorer.class).setInitParam(initParam);
+      this.getChild(UITreeExplorer.class).setInitParam(getEncodedInitParam());
     }
     super.processRender(context);
   }
