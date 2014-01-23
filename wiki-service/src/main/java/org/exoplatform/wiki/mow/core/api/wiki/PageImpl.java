@@ -254,6 +254,13 @@ public abstract class PageImpl extends NTFolder implements Page {
   }
   
   public VersionableMixin getVersionableMixin() {
+    try {
+      migrateLegacyData();
+    } catch (Exception e) {
+      if (LOG.isWarnEnabled()) {
+        LOG.warn("Can not migrate legacy version data", e.getMessage());
+      }
+    }
     return getContent().getVersionableMixin();
   }
 
