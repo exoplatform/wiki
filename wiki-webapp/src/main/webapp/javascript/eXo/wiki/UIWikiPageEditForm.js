@@ -206,7 +206,7 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
     $.ajax({
     async : true,
     url : me.restURL + me.restParam,
-    contentType: "application/x-www-form-urlencoded;charset=ISO-8859-15",
+    contentType: "application/x-www-form-urlencoded;",
     type : 'POST',
     data : dataString,
     dataType: 'json',
