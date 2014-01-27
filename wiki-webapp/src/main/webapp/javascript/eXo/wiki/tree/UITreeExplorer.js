@@ -54,31 +54,32 @@ UITreeExplorer.prototype.initMacros = function() {
   }
 };
 
-UITreeExplorer.prototype.collapseExpand = function(element) {
-  if(element) {
-	var node = element.parentNode;
-	var subGroup = $(node).find('ul.nodeGroup')[0];
-	if ($(element).hasClass('EmptyIcon')) {
-	  return true;
+UITreeExplorer.prototype.collapseExpand = function (element) {
+  if (element) {
+    var node = element.parentNode;
+    var subGroup = $(node).find('ul.nodeGroup')[0];
+    if ($(element).hasClass('EmptyIcon')) {
+      return true;
     }
-      
-	if ($(element).hasClass('expandIcon')) {
-	  $(element).toggleClass('expandIcon');
-	  $(element).addClass('collapseIcon');
+
+    if ($(element).hasClass('expandIcon')) {
+      $(element).toggleClass('expandIcon');
+      $(element).addClass('collapseIcon');
     } else {
       $(element).toggleClass('collapseIcon');
-	  $(element).addClass('expandIcon');
+      $(element).addClass('expandIcon');
     }
-      
+
     if (!subGroup) {
       return false;
-	}
-	  
-	$(subGroup).toggle();
-	return true;
+    }
+
+    $(subGroup).toggle();
+
+    eXo.wiki.WikiLayout.setHeightLayOut();
+    return true;
   }
 };
-
 UITreeExplorer.prototype.onNodeClick = function(node, absPath) {
   var me = eXo.wiki.UITreeExplorer;
   var selectableObj = $(node).find('a');
