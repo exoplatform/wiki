@@ -1061,10 +1061,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       // Notify to client that saved draft success
       return Response.ok(new DraftData(draftPage.getName()), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (UnsupportedEncodingException uee) {
-        log.warn("Cannot decode page name");
+        log.warn(String.format("Cannot decode page name %s",pageId));
         return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     } 
     catch (Exception ex) {
+      if(StringUtils.isEmpty(pageId)) pageId = rawPageId;
       log.warn(String.format("Failed to perform auto save wiki page %s:%s:%s", wikiType,wikiOwner,pageId), ex);
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
