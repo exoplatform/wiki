@@ -1061,7 +1061,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       // Notify to client that saved draft success
       return Response.ok(new DraftData(draftPage.getName()), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (UnsupportedEncodingException uee) {
-        log.warn(String.format("Cannot decode page name %s",pageId));
+        log.warn("Cannot decode page name");
         return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     } 
     catch (Exception ex) {
