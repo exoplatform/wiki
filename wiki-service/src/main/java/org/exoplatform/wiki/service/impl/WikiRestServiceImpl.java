@@ -981,7 +981,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
    * 
    * @param wikiType type of wiki to save draft
    * @param wikiOwner owner of wiki to save draft
-   * @param pageId name of page to save draft
+   * @param rawPageId name of page to save draft in encoded format
    * @param pageRevision the target revision of target page
    * @param lastDraftName name of the draft page of last saved draft request
    * @param isNewPage The draft for new page or not
@@ -1004,13 +1004,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                             @FormParam("title") String title,
                             @FormParam("content") String content,
                             @FormParam("isMarkup") String isMarkup) {
-	
+    String pageId = null;
     try {
       if ("__anonim".equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
         return Response.status(HTTPStatus.BAD_REQUEST).cacheControl(cc).build();
-      }  
-      
-      String pageId = URLDecoder.decode(rawPageId,"utf-8");
+      } 
+      pageId = URLDecoder.decode(rawPageId,"utf-8");
       WikiPageParams param = new WikiPageParams(wikiType, wikiOwner, pageId);
       PageImpl pageImpl = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
       if (StringUtils.isEmpty(pageId) || (pageImpl == null)) {
@@ -1061,15 +1060,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       
       // Notify to client that saved draft success
       return Response.ok(new DraftData(draftPage.getName()), MediaType.APPLICATION_JSON).cacheControl(cc).build();
-    } catch (Exception ex) {
-      
-      // Notify to client that save draft fail
-      try {
-        String pageId = URLDecoder.decode(rawPageId,"utf-8");
-        log.warn(String.format("Failed to perform auto save wiki page %s:%s:%s", wikiType,wikiOwner,pageId), ex);
-      } catch (UnsupportedEncodingException uee) {
+    } catch (UnsupportedEncodingException uee) {
         log.warn("Cannot decode page name");
-      }
+        return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
+    } 
+    catch (Exception ex) {
+      log.warn(String.format("Failed to perform auto save wiki page %s:%s:%s", wikiType,wikiOwner,pageId), ex);
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }
