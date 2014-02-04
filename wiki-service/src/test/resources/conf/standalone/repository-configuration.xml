@@ -64,13 +64,13 @@
               <property name="indexing-configuration-path" value="jar:/conf/standalone/indexing-configuration.xml" />                         
             </properties>            
           </query-handler>          
-          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.jbosscache.CacheableLockManagerImpl">
+          <lock-manager class="org.exoplatform.services.jcr.impl.core.lock.infinispan.ISPNCacheableLockManagerImpl">
             <properties>
               <property name="persister-class-name" value="org.exoplatform.services.jcr.impl.core.lock.FileSystemLockPersister"/>
               <property name="time-out" value="15m" />
               <property name="path" value="../temp/lock/gadgets" />
-              <property name="jbosscache-configuration" value="exo.portal.component.test.jcr-jbosscache-lock-config.xml" />
-              <property name="jbosscache-cl-cache.jdbc.datasource" value="jdbcidm"/>
+              <property name="infinispan-configuration" value="conf/standalone/infinispan/lock-config.xml" />
+              <property name="infinispan-cl-cache.jdbc.datasource" value="jdbcidm" />
             </properties>
           </lock-manager>
         </workspace>

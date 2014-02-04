@@ -16,17 +16,7 @@
  */
 package org.exoplatform.wiki.bench;
 
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.Session;
-import javax.jcr.query.Query;
-import javax.jcr.query.QueryManager;
-import javax.jcr.query.QueryResult;
-
-import java.util.HashMap;
-
 import junit.framework.TestCase;
-
 import org.exoplatform.container.StandaloneContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -37,6 +27,17 @@ import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.bench.WikiDataInjector.CONSTANTS;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiService;
+import org.junit.Ignore;
+
+import javax.jcr.Node;
+import javax.jcr.NodeIterator;
+import javax.jcr.Session;
+import javax.jcr.query.Query;
+import javax.jcr.query.QueryManager;
+import javax.jcr.query.QueryResult;
+import java.util.HashMap;
+
+@Ignore
 
 public class TestWikiDataInjector extends TestCase {
 
