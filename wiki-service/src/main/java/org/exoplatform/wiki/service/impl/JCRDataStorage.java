@@ -201,7 +201,7 @@ public class JCRDataStorage implements DataStorage{
     //get the excerpt from row result
     excerpt = getExcerpt(row, type);
 
-    if (page == null || !page.hasPermission(PermissionType.VIEWPAGE) || page.getName().equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
+    if (page == null || !page.hasPermission(PermissionType.VIEWPAGE)) {
       return null;
     }
     
