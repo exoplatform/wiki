@@ -235,7 +235,19 @@ public class Utils {
       if (!spaceUrl.toString().endsWith("/")) {
         spaceUrl.append("/");
       }
-      spaceUrl.append("wiki/");
+      UIPortal uiPortal = Util.getUIPortal();
+      String [] resultsList =uiPortal.getSelectedUserNode().getURI().split(SLASH);
+      /*
+       * Check case remove the default wiki portlet in space & re-add to the same space.
+       */
+      if(resultsList.length > 1){
+        spaceUrl.append(resultsList[1]+"/");
+      /*
+       * Check case public wiki page in space.
+       */
+      }else{
+        spaceUrl.append("wiki/");
+      }
       if (!StringUtils.isEmpty(params.getPageId())) {
         spaceUrl.append(params.getPageId());
       }
