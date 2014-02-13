@@ -27,7 +27,6 @@ import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.bench.WikiDataInjector.CONSTANTS;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiService;
-import org.junit.Ignore;
 
 import javax.jcr.Node;
 import javax.jcr.NodeIterator;
@@ -36,9 +35,6 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import java.util.HashMap;
-
-@Ignore
-
 public class TestWikiDataInjector extends TestCase {
 
   private static StandaloneContainer container;
@@ -59,12 +55,12 @@ public class TestWikiDataInjector extends TestCase {
 
   protected void setUp() throws Exception {
     initContainer();
-    //initJCR();
+    initJCR();
     begin();
     Identity systemIdentity = new Identity(IdentityConstants.SYSTEM);
     ConversationState.setCurrent(new ConversationState(systemIdentity));
     this.wikiService = (WikiService) container.getComponentInstanceOfType(WikiService.class);
-    this.injector = new WikiDataInjector(wikiService, null);    
+    this.injector = new WikiDataInjector(wikiService, null);
   }
 
   protected void tearDown() throws Exception {
