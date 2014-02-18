@@ -609,19 +609,4 @@ public class Utils {
       return res.getString("UIWikiPortlet.label.Anonymous");
     }
   }
-  
-  public static String getPageLink() throws Exception {    
-    StringBuilder sb = new StringBuilder();    
-    sb.append(Utils.getBaseUrl());
-     
-    String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();    
-    String pageName = Util.getUIPortal().getSelectedUserNode().getName();
-    if(!WikiContext.WIKI.equals(pageName)) {
-      if(pageURI.contains(WikiContext.WIKI)) {
-        pageURI = pageURI.substring(pageURI.indexOf(WikiContext.WIKI) + WikiContext.WIKI.length() + 1, pageURI.length());
-      }
-      sb.append(pageURI).append("/");
-    } 
-    return sb.toString();
-  }
 }
