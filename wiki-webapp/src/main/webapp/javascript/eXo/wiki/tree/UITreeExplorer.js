@@ -77,6 +77,7 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
     }
 	eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);  
 	$(subGroup).toggle();
+	eXo.wiki.WikiLayout.setHeightLayOut();
 	
 	return true;
   }
