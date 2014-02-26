@@ -19,5 +19,7 @@
 <script type="text/javascript" src="/wiki/javascript/xwiki/xwiki.js"></script>
 <script type="text/javascript">
   XWiki.contextaction = 'preview';
-  XWiki.fixLinksTargetAttribute(undefined);
+  if(XWiki.fixLinksTargetAttribute){
+    XWiki.fixLinksTargetAttribute(undefined);  
+  }
 </script>
