@@ -1,5 +1,5 @@
 <%  
-  String link = "eXo.wiki.UIWikiPageEditForm.setPageSaved();" + uicomponent.getActionLink(); 
+  String link = uicomponent.getActionLink(); 
   String titleMessage = _ctx.appRes("UIConfirmBox.label.Confirmation");
   String addMessage = _ctx.appRes("UIConfirmBox.label.ConfirmAdd");
   String untitledMessage = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
@@ -17,6 +17,6 @@
   requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
 %>
 <a style="display:none" id="link_$uicomponent.id" href="$link"></a>
-<button type="button" id="$uicomponent.id" onclick="if(eXo.wiki.UIWikiSavePage.confirm('$uicomponent.id', $isNewMode, '$pageTitleInputId', '$untitledMessage','$titleMessage',  '$addMessage',  'SavePage Icon',  '$confirmLabel','$cancelLabel')) $link;" class="btn btn-primary saveWikiPage">
+<button type="button" id="$uicomponent.id" onclick="eXo.wiki.UIWikiPageEditForm.setPageSaved();if(eXo.wiki.UIWikiSavePage.confirm('$uicomponent.id', $isNewMode, '$pageTitleInputId', '$untitledMessage','$titleMessage',  '$addMessage',  'SavePage Icon',  '$confirmLabel','$cancelLabel')) $link;" class="btn btn-primary saveWikiPage">
     <%=_ctx.appRes("UISubmitToolBar.action.SavePage");%>
 </button>
