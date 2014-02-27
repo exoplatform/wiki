@@ -255,7 +255,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/tree/{type}")
   @Produces(MediaType.APPLICATION_JSON)
-  @RolesAllowed("users")
   public Response getTreeData(@PathParam("type") String type,
                               @QueryParam(TreeNode.PATH) String path,
                               @QueryParam(TreeNode.CURRENT_PATH) String currentPath,
