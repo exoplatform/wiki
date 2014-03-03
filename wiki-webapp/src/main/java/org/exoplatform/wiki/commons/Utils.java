@@ -416,7 +416,10 @@ public class Utils {
                                          WikiMode mode,
                                          Map<String, String[]> params) throws Exception {
     StringBuffer sb = new StringBuffer();
-    sb.append(getURLFromParams(pageParams));
+    sb.append(getPageLink());
+    if(!StringUtils.isEmpty(pageParams.getPageId())){
+      sb.append(pageParams.getPageId());
+    }
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));
     }
@@ -582,5 +585,20 @@ public class Utils {
       ResourceBundle res = context.getApplicationResourceBundle();
       return res.getString("UIWikiPortlet.label.Anonymous");
     }
+  }
+  
+  public static String getPageLink() throws Exception {    
+    StringBuilder sb = new StringBuilder();    
+    sb.append(Utils.getBaseUrl());
+     
+    String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();    
+    String pageName = Util.getUIPortal().getSelectedUserNode().getName();
+    if(!WikiContext.WIKI.equals(pageName)) {
+      if(pageURI.contains(WikiContext.WIKI)) {
+        pageURI = pageURI.substring(pageURI.indexOf(WikiContext.WIKI) + WikiContext.WIKI.length() + 1, pageURI.length());
+      }
+      sb.append(pageURI).append("/");
+    } 
+    return sb.toString();
   }
 }
