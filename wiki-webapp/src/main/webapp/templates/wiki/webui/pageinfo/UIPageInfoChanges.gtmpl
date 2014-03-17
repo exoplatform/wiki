@@ -48,7 +48,7 @@
 	    <% } %>
 	    
 	   <tr>
-	     <td colspan="3" style="padding: 0px;">
+	     <td colspan="2" style="padding: 0px;">
            <% if (currentVersions.size() > 0) { %>
 		     <div class="actionCenter">
 			   <button type="button" class="btn" onclick="<%=uicomponent.event("ShowHistory")%>"><%= _ctx.appRes("UIWikiPageInfo.label.view-page-history")%></button>

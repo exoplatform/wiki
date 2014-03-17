@@ -487,9 +487,21 @@ WikiLayout.prototype.adjustWidth      = function(evt) {
   	leftWidth = me.leftMinWidth;
   	rightWidth = allowedWidth - leftWidth - WikiLayout.resizeBar.offsetWidth;
   }
+
   if (rightWidth < me.rightMinWidth) {
   	leftWidth = allowedWidth - me.rightMinWidth -me.resizeBar.offsetWidth;
   	rightWidth = me.rightMinWidth;
+  }
+  if (rightWidth <= me.rightMinWidth + me.resizeBar.offsetWidth + 25) {
+	  var pageTitleDiv = $(me.rightArea).find("div.uiWikiPageTitle")[0];
+	  if (pageTitleDiv) {
+		  $(pageTitleDiv).hide();
+	  }
+  } else {
+  	var pageTitleDiv = $(me.rightArea).find("div.uiWikiPageTitle")[0];
+  	if (pageTitleDiv) {
+  		$(pageTitleDiv).show();
+  	}
   }
   $(me.leftArea).width(leftWidth + "px");
   $(me.rightArea).width(rightWidth + "px");

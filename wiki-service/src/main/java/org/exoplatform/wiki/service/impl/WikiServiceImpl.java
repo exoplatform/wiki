@@ -246,6 +246,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       return false;
     try {
       PageImpl page = (PageImpl) getPageById(wikiType, wikiOwner, pageId);
+      invalidateUUIDCache(wikiType, wikiOwner, pageId);
       Model model = getModel();
       WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
       ChromatticSession session = wStore.getSession();
@@ -285,14 +286,26 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
       session.save();
 
-      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
-      .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, pageId));
-   
     } catch (Exception e) {
       log.error("Can't delete page '" + pageId + "' ", e) ;
       return false;
     }
     return true;    
+  }
+  
+  private void invalidateUUIDCache(String wikiType, String wikiOwner, String pageId) throws Exception {
+    PageImpl page = (PageImpl) getPageById(wikiType, wikiOwner, pageId);
+    
+    Queue<PageImpl> queue = new LinkedList<PageImpl>();
+    queue.add(page);
+    while (!queue.isEmpty()) {
+      PageImpl currentPage = queue.poll();
+      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
+         .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, currentPage.getName()));
+      for (PageImpl child : currentPage.getChildPages().values()) {
+        queue.add(child);
+      }
+    }
   }
 
   @Override
