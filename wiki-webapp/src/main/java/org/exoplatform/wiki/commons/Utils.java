@@ -32,6 +32,7 @@ import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.MimeTypeResolver;
+import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -40,6 +41,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.organization.OrganizationService;
@@ -298,12 +300,19 @@ public class Utils {
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
-    SessionManager sessionManager = (SessionManager) ExoContainerContext.getCurrentContainer()
-                                                                        .getComponentInstanceOfType(SessionManager.class);
-    sessionManager.addSessionContext(ConversationState.getCurrent().getIdentity().getUserId(), 
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
+    sessionManager.addSessionContext(session.getId(), Utils.createWikiContext(wikiPortlet));
+    sessionManager.addSessionContext(ConversationState.getCurrent().getIdentity().getUserId()
+                                     + ((RepositoryService)container.getComponentInstanceOfType(RepositoryService.class))
+                                       .getCurrentRepository().getConfiguration().getName(), 
                                      Utils.createWikiContext(wikiPortlet));
-    sessionManager.addSessionContainer(ConversationState.getCurrent().getIdentity().getUserId(), 
-                                     sessionManager.getSessionContainer(session.getId()));
+    if (sessionManager.getSessionContainer(session.getId()) != null) {
+      sessionManager.addSessionContainer(ConversationState.getCurrent().getIdentity().getUserId()
+                                         + ((RepositoryService)container.getComponentInstanceOfType(RepositoryService.class))
+                                         .getCurrentRepository().getConfiguration().getName(), 
+                                       sessionManager.getSessionContainer(session.getId()));
+    }
 
   }
 
