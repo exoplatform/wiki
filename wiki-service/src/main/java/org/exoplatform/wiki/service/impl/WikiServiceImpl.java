@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import java.util.Queue;
 import java.util.ResourceBundle;
 
+import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.ChromatticSession;
@@ -117,7 +118,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private JCRDataStorage        jcrDataStorage;
 
-  private Iterator<ValuesParam> syntaxHelpParams;
+  private List<ValuesParam> syntaxHelpParams;
 
   private PropertiesParam           preferencesParams;
   
@@ -147,7 +148,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     this.configManager = configManager;
     this.jcrDataStorage = jcrDataStorage;
     if (initParams != null) {
-      syntaxHelpParams = initParams.getValuesParamIterator();
+      Iterator<ValuesParam> helps = initParams.getValuesParamIterator();
+      if (helps != null)
+        syntaxHelpParams = (List<ValuesParam>) IteratorUtils.toList(initParams.getValuesParamIterator());
+      else
+        syntaxHelpParams = new ArrayList<ValuesParam>();
       preferencesParams = initParams.getPropertiesParam(PREFERENCES);
     }
     
@@ -1151,12 +1156,10 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   private synchronized void createHelpPages(WikiStoreImpl wStore) throws Exception {
-    if (wStore.getHelpPageByChromattic() == null) {
       PageImpl helpPage = wStore.getHelpPagesContainer();
       if (helpPage.getChildPages().size() == 0) {
-        while (syntaxHelpParams.hasNext()) {
+        for(ValuesParam syntaxhelpParam : syntaxHelpParams)  {
           try {
-            ValuesParam syntaxhelpParam = syntaxHelpParams.next();
             String syntaxName = syntaxhelpParam.getName();
             ArrayList<String> syntaxValues = syntaxhelpParam.getValues();
             String shortFile = syntaxValues.get(0);
@@ -1169,7 +1172,6 @@ public class WikiServiceImpl implements WikiService, Startable {
           }
         }
       }
-    }
   }
   
   @Override
