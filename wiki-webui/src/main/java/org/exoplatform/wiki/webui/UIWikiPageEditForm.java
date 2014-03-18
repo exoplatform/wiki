@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -282,7 +283,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   protected String getCurrentPageId() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-    return pageParams.getPageId();
+    return URLEncoder.encode(pageParams.getPageId(),"utf-8");
   }
   
   /**

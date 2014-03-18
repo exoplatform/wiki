@@ -77,6 +77,7 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
     }
 	eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);  
 	$(subGroup).toggle();
+	eXo.wiki.WikiLayout.setHeightLayOut();
 	
 	return true;
   }
@@ -117,7 +118,8 @@ UITreeExplorer.prototype.selectNode = function(node, nodePath) {
       link.href = link.href.substring(0, modeIndex) + param + "=" + nodePath;
 	}    
   }
-  window.location = link.href;
+  eval(link.href);
+  return false;
 };
 
 UITreeExplorer.prototype.render = function(param, element, isFullRender) {
