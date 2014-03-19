@@ -70,6 +70,9 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
       
       uploadCont.on("change", ".file", (function(id) {
     	  return function() {
+    	      $(".saveWikiPage", document.body).each(function(index, elem) {
+    	      	$(elem).attr("disabled", "");
+  	          });
     		  eXo.wiki.UIUpload.upload(id);    		  
     	  };
       })(uploadId[i]));
@@ -158,11 +161,11 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     } catch (err) {
       return;
     }
-
     for (id in response.upload) {
       var container = parent.document.getElementById('UploadInputContainer'
           + id);
       var jCont = $(container);
+      
       if (response.upload[id].status == "failed") {
         eXo.wiki.UIUpload.abortUpload(id);
         var message = jCont.children(".limitMessage").first().html();
@@ -175,7 +178,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
       var percent = response.upload[id].percent;
       var bar = jCont.find(".bar").first();
       bar.css("width", percent + "%");
-      var label = bar.children(".percent").first();
+      var label = jCont.find(".percent").first();
       label.html(percent + "%");
 
       if(percent == 100) {
@@ -189,8 +192,12 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
         }
     }
 
-    if (eXo.wiki.UIUpload.listUpload.length < 1)
+    if (eXo.wiki.UIUpload.listUpload.length < 1) {
+      $(".saveWikiPage", document.body).each(function(index, elem) {
+    	$(elem).removeAttr("disabled");
+      });
       return;
+    }
 
     if (element) {
       element.innerHTML = "Uploaded " + percent + "% "
@@ -213,7 +220,6 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     eXo.wiki.UIUpload.remove(id);
     var url = eXo.wiki.UIUpload.abortURL + id;
     ajaxRequest('GET', url, false);
-    
     var container = parent.document.getElementById('UploadInputContainer' + id);
     var jCont = $(container);
     var progressIframe = jCont.find('#ProgressIframe' + id);
@@ -223,6 +229,11 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     progressBarFrame.hide();
 
     eXo.wiki.UIUpload.createEntryUpload(id, isDynamicMode);
+    if (eXo.wiki.UIUpload.listUpload.length < 1) {
+	    $(".saveWikiPage", document.body).each(function(index, elem) {
+	  	$(elem).removeAttr("disabled");
+    });
+  }
   };
 
   /**
@@ -301,3 +312,4 @@ eXo.wiki.UIUpload = new UIUpload();
 return eXo.wiki.UIUpload;
 
 })(base, uiForm, webuiExt, $);
+

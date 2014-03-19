@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -100,7 +101,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     initURLSb.append("/wiki/tree/").append(TREETYPE.ALL.toString());
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
     childrenURLSb.append("/wiki/tree/").append(TREETYPE.CHILDREN.toString());
-    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(Utils.getCurrentWikiPagePath()), eventComponent, false);
+    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(URLEncoder.encode(Utils.getCurrentWikiPagePath(),"utf-8")), eventComponent, false);
     
     // Init space switcher
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
