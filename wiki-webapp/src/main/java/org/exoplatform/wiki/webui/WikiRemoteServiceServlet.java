@@ -61,7 +61,10 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
     } catch (Exception e) {
       try {
         sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
-        portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId));
+        portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId + 
+                                         ((RepositoryService)ExoContainerContext.getCurrentContainer()
+                                            .getComponentInstanceOfType(RepositoryService.class))
+                                            .getCurrentRepository().getConfiguration().getName()));
       } catch (Exception ex) {
         return RPC.encodeResponseForFailure(null, ex);
       }
