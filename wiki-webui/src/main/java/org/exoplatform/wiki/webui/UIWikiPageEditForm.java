@@ -26,11 +26,10 @@ import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.jcr.RepositoryException;
-import javax.jcr.UnsupportedRepositoryOperationException;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.organization.OrganizationService;
@@ -284,24 +283,6 @@ public class UIWikiPageEditForm extends UIWikiForm {
   protected String getCurrentPageId() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
     return URLEncoder.encode(pageParams.getPageId(),"utf-8");
-  }
-  
-  /**
-   * Gets the uuid of real current edited page node
-   * @return the page node uuid
-   * @throws UnsupportedRepositoryOperationException
-   * @throws RepositoryException
-   * @throws Exception
-   */
-  protected String getCurrentPageUUID() throws UnsupportedRepositoryOperationException, RepositoryException, Exception{
-    Page page = null;
-    UIWikiPortlet wikiPortlet = this.getAncestorOfType(UIWikiPortlet.class);
-    if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-      page = Utils.getCurrentNewDraftWikiPage();
-    } else {
-      page = Utils.getCurrentWikiPage();
-    }
-    return page.getJCRPageNode().getUUID();
   }
 
   protected String getCurrentPageRevision() throws Exception {
