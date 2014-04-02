@@ -200,7 +200,7 @@ public class SavePageActionComponent extends UIComponent {
             }
   
             synchronized (page.getJCRPageNode().getUUID()) {
-              page.setComment(StringEscapeUtils.escapeHtml(commentInput.getValue()));
+              page.setComment(commentInput.getValue());
               page.setSyntax(syntaxId);
               pageTitleControlForm.getUIFormInputInfo().setValue(title);
               pageParams.setPageId(page.getName());
