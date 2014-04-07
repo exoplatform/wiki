@@ -1,12 +1,12 @@
-<%  
+<%
+  import org.apache.commons.lang.StringEscapeUtils;
+
   String link = "eXo.wiki.UIWikiPageEditForm.setPageSaved();" + uicomponent.getActionLink(); 
-  String titleMessage = _ctx.appRes("UIConfirmBox.label.Confirmation");
-  String addMessage = _ctx.appRes("UIConfirmBox.label.ConfirmAdd");
-  String untitledMessage = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
-  String exitMessage = _ctx.appRes("UIConfirmBox.label.ConfirmExit");
-  String confirmLabel = _ctx.appRes("UIConfirmBox.label.Confirm");
-  String okLabel = _ctx.appRes("UIConfirmBox.label.Ok");
-  String cancelLabel = _ctx.appRes("UIConfirmBox.label.Cancel");
+  String titleMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.Confirmation"));
+  String addMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.ConfirmAdd"));
+  String untitledMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIWikiPageTitleControlArea.label.Untitled"));
+  String confirmLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.Confirm"));
+  String cancelLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.Cancel"));
   boolean isNewMode = uicomponent.isNewMode();
   String pageTitleInputId= uicomponent.getPageTitleInputId();
   def rcontext = _ctx.getRequestContext() ;  
