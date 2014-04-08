@@ -178,18 +178,6 @@ public class JCRDataStorage implements DataStorage{
         updateDate.setTime(page.getUpdatedDate());
         createdDate.setTime(page.getCreatedDate());
       }
-    } else if (WikiNodeType.WIKI_ATTACHMENT_CONTENT.equals(type)) {
-      AttachmentImpl searchAtt = (AttachmentImpl) Utils.getObject(path, WikiNodeType.WIKI_ATTACHMENT);
-      updateDate = searchAtt.getUpdatedDate();
-      page = searchAtt.getParentPage();
-      createdDate.setTime(page.getCreatedDate());
-      if ("nt:base".equals(data.getNodeType())) {
-        try  {
-          title = row.getValue(WikiNodeType.Definition.TITLE).getString();
-        } catch (RepositoryException e) { title = StringUtils.EMPTY; }
-      } else {
-        title = page.getTitle();
-      }
     } else if (WikiNodeType.WIKI_PAGE.equals(type)) {
       page = (PageImpl) Utils.getObject(path, type);
       updateDate.setTime(page.getUpdatedDate());
