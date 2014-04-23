@@ -118,7 +118,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
 
   UIUpload.prototype.showUploaded = function(id, fileName) {
     eXo.wiki.UIUpload.remove(id);
-    var container = parent.document.getElementById('UploadInputContainer' + id);
+    var container = window.document.getElementById('UploadInputContainer' + id);
     var element = document.getElementById('ProgressIframe' + id);
     element.innerHTML = "<span></span>";
 
@@ -162,7 +162,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
       return;
     }
     for (id in response.upload) {
-      var container = parent.document.getElementById('UploadInputContainer'
+      var container = window.document.getElementById('UploadInputContainer'
           + id);
       var jCont = $(container);
       
@@ -209,7 +209,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     var url = eXo.wiki.UIUpload.deleteURL + id;
     ajaxRequest('GET', url, false);
     
-    var container = parent.document.getElementById('UploadInputContainer' + id);
+    var container = window.document.getElementById('UploadInputContainer' + id);
     var selectFileFrame = $(container).find(".selectFileFrame").first();
     selectFileFrame.hide();
 
@@ -220,7 +220,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
     eXo.wiki.UIUpload.remove(id);
     var url = eXo.wiki.UIUpload.abortURL + id;
     ajaxRequest('GET', url, false);
-    var container = parent.document.getElementById('UploadInputContainer' + id);
+    var container = window.document.getElementById('UploadInputContainer' + id);
     var jCont = $(container);
     var progressIframe = jCont.find('#ProgressIframe' + id);
     progressIframe.hide();
@@ -245,7 +245,7 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
    *          id
    */
   UIUpload.prototype.doUpload = function(id) {
-    var container = parent.document.getElementById('UploadInputContainer' + id);
+    var container = window.document.getElementById('UploadInputContainer' + id);
     var jCont = $(container);
     eXo.wiki.UIUpload.displayUploadButton(id);
     if (id instanceof Array) {
