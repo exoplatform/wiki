@@ -42,6 +42,17 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
     return;
   }
   
+
+  // Declare the function to handle change to create draft
+  var func = function() {
+    var me = eXo.wiki.UIWikiPageEditForm;
+    me.firstChanged = true;
+    if (me.changed == false) {
+      setTimeout("eXo.wiki.UIWikiPageEditForm.saveDraft()", me.autoSaveSequeneTime);
+      me.changed = true;
+    }
+  }
+  
   // Find title input
   var titleContainer = $(pageEditForm).find('div.uiWikiPageTitle')[0];
   var titleInput = $(titleContainer).find('input')[0];
@@ -53,35 +64,20 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   }
   
   // Bind event for text area and title input
-  $(titleInput).keyup(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
-  $(titleInput).change(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
+  $(titleInput).keyup(func);
+  $(titleInput).change(func);
   if (textAreaContainer) {
     var textarea = $(textAreaContainer).find('textarea');
-    textarea.keyup(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
-    textarea.change(eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
+    textarea.keyup(func);
+    textarea.change(func);
     
     textarea = $(textAreaContainer).find('iframe')[0];
     if (textarea) {
-    	$(textarea.contentWindow.document).bind('keyup', eXo.wiki.UIWikiPageEditForm.handleSaveDraftTiming);
+    	$(textarea.contentWindow.document).bind('keyup', func);
     }
 //    textarea = $(textAreaContainer).find('iframe').bind('change',func);
   }
 };
-
-// sets current edited page uuid
-UIWikiPageEditForm.prototype.setRealPageUUID = function(uuid) {
-  eXo.wiki.UIWikiPageEditForm.uuid = uuid;
-}
-
-// Declare the function to handle change to create draft
-UIWikiPageEditForm.prototype.handleSaveDraftTiming = function() {
-  var me = eXo.wiki.UIWikiPageEditForm;
-  me.firstChanged = true;
-  if (me.changed == false) {
-    setTimeout("eXo.wiki.UIWikiPageEditForm.saveDraft()", me.autoSaveSequeneTime);
-    me.changed = true;
-  }
-}
 
 UIWikiPageEditForm.prototype.checkToRemoveEditorMenu = function() {
   var me = eXo.wiki.UIWikiPageEditForm;
@@ -188,11 +184,10 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
       pageContent = $(textAreaContainer).find('textarea')[0].value;
     }
   }
-  var uuid = me.uuid;
   
   // Create rest request
   if (me.restParam) {
-    var dataString = {'title': pageTitle, 'content': pageContent, 'isMarkup': isMarkup, 'uuid': uuid}
+    var dataString = {'title': pageTitle, 'content': pageContent, 'isMarkup': isMarkup}
     $.ajax({
     async : true,
     url : me.restURL + me.restParam,

@@ -29,6 +29,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
@@ -55,6 +56,10 @@ public class UIWikiPageContentArea extends UIWikiContainer {
   }
 
   private void renderVersion() throws Exception {
+    // Check to remove temp draft
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    wikiService.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
+
     String currentVersionName= this.getChild(UIWikiVersionSelect.class).getVersionName();
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     WikiMode currentMode= wikiPortlet.getWikiMode();

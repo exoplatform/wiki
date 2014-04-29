@@ -23,6 +23,7 @@ import org.exoplatform.container.RootContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityRegistry;
+import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.service.WikiContext;
@@ -54,12 +55,21 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
     String result;
     PortalContainer portalContainer;
     SessionManager sessionManager;
+    String sessionId = getThreadLocalRequest().getSession(false) == null ? null : getThreadLocalRequest().getSession(false).getId();
     String userId = getThreadLocalRequest().getRemoteUser();
     try {
       sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
-      portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId));
+      portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(sessionId));
     } catch (Exception e) {
-      return RPC.encodeResponseForFailure(null, e);
+      try {
+        sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
+        portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId + 
+                                        ((RepositoryService)ExoContainerContext.getCurrentContainer()
+                                        .getComponentInstanceOfType(RepositoryService.class))
+                                        .getCurrentRepository().getConfiguration().getName()));
+      } catch (Exception ex) {
+        return RPC.encodeResponseForFailure(null, ex);
+      }
     }
     ExoContainer oldContainer = ExoContainerContext.getCurrentContainer();
     ExoContainerContext.setCurrentContainer(portalContainer);
@@ -68,13 +78,19 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
 
     try {
       RPCRequest req = RPC.decodeRequest(payload, null, this);
-      RenderingServiceImpl renderingService =
-          (RenderingServiceImpl) portalContainer.getComponentInstanceOfType(RenderingService.class);
-      WikiContext wikiContext = (WikiContext) sessionManager.getSessionContext(userId);
+      RenderingServiceImpl renderingService = (RenderingServiceImpl) portalContainer.getComponentInstanceOfType(RenderingService.class);
+      Object obj = sessionId == null ? null : sessionManager.getSessionContext(sessionId);
+      WikiContext wikiContext = obj == null ? (WikiContext) sessionManager.getSessionContext(userId
+                                             + ((RepositoryService)portalContainer.getComponentInstanceOfType(RepositoryService.class))
+                                             .getCurrentRepository().getConfiguration().getName()) 
+                                            : (WikiContext) obj;
       Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
-      ec.setContext(new ExecutionContext());
-      ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
-
+      if (ec.getContext() == null) {
+        ec.setContext(new ExecutionContext());
+      }
+      if (ec.getContext().getProperty(WikiContext.WIKICONTEXT) == null) {
+        ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
+      }
       if (ConversationState.getCurrent() == null)
       {
         IdentityRegistry identityRegistry = (IdentityRegistry) portalContainer.getComponentInstanceOfType(IdentityRegistry.class);
