@@ -1,9 +1,11 @@
 <%
+  import org.apache.commons.lang.StringEscapeUtils;
+
   def rcontext = _ctx.getRequestContext();
-  String cancelLabel = _ctx.appRes("UIConfirmBox.label.Cancel");
-  String titleMessage = _ctx.appRes("UIConfirmBox.label.Confirmation");
-  String exitMessage = _ctx.appRes("UIConfirmBox.label.ConfirmExit");
-  String okLabel = _ctx.appRes("UIConfirmBox.label.Ok");
+  String cancelLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.Cancel"));
+  String titleMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.Confirmation"));
+  String exitMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.ConfirmExit"));
+  String okLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.Ok"));
   String cancelLink = uicomponent.getActionLink();
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");

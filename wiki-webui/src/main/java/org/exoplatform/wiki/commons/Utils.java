@@ -440,9 +440,9 @@ public class Utils {
                                          Map<String, String[]> params) throws Exception {
     StringBuffer sb = new StringBuffer();
     sb.append(getPageLink());
-    if (!StringUtils.isEmpty(pageParams.getPageId())) {
-      sb.append(pageParams.getPageId());
-    }    
+    if(!StringUtils.isEmpty(pageParams.getPageId())){
+      sb.append(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+    }
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));
     }

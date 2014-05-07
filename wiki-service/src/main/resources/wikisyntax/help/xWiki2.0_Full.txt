@@ -553,7 +553,7 @@ java content
 \\
 | Anchor Macro| ~{~{anchor name="anchor_name"}}~{~{/anchor}} | ((({{anchor name="anchor_name"}}{{/anchor}})))
 \\
-| Chilren Macro| ~{~{children childrenNum="1" depth="2"/}} | ((({{children childrenNum="1" depth="2"/}})))
+| Children Macro| ~{~{children childrenNum="1" depth="2"/}} | ((({{children childrenNum="1" depth="2"/}})))
 \\
 | Color Macro| ~{~{color name="blue"}}content~{~{/color}} | ((({{color name="blue"}}content{{/color}})))
 \\
