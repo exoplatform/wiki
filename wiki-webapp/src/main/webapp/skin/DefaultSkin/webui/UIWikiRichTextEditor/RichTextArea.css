@@ -51,8 +51,8 @@ body.UIWikiPortletWysiwygCss { /*
   Overwrite no matter what list-style-position to outside position to avoid the Firefox issues with editing lists
   with inside list style. 
 */
-.UIWikiPortletWysiwygCss ul {
-  list-style-type: circle;
+.UIWikiPortletWysiwygCss ul,.UIWikiPortletWysiwygCss ol {
+  list-style-position: outside !important;
 }
 
 /*
