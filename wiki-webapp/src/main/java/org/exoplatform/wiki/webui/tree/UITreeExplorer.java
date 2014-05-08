@@ -102,7 +102,7 @@ public class UITreeExplorer extends UIContainer {
   }
 
   public String getBaseLink() throws Exception {
-    return Utils.getPageLink();
+    return Utils.getBaseUrl();
   }
 
   static public class SelectNodeActionListener extends EventListener<UITreeExplorer> {
