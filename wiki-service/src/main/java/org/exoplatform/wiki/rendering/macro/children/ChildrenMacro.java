@@ -86,7 +86,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
   private boolean excerpt;
   
   public ChildrenMacro() {
-    super("Chilren", DESCRIPTION, ChildrenMacroParameters.class);
+    super("Children", DESCRIPTION, ChildrenMacroParameters.class);
     setDefaultCategory(DEFAULT_CATEGORY_NAVIGATION);
   }
 

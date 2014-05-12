@@ -161,10 +161,9 @@ public class JCRDataStorage implements DataStorage{
     Calendar updateDate = GregorianCalendar.getInstance();
     Calendar createdDate = GregorianCalendar.getInstance();
     PageImpl page = null;
-    if (WikiNodeType.WIKI_ATTACHMENT_CONTENT.equals(type)) {
+    if (WikiNodeType.WIKI_ATTACHMENT.equals(type)) {
       // Transform to Attachment result
       type = WikiNodeType.WIKI_ATTACHMENT.toString();
-      path = path.substring(0, path.lastIndexOf("/"));
       if(!path.endsWith(WikiNodeType.Definition.CONTENT)){
         AttachmentImpl searchAtt = (AttachmentImpl) Utils.getObject(path, WikiNodeType.WIKI_ATTACHMENT);
         updateDate = searchAtt.getUpdatedDate();
@@ -178,16 +177,6 @@ public class JCRDataStorage implements DataStorage{
         title = page.getTitle();
         updateDate.setTime(page.getUpdatedDate());
         createdDate.setTime(page.getCreatedDate());
-      }
-    } else if (WikiNodeType.WIKI_ATTACHMENT.equals(type)) {
-      AttachmentImpl searchAtt = (AttachmentImpl) Utils.getObject(path, WikiNodeType.WIKI_ATTACHMENT);
-      updateDate = searchAtt.getUpdatedDate();
-      page = searchAtt.getParentPage();
-      createdDate.setTime(page.getCreatedDate());
-      if ("nt:base".equals(data.getNodeType())) {
-        title = searchAtt.getFullTitle();
-      } else {
-        title = page.getTitle();
       }
     } else if (WikiNodeType.WIKI_PAGE.equals(type)) {
       page = (PageImpl) Utils.getObject(path, type);

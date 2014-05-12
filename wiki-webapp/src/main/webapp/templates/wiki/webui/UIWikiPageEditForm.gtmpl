@@ -1,16 +1,17 @@
 <%
   import java.util.List;
+  import org.apache.commons.lang.StringEscapeUtils;
   
   uicomponent.checkToDissplayNotification();
   def rcontext = _ctx.getRequestContext() ;    
-  def saveDraftSuccessMessage = _ctx.appRes("DraftPage.msg.save-draft-success");
-  def discardDraftConfirmMessage = _ctx.appRes("DraftPage.msg.keep-draft-question");
+  def saveDraftSuccessMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("DraftPage.msg.save-draft-success"));
+  def discardDraftConfirmMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("DraftPage.msg.keep-draft-question"));
   
   // Resource for cancel action
-  def cancelDraftConfirmTitle = _ctx.appRes("UIConfirmBox.label.Confirmation");
-  def cancelDraftConfirmMessage = _ctx.appRes("DraftPage.msg.cancel-draft");
-  def yesButtonLabel = _ctx.appRes("DraftPage.label.yes-button");
-  def noButtonLabel = _ctx.appRes("DraftPage.label.no-button");
+  def cancelDraftConfirmTitle = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIConfirmBox.label.Confirmation"));
+  def cancelDraftConfirmMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("DraftPage.msg.cancel-draft"));
+  def yesButtonLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("DraftPage.label.yes-button"));
+  def noButtonLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("DraftPage.label.no-button"));
   def removeDraftRestUrl = uicomponent.getRemoveDraftRestUrl();
   
   def removeDraftAction = uicomponent.getCancelDraftEvent();
@@ -26,7 +27,7 @@
   boolean isDraftForNewPage = uicomponent.isNewPage();
   long getAutoSaveSequenceTime = uicomponent.getAutoSaveSequenceTime();
   List notificationMessages = uicomponent.getNotificationMessages();
-  String untitledLabel = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
+  String untitledLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIWikiPageTitleControlArea.label.Untitled"));
   
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
