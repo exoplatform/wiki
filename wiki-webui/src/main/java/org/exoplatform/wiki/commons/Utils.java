@@ -413,7 +413,6 @@ public class Utils {
   public static void redirect(WikiPageParams pageParams, WikiMode mode, Map<String, String[]> params) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
-    pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }
   
@@ -440,9 +439,9 @@ public class Utils {
                                          Map<String, String[]> params) throws Exception {
     StringBuffer sb = new StringBuffer();
     sb.append(getPageLink());
-    if (!StringUtils.isEmpty(pageParams.getPageId())) {
-      sb.append(pageParams.getPageId());
-    }    
+    if(!StringUtils.isEmpty(pageParams.getPageId())){
+      sb.append(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+    }
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));
     }
