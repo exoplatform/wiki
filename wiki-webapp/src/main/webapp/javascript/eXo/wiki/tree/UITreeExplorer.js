@@ -154,6 +154,7 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
 	    data : '',
 	    success : function(data) {
 	      me.renderTreeNodes(childBlock, data);
+              eXo.wiki.WikiLayout.setHeightLayOut();
 	    }
 	  });
 	}

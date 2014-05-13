@@ -1,4 +1,5 @@
 <%
+  import org.apache.commons.lang.StringEscapeUtils;
   import java.util.List;
   import java.util.ArrayList;
   import java.util.Locale;
@@ -66,7 +67,7 @@
               versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " ( " + _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase()+"." + versionNumber + ")";
             }
             String author = Utils.getFullName(frozenNode.getAuthor());
-            String comment = frozenNode.getComment();
+            String comment = StringEscapeUtils.escapeHtml(frozenNode.getComment());
             String viewLink = uicomponent.event(uicomponent.VIEW_REVISION, versionNumber);
             String viewLinkId=  UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.VIEW_REVISION + "_" + versionNumber;
         %>

@@ -33,6 +33,7 @@ import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.Template;
+import org.exoplatform.wiki.webui.EditorMode;
 import org.exoplatform.wiki.webui.UIWikiMaskWorkspace;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
 import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
@@ -90,16 +91,22 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       if(templateId == null) {
       	popupContainer.deActivate();      	
       } else {
-	      titleInput.setReadOnly(false);
-	      commentInput.setRendered(false);
-	      Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(), templateId);     
-	      titleInput.setValue(template.getTitle());
-	      descriptionInput.setValue(template.getDescription());
-	      pageEditForm.setTitle(template.getTitle());
-	      markupInput.setValue(template.getContent().getText());
-	      pageEditForm.setInitDraftName(StringUtils.EMPTY);
-	      popupContainer.deActivate();
-	      wikiPortlet.changeMode(WikiMode.ADDPAGE);
+        titleInput.setReadOnly(false);
+        commentInput.setRendered(false);
+        Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(),
+                templateId);
+        titleInput.setValue(template.getTitle());
+        descriptionInput.setValue(template.getDescription());
+        pageEditForm.setTitle(template.getTitle());
+        markupInput.setValue(template.getContent().getText());
+
+        if (EditorMode.RICHTEXT.equals(wikiPortlet.getEditorMode())) {
+          Utils.feedDataForWYSIWYGEditor(pageEditForm, null);
+        }
+
+        pageEditForm.setInitDraftName(StringUtils.EMPTY);
+        popupContainer.deActivate();
+        wikiPortlet.changeMode(WikiMode.ADDPAGE);
       }
     }
   }
