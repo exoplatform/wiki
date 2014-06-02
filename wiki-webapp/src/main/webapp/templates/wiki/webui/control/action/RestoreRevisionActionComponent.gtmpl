@@ -4,6 +4,6 @@
 %>
 <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeHash('#');" rel="tooltip" data-placement="bottom" title="$restoreLabel" class="actionIcon" onclick="$restoreLink">
   <% if (!uicomponent.isCurrentVersion) { %>
-    <i class="uiIconRestore"></i>
+    <i class="uiIconRestore uiIconLightGray"></i>
   <% } %>
 </a>
