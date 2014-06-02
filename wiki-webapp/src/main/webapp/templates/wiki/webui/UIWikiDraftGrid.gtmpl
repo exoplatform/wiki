@@ -144,9 +144,9 @@
                %>
                
                <% if (Utils.getModeFromAction(action)){ %>
-			   <a onclick="$actionLink" data-placement="bottom" rel="tooltip" title="$title" class="actionIcon"><i class="uiIcon${action}"></i></a>
+			   <a onclick="$actionLink" data-placement="bottom" rel="tooltip" title="$title" class="actionIcon"><i class="uiIcon${action} uiIconLightGray"></i></a>
                <% } else { %>
-			   <a onclick="$actionLink" data-placement="bottom" rel="tooltip" title="$title" class="actionIcon"><i class="uiIcon${action}"></i></a>
+			   <a onclick="$actionLink" data-placement="bottom" rel="tooltip" title="$title" class="actionIcon"><i class="uiIcon${action} uiIconLightGray"></i></a>
                <% } %>
               <% } %>
          </td>

@@ -211,7 +211,7 @@ UITreeExplorer.prototype.buildNode = function(data) {
   var nodeTypeCSS = nodeType.toLowerCase();
   var iconClass = "uiIconFileMini uiIconLightGray";
   if (nodeType == "WIKIHOME") {
-    iconClass = "uiIconWiki";
+    iconClass = "uiIconWiki uiIconWikiLightGray";
   }
   
   var iconType = (data.expanded ==true)? "collapseIcon":"expandIcon" ;
