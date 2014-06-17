@@ -18,7 +18,7 @@
     <div class="progressBarFrame  clearfix" style="display: none;">
 	<span class="deleteFileLabel pull-right">
 		<div class="deleteFileLable actionIcon" data-placement="bottom" rel="tooltip" title="<%=_ctx.appRes("UIWikiFormUploadInput.label.cancel")%>">
-			<i class="uiIconStop"></i>
+			<i class="uiIconRemove uiIconLightGray"></i>
 		</div>
 	</span>
 	<div class="percent pull-left">0%</div>

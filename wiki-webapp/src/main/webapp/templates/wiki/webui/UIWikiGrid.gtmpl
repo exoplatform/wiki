@@ -110,7 +110,7 @@
                    %>
                          <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
                    <%  } else { %>
-                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIconPreview"></i></a>
+                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIconPreview uiIconLightGray"></i></a>
                    <%  } 
                   } %>                 
                </td>
@@ -207,10 +207,10 @@
                        String anchor = "#" + action;
                        if (Utils.getModeFromAction(action)) {
                  %>
-                         <a onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$action"></i></a>
+                         <a onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor/$beanId');" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$action uiIconLightGray"></i></a>
                          <a onclick="$actionLink" id="$actionId/$beanId" style="display:none;">&nbsp;</a>
                  <%    } else { %>
-                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$action"></i></a>
+                         <a onclick="$actionLink" alt="$action" class="actionIcon"  rel="tooltip" data-placement="bottom" title="$title"><i class="uiIcon$action uiIconLightGray"></i></a>
                  <%    } %>
                    <%} %>                 
                </td>
