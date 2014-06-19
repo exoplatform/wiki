@@ -314,7 +314,7 @@ isc.XWEResultTree.addMethods({
             isNewAttachment: false,
             clickCallback: function(viewer, node, recordNum) {
                 node.resource = XWiki.resource.get(node.resource.prefixedSpace);
-                viewer.input.value = "";                
+                viewer.input.value = node.id;
               }
         };
 
@@ -343,7 +343,7 @@ isc.XWEResultTree.addMethods({
             resource: node.resource,
             isNewPage: false,
             isNewAttachment: true,
-            clickCallback: function(viewer, node, recordNum) { viewer.input.value = '' }
+            clickCallback: function(viewer, node, recordNum) { viewer.input.value = node.id }
         };
 
         // Determine node position in the children list.
