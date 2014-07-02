@@ -18,8 +18,11 @@ package org.exoplatform.wiki.rendering.context;
 
 import javax.inject.Inject;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.rendering.reference.ObjectReferenceConverter;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
@@ -47,8 +50,6 @@ public class DefaultMarkupContextManager implements MarkupContextManager {
   /**
    * Used to get the current context
    */
-  @Inject
-  private Execution           execution;
 
   private static final String DEFAULT_WIKI  = "xwiki";
 
@@ -73,6 +74,8 @@ public class DefaultMarkupContextManager implements MarkupContextManager {
         componentManager.getInstance(AttachmentReferenceResolver.TYPE_STRING);
       ObjectReferenceResolver<String> stringObjectReferenceResolver = 
         componentManager.getInstance(ObjectReferenceResolver.TYPE_STRING);
+      RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RenderingService.class);
+      Execution execution = ((RenderingServiceImpl) renderingService).getExecution();
       ExecutionContext ec = execution.getContext();
       WikiContext wikiContext = null;
       if (ec != null) {
