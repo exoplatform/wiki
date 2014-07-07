@@ -31,6 +31,7 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.resolver.TitleResolver;
@@ -236,12 +237,19 @@ public class DefaultWikiModel implements WikiModel {
   }
   
   private WikiContext getWikiContext() {
-    ExecutionContext ec = execution.getContext();
-    if (ec != null) {
-      WikiContext wikiContext = (WikiContext) ec.getProperty(WikiContext.WIKICONTEXT);
-      return wikiContext;
+    try {
+      RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RenderingService.class);
+      Execution execution = ((RenderingServiceImpl) renderingService).getExecution();
+      ExecutionContext ec = execution.getContext();
+      
+      if (ec != null) {
+        WikiContext wikiContext = (WikiContext) ec.getProperty(WikiContext.WIKICONTEXT);
+        return wikiContext;
+      }
+      return null;
+    } catch (Exception e) {
+      return null;
     }
-    return null;
   }
   
 }
