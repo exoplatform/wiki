@@ -606,7 +606,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @GET
   @Path("/images/{wikiType}/space/{wikiOwner:.+}/page/{pageId}/{imageId}")
   @Produces("image")
-  @RolesAllowed("users")
   public Response getImage(@Context UriInfo uriInfo,
                            @PathParam("wikiType") String wikiType,
                            @PathParam("wikiOwner") String wikiOwner,

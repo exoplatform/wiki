@@ -49,6 +49,8 @@ import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
@@ -237,13 +239,29 @@ public class Utils {
       if (!spaceUrl.toString().endsWith("/")) {
         spaceUrl.append("/");
       }
-      spaceUrl.append("wiki/");
+      //spaceUrl.append("wiki/");
+      spaceUrl.append(getWikiAppNameInSpace(params.getOwner())).append("/");
       if (!StringUtils.isEmpty(params.getPageId())) {
         spaceUrl.append(params.getPageId());
       }
       return spaceUrl.toString();
     }
     return org.exoplatform.wiki.utils.Utils.getPermanlink(params, false);
+  }
+  
+  private static String getWikiAppNameInSpace(String spaceId) {
+    SpaceService spaceService = org.exoplatform.wiki.rendering.util.Utils.getService(SpaceService.class);
+    Space space = spaceService.getSpaceByGroupId(spaceId);
+    String apps = space.getApp();
+    if (apps != null) {
+      for (String app : apps.split(",")) {
+        String[] appInfos = app.split(":");
+        if (appInfos.length > 1 && "WikiPortlet".equals(appInfos[0])) {
+          return appInfos[1];
+        }
+      }
+    }
+    return "wiki";
   }
   
   public static Page getCurrentNewDraftWikiPage() throws Exception {
@@ -396,18 +414,18 @@ public class Utils {
    * Get the full path for current wiki page   
   */
   public static String getPageLink() throws Exception {    
-    StringBuilder sb = new StringBuilder();    
-    sb.append(Utils.getBaseUrl());
-    
-    String pageURI = Util.getUIPortal().getSelectedUserNode().getURI();    
-    String pageName = Util.getUIPortal().getSelectedUserNode().getName();
-    if(!WikiContext.WIKI.equalsIgnoreCase(pageName)) {
-      if(pageURI.contains(WikiContext.WIKI)) {
-        pageURI = pageURI.substring(pageURI.indexOf(WikiContext.WIKI) + WikiContext.WIKI.length() + 1, pageURI.length());
+    WikiPageParams params = getCurrentWikiPageParams();
+    params.setPageId(null);
+    if (PortalConfig.PORTAL_TYPE.equals(params.getType())) {
+      String navigationURI = Util.getUIPortal().getNavPath().getURI();
+      String requestURI = Util.getPortalRequestContext().getRequestURI();
+      if (requestURI.indexOf(navigationURI) < 0) {
+        navigationURI = "wiki";
       }
-      sb.append(pageURI).append("/");
-    } 
-    return sb.toString();
+      return requestURI.substring(0, requestURI.indexOf(navigationURI) + navigationURI.length())
+          + "/";
+    }
+    return getURLFromParams(params);
   }
 
   public static void redirect(WikiPageParams pageParams, WikiMode mode, Map<String, String[]> params) throws Exception {
@@ -438,10 +456,11 @@ public class Utils {
                                          WikiMode mode,
                                          Map<String, String[]> params) throws Exception {
     StringBuffer sb = new StringBuffer();
-    sb.append(getPageLink());
-    if(!StringUtils.isEmpty(pageParams.getPageId())){
-      sb.append(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
-    }
+    sb.append(getURLFromParams(pageParams));
+//    sb.append(getPageLink());
+//    if(!StringUtils.isEmpty(pageParams.getPageId())){
+//      sb.append(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+//    }
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));
     }
