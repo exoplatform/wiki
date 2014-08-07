@@ -115,27 +115,6 @@ public class SavePageActionComponent extends UIComponent {
         String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
         boolean isRenamedPage = false;
         boolean isContentChange = false;
-        
-        try {
-          WikiNameValidator.validate(titleInput.getValue());
-        } catch (IllegalNameException ex) {
-          String msg = ex.getMessage();
-          ApplicationMessage appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
-                                                             null,
-                                                             ApplicationMessage.WARNING);
-          if (msg != null) {
-            Object[] arg = { msg };
-            appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",
-                                            arg,
-                                            ApplicationMessage.WARNING);
-          }
-          event.getRequestContext().getUIApplication().addMessage(appMsg);
-          event.getRequestContext().setProcessRender(true);
-        }
-        if (event.getRequestContext().getProcessRender()) {
-          Utils.redirect(pageParams, wikiPortlet.getWikiMode());
-          return;
-        }
   
         String title = titleInput.getValue().trim();
         if (wikiRichTextArea.isRendered()) {

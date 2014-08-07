@@ -77,6 +77,48 @@ UIConfirmBox.prototype.renderConfirmBox = function(componentId, titleMessage, me
     return false;
 };
 
+UIConfirmBox.prototype.renderWarningBox = function(componentId, titleMessage, message, buttonLabel) {
+    var me = eXo.wiki.UIConfirmBox;
+    var INVALID_CHARACTERS  = "% = : @ / \\ | ^ # ; [ ] { } < > * ' \" + ? &";
+    message = message.replace("{0}", INVALID_CHARACTERS);
+    
+    // Build the box
+    me.confirmBox = $('<div/>', {'class':'UIPopupWindow UIDragObject uiPopup', 'width':'460','height':'185'});
+    me.confirmBox.append($(""
+	  + "<div class='popupHeader clearfix'>"
+	  +   "<a href='javascript:eXo.wiki.UIConfirmBox.closeConfirm()' class='uiIconClose pull-right'></a>"
+	  +   "<span class='PopupTitle popupTitle'>" + titleMessage + "</span>"
+	  + "</div>"
+	  + "<div class='PopupContent popupContent'>"
+	  +   "<ul class='singleMessage popupMessage resizable'><li><span class='warningIcon'>" + message + "</span></li></ul>"
+	  +   "<div class='uiAction uiActionBorder'>"
+	  +     "<a class='btn' href='javascript:eXo.wiki.UIConfirmBox.closeConfirm()'>" + buttonLabel + "</a>"
+	  +   "</div>"
+	  + "</div>"));
+	  
+	// Append confirm box to UI
+    var component = document.getElementById(componentId);
+    $(component).append(me.confirmBox);
+    
+    // Create maskLayer
+    this.maskLayer = eXo.core.UIMaskLayer.createMask("UIPortalApplication", me.confirmBox[0], 30);
+    return false;
+};
+
+UIConfirmBox.prototype.validate = function(pageTitleInputId) {
+  var pageTitleInput = document.getElementById(pageTitleInputId);
+  var invalidChars = ["%", "=", ":", "@", "/", "\\", "|", "^", "#", ";", "[", "]", "{", "}", "<", ">", "*", "'", "\"", "+", "?", "&"];
+  var valid = true;
+  for (var i=0; i<invalidChars.length; i++) {
+    var current = invalidChars[i];
+    if (pageTitleInput.value.indexOf(current) != -1) {
+      valid = false;
+      break;
+    }
+  }
+  return valid;
+};
+
 UIConfirmBox.prototype.createInput = function(container, callBackFunction, message) {
   var button = $('<button/>', {
     'class': 'btn',

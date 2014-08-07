@@ -22,10 +22,13 @@ function UIWikiSavePage() {
   this.actionToSynchronizeSave = ["SavePage", "MinorEdit", "SaveTemplate"];
 };
 
-UIWikiSavePage.prototype.confirm = function(uicomponentId, isNewMode, pageTitleInputId, untitled, titleMessage, addMessage, submitClass, submitLabel,cancelLabel) {
+UIWikiSavePage.prototype.confirm = function(uicomponentId, isNewMode, pageTitleInputId, untitled, titleMessage, addMessage, submitClass, submitLabel, cancelLabel, titleWarning, warningMsg, okLabel) {
   var pageTitleInput = document.getElementById(pageTitleInputId);
   if (isNewMode == true && (pageTitleInput.value == untitled)) {
     eXo.wiki.UIConfirmBox.render(uicomponentId, titleMessage, addMessage, submitClass, submitLabel, cancelLabel);
+    return false;
+  } else if (!eXo.wiki.UIConfirmBox.validate(pageTitleInputId)) {
+    eXo.wiki.UIConfirmBox.renderWarningBox(uicomponentId, titleWarning, warningMsg, okLabel);
     return false;
   }
   return true;
