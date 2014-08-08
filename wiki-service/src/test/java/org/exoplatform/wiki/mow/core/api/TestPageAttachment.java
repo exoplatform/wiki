@@ -44,35 +44,24 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    WikiHome wikiHomePage = wiki.getWikiHome();
+    PageImpl wikiHomePage = (PageImpl) wiki.getWikiHome();
     
-    AttachmentImpl attachment0 = wikiHomePage.createAttachment("attachment0.jpg", Resource.createPlainText("logo")) ;
-    attachment0.setCreator("root") ;    
-    assertEquals(attachment0.getName(), "attachment0.jpg") ;
-    assertNotNull(attachment0.getContentResource()) ;
-    attachment0.setContentResource(Resource.createPlainText("logo - Updated")) ;
+    AttachmentImpl attachment0 = addAttachment(wikiHomePage, "attachment0.jpg", "logo", "root");   
+    assertEquals(attachment0.getName(), "attachment0.jpg");
+    assertNotNull(attachment0.getContentResource());
+    attachment0.setContentResource(Resource.createPlainText("logo - Updated"));
     
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName("AddPageAttachment-001") ;
+    PageImpl wikipage = addWikiPage(wiki, "testAddPageAttachment");
     wikiHomePage.addWikiPage(wikipage);
     wikipage.makeVersionable();
     
-    AttachmentImpl attachment1 = wikipage.createAttachment("attachment1.jpg", Resource.createPlainText("foo")) ;
-    attachment1.setCreator("you") ;    
-    assertEquals(attachment1.getName(), "attachment1.jpg") ;
-    assertNotNull(attachment1.getContentResource()) ;
-    attachment1.setContentResource(Resource.createPlainText("foo - Updated")) ;    
+    AttachmentImpl attachment1 = addAttachment(wikipage, "attachment1.jpg", "foo", "you");
+    assertEquals(attachment1.getName(), "attachment1.jpg");
+    assertNotNull(attachment1.getContentResource());
     
-    AttachmentImpl attachment2 = wikipage.createAttachment("attachment2.jpg", Resource.createPlainText("faa")) ;    
-    attachment2.setCreator("me") ;
-    assertEquals(attachment2.getName(), "attachment2.jpg") ;
-    assertNotNull(attachment2.getContentResource()) ;
-    attachment2.setContentResource(Resource.createPlainText("faa - Updated")) ;
-    
-    wikipage = wiki.createWikiPage();
-    wikipage.setName("AddPageAttachment-002");
-    wikiHomePage.addWikiPage(wikipage);
-    wikipage.makeVersionable();
+    AttachmentImpl attachment2 = addAttachment(wikipage, "attachment2.jpg", "bar", "me");    
+    assertEquals(attachment2.getName(), "attachment2.jpg");
+    assertNotNull(attachment2.getContentResource());
   }
   
   public void testAttachmentPermission() throws Exception {
@@ -90,8 +79,7 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     expectedPermissions.put("demo", permission);
 
     // Create new wiki page
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName("testAttachmentPermissionPage");
+    PageImpl wikipage = addWikiPage(wiki, "testAttachmentPermissionPage");
     wikiHomePage.addWikiPage(wikipage);
     wikipage.setOwner("demo");
     wikipage.setPermission(expectedPermissions);
@@ -115,8 +103,33 @@ public class TestPageAttachment extends AbstractMOWTestcase {
   }
   
   public void testGetPageAttachment() throws Exception{
+	  
+    //Init data
+    Model model = mowService.getModel();
+    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
+    PortalWiki wiki = portalWikiContainer.addWiki("acme");
+    PageImpl wikiHomePage = (PageImpl) wiki.getWikiHome();
+    
+    AttachmentImpl attachment0 = addAttachment(wikiHomePage, "attachment0.jpg", "logo", "root");
+    attachment0.setContentResource(Resource.createPlainText("logo - Updated"));
+    
+    PageImpl wikiPage = addWikiPage(wiki, "testGetPageAttachment1");
+    wikiHomePage.addWikiPage(wikiPage);
+    wikiPage.makeVersionable();
+    
+    AttachmentImpl attachment1 = addAttachment(wikiPage, "attachment1.jpg", "foo", "you");
+    attachment1.setContentResource(Resource.createPlainText("foo - Updated"));
+    
+    AttachmentImpl attachment2 = addAttachment(wikiPage, "attachment2.jpg", "bar", "me");
+    attachment2.setContentResource(Resource.createPlainText("bar - Updated"));
+
+    wikiPage = addWikiPage(wiki, "testGetPageAttachment2");
+    wikiHomePage.addWikiPage(wikiPage);
+    wikiPage.makeVersionable();
+	  
     WikiService wService = (WikiService)container.getComponentInstanceOfType(WikiService.class) ;
-    PageImpl wikipage = (PageImpl)wService.getPageById("portal", "classic", "WikiHome") ;
+    PageImpl wikipage = (PageImpl)wService.getPageById("portal", "acme", "WikiHome") ;
     Collection<AttachmentImpl> attachments = wikipage.getAttachmentsExcludeContent() ;
     assertEquals(attachments.size(), 1) ;
     Iterator<AttachmentImpl> iter = attachments.iterator() ;
@@ -126,7 +139,7 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     assertEquals(att0.getWeightInBytes(), "logo - Updated".getBytes().length) ;
     assertEquals(att0.getCreator(), "root") ;
     
-    wikipage = (PageImpl)wService.getPageById("portal", "classic", "AddPageAttachment-001") ;
+    wikipage = (PageImpl)wService.getPageById("portal", "acme", "testGetPageAttachment1") ;
     attachments = wikipage.getAttachmentsExcludeContent() ;
     assertEquals(attachments.size(), 2) ;
     iter = attachments.iterator() ;
@@ -138,22 +151,35 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     
     AttachmentImpl att2 = iter.next() ;
     assertNotNull(att2.getContentResource()) ;
-    assertEquals(new String(att2.getContentResource().getData()), "faa - Updated") ;
-    assertEquals(att2.getWeightInBytes(), "faa - Updated".getBytes().length) ;
+    assertEquals(new String(att2.getContentResource().getData()), "bar - Updated") ;
+    assertEquals(att2.getWeightInBytes(), "bar - Updated".getBytes().length) ;
     assertEquals(att2.getCreator(), "me") ;
     
     //Add new attachment for page that still don't have any attachment
-    wikipage = (PageImpl)wService.getPageById("portal", "classic", "AddPageAttachment-002") ;
-    AttachmentImpl att = wikipage.createAttachment("attachment3.jpg", Resource.createPlainText("attachment3")) ;    
-    att.setCreator("me") ;
+    wikipage = (PageImpl)wService.getPageById("portal", "acme", "testGetPageAttachment2");
+    AttachmentImpl att = addAttachment(wikipage, "attachment3.jpg", "attachment3", "me");
     assertEquals(att.getName(), "attachment3.jpg") ;
     assertNotNull(att.getContentResource()) ;
-    att.setContentResource(Resource.createPlainText("attachment3 - Updated")) ;
   }
   
   public void testGetNewPageAttachment() throws Exception{
+	  
+    //Init data
+    Model model = mowService.getModel();
+    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
+    PortalWiki wiki = portalWikiContainer.addWiki("ecms");
+    PageImpl wikiHomePage = (PageImpl) wiki.getWikiHome();
+    
+    PageImpl wikiPage = addWikiPage(wiki, "testGetNewPageAttachment");
+    wikiHomePage.addWikiPage(wikiPage);
+    wikiPage.makeVersionable();
+    
+    AttachmentImpl attachment = addAttachment(wikiPage, "attachment3.jpg", "attachment3", "me");
+    attachment.setContentResource(Resource.createPlainText("attachment3 - Updated"));
+	  
     WikiService wService = (WikiService)container.getComponentInstanceOfType(WikiService.class) ;
-    PageImpl wikipage = (PageImpl)wService.getPageById("portal", "classic", "AddPageAttachment-002") ;
+    PageImpl wikipage = (PageImpl)wService.getPageById("portal", "ecms", "testGetNewPageAttachment") ;
     Collection<AttachmentImpl> attachments = wikipage.getAttachmentsExcludeContent() ;
     assertEquals(attachments.size(), 1) ;
     Iterator<AttachmentImpl> iter = attachments.iterator() ;
@@ -162,6 +188,18 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     assertEquals(new String(att.getContentResource().getData()), "attachment3 - Updated") ;
     assertEquals(att.getWeightInBytes(), "attachment3 - Updated".getBytes().length) ;
     assertEquals(att.getCreator(), "me") ;
+  }
+  
+  private PageImpl addWikiPage(PortalWiki wiki, String pageName){
+    PageImpl wikipage = wiki.createWikiPage();
+    wikipage.setName(pageName);
+    return wikipage;
+  }
+  
+  private AttachmentImpl addAttachment(PageImpl wikiPage, String filename, String plainText, String creator) throws Exception{
+	AttachmentImpl attachment = wikiPage.createAttachment(filename, Resource.createPlainText(plainText));
+	attachment.setCreator(creator);
+	return attachment;
   }
   
 }

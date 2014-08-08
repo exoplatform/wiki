@@ -400,10 +400,10 @@ public class TestWikiService extends AbstractMOWTestcase {
     WikiContainer<PortalWiki> portalContainer = wStore.getWikiContainer(WikiType.PORTAL);
     portalContainer.addWiki("ext");
     
-    PageImpl kspage = (PageImpl)wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "knowledge", "WikiHome") ;
+    PageImpl kspage = (PageImpl)wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "test search service", "WikiHome") ;
     kspage.getContent().setText("forum faq wiki exoplatform") ;
     
-    PageImpl ksExtPage = (PageImpl)wService.createPage(PortalConfig.PORTAL_TYPE, "ext", "knowledge ext", "WikiHome") ;
+    PageImpl ksExtPage = (PageImpl)wService.createPage(PortalConfig.PORTAL_TYPE, "ext", "test search service ext", "WikiHome") ;
     ksExtPage.getContent().setText("forum faq wiki exoplatform") ;
     
     AttachmentImpl attachment1 = kspage.createAttachment("attachment1.txt", Resource.createPlainText("foo")) ;
@@ -519,7 +519,7 @@ public class TestWikiService extends AbstractMOWTestcase {
   
   public void testGetPageTitleOfAttachment() throws Exception {
     PageImpl kspage = (PageImpl)wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "GetPageTitleOfAttachment", "WikiHome") ;
-    kspage.getContent().setText("forum faq wiki exoplatform") ;
+    kspage.getContent().setText("forum faq wiki platform") ;
     AttachmentImpl attachment1 = kspage.createAttachment("attachment1.txt", Resource.createPlainText("foo")) ;
     attachment1.setCreator("you") ;    
     assertEquals(attachment1.getName(), "attachment1.txt") ;
@@ -532,7 +532,7 @@ public class TestWikiService extends AbstractMOWTestcase {
   
   public void testGetAttachmentAsStream() throws Exception {
     PageImpl kspage = (PageImpl)wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "GetAttachmentAsStream", "WikiHome") ;
-    kspage.getContent().setText("forum faq wiki exoplatform") ;
+    kspage.getContent().setText("forum faq wiki platform") ;
     AttachmentImpl attachment1 = kspage.createAttachment("attachment.txt", Resource.createPlainText("this is a text attachment")) ;
     attachment1.setCreator("john") ;    
     assertEquals(attachment1.getName(), "attachment.txt") ;
