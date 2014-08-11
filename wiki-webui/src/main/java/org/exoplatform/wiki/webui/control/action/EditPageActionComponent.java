@@ -102,11 +102,11 @@ public class EditPageActionComponent extends AbstractEventActionComponent {
       markupInput.setValue(content);
       commentInput.setValue("");
       commentInput.setRendered(true);
+      wikiPortlet.changeMode(WikiMode.EDITPAGE);
       UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
       if (wikiRichTextArea.isRendered()) {
         Utils.feedDataForWYSIWYGEditor(pageEditForm, null);
       }      
-      wikiPortlet.changeMode(WikiMode.EDITPAGE);
       pageEditForm.setInitDraftName(StringUtils.EMPTY);
       super.processEvent(event);
     }
