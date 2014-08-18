@@ -247,10 +247,10 @@ UIWikiPageEditForm.prototype.onNotKeepDraftFunction = function()  {
     async : true,
     url : me.removeDraftRestUrl + "?draftName=" + me.draftName,
     type : 'GET'
+  }).done(function() {
+    // Back to view mode
+    me.doCancelAction();
   });
-  
-  // Back to view mode
-  me.doCancelAction();
 };
 
 UIWikiPageEditForm.prototype.cancel = function(uicomponentId, titleMessage, message, submitClass, submitLabel, cancelLabel) {
