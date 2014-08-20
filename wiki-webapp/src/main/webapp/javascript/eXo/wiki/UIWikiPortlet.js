@@ -38,7 +38,7 @@ $(document).ready(function(){
         e.preventDefault();
         var destLink = $(href);
         $('.uiRightContainerArea').scrollTop(0);
-        $('.uiRightContainerArea').animate({scrollTop: destLink.position().top}, 50);
+        $('.uiRightContainerArea').animate({scrollTop: destLink.offset().top}, 50);
       }
     });
 });
