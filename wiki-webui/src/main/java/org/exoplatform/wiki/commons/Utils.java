@@ -279,17 +279,8 @@ public class Utils {
   }
   
   public static Wiki getCurrentWiki() throws Exception {
-    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    if (params != null) {
-      String wikiType = params.getType();
-      String owner = params.getOwner();
-      if (!StringUtils.isEmpty(wikiType) && !StringUtils.isEmpty(owner)) {
-        return store.getWiki(WikiType.valueOf(wikiType.toUpperCase()), owner);
-      }
-    }
-    return null;
+    return org.exoplatform.wiki.utils.Utils.getWiki(params);
   }
 
   public static WikiContext setUpWikiContext(UIWikiPortlet wikiPortlet) throws Exception {
@@ -431,6 +422,9 @@ public class Utils {
   public static void redirect(WikiPageParams pageParams, WikiMode mode, Map<String, String[]> params) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
+    if (PortalConfig.GROUP_TYPE.equals(Utils.getCurrentWiki().getType())) {
+      pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+    }
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }
   
