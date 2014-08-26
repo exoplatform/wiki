@@ -36,7 +36,7 @@ $(document).ready(function(){
       var href = $(this).attr('href');
       if (href.lastIndexOf("#", 0) == 0) {
         e.preventDefault();
-        var destLink = $(href);
+        var destLink = $("#"+href.substring(1).replace(/[^\w\s]/gi, '\\$&'));
         $('.uiRightContainerArea').scrollTop(0);
         $('.uiRightContainerArea').animate({scrollTop: destLink.offset().top}, 50);
       }
