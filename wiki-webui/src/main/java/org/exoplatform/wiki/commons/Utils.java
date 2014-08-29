@@ -223,10 +223,10 @@ public class Utils {
   }
   
   public static String getSpaceHomeURL(String spaceGroupId) {
-    String permanentSpaceName = spaceGroupId.split("/")[2];
-    NodeURL nodeURL = RequestContext.getCurrentInstance().createURL(NodeURL.TYPE);
-    NavigationResource resource = new NavigationResource(SiteType.GROUP, spaceGroupId, permanentSpaceName);
-    return nodeURL.setResource(resource).toString();
+    SpaceService spaceService  = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    Space space = spaceService.getSpaceByGroupId(spaceGroupId);
+    String spaceLink = org.exoplatform.social.webui.Utils.getSpaceHomeURL(space);
+    return spaceLink;
   }
   
   public static String getURLFromParams(WikiPageParams params) throws Exception {

@@ -133,6 +133,14 @@
         <version>${project.version}</version>
         <type>pom</type>
       </dependency>
+      <!-- Import versions from social project -->
+      <dependency>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social</artifactId>
+        <version>${org.exoplatform.social.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
       <!-- Import versions from commons project -->
       <dependency>
         <groupId>org.exoplatform.commons</groupId>
