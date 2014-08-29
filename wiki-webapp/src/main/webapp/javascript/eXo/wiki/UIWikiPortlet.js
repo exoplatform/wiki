@@ -361,18 +361,36 @@ UIWikiPortlet.prototype.ajaxRedirect = function(url) {
 }
 
 UIWikiPortlet.prototype.fixImageUrl = function(lastUpdated) {
-    var content = $(".uiWikiContentDisplay", document.body)[0];
-    if (content) {
-	  $("img", content).each(function(index, elem) {
-		var src = elem.getAttribute("src");
-		if (src.indexOf("?lastUpdated=")==-1) {
-			elem.setAttribute("src", src + "?lastUpdated=" + lastUpdated);
-		}
+  var content = $(".uiWikiContentDisplay", document.body)[0];
+  if (content) {
+    $("img", content).each(function(index, elem) {
+      var src = elem.getAttribute("src");
+      var fragmentParser = src.split("#");
+      var fragment = fragmentParser[1];
+      var queryParser = fragmentParser[0].split("?");
+      var baseURL = queryParser[0];
+      var queryString = queryParser[1];
+      var queryStringBuilder = "";
+      if (queryString && queryString.length !=0) {
+        var params = queryString.split("&");
+        for (i =0; i< params.length; i++) {
+          if( params[i].split("=")[0] != "lastUpdated" ) {
+            queryStringBuilder +=  params[i] + "&";
+          }
+        }
+      }
+      var newQueryString = "?" + queryStringBuilder + "lastUpdate=" + lastUpdated; 
+      if (fragment) {
+        src = baseURL + newQueryString + "#" + fragment;
+      } else if (src.indexOf("#")) {
+        src = baseURL + newQueryString + "#";
+      } else {
+        src = baseURL + newQueryString;
+      }
+      elem.setAttribute("src", src);
       });
     }
 },
-
-
 
 eXo.wiki.UIWikiPortlet = new UIWikiPortlet();
 return eXo.wiki.UIWikiPortlet;
