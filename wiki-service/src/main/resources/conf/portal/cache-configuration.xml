@@ -84,6 +84,65 @@
         </object-param>
       </init-params>
     </component-plugin>
+  </external-component-plugins>
+  
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.cache.CacheService</target-component>
+    <component-plugin  profiles="cluster">
+      <name>addExoCacheConfig</name>
+      <set-method>addExoCacheConfig</set-method>
+      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
+      <description>Configures the wiki markup cache</description>
+      <init-params>
+        <object-param>
+          <name>wiki.PageRenderingCache</name>
+          <description>The wiki markup cache configuration</description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>wiki.PageRenderingCache</string></field>
+            <field name="maxSize"><int>${cache.exo.wiki.PageRenderingCache.Capacity.cluster:1000}</int></field>
+            <field name="liveTime"><long>${cache.exo.wiki.PageRenderingCache.TimeToLive.cluster:-1}</long></field>
+            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field> 
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    
+    <component-plugin  profiles="cluster">
+      <name>addExoCacheConfig</name>
+      <set-method>addExoCacheConfig</set-method>
+      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
+      <description>Configures the wiki page uuid cache</description>
+      <init-params>
+        <object-param>
+          <name>wiki.PageRenderingCache.pageUuid</name>
+          <description>The wiki attachment size cache configuration</description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>wiki.PageRenderingCache.pageUuid</string></field>
+            <field name="maxSize"><int>${cache.exo.wiki.PageRenderingCache.uuid.Capacity.cluster:1000}</int></field>
+            <field name="liveTime"><long>${cache.exo.wiki.PageRenderingCache.uuid.TimeToLive.cluster:-1}</long></field>
+            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field> 
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin  profiles="cluster">
+      <name>addExoCacheConfig</name>
+      <set-method>addExoCacheConfig</set-method>
+      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
+      <description>Configures the wiki attachment size cache</description>
+      <init-params>
+        <object-param>
+          <name>wiki.PageRenderingCache.attachment</name>
+          <description>The wiki attachment size cache configuration</description>
+          <object type="org.exoplatform.services.cache.ExoCacheConfig">
+            <field name="name"><string>wiki.PageRenderingCache.attachment</string></field>
+            <field name="maxSize"><int>${cache.exo.wiki.PageRenderingCache.attachment.Capacity.cluster:1000}</int></field>
+            <field name="liveTime"><long>${cache.exo.wiki.PageRenderingCache.attachment.TimeToLive.cluster:-1}</long></field>
+            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field> 
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
   </external-component-plugins>  
   
   <external-component-plugins>
