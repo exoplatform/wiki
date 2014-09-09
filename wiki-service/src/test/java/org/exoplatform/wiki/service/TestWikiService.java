@@ -524,7 +524,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     attachment1.setCreator("you") ;    
     assertEquals(attachment1.getName(), "attachment1.txt") ;
     assertNotNull(attachment1.getContentResource()) ;
-    attachment1.setContentResource(Resource.createPlainText("exoplatform content mamagement")) ;
+    attachment1.setContentResource(Resource.createPlainText("exo platform content mamagement")) ;
     
     assertEquals("GetPageTitleOfAttachment", wService.getPageTitleOfAttachment(attachment1.getJCRContentPath())) ;
     
