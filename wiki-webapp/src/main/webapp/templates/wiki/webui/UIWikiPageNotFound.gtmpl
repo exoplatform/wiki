@@ -13,8 +13,8 @@ import org.exoplatform.wiki.commons.DateTimeFomatter;
 <div class="uiWikiPageNotFound">
 	<span class="errorBlock"></span>
 	
-	<h3>Page Not Found</h3>
-		<p class="titleWarning">The page you were trying to reach could not be found</p>
+	<h3><%=_ctx.appRes("UIWikiPageNotFound.label.PageNotFound")%></h3>
+		<p class="titleWarning"><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part1")%></p>
 			<div class="pageContent">
 <%
 	  WikiPageParams currentParam =  org.exoplatform.wiki.commons.Utils.getCurrentWikiPageParams();	  
@@ -32,25 +32,25 @@ import org.exoplatform.wiki.commons.DateTimeFomatter;
 			String homeUrl = uicomponent.getHomeURL(param);
 		%>
 			
-				<p>It may have renamed or moved to another space, or the name you requested maybe incomplete. </br>
-				<strong>Note :</strong>The page you were looking for may have been renamed or moved to the following location</p>			
+				<p><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part2")%></br>
+				<strong><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part3")%></strong><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part4")%></p>
 				<div class="blockResultFeed">
 				  <a href="$url"><i class="uiIconFileMini uiIconLightGray"></i><%=relatedPage.getTitle()%></a>
 					<div class="txtDetail"><%=summaryContent%></div>
-					<a href="$homeUrl" class="txtMark"><%=relatedLocation %></a><span> Last Modified: <%= updateDate %></span>
+					<a href="$homeUrl" class="txtMark"><%=relatedLocation %></a><span> <%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part5")%> <%= updateDate %></span>
 				</div>
 			
   	<%
 		} else {
 			%>
 			<ul>
-				<li>The page does not exist.</li>
-				<li>The page exists, but you do not have permission to view it.</li>
+				<li><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.SecondMsg.part1")%></li>
+				<li><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.SecondMsg.part2")%></li>
 			</ul>		
 			<%	
 		}
 	%>
-		<p>Or you can back to <a href="$currentHomeUrl" class="backHome">Home page</a></p>
+		<p><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.SecondMsg.part3")%> <a href="$currentHomeUrl" class="backHome"><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.SecondMsg.part4")%></a></p>
 		
 	</div>
 </div>
