@@ -142,9 +142,9 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
 	  
 	  // Message loading first load or expand node
 	  if ('UITreeExplorer' == $(node).attr('id')) {
-	    $(childBlock).html('<span style="margin: 4px 4px 4px 35%; display:block" class="uiIconLoadingTree">'+ me.loading + '</span>');
+	    $(childBlock).html('<li class="loadingTree"><span class="uiLoadingIconMini">'+ me.loading + '</span></li>');
 	  } else {
-	    $(childBlock).html('<span class="uiIconLoadingTree">'+ me.loading + '</span>');
+	    $(childBlock).html('<li class="loadingTree"><span class="uiLoadingIconMini">'+ me.loading + '</span></li>');
 	  }
 	  $(node).append(childBlock);
 	  $.ajax({
