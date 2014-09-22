@@ -2,6 +2,7 @@
   import org.exoplatform.wiki.mow.api.Page;
   import org.exoplatform.container.PortalContainer;
   import org.exoplatform.web.application.JavascriptManager;
+  import org.apache.commons.lang.StringEscapeUtils;
   
   def rcontext = _ctx.getRequestContext() ;
   def userName = rcontext.getRemoteUser();
@@ -31,7 +32,7 @@
   requireJs.addScripts("UIWikiAjaxRequest.init('" + uicomponent.WIKI_PORTLET_ACTION_PREFIX + "', '" + uicomponent.VIEW_PAGE_ACTION + "');");
   requireJs.addScripts("UIWikiPortlet.init('"+uicomponent.id+ "', '" + changeModeLinkId + "');");
   requireJs.addScripts("UIWikiPortlet.keepSessionAlive(" + uicomponent.isKeepSessionAlive() + ");");
-  requireJs.addScripts("UITreeExplorer.loading ='" + _ctx.appRes("UITreeExplorer.label.loading") +"' ;");
+  requireJs.addScripts("UITreeExplorer.loading ='" + StringEscapeUtils.escapeJavaScript(_ctx.appRes("UITreeExplorer.label.loading")) +"' ;");
   
 %>
 <script type="text/javascript"> 

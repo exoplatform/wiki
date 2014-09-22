@@ -1,16 +1,18 @@
 <%
   import org.exoplatform.wiki.commons.Utils;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   def rcontext = _ctx.getRequestContext() ;
-  String searchLabel=_ctx.appRes("UIWikiSearchBox.label.Search");
-  String searchForLabel=_ctx.appRes("UIWikiSearchBox.label.SearchFor");
+  String searchLabel=StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIWikiSearchBox.label.Search"));
+  String searchForLabel=StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIWikiSearchBox.label.SearchFor"));
+  String searchLoadingLabel = StringEscapeUtils.escapeJavaScript(_ctx.appRes("UIWikiSearchBox.label.Loading"));
   String wikiNodeURI = Utils.getCurrentWikiNodeUri();
   String restUrl= uicomponent.getContextSearchURL();
   
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiSearchBox", "UIWikiSearchBox");
   requireJs.addScripts("UIWikiSearchBox.init('" + uicomponent.id +"','"+ uicomponent.FIELD_SEARCHVALUE +"','" +searchLabel + "','"+ wikiNodeURI +"');");
-  requireJs.addScripts("UIWikiSearchBox.loading ='" + _ctx.appRes("UIWikiSearchBox.label.Loading") +"' ;");
+  requireJs.addScripts("UIWikiSearchBox.loading ='" + searchLoadingLabel +"' ;");
   requireJs.addScripts("UIWikiSearchBox.searchMsg ='" + searchForLabel +"' ;");
 %>
 <div class="uiWikiSearchBox uiSearchInput pull-right">
