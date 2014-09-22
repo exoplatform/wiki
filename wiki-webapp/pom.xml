@@ -13,6 +13,7 @@
     <gwt.output.directory>${project.build.directory}/${project.build.finalName}/resources/js/xwiki/wysiwyg</gwt.output.directory>
     <xwe.directory>${gwt.output.directory}/xwe</xwe.directory>
     <xwe.module>org.xwiki.gwt.wysiwyg.WysiwygDev</xwe.module>
+    <xwiki.platform.version>6.0</xwiki.platform.version>
   </properties>
   <dependencies>
     <!-- GWT core dependencies -->
@@ -29,21 +30,25 @@
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-gwt-dom</artifactId>
+      <version>${xwiki.platform.version}</version>
     </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-gwt-user</artifactId>
+      <version>${xwiki.platform.version}</version>
     </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-wysiwyg-client</artifactId>
+      <version>${xwiki.platform.version}</version>
     </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-wysiwyg-plugin-api</artifactId>
+      <version>${xwiki.platform.version}</version>
     </dependency>
     <!--dependency>
       <groupId>org.xwiki.commons</groupId>
