@@ -78,8 +78,8 @@
           <description>The JBoss Cache configuration for wiki page markup</description>
           <object type="org.exoplatform.services.cache.impl.jboss.ea.EAExoCacheConfig">
             <field name="name"><string>wiki.PageRenderingCache</string></field>
-            <field name="expirationTimeout"><long>${cache.exo.social.IdentityCache.TimeToLive:-1}</long></field>
-            <field name="maxNodes"><int>${cache.exo.social.IdentityCache.Capacity:1000}</int></field>
+            <field name="expirationTimeout"><long>${cache.exo.wiki.PageRenderingCache.Expiration:-1}</long></field>
+            <field name="maxNodes"><int>${cache.exo.wiki.PageRenderingCache.Maxnodes:1000}</int></field>
             <field name="distributed"><boolean>true</boolean></field>
           </object>
         </object-param>
@@ -88,8 +88,8 @@
           <description>The JBoss Cache configuration for wiki page uuid</description>
           <object type="org.exoplatform.services.cache.impl.jboss.ea.EAExoCacheConfig">
             <field name="name"><string>wiki.PageRenderingCache.pageUuid</string></field>
-            <field name="expirationTimeout"><long>${cache.exo.social.IdentityIndexCache.TimeToLive:-1}</long></field>
-            <field name="maxNodes"><int>${cache.exo.social.IdentityIndexCache.Capacity:1000}</int></field>
+            <field name="expirationTimeout"><long>${cache.exo.wiki.PageRenderingCache.Expiration:-1}</long></field>
+            <field name="maxNodes"><int>${cache.exo.wiki.PageRenderingCache.Maxnodes:1000}</int></field>
             <field name="distributed"><boolean>true</boolean></field>
           </object>
         </object-param>
@@ -98,8 +98,8 @@
           <description>The JBoss Cache configuration for wiki page attachment count</description>
           <object type="org.exoplatform.services.cache.impl.jboss.ea.EAExoCacheConfig">
             <field name="name"><string>wiki.PageRenderingCache.attachment</string></field>
-            <field name="expirationTimeout"><long>${cache.exo.social.IdentityIndexCache.TimeToLive:-1}</long></field>
-            <field name="maxNodes"><int>${cache.exo.social.IdentityIndexCache.Capacity:1000}</int></field>
+            <field name="expirationTimeout"><long>${cache.exo.wiki.PageRenderingCache.Expiration:-1}</long></field>
+            <field name="maxNodes"><int>${cache.exo.wiki.PageRenderingCache.Maxnodes:1000}</int></field>
             <field name="distributed"><boolean>true</boolean></field>
           </object>
         </object-param>
