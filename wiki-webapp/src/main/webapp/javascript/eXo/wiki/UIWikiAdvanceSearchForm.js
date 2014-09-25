@@ -62,9 +62,8 @@ UIWikiAdvanceSearchForm.prototype.pressHandler = function(evt, textbox){
 };
 
 UIWikiAdvanceSearchForm.prototype.enterHandler = function(evt, textbox) {
-;
-  var uiform = $(textbox).closest('.UIWikiAdvanceSearchForm')[0];
-  $(uiform).find('div.SearchAction')[0].onclick();
+var uiform= document.getElementById("UIWikiAdvanceSearchForm");
+ $(uiform).find('button')[0].onclick();
 
 };
 
