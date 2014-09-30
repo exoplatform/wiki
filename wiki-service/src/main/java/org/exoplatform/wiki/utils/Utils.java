@@ -473,10 +473,13 @@ public class Utils {
   }
   
   public static Wiki getWiki(WikiPageParams params) {
-    Collection<Wiki> wikis = getWikisByType(WikiType.valueOf(params.getType().toUpperCase()));
-    for (Wiki wiki : wikis) {
-      if (wiki.getOwner().equals(params.getOwner())) {
-        return wiki;
+    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
+    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
+    if (params != null) {
+      String wikiType = params.getType();
+      String owner = params.getOwner();
+      if (!StringUtils.isEmpty(wikiType) && !StringUtils.isEmpty(owner)) {
+        return store.getWiki(WikiType.valueOf(wikiType.toUpperCase()), owner);
       }
     }
     return null;
