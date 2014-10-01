@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.webui;
 
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -37,8 +38,10 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.PermissionEntry;
 import org.exoplatform.wiki.service.PermissionType;
@@ -141,6 +144,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
       UIWikiPermalinkForm uiWikiPermalinkForm = event.getSource();
       if (uiWikiPermalinkForm.canPublicAndRetrictPage()) {
         Page currentPage = Utils.getCurrentWikiPage();
+        Collection<AttachmentImpl> attachments = ((PageImpl)currentPage).getAttachmentsExcludeContent();
         HashMap<String, String[]> permissions = currentPage.getPermission();
         permissions.put(IdentityConstants.ANY, new String[] {
             org.exoplatform.services.jcr.access.PermissionType.READ, 
@@ -148,6 +152,15 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
             org.exoplatform.services.jcr.access.PermissionType.REMOVE,
             org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY});
         currentPage.setPermission(permissions);
+        for (AttachmentImpl attachment : attachments) {
+          permissions = attachment.getPermission();
+          if (!permissions.containsKey(IdentityConstants.ANY)) {
+            permissions.put(IdentityConstants.ANY, new String[] {
+                  org.exoplatform.services.jcr.access.PermissionType.READ});
+            attachment.setPermission(permissions);
+          }
+        }
+        
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
         UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
