@@ -65,6 +65,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
@@ -325,16 +326,17 @@ public abstract class PageImpl extends NTFolder implements Page {
       file.setContentResource(contentResource);
     }
     getChromatticSession().save();
-    setFullPermissionForOwner(file);
+    correctPermissions(file);
     return file;
   }
   
-  private void setFullPermissionForOwner(AttachmentImpl file) throws Exception {
+  private void correctPermissions(AttachmentImpl file) throws Exception {
     ConversationState conversationState = ConversationState.getCurrent();
 
     if (conversationState != null) {
       HashMap<String, String[]> permissions = file.getPermission();
       permissions.put(conversationState.getIdentity().getUserId(), org.exoplatform.services.jcr.access.PermissionType.ALL);
+      permissions.put(IdentityConstants.ANY, new String[] {org.exoplatform.services.jcr.access.PermissionType.READ});
       file.setPermission(permissions);
     }
   }
@@ -727,6 +729,30 @@ public abstract class PageImpl extends NTFolder implements Page {
       //remove mix:versionable of the page itself
       removeMixVersionable(pageNode);
     }
+  }
+  
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract UpdateAttachmentMixin getUpdateAttachmentMixin();
+  public abstract void setUpdateAttachmentMixin(UpdateAttachmentMixin mix);
+
+  @Create
+  public abstract UpdateAttachmentMixin createUpdateAttachmentMixin();
+  /* Grant read permission for any for all attachments*/
+  public void migrateAttachmentPermission() throws Exception {
+    UpdateAttachmentMixin updateAttachment = this.getUpdateAttachmentMixin();
+    if (updateAttachment == null) {
+      Collection<AttachmentImpl> attachments = getAttachmentsExcludeContentByRootPermisison();
+      for (AttachmentImpl attachment : attachments) {
+        HashMap<String, String[]> permissions = attachment.getPermission();
+        if (!permissions.containsKey(IdentityConstants.ANY)) {
+          permissions.put(IdentityConstants.ANY, new String[] {org.exoplatform.services.jcr.access.PermissionType.READ});
+          attachment.setPermission(permissions);
+        }
+      }
+      updateAttachment = this.createUpdateAttachmentMixin();
+      this.setUpdateAttachmentMixin(updateAttachment);
+    }  
   }
   
   private void removeMixVersionable(Node node) {
