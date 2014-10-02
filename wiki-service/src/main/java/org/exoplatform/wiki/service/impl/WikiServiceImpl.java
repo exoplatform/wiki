@@ -1370,6 +1370,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       PageImpl p = (PageImpl) queue.poll();
       if (!p.getOverridePermission()) {
         p.setPermission(permMap);
+        p.setUpdateAttachmentMixin(null);
       }
       Iterator<PageImpl> iter = p.getChildPages().values().iterator();
       while (iter.hasNext()) {

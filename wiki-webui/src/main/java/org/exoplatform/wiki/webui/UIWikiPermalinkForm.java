@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.webui;
 
 import java.net.URLEncoder;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
@@ -39,6 +40,7 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.PermissionEntry;
 import org.exoplatform.wiki.service.PermissionType;
@@ -119,6 +121,14 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         permissions.remove(IdentityConstants.ANY);
         currentPage.setPermission(permissions);
         
+        // Remove any permission of all attachments when making a page restricted
+        Collection<AttachmentImpl> attachments = ((PageImpl) currentPage).getAttachmentsExcludeContentByRootPermisison();
+        for (AttachmentImpl attachment : attachments) {
+          HashMap<String, String[]> attachmentPermissions = attachment.getPermission();
+          attachmentPermissions.remove(IdentityConstants.ANY);
+          attachment.setPermission(attachmentPermissions);
+        }
+        
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
         if (currentPage.hasPermission(PermissionType.VIEWPAGE)) {
           UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
@@ -148,6 +158,16 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
             org.exoplatform.services.jcr.access.PermissionType.REMOVE,
             org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY});
         currentPage.setPermission(permissions);
+        
+        // Add any permission of all attachments when making a page public
+        Collection<AttachmentImpl> attachments = ((PageImpl) currentPage).getAttachmentsExcludeContentByRootPermisison();
+        for (AttachmentImpl attachment : attachments) {
+          HashMap<String, String[]> attachmentPermissions = attachment.getPermission();
+          if (!attachmentPermissions.containsKey(IdentityConstants.ANY)) {
+            attachmentPermissions.put(IdentityConstants.ANY, new String[] { org.exoplatform.services.jcr.access.PermissionType.READ });
+            attachment.setPermission(attachmentPermissions);
+          }
+        }
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
         UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);

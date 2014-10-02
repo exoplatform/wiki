@@ -24,9 +24,11 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Map.Entry;
 import java.util.TreeMap;
 
@@ -65,6 +67,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
@@ -726,6 +729,43 @@ public abstract class PageImpl extends NTFolder implements Page {
       pageNode.save();
       //remove mix:versionable of the page itself
       removeMixVersionable(pageNode);
+    }
+  }
+  
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract UpdateAttachmentMixin getUpdateAttachmentMixin();
+
+  public abstract void setUpdateAttachmentMixin(UpdateAttachmentMixin mix);
+
+  @Create
+  public abstract UpdateAttachmentMixin createUpdateAttachmentMixin();
+
+  /* Grant read permission for any for all attachments */
+  public void migrateAttachmentPermission() throws Exception {
+    UpdateAttachmentMixin updateAttachment = this.getUpdateAttachmentMixin();
+    if (updateAttachment == null) {
+      Collection<AttachmentImpl> attachments = getAttachmentsExcludeContentByRootPermisison();
+      Set<String> permissionKeys = new HashSet<String> (this.getPermission().keySet());
+      for (AttachmentImpl attachment : attachments) {
+        HashMap<String, String[]> permissions = attachment.getPermission();
+        Iterator<Entry<String, String[]>> permissionIterator = permissions.entrySet().iterator();
+        while (permissionIterator.hasNext()) {
+          Entry<String, String[]> attachmentPermissionEntry = permissionIterator.next();
+          String attachmentPermissionKey = attachmentPermissionEntry.getKey();
+          if (permissionKeys.contains(attachmentPermissionKey)) {
+            permissionKeys.remove(attachmentPermissionKey);
+          } else {
+            permissionIterator.remove();
+          }
+        }
+        for (String permissionEntry : permissionKeys) {
+          permissions.put(permissionEntry, new String[] {org.exoplatform.services.jcr.access.PermissionType.READ});
+        }
+        attachment.setPermission(permissions);
+      }
+      updateAttachment = this.createUpdateAttachmentMixin();
+      this.setUpdateAttachmentMixin(updateAttachment);
     }
   }
   

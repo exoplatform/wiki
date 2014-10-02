@@ -45,6 +45,7 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.UpdateAttachmentMixin;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -240,10 +241,11 @@ public class SavePageActionComponent extends UIComponent {
             addedPage.getContent().setText(markup);
             addedPage.setSyntax(syntaxId);
             ((PageImpl) addedPage).getAttachments().addAll(attachs);
+            UpdateAttachmentMixin updateAttachment = ((PageImpl) addedPage).createUpdateAttachmentMixin();
+            ((PageImpl) addedPage).setUpdateAttachmentMixin(updateAttachment);
             ((PageImpl) addedPage).checkin();
             ((PageImpl) addedPage).checkout();
             draftPage.remove();
-  
             // remove the draft for new page
             Page parentPage = addedPage.getParentPage();
             DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
