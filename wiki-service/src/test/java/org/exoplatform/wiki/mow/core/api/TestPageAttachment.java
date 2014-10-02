@@ -22,6 +22,7 @@ import java.util.Iterator;
 
 
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.mow.api.Model;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
@@ -92,6 +93,8 @@ public class TestPageAttachment extends AbstractMOWTestcase {
 
     // Check if permission is correct
     expectedPermissions.put("demo", org.exoplatform.services.jcr.access.PermissionType.ALL);
+    expectedPermissions.put(IdentityConstants.ANY, new String[] {
+            org.exoplatform.services.jcr.access.PermissionType.READ});
     HashMap<String, String[]> altualPermissions = attachment1.getPermission();
     for (String key : altualPermissions.keySet()) {
       String[] expectPermission = expectedPermissions.get(key);

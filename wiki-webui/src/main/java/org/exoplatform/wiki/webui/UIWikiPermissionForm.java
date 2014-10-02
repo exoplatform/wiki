@@ -18,13 +18,17 @@ package org.exoplatform.wiki.webui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
 
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -44,6 +48,7 @@ import org.exoplatform.webui.organization.UIGroupMembershipSelector;
 import org.exoplatform.webui.organization.account.UIGroupSelector;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.Permission;
@@ -593,6 +598,28 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
         page.setPermission(permissionMap);
         page.setOverridePermission(true);
 
+        HashMap<String, String[]> pagePermissions = page.getPermission();
+        Collection<AttachmentImpl> attachments = page.getAttachmentsExcludeContentByRootPermisison();
+        Set<String> permissionKeys = new HashSet<String> (pagePermissions.keySet());
+        for (AttachmentImpl attachment : attachments) {
+          HashMap<String, String[]> permissions = attachment.getPermission();
+          Iterator<Entry<String, String[]>> permissionIterator = permissions.entrySet().iterator();
+          while (permissionIterator.hasNext()) {
+            Entry<String, String[]> attachmentPermissionEntry = permissionIterator.next();
+            String attachmentPermissionKey = attachmentPermissionEntry.getKey();
+            if (permissionKeys.contains(attachmentPermissionKey)) {
+              permissionKeys.remove(attachmentPermissionKey);
+            } else {
+              permissionIterator.remove();
+            }
+          }
+          for (String permissionEntry : permissionKeys) {
+            permissions.put(permissionEntry, new String[] {org.exoplatform.services.jcr.access.PermissionType.READ});
+          }
+          attachment.setPermission(permissions);
+        }
+
+        
         // Update page info area
         UIWikiPortlet uiWikiPortlet = uiWikiPermissionForm.getAncestorOfType(UIWikiPortlet.class);
         if (page.hasPermission(PermissionType.VIEWPAGE)) {
