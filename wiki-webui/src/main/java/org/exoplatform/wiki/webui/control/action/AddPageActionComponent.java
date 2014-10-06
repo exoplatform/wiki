@@ -80,6 +80,7 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
       wservice.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
       
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
+      wikiPortlet.changeMode(WikiMode.ADDPAGE);
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       ResourceBundle res = context.getApplicationResourceBundle();
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
@@ -105,7 +106,6 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
         Utils.feedDataForWYSIWYGEditor(pageEditForm, null);
       }
 
-      wikiPortlet.changeMode(WikiMode.ADDPAGE);
       super.processEvent(event);
     }
   }
