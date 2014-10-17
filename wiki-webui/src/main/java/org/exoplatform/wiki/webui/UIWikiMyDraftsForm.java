@@ -6,8 +6,11 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpSession;
+
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -176,6 +179,10 @@ public class UIWikiMyDraftsForm extends UIForm {
       
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       DraftPage draftPage = wikiService.getDraft(draftId);
+      
+      HttpSession session = Util.getPortalRequestContext().getRequest().getSession(false);
+      session.setAttribute(Utils.getDraftIdSessionKey(), draftId);
+      
       if (draftPage != null) {
         if (draftPage.getTargetPage() != null) {
           Page targetPage = wikiService.getPageByUUID(draftPage.getTargetPage());
