@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
@@ -117,6 +118,12 @@ public class SavePageActionComponent extends UIComponent {
         boolean isContentChange = false;
   
         String title = titleInput.getValue().trim();
+        if(StringUtils.isEmpty(title)){
+          event.getRequestContext().getUIApplication()
+                  .addMessage(new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle", null, ApplicationMessage.WARNING));
+          Utils.redirect(Utils.getCurrentWikiPageParams(), WikiMode.EDITPAGE);
+          return;
+        }
         if (wikiRichTextArea.isRendered()) {
           String htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
           String markupContent = renderingService.render(htmlContent,
