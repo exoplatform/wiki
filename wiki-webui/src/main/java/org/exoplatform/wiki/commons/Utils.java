@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
 
+import javax.jcr.RepositoryException;
 import javax.portlet.PortletPreferences;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -61,6 +62,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -95,6 +97,8 @@ public class Utils {
   public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;
   
   public static final String SLASH = "/";
+  
+  public static final String DRAFT_ID = "draftId";
   
   public static String upperFirstCharacter(String str) {
     if (StringUtils.isEmpty(str)) {
@@ -620,5 +624,12 @@ public class Utils {
       ResourceBundle res = context.getApplicationResourceBundle();
       return res.getString("UIWikiPortlet.label.Anonymous");
     }
+  }
+  
+  public static String getDraftIdSessionKey() throws RepositoryException {
+    return ConversationState.getCurrent().getIdentity().getUserId()
+          + org.exoplatform.wiki.rendering.util.Utils.getService(RepositoryService.class)
+           .getCurrentRepository().getConfiguration().getName()
+          + DRAFT_ID;
   }
 }

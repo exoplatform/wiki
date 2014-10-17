@@ -20,8 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -31,6 +34,8 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.DraftPage;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -76,15 +81,20 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
     @Override
     protected void processEvent(Event<AddPageActionComponent> event) throws Exception {
       WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+      HttpSession session = Util.getPortalRequestContext().getRequest().getSession(false);
+      String draftId = (String) session.getAttribute(Utils.getDraftIdSessionKey());
       // Check to remove temp draft
-      wservice.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
+      if (draftId == null)
+        wservice.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
       
+      DraftPage draftPage = draftId == null ? null : wservice.getDraft(draftId);
+ 
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       wikiPortlet.changeMode(WikiMode.ADDPAGE);
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       ResourceBundle res = context.getApplicationResourceBundle();
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-      String pageTitle = pageParams.getParameter(WikiContext.PAGETITLE);
+      String pageTitle = draftPage == null ? pageParams.getParameter(WikiContext.PAGETITLE) : draftPage.getTitle();
       UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
       UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
@@ -92,7 +102,7 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
       titleInput.setValue(res.getString("UIWikiPageTitleControlArea.label.Untitled"));
 
       titleInput.setEditable(true);
-      markupInput.setValue("");
+      markupInput.setValue(draftPage == null ? "" : draftPage.getContent().getText());
       commentInput.setRendered(false);
 
       if (pageTitle != null && pageTitle.length() > 0) {
@@ -100,12 +110,13 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
         titleInput.setEditable(false);
       }
 
-      pageEditForm.setInitDraftName(StringUtils.EMPTY);
+      pageEditForm.setInitDraftName(draftPage == null ? StringUtils.EMPTY : draftPage.getName());
       UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
       if (wikiRichTextArea.isRendered()) {
         Utils.feedDataForWYSIWYGEditor(pageEditForm, null);
       }
 
+      session.setAttribute(Utils.getDraftIdSessionKey(), null);
       super.processEvent(event);
     }
   }
