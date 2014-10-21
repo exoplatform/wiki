@@ -35,6 +35,7 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.core.api.wiki.Template;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -84,6 +85,8 @@ public class SaveTemplateActionComponent extends UIComponent {
                                                 UISubmitToolBarActionListener<SaveTemplateActionComponent> {
     @Override
     protected void processEvent(Event<SaveTemplateActionComponent> event) throws Exception {
+      boolean isError = false;
+      ApplicationMessage appMsg = null;
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
@@ -92,19 +95,25 @@ public class SaveTemplateActionComponent extends UIComponent {
                                                  .getUIStringInput();
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
+      if (titleInput.getValue() == null || titleInput.getValue().trim().length() == 0) {
+        isError = true;
+        appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
+                  null,
+                  ApplicationMessage.WARNING);
+      } else if (titleInput.getValue().trim().length() > WikiConstants.MAX_LENGTH_TITLE) {
+      	isError = true;
+      	appMsg = new ApplicationMessage("WikiPageNameValidator.msg.TooLongTitle", new Object[] {WikiConstants.MAX_LENGTH_TITLE} , ApplicationMessage.WARNING);
+      }
       try {
         WikiNameValidator.validate(titleInput.getValue());
       } catch (IllegalNameException ex) {
-        String msg = ex.getMessage();
-        ApplicationMessage appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
-                                                           null,
-                                                           ApplicationMessage.WARNING);
-        if (msg != null) {
-          Object[] arg = { msg };
-          appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",
-                                          arg,
-                                          ApplicationMessage.WARNING);
-        }
+        isError = true;
+        Object[] arg = { ex.getMessage() };
+        appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",
+                                            arg,
+                                            ApplicationMessage.WARNING);
+      }
+      if (isError) {
         event.getRequestContext().getUIApplication().addMessage(appMsg);
         event.getRequestContext().setProcessRender(true);
       }
