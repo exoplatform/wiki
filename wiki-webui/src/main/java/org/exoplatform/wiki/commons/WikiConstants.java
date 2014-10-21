@@ -29,4 +29,6 @@ public interface WikiConstants {
   public static final String IS_MARKUP          = "isMarkup";
 
   public static final String WITH               = "With";
+
+  public static final int MAX_LENGTH_TITLE      = 512;
 }

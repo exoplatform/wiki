@@ -39,6 +39,7 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
@@ -121,6 +122,11 @@ public class SavePageActionComponent extends UIComponent {
         if(StringUtils.isEmpty(title)){
           event.getRequestContext().getUIApplication()
                   .addMessage(new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle", null, ApplicationMessage.WARNING));
+          Utils.redirect(Utils.getCurrentWikiPageParams(), WikiMode.EDITPAGE);
+          return;
+        } else if (title.length() > WikiConstants.MAX_LENGTH_TITLE) {
+          event.getRequestContext().getUIApplication()
+                  .addMessage(new ApplicationMessage("WikiPageNameValidator.msg.TooLongTitle", new Object[] {WikiConstants.MAX_LENGTH_TITLE} , ApplicationMessage.WARNING));
           Utils.redirect(Utils.getCurrentWikiPageParams(), WikiMode.EDITPAGE);
           return;
         }
