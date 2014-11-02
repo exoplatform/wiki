@@ -31,7 +31,7 @@ import org.xwiki.component.annotation.Component;
 @Singleton
 public class RssSkinAccessBridge implements SkinAccessBridge {
 
-  public static final String RSS_IMAGE = "/eXoResources/skin/DefaultSkin/skinIcons/16x16/icons/RSS.gif";
+  public static final String RSS_IMAGE = "/eXoResources/skin/images/Icons/skinIcons/16x16/RSS.gif";
   
   @Override
   public String getSkinFile(String fileName) {
