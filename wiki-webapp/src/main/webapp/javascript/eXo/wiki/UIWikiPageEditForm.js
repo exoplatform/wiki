@@ -61,6 +61,10 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   var textAreaContainer = $(pageEditForm).find('div.uiWikiPageContentInputContainer')[0];
   if (!textAreaContainer) {
     textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
+  } else {
+    setTimeout(function () {
+      $(textAreaContainer).find('textarea')[0].focus();
+    }, 100);
   }
   
   // Bind event for text area and title input
@@ -75,7 +79,6 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
     if (textarea) {
     	$(textarea.contentWindow.document).bind('keyup', func);
     }
-//    textarea = $(textAreaContainer).find('iframe').bind('change',func);
   }
 };
 
