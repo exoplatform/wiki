@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.organization.OrganizationService;
@@ -153,16 +154,21 @@ public class TreeUtils {
         if (array[0].equals(PortalConfig.GROUP_TYPE)) {
           OrganizationService oService = (OrganizationService) ExoContainerContext.getCurrentContainer()
                                                                                   .getComponentInstanceOfType(OrganizationService.class);
-          String groupId = path.substring(path.indexOf("/"));
-          if (oService.getGroupHandler().findGroupById(groupId) != null) {
-            result.setOwner(groupId);
-          } else {
-            result.setPageId(path.substring(path.lastIndexOf("/") + 1));
-            String owner = path.substring(path.indexOf("/"), path.lastIndexOf("/"));
-            while (oService.getGroupHandler().findGroupById(owner) == null) {
-              owner = owner.substring(0,owner.lastIndexOf("/"));
+          CommonsUtils.startRequest(oService);
+          try {
+            String groupId = path.substring(path.indexOf("/"));
+            if (oService.getGroupHandler().findGroupById(groupId) != null) {
+              result.setOwner(groupId);
+            } else {
+              result.setPageId(path.substring(path.lastIndexOf("/") + 1));
+              String owner = path.substring(path.indexOf("/"), path.lastIndexOf("/"));
+              while (oService.getGroupHandler().findGroupById(owner) == null) {
+                owner = owner.substring(0,owner.lastIndexOf("/"));
+              }
+              result.setOwner(owner);
             }
-            result.setOwner(owner);
+          } finally {
+            CommonsUtils.endRequest(oService);
           }
         } else {
           // if (array[0].equals(PortalConfig.PORTAL_TYPE) || array[0].equals(PortalConfig.USER_TYPE))

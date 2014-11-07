@@ -1,11 +1,13 @@
 package org.exoplatform.wiki.utils;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.RootContainer;
+import org.exoplatform.container.component.ComponentRequestLifecycle;
 import org.exoplatform.container.definition.PortalContainerConfig;
 import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.portal.application.PortalRequestContext;
@@ -627,9 +629,14 @@ public class Utils {
   public static String getEmailUser(String userName) throws Exception {
     OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
                                                                                        .getComponentInstanceOfType(OrganizationService.class);
-    User user = organizationService.getUserHandler().findUserByName(userName);
-    String email = user.getEmail();
-    return email;
+    CommonsUtils.startRequest(organizationService);
+    try {
+      User user = organizationService.getUserHandler().findUserByName(userName);
+      String email = user.getEmail();
+      return email;
+    } finally {
+      CommonsUtils.endRequest(organizationService);
+    }
   }
   
   public static boolean isWikiAvailable(String wikiType, String wikiOwner) {
@@ -805,5 +812,5 @@ public class Utils {
   public static String getRestContextName() {
     return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
   }
-
+  
 }
