@@ -149,6 +149,7 @@ public class UIWikiPortlet extends UIPortletApplication {
         return;
       } else {
         ((PageImpl)page).migrateLegacyData();
+        ((PageImpl)page).migrateAttachmentPermission();
         if (mode.equals(WikiMode.PAGE_NOT_FOUND)) {
           changeMode(WikiMode.VIEW);
         }
