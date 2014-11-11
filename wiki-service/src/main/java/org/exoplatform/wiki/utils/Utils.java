@@ -93,8 +93,8 @@ public class Utils {
   
   public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
   
-  private static final String ILLEGAL_SEARCH_CHARACTERS= "!^()+{}[]:-\"";
-  
+  private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-\"";
+
   public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
   
   public static String escapeIllegalCharacterInQuery(String query) {
