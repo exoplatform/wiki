@@ -37,6 +37,7 @@ import javax.jcr.NodeIterator;
 import javax.jcr.RepositoryException;
 import javax.jcr.Session;
 import javax.jcr.Value;
+import javax.jcr.nodetype.NodeType;
 import javax.jcr.query.Query;
 import javax.jcr.version.Version;
 import javax.jcr.version.VersionIterator;
@@ -601,12 +602,24 @@ public abstract class PageImpl extends NTFolder implements Page {
       while (refferedIter.hasNext()) {
         Entry<String, Value> entry = refferedIter.next();
         PageImpl page = chSession.findById(PageImpl.class, entry.getValue().getString());
-        if(page != null && page.hasPermission(PermissionType.VIEWPAGE)){
+        if(page != null && page.hasPermission(PermissionType.VIEWPAGE) && !isRelatedPageRemoved(page)){
           relatedPages.add(page);
         }
       }
     }
     return new ArrayList<PageImpl>(relatedPages);
+  }
+  private boolean isRelatedPageRemoved(Page page) throws Exception{
+    boolean isRemoved = false;
+    Node pageNode = page.getJCRPageNode();
+    NodeType[] nodetypes = pageNode.getMixinNodeTypes();
+    for (NodeType nodetype : nodetypes) {
+      if (nodetype.getName().equals(WikiNodeType.WIKI_REMOVED)) {
+        isRemoved=true;
+      }
+    }
+    return isRemoved;
+    
   }
   
   /**
