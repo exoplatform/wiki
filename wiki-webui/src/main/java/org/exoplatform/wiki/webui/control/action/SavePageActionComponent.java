@@ -136,7 +136,6 @@ public class SavePageActionComponent extends UIComponent {
         markup = markup.trim();
   
         String newPageId = TitleResolver.getId(title, false);
-        pageParams.setPageId(newPageId);
         if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
           // as wiki home page has fixed name (never edited anymore), every title changing is accepted.
           ;
@@ -159,6 +158,7 @@ public class SavePageActionComponent extends UIComponent {
           Utils.redirect(pageParams, wikiPortlet.getWikiMode());
           return;
         }
+        pageParams.setPageId(newPageId);
         try {
           if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
             if (wikiPortlet.getEditMode() == EditMode.SECTION) {
