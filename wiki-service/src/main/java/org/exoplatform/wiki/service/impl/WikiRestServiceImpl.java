@@ -584,8 +584,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         } else {
           url = searchResult.getUrl();
         }
-        
-        titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), url));
+        String attachmentName = searchResult.getPath().substring(searchResult.getPath().lastIndexOf("/")+1);
+        titleSearchResults.add(new TitleSearchResult(attachmentName, searchResult.getPath(), searchResult.getType(), url));
       }
       return Response.ok(new BeanToJsons(titleSearchResults), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
