@@ -602,8 +602,10 @@ public abstract class PageImpl extends NTFolder implements Page {
       while (refferedIter.hasNext()) {
         Entry<String, Value> entry = refferedIter.next();
         PageImpl page = chSession.findById(PageImpl.class, entry.getValue().getString());
-        if(page != null && page.hasPermission(PermissionType.VIEWPAGE) && !isRelatedPageRemoved(page)){
-          relatedPages.add(page);
+        if(!isRelatedPageRemoved(page)){
+          if(page != null && page.hasPermission(PermissionType.VIEWPAGE)){
+            relatedPages.add(page);
+          }
         }
       }
     }
