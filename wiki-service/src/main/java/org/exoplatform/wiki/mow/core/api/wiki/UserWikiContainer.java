@@ -25,7 +25,6 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.organization.OrganizationService;
@@ -65,15 +64,12 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
     }
     OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
                                                                                        .getComponentInstanceOfType(OrganizationService.class);
-    CommonsUtils.startRequest(organizationService);
     try {
       if (organizationService.getUserHandler().findUserByName(wikiOwner) == null) {
         return null;
       }
     } catch (Exception ex) {
       return null;
-    } finally {
-      CommonsUtils.endRequest(organizationService);
     }
     ChromatticSession session = getMultiWiki().getSession();
     Node wikiNode = null;
