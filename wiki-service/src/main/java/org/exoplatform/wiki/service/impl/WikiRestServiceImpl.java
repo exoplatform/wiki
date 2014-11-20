@@ -209,6 +209,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       try {
         List<FileItem> items = upload.parseRequest(req);
         for (FileItem fileItem : items) {
+          String fileName = fileItem.getName().replaceAll(":", "_");
+          fileItem.setFieldName(fileName);
           InputStream inputStream = fileItem.getInputStream();
           byte[] imageBytes;
           if (inputStream != null) {
@@ -217,7 +219,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           } else {
             imageBytes = null;
           }
-          String fileName = fileItem.getName();
           if (fileName != null)
             // It's necessary because IE posts full path of uploaded files
             fileName = FilenameUtils.getName(fileName);          
