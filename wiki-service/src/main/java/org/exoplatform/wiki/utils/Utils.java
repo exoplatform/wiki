@@ -2,6 +2,7 @@ package org.exoplatform.wiki.utils;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -596,7 +597,7 @@ public class Utils {
        .append("     <link rel=\"stylesheet\" href=\""+renderingService.getCssURL() +"\" type=\"text/css\">")
        .append("  </head>")
        .append("  <body>")
-       .append("    Page <a href=\""+page.getURL()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
+       .append("    Page <a href=\""+CommonsUtils.getCurrentDomain()+page.getURL()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
        .append("    <br/><br/>")
        .append("    Changes("+ diffResult.getChanges()+")")
        .append("    <br/><br/>")
