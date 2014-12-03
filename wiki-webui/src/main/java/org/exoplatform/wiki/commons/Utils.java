@@ -355,7 +355,7 @@ public class Utils {
     UIPortal uiPortal = Util.getUIPortal();
     String portalURI = portalRequestContext.getPortalURI();
     URL requestURL = new URL(portalRequestContext.getRequest().getRequestURL().toString());
-    String domainURL = requestURL.getPath();
+    String domainURL = requestURL.getProtocol() + "://" + requestURL.getAuthority();
     String portalURL = domainURL + portalURI;
     String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
     String treeRestURL = getCurrentRestURL().concat("/wiki/tree/children/");
