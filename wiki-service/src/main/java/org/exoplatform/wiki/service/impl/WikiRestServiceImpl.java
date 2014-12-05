@@ -617,11 +617,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       ResizeImageService resizeImgService = (ResizeImageService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
       PageImpl page = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
       if (page == null) {
-        return Response.status(HTTPStatus.NOT_FOUND).entity("There is no any resource matched to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
+        return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
       AttachmentImpl att = page.getAttachment(imageId);
       if (att == null) {
-        return Response.status(HTTPStatus.NOT_FOUND).entity("There is no any resource matched to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
+        return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
       ByteArrayInputStream bis = new ByteArrayInputStream(att.getContentResource().getData());
       if (width != null) {
