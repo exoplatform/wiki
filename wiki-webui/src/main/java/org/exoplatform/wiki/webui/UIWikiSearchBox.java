@@ -50,7 +50,7 @@ public class UIWikiSearchBox extends UIForm {
   public UIWikiSearchBox() throws Exception {
     if(getId() == null) setId("UIWikiSearchBox");
     UIFormStringInput stringInput = new UIFormStringInput(FIELD_SEARCHVALUE, FIELD_SEARCHVALUE, null);
-    stringInput.setHTMLAttribute("title", getLabel("Search"));
+    stringInput.setHTMLAttribute("placeholder", getLabel("Search"));
     addUIFormInput(stringInput) ;
   }
   

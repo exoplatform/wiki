@@ -336,22 +336,19 @@ UIWikiPortlet.prototype.initMacros = function() {
 };
 
 UIWikiPortlet.prototype.decorateInput = function(input, defaultValue, defaultCondition) {
-  if ($(input).val() == defaultValue && defaultCondition )
-    $(input).css('color', '#9A9A9A');
   input.form.onsubmit = function() {
     return false;
   };
   $(input).focus(function() {
     if ($(this).val() == defaultValue && defaultCondition)
       $(this).val('');
-    $(this).css('color', 'black');
   });
   $(input).blur(function() {
     if ($(this).val() == '') {
       $(this).val(defaultValue);
-      $(this).css('color', '#9A9A9A');
     }
   });
+  $(input).attr("placeholder", defaultValue);
 };
 
 UIWikiPortlet.prototype.getKeynum = function(event) {
