@@ -555,6 +555,7 @@
 
 .gwt-MenuBar .gwt-MenuItem {
   cursor: default;
+  color: #333;
 }
 
 .gwt-MenuBar .gwt-MenuItem-selected {
@@ -867,6 +868,7 @@ html>body .xToolbar .gwt-PushButton-up-disabled,html>body .xToolbar .gwt-PushBut
   margin-top: 3px;
   padding: 0 !important;
   vertical-align: top;
+  color: #333;
 }
 
 .xToolbar .gwt-ListBox optgroup {
