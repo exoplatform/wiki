@@ -17,7 +17,7 @@
 %>
 <div class="uiWikiSearchBox uiSearchInput pull-right">
   <% uiform.begin() %>
-	<a class="AdvancedSearch"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIWikiPortlet.label.Advanced-Search")%>" onclick="<%=uicomponent.event("AdvancedSearch");%>"></a>
+	<a class="advancedSearch"  rel="tooltip" data-placement="bottom" title="<%=_ctx.appRes("UIWikiPortlet.label.Advanced-Search")%>" onclick="<%=uicomponent.event("AdvancedSearch");%>"><i class="uiIconSearch uiIconLightGray"></i></a>
 	<input name="restURL" type="hidden" value="$restUrl" />
     <% uiform.renderChild(uiform.FIELD_SEARCHVALUE);%>
   <%uiform.end()%>
