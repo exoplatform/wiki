@@ -339,15 +339,6 @@ UIWikiPortlet.prototype.decorateInput = function(input, defaultValue, defaultCon
   input.form.onsubmit = function() {
     return false;
   };
-  $(input).focus(function() {
-    if ($(this).val() == defaultValue && defaultCondition)
-      $(this).val('');
-  });
-  $(input).blur(function() {
-    if ($(this).val() == '') {
-      $(this).val(defaultValue);
-    }
-  });
   $(input).attr("placeholder", defaultValue);
 };
 
