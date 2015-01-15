@@ -30,14 +30,18 @@ import org.exoplatform.wiki.commons.DateTimeFomatter;
 			String url = org.exoplatform.wiki.commons.Utils.getURLFromParams(param);
 			String updateDate =  DateTimeFomatter.getLongFormatted(relatedPage.getUpdatedDate());
 			String homeUrl = uicomponent.getHomeURL(param);
+			String msg1 = _ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part3");
+			msg1 = msg1.replace("{0}", "<strong>");
+			msg1 = msg1.replace("{1}", "</strong>");
 		%>
 			
 				<p><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part2")%></br>
-				<strong><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part3")%></strong><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part4")%></p>
+				$msg1
+				</p>
 				<div class="blockResultFeed">
 				  <a href="$url"><i class="uiIconFileMini uiIconLightGray"></i><%=relatedPage.getTitle()%></a>
 					<div class="txtDetail"><%=summaryContent%></div>
-					<a href="$homeUrl" class="txtMark"><%=relatedLocation %></a><span> <%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part5")%> <%= updateDate %></span>
+					<a href="$homeUrl" class="txtMark"><%=relatedLocation %></a><span> <%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.FirstMsg.part4")%> <%= updateDate %></span>
 				</div>
 			
   	<%
@@ -50,7 +54,12 @@ import org.exoplatform.wiki.commons.DateTimeFomatter;
 			<%	
 		}
 	%>
-		<p><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.SecondMsg.part3")%> <a href="$currentHomeUrl" class="backHome"><%=_ctx.appRes("UIWikiPageNotFound.label.NotFound.SecondMsg.part4")%></a></p>
+		<%
+			String msg2 = _ctx.appRes("UIWikiPageNotFound.label.NotFound.SecondMsg.part3");
+			msg2 = msg2.replace("{0}", "<a href=\"$currentHomeUrl\" class=\"backHome\">");
+			msg2 = msg2.replace("{1}", "</a>");
+		%>
+		<p>$msg2</p>
 		
 	</div>
 </div>
