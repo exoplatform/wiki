@@ -34,6 +34,8 @@ import org.xwiki.rendering.syntax.Syntax;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
+import com.lowagie.text.pdf.BaseFont;
+
 
 @ComponentConfig (
 		  template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
@@ -77,12 +79,13 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       while ( (line = dataIn.readLine()) != null)
       	stringBuilder.append(line);
       dataIn.close();
-            
       String css = "<head><style type=\"text/css\"> " + stringBuilder.toString() + " </style></head>";
       String title = currentPage.getTitle();
       String content = "<h1>" + title +"</h1><hr />" + renderingService.render("[[image:wiki.png]]"
         + currentPage.getContent().getText(), currentPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
       content = "<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
+      String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
+      content = encoding+"<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
       File pdfFile = createPDFFile(title, content);
       DownloadService dservice = (DownloadService) ExoContainerContext.getCurrentContainer()
         .getComponentInstanceOfType(DownloadService.class);
@@ -105,6 +108,12 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
         pdfFile = File.createTempFile(title, ".pdf");
         os = new FileOutputStream(pdfFile);
         ITextRenderer renderer = new ITextRenderer();
+        renderer.getFontResolver().addFont("/fonts/arialuni.ttf", 
+                BaseFont.IDENTITY_H, 
+                BaseFont.NOT_EMBEDDED);
+        renderer.getFontResolver().addFont("/fonts/COURIER.TTF", 
+                BaseFont.IDENTITY_H, 
+                BaseFont.NOT_EMBEDDED);
         renderer.setDocumentFromString(content);
         renderer.layout();
         renderer.createPDF(os);
