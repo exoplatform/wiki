@@ -41,7 +41,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   /**
    * URL pointing to the icon representing the wiki pages in the unified search results.
    */
-  public static final String WIKI_PAGE_ICON = "/wiki/skin/images/unified-search/PageIcon.png";
+  public static final String WIKI_PAGE_ICON = "/eXoSkin/skin/images/system/unified-search/PageIcon.png";
 
   /**
    * Date and time format used in the unified search.
