@@ -151,6 +151,11 @@ public class SavePageActionComponent extends UIComponent {
                .addMessage(new ApplicationMessage("SavePageAction.msg.warning-page-title-already-exist",
                                                   null,
                                                   ApplicationMessage.WARNING));
+          if (wikiRichTextArea.isRendered()) {
+            SavePageActionComponent component = event.getSource();
+            UIWikiPageEditForm wikiPageEditForm = component.getAncestorOfType(UIWikiPageEditForm.class);
+            Utils.feedDataForWYSIWYGEditor(wikiPageEditForm,null);
+          }
           Utils.redirect(pageParams, wikiPortlet.getWikiMode());
           return;
         }
