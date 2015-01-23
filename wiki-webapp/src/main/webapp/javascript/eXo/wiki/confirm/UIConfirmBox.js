@@ -49,7 +49,7 @@ UIConfirmBox.prototype.renderConfirmBox = function(componentId, titleMessage, me
     var me = eXo.wiki.UIConfirmBox;
     
     // Build the confirm box
-    me.confirmBox = $('<div/>', {'class':'uiPopup UIDragObject NormalStyle', 'width':'460','height':'200'});
+    me.confirmBox = $('<div/>', {'class':'uiPopup UIDragObject NormalStyle', 'width':'460','height':'215'});
     me.confirmBox.append($(""
       + "<div class='popupHeader clearfix'>"
 	  +   "<a href='javascript:eXo.wiki.UIConfirmBox.closeConfirm()' class='uiIconClose pull-right'></a>"
