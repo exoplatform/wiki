@@ -37,8 +37,6 @@ UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLa
   var restInput = uiComponent["restURL"];
   this.input = uiComponent[searchInputName];
   $(this.input).attr('autocomplete', 'off');
-  $(this.input).attr('title', searchLabel);
-  $(this.input).val(searchLabel);  
   this.restURL = restInput.value;
   this.input.onkeyup = function(evt) {
     evt = window.event || evt;
@@ -46,7 +44,7 @@ UIWikiSearchBox.prototype.init = function(componentId, searchInputName, searchLa
   }
   this.input.form.onsubmit = function() {
     return false;
-  }  
+  } //
   eXo.wiki.UIWikiPortlet.decorateInput(this.input, searchLabel, true);
 };
 

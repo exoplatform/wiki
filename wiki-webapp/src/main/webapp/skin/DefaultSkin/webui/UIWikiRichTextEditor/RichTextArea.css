@@ -10,14 +10,7 @@
   content and this content grows beyond the height/width of the rich text area requiring the vertical/horizontal scroll
   bar then the BODY element should increase its height/width to be able to wrap the content.
 */
-html {
-  height: 100%;
-  width: 100%;
-}
 
-* html {
-  overflow-y: scroll;
-}
 
 body.UIWikiPortletWysiwygCss { /*
     We force the background color to white because the Albatross skin uses a dark background color which makes the text

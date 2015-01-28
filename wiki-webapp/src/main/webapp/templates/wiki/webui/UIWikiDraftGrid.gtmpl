@@ -47,9 +47,9 @@
               clazz = "uiIconArrowUp uiIconBlue ";
             }
           } else {
-            clazz = "uiIconArrowDown";
+            clazz = "uiIconArrowDown uiIconLightGray";
             if ("DESC".equals(orderParam)) {
-              clazz = "uiIconArrowUp";
+              clazz = "uiIconArrowUp uiIconLightGray";
             }
           }
         %>
