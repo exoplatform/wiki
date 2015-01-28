@@ -1,6 +1,7 @@
 package org.exoplatform.wiki.webui.control.action;
 
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -10,6 +11,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.download.DownloadService;
@@ -29,7 +33,9 @@ import org.exoplatform.wiki.webui.control.filter.AdminPagesPermissionFilter;
 import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
+import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
+import org.xhtmlrenderer.resource.FSEntityResolver;
 import org.xwiki.rendering.syntax.Syntax;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -83,9 +89,8 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       String title = currentPage.getTitle();
       String content = "<h1>" + title +"</h1><hr />" + renderingService.render("[[image:wiki.png]]"
         + currentPage.getContent().getText(), currentPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
-      content = "<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
       String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
-      content = encoding+"<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
+      content = encoding + "<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
       File pdfFile = createPDFFile(title, content);
       DownloadService dservice = (DownloadService) ExoContainerContext.getCurrentContainer()
         .getComponentInstanceOfType(DownloadService.class);
@@ -114,7 +119,12 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
         renderer.getFontResolver().addFont("/fonts/COURIER.TTF", 
                 BaseFont.IDENTITY_H, 
                 BaseFont.NOT_EMBEDDED);
-        renderer.setDocumentFromString(content);
+        final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
+        documentBuilderFactory.setValidating(false);
+        DocumentBuilder builder = documentBuilderFactory.newDocumentBuilder();
+        builder.setEntityResolver(FSEntityResolver.instance());
+        Document document = builder.parse(new ByteArrayInputStream(content.toString().getBytes()));
+        renderer.setDocument(document, null);
         renderer.layout();
         renderer.createPDF(os);
       } catch (Exception e) {
