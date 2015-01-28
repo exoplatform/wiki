@@ -40,6 +40,7 @@ import org.xwiki.rendering.syntax.Syntax;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 
+
 import com.lowagie.text.pdf.BaseFont;
 
 
@@ -113,10 +114,7 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
         pdfFile = File.createTempFile(title, ".pdf");
         os = new FileOutputStream(pdfFile);
         ITextRenderer renderer = new ITextRenderer();
-        renderer.getFontResolver().addFont("/fonts/arialuni.ttf", 
-                BaseFont.IDENTITY_H, 
-                BaseFont.NOT_EMBEDDED);
-        renderer.getFontResolver().addFont("/fonts/COURIER.TTF", 
+        renderer.getFontResolver().addFont("/fonts/ARIALUNI.TTF", 
                 BaseFont.IDENTITY_H, 
                 BaseFont.NOT_EMBEDDED);
         final DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
