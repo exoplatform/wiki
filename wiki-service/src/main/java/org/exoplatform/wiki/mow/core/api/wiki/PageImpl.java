@@ -68,6 +68,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
@@ -743,9 +744,11 @@ public abstract class PageImpl extends NTFolder implements Page {
 
   /* Grant read permission for any for all attachments */
   public void migrateAttachmentPermission() throws Exception {
+
+    boolean isGroupWiki = PortalConfig.GROUP_TYPE.equals(this.getWiki().getType());
     UpdateAttachmentMixin updateAttachment = this.getUpdateAttachmentMixin();
     if (updateAttachment == null) {
-      Collection<AttachmentImpl> attachments = getAttachmentsExcludeContentByRootPermisison();
+      Collection<AttachmentImpl> attachments = this.getAttachmentsExcludeContentByRootPermisison();
       Set<String> permissionKeys = new HashSet<String> (this.getPermission().keySet());
       for (AttachmentImpl attachment : attachments) {
         HashMap<String, String[]> permissions = attachment.getPermission();
@@ -760,7 +763,11 @@ public abstract class PageImpl extends NTFolder implements Page {
           }
         }
         for (String permissionEntry : permissionKeys) {
-          permissions.put(permissionEntry, new String[] {org.exoplatform.services.jcr.access.PermissionType.READ});
+          if (isGroupWiki && permissionEntry.contains(this.getWiki().getOwner())) {
+            permissions.put(permissionEntry, org.exoplatform.services.jcr.access.PermissionType.ALL);
+          } else {
+            permissions.put(permissionEntry, new String[] {org.exoplatform.services.jcr.access.PermissionType.READ});
+          }
         }
         attachment.setPermission(permissions);
       }
