@@ -424,6 +424,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       movePage.setMinorEdit(false);
       
       // Update permission if moving page to other space or other wiki
+      Collection<AttachmentImpl> attachments = ((PageImpl) movePage).getAttachmentsExcludeContentByRootPermisison();
       HashMap<String, String[]> pagePermission = (HashMap<String, String[]>)movePage.getPermission();
       if (PortalConfig.GROUP_TYPE.equals(currentLocationParams.getType()) 
           && (!currentLocationParams.getOwner().equals(newLocationParams.getOwner())
@@ -436,6 +437,17 @@ public class WikiServiceImpl implements WikiService, Startable {
             pagePermissionIterator.remove();
           }
         }
+        for (AttachmentImpl attachment : attachments) {
+          HashMap<String, String[]> attachmentPermission = (HashMap<String, String[]>)attachment.getPermission();
+          Iterator<Entry<String, String[]>> attachmentPermissionIterator = attachmentPermission.entrySet().iterator();
+          while (attachmentPermissionIterator.hasNext()) {
+            Entry<String, String[]> permissionEntry = attachmentPermissionIterator.next();
+            if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
+              attachmentPermissionIterator.remove();
+            }
+          }
+          attachment.setPermission(attachmentPermission);
+        }
       }
       
       // Update permission by inherit from parent
@@ -444,6 +456,12 @@ public class WikiServiceImpl implements WikiService, Startable {
       
       // Set permission to page
       movePage.setPermission(pagePermission);
+      
+      for (AttachmentImpl attachment : attachments) {
+        HashMap<String, String[]> attachmentPermission = (HashMap<String, String[]>)attachment.getPermission();
+        attachmentPermission.putAll(parentPermissions);
+        attachment.setPermission(attachmentPermission);
+      }
       
       
       //update LinkRegistry
