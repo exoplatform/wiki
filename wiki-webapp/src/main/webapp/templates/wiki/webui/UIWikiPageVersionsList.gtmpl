@@ -41,7 +41,7 @@
       <thead >
         <tr>
           <th ></th>
-          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Revision"); %></th>
+          <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Version"); %></th>
           <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Date"); %></th>
           <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Author"); %></th>
           <th ><%= _ctx.appRes("UIWikiPageVersionsList.label.Summary"); %></th>
@@ -79,7 +79,7 @@
           </td>
           <td >
             <label for="<%=versionNumber%>">
-	          	<a onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#<%=uicomponent.VIEW_REVISION%>_<%=versionNumber%>')" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageVersionsList.label.ViewRevision"); %>" ><%= versionLabel %></a>
+	          	<a onclick="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#<%=uicomponent.VIEW_REVISION%>_<%=versionNumber%>')" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIWikiPageVersionsList.label.ViewVersion"); %>" ><%= versionLabel %></a>
 	          	<a id="$viewLinkId" onclick="$viewLink" style="display:none"></a>
           	</label>  
           </td>

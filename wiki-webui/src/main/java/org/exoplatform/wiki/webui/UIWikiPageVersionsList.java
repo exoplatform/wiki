@@ -89,7 +89,7 @@ public class UIWikiPageVersionsList extends UIWikiForm {
     component.setVersionName(versionName);
     component.setCurrentVersion(versionName.equals(versionsList.get(0).getName()));
     component.setLabel(bundle.getString("UIWikiPageVersionsList.label.RestoreRevision"));
-    component.setTooltip(bundle.getString("UIWikiPageVersionsList.title.RestoreRevision"));
+    component.setTooltip(bundle.getString("UIWikiPageVersionsList.title.RestoreVersion"));
     
     // Accept permission
     UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);

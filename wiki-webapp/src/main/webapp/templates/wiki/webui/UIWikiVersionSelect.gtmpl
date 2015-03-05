@@ -1,7 +1,7 @@
 <%
   import org.exoplatform.wiki.webui.UIWikiPortlet;  
 %>
-<h4 class="titleInfo"><%= _ctx.appRes("UIWikiVersionSelect.label.view-revision") %></h4>
+<h4 class="titleInfo"><%= _ctx.appRes("UIWikiVersionSelect.label.view-version") %></h4>
 <div class="uiWikiVersionSelect" id="$uicomponent.id">
   <%
     String viewCurrentVersionLink = uicomponent.event(uicomponent.VIEW_CURRENT_VERSION);
