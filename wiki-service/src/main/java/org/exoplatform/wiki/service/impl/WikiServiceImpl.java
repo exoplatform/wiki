@@ -669,6 +669,9 @@ public class WikiServiceImpl implements WikiService, Startable {
         URL oldURL = new URL(url);
         page.setURL(oldURL.getPath());
       } catch (MalformedURLException ex) {
+        if (log.isInfoEnabled()) {
+          log.info("Malformed url" + url);
+        }
       }
     }
   }
