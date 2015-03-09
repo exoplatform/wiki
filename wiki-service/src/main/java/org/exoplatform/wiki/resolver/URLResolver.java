@@ -33,12 +33,11 @@ public class URLResolver extends Resolver{
         params.setType(PortalConfig.USER_TYPE)  ;
         if(array.length >= 3) {
           params.setOwner(array[1]);
-          String pageId = "";
+          StringBuilder pageId = new StringBuilder();
           for(int i=2; i< array.length; i++){
-            pageId += array[i];
+            pageId.append(array[i]);
           }
-          pageId = pageId.substring(0, pageId.length());
-          params.setPageId(pageId);
+          params.setPageId(pageId.toString());
           
         }else if(array.length == 2) {
           params.setOwner(array[1]);
