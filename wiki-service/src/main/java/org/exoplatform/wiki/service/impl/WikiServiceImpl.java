@@ -664,7 +664,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
     
     String url = page.getURL();
-    if (url != null) {
+    if (url != null && url.contains("://")) {
       try {
         URL oldURL = new URL(url);
         page.setURL(oldURL.getPath());
