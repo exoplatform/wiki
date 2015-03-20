@@ -111,6 +111,9 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
     private File createPDFFile(String title, String content) throws IOException {
       File pdfFile = null;
       OutputStream os = null;
+      if (title.length() < 3) {
+        title += "tmp";
+      }
       try {
         pdfFile = File.createTempFile(title, ".pdf");
         os = new FileOutputStream(pdfFile);
