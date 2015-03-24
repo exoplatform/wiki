@@ -19,6 +19,7 @@ package org.exoplatform.wiki.webui.popup;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
@@ -86,6 +87,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
   protected static final String SPACE_SWITCHER = "uiSpaceSwitcher_UIWikiMovePageForm";
   
   private static final String RENAME_ACTION = "Rename";
+  
   
   private List<PageInfo> duplicatedPages;
   
@@ -240,14 +242,14 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       if (!currentLocationParams.getType().equals(newLocationParams.getType()) ||
           !currentLocationParams.getOwner().equals(newLocationParams.getOwner())) {
         
-        // Get the list of dupplicated page
+        // Get the list of duplicated page
         List<PageImpl> duplicatedPageList = wservice.getDuplicatePages(movepage, wservice.getWiki(newLocationParams.getType(), newLocationParams.getOwner()), null);
         movePageForm.duplicatedPages = new ArrayList<UIWikiMovePageForm.PageInfo>();
         for (PageImpl page : duplicatedPageList) {
           movePageForm.duplicatedPages.add(movePageForm.new PageInfo(page));
         }
         
-        // If there're some dupplicated page then show warning and return
+        // If there're some duplicated page then show warning and return
         if (movePageForm.duplicatedPages.size() > 0) {
           movePageForm.pageToMove = movePageForm.new PageInfo(movepage);
           return;
@@ -262,11 +264,18 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
              .addMessage(new ApplicationMessage("UIWikiMovePageForm.msg.no-permission-at-destination", null, ApplicationMessage.WARNING));
         return;
       }
-      
-      
+      String destLocation = org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams);
+      String destURL = destLocation.substring(0, destLocation.lastIndexOf(org.exoplatform.wiki.commons.Utils.SLASH)+1);
       // Update Page URL
-      movepage.setURL(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
-      
+      movepage.setURL(destURL+movepage.getName());
+      Map<String, PageImpl> childPages = movepage.getChildPages();
+      while(childPages.size() > 0) {
+        for(PageImpl childPage: childPages.values()) {
+          childPage.setURL(destURL+childPage.getName());
+          childPages = childPage.getChildPages();
+        }
+      }
+     
       // Redirect to new location
       UIPopupContainer popupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);    
       popupContainer.cancelPopupAction();
