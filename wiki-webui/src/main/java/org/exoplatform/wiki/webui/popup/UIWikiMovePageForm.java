@@ -254,18 +254,25 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
         }
       }
       
+      // Update Page URL
+      movepage.setURL(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
+      String destLocation = movepage.getURL();
+      String destURL = destLocation.substring(0, destLocation.lastIndexOf("/") + 1);
+      changeURL(movepage, destURL);
+      
       // Move page
       boolean isMoved = wservice.movePage(currentLocationParams, newLocationParams);      
       if (!isMoved) {
+        // Restore Page URL
+        movepage.setURL(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
+        String sourceLocation = movepage.getURL();
+        String sourceURL = sourceLocation.substring(0, sourceLocation.lastIndexOf("/") + 1);
+        changeURL(movepage, sourceURL);
         event.getRequestContext()
              .getUIApplication()
              .addMessage(new ApplicationMessage("UIWikiMovePageForm.msg.no-permission-at-destination", null, ApplicationMessage.WARNING));
         return;
       }
-      
-      
-      // Update Page URL
-      movepage.setURL(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
       
       // Redirect to new location
       UIPopupContainer popupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);    
@@ -273,6 +280,14 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       newLocationParams.setPageId(currentLocationParams.getPageId());
       String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams, false);
       org.exoplatform.wiki.commons.Utils.redirect(permalink);
+    }
+  }
+  private static void changeURL(PageImpl page, String destURL) throws Exception {
+    page.setURL(destURL + page.getName());
+    if (page.getChildPages().size() > 0) {
+      for (PageImpl childPage : page.getChildPages().values()) {
+        changeURL(childPage, destURL);
+      }
     }
   }
 
