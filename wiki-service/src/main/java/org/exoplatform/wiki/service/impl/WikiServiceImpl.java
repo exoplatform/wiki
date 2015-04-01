@@ -425,44 +425,32 @@ public class WikiServiceImpl implements WikiService, Startable {
       
       // Update permission if moving page to other space or other wiki
       Collection<AttachmentImpl> attachments = ((PageImpl) movePage).getAttachmentsExcludeContentByRootPermisison();
-      HashMap<String, String[]> pagePermission = (HashMap<String, String[]>)movePage.getPermission();
-      if (PortalConfig.GROUP_TYPE.equals(currentLocationParams.getType()) 
-          && (!currentLocationParams.getOwner().equals(newLocationParams.getOwner())
-              || !PortalConfig.GROUP_TYPE.equals(newLocationParams.getType()))) {
-        // Remove old space permission first
-        Iterator<Entry<String, String[]>> pagePermissionIterator = pagePermission.entrySet().iterator();
-        while (pagePermissionIterator.hasNext()) {
-          Entry<String, String[]> permissionEntry = pagePermissionIterator.next();
-          if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
-            pagePermissionIterator.remove();
-          }
-        }
-        for (AttachmentImpl attachment : attachments) {
-          HashMap<String, String[]> attachmentPermission = (HashMap<String, String[]>)attachment.getPermission();
-          Iterator<Entry<String, String[]>> attachmentPermissionIterator = attachmentPermission.entrySet().iterator();
-          while (attachmentPermissionIterator.hasNext()) {
-            Entry<String, String[]> permissionEntry = attachmentPermissionIterator.next();
-            if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
-              attachmentPermissionIterator.remove();
-            }
-          }
-          attachment.setPermission(attachmentPermission);
-        }
+      HashMap<String, String[]> pagePermission = (HashMap<String, String[]>) movePage.getPermission();
+      // Remove old permission first
+      Iterator<Entry<String, String[]>> pagePermissionIterator = pagePermission.entrySet().iterator();
+      while (pagePermissionIterator.hasNext()) {
+        Entry<String, String[]> permissionEntry = pagePermissionIterator.next();
+        if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
+        pagePermissionIterator.remove();
+       }
       }
-      
-      // Update permission by inherit from parent
-      HashMap<String, String[]> parentPermissions = (HashMap<String, String[]>)destPage.getPermission();
-      pagePermission.putAll(parentPermissions);
-      
-      // Set permission to page
-      movePage.setPermission(pagePermission);
-      
       for (AttachmentImpl attachment : attachments) {
-        HashMap<String, String[]> attachmentPermission = (HashMap<String, String[]>)attachment.getPermission();
-        attachmentPermission.putAll(parentPermissions);
+        HashMap<String, String[]> attachmentPermission = (HashMap<String, String[]>) attachment.getPermission();
+        Iterator<Entry<String, String[]>> attachmentPermissionIterator = attachmentPermission.entrySet().iterator();
+        while (attachmentPermissionIterator.hasNext()) {
+          Entry<String, String[]> permissionEntry = attachmentPermissionIterator.next();
+          if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
+            attachmentPermissionIterator.remove();
+          }
+        }
         attachment.setPermission(attachmentPermission);
       }
-      
+      // Update permission by inherit from parent
+      HashMap<String, String[]> parentPermissions = (HashMap<String, String[]>) destPage.getPermission();
+      pagePermission.putAll(parentPermissions);
+
+      // Set permission to pages
+      updatePagePermission(movePage,pagePermission);
       
       //update LinkRegistry
       if (!newLocationParams.getType().equals(currentLocationParams.getType())
@@ -508,6 +496,15 @@ public class WikiServiceImpl implements WikiService, Startable {
       return false;
     }
     return true;
+  }
+  
+  private void updatePagePermission(PageImpl page, HashMap<String, String[]> pagePermission) throws Exception {
+    page.setPermission(pagePermission);
+    if (page.getChildPages().size() > 0) {
+      for (PageImpl childPage : page.getChildPages().values()) {
+        updatePagePermission(childPage, pagePermission);
+      }
+    }
   }
   
   @Override
