@@ -424,26 +424,21 @@ public class WikiServiceImpl implements WikiService, Startable {
       movePage.setMinorEdit(false);
       
       // Update permission if moving page to other space or other wiki
-      HashMap<String, String[]> pagePermission = (HashMap<String, String[]>)movePage.getPermission();
-      if (PortalConfig.GROUP_TYPE.equals(currentLocationParams.getType()) 
-          && (!currentLocationParams.getOwner().equals(newLocationParams.getOwner())
-              || !PortalConfig.GROUP_TYPE.equals(newLocationParams.getType()))) {
-        // Remove old space permission first
-        Iterator<Entry<String, String[]>> pagePermissionIterator = pagePermission.entrySet().iterator();
-        while (pagePermissionIterator.hasNext()) {
-          Entry<String, String[]> permissionEntry = pagePermissionIterator.next();
-          if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
-            pagePermissionIterator.remove();
-          }
-        }
+      HashMap<String, String[]> pagePermission = (HashMap<String, String[]>) movePage.getPermission();
+      // Remove old space permission first
+      Iterator<Entry<String, String[]>> pagePermissionIterator = pagePermission.entrySet().iterator();
+      //Remove source permission
+      while (pagePermissionIterator.hasNext()) {
+        pagePermissionIterator.next();
+        pagePermissionIterator.remove();
       }
-      
+
       // Update permission by inherit from parent
-      HashMap<String, String[]> parentPermissions = (HashMap<String, String[]>)destPage.getPermission();
+      HashMap<String, String[]> parentPermissions = (HashMap<String, String[]>) destPage.getPermission();
       pagePermission.putAll(parentPermissions);
-      
-      // Set permission to page
-      movePage.setPermission(pagePermission);
+
+      // Set permission to pages
+      updatePagePermission(movePage,pagePermission);
       
       
       //update LinkRegistry
@@ -490,6 +485,15 @@ public class WikiServiceImpl implements WikiService, Startable {
       return false;
     }
     return true;
+  }
+  
+  private void updatePagePermission(PageImpl page, HashMap<String, String[]> pagePermission) throws Exception {
+    page.setPermission(pagePermission);
+    if (page.getChildPages().size() > 0) {
+      for (PageImpl childPage : page.getChildPages().values()) {
+        updatePagePermission(childPage, pagePermission);
+      }
+    }
   }
   
   @Override
