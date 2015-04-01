@@ -21,7 +21,7 @@
 	<div><%= _ctx.appRes("UIWikiPageInfo.label.child-pages")%></div>
 	<ul>
 	  <li class="nodeLabel">
-	    <a href="javascrip:void(0);">${uicomponent.renderHierarchy();}</a>
+	    <a href="javascript:void(0);">${uicomponent.renderHierarchy()}</a>
 	  </li>
 	</ul>
   </div>
