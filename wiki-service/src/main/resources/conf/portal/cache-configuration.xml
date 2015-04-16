@@ -98,7 +98,7 @@
         <object-param>
           <name>wiki.PageRenderingCache.attachment</name>
           <description>The JBoss Cache configuration for wiki page attachment count</description>
-          <object type="org.exoplatform.services.cache.impl.jboss.ea.EAExoCacheConfig">
+          <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
             <field name="name"><string>wiki.PageRenderingCache.attachment</string></field>
             <field name="strategy"><string>LIRS</string></field>
             <field name="maxEntries"><int>${cache.exo.wiki.PageRenderingCache.Capacity:1000}</int></field>
