@@ -58,6 +58,7 @@ import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
@@ -616,7 +617,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     InputStream result = null;
     try {
       ResizeImageService resizeImgService = (ResizeImageService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
-      PageImpl page = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
+      PageImpl page = (PageImpl) wikiService.getPageByRootPermission(wikiType, wikiOwner, Text.escapeIllegalJcrChars(pageId));
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }

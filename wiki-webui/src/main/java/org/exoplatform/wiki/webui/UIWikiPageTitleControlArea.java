@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
@@ -112,7 +113,7 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
   public void saveTitle(String newTitle, Event event) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);    
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-    String newName = TitleResolver.getId(newTitle, true);
+    String newName = Text.escapeIllegalJcrChars(newTitle);
     Page page = Utils.getCurrentWikiPage();
     boolean isRenameHome = WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName())
         && !newName.equals(pageParams.getPageId());

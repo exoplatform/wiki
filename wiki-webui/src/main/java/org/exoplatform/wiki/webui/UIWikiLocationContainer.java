@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.webui;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -53,7 +54,7 @@ public class UIWikiLocationContainer extends UIContainer {
       UIWikiLocationContainer container = event.getSource();
       UIWikiBreadCrumb newlocation = container.getChildById(NEW_LOCATION);
       String value = event.getRequestContext().getRequestParameter(OBJECTID);
-      value = TitleResolver.getId(value, false);
+      value = Text.escapeIllegalJcrChars(value);
       WikiPageParams params = TreeUtils.getPageParamsFromPath(value);
       newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
       event.getRequestContext().addUIComponentToUpdateByAjax(newlocation);

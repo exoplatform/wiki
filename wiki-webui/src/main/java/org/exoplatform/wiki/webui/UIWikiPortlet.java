@@ -25,6 +25,7 @@ import javax.portlet.PortletPreferences;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -365,7 +366,7 @@ public class UIWikiPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIWikiPortlet> event) throws Exception {      
       String value = event.getRequestContext().getRequestParameter(OBJECTID);
-      value = TitleResolver.getId(value, false);
+      value = Text.escapeIllegalJcrChars(value);
       WikiPageParams params = TreeUtils.getPageParamsFromPath(value);
       Utils.redirect(params, WikiMode.VIEW);
     }

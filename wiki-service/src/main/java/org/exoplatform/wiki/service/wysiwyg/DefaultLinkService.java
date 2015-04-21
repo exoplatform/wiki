@@ -20,6 +20,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
@@ -148,7 +149,7 @@ public class DefaultLinkService implements LinkService {
     PageImpl page;
     switch (entityReference.getType()) {
     case DOCUMENT:
-      String pageId = TitleResolver.getId(entityReference.getName(), false);
+      String pageId = Text.escapeIllegalJcrChars(entityReference.getName());
       String wikiOwner = entityReference.getParent().getName();
       String wikiType = entityReference.getParent().getParent().getName();
       context.setType(wikiType);
@@ -165,7 +166,7 @@ public class DefaultLinkService implements LinkService {
       return null;
     case ATTACHMENT:
       String attachmentId = entityReference.getName();
-      pageId = TitleResolver.getId(entityReference.getParent().getName(), false);
+      pageId = Text.escapeIllegalJcrChars(entityReference.getParent().getName());
       wikiOwner = entityReference.getParent().getParent().getName();
       wikiType = entityReference.getParent().getParent().getParent().getName();
       try {

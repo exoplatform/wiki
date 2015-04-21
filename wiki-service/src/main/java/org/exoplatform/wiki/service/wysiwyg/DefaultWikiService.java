@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
@@ -303,7 +304,7 @@ public class DefaultWikiService implements WikiService {
       }
       List<Attachment> attachments = new ArrayList<Attachment>();
       org.exoplatform.wiki.service.WikiService wservice = (org.exoplatform.wiki.service.WikiService) PortalContainer.getComponent(org.exoplatform.wiki.service.WikiService.class);
-      Page page = wservice.getExsitedOrNewDraftPageById(wikiName, spaceName, TitleResolver.getId(pageName, false));
+      Page page = wservice.getExsitedOrNewDraftPageById(wikiName, spaceName, pageName);
       Collection<AttachmentImpl> attachs = ((PageImpl) page).getAttachmentsExcludeContentByRootPermisison();
       for (AttachmentImpl attach : attachs) {
         AttachmentReference attachmentReference = new AttachmentReference(attach.getName(), documentReference);

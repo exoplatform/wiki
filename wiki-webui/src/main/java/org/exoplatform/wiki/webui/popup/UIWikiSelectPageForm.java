@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.commons.EventUIComponent;
@@ -128,7 +129,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
       UIWikiPortlet wikiPortlet = uiform.getAncestorOfType(UIWikiPortlet.class);
       try {
         if (uiform.currentNodeValue.length() > 0) {
-          String currentNodeValue = TitleResolver.getId(uiform.currentNodeValue, false);
+          String currentNodeValue = Text.escapeIllegalJcrChars(uiform.currentNodeValue);
           WikiPageParams params = TreeUtils.getPageParamsFromPath(currentNodeValue);
 
           WikiService service = uiform.getApplicationComponent(WikiService.class);

@@ -494,15 +494,15 @@ public class TestWikiService extends AbstractMOWTestcase {
   public void testSearchTemplate() throws Exception {    
     WikiPageParams params= new WikiPageParams(PortalConfig.PORTAL_TYPE,  "classic", null);
     wService.createTemplatePage("Sample Search Template", params);
-    assertNotNull(wService.getTemplatePage(params, "Sample_Search_Template"));
+    assertNotNull(wService.getTemplatePage(params, "Sample Search Template"));
     
     params= new WikiPageParams(PortalConfig.GROUP_TYPE,  "/platform/guests", null);
     wService.createTemplatePage("Sample Group Search Template", params);
-    assertNotNull(wService.getTemplatePage(params, "Sample_Group_Search_Template"));
+    assertNotNull(wService.getTemplatePage(params, "Sample Group Search Template"));
     
     params= new WikiPageParams(PortalConfig.USER_TYPE,  "demo", null);
     wService.createTemplatePage("Sample User Search Template", params);
-    assertNotNull(wService.getTemplatePage(params, "Sample_User_Search_Template"));
+    assertNotNull(wService.getTemplatePage(params, "Sample User Search Template"));
     
     TemplateSearchData data = new TemplateSearchData("Template",PortalConfig.PORTAL_TYPE,  "classic");
     List<TemplateSearchResult> result = wService.searchTemplate(data);

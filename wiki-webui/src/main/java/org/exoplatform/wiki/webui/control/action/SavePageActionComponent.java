@@ -26,6 +26,7 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -154,7 +155,7 @@ public class SavePageActionComponent extends UIComponent {
         String markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
         markup = markup.trim();
   
-        String newPageId = TitleResolver.getId(title, false);
+        String newPageId = Text.escapeIllegalJcrChars(title);
         if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
           // as wiki home page has fixed name (never edited anymore), every title changing is accepted.
           ;
@@ -249,7 +250,7 @@ public class SavePageActionComponent extends UIComponent {
             Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
             Page addedPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
             pageParams.setPageId(newPageId);
-            addedPage.setURL(Utils.getURLFromParams(pageParams));
+            addedPage.setURL(Text.unescapeIllegalJcrChars(Utils.getURLFromParams(pageParams)));
             addedPage.getContent().setText(markup);
             addedPage.setSyntax(syntaxId);
             ((PageImpl) addedPage).getAttachments().addAll(attachs);

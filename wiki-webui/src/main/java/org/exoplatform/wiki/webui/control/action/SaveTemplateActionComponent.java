@@ -22,6 +22,7 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.jcr.datamodel.IllegalNameException;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -129,7 +130,7 @@ public class SaveTemplateActionComponent extends UIComponent {
       String[] msgArg = { title };
       boolean isExist = false; 
       try {
-        String idTemp = TitleResolver.getId(title, false);
+        String idTemp = Text.escapeIllegalJcrChars(title);
         if (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE
             || (wikiPortlet.getWikiMode() == WikiMode.EDITTEMPLATE && !idTemp.equals(pageEditForm.getTemplateId()))) {
           isExist = (wikiService.getTemplatePage(pageParams, idTemp) != null);
