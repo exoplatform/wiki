@@ -39,7 +39,7 @@
 	    <td><% uicomponent.renderChild(breadcrumbComponent); %></td>
 	    <% if(uicomponent.isHasExtension()) {%>
 	      <td class="center">
-	        <a href="$rmAction" class="actionIcon" rel="tooltip" data-placement="bottom" title="Delete Page"><i class="uiIconDelete uiIconLightGray"></i></a></div>
+	        <a href="$rmAction" class="actionIcon" rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("MoreExtensionContainer.action.DeletePage"); %>"><i class="uiIconDelete uiIconLightGray"></i></a></div>
 	      </td>
 	    <% }%>
 	  </tr>
