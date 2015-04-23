@@ -262,12 +262,13 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   public Response getTreeData(@PathParam("type") String type,
                               @QueryParam(TreeNode.PATH) String path,
                               @QueryParam(TreeNode.CURRENT_PATH) String currentPath,
+                              @QueryParam(TreeNode.CAN_EDIT) Boolean canEdit,
                               @QueryParam(TreeNode.SHOW_EXCERPT) Boolean showExcerpt,
                               @QueryParam(TreeNode.DEPTH) String depth) {
     try {
       List<JsonNodeData> responseData = new ArrayList<JsonNodeData>();
       HashMap<String, Object> context = new HashMap<String, Object>();
-      
+      context.put(TreeNode.CAN_EDIT, canEdit);
       if (currentPath != null){
         currentPath = URLDecoder.decode(currentPath, "utf-8");
         context.put(TreeNode.CURRENT_PATH, currentPath);

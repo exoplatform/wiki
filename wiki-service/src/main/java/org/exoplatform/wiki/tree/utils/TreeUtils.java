@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.organization.OrganizationService;
@@ -88,11 +89,12 @@ public class TreeUtils {
     Boolean showExcerpt = false;
     PageImpl currentPage = null;
     String currentPath = null;
-    
+    Boolean canEdit      = false;
     if (context != null) {
       currentPath = (String) context.get(TreeNode.CURRENT_PATH);
       currentPage = (PageImpl) context.get(TreeNode.CURRENT_PAGE);
       showExcerpt = (Boolean) context.get(TreeNode.SHOW_EXCERPT);
+      canEdit     = (Boolean)context.get(TreeNode.CAN_EDIT);
     }
     
     List<JsonNodeData> children = new ArrayList<JsonNodeData>();
@@ -115,13 +117,22 @@ public class TreeUtils {
           isSelectable = false;
           child.setRetricted(true);
         }
-        
+        if(BooleanUtils.isTrue(canEdit) && !page.hasPermission(PermissionType.EDITPAGE)){
+          isSelectable = false;
+          child.setRetricted(true);
+        }
       } else if (child.getNodeType().equals(TreeNodeType.WIKIHOME)) {
         PageImpl page = ((WikiHomeTreeNode) child).getWikiHome();
         if (!page.hasPermission(PermissionType.VIEWPAGE)) {
           isSelectable = false;
           child.setRetricted(true);
         }
+
+        if(BooleanUtils.isTrue(canEdit) && !page.hasPermission(PermissionType.EDITPAGE)){
+          isSelectable = false;
+          child.setRetricted(true);
+        }
+
       }
       
       String excerpt = null;

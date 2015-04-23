@@ -22,6 +22,7 @@ import java.util.ResourceBundle;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupContainer;
@@ -95,6 +96,9 @@ public class MovePageActionComponent extends AbstractEventActionComponent {
       pageNameInfo.setValue(res.getString("UIWikiMovePageForm.msg.you-are-about-move-page")
           +" "+ Utils.getCurrentWikiPage().getTitle());
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
+      RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
+      requireJS.require("SHARED/UITreeExplorer", "UITreeExplorer")
+      .addScripts("UITreeExplorer.setMovePage(true); ");
       super.processEvent(event);
     }
   }

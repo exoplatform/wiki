@@ -6,10 +6,22 @@ if(eXo.wiki.UITreeExplorer ==  null) {
 
 function UITreeExplorer() {};
 
-UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, restrictedTitle) {
+/**
+ * WIKI-725 Move a page when user does not have edit permission on destination page
+ * Mark when move page action is executed/cancel
+ * Values: true  --> send canEdit to filter nodes editable right
+ * @param isMovePage
+ */
+UITreeExplorer.prototype.setMovePage = function(isMovePage){
+  eXo.wiki.UIWikiPortlet.isMovePage = isMovePage;
+}
+
+UITreeExplorer.prototype.init = function(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, restrictedTitle, restrictedTitleModify) {
   $(window).ready(function(){
     var me = eXo.wiki.UITreeExplorer;
-    me.initTree(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, restrictedTitle);
+    var _restrictedTitle = restrictedTitle;
+    if(eXo.wiki.UIWikiPortlet.isMovePage) _restrictedTitle = restrictedTitleModify;
+    me.initTree(componentid, initParam, isFullRender, isRenderLink, baseLink, retrictedLabel, _restrictedTitle);
   });
 };
 
@@ -19,13 +31,14 @@ UITreeExplorer.prototype.initTree = function(componentid, initParam, isFullRende
   if (!component) {
     return;
   }
-  
+
   this.isRenderLink = isRenderLink;
   this.baseLink = baseLink;
   me.retrictedLabel = retrictedLabel;
   me.restrictedTitle = restrictedTitle;
   var initNode = $(component).find('input')[0];
   initParam = me.cleanParam(initParam);
+  if(eXo.wiki.UIWikiPortlet.isMovePage) initParam += "&canEdit=true";
   me.render(initParam, initNode, isFullRender);
 }
 

@@ -20,6 +20,7 @@
  // Reuse the resource bundle
  String retrictedLabel = _ctx.appRes("UIWikiPageInfoArea.label.Restrict").toLowerCase();
  String restrictedTitle = _ctx.appRes("UITreeExplorer.label.restricted-node");
+ String restrictedModifyTitle = _ctx.appRes("UITreeExplorer.label.restricted-node-modify");
  
  boolean isEvent = false;
  if (uicomponent.getEventComponent() != null) {
@@ -33,7 +34,7 @@
  if (initParam!=null) {
    def requireJs = rcontext.getJavascriptManager().getRequireJS();
    requireJs.require("SHARED/UITreeExplorer", "UITreeExplorer");
-   requireJs.addScripts("UITreeExplorer.init('" + uicomponent.id  + "','" + initParam + "',true," + isRenderLink + ",'" + baseLink + "','" + retrictedLabel + "',\"" + restrictedTitle + "\");");
+   requireJs.addScripts("UITreeExplorer.init('" + uicomponent.id  + "','" + initParam + "',true," + isRenderLink + ",'" + baseLink + "','" + retrictedLabel + "',\"" + restrictedTitle + "\",\""+restrictedModifyTitle+"\"  );");
  } 
 %>
 	<div class="uiTreeExplorer" id="$uicomponent.id" style="height:250px">

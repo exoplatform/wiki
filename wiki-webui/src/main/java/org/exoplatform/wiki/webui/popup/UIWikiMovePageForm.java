@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.commons.EventUIComponent;
 import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
 import org.exoplatform.webui.commons.UISpacesSwitcher;
@@ -207,7 +208,10 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     public void execute(Event<UIWikiMovePageForm> event) throws Exception {  
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
-      popupContainer.cancelPopupAction();    
+      popupContainer.cancelPopupAction();
+      RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
+      requireJS.require("SHARED/UITreeExplorer", "UITreeExplorer")
+              .addScripts("UITreeExplorer.setMovePage(false); ");
     }
   } 
   
@@ -273,6 +277,9 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       newLocationParams.setPageId(currentLocationParams.getPageId());
       String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams, false);
       org.exoplatform.wiki.commons.Utils.redirect(permalink);
+      RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
+      requireJS.require("SHARED/UITreeExplorer", "UITreeExplorer")
+              .addScripts("UITreeExplorer.setMovePage(false); ");
     }
   }
 
