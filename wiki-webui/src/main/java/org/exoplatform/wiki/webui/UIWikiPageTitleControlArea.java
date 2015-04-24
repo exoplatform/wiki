@@ -113,7 +113,7 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
   public void saveTitle(String newTitle, Event event) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);    
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-    String newName = Text.escapeIllegalJcrChars(newTitle);
+    String newName = org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(newTitle);
     Page page = Utils.getCurrentWikiPage();
     boolean isRenameHome = WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName())
         && !newName.equals(pageParams.getPageId());

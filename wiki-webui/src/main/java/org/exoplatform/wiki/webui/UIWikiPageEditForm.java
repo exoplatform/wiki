@@ -32,6 +32,7 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.web.application.RequestContext;
@@ -282,7 +283,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   protected String getCurrentPageId() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-    return URLEncoder.encode(pageParams.getPageId(),"utf-8");
+    return org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(pageParams.getPageId());
   }
 
   protected String getCurrentPageRevision() throws Exception {

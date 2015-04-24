@@ -140,8 +140,18 @@ public class DefaultWikiModel implements WikiModel {
       }
       if (page != null) {
         sb.append(page.getWorkspace());
-        sb.append(page.getPath());
-        sb.append("/");
+        String basePath = "";
+        String pagePath = page.getPath();
+        basePath = pagePath.substring(0, pagePath.lastIndexOf("WikiHome")+"WikiHome".length() + 1);
+        sb.append(basePath);
+        String[] pagesName = pagePath.substring(basePath.length()).split("/");
+        StringBuffer sbpageName = new StringBuffer();
+        for(String pageName : pagesName) {
+          pageName = Utils.escapeIllegalJcrChars(pageName);
+          sbpageName.append(pageName);
+          sbpageName.append("/");
+        }
+        sb.append(sbpageName.toString());
         AttachmentImpl att = page.getAttachment(TitleResolver.getId(wikiMarkupContext.getAttachmentName(), false));
         if (att != null) {
           sb.append(URLEncoder.encode(att.getName(), "UTF-8"));

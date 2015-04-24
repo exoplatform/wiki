@@ -65,7 +65,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     initURLSb.append("/wiki/tree/").append(TREETYPE.ALL.toString());
     StringBuilder childrenURLSb = new StringBuilder(Utils.getCurrentRestURL());
     childrenURLSb.append("/wiki/tree/").append(TREETYPE.CHILDREN.toString());
-    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(URLEncoder.encode(Utils.getCurrentWikiPagePath(),"utf-8")), eventComponent, false);
+    uiTree.init(initURLSb.toString(), childrenURLSb.toString(), getInitParam(Utils.getCurrentWikiPagePath()), eventComponent, false);
     
     // Init space switcher
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
@@ -129,7 +129,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
       UIWikiPortlet wikiPortlet = uiform.getAncestorOfType(UIWikiPortlet.class);
       try {
         if (uiform.currentNodeValue.length() > 0) {
-          String currentNodeValue = Text.escapeIllegalJcrChars(uiform.currentNodeValue);
+          String currentNodeValue = org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(uiform.currentNodeValue);
           WikiPageParams params = TreeUtils.getPageParamsFromPath(currentNodeValue);
 
           WikiService service = uiform.getApplicationComponent(WikiService.class);

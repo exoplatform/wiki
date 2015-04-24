@@ -59,6 +59,7 @@ import org.xwiki.rendering.syntax.Syntax;
 import javax.jcr.RepositoryException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -126,6 +127,51 @@ public class Utils {
       name = name.replace("%20", "_");
       return name;
     }
+  }
+  
+  public static String escapeIllegalJcrChars(String name) {
+    StringBuilder buffer = new StringBuilder(name.length() * 2);
+    for (int i = 0; i < name.length(); i++) {
+      char ch = name.charAt(i);
+      if (ch == '%' || ch == '/' || ch == '\\' || ch == ':' || ch == '[' || ch == ']' || ch == '*'
+          || ch == '\'' || ch == '\"' || ch == '\'' || ch == '|' || ch == '?' || ch == '#'
+          || ch == '&' || ch == '+' || ch == '>' || ch == '<' || ch == '!' || ch == '~'
+          || ch == '=' || ch == '(' || ch == ')' || (ch == '.' && name.length() < 3)
+          || (ch == ' ' && (i == 0 || i == name.length() - 1)) || ch == '\t' || ch == '\r'
+          || ch == '\n') 
+      {
+        buffer.append('%');
+        buffer.append(Character.toUpperCase(Character.forDigit(ch / 16, 16)));
+        buffer.append(Character.toUpperCase(Character.forDigit(ch % 16, 16)));
+      } else {
+        buffer.append(ch);
+      }
+    }
+    return buffer.toString();
+  }
+  
+  public static String unescapeIllegalJcrChars(String name) {
+     StringBuilder buffer = new StringBuilder(name.length());
+     int i = name.indexOf('%');
+     while (i > -1 && i + 2 < name.length())
+     {
+        buffer.append(name.toCharArray(), 0, i);
+        int a = Character.digit(name.charAt(i + 1), 16);
+        int b = Character.digit(name.charAt(i + 2), 16);
+        if (a > -1 && b > -1)
+        {
+           buffer.append((char)(a * 16 + b));
+           name = name.substring(i + 3);
+        }
+        else
+        {
+           buffer.append('%');
+           name = name.substring(i + 1);
+        }
+        i = name.indexOf('%');
+     }
+     buffer.append(name);
+     return buffer.toString();
   }
   
   public static String getPortalName() {

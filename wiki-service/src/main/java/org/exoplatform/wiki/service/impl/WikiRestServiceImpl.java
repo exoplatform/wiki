@@ -227,7 +227,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           attachfile.setName(fileName);
           if (attachfile != null) {
             WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-            Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, Text.escapeIllegalJcrChars(pageId));
+            Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, Utils.escapeIllegalJcrChars(pageId));
             AttachmentImpl att = ((PageImpl) page).createAttachment(attachfile.getName(), attachfile);
             ConversationState conversationState = ConversationState.getCurrent();
             String creator = null;
@@ -270,16 +270,14 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       HashMap<String, Object> context = new HashMap<String, Object>();
       
       if (currentPath != null){
-        currentPath = URLDecoder.decode(currentPath, "utf-8");
-        context.put(TreeNode.CURRENT_PATH, currentPath);
+        context.put(TreeNode.CURRENT_PATH, Text.unescapeIllegalJcrChars(currentPath));
         WikiPageParams currentPageParam = TreeUtils.getPageParamsFromPath(currentPath);
         PageImpl currentPage = (PageImpl) wikiService.getPageById(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageId());
         context.put(TreeNode.CURRENT_PAGE, currentPage);
       }
       
       // Put select page to context
-      path = URLDecoder.decode(path, "utf-8");
-      context.put(TreeNode.PATH, path);
+      context.put(TreeNode.PATH, Text.unescapeIllegalJcrChars(path));
       WikiPageParams pageParam = TreeUtils.getPageParamsFromPath(path);
       PageImpl page = (PageImpl) wikiService.getPageById(pageParam.getType(), pageParam.getOwner(), pageParam.getPageId());
       if (page == null) {
@@ -617,7 +615,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     InputStream result = null;
     try {
       ResizeImageService resizeImgService = (ResizeImageService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
-      PageImpl page = (PageImpl) wikiService.getPageByRootPermission(wikiType, wikiOwner, Text.escapeIllegalJcrChars(pageId));
+      PageImpl page = (PageImpl) wikiService.getPageByRootPermission(wikiType, wikiOwner, Utils.escapeIllegalJcrChars(pageId));
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }

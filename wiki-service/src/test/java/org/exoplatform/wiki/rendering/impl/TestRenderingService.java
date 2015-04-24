@@ -138,7 +138,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
      
     String expectedImageHtml = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\" alt=\"eXoWikiHome.png\"/></p>";    
      assertEquals(expectedImageHtml, renderingService.render("[[image:eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-     
+    
     String expectedImageHtmlPageName = "<p><img src=\"http://loclahost:8080/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/CreateWikiPage-003/eXoWikiHome.png\" alt=\"CreateWikiPage-003@eXoWikiHome.png\"/></p>";
     assertEquals(expectedImageHtmlPageName, renderingService.render("[[image:CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
      

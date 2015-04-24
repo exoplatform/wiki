@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.commons;
 
 import java.net.URL;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -45,6 +46,7 @@ import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
@@ -143,7 +145,7 @@ public class Utils {
   public static String getCurrentRequestURL() throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     HttpServletRequest request = portalRequestContext.getRequest();
-    String requestURL = java.net.URLDecoder.decode(request.getRequestURL().toString(), "UTF-8");
+    String requestURL = URLDecoder.decode(request.getRequestURL().toString(), "UTF-8");
     UIPortal uiPortal = Util.getUIPortal();
     String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
     if (!requestURL.contains(pageNodeSelected)) {
@@ -427,7 +429,7 @@ public class Utils {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     if (PortalConfig.GROUP_TYPE.equals(Utils.getCurrentWiki().getType())) {
-      pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+      pageParams.setPageId(org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(pageParams.getPageId()));
     }
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }

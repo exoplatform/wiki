@@ -172,7 +172,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Page createPage(String wikiType, String wikiOwner, String title, String parentId) throws Exception {
-    String pageId = Text.escapeIllegalJcrChars(title);
+    String pageId = Utils.escapeIllegalJcrChars(title);
     if(isExisting(wikiType, wikiOwner, pageId)) throw new Exception();
     Model model = getModel();
     WikiImpl wiki = (WikiImpl) getWiki(wikiType, wikiOwner, model);
@@ -235,7 +235,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       if (!isExisted) {
         Page page = getWikiHome(wikiType, wikiOwner);
         if (page != null) {
-          String wikiHomeId = Text.escapeIllegalJcrChars(page.getTitle());
+          String wikiHomeId = Utils.escapeIllegalJcrChars(page.getTitle());
           if (wikiHomeId.equals(pageId)) {
             isExisted = true;
           }
@@ -632,9 +632,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
-    pageId = Text.unescapeIllegalJcrChars(pageId);
     Page page = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
-       .getPageByParams(new WikiPageParams(wikiType, wikiOwner, Text.escapeIllegalJcrChars(pageId)));
+       .getPageByParams(new WikiPageParams(wikiType, wikiOwner, pageId));
     if (page != null && !page.hasPermission(PermissionType.VIEWPAGE)) {
       page = null;
     }
@@ -842,7 +841,7 @@ public class WikiServiceImpl implements WikiService, Startable {
                              String newContent,
                              String newSyntaxId) throws Exception {
     if (newTitle != null) {
-      template = getTemplatesContainer(params).addPage(Text.escapeIllegalJcrChars(newTitle), template);
+      template = getTemplatesContainer(params).addPage(Utils.escapeIllegalJcrChars(newTitle), template);
       template.setDescription(StringEscapeUtils.escapeHtml(newDescription));
       template.setTitle(newTitle);
       template.getContent().setText(newContent);
@@ -1256,7 +1255,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     ConversationState conversationState = ConversationState.getCurrent();
     try {
       Template template = templContainer.createTemplatePage();
-      String pageId = Text.escapeIllegalJcrChars(title);
+      String pageId = Utils.escapeIllegalJcrChars(title);
       template.setName(pageId);
       templContainer.addPage(template.getName(), template);
       String creator = null;

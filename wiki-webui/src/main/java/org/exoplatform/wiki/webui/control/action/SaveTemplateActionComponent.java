@@ -130,7 +130,7 @@ public class SaveTemplateActionComponent extends UIComponent {
       String[] msgArg = { title };
       boolean isExist = false; 
       try {
-        String idTemp = Text.escapeIllegalJcrChars(title);
+        String idTemp = org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(title);
         if (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE
             || (wikiPortlet.getWikiMode() == WikiMode.EDITTEMPLATE && !idTemp.equals(pageEditForm.getTemplateId()))) {
           isExist = (wikiService.getTemplatePage(pageParams, idTemp) != null);
