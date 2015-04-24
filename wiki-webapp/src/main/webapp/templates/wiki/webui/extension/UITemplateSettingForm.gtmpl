@@ -17,7 +17,7 @@
     <button type="button" class="pull-right btn" onclick="eXo.wiki.UIWikiAjaxRequest.makeNewHash('$anchor');"><%=_ctx.appRes("UITemplateSettingForm.action.title.Add")%></button>
     <a onclick="$addLink" id="$actionId" style="display:none;">&nbsp;</a>
 
-    <div class="uiSearchInput" >	
+    <div class="pull-left uiSearchInput" >
       <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
       <button type="button" class="btn TemplateSearchButton" style="display:none" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></button>
     </div>

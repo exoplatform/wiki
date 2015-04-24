@@ -2,6 +2,7 @@ package org.exoplatform.wiki.utils;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -94,6 +95,8 @@ public class Utils {
   public static final String WIKI_RESOUCE_BUNDLE_NAME = "locale.wiki.service.WikiService";
   
   private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-\"";
+  
+  private static final String ILLEGAL_JCR_NAME_CHARACTERS = "*|\":[]/'"; 
 
   public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
   
@@ -106,6 +109,23 @@ public class Utils {
       ret = ret.replace("'", "''");
     }
     return ret;
+  }
+  
+  public static String escapeIllegalCharacterInName(String name) {
+    if (name == null) return null;
+    else if (".".equals(name)) return "_";
+    else {
+      int first = name.indexOf('.');
+      int last = name.lastIndexOf('.');
+      //if only 1 dot character
+      if (first != -1 && first == last && ( first == 0 || last == name.length() - 1)) {
+        name = name.replace('.', '_');
+      } 
+      for (char c : ILLEGAL_JCR_NAME_CHARACTERS.toCharArray())
+        name = name.replace(c, '_');
+      name = name.replace("%20", "_");
+      return name;
+    }
   }
   
   public static String getPortalName() {
@@ -596,7 +616,7 @@ public class Utils {
        .append("     <link rel=\"stylesheet\" href=\""+renderingService.getCssURL() +"\" type=\"text/css\">")
        .append("  </head>")
        .append("  <body>")
-       .append("    Page <a href=\""+page.getURL()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
+       .append("    Page <a href=\""+CommonsUtils.getCurrentDomain()+page.getURL()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
        .append("    <br/><br/>")
        .append("    Changes("+ diffResult.getChanges()+")")
        .append("    <br/><br/>")

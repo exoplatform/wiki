@@ -243,6 +243,8 @@ public class DefaultWikiService implements WikiService {
   public Attachment getAttachment(AttachmentReference attachmentReference) {
     // Clean attachment filename to be synchronized with all attachment operations.
     String cleanedFileName = attachmentReference.getFileName();
+    cleanedFileName = Utils.escapeIllegalCharacterInName(cleanedFileName);
+    attachmentReference.setFileName(cleanedFileName);
     WikiPageReference pageReference = attachmentReference.getWikiPageReference();
     org.exoplatform.wiki.service.WikiService wservice = (org.exoplatform.wiki.service.WikiService) PortalContainer.getComponent(org.exoplatform.wiki.service.WikiService.class);
     PageImpl page;

@@ -535,6 +535,10 @@
   
   <nodeType name="wiki:migrating" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
   </nodeType>
+  
+  <nodeType name="wiki:updateAttachment" isMixin="true" hasOrderableChildNodes="false" primaryItemName="">
+  </nodeType>
+
 
 </nodeTypes>
   

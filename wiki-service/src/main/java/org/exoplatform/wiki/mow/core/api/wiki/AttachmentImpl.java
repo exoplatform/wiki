@@ -115,9 +115,12 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
         .append("/")
         .append(Utils.PAGE)
         .append("/")
-        .append(page.getName())
-        .append("/")
-        .append(this.getName());
+        .append(page.getName());
+      try{
+        sb.append("/").append(URLEncoder.encode(this.getName(), "UTF-8"));
+      }catch (UnsupportedEncodingException e) {
+        sb.append("/").append(this.getName());
+      }
     } else {
       sb.append(Utils.getCurrentRepositoryWebDavUri());
       sb.append(getWorkspace());

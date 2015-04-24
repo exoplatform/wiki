@@ -88,10 +88,12 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       UIWikiFormUploadInput input = (UIWikiFormUploadInput) wikiAttachmentArea.getUIInput(FIELD_UPLOAD);
       UploadResource uploadResource = input.getUploadResource(id);
       
+      String fileName = null;
       try {
         if (uploadResource != null) {
-          String fileName = uploadResource.getFileName();
-          if (fileName != null) {            
+          fileName = uploadResource.getFileName();
+          if (fileName != null) {  
+            fileName = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInName(fileName);
             WikiNameValidator.validateFileName(fileName);
           }
         }
@@ -139,7 +141,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
         imageBytes = new byte[is.available()];
         is.read(imageBytes);
         attachfile = new WikiResource(uploadResource.getMimeType(), "UTF-8", imageBytes);
-        attachfile.setName(uploadResource.getFileName());
+        attachfile.setName(fileName);
         attachfile.setResourceId(uploadResource.getUploadId());
       }
       

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2011 eXo Platform SAS.
+ * Copyright (C) 2003-2013 eXo Platform SAS.
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Affero General Public License as published by
@@ -14,21 +14,19 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.wiki.commons;
 
-public interface WikiConstants {
 
-  public static final String WIKI_MODE          = "mode";
+package org.exoplatform.wiki.mow.core.api.wiki;
 
-  public static final String CURRENT_PAGE       = "page";
+import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.MixinType;
+import org.chromattic.api.annotations.OneToOne;
+import org.exoplatform.wiki.mow.api.WikiNodeType;
 
-  public static final String CURRENT_WIKI_TYPE  = "wikiType";
+@MixinType(name = WikiNodeType.WIKI_PERMISSION_MIGRATION)
+public abstract class UpdateAttachmentMixin {
 
-  public static final String CURRENT_WIKI_OWNER = "wikiOwner";
-
-  public static final String IS_MARKUP          = "isMarkup";
-
-  public static final String WITH               = "With";
-
-  public static final int MAX_LENGTH_TITLE      = 512;
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  public abstract PageImpl getEntity();
+  public abstract void setEntity(PageImpl page);
 }

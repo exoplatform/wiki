@@ -236,7 +236,6 @@ public class DiffService {
           html.append("<div class=\"diffmodifiedline\">");
           if (revline.equals("")) {
             html.append("<pre class=\"diffaddword\">");
-            html.append("&nbsp;");
             html.append("</pre>");
           } else {
             html.append("<span class=\"diffaddword\">");

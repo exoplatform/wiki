@@ -39,11 +39,13 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.UpdateAttachmentMixin;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -121,6 +123,11 @@ public class SavePageActionComponent extends UIComponent {
         if(StringUtils.isEmpty(title)){
           event.getRequestContext().getUIApplication()
                   .addMessage(new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle", null, ApplicationMessage.WARNING));
+          Utils.redirect(Utils.getCurrentWikiPageParams(), WikiMode.EDITPAGE);
+          return;
+        } else if (title.length() > WikiConstants.MAX_LENGTH_TITLE) {
+          event.getRequestContext().getUIApplication()
+                  .addMessage(new ApplicationMessage("WikiPageNameValidator.msg.TooLongTitle", new Object[] {WikiConstants.MAX_LENGTH_TITLE} , ApplicationMessage.WARNING));
           Utils.redirect(Utils.getCurrentWikiPageParams(), WikiMode.EDITPAGE);
           return;
         }
@@ -234,10 +241,11 @@ public class SavePageActionComponent extends UIComponent {
             addedPage.getContent().setText(markup);
             addedPage.setSyntax(syntaxId);
             ((PageImpl) addedPage).getAttachments().addAll(attachs);
+            UpdateAttachmentMixin updateAttachment = ((PageImpl) addedPage).createUpdateAttachmentMixin();
+            ((PageImpl) addedPage).setUpdateAttachmentMixin(updateAttachment);
             ((PageImpl) addedPage).checkin();
             ((PageImpl) addedPage).checkout();
             draftPage.remove();
-  
             // remove the draft for new page
             Page parentPage = addedPage.getParentPage();
             DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
