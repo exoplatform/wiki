@@ -149,7 +149,7 @@ public class DefaultLinkService implements LinkService {
     PageImpl page;
     switch (entityReference.getType()) {
     case DOCUMENT:
-      String pageId = Text.escapeIllegalJcrChars(entityReference.getName());
+      String pageId = entityReference.getName();
       String wikiOwner = entityReference.getParent().getName();
       String wikiType = entityReference.getParent().getParent().getName();
       context.setType(wikiType);
@@ -166,7 +166,7 @@ public class DefaultLinkService implements LinkService {
       return null;
     case ATTACHMENT:
       String attachmentId = entityReference.getName();
-      pageId = Text.escapeIllegalJcrChars(entityReference.getParent().getName());
+      pageId = entityReference.getParent().getName();
       wikiOwner = entityReference.getParent().getParent().getName();
       wikiType = entityReference.getParent().getParent().getParent().getName();
       try {

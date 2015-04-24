@@ -227,7 +227,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           attachfile.setName(fileName);
           if (attachfile != null) {
             WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-            Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
+            Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, Text.escapeIllegalJcrChars(pageId));
             AttachmentImpl att = ((PageImpl) page).createAttachment(attachfile.getName(), attachfile);
             ConversationState conversationState = ConversationState.getCurrent();
             String creator = null;
