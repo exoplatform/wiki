@@ -195,7 +195,9 @@ UIWikiSearchBox.prototype.renderMenu = function(data) {
   var searchBox = $(me.input).closest(".uiWikiSearchBox")[0];
   me.searchPopup = $(searchBox).find("ul.dropdown-menu")[0];
   $(me.searchPopup).attr('style', "min-width:" + me.input.offsetWidth + "px;");
-  
+  $("*").not(me.searchPopup).click(function() {
+    $(me.searchPopup).hide();
+  });
   var resultLength = data.jsonList.length;
   
   if (resultLength > 0) {
