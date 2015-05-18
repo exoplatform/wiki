@@ -129,9 +129,9 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
       UIWikiPortlet wikiPortlet = uiform.getAncestorOfType(UIWikiPortlet.class);
       try {
         if (uiform.currentNodeValue.length() > 0) {
-          String currentNodeValue = org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(uiform.currentNodeValue);
-          WikiPageParams params = TreeUtils.getPageParamsFromPath(currentNodeValue);
-
+          String currentNodeValue = uiform.currentNodeValue;
+          WikiPageParams params = TreeUtils.getPageParamsFromPath(currentNodeValue.substring(0,currentNodeValue.lastIndexOf("/") + 1)
+              + org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(currentNodeValue.substring(currentNodeValue.lastIndexOf('/') + 1)));
           WikiService service = uiform.getApplicationComponent(WikiService.class);
           service.addRelatedPage(Utils.getCurrentWikiPageParams(), params);
         }

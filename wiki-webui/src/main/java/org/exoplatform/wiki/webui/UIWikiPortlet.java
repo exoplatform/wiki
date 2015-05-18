@@ -366,8 +366,8 @@ public class UIWikiPortlet extends UIPortletApplication {
     @Override
     public void execute(Event<UIWikiPortlet> event) throws Exception {      
       String value = event.getRequestContext().getRequestParameter(OBJECTID);
-      value = org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(value);
-      WikiPageParams params = TreeUtils.getPageParamsFromPath(value);
+      WikiPageParams params = TreeUtils.getPageParamsFromPath(value.substring(0,value.lastIndexOf("/") + 1)
+          + org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(value.substring(value.lastIndexOf('/') + 1)));
       Utils.redirect(params, WikiMode.VIEW);
     }
   }

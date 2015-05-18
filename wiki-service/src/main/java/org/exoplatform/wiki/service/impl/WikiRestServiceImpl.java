@@ -268,17 +268,29 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     try {
       List<JsonNodeData> responseData = new ArrayList<JsonNodeData>();
       HashMap<String, Object> context = new HashMap<String, Object>();
-      
       if (currentPath != null){
         context.put(TreeNode.CURRENT_PATH, Text.unescapeIllegalJcrChars(currentPath));
-        WikiPageParams currentPageParam = TreeUtils.getPageParamsFromPath(currentPath);
+        WikiPageParams currentPageParam = null;
+        if(currentPath.equals(Utils.unescapeIllegalJcrChars(currentPath))) {
+          currentPageParam = TreeUtils.getPageParamsFromPath(currentPath.substring(0,currentPath.lastIndexOf("/") +1)
+             + Utils.escapeIllegalJcrChars(currentPath.substring(currentPath.lastIndexOf('/') + 1)));
+        }
+        else {
+          currentPageParam = TreeUtils.getPageParamsFromPath(currentPath);
+        }
         PageImpl currentPage = (PageImpl) wikiService.getPageById(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageId());
         context.put(TreeNode.CURRENT_PAGE, currentPage);
       }
-      
       // Put select page to context
       context.put(TreeNode.PATH, Text.unescapeIllegalJcrChars(path));
-      WikiPageParams pageParam = TreeUtils.getPageParamsFromPath(path);
+      WikiPageParams pageParam = null;
+      if(path.equals(Utils.unescapeIllegalJcrChars(path))) {
+        pageParam = TreeUtils.getPageParamsFromPath(path.substring(0, path.lastIndexOf("/") +1)
+            + Utils.escapeIllegalJcrChars(path.substring(path.lastIndexOf('/') + 1)));
+      }
+      else {
+        pageParam = TreeUtils.getPageParamsFromPath(path);
+      }
       PageImpl page = (PageImpl) wikiService.getPageById(pageParam.getType(), pageParam.getOwner(), pageParam.getPageId());
       if (page == null) {
         log.warn("User [{}] can not get wiki path [{}]. Wiki Home is used instead",
