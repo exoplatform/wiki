@@ -96,7 +96,7 @@ public class Utils {
   
   private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-\"";
   
-  private static final String ILLEGAL_JCR_NAME_CHARACTERS = "*|\":[]/'"; 
+  private static final String ILLEGAL_JCR_NAME_CHARACTERS = "*|\":[]/'^<>"; 
 
   public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
   
@@ -123,7 +123,7 @@ public class Utils {
       } 
       for (char c : ILLEGAL_JCR_NAME_CHARACTERS.toCharArray())
         name = name.replace(c, '_');
-      name = name.replace("%20", "_");
+      name = name.replace("%22", "_");
       return name;
     }
   }
