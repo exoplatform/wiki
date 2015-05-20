@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +29,7 @@ import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -119,6 +121,14 @@ public class SavePageActionComponent extends UIComponent {
         boolean isRenamedPage = false;
         boolean isContentChange = false;
   
+        if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE && 
+            (titleInput.getValue() == null || titleInput.getValue().isEmpty())){
+          // Add a new page with empty title, set title value to Untitled
+          WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+          ResourceBundle res = context.getApplicationResourceBundle();
+          titleInput.setValue(res.getString("UIWikiPageTitleControlArea.label.Untitled"));
+        }
+        
         String title = titleInput.getValue().trim();
         if(StringUtils.isEmpty(title)){
           event.getRequestContext().getUIApplication()
