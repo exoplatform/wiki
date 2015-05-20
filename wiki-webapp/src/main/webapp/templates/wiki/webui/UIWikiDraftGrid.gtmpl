@@ -114,6 +114,8 @@
               } else {
                 if (field.equals(fieldToDisplayBreadCrumb)) {
                   String tooltipText = uicomponent.getBreadCrumb(beanId);
+                  tooltipText = tooltipText.replace("<","&lt;");
+                  tooltipText = tooltipText.replace(">","&gt;");
                   String wikiId = uicomponent.getWikiName(beanId);
                   %>
                   <td class='breadcrum'><div class="$cssClass" title="$tooltipText" alt="$tooltipText">$wikiId</div></td>
