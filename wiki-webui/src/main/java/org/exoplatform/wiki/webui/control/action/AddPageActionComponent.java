@@ -18,14 +18,12 @@ package org.exoplatform.wiki.webui.control.action;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.event.Event;
@@ -35,7 +33,6 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.DraftPage;
-import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -91,15 +88,13 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
  
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       wikiPortlet.changeMode(WikiMode.ADDPAGE);
-      WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
-      ResourceBundle res = context.getApplicationResourceBundle();
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       String pageTitle = draftPage == null ? pageParams.getParameter(WikiContext.PAGETITLE) : draftPage.getTitle();
       UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
       UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
-      titleInput.setValue(res.getString("UIWikiPageTitleControlArea.label.Untitled"));
+      titleInput.setValue("");
 
       titleInput.setEditable(true);
       markupInput.setValue(draftPage == null ? "" : draftPage.getContent().getText());
