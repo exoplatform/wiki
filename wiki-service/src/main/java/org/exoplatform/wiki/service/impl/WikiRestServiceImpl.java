@@ -581,11 +581,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         String url = null;
         if (WikiNodeType.WIKI_ATTACHMENT.equals(searchResult.getType())) {
           url = ((AttachmentImpl)Utils.getObject(searchResult.getPath(), searchResult.getType())).getDownloadURL();
+          String attachmentName = searchResult.getPath().substring(searchResult.getPath().lastIndexOf("/")+1);
+          titleSearchResults.add(new TitleSearchResult(attachmentName, searchResult.getPath(), searchResult.getType(), url));
         } else {
           url = searchResult.getUrl();
+          titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), url));
         }
-        
-        titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), url));
       }
       return Response.ok(new BeanToJsons(titleSearchResults), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
