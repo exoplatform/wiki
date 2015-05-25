@@ -253,6 +253,8 @@
           <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode</value>
           <value>org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin</value>
           <value>org.exoplatform.wiki.mow.core.api.content.AnnotationImpl</value>
+          <value>org.exoplatform.portal.mop.ProtectedResource</value>
+          <value>org.exoplatform.portal.mop.ProtectedContainer</value>
         </values-param>
         <!--<properties-param>
           <name>options</name>
