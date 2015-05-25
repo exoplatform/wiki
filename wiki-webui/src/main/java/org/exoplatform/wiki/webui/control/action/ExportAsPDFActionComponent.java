@@ -88,11 +88,13 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       dataIn.close();
       String css = "<head><style type=\"text/css\"> " + stringBuilder.toString() + " </style></head>";
       String title = currentPage.getTitle();
-
-      String content = "<h1>" + title +"</h1><hr />" + renderingService.render(currentPage.getContent().getText(), currentPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
+      String titleInHtml = title;
+      titleInHtml = titleInHtml.replaceAll("&", "&amp;");
+      titleInHtml = titleInHtml.replaceAll("<","&lt;");
+      titleInHtml = titleInHtml.replaceAll(">","&gt;");
+      String content = "<h1>" + titleInHtml +"</h1><hr />" + renderingService.render(currentPage.getContent().getText(), currentPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
       String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
       content = encoding + "<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
-      
       File pdfFile = createPDFFile(title, content);
       DownloadService dservice = (DownloadService) ExoContainerContext.getCurrentContainer()
         .getComponentInstanceOfType(DownloadService.class);
