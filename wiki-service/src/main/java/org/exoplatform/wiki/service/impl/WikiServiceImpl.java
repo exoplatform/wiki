@@ -45,7 +45,6 @@ import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
-import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
@@ -632,6 +631,9 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
+    if(pageId.equals(Utils.unescapeIllegalJcrChars(pageId))) {
+      pageId = Utils.escapeIllegalJcrChars(pageId);
+    }
     Page page = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
        .getPageByParams(new WikiPageParams(wikiType, wikiOwner, pageId));
     if (page != null && !page.hasPermission(PermissionType.VIEWPAGE)) {

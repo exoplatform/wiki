@@ -1,11 +1,9 @@
 package org.exoplatform.wiki.webui.popup;
 
-import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.commons.EventUIComponent;
@@ -23,7 +21,6 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.TreeNode;
@@ -130,8 +127,11 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
       try {
         if (uiform.currentNodeValue.length() > 0) {
           String currentNodeValue = uiform.currentNodeValue;
-          WikiPageParams params = TreeUtils.getPageParamsFromPath(currentNodeValue.substring(0,currentNodeValue.lastIndexOf("/") + 1)
-              + org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(currentNodeValue.substring(currentNodeValue.lastIndexOf('/') + 1)));
+          String pageId = currentNodeValue.substring(currentNodeValue.lastIndexOf('/') + 1);
+          if(pageId.equalsIgnoreCase(org.exoplatform.wiki.utils.Utils.unescapeIllegalJcrChars(pageId))) {
+           pageId = org.exoplatform.wiki.utils.Utils.escapeIllegalJcrChars(pageId);
+          }
+          WikiPageParams params = TreeUtils.getPageParamsFromPath(currentNodeValue.substring(0,currentNodeValue.lastIndexOf("/") + 1) + pageId);
           WikiService service = uiform.getApplicationComponent(WikiService.class);
           service.addRelatedPage(Utils.getCurrentWikiPageParams(), params);
         }
