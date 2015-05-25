@@ -1029,7 +1029,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       if ("__anonim".equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
         return Response.status(HTTPStatus.BAD_REQUEST).cacheControl(cc).build();
       } 
-      pageId = URLDecoder.decode(rawPageId,"utf-8");
+      pageId = rawPageId;
       WikiPageParams param = new WikiPageParams(wikiType, wikiOwner, pageId);
       PageImpl pageImpl = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
       if (StringUtils.isEmpty(pageId) || (pageImpl == null)) {
