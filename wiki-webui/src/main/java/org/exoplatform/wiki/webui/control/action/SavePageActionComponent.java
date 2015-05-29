@@ -50,6 +50,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.UpdateAttachmentMixin;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
+import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
@@ -108,6 +109,7 @@ public class SavePageActionComponent extends UIComponent {
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       Page page = Utils.getCurrentWikiPage();
       if (page != null) {
+        if(!page.hasPermission(PermissionType.EDITPAGE)) return;
         UIWikiPageTitleControlArea pageTitleControlForm = wikiPortlet.findComponentById(UIWikiPageControlArea.TITLE_CONTROL);
         UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
         UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
