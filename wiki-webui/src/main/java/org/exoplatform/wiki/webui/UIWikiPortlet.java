@@ -44,6 +44,7 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.resolver.PageResolver;
 import org.exoplatform.wiki.resolver.TitleResolver;
+import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
@@ -153,6 +154,11 @@ public class UIWikiPortlet extends UIPortletApplication {
           ((PageImpl)page).migrateAttachmentPermission();
         }
         if (mode.equals(WikiMode.PAGE_NOT_FOUND)) {
+          changeMode(WikiMode.VIEW);
+        }
+
+        if((WikiMode.EDITPAGE.equals(this.getWikiMode()) || WikiMode.ADDPAGE.equals(this.getWikiMode()))
+                && !page.hasPermission(PermissionType.EDITPAGE) ){
           changeMode(WikiMode.VIEW);
         }
       }
