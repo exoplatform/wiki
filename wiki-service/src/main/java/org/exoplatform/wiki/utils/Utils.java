@@ -590,7 +590,9 @@ public class Utils {
     List<String> list = page.getWatchedMixin().getWatchers();
     List<String> emailList = new ArrayList<String>();
     for (int i = 0; i < list.size(); i++) {
-      emailList.add(getEmailUser(list.get(i)));
+      if (isEnabledUser(list.get(i))) {
+        emailList.add(getEmailUser(list.get(i)));
+      }
     }   
     
     // Get differences
@@ -642,6 +644,11 @@ public class Utils {
         }
       }
     }
+  }
+  
+  private static boolean isEnabledUser(String userName) throws Exception {
+    OrganizationService orgService = org.exoplatform.wiki.rendering.util.Utils.getService(OrganizationService.class);
+    return orgService.getUserHandler().findUserByName(userName) != null;
   }
   
   public static String getEmailUser(String userName) throws Exception {
