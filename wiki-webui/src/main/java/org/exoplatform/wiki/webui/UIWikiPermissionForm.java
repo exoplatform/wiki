@@ -274,11 +274,11 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       perms[1] = new Permission();
       perms[1].setPermissionType(PermissionType.EDITPAGE);
       for (String action : entry.getValue()) {
-        if (org.exoplatform.services.jcr.access.PermissionType.READ.equals(action)) {
+        if (org.exoplatform.wiki.utils.Utils.getReadPermissionText().equals(action)) {
           perms[0].setAllowed(true);
-        } else if (org.exoplatform.services.jcr.access.PermissionType.ADD_NODE.equals(action)
-            || org.exoplatform.services.jcr.access.PermissionType.REMOVE.equals(action)
-            || org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY.equals(action)) {
+        } else if (org.exoplatform.wiki.utils.Utils.getAddNodePermissionText().equals(action)
+            || org.exoplatform.wiki.utils.Utils.getRemovePermissionText().equals(action)
+            || org.exoplatform.wiki.utils.Utils.getSetPropertyPermissionText().equals(action)) {
           perms[1].setAllowed(true);
         }
       }
@@ -325,11 +325,11 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
         Permission permission = permissions[i];
         if (permission.isAllowed()) {
           if (permission.getPermissionType().equals(PermissionType.VIEWPAGE)) {
-            permlist.add(org.exoplatform.services.jcr.access.PermissionType.READ);
+            permlist.add(org.exoplatform.wiki.utils.Utils.getReadPermissionText());
           } else if (permission.getPermissionType().equals(PermissionType.EDITPAGE)) {
-            permlist.add(org.exoplatform.services.jcr.access.PermissionType.ADD_NODE);
-            permlist.add(org.exoplatform.services.jcr.access.PermissionType.REMOVE);
-            permlist.add(org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY);
+            permlist.add(org.exoplatform.wiki.utils.Utils.getAddNodePermissionText());
+            permlist.add(org.exoplatform.wiki.utils.Utils.getRemovePermissionText());
+            permlist.add(org.exoplatform.wiki.utils.Utils.getSetPropertyPermissionText());
           }
         }
       }
@@ -614,7 +614,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
             }
           }
           for (String permissionEntry : permissionKeys) {
-            permissions.put(permissionEntry, new String[] {org.exoplatform.services.jcr.access.PermissionType.READ});
+            permissions.put(permissionEntry, new String[] {org.exoplatform.wiki.utils.Utils.getReadPermissionText()});
           }
           attachment.setPermission(permissions);
         }

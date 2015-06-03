@@ -250,4 +250,9 @@ public class SimplePageImpl implements Page {
     // TODO Auto-generated method stub
     return false;
   }
+
+  @Override
+  public String getID() throws Exception{
+    return this.getJCRPageNode().getUUID();
+  }
 }

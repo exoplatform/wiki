@@ -23,7 +23,6 @@ import org.exoplatform.container.RootContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityRegistry;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.service.WikiContext;
@@ -64,9 +63,7 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
       try {
         sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
         portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId + 
-                                        ((RepositoryService)ExoContainerContext.getCurrentContainer()
-                                        .getComponentInstanceOfType(RepositoryService.class))
-                                        .getCurrentRepository().getConfiguration().getName()));
+                                        org.exoplatform.wiki.utils.Utils.getRepositoryName()));
       } catch (Exception ex) {
         return RPC.encodeResponseForFailure(null, ex);
       }
@@ -81,8 +78,7 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
       RenderingServiceImpl renderingService = (RenderingServiceImpl) portalContainer.getComponentInstanceOfType(RenderingService.class);
       Object obj = sessionId == null ? null : sessionManager.getSessionContext(sessionId);
       WikiContext wikiContext = obj == null ? (WikiContext) sessionManager.getSessionContext(userId
-                                             + ((RepositoryService)portalContainer.getComponentInstanceOfType(RepositoryService.class))
-                                             .getCurrentRepository().getConfiguration().getName()) 
+                                             + org.exoplatform.wiki.utils.Utils.getRepositoryName()) 
                                             : (WikiContext) obj;
       Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
       if (ec.getContext() == null) {

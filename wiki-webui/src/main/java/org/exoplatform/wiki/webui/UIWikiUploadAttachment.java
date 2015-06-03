@@ -21,7 +21,6 @@ import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
 
-import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.upload.UploadResource;
@@ -97,7 +96,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
             WikiNameValidator.validateFileName(fileName);
           }
         }
-      } catch (IllegalNameException ex) {
+      } catch (IllegalArgumentException ex) {
         event.getRequestContext()
              .getUIApplication()
              .addMessage(new ApplicationMessage("AttachmentNameValidator.msg.Invalid-char", null, ApplicationMessage.WARNING));        

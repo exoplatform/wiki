@@ -6,9 +6,6 @@ import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
-import org.exoplatform.container.definition.PortalContainerConfig;
-import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -46,6 +43,8 @@ import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.Permission;
+import org.exoplatform.wiki.service.PermissionEntry;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -59,6 +58,7 @@ import org.xwiki.rendering.syntax.Syntax;
 import javax.jcr.RepositoryException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -340,6 +340,19 @@ public class Utils {
     } else {
       throw new IllegalArgumentException(jcrPath + " is not jcr path of a group wiki page node!");
     }
+  }
+  
+  public static String getRepositoryName(){
+    ExoContainer container = ExoContainerContext.getCurrentContainer();
+    try {
+      return ((RepositoryService)container.getComponentInstanceOfType(RepositoryService.class))
+          .getCurrentRepository().getConfiguration().getName();
+    } catch (RepositoryException e) {
+      if (log_.isDebugEnabled()) {
+        log_.debug(String.format("Failed to get Repository name"), e);
+      }
+    }
+    return "";
   }
 
   public static List<NTVersion> getCurrentPageRevisions(Page wikipage) throws Exception {
@@ -679,20 +692,19 @@ public class Utils {
     }
     return permissionMap;
   }
-  
   /**
    * Has permission.
    * 
    * @param acl
-   *          access control list
+   *          access control list 
    * @param permission
    *          permissions array
    * @param user
    *          user Identity
    * @return boolean
    */
-  public static boolean hasPermission(AccessControlList acl, String[] permission, Identity user) {
-   
+  public static boolean hasPermission( AccessControlList acl,String[] permission, Identity user){
+    
     String userId = user.getUserId();
     if (userId.equals(IdentityConstants.SYSTEM)) {
       // SYSTEM has permission everywhere
@@ -723,6 +735,40 @@ public class Utils {
       }
       return false;
     }
+  }
+  /**
+   * Has permission.
+   * 
+   * @param permission
+   *          permissions array
+   * @param user
+   *          user Identity
+   * @param pageParams
+   *          wikiPage parameter 
+   * @return boolean
+   */
+  public static boolean hasPermission( String[] permission, Identity user,WikiPageParams pageParams) {
+    UserACL userACL = Util.getUIPortalApplication().getApplicationComponent(UserACL.class);
+    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    List<PermissionEntry> permissionEntries = new ArrayList<PermissionEntry>();
+    try {
+      permissionEntries = wikiService.getWikiPermission(pageParams.getType(), pageParams.getOwner());
+    } catch (Exception e) {
+      // TODO Auto-generated catch block
+      e.printStackTrace();
+    }
+    List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
+    for (PermissionEntry permissionEntry : permissionEntries) {
+      Permission[] perms = permissionEntry.getPermissions();
+      for (Permission perm : perms) {
+        if (perm.isAllowed()) {
+          AccessControlEntry ace = new AccessControlEntry(permissionEntry.getId(), perm.getPermissionType().toString());
+          aces.add(ace);
+        }
+      }
+    }
+    AccessControlList acl = new AccessControlList(userACL.getSuperUser(), aces);
+    return hasPermission(acl,permission,user);
   }
   
   private static boolean isPermissionMatch(List<AccessControlEntry> existedPermission, String testPermission, Identity user) {
@@ -831,6 +877,30 @@ public class Utils {
    */
   public static String getRestContextName() {
     return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
+  }
+  
+  public static String[] getAllPermissionText(){
+    return new String[] {
+        org.exoplatform.services.jcr.access.PermissionType.READ, 
+        org.exoplatform.services.jcr.access.PermissionType.ADD_NODE,
+        org.exoplatform.services.jcr.access.PermissionType.REMOVE,
+        org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY};
+  }
+  
+  public static String getReadPermissionText(){
+    return org.exoplatform.services.jcr.access.PermissionType.READ;
+  }
+  
+  public static String getAddNodePermissionText(){
+    return org.exoplatform.services.jcr.access.PermissionType.ADD_NODE;
+  }
+  
+  public static String getRemovePermissionText(){
+    return org.exoplatform.services.jcr.access.PermissionType.REMOVE;
+  }
+  
+  public static String getSetPropertyPermissionText(){
+    return org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY;
   }
 
 }

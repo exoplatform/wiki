@@ -1937,4 +1937,40 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void stop() {
   }
+
+  @Override
+  public boolean canModifyPagePermission(Page currentPage, String currentUser) throws Exception{
+    boolean isPageOwner = currentPage.getOwner().equals(currentUser);
+    String[] permissionOfCurrentUser = currentPage.getPermission().get(currentUser);
+    boolean hasEditPagePermissionOnPage = false;
+    if (permissionOfCurrentUser != null) {
+      for (int i = 0; i < permissionOfCurrentUser.length; i++) {
+        if (org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY.equals(permissionOfCurrentUser[i])) {
+          hasEditPagePermissionOnPage = true;
+          break;
+        }
+      }
+    }
+    
+    Wiki wiki = currentPage.getWiki();
+    return ((isPageOwner && hasEditPagePermissionOnPage) || hasAdminSpacePermission(wiki.getType(), wiki.getOwner()))
+        || hasAdminPagePermission(wiki.getType(), wiki.getOwner());
+  }
+
+  @Override
+  public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws Exception {
+    Wiki wiki = currentPage.getWiki();
+    
+    boolean hasEditPagePermissionOnPage = false;
+    String[] permissionOfCurrentUser = currentPage.getPermission().get(currentUser);
+    if (permissionOfCurrentUser != null) {
+      for (int i = 0; i < permissionOfCurrentUser.length; i++) {
+        if (org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY.equals(permissionOfCurrentUser[i])) {
+          hasEditPagePermissionOnPage = true;
+          break;
+        }
+      }
+    }
+    return hasAdminSpacePermission(wiki.getType(), wiki.getOwner()) || hasEditPagePermissionOnPage;
+  }
 }

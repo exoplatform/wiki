@@ -93,7 +93,7 @@ public class DefaultWikiModel implements WikiModel {
           .append(WikiContext.WIKITYPE)
           .append("=")
           .append(wikiType);
-      } catch (IllegalNameException ex) {
+      } catch (IllegalArgumentException ex) {
         sb.append(String.format("javascript:void(0);"));
       }
       return sb.toString();

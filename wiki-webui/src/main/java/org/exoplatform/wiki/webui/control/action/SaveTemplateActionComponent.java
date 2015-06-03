@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -106,7 +105,7 @@ public class SaveTemplateActionComponent extends UIComponent {
       }
       try {
         WikiNameValidator.validate(titleInput.getValue());
-      } catch (IllegalNameException ex) {
+      } catch (IllegalArgumentException ex) {
         isError = true;
         Object[] arg = { ex.getMessage() };
         appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",

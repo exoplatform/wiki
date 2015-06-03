@@ -22,10 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -55,7 +53,6 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
-import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.exoplatform.wiki.webui.EditMode;
 import org.exoplatform.wiki.webui.UIWikiPageControlArea;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
@@ -209,7 +206,7 @@ public class SavePageActionComponent extends UIComponent {
                                      title);
             }
   
-            synchronized (page.getJCRPageNode().getUUID()) {
+            synchronized (page.getID()) {
               page.setComment(commentInput.getValue());
               page.setSyntax(syntaxId);
               pageTitleControlForm.getUIFormInputInfo().setValue(title);
@@ -292,7 +289,7 @@ public class SavePageActionComponent extends UIComponent {
 
     private DraftPage findTheMatchDraft(String pageTitle, Page parentPage) throws Exception {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-      String parentUUID = parentPage.getJCRPageNode().getUUID();
+      String parentUUID = parentPage.getID();
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
       List<DraftPage> draftPages = wikiService.getDrafts(currentUser);
       for (DraftPage draftPage : draftPages) {

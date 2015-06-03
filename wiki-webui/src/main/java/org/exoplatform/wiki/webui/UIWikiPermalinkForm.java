@@ -152,11 +152,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
       if (uiWikiPermalinkForm.canPublicAndRetrictPage()) {
         Page currentPage = Utils.getCurrentWikiPage();
         HashMap<String, String[]> permissions = currentPage.getPermission();
-        permissions.put(IdentityConstants.ANY, new String[] {
-            org.exoplatform.services.jcr.access.PermissionType.READ, 
-            org.exoplatform.services.jcr.access.PermissionType.ADD_NODE,
-            org.exoplatform.services.jcr.access.PermissionType.REMOVE,
-            org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY});
+        permissions.put(IdentityConstants.ANY, org.exoplatform.wiki.utils.Utils.getAllPermissionText());
         currentPage.setPermission(permissions);
         
         // Add any permission of all attachments when making a page public
@@ -164,7 +160,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         for (AttachmentImpl attachment : attachments) {
           HashMap<String, String[]> attachmentPermissions = attachment.getPermission();
           if (!attachmentPermissions.containsKey(IdentityConstants.ANY)) {
-            attachmentPermissions.put(IdentityConstants.ANY, new String[] { org.exoplatform.services.jcr.access.PermissionType.READ });
+            attachmentPermissions.put(IdentityConstants.ANY, new String[] { org.exoplatform.wiki.utils.Utils.getReadPermissionText() });
             attachment.setPermission(attachmentPermissions);
           }
         }

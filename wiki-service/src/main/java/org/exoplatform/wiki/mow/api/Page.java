@@ -209,4 +209,6 @@ public interface Page {
    * @throws Exception
    */
   void setNonePermission() throws Exception;
+
+  String getID() throws Exception;
 }

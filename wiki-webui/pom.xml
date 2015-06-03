@@ -36,20 +36,6 @@
       <artifactId>exo.core.component.security.core</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.core</artifactId>
-      <exclusions>
-        <exclusion>          
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-        <exclusion>
-		  <groupId>xml-apis</groupId>
-          <artifactId>xml-apis-ext</artifactId>          
-        </exclusion>        
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.exoplatform.kernel</groupId>
       <artifactId>exo.kernel.commons</artifactId>
     </dependency>
@@ -231,11 +217,6 @@
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-common</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.jcr</groupId>
-      <artifactId>exo.jcr.component.ext</artifactId>
       <scope>runtime</scope>
     </dependency>
     <dependency>

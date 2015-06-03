@@ -663,4 +663,6 @@ public interface WikiService {
    * @throws Exception
    */
   public String getWikiNameById(String wikiId) throws Exception;
+  public boolean canModifyPagePermission(Page currentPage, String currentUser) throws Exception;
+  public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws Exception;
 }
