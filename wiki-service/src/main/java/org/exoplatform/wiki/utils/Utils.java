@@ -45,6 +45,7 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.Permission;
 import org.exoplatform.wiki.service.PermissionEntry;
+import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -69,7 +70,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 import java.util.ResourceBundle;
+import java.util.Set;
 import java.util.Stack;
+import java.util.Map.Entry;
 
 public class Utils {
   public static final String SLASH = "SLASH";
@@ -891,16 +894,74 @@ public class Utils {
     return org.exoplatform.services.jcr.access.PermissionType.READ;
   }
   
-  public static String getAddNodePermissionText(){
+  private static String getAddNodePermissionText(){
     return org.exoplatform.services.jcr.access.PermissionType.ADD_NODE;
   }
   
-  public static String getRemovePermissionText(){
+  private static String getRemovePermissionText(){
     return org.exoplatform.services.jcr.access.PermissionType.REMOVE;
   }
   
-  public static String getSetPropertyPermissionText(){
+  private static String getSetPropertyPermissionText(){
     return org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY;
   }
 
+  public static List<PermissionEntry> convertToPermissionEntryList(HashMap<String, String[]> permissions) {
+    List<PermissionEntry> permissionEntries = new ArrayList<PermissionEntry>();
+    Set<Entry<String, String[]>> entries = permissions.entrySet();
+    for (Entry<String, String[]> entry : entries) {
+      PermissionEntry permissionEntry = new PermissionEntry();
+      String key = entry.getKey();
+      IDType idType = IDType.USER;
+      if (key.indexOf(":") > 0) {
+        idType = IDType.MEMBERSHIP;
+      } else if (key.indexOf("/") == 0) {
+        idType = IDType.GROUP;
+      }
+      permissionEntry.setIdType(idType);
+      permissionEntry.setId(key);
+      Permission[] perms = new Permission[2];
+      perms[0] = new Permission();
+      perms[0].setPermissionType(PermissionType.VIEWPAGE);
+      perms[1] = new Permission();
+      perms[1].setPermissionType(PermissionType.EDITPAGE);
+      for (String action : entry.getValue()) {
+        if (Utils.getReadPermissionText().equals(action)) {
+          perms[0].setAllowed(true);
+        } else if (Utils.getAddNodePermissionText().equals(action)
+            || Utils.getRemovePermissionText().equals(action)
+            || Utils.getSetPropertyPermissionText().equals(action)) {
+          perms[1].setAllowed(true);
+        }
+      }
+      permissionEntry.setPermissions(perms);
+
+      permissionEntries.add(permissionEntry);
+    }
+    return permissionEntries;
+  }
+  
+  public static HashMap<String, String[]> convertToPermissionMap(List<PermissionEntry> permissionEntries) {
+    HashMap<String, String[]> permissionMap = new HashMap<String, String[]>();
+    for (PermissionEntry permissionEntry : permissionEntries) {
+      Permission[] permissions = permissionEntry.getPermissions();
+      List<String> permlist = new ArrayList<String>();
+      for (int i = 0; i < permissions.length; i++) {
+        Permission permission = permissions[i];
+        if (permission.isAllowed()) {
+          if (permission.getPermissionType().equals(PermissionType.VIEWPAGE)) {
+            permlist.add(Utils.getReadPermissionText());
+          } else if (permission.getPermissionType().equals(PermissionType.EDITPAGE)) {
+            permlist.add(Utils.getAddNodePermissionText());
+            permlist.add(Utils.getRemovePermissionText());
+            permlist.add(Utils.getSetPropertyPermissionText());
+          }
+        }
+      }
+      if (permlist.size() > 0) {
+        permissionMap.put(permissionEntry.getId(), permlist.toArray(new String[permlist.size()]));
+      }
+    }
+    return permissionMap;
+  }
 }

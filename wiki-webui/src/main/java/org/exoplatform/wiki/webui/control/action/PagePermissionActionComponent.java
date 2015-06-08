@@ -76,7 +76,7 @@ public class PagePermissionActionComponent extends AbstractEventActionComponent 
       uiWikiPermissionForm.setScope(Scope.PAGE);
       PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
       HashMap<String, String[]> permissionMap = page.getPermission();
-      List<PermissionEntry> permissionEntries = uiWikiPermissionForm.convertToPermissionEntryList(permissionMap);
+      List<PermissionEntry> permissionEntries = org.exoplatform.wiki.utils.Utils.convertToPermissionEntryList(permissionMap);
       uiWikiPermissionForm.setPermission(permissionEntries);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
       super.processEvent(event);

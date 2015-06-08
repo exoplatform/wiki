@@ -28,7 +28,6 @@ import java.util.Map.Entry;
 
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -254,41 +253,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     permissionGrid.setPermissionEntries(this.permissionEntries);
   }
 
-  public List<PermissionEntry> convertToPermissionEntryList(HashMap<String, String[]> permissions) {
-    List<PermissionEntry> permissionEntries = new ArrayList<PermissionEntry>();
-    Set<Entry<String, String[]>> entries = permissions.entrySet();
-    for (Entry<String, String[]> entry : entries) {
-      PermissionEntry permissionEntry = new PermissionEntry();
-      String key = entry.getKey();
-      IDType idType = IDType.USER;
-      if (key.indexOf(":") > 0) {
-        idType = IDType.MEMBERSHIP;
-      } else if (key.indexOf("/") == 0) {
-        idType = IDType.GROUP;
-      }
-      permissionEntry.setIdType(idType);
-      permissionEntry.setId(key);
-      Permission[] perms = new Permission[2];
-      perms[0] = new Permission();
-      perms[0].setPermissionType(PermissionType.VIEWPAGE);
-      perms[1] = new Permission();
-      perms[1].setPermissionType(PermissionType.EDITPAGE);
-      for (String action : entry.getValue()) {
-        if (org.exoplatform.wiki.utils.Utils.getReadPermissionText().equals(action)) {
-          perms[0].setAllowed(true);
-        } else if (org.exoplatform.wiki.utils.Utils.getAddNodePermissionText().equals(action)
-            || org.exoplatform.wiki.utils.Utils.getRemovePermissionText().equals(action)
-            || org.exoplatform.wiki.utils.Utils.getSetPropertyPermissionText().equals(action)) {
-          perms[1].setAllowed(true);
-        }
-      }
-      permissionEntry.setPermissions(perms);
-
-      permissionEntries.add(permissionEntry);
-    }
-    return permissionEntries;
-  }
-
   @Override
   public void activate() {
   }
@@ -314,30 +278,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       permEntries.add(permissionEntry);
     }
     setPermission(permEntries);
-  }
-
-  private HashMap<String, String[]> convertToPermissionMap(List<PermissionEntry> permissionEntries) {
-    HashMap<String, String[]> permissionMap = new HashMap<String, String[]>();
-    for (PermissionEntry permissionEntry : permissionEntries) {
-      Permission[] permissions = permissionEntry.getPermissions();
-      List<String> permlist = new ArrayList<String>();
-      for (int i = 0; i < permissions.length; i++) {
-        Permission permission = permissions[i];
-        if (permission.isAllowed()) {
-          if (permission.getPermissionType().equals(PermissionType.VIEWPAGE)) {
-            permlist.add(org.exoplatform.wiki.utils.Utils.getReadPermissionText());
-          } else if (permission.getPermissionType().equals(PermissionType.EDITPAGE)) {
-            permlist.add(org.exoplatform.wiki.utils.Utils.getAddNodePermissionText());
-            permlist.add(org.exoplatform.wiki.utils.Utils.getRemovePermissionText());
-            permlist.add(org.exoplatform.wiki.utils.Utils.getSetPropertyPermissionText());
-          }
-        }
-      }
-      if (permlist.size() > 0) {
-        permissionMap.put(permissionEntry.getId(), permlist.toArray(new String[permlist.size()]));
-      }
-    }
-    return permissionMap;
   }
 
   static public class AddEntryActionListener extends EventListener<UIWikiPermissionForm> {
@@ -594,7 +534,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
 
       } else if (Scope.PAGE.equals(scope)) {
         PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
-        HashMap<String, String[]> permissionMap = uiWikiPermissionForm.convertToPermissionMap(uiWikiPermissionForm.permissionEntries);
+        HashMap<String, String[]> permissionMap = org.exoplatform.wiki.utils.Utils.convertToPermissionMap(uiWikiPermissionForm.permissionEntries);
         page.setPermission(permissionMap);
         page.setOverridePermission(true);
 

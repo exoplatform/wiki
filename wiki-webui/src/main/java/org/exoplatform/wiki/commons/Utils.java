@@ -55,7 +55,6 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
@@ -547,7 +546,7 @@ public class Utils {
   }
   
   public static List<NTVersion> getCurrentPageRevisions() throws Exception {
-    return org.exoplatform.wiki.utils.Utils.getCurrentPageRevisions((PageImpl) getCurrentWikiPage());
+    return org.exoplatform.wiki.utils.Utils.getCurrentPageRevisions(getCurrentWikiPage());
   }
   
   public static int getLimitUploadSize() {
