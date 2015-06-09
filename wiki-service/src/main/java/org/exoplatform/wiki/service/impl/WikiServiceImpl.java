@@ -631,7 +631,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   
   @Override
   public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
-    if(pageId.equals(Utils.unescapeIllegalJcrChars(pageId))) {
+    if(pageId !=null && pageId.equals(Utils.unescapeIllegalJcrChars(pageId))) {
       pageId = Utils.escapeIllegalJcrChars(pageId);
     }
     Page page = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
