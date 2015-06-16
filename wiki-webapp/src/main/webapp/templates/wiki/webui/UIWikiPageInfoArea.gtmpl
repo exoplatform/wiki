@@ -27,6 +27,7 @@
   
   String viewChangeActionId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.COMPARE_REVISION + viewChangeSufix;
   String togglelink= uicomponent.event(uicomponent.TOGGLE_ATTACHMENTS_ACTION);
+  String showRevision = uicomponent.event(uicomponent.SHOW_REVISION);
   
   String addedByLabel = _ctx.appRes("UIWikiPageInfoArea.label.AddedBy").replace("{0}", "<a>" + creator + "</a>").replace("{1}", createdDate);
   String lastModifiedByLabel = _ctx.appRes("UIWikiPageInfoArea.label.LastModifiedBy").replace("{0}", "<a>" + author + "</a>").replace("{1}", updatedDate);
@@ -38,7 +39,7 @@
 %>
 <div id="$uicomponent.id" class="uiWikiPageInfoArea">
   <div class="txtFeed">
-    <span class="label"><a href="<%=uicomponent.event(uicomponent.SHOW_REVISION);%>"><%=_ctx.appRes("UIWikiPageInfoArea.label.version-short"); %>$versionsTotal</a></span>&nbsp;
+    <span class="label"><a href="javascript:void(0);" onclick="$showRevision"><%=_ctx.appRes("UIWikiPageInfoArea.label.version-short"); %>$versionsTotal</a></span>&nbsp;
 	${addedByLabel}&nbsp;-&nbsp;$lastModifiedByLabel
 	<!-- View change -->
 	<% if (versionsTotal>1) { %>
