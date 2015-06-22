@@ -105,6 +105,9 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   private boolean isMinorEdit = false;
   
+  public String getID() throws Exception{
+    return this.getJCRPageNode().getUUID();
+  }
   public void setMOWService(MOWService mowService) {
     this.mowService = mowService;
     permission.setMOWService(mowService);

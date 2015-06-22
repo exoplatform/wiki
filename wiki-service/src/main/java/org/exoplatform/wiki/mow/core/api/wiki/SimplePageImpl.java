@@ -253,6 +253,6 @@ public class SimplePageImpl implements Page {
 
   @Override
   public String getID() throws Exception{
-    return this.getJCRPageNode().getUUID();
+    return null;
   }
 }
