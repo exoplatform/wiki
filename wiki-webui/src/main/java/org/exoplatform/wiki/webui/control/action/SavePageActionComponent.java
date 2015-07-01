@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
@@ -28,6 +29,7 @@ import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
+import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
@@ -48,6 +50,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.UpdateAttachmentMixin;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
+import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
@@ -106,6 +109,7 @@ public class SavePageActionComponent extends UIComponent {
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       Page page = Utils.getCurrentWikiPage();
       if (page != null) {
+        if(!page.hasPermission(PermissionType.EDITPAGE)) return;
         UIWikiPageTitleControlArea pageTitleControlForm = wikiPortlet.findComponentById(UIWikiPageControlArea.TITLE_CONTROL);
         UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
         UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
@@ -119,6 +123,14 @@ public class SavePageActionComponent extends UIComponent {
         boolean isRenamedPage = false;
         boolean isContentChange = false;
   
+        if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE && 
+            (titleInput.getValue() == null || titleInput.getValue().isEmpty())){
+          // Add a new page with empty title, set title value to Untitled
+          WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
+          ResourceBundle res = context.getApplicationResourceBundle();
+          titleInput.setValue(res.getString("UIWikiPageTitleControlArea.label.Untitled"));
+        }
+        
         String title = titleInput.getValue().trim();
         if(StringUtils.isEmpty(title)){
           event.getRequestContext().getUIApplication()
