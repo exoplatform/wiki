@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.search.SearchServiceConnector;
@@ -49,6 +50,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   public static String  DATE_TIME_FORMAT = "EEEEE, MMMMMMMM d, yyyy K:mm a";
   
   private WikiService wikiService;
+  private String language;
 
   /**
    * Initializes the Wiki search service.
@@ -70,15 +72,16 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
      * @param limit The limitation number of search results.
      * @param sort The sorting criteria (title, relevancy and date).
      * @param order The sorting order (ascending and descending).
+     * @param language The current language of the portal.
      * @return Search results.
      */
   @Override
-  public Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order) {
+  public Collection<SearchResult> search(SearchContext context, String query, Collection<String> sites, int offset, int limit, String sort, String order, String language) {
     // When limit is 0 then return all search result
     if (limit == 0) {
       limit = Integer.MAX_VALUE;
     }
-
+    setLanguage(language);
     // Prepare search data
     WikiSearchData searchData = new WikiSearchData(query, query, null, null);
     searchData.setOffset(offset);
@@ -217,8 +220,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       
       // Get update date
       Calendar updateDate = wikiSearchResult.getUpdatedDate();
-      SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_FORMAT);
-      
+      SimpleDateFormat format = new SimpleDateFormat(DATE_TIME_FORMAT,Locale.forLanguageTag(getLanguage()));
       // Build page detail
       pageDetail.append(spaceName);
       pageDetail.append(" - ");
@@ -292,5 +294,13 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       LOG.info("Error when getting property from node ", e);
       return null;
     }
+  }
+
+  public String getLanguage() {
+    return language;
+  }
+
+  public void setLanguage(String language) {
+    this.language = language;
   }
 }
