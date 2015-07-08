@@ -240,26 +240,11 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     StringBuffer permalink = new StringBuffer();
     try {
       PageImpl page = getPage(wikiSearchResult);
+      String url = page.getURL(); 
       if (page.getWiki().getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
-        String portalContainerName = Utils.getPortalName();
-        String portalOwner = context.getSiteName();
-        String wikiWebappUri = wikiService.getWikiWebappUri();
-        String spaceGroupId = page.getWiki().getOwner();
-        
-        permalink.append("/");
-        permalink.append(portalContainerName);
-        permalink.append("/");
-        permalink.append(portalOwner);
-        permalink.append("/");
-        permalink.append(wikiWebappUri);
-        permalink.append("/");
-        permalink.append(PortalConfig.GROUP_TYPE);
-        permalink.append(spaceGroupId);
-        permalink.append("/");
-        permalink.append(page.getName());
+        permalink.append(url);
       } else {
         String portalContainerName = Utils.getPortalName();
-        String url = page.getURL();
         if (url != null) {
           url = url.substring(url.indexOf("/" + portalContainerName + "/"));
           permalink.append(url);
