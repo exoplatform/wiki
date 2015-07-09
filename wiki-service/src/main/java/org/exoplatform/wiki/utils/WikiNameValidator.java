@@ -22,7 +22,7 @@ import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 
 public class WikiNameValidator {
   
-  public static final String INVALID_CHARACTERS  = ""; // and .
+  public static final String INVALID_CHARACTERS  = "/ \\";
   
   public static void validate(String s) throws IllegalNameException {
     StringTokenizer tokens;

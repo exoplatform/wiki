@@ -107,7 +107,7 @@ UIConfirmBox.prototype.renderWarningBox = function(componentId, titleMessage, me
 
 UIConfirmBox.prototype.validate = function(pageTitleInputId) {
   var pageTitleInput = document.getElementById(pageTitleInputId);
-  var invalidChars = [];
+  var invalidChars = ["/", "\\"];
   var valid = true;
   for (var i=0; i<invalidChars.length; i++) {
     var current = invalidChars[i];
