@@ -240,14 +240,14 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       if (!currentLocationParams.getType().equals(newLocationParams.getType()) ||
           !currentLocationParams.getOwner().equals(newLocationParams.getOwner())) {
         
-        // Get the list of dupplicated page
+        // Get the list of duplicated page
         List<PageImpl> duplicatedPageList = wservice.getDuplicatePages(movepage, wservice.getWiki(newLocationParams.getType(), newLocationParams.getOwner()), null);
         movePageForm.duplicatedPages = new ArrayList<UIWikiMovePageForm.PageInfo>();
         for (PageImpl page : duplicatedPageList) {
           movePageForm.duplicatedPages.add(movePageForm.new PageInfo(page));
         }
         
-        // If there're some dupplicated page then show warning and return
+        // If there're some duplicated page then show warning and return
         if (movePageForm.duplicatedPages.size() > 0) {
           movePageForm.pageToMove = movePageForm.new PageInfo(movepage);
           return;
@@ -261,7 +261,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       changeURL(movepage, destURL);
       
       // Move page
-      boolean isMoved = wservice.movePage(currentLocationParams, newLocationParams);      
+      boolean isMoved = movePages(movepage, currentLocationParams, newLocationParams);     
       if (!isMoved) {
         // Restore Page URL
         movepage.setURL(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
@@ -282,6 +282,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       org.exoplatform.wiki.commons.Utils.redirect(permalink);
     }
   }
+  
   private static void changeURL(PageImpl page, String destURL) throws Exception {
     page.setURL(destURL + page.getName());
     if (page.getChildPages().size() > 0) {
@@ -289,6 +290,19 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
         changeURL(childPage, destURL);
       }
     }
+  }
+  
+  private static boolean movePages (PageImpl page, WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws Exception {
+    WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+    boolean isMoved = wservice.movePage(currentLocationParams, newLocationParams);
+    if(page.getChildPages().size() > 0) {
+      for(PageImpl childPage : page.getChildPages().values()) {
+        currentLocationParams = org.exoplatform.wiki.utils.Utils.getWikiPageParams(childPage);
+        newLocationParams = org.exoplatform.wiki.utils.Utils.getWikiPageParams(childPage.getParentPage());
+        movePages(childPage, currentLocationParams, newLocationParams);
+      }
+    }
+    return isMoved;
   }
 
   public void activate() {
