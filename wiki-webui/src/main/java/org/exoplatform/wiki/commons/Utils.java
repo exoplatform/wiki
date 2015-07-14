@@ -47,6 +47,7 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
@@ -617,7 +618,7 @@ public class Utils {
   public static String getFullName(String userId) {
     try {
       OrganizationService organizationService = (OrganizationService) PortalContainer.getComponent(OrganizationService.class);
-      User user = organizationService.getUserHandler().findUserByName(userId);
+      User user = organizationService.getUserHandler().findUserByName(userId, UserStatus.ANY);
       return user.getFullName();
     } catch (Exception e) {
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
