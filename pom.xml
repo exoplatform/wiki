@@ -52,6 +52,7 @@
     <org.gatein.portal.version>4.2.x-PLF-SNAPSHOT</org.gatein.portal.version>
     <!-- Platform Project Dependencies -->
     <org.exoplatform.commons.version>4.2.x-SNAPSHOT</org.exoplatform.commons.version>
+    <org.exoplatform.ecms.version>4.2.x-SNAPSHOT</org.exoplatform.ecms.version>
     <org.exoplatform.social.version>4.2.x-SNAPSHOT</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>4.2.x-SNAPSHOT</org.exoplatform.platform-ui.version>
     <!-- Platform Project 3rd party Dependencies -->
