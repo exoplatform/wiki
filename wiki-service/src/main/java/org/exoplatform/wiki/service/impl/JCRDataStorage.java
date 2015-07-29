@@ -101,22 +101,13 @@ public class JCRDataStorage implements DataStorage{
       while (iter.hasNext()) {
         SearchResult tempResult = getResult(iter.nextRow(), data);
         // If contains, merges with the exist
-        if (tempResult != null && !isContains(resultList, tempResult) && !isDuplicateTitle(resultList, tempResult)) {
+        if (tempResult != null && !isContains(resultList, tempResult)) {
           resultList.add(tempResult);
         }
       }
     }
     // Return all the result
     return new ObjectPageList<SearchResult>(resultList, resultList.size());
-  }
-  
-  public boolean isDuplicateTitle(List<SearchResult> list, SearchResult result) {
-    for (SearchResult searchResult : list) {
-      if (result.getTitle().equals(searchResult.getTitle())) {
-        return true;
-      }
-    } 
-    return false;
   }
   
   public Page getWikiPageByUUID(ChromatticSession session, String uuid) throws Exception {

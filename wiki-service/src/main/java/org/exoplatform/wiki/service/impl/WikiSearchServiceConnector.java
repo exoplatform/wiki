@@ -2,11 +2,14 @@ package org.exoplatform.wiki.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.search.SearchServiceConnector;
@@ -26,6 +29,8 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
+
+import sun.print.resources.serviceui;
 
 
 /**
@@ -90,6 +95,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       PageList<org.exoplatform.wiki.service.search.SearchResult> wikiSearchPageList = wikiService.search(searchData);
       if (wikiSearchPageList != null) {
         List<org.exoplatform.wiki.service.search.SearchResult> wikiSearchResults = wikiSearchPageList.getAll();
+        removeDuplicates(wikiSearchResults);
         for (org.exoplatform.wiki.service.search.SearchResult wikiSearchResult : wikiSearchResults) {
           SearchResult searchResult = buildResult(context, wikiSearchResult);
           if (searchResult != null) {
@@ -107,8 +113,27 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     // Return the result
     return searchResults;
   }
+  
+  private List<org.exoplatform.wiki.service.search.SearchResult> removeDuplicates(List<org.exoplatform.wiki.service.search.SearchResult> wikiSearchResults) {
+    int size = wikiSearchResults.size();
+    int out = 0;
+    {
+      final Set<String> encountered = new HashSet<String>();
+      for (int in = 0; in < size; in++) {
+        final String searchResultUrl = wikiSearchResults.get(in).getUrl();
+        final boolean first = encountered.add(searchResultUrl);
+        if (first) {
+          wikiSearchResults.set(out++, wikiSearchResults.get(in));
+        }
+      }
+    }
+    while (out < size) {
+      wikiSearchResults.remove(--size);
+    }
+    return wikiSearchResults;
+  }
 
-  /**
+ /**
    * Sorts search results by order and sorting criteria.
    *
    * @param searchResults The list of search results.
