@@ -422,16 +422,16 @@ public class TestWikiService extends AbstractMOWTestcase {
     WikiSearchData data = new WikiSearchData("exoplatform", "exoplatform", null, null);
 
     PageList<SearchResult> result = wService.search(data);
-    assertEquals(4, result.getAll().size());
+    assertEquals(5, result.getAll().size());
     
     data = new WikiSearchData("exoplatform", "exoplatform", "portal",null) ;
     result = wService.search(data) ;
-    assertEquals(2, result.getAll().size()) ;
+    assertEquals(3, result.getAll().size()) ;
     
     data = new WikiSearchData("exoplatform", "exoplatform", "portal", "classic");
 
     result = wService.search(data);
-    assertEquals(1, result.getAll().size());    
+    assertEquals(2, result.getAll().size());    
     
     data = new WikiSearchData("exoplatform", "exoplatform", PortalConfig.GROUP_TYPE, null);
     result = wService.search(data);

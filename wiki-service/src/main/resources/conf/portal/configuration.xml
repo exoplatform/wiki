@@ -94,6 +94,14 @@
   <component>
     <key>org.exoplatform.commons.api.search.SearchServiceConnector</key>
     <type>org.exoplatform.wiki.service.impl.WikiSearchServiceConnector</type>
+    <init-params>
+          <properties-param>
+             <name>constructor.params</name>
+             <property name="searchType" value="wiki"/>
+             <property name="displayName" value="wiki"/>
+          </properties-param>
+   </init-params>
+    
   </component>
   
   <component>
