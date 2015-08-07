@@ -16,17 +16,15 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.datamodel.IllegalNameException;
-import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -50,13 +48,11 @@ import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.UpdateAttachmentMixin;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
-import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.exoplatform.wiki.webui.EditMode;
 import org.exoplatform.wiki.webui.UIWikiPageControlArea;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
@@ -214,7 +210,8 @@ public class SavePageActionComponent extends UIComponent {
               page.setComment(commentInput.getValue());
               page.setSyntax(syntaxId);
               pageTitleControlForm.getUIFormInputInfo().setValue(title);
-              page.setURL(org.exoplatform.wiki.utils.Utils.unescapeIllegalJcrChars(Utils.getURLFromParams(pageParams)));
+              String urlFromParams = Utils.getURLFromParams(pageParams); 
+              page.setURL(urlFromParams.substring(0, urlFromParams.lastIndexOf("/")+1)+ URLEncoder.encode(newPageId, "UTF-8"));
               
               if (!page.getContent().getText().equals(markup)) {
                 page.getContent().setText(markup);
@@ -247,7 +244,8 @@ public class SavePageActionComponent extends UIComponent {
             Page draftPage = Utils.getCurrentNewDraftWikiPage();
             Collection<AttachmentImpl> attachs = (Collection<AttachmentImpl>) draftPage.getAttachments();
             Page addedPage = wikiService.createPage(pageParams.getType(), pageParams.getOwner(), title, page.getName());
-            addedPage.setURL(org.exoplatform.wiki.utils.Utils.unescapeIllegalJcrChars(Utils.getURLFromParams(pageParams)));
+            String urlFromParams = Utils.getURLFromParams(pageParams); 
+            addedPage.setURL(urlFromParams.substring(0, urlFromParams.lastIndexOf("/")+1)+ URLEncoder.encode(newPageId, "UTF-8"));
             addedPage.getContent().setText(markup);
             addedPage.setSyntax(syntaxId);
             ((PageImpl) addedPage).getAttachments().addAll(attachs);
