@@ -28,4 +28,6 @@ org.exoplatform.wiki.rendering.filter.ConfluenceMacroFilter
 org.exoplatform.wiki.rendering.internal.parser.confluence.ConfluenceLinkReferenceParser
 500:org.exoplatform.wiki.rendering.render.xwiki.DefaultXWikiSyntaxRenderer
 500:org.exoplatform.wiki.rendering.render.xwiki.RssSkinAccessBridge
-500:org.exoplatform.wiki.rendering.render.xwiki.WikiOfficeHTMLCleaner
+500:org.exoplatform.wiki.rendering.render.xwiki.image.ImageWriterImpl
+500:org.exoplatform.wiki.rendering.render.xwiki.WikiFormulaMacro
+org.exoplatform.wiki.rendering.render.xwiki.DummyFormularDocumentAccessBridge
