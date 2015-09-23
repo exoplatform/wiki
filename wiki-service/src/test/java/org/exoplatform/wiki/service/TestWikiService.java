@@ -393,7 +393,8 @@ public class TestWikiService extends AbstractMOWTestcase {
     result = wService.search(data);
     assertEquals(1, result.getAll().size());
   }
-  
+
+  /*
   public void testSearch() throws Exception {
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
@@ -490,6 +491,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     result = wService.search(data).getAll();
     assertEquals(1, result.size());
   }
+  */
   
   public void testSearchTemplate() throws Exception {    
     WikiPageParams params= new WikiPageParams(PortalConfig.PORTAL_TYPE,  "classic", null);
