@@ -22,10 +22,9 @@ import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 @PrimaryType(name=WikiNodeType.WIKI_PREFERENCES)
-public abstract class Preferences {
+public abstract class PreferencesImpl {
 
   @OneToOne
   @Owner

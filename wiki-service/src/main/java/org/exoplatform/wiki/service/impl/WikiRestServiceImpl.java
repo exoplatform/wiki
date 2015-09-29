@@ -16,38 +16,6 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Stack;
-import java.util.StringTokenizer;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriBuilderException;
-import javax.ws.rs.core.UriInfo;
-
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
@@ -66,30 +34,16 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.DraftPageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
-import org.exoplatform.wiki.service.Relations;
-import org.exoplatform.wiki.service.WikiContext;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiResource;
-import org.exoplatform.wiki.service.WikiRestService;
-import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
 import org.exoplatform.wiki.service.related.RelatedUtil;
-import org.exoplatform.wiki.service.rest.model.Attachment;
-import org.exoplatform.wiki.service.rest.model.Attachments;
-import org.exoplatform.wiki.service.rest.model.Link;
-import org.exoplatform.wiki.service.rest.model.ObjectFactory;
-import org.exoplatform.wiki.service.rest.model.PageSummary;
-import org.exoplatform.wiki.service.rest.model.Pages;
-import org.exoplatform.wiki.service.rest.model.Space;
-import org.exoplatform.wiki.service.rest.model.Spaces;
+import org.exoplatform.wiki.service.rest.model.*;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
@@ -103,6 +57,21 @@ import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.*;
+import java.lang.Class;
+import java.lang.Object;
 
 /**
  * {@inheritDoc}
@@ -227,13 +196,14 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           if (attachfile != null) {
             WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
             Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
-            AttachmentImpl att = ((PageImpl) page).createAttachment(attachfile.getName(), attachfile);
+            // TODO need createAttachment
+            //AttachmentImpl att = page.createAttachment(attachfile.getName(), attachfile);
             ConversationState conversationState = ConversationState.getCurrent();
             String creator = null;
             if (conversationState != null && conversationState.getIdentity() != null) {
               creator = conversationState.getIdentity().getUserId();
             }
-            att.setCreator(creator);
+            //att.setCreator(creator);
           }
         }
       } catch (IllegalArgumentException e) {
@@ -273,7 +243,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         currentPath = URLDecoder.decode(currentPath, "utf-8");
         context.put(TreeNode.CURRENT_PATH, currentPath);
         WikiPageParams currentPageParam = TreeUtils.getPageParamsFromPath(currentPath);
-        PageImpl currentPage = (PageImpl) wikiService.getPageById(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageId());
+        Page currentPage = wikiService.getPageOfWikiByName(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageId());
         context.put(TreeNode.CURRENT_PAGE, currentPage);
       }
       
@@ -281,11 +251,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       path = URLDecoder.decode(path, "utf-8");
       context.put(TreeNode.PATH, path);
       WikiPageParams pageParam = TreeUtils.getPageParamsFromPath(path);
-      PageImpl page = (PageImpl) wikiService.getPageById(pageParam.getType(), pageParam.getOwner(), pageParam.getPageId());
+      Page page = wikiService.getPageOfWikiByName(pageParam.getType(), pageParam.getOwner(), pageParam.getPageId());
       if (page == null) {
         log.warn("User [{}] can not get wiki path [{}]. Wiki Home is used instead",
                  ConversationState.getCurrent().getIdentity().getUserId(), path);
-        page = (PageImpl) wikiService.getPageById(pageParam.getType(), pageParam.getOwner(), pageParam.WIKI_HOME);
+        page = wikiService.getPageOfWikiByName(pageParam.getType(), pageParam.getOwner(), pageParam.WIKI_HOME);
       }
       
       context.put(TreeNode.SELECTED_PAGE, page);
@@ -305,7 +275,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
       if (log.isErrorEnabled()) {
-        log.error("Failed for get tree data by rest service.", e.getMessage());
+        log.error("Failed for get tree data by rest service - Ca use : " + e.getMessage(), e);
       }
       return Response.serverError().entity(e.getMessage()).cacheControl(cc).build();
     }
@@ -326,11 +296,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     try {
       WikiPageParams params = TreeUtils.getPageParamsFromPath(path);
-      PageImpl page = (PageImpl) wikiService.getPageById(params.getType(), params.getOwner(), params.getPageId());
+      Page page = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageId());
       if (page != null) {
-        List<PageImpl> relatedPages = page.getRelatedPages();
-        List<JsonRelatedData> relatedData = RelatedUtil.pageImplToJson(relatedPages);
-        return Response.ok(new BeanToJsons<JsonRelatedData>(relatedData)).cacheControl(cc).build();
+        List<Page> relatedPages = wikiService.getRelatedPagesOfPage(page);
+        List<JsonRelatedData> relatedData = RelatedUtil.pageToJson(relatedPages);
+        return Response.ok(new BeanToJsons<>(relatedData)).cacheControl(cc).build();
       }
       return Response.status(Status.NOT_FOUND).build();
     } catch (Exception e) {
@@ -363,7 +333,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     for (String spaceName : spaceNames) {
       try {
-        Page page = wikiService.getPageById(wikiType, spaceName, WikiNodeType.Definition.WIKI_HOME_NAME);
+        Page page = wikiService.getPageOfWikiByName(wikiType, spaceName, WikiNodeType.Definition.WIKI_HOME_NAME);
         spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wikiType, spaceName, page));
       } catch (Exception e) {
         log.error(e.getMessage(), e);
@@ -411,8 +381,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       for (Object space : lastVisitedSpaces) {
         String groupId = getValueFromSpace(space, "getGroupId", String.class);
         String displayName = getValueFromSpace(space, "getDisplayName", String.class);
-        Wiki wiki = wikiService.getWikiById(groupId);
-        Page page = wikiService.getPageById(wiki.getType(), wiki.getOwner(), WikiNodeType.Definition.WIKI_HOME_NAME);
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(WikiType.GROUP.toString(), groupId);
+        Page page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), WikiNodeType.Definition.WIKI_HOME_NAME);
         spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wiki.getType(), displayName, page));
       }
     } catch (Exception e) {
@@ -437,7 +407,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                         @PathParam("wikiOwner") String wikiOwner) {
     Page page;
     try {
-      page = wikiService.getPageById(wikiType, wikiOwner, WikiNodeType.Definition.WIKI_HOME_NAME);
+      page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, WikiNodeType.Definition.WIKI_HOME_NAME);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       return objectFactory.createSpace();
@@ -466,7 +436,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                         @QueryParam("number") Integer number,
                         @QueryParam("parentId") String parentFilterExpression) {
     Pages pages = objectFactory.createPages();
-    PageImpl page = null;
+    Page page;
     boolean isWikiHome = true;
     try {
       String parentId = WikiNodeType.Definition.WIKI_HOME_NAME;
@@ -478,11 +448,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         }
         isWikiHome = false;
       }
-      page = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, parentId);
+      page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, parentId);
       if (isWikiHome) {
         pages.getPageSummaries().add(createPageSummary(objectFactory, uriInfo.getBaseUri(), page));
       } else {
-        for (PageImpl childPage : page.getChildPages().values()) {
+        List<Page> childrenPages = wikiService.getChildrenPageOf(page);
+        for (Page childPage : childrenPages) {
           pages.getPageSummaries().add(createPageSummary(objectFactory,
                                                        uriInfo.getBaseUri(),
                                                        childPage));
@@ -511,9 +482,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                                                               @PathParam("wikiType") String wikiType,
                                                               @PathParam("wikiOwner") String wikiOwner,
                                                               @PathParam("pageId") String pageId) {
-    PageImpl page;
+    Page page;
     try {
-      page = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
+      page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
       if (page != null) {
         return createPage(objectFactory, uriInfo.getBaseUri(), uriInfo.getAbsolutePath(), page);
       }
@@ -544,11 +515,13 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                                     @QueryParam("start") Integer start,
                                     @QueryParam("number") Integer number) {
     Attachments attachments = objectFactory.createAttachments();
-    PageImpl page;
+    Page page;
     try {
-      page = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
-      Collection<AttachmentImpl> pageAttachments = page.getAttachmentsExcludeContent();
-      for (AttachmentImpl pageAttachment : pageAttachments) {
+      page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
+      // TODO attachments
+      //List<org.exoplatform.wiki.mow.api.Attachment> pageAttachments = page.getAttachments();
+      List<org.exoplatform.wiki.mow.api.Attachment> pageAttachments = Collections.EMPTY_LIST;
+      for (org.exoplatform.wiki.mow.api.Attachment pageAttachment : pageAttachments) {
         attachments.getAttachments().add(createAttachment(objectFactory, uriInfo.getBaseUri(), pageAttachment, "attachment", "attachment"));
       }
     } catch (Exception e) {
@@ -614,18 +587,27 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                            @PathParam("pageId") String pageId,
                            @PathParam("imageId") String imageId,
                            @QueryParam("width") Integer width) {
-    InputStream result = null;
+    InputStream result;
     try {
-      ResizeImageService resizeImgService = (ResizeImageService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
-      PageImpl page = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
+      ResizeImageService resizeImgService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
+      Page page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
-      AttachmentImpl att = page.getAttachment(imageId);
-      if (att == null) {
+      // TODO attachments
+      //List<org.exoplatform.wiki.mow.api.Attachment> attachments = page.getAttachments();
+      List<org.exoplatform.wiki.mow.api.Attachment> attachments = Collections.EMPTY_LIST;
+      org.exoplatform.wiki.mow.api.Attachment imageAttachment = null;
+      for(org.exoplatform.wiki.mow.api.Attachment attachment : attachments) {
+        if(attachment.getName().equals(imageId)) {
+          imageAttachment = attachment;
+          break;
+        }
+      }
+      if (imageAttachment == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
-      ByteArrayInputStream bis = new ByteArrayInputStream(att.getContentResource().getData());
+      ByteArrayInputStream bis = new ByteArrayInputStream(imageAttachment.getContent());
       if (width != null) {
         result = resizeImgService.resizeImageByWidth(imageId, bis, width);
       } else {
@@ -691,7 +673,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   public org.exoplatform.wiki.service.rest.model.Page createPage(ObjectFactory objectFactory,
                                                                  URI baseUri,
                                                                  URI self,
-                                                                 PageImpl doc) throws Exception {
+                                                                 Page doc) throws Exception {
     org.exoplatform.wiki.service.rest.model.Page page = objectFactory.createPage();
     fillPageSummary(page, objectFactory, baseUri, doc);
 
@@ -721,14 +703,15 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     return page;
   }
 
-  public PageSummary createPageSummary(ObjectFactory objectFactory, URI baseUri, PageImpl doc) throws IllegalArgumentException, UriBuilderException, Exception {
+  public PageSummary createPageSummary(ObjectFactory objectFactory, URI baseUri, Page page) throws IllegalArgumentException, UriBuilderException, Exception {
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
     PageSummary pageSummary = objectFactory.createPageSummary();
-    fillPageSummary(pageSummary, objectFactory, baseUri, doc);
-    String wikiName = doc.getWiki().getType();
-    String spaceName = doc.getWiki().getOwner();
+    fillPageSummary(pageSummary, objectFactory, baseUri, page);
+    String wikiName = wiki.getType();
+    String spaceName = wiki.getOwner();
     String pageUri = UriBuilder.fromUri(baseUri)
                                .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}")
-                               .build(wikiName, spaceName, doc.getName())
+                               .build(wikiName, spaceName, page.getName())
                                .toString();
     Link pageLink = objectFactory.createLink();
     pageLink.setHref(pageUri);
@@ -740,18 +723,19 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   
   public Attachment createAttachment(ObjectFactory objectFactory,
                                      URI baseUri,
-                                     AttachmentImpl pageAttachment,
+                                     org.exoplatform.wiki.mow.api.Attachment pageAttachment,
                                      String xwikiRelativeUrl,
                                      String xwikiAbsoluteUrl) throws Exception {
     Attachment attachment = objectFactory.createAttachment();
 
     fillAttachment(attachment, objectFactory, baseUri, pageAttachment, xwikiRelativeUrl, xwikiAbsoluteUrl);
 
-    PageImpl page = pageAttachment.getParentPage();
+    Page page = wikiService.getPageOfAttachment(pageAttachment);
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
 
     String attachmentUri = UriBuilder.fromUri(baseUri)
                                      .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}/attachments/{attachmentName}")
-                                     .build(page.getWiki().getType(), page.getWiki().getOwner(), page.getName(), pageAttachment.getName())
+            .build(wiki.getType(), wiki.getOwner(), page.getName(), pageAttachment.getName())
                                      .toString();
     Link attachmentLink = objectFactory.createLink();
     attachmentLink.setHref(attachmentUri);
@@ -762,12 +746,10 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   }  
  
   private List<JsonNodeData> getJsonTree(WikiPageParams params,HashMap<String, Object> context) throws Exception {
-    List<JsonNodeData> responseData = new ArrayList<JsonNodeData>();
     Wiki wiki = Utils.getWiki(params);
     WikiTreeNode wikiNode = new WikiTreeNode(wiki);
     wikiNode.pushDescendants(context);
-    responseData = TreeUtils.tranformToJson(wikiNode, context);
-    return responseData;
+    return TreeUtils.tranformToJson(wikiNode, context);
   }
 
   private List<JsonNodeData> getJsonDescendants(WikiPageParams params,
@@ -776,21 +758,21 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     return TreeUtils.tranformToJson(treeNode, context);
   }
 
-  private static void fillPageSummary(PageSummary pageSummary,
+  private void fillPageSummary(PageSummary pageSummary,
                                       ObjectFactory objectFactory,
                                       URI baseUri,
-                                      PageImpl doc) throws IllegalArgumentException, UriBuilderException, Exception {
-    String wikiType = doc.getWiki().getType();
-    pageSummary.setWiki(wikiType);
-    pageSummary.setFullName(doc.getTitle());
-    pageSummary.setId(wikiType + ":" + doc.getWiki().getOwner() + "." + doc.getName());
-    pageSummary.setSpace(doc.getWiki().getOwner());
-    pageSummary.setName(doc.getName());
-    pageSummary.setTitle(doc.getTitle());
+                                      Page page) throws IllegalArgumentException, UriBuilderException, Exception {
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+    pageSummary.setWiki(wiki.getType());
+    pageSummary.setFullName(page.getTitle());
+    pageSummary.setId(wiki.getType() + ":" + wiki.getOwner() + "." + page.getName());
+    pageSummary.setSpace(wiki.getOwner());
+    pageSummary.setName(page.getName());
+    pageSummary.setTitle(page.getTitle());
     pageSummary.setTranslations(objectFactory.createTranslations());
-    pageSummary.setSyntax(doc.getSyntax());
+    pageSummary.setSyntax(page.getSyntax());
 
-    PageImpl parent = doc.getParentPage();
+    Page parent = wikiService.getParentPageOf(page);
     // parentId must not be set if the parent document does not exist.
     if (parent != null) {
       pageSummary.setParent(parent.getName());
@@ -802,7 +784,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
     String spaceUri = UriBuilder.fromUri(baseUri)
                                 .path("/wiki/{wikiName}/spaces/{spaceName}")
-                                .build(wikiType, doc.getWiki().getOwner())
+                                .build(wiki.getType(), wiki.getOwner())
                                 .toString();
     Link spaceLink = objectFactory.createLink();
     spaceLink.setHref(spaceUri);
@@ -812,8 +794,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     if (parent != null) {
       String parentUri = UriBuilder.fromUri(baseUri)
                                    .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}")
-                                   .build(parent.getWiki().getType(),
-                                          parent.getWiki().getOwner(),
+                                   .build(wiki.getType(),
+                                           wiki.getOwner(),
                                           parent.getName())
                                    .toString();
       Link parentLink = objectFactory.createLink();
@@ -822,12 +804,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       pageSummary.getLinks().add(parentLink);
     }
 
-    if (!doc.getChildPages().isEmpty()) {
+    if (!wikiService.getChildrenPageOf(page).isEmpty()) {
       String pageChildrenUri = UriBuilder.fromUri(baseUri)
                                          .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}/children")
-                                         .build(wikiType,
-                                                doc.getWiki().getOwner(),
-                                                doc.getName())
+                                         .build(wiki.getType(),
+                                                 wiki.getOwner(),
+                                                 page.getName())
                                          .toString();
       Link pageChildrenLink = objectFactory.createLink();
       pageChildrenLink.setHref(pageChildrenUri);
@@ -835,13 +817,15 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       pageSummary.getLinks().add(pageChildrenLink);
     }
 
-    if (!doc.getAttachmentsExcludeContent().isEmpty()) {
+    // TODO attachments
+    /*
+    if (!page.getAttachments().isEmpty()) {
       String attachmentsUri;
       attachmentsUri = UriBuilder.fromUri(baseUri)
                                  .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}/attachments")
-                                 .build(wikiType,
-                                        doc.getWiki().getOwner(),
-                                        doc.getName())
+                                 .build(wiki.getType(),
+                                         wiki.getOwner(),
+                                         page.getName())
                                  .toString();
 
       Link attachmentsLink = objectFactory.createLink();
@@ -849,16 +833,18 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       attachmentsLink.setRel(Relations.ATTACHMENTS);
       pageSummary.getLinks().add(attachmentsLink);
     }
+    */
 
   }
   
   private void fillAttachment(Attachment attachment,
                               ObjectFactory objectFactory,
                               URI baseUri,
-                              AttachmentImpl pageAttachment,
+                              org.exoplatform.wiki.mow.api.Attachment pageAttachment,
                               String xwikiRelativeUrl,
                               String xwikiAbsoluteUrl) throws Exception {
-    PageImpl page = pageAttachment.getParentPage();
+    Page page = wikiService.getPageOfAttachment(pageAttachment);
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
 
     attachment.setId(String.format("%s@%s", page.getName(), pageAttachment.getName()));
     attachment.setName(pageAttachment.getName());
@@ -866,11 +852,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     attachment.setVersion("current");
     attachment.setPageId(page.getName());
     attachment.setPageVersion("current");
-    attachment.setMimeType(pageAttachment.getContentResource().getMimeType());
+    attachment.setMimeType(pageAttachment.getMimeType());
     attachment.setAuthor(pageAttachment.getCreator());
 
     GregorianCalendar calendar = new GregorianCalendar();
-    calendar.setTime(pageAttachment.getCreated());
+    calendar.setTime(pageAttachment.getCreatedDate().getTime());
     attachment.setDate(calendar);
 
     attachment.setXwikiRelativeUrl(xwikiRelativeUrl);
@@ -878,7 +864,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
     String pageUri = UriBuilder.fromUri(baseUri)
                                .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}")
-                               .build(page.getWiki().getType(), page.getWiki().getOwner(), page.getName())
+                               .build(wiki.getType(), wiki.getOwner(), page.getName())
                                .toString();
     Link pageLink = objectFactory.createLink();
     pageLink.setHref(pageUri);
@@ -908,17 +894,17 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     
     syntaxId = syntaxId.replace(Utils.SLASH, "/").replace(Utils.DOT, ".");
     try {
-      PageImpl page = wikiService.getHelpSyntaxPage(syntaxId);
+      Page page = wikiService.getHelpSyntaxPage(syntaxId);
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).cacheControl(cc).build();
       }
-      Page fullHelpPage = (Page) page.getChildPages().values().iterator().next();
+      Page fullHelpPage = wikiService.getChildrenPageOf(page).iterator().next();
       
       // Build wiki context
       if (!StringUtils.isEmpty(portalUrl)) {
-        RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
+        RenderingService renderingService = ExoContainerContext.getCurrentContainer()
             .getComponentInstanceOfType(RenderingService.class);
-        Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
+        Execution ec = renderingService.getExecution();
         if (ec.getContext() == null) {
           ec.setContext(new ExecutionContext());
         }
@@ -1021,20 +1007,20 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       } 
       pageId = URLDecoder.decode(rawPageId,"utf-8");
       WikiPageParams param = new WikiPageParams(wikiType, wikiOwner, pageId);
-      PageImpl pageImpl = (PageImpl) wikiService.getPageById(wikiType, wikiOwner, pageId);
-      if (StringUtils.isEmpty(pageId) || (pageImpl == null)) {
+      Page page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
+      if (StringUtils.isEmpty(pageId) || (page == null)) {
         throw new IllegalArgumentException("Can not find the target page");
       }
       
       DraftPage draftPage = null;
       if (!isNewPage) {
-        draftPage = wikiService.getDraft(param);
+        draftPage = wikiService.getDraftOfPage(page);
         if ((draftPage != null) && !draftPage.getName().equals(lastDraftName)) {
           draftPage = null;
         }
       } else {
         if (!StringUtils.isEmpty(lastDraftName)) {
-          draftPage = (DraftPageImpl) wikiService.getDraft(lastDraftName);
+          draftPage = wikiService.getDraft(lastDraftName);
         }
       }
       
@@ -1042,11 +1028,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       if (draftPage == null) {
         // if create draft for exist page, we need synchronized when create draft 
         if (!isNewPage) {
-          synchronized (pageImpl.getJCRPageNode().getUUID()) {
-            draftPage = (DraftPageImpl) wikiService.createDraftForExistPage(param, pageRevision, clientTime);
+          synchronized (page.getId()) {
+            draftPage = wikiService.createDraftForExistPage(param, pageRevision, clientTime);
           }
         } else {
-          draftPage = (DraftPageImpl) wikiService.createDraftForNewPage(param, clientTime);
+          draftPage = wikiService.createDraftForNewPage(param, clientTime);
         }
       }
       
@@ -1063,7 +1049,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         draftPage.setTitle(title);
       }
       draftPage.getContent().setText(content);
-      ((DraftPageImpl) draftPage).getChromatticSession().save();
+      // TODO need an updatePage ? updateDraftPage ?
+      //draftPage.getChromatticSession().save();
       
       // Log the editting time for current user
       Utils.logEditPageTime(param, Utils.getCurrentUser(), System.currentTimeMillis(), draftPage.getName(), isNewPage);

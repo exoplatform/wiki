@@ -28,7 +28,7 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.utils.Utils;
 
 public class SearchData {
@@ -72,7 +72,7 @@ public class SearchData {
     this.wikiOwner = Utils.validateWikiOwner(wikiType, wikiOwner);
     this.pageId = pageId;
     if (PortalConfig.USER_TYPE.equals(wikiType)) {
-      NodeHierarchyCreator nodeHierachyCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
+      NodeHierarchyCreator nodeHierachyCreator = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
       try {
         if (wikiOwner != null && wikiOwner.length() > 0) {
           Node userNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), wikiOwner);
@@ -86,7 +86,7 @@ public class SearchData {
         }
       }
     }
-    this.propertyConstraints = new ArrayList<String>();
+    this.propertyConstraints = new ArrayList<>();
     if (constraints != null) {
       this.propertyConstraints.addAll(constraints);
     }

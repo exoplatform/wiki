@@ -16,12 +16,11 @@
  */
 package org.exoplatform.wiki.tree;
 
-import java.util.HashMap;
-
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
+
+import java.util.HashMap;
 
 public class WikiTreeNode extends TreeNode {
   private Wiki wiki;
@@ -40,7 +39,7 @@ public class WikiTreeNode extends TreeNode {
   @Override
   protected void addChildren(HashMap<String, Object> context) throws Exception {
 
-    this.children.add(new WikiHomeTreeNode((WikiHome) wiki.getWikiHome()));
+    this.children.add(new WikiHomeTreeNode(wiki.getWikiHome()));
     super.addChildren(context);
   }
 

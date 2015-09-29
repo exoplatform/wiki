@@ -1,8 +1,8 @@
 package org.exoplatform.wiki.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -29,26 +29,13 @@ import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.mow.core.api.ModelImpl;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.Permission;
-import org.exoplatform.wiki.service.PermissionEntry;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiContext;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
@@ -59,19 +46,7 @@ import org.xwiki.rendering.syntax.Syntax;
 import javax.jcr.RepositoryException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.Stack;
+import java.util.*;
 import java.util.Map.Entry;
 
 public class Utils {
@@ -357,31 +332,6 @@ public class Utils {
     }
     return "";
   }
-
-  public static List<NTVersion> getCurrentPageRevisions(Page wikipage) throws Exception {
-    List<NTVersion> versionsList = getPageRevisions((PageImpl) wikipage);
-    if (versionsList.size() == 0) {
-      PageImpl pageImpl = (PageImpl) wikipage;
-      pageImpl.checkin();
-      pageImpl.checkout();
-      pageImpl.getJCRSession().save();
-      versionsList = getPageRevisions((PageImpl) wikipage);
-    }
-    return versionsList;
-  }
-  
-  private static List<NTVersion> getPageRevisions(PageImpl pageImpl) throws Exception {
-    Iterator<NTVersion> iter = pageImpl.getVersionableMixin().getVersionHistory().iterator();
-    List<NTVersion> versionsList = new ArrayList<NTVersion>();
-    while (iter.hasNext()) {
-      NTVersion version = iter.next();
-      if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {
-        versionsList.add(version);
-      }
-    }
-    Collections.sort(versionsList, new VersionNameComparatorDesc());
-    return versionsList;
-  }
   
   /**
    * @param jcrPath follows the format /Users/$USERNAME/ApplicationData/eXoWiki/...
@@ -439,10 +389,7 @@ public class Utils {
    * @return wikiOwner after validated.
    */ 
   public static String validateWikiOwner(String wikiType, String wikiOwner){
-    if(wikiType != null && wikiType.equals(PortalConfig.GROUP_TYPE)) {
-      if(wikiOwner == null || wikiOwner.length() == 0){
-        return "";
-      }
+    if(wikiType != null && wikiType.equals(PortalConfig.GROUP_TYPE) && StringUtils.isNotEmpty(wikiOwner)) {
       if(wikiOwner.startsWith("/")){
         wikiOwner = wikiOwner.substring(1,wikiOwner.length());
       }
@@ -467,7 +414,7 @@ public class Utils {
     sb.append(getDefaultRestBaseURI());
     sb.append(JCR_WEBDAV_SERVICE_BASE_URI);
     sb.append("/");
-    RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
+    RepositoryService repositoryService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
     try {
       sb.append(repositoryService.getCurrentRepository().getConfiguration().getName());
     } catch (RepositoryException e) {
@@ -504,19 +451,23 @@ public class Utils {
   }
   
   public static Collection<Wiki> getWikisByType(WikiType wikiType) {
-    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
-    return store.getWikiContainer(wikiType).getAllWikis();
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    // TODO need getAllWikis
+    //return store.getWikiContainer(wikiType).getAllWikis();
+    return Collections.EMPTY_LIST;
   }
   
   public static Wiki getWiki(WikiPageParams params) {
-    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     if (params != null) {
       String wikiType = params.getType();
       String owner = params.getOwner();
       if (!StringUtils.isEmpty(wikiType) && !StringUtils.isEmpty(owner)) {
-        return store.getWiki(WikiType.valueOf(wikiType.toUpperCase()), owner);
+        try {
+          return wikiService.getWikiByTypeAndOwner(wikiType, owner);
+        } catch (Exception e) {
+          // TODO Log and Exception
+        }
       }
     }
     return null;
@@ -528,23 +479,17 @@ public class Utils {
     return store.getWikis().toArray(new Wiki[]{}) ;
   } 
   
-  public static boolean isDescendantPage(PageImpl page, PageImpl parentPage) throws Exception {
+  public static boolean isDescendantPage(Page page, Page parentPage) throws Exception {
     return page.getPath().startsWith(parentPage.getPath());
   }
 
   public static Object getObject(String path, String type) throws Exception {
-    WikiService wservice = (WikiService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    WikiService wservice = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     return wservice.findByPath(path, type) ;
-  }
-
-  public static NTVersion getLastRevisionOfPage(Page wikipage) throws Exception {
-    return getCurrentPageRevisions(wikipage).get(0);
   }
   
   public static Object getObjectFromParams(WikiPageParams param) throws Exception {
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     String wikiType = param.getType();
     String wikiOwner = param.getOwner();
     String wikiPageId = param.getPageId();
@@ -552,17 +497,17 @@ public class Utils {
     if (wikiOwner != null && wikiPageId != null) {
       if (!wikiPageId.equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
         // Object is a page
-        Page expandPage = (Page) wikiService.getPageByRootPermission(wikiType, wikiOwner, wikiPageId);
+        Page expandPage = wikiService.getPageByRootPermission(wikiType, wikiOwner, wikiPageId);
         return expandPage;
       } else {
         // Object is a wiki home page
-        Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase())).getWiki(wikiOwner, true);
-        WikiHome wikiHome = (WikiHome) wiki.getWikiHome();
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType.toUpperCase(), wikiOwner);
+        Page wikiHome = wiki.getWikiHome();
         return wikiHome;
       }
     } else if (wikiOwner != null) {
       // Object is a wiki
-      Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase())).getWiki(wikiOwner, true);
+      Wiki wiki =  wikiService.getWikiByTypeAndOwner(wikiType.toUpperCase(), wikiOwner);
       return wiki;
     } else if (wikiType != null) {
       // Object is a space
@@ -572,13 +517,14 @@ public class Utils {
     }
   }
   
-  public static Stack<WikiPageParams> getStackParams(PageImpl page) throws Exception {
-    Stack<WikiPageParams> stack = new Stack<WikiPageParams>();
-    Wiki wiki = page.getWiki();
+  public static Stack<WikiPageParams> getStackParams(Page page) throws Exception {
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    Stack<WikiPageParams> stack = new Stack<>();
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
     if (wiki != null) {
       while (page != null) {
         stack.push(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
-        page = page.getParentPage();
+        page = wikiService.getParentPageOf(page);
       }      
     }
     return stack;
@@ -586,25 +532,34 @@ public class Utils {
   
   
   public static WikiPageParams getWikiPageParams(Page page) {
-    Wiki wiki = ((PageImpl) page).getWiki();
-    String wikiType = wiki.getType();
-    WikiPageParams params = new WikiPageParams(wikiType, wiki.getOwner(), page.getName());
-    return params;
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    try {
+      Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+      String wikiType = wiki.getType();
+      WikiPageParams params = new WikiPageParams(wikiType, wiki.getOwner(), page.getName());
+      return params;
+    } catch(Exception e) {
+      // TODO Log exception
+      return null;
+    }
   }
   
-  public static void sendMailOnChangeContent(AttachmentImpl content) throws Exception {
+  public static void sendMailOnChangeContent(Attachment content) throws Exception {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    DiffService diffService = (DiffService) container.getComponentInstanceOfType(DiffService.class);
-    RenderingService renderingService = (RenderingService) container.getComponentInstanceOfType(RenderingService.class);
+    WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
+    DiffService diffService = container.getComponentInstanceOfType(DiffService.class);
+    RenderingService renderingService = container.getComponentInstanceOfType(RenderingService.class);
     Message message = new Message();
     ConversationState conversationState = ConversationState.getCurrent();
     // Get author
     String author = conversationState.getIdentity().getUserId();
 
     // Get watchers' mails
-    PageImpl page = content.getParentPage();
-    List<String> list = page.getWatchedMixin().getWatchers();
-    List<String> emailList = new ArrayList<String>();
+    Page page = wikiService.getPageOfAttachment(content);
+    // TODO need page watchers
+    //List<String> list = page.getWatchedMixin().getWatchers();
+    List<String> list = Collections.EMPTY_LIST;
+            List<String> emailList = new ArrayList<String>();
     for (int i = 0; i < list.size(); i++) {
       if (isEnabledUser(list.get(i))) {
         emailList.add(getEmailUser(list.get(i)));
@@ -614,8 +569,12 @@ public class Utils {
     // Get differences
     String pageTitle = page.getTitle();
     String currentVersionContent = content.getText();
-    NTVersion previousVersion = page.getVersionableMixin().getBaseVersion();    
-    String previousVersionContent = previousVersion.getNTFrozenNode().getContentString();
+    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    String previousVersionContent = StringUtils.EMPTY;
+    if(versions != null && !versions.isEmpty()) {
+      PageVersion previousVersion = versions.get(0);
+      previousVersionContent = previousVersion.getContent();
+    }
     DiffResult diffResult = diffService.getDifferencesAsHTML(previousVersionContent,
                                                              currentVersionContent,
                                                              false);
@@ -634,7 +593,7 @@ public class Utils {
        .append("     <link rel=\"stylesheet\" href=\""+renderingService.getCssURL() +"\" type=\"text/css\">")
        .append("  </head>")
        .append("  <body>")
-       .append("    Page <a href=\""+CommonsUtils.getCurrentDomain()+page.getURL()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
+       .append("    Page <a href=\""+CommonsUtils.getCurrentDomain()+page.getUrl()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
        .append("    <br/><br/>")
        .append("    Changes("+ diffResult.getChanges()+")")
        .append("    <br/><br/>")
@@ -676,12 +635,16 @@ public class Utils {
   }
   
   public static boolean isWikiAvailable(String wikiType, String wikiOwner) {
-    MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer()
-                                                            .getComponentInstanceOfType(MOWService.class);
-    ModelImpl model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<Wiki> container = wStore.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase()));
-    return (container.contains(wikiOwner) != null);
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
+    Wiki wiki;
+    try {
+      wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
+    } catch (Exception e) {
+      return false;
+    }
+
+    return (wiki != null);
   }
   
   public static HashMap<String, IDType> getACLForAdmins() {
@@ -835,13 +798,13 @@ public class Utils {
    * get URL to public on social activity
    */
   public static String getURL(String url, String verName){
-    StringBuffer strBuffer = new StringBuffer(url);
-    strBuffer.append("?").append(WikiContext.ACTION).append("=").append(COMPARE_REVISION).append("&").append(VER_NAME).append("=").append(verName);
+    StringBuffer strBuffer = new StringBuffer();
+    strBuffer.append(url).append("?").append(WikiContext.ACTION).append("=").append(COMPARE_REVISION).append("&").append(VER_NAME).append("=").append(verName);
     return strBuffer.toString();
   }
   
   public static SessionProvider createSystemProvider() {
-    SessionProviderService sessionProviderService = (SessionProviderService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SessionProviderService.class);
+    SessionProviderService sessionProviderService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SessionProviderService.class);
     return sessionProviderService.getSystemSessionProvider(null);
   }
   
@@ -854,7 +817,7 @@ public class Utils {
 
   }
   
-  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) throws Exception {
+  public static String getNodeTypeCssClass(Attachment attachment, String append) throws Exception {
     Class<?> dmsMimeTypeResolverClass = Class.forName("org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver");
     Object dmsMimeTypeResolverObject =
         dmsMimeTypeResolverClass.getDeclaredMethod("getInstance", null).invoke(null, null);

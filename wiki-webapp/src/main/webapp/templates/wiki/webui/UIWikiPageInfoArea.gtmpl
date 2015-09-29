@@ -20,8 +20,10 @@
         .getComponentInstanceOfType(PageRenderingCacheService.class);
   
   int attachmentsTotal =  cacheService.getAttachmentCount(currentWikiPage);
-  int versionsTotal = currentWikiPage.getVersionableMixin().getVersionHistory().getChildren().size() -1 ;
-  
+  //int versionsTotal = currentWikiPage.getVersionableMixin().getVersionHistory().getChildren().size() -1 ;
+  // TODO ???
+  int versionsTotal = 1;
+
   String viewChangeSufix = "_changes";
   String viewChangeAnchor = "#" + uicomponent.COMPARE_REVISION +viewChangeSufix;
   

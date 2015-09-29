@@ -24,43 +24,46 @@ import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 @PrimaryType(name = WikiNodeType.WIKI_TEMPLATE_CONTAINER)
 public abstract class TemplateContainer {
   
 
   @Create
-  public abstract Template createTemplatePage();
+  public abstract TemplateImpl createTemplatePage();
   
   @Path
   public abstract String getPath();
 
   @OneToMany
-  public abstract Map<String,Template> getTemplates();
-  public abstract void setTemplates(Map<String,Template> templates);
+  public abstract Map<String, TemplateImpl> getTemplates();
+  public abstract void setTemplates(Map<String,TemplateImpl> templates);
   
-  public Template addPage(String templateName, Template template) throws Exception {
+  public TemplateImpl addPage(String templateName, TemplateImpl template) {
     if (templateName == null) {
       throw new NullPointerException();
     }
     if (template == null) {
       throw new NullPointerException();
     }
-    Map<String, Template> children = getTemplates();
+    Map<String, TemplateImpl> children = getTemplates();
     if (children.containsKey(templateName)) {
       return template;
     }
     children.put(templateName, template);
-    template.setNonePermission();
+    try {
+      template.setPermission(null);
+    } catch (Exception e) {
+      // TODO Ignore
+    }
     return template;
   }
   
-  public Template getTemplate(String name) {
-    Iterator<Entry<String, Template>> iter = getTemplates().entrySet().iterator();
+  public TemplateImpl getTemplate(String name) {
+    Iterator<Entry<String, TemplateImpl>> iter = getTemplates().entrySet().iterator();
     while (iter.hasNext()) {
-      Entry<String, Template> entry = iter.next();
-      Template template = entry.getValue();
+      Entry<String, TemplateImpl> entry = iter.next();
+      TemplateImpl template = entry.getValue();
       if (template.getName().equals(name)) {
         return template;
       }

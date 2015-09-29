@@ -16,25 +16,30 @@
  */
 package org.exoplatform.wiki.rendering.cache.impl;
 
-import javax.jcr.Node;
-import javax.jcr.Property;
-
 import org.apache.commons.chain.Context;
-import org.chromattic.api.ChromatticSession;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.command.action.Action;
 import org.exoplatform.services.ext.action.InvocationContext;
 import org.exoplatform.services.jcr.observation.ExtendedEvent;
-import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 
+import javax.jcr.Node;
+import javax.jcr.Property;
+
 public class UpdatePageRenderingCacheAction implements Action {
+
+  private WikiService wikiService;
+
+  public UpdatePageRenderingCacheAction() {
+    this.wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+  }
 
   @Override
   public boolean execute(Context context) throws Exception {
@@ -42,21 +47,23 @@ public class UpdatePageRenderingCacheAction implements Action {
     Object eventObj = context.get(InvocationContext.EVENT);
     int eventCode = Integer.parseInt(eventObj.toString());
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    PageRenderingCacheService pRenderingCacheService = (PageRenderingCacheService)
-                        container.getComponentInstanceOfType(PageRenderingCacheService.class);
+    PageRenderingCacheService pRenderingCacheService = container.getComponentInstanceOfType(PageRenderingCacheService.class);
     
     switch (eventCode) {
     case ExtendedEvent.NODE_ADDED:
       if (item instanceof Node) {
-          Node node = (Node) item;
-          Node parent = ((Node) item).getParent();
-          if (parent.isNodeType(WikiNodeType.WIKI_PAGE) &&  node.isNodeType(WikiNodeType.WIKI_PAGE)) {
-            PageImpl parentPage = (PageImpl) Utils.getObject(parent.getPath(), WikiNodeType.WIKI_PAGE);
-            Wiki wiki = parentPage.getWiki();
+        Node node = (Node) item;
+        Node parent = ((Node) item).getParent();
+        if (parent.isNodeType(WikiNodeType.WIKI_PAGE) &&  node.isNodeType(WikiNodeType.WIKI_PAGE)) {
+          // TODO do not use getObject here
+          /*
+          Page parentPage = (Page) Utils.getObject(parent.getPath(), WikiNodeType.WIKI_PAGE);
+          Wiki wiki = wikiService.getWikiById(parentPage.getWikiId());
           if (wiki != null) {
             pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));
             pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), node.getName()));
           }
+          */
         }
       }
       break;
@@ -64,12 +71,15 @@ public class UpdatePageRenderingCacheAction implements Action {
       if (item instanceof Node) {
         Node node = ((Node) item);
         if (node.isNodeType(WikiNodeType.WIKI_PAGE)) {
-          PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
-          Wiki wiki = page.getWiki();
+          // TODO do not use getObject here
+          /*
+          Page page = (Page) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
+          Wiki wiki = wikiService.getWikiById(page.getWikiId());
           if (wiki != null) {
             pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
             pRenderingCacheService.getPageLinksMap().remove(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
           }
+          */
         }
       }
       
@@ -80,23 +90,30 @@ public class UpdatePageRenderingCacheAction implements Action {
         Node node = ((Property) item).getParent();
         if (WikiNodeType.Definition.OLD_PAGE_IDS.equals(currentProperty.getName())) {          
           if (node.isNodeType(WikiNodeType.WIKI_PAGE)) {
-            PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
-            Wiki wiki = page.getWiki();
+            // TODO do not use getObject here
+            /*
+            Page page = (Page) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
+            Wiki wiki = wikiService.getWikiById(page.getWikiId());
             if (wiki != null) {
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
               pRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
             }
+            */
           }
         } else if (WikiNodeType.Definition.TARGET_PAGE.equals(currentProperty.getName())) {
           if (node.isNodeType(WikiNodeType.WIKI_PAGE)) {
-            PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
-            Wiki wiki = page.getWiki();
+            // TODO do not use getObject here
+            /*
+            Page page = (Page) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
+            Wiki wiki = wikiService.getWikiById(page.getWikiId());
             if (wiki != null) {
               pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
-              PageImpl desPage = page.getMovedMixin().getTargetPage();
-              pRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), desPage.getName()));
-              pRenderingCacheService.getPageLinksMap().remove(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
-            }            
+              // TODO handle moved mixin
+              //PageImpl desPage = page.getMovedMixin().getTargetPage();
+              //pRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), desPage.getName()));
+              //pRenderingCacheService.getPageLinksMap().remove(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
+            }
+            */
           }
         }
       }
@@ -105,22 +122,28 @@ public class UpdatePageRenderingCacheAction implements Action {
       Node node = (Node) item;
       if (node.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {
         node = node.getParent();
-        PageImpl page = (PageImpl) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
-        Wiki wiki = page.getWiki();
+        // TODO do not use getObject here
+        /*
+        Page page = (Page) Utils.getObject(node.getPath(), WikiNodeType.WIKI_PAGE);
+        Wiki wiki = wikiService.getWikiById(page.getWikiId());
         if (wiki != null) {
           //invalidate cache
           pRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
         }
+        */
       }
       break;
     case ExtendedEvent.CHECKOUT:
       node = (Node) item;
       if (node.isNodeType(WikiNodeType.WIKI_ATTACHMENT)) {
-        PageImpl page = (PageImpl) Utils.getObject(node.getParent().getPath(), WikiNodeType.WIKI_PAGE);
-        Wiki wiki = page.getWiki();
+        // TODO do not use getObject here
+        /*
+        Page page = (Page) Utils.getObject(node.getParent().getPath(), WikiNodeType.WIKI_PAGE);
+        Wiki wiki = wikiService.getWikiById(page.getWikiId());
         if (wiki != null) {
           checkUncachedMacroesInPage(page);
         }
+        */
       }
       break;
       
@@ -134,7 +157,7 @@ public class UpdatePageRenderingCacheAction implements Action {
    * checks if page contains uncached macroes
    * @param page
    */
-  private void checkUncachedMacroesInPage(PageImpl page) {
+  private void checkUncachedMacroesInPage(Page page) {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     PageRenderingCacheService pRenderingCacheService = (PageRenderingCacheService)
                         container.getComponentInstanceOfType(PageRenderingCacheService.class);
@@ -150,7 +173,9 @@ public class UpdatePageRenderingCacheAction implements Action {
         break;
       }
     }
-    
+
+    // TODO remove chromattic from here
+    /*
     ChromatticSession session = page.getMOWService().getSession();
     if (found) {
       if (page.getUncachedMixin() == null) {
@@ -162,6 +187,7 @@ public class UpdatePageRenderingCacheAction implements Action {
         session.setEmbedded(page, UncachedMixin.class, null);
       }
     }
+    */
   }
 
 }

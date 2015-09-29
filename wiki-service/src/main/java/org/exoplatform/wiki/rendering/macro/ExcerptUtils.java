@@ -16,10 +16,8 @@
  */
 package org.exoplatform.wiki.rendering.macro;
 
-import java.util.List;
-
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.macro.excerpt.ExcerptMacro;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -30,20 +28,22 @@ import org.xwiki.rendering.block.XDOM;
 import org.xwiki.rendering.block.match.ClassBlockMatcher;
 import org.xwiki.rendering.syntax.Syntax;
 
+import java.util.List;
+
 public class ExcerptUtils {
   
   public static String getExcerpts(WikiPageParams params) throws Exception {
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer()
+    WikiService wikiService = ExoContainerContext.getCurrentContainer()
                                                                .getComponentInstanceOfType(WikiService.class);
-    PageImpl page = (PageImpl) wikiService.getPageById(params.getType(),
-                                                       params.getOwner(),
-                                                       params.getPageId());
+    Page page = wikiService.getPageOfWikiByName(params.getType(),
+            params.getOwner(),
+            params.getPageId());
 
     return getExcerpts(page.getContent().getText(), page.getSyntax());
   }
   
   private static String getExcerpts(String markup, String sourceSyntax) throws Exception {
-    RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
+    RenderingService renderingService = ExoContainerContext.getCurrentContainer()
                                                                               .getComponentInstanceOfType(RenderingService.class);
     StringBuilder sb = new StringBuilder();
     if (markup != null) {

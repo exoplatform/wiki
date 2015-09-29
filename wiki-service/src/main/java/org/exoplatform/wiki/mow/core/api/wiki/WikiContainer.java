@@ -26,13 +26,12 @@ import org.chromattic.api.annotations.OneToMany;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.service.WikiService;
 
 /**
  * @version $Revision$
  */
-public abstract class WikiContainer<T extends Wiki> {
+public abstract class WikiContainer<T extends WikiImpl> {
   
   private static final Log      log               = ExoLogger.getLogger(WikiContainer.class);
 
@@ -55,14 +54,6 @@ public abstract class WikiContainer<T extends Wiki> {
     return wikiOwner;
   }
 
-  public WikiService getwService() {
-    return wService;
-  }
-
-  public void setwService(WikiService wService) {
-    this.wService = wService;
-  }
-
   public T getWiki(String wikiOwner, boolean hasAdminPermission) {
     T wiki = contains(wikiOwner);
     if (wiki != null)
@@ -70,7 +61,10 @@ public abstract class WikiContainer<T extends Wiki> {
     else {
       if(hasAdminPermission){
         wiki = addWiki(wikiOwner);
-        if(wiki != null) ((WikiImpl)wiki).initTemplate();
+        if(wiki != null) {
+          wiki.createWikiHome();
+          wiki.initTemplate();
+        }
       }
       return wiki;
     }
@@ -101,8 +95,10 @@ public abstract class WikiContainer<T extends Wiki> {
    */
   abstract protected T getWikiObject(String wikiOwner, boolean createIfNonExist);
   
-  public void initDefaultPermisisonForWiki(Wiki wiki) {
-    WikiService wikiService = getwService(); 
+  public void initDefaultPermisisonForWiki(WikiImpl wiki) {
+    // TODO launch the permission init from service level
+    /*
+    WikiService wikiService = getwService();
     List<String> permissions;
     try {
       permissions = wikiService.getWikiDefaultPermissions(wiki.getType(), wiki.getOwner());
@@ -111,6 +107,7 @@ public abstract class WikiContainer<T extends Wiki> {
     } catch (Exception e) {
       log.warn(String.format("Can not initialize the permission for wiki [type: %s, owner: %s]", wiki.getType(), wiki.getOwner()), e);
     }
+    */
   }
 
 }

@@ -25,16 +25,10 @@ import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.api.WikiStore;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiStore;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.HelpPage;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
+import org.exoplatform.wiki.mow.core.api.wiki.*;
 
 /**
  * A Wiki store for portal, group and user wikis
@@ -58,12 +52,12 @@ public abstract class WikiStoreImpl implements WikiStore {
     getWikiContainer(wikiType).addWiki(name);
   }
 
-  public Wiki getWiki(WikiType wikiType, String name) {
+  public WikiImpl getWiki(WikiType wikiType, String name) {
     return getWikiContainer(wikiType).getWiki(name, true);
   }
 
-  public Collection<Wiki> getWikis() {
-    Collection<Wiki> col = new CopyOnWriteArraySet<Wiki>();
+  public Collection<WikiImpl> getWikis() {
+    Collection<WikiImpl> col = new CopyOnWriteArraySet<>();
     col.addAll(getPortalWikiContainer().getAllWikis());
     col.addAll(getGroupWikiContainer().getAllWikis());
     col.addAll(getUserWikiContainer().getAllWikis());
@@ -71,7 +65,7 @@ public abstract class WikiStoreImpl implements WikiStore {
   }
 
   @SuppressWarnings("unchecked")
-  public  <W extends Wiki>WikiContainer<W> getWikiContainer(WikiType wikiType) {
+  public  <W extends WikiImpl>WikiContainer<W> getWikiContainer(WikiType wikiType) {
     if (wikiType == WikiType.PORTAL) {
       return (WikiContainer<W>) getPortalWikiContainer();
     } else if (wikiType == WikiType.GROUP) {

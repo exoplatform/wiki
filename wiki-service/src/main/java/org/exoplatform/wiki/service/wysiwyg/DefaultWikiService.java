@@ -16,12 +16,6 @@
  */
 package org.exoplatform.wiki.service.wysiwyg;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
@@ -30,10 +24,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.search.SearchResult;
@@ -41,15 +34,14 @@ import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.context.Execution;
-import org.xwiki.gwt.wysiwyg.client.wiki.Attachment;
-import org.xwiki.gwt.wysiwyg.client.wiki.AttachmentReference;
-import org.xwiki.gwt.wysiwyg.client.wiki.EntityConfig;
-import org.xwiki.gwt.wysiwyg.client.wiki.EntityReference;
-import org.xwiki.gwt.wysiwyg.client.wiki.ResourceReference;
-import org.xwiki.gwt.wysiwyg.client.wiki.WikiPage;
-import org.xwiki.gwt.wysiwyg.client.wiki.WikiPageReference;
-import org.xwiki.gwt.wysiwyg.client.wiki.WikiService;
+import org.xwiki.gwt.wysiwyg.client.wiki.*;
 import org.xwiki.model.reference.DocumentReference;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 @Component
 public class DefaultWikiService implements WikiService {
@@ -146,7 +138,7 @@ public class DefaultWikiService implements WikiService {
   /**
    * {@inheritDoc}
    *
-   * @see WikiService#getRecentlyModifiedPages(int, int)
+   * @see WikiService#getRecentlyModifiedPages(String, int, int)
    */
   public List<WikiPage> getRecentlyModifiedPages(String wikiName, int start, int count) {
     WikiContext wikiContext = getWikiContext();
@@ -176,7 +168,7 @@ public class DefaultWikiService implements WikiService {
   /**
    * {@inheritDoc}
    *
-   * @see WikiService#getMatchingPages(String, int, int)
+   * @see WikiService#getMatchingPages(String, String, int, int)
    */
   public List<WikiPage> getMatchingPages(String wikiName, String keyword, int start, int count) {
     String quote = "'";
@@ -216,7 +208,7 @@ public class DefaultWikiService implements WikiService {
       String pageId = documentReference.getName();
       String wikiOwner = documentReference.getParent().getName();
       String wikiType = documentReference.getParent().getParent().getName();
-      PageImpl page = (PageImpl) wservice.getPageByRootPermission(wikiType, wikiOwner, pageId);
+      Page page = wservice.getPageByRootPermission(wikiType, wikiOwner, pageId);
       wikiPage.setTitle(page.getTitle());
       wikiPage.setUrl(pageId);
       wikiPages.add(wikiPage);
@@ -247,15 +239,17 @@ public class DefaultWikiService implements WikiService {
     attachmentReference.setFileName(cleanedFileName);
     WikiPageReference pageReference = attachmentReference.getWikiPageReference();
     org.exoplatform.wiki.service.WikiService wservice = (org.exoplatform.wiki.service.WikiService) PortalContainer.getComponent(org.exoplatform.wiki.service.WikiService.class);
-    PageImpl page;
+    Page page;
     try {
       cleanedFileName = TitleResolver.getId(cleanedFileName, false);
-      page = (PageImpl) wservice.getExsitedOrNewDraftPageById(pageReference.getWikiName(), pageReference.getSpaceName(), pageReference.getPageName());
+      page = wservice.getExsitedOrNewDraftPageById(pageReference.getWikiName(), pageReference.getSpaceName(), pageReference.getPageName());
       if (page == null) {
         return null;
       }
 
-      AttachmentImpl attachment = page.getAttachmentByRootPermisison(cleanedFileName);
+      // TODO need getAttachmentByRootPermisison
+      //AttachmentImpl attachment = page.getAttachmentByRootPermisison(cleanedFileName);
+      AttachmentImpl attachment = null;
       if (attachment == null) {
         log.warn(String.format("Failed to get attachment: %s not found.", cleanedFileName));
         return null;
@@ -304,7 +298,9 @@ public class DefaultWikiService implements WikiService {
       List<Attachment> attachments = new ArrayList<Attachment>();
       org.exoplatform.wiki.service.WikiService wservice = (org.exoplatform.wiki.service.WikiService) PortalContainer.getComponent(org.exoplatform.wiki.service.WikiService.class);
       Page page = wservice.getExsitedOrNewDraftPageById(wikiName, spaceName, TitleResolver.getId(pageName, false));
-      Collection<AttachmentImpl> attachs = ((PageImpl) page).getAttachmentsExcludeContentByRootPermisison();
+      // TODO need getAttachmentsExcludeContentByRootPermisison
+      //Collection<AttachmentImpl> attachs = page.getAttachmentsExcludeContentByRootPermisison();
+      Collection<AttachmentImpl> attachs = Collections.EMPTY_LIST;
       for (AttachmentImpl attach : attachs) {
         AttachmentReference attachmentReference = new AttachmentReference(attach.getName(), documentReference);
         EntityReference entityReference = attachmentReference.getEntityReference();
@@ -324,7 +320,7 @@ public class DefaultWikiService implements WikiService {
   /**
    * {@inheritDoc}
    *
-   * @see WikiService#getUploadURL(org.xwiki.gwt.wysiwyg.client.wiki.EntityReference)
+   * @see WikiService#getUploadURL(org.xwiki.gwt.wysiwyg.client.wiki.WikiPageReference)
    */
   @Override
   public String getUploadURL(WikiPageReference documentReference) {

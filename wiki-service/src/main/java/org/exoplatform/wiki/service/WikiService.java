@@ -16,19 +16,11 @@
  */
 package org.exoplatform.wiki.service;
 
-import java.io.InputStream;
-import java.util.List;
-import java.util.Map;
-
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.ComponentPlugin;
-import org.exoplatform.wiki.mow.api.DraftPage;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.Template;
-import org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.wiki.mow.api.*;
+import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
@@ -36,6 +28,10 @@ import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
+
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Provides functions for processing database
@@ -55,7 +51,7 @@ public interface WikiService {
    * @return The new wiki page.
    * @throws Exception
    */
-  public Page createPage(String wikiType, String wikiOwner, String title, String parentId) throws Exception;
+  public Page createPage(Wiki wiki, String parentId, Page page) throws Exception;
 
   /**
    * Creates a new Wiki template.
@@ -65,7 +61,7 @@ public interface WikiService {
    * @return The new Wiki template.
    * @throws Exception
    */
-  public Template createTemplatePage(String title, WikiPageParams params) throws Exception;
+  public void createTemplatePage(String title, WikiPageParams params) throws Exception;
 
   /**
    * Initializes a default Wiki template.
@@ -90,18 +86,10 @@ public interface WikiService {
    *
    * @param wikiType It can be Portal, Group, or User.
    * @param wikiOwner The Wiki owner.
-   * @param templateId Id of the Wiki template.
+   * @param templateName Name of the Wiki template.
    * @throws Exception
    */
-  public void deleteTemplatePage(String wikiType, String wikiOwner, String templateId) throws Exception;
-
-  /**
-   * Deletes a draft page based on its Id.
-   *
-   * @param draftNewPageId Id of the draft page.
-   * @throws Exception
-   */
-  public void deleteDraftNewPage(String draftNewPageId) throws Exception;
+  public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws Exception;
 
   /**
    * Renames a wiki page.
@@ -147,26 +135,15 @@ public interface WikiService {
   public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws Exception;
 
   /**
-   * Gets a wiki page by a given Id.
+   * Gets a wiki page by its unique name in the wiki.
    *
    * @param wikiType It can be Portal, Group, or User.
    * @param wikiOwner The Wiki owner.
-   * @param pageId Id of the wiki page.
+   * @param pageName Id of the wiki page.
    * @return The wiki page if the current user has the read permission. Otherwise, it is "null".
    * @throws Exception
    */
-  public Page getPageById(String wikiType, String wikiOwner, String pageId) throws Exception;
-  
-  /**
-   * Gets a wiki page by a given Id using JCR query
-   *
-   * @param wikiType It can be Portal, Group, or User.
-   * @param wikiOwner The Wiki owner.
-   * @param pageId Id of the wiki page.
-   * @return The wiki page if the current user has the read permission. Otherwise, it is "null".
-   * @throws Exception
-   */
-  public Page getPageByIdJCRQuery(String wikiType, String wikiOwner, String pageId) throws Exception;
+  public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws Exception;
 
   /**
    * Gets a wiki page regardless of the current user's permission.
@@ -202,13 +179,27 @@ public interface WikiService {
   public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId) throws Exception;
 
   /**
-   * Gets a wiki page based on its UUID.
+   * Gets a wiki page based on its unique id.
    *
-   * @param uuid UUID of the wiki page.
+   * @param id Unique id of the wiki page.
    * @return The wiki page.
    * @throws Exception
    */
-  public Page getPageByUUID(String uuid) throws Exception;
+  public Page getPageById(String id) throws Exception;
+
+  /**
+   * Get parent page of a wiki page
+   * @param page Wiki page.
+   * @return The list of children pages
+   */
+  public Page getParentPageOf(Page page) throws Exception;
+
+  /**
+   * Get all the children pages of a wiki page
+   * @param page Wiki page.
+   * @return The list of children pages
+   */
+  public List<Page> getChildrenPageOf(Page page) throws Exception;
 
   /**
    * Gets a Wiki template.
@@ -278,7 +269,7 @@ public interface WikiService {
    * @return The list of duplicated wiki pages.
    * @throws Exception
    */
-  public List<PageImpl> getDuplicatePages(PageImpl parentPage, Wiki targetWiki, List<PageImpl> resultList) throws Exception;
+  public List<Page> getDuplicatePages(Page parentPage, Wiki targetWiki, List<Page> resultList) throws Exception;
 
   /**
    * Finds a wiki page based on its type and relative path.
@@ -321,6 +312,15 @@ public interface WikiService {
   public String getPageTitleOfAttachment(String path) throws Exception;
 
   /**
+   * Gets parent page of a wiki attachment.
+   *
+   * @param attachment Attachment.
+   * @return Page of the attachment.
+   * @throws Exception
+   */
+  public Page getPageOfAttachment(Attachment attachment) throws Exception;
+
+  /**
    * Gets a stream of a wiki attachment.
    *
    * @param path Path of the wiki attachment.
@@ -336,7 +336,7 @@ public interface WikiService {
    * @return The Help wiki page.
    * @throws Exception
    */
-  public PageImpl getHelpSyntaxPage(String syntaxId) throws Exception;
+  public Page getHelpSyntaxPage(String syntaxId) throws Exception;
 
   /**
    * Gets a wiki page of metadata.
@@ -355,15 +355,6 @@ public interface WikiService {
    * @throws Exception
    */
   public Map<String, Template> getTemplates(WikiPageParams params) throws Exception;
-
-  /**
-   * Gets a container of templates based on a given params object.
-   *
-   * @param params The params object which is used for getting the containers.
-   * @return The container of templates.
-   * @throws Exception
-   */
-  public TemplateContainer getTemplatesContainer(WikiPageParams params) throws Exception;
 
   /**
    * Modifies an existing wiki template.
@@ -423,18 +414,17 @@ public interface WikiService {
    *
    * @param orginaryPageParams The params object of the current wiki page.
    * @param relatedPageParams The params object of the related page.
-   * @return "True" if adding the related page is successful, or "false" if not.
    * @throws Exception
    */
-  public boolean addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
+  public void addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
 
   /**
    * Gets a list of related pages based on a given param.
-   * @param pageParams The params object of the wiki page.
+   * @param page The wiki page.
    * @return The list of related pages.
    * @throws Exception
    */
-  public List<Page> getRelatedPage(WikiPageParams pageParams) throws Exception;
+  public List<Page> getRelatedPagesOfPage(Page page) throws Exception;
 
   /**
    * Removes a related page of the current wiki page.
@@ -443,7 +433,7 @@ public interface WikiService {
    * @return "True" if removing the related page is successful, or "false" if not.
    * @throws Exception
    */
-  public boolean removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
+  public void removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception;
   
   /**
    * Creates a draft page for a wiki page which is specified by a given param object.
@@ -473,7 +463,7 @@ public interface WikiService {
    * @return The draft page, or "null" if the draft page does not exist.
    * @throws Exception
    */
-  public DraftPage getDraft(WikiPageParams param) throws Exception;
+  public DraftPage getDraftOfPage(Page page) throws Exception;
   
   /**
    * Gets a draft page by its name.
@@ -490,7 +480,7 @@ public interface WikiService {
     * @param param The param object of the wiki page param.
     * @throws Exception
     */
-  public void removeDraft(WikiPageParams param) throws Exception;
+  public void removeDraftOfPage(WikiPageParams param) throws Exception;
   
   /**
    * Removes a draft page by its name.
@@ -507,16 +497,15 @@ public interface WikiService {
    * @return The list of draft pages.
    * @throws Exception
    */
-  public List<DraftPage> getDrafts(String username) throws Exception;
-  
+  public List<DraftPage> getDraftsOfUser(String username) throws Exception;
+
   /**
-   * Gets a wiki page by its UUID.
-   * 
-   * @param uuid UUID of the wiki page.
-   * @return The wiki page.
+   * Check if a draft page is outdated
+   * @param draftPage
+   * @return
    * @throws Exception
    */
-  public Page getWikiPageByUUID(String uuid) throws Exception;
+  public boolean isDraftOutDated(DraftPage draftPage) throws Exception;
   
   /**
    * Gets the last created draft of a wiki page.
@@ -527,12 +516,19 @@ public interface WikiService {
   public DraftPage getLastestDraft() throws Exception;
 
   /**
+   * Gets the changes between the draft page and the target page
+   * @return
+   * @throws Exception
+   */
+  public DiffResult getDraftChanges(DraftPage draftPage) throws Exception;
+
+  /**
    * Gets a user Wiki. If it does not exist, the new one will be created.
    * 
    * @param username Name of the user.
    * @return The user Wiki.
    */
-  public UserWiki getOrCreateUserWiki(String username);
+  public Wiki getOrCreateUserWiki(String username) throws Exception;
  
   /**
    * Gets a space name by a given group Id.
@@ -559,7 +555,15 @@ public interface WikiService {
    * @param owner The Wiki owner.
    * @return The Wiki.
    */
-  public Wiki getWiki(String wikiType, String owner);
+  public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws Exception;
+
+  /**
+   * Creates a wiki with the given type and owner
+   * @param wikiType It can be Portal, Group, or User.
+   * @param owner The Wiki owner.
+   * @throws Exception
+   */
+  public Wiki createWiki(String wikiType, String owner) throws Exception;
   
   /**
    * Gets a portal owner.
@@ -592,7 +596,17 @@ public interface WikiService {
    * @throws Exception
    */
   public boolean isHiddenSpace(String groupId) throws Exception;
-   
+
+  /**
+   * Checks if the given user has the permission on a page
+   * @param user
+   * @param page
+   * @param permissionType
+   * @return
+   * @throws Exception
+   */
+  public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws Exception;
+
   /** 
    * Checks if the current user has the admin permission on a space or not.
    *
@@ -653,7 +667,7 @@ public interface WikiService {
    * @param wikiId The Wiki Id.
    * @return The Wiki.
    */
-  public Wiki getWikiById(String wikiId);
+  public Wiki getWikiById(String wikiId) throws Exception;
   
   /**
    * Gets a Wiki name by its Id.
@@ -663,6 +677,12 @@ public interface WikiService {
    * @throws Exception
    */
   public String getWikiNameById(String wikiId) throws Exception;
+
   public boolean canModifyPagePermission(Page currentPage, String currentUser) throws Exception;
+
   public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws Exception;
+
+  public List<PageVersion> getVersionsOfPage(Page page) throws Exception;
+
+  public void updatePage(Page page) throws Exception;
 }

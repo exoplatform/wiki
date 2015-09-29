@@ -29,6 +29,7 @@ import org.exoplatform.webui.ext.UIExtensionEventListener;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.webui.UIWikiPageVersionsList;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
@@ -82,11 +83,14 @@ public class RestoreRevisionActionComponent extends UIContainer {
     public void processEvent(Event<RestoreRevisionActionComponent> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       String versionName = event.getRequestContext().getRequestParameter(OBJECTID);
-      PageImpl wikipage = (PageImpl) Utils.getCurrentWikiPage();
+      Page wikipage = Utils.getCurrentWikiPage();
+      // TODO use wikiService
+      /*
       wikipage.restore(versionName, false);
       wikipage.checkout();
       wikipage.checkin();
       wikipage.checkout();
+      */
       wikiPortlet.changeMode(WikiMode.VIEW);
     }
 

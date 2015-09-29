@@ -23,8 +23,7 @@
 	  <%
 	    def isCurrentVersion = true;
 	    currentVersions.each {version ->
-	    
-	      def frozenNode = version.getNTFrozenNode();
+
 	      def versionLabel = version.getName();
 	      def versionNumber= versionLabel;
 	      if(isCurrentVersion){
@@ -35,8 +34,8 @@
 	      }
 	      def viewLinkId = UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + "ViewRevision_"+versionNumber;
 	      def viewLink = uicomponent.event("ViewRevision", version.getName());
-	      def updatedDate = df.format(frozenNode.getUpdatedDate());
-	      def author = Utils.getFullName(frozenNode.getAuthor());
+	      def updatedDate = df.format(version.getUpdatedDate());
+	      def author = Utils.getFullName(version.getAuthor());
 	    %>
 	      <tr>
 	        <td>

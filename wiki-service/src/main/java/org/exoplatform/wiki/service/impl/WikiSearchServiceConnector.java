@@ -18,11 +18,10 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
@@ -177,13 +176,15 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
    * @return The wiki page.
    * @throws Exception
    */
-  private PageImpl getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
-    PageImpl page = null;
+  private Page getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
+    Page page = null;
     if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
-      AttachmentImpl searchContent = (AttachmentImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
-      page = searchContent.getParentPage();
+      // TODO use wikiservice
+      //Attachment searchContent = (Attachment) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
+      //page = wikiService.getPageOfAttachment(searchContent);
     } else if (WikiNodeType.WIKI_PAGE.equals(result.getType()) || WikiNodeType.WIKI_HOME.equals(result.getType())) {
-      page = (PageImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
+      // TODO get page from search result
+      //page = (Page) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
     }
     return page;
   }
@@ -201,9 +202,9 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     try {
       
       // Get space name
-      PageImpl page = getPage(wikiSearchResult);
-      String spaceName = "";
-      Wiki wiki = page.getWiki();
+      Page page = getPage(wikiSearchResult);
+      String spaceName;
+      Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
       if (wiki.getType().equals(PortalConfig.GROUP_TYPE)) {
         String wikiOwner = wiki.getOwner();
         if (wikiOwner.indexOf('/') == -1) {
@@ -239,12 +240,13 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   private String getPagePermalink(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer permalink = new StringBuffer();
     try {
-      PageImpl page = getPage(wikiSearchResult);
-      if (page.getWiki().getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
+      Page page = getPage(wikiSearchResult);
+      Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+      if (wiki.getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
         String portalContainerName = Utils.getPortalName();
         String portalOwner = context.getSiteName();
         String wikiWebappUri = wikiService.getWikiWebappUri();
-        String spaceGroupId = page.getWiki().getOwner();
+        String spaceGroupId = wiki.getOwner();
         
         permalink.append("/");
         permalink.append(portalContainerName);
@@ -259,7 +261,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
         permalink.append(page.getName());
       } else {
         String portalContainerName = Utils.getPortalName();
-        String url = page.getURL();
+        String url = page.getUrl();
         if (url != null) {
           url = url.substring(url.indexOf("/" + portalContainerName + "/"));
           permalink.append(url);

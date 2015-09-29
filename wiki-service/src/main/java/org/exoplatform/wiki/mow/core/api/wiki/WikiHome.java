@@ -19,7 +19,6 @@ package org.exoplatform.wiki.mow.core.api.wiki;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 @PrimaryType(name = WikiNodeType.WIKI_HOME)
 public abstract class WikiHome extends PageImpl {

@@ -22,6 +22,7 @@ import javax.inject.Named;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.resolver.TitleResolver;
@@ -145,7 +146,7 @@ public class DefaultLinkService implements LinkService {
     WikiContext context = new WikiContext();
     context.setPortalURL(wikiContext.getPortalURL());
     context.setPortletURI(wikiContext.getPortletURI());
-    PageImpl page;
+    Page page;
     switch (entityReference.getType()) {
     case DOCUMENT:
       String pageId = TitleResolver.getId(entityReference.getName(), false);
@@ -169,8 +170,10 @@ public class DefaultLinkService implements LinkService {
       wikiOwner = entityReference.getParent().getParent().getName();
       wikiType = entityReference.getParent().getParent().getParent().getName();
       try {
-        page = (PageImpl) wservice.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
-        AttachmentImpl att = page.getAttachmentByRootPermisison(TitleResolver.getId(attachmentId, false));
+        page = wservice.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
+        // TODO need getAttachmentByRootPermisison
+        //AttachmentImpl att = page.getAttachmentByRootPermisison(TitleResolver.getId(attachmentId, false));
+        AttachmentImpl att = null;
         if (att != null) {
           return att.getDownloadURL();
         }

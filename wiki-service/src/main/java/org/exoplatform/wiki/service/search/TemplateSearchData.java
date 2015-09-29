@@ -19,7 +19,7 @@ package org.exoplatform.wiki.service.search;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 
 public class TemplateSearchData extends SearchData {
   private Log log = ExoLogger.getLogger(this.getClass());

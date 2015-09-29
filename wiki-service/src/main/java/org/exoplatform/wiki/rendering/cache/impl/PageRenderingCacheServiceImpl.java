@@ -16,32 +16,23 @@
  */
 package org.exoplatform.wiki.rendering.cache.impl;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
-import org.exoplatform.wiki.rendering.cache.MarkupData;
-import org.exoplatform.wiki.rendering.cache.MarkupKey;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
-import org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin;
-import org.exoplatform.wiki.rendering.util.Utils;
+import org.exoplatform.wiki.rendering.cache.*;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.rendering.syntax.Syntax;
+
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class PageRenderingCacheServiceImpl implements PageRenderingCacheService {
   
@@ -81,16 +72,17 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
   public String getRenderedContent(WikiPageParams param, String targetSyntax) {
     String renderedContent = StringUtils.EMPTY;
     try {
-      PageImpl page = (PageImpl) wikiService.getPageById(param.getType(), param.getOwner(), param.getPageId());
-      boolean supportSectionEdit = page.hasPermission(PermissionType.EDITPAGE);
+      Page page = wikiService.getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageId());
+      boolean supportSectionEdit = wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
       MarkupKey key = new MarkupKey(new WikiPageParams(param.getType(), param.getOwner(), param.getPageId()), page.getSyntax(), targetSyntax, supportSectionEdit);
       //get content from cache only when page is not uncached mixin
-      if (page.getUncachedMixin() == null) {
+      // TODO add uncached property to page object
+      //if (page.getUncachedMixin() == null) {
         MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
         if (cachedData != null) {
           return cachedData.build();
         }
-      }
+      //}
       String markup = page.getContent().getText();
       renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
       renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
@@ -108,15 +100,15 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
                                     "", Syntax.XHTML_1_0.toIdString(), true);
       String uuid  = uuidCache.get(new Integer(key.hashCode()));
       if (uuid != null) {
-        page = wikiService.getPageByUUID(uuid);
+        page = wikiService.getPageById(uuid);
         if (page != null) {
           return page;
         }
       }
       
-      page = wikiService.getPageByIdJCRQuery(param.getType(), param.getOwner(), param.getPageId());
+      page = wikiService.getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageId());
       if (page != null) {
-        uuid = page.getJCRPageNode().getUUID();
+        uuid = page.getId();
         uuidCache.put(new Integer(key.hashCode()), uuid);
       }
     } catch (Exception e) {
@@ -127,23 +119,25 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
   }
 
   @Override
-  public int getAttachmentCount(PageImpl page) {
+  public int getAttachmentCount(Page page) {
     int attachmentCount = 0;
-    Wiki wiki = page.getWiki();
+    Wiki wiki;
     try {
-      boolean supportSectionEdit = page.hasPermission(PermissionType.EDITPAGE);
-//      PageImpl page = (PageImpl) wikiService.getPageById(param.getType(), param.getOwner(), param.getPageId());
+      wiki = wikiService.getWikiById(page.getWikiId());
+      boolean supportSectionEdit = wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
+//      PageImpl page = (PageImpl) wikiService.getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageId());
       MarkupKey key = new MarkupKey(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()), 
                                     page.getSyntax(), Syntax.XHTML_1_0.toIdString(), supportSectionEdit);
       AttachmentCountData cachedData = attachmentCountCache.get(new Integer(key.hashCode()));
       if (cachedData != null) {
         return cachedData.build();
       }
-      attachmentCount = page.getAttachmentsExcludeContent().size();
+      // TODO ???
+      //attachmentCount = page.getAttachmentsExcludeContent().size();
+      attachmentCount = 0;
       attachmentCountCache.put(new Integer(key.hashCode()), new AttachmentCountData(attachmentCount));
     } catch (Exception e) {
-      LOG.error(String.format("Failed to get attachment count of page [%s:%s:%s]", 
-                              wiki.getType(), wiki.getOwner(), page.getName()), e);
+      LOG.error(String.format("Failed to get attachment count of page [%s]", page.getName()), e);
     }
     return attachmentCount;
   }

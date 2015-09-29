@@ -16,18 +16,10 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-import java.util.Map.Entry;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -47,18 +39,16 @@ import org.exoplatform.webui.organization.UIGroupMembershipSelector;
 import org.exoplatform.webui.organization.account.UIGroupSelector;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.service.IDType;
-import org.exoplatform.wiki.service.Permission;
-import org.exoplatform.wiki.service.PermissionEntry;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions.ActionData;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 @ComponentConfigs({
 @ComponentConfig(
@@ -124,6 +114,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
 
   private PopupLevel popupLevel = PopupLevel.L1;
 
+  private static WikiService wikiService;
+
   public static enum Scope {
     WIKI, PAGE
   }
@@ -171,6 +163,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     addPopupWindow();
 
     setActions(new String[] { SAVE, CLOSE });
+
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   public Scope getScope() {
@@ -533,16 +527,19 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
                                                 ApplicationMessage.INFO));
 
       } else if (Scope.PAGE.equals(scope)) {
-        PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
+        Page page = Utils.getCurrentWikiPage();
         HashMap<String, String[]> permissionMap = org.exoplatform.wiki.utils.Utils.convertToPermissionMap(uiWikiPermissionForm.permissionEntries);
         page.setPermission(permissionMap);
-        page.setOverridePermission(true);
+        // TODO need page.setOverridePermission
+        //page.setOverridePermission(true);
 
         HashMap<String, String[]> pagePermissions = page.getPermission();
-        Collection<AttachmentImpl> attachments = page.getAttachmentsExcludeContentByRootPermisison();
+        // TODO need getAttachmentsExcludeContentByRootPermisison
+        //Collection<AttachmentImpl> attachments = page.getAttachmentsExcludeContentByRootPermisison();
+        Collection<Attachment> attachments = Collections.EMPTY_LIST;
         Set<String> permissionKeys = new HashSet<String> (pagePermissions.keySet());
-        for (AttachmentImpl attachment : attachments) {
-          HashMap<String, String[]> permissions = attachment.getPermission();
+        for (Attachment attachment : attachments) {
+          HashMap<String, String[]> permissions = attachment.getPermissions();
           Iterator<Entry<String, String[]>> permissionIterator = permissions.entrySet().iterator();
           while (permissionIterator.hasNext()) {
             Entry<String, String[]> attachmentPermissionEntry = permissionIterator.next();
@@ -556,13 +553,13 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
           for (String permissionEntry : permissionKeys) {
             permissions.put(permissionEntry, new String[] {org.exoplatform.wiki.utils.Utils.getReadPermissionText()});
           }
-          attachment.setPermission(permissions);
+          attachment.setPermissions(permissions);
         }
 
         
         // Update page info area
         UIWikiPortlet uiWikiPortlet = uiWikiPermissionForm.getAncestorOfType(UIWikiPortlet.class);
-        if (page.hasPermission(PermissionType.VIEWPAGE)) {
+        if (wikiService.hasPermissionOnPage(page, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())) {
           UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
           UIWikiPageControlArea uiWikiPageControlArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageControlArea.class);
           event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPageControlArea);

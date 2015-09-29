@@ -5,9 +5,8 @@
   import java.util.Locale;
   import java.text.DateFormat;
   import org.exoplatform.portal.webui.util.Util;
-  import org.exoplatform.wiki.mow.api.WikiNodeType;
-  import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-  import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
+  import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
+  import org.exoplatform.wiki.mow.api.PageVersion;
   import org.exoplatform.wiki.webui.UIWikiPortlet;
   import org.exoplatform.wiki.webui.UIWikiBottomArea;
   import org.exoplatform.wiki.commons.Utils;
@@ -19,9 +18,9 @@
   requireJs.addScripts("UIWikiPageVersionsList.init(\""+uicomponent.id+"\");");
   
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
-  List<NTVersion> versionsList = uicomponent.getVersionsList();
+  List<PageVersion> versionsList = uicomponent.getVersionsList();
   if(versionsList == null){
-    versionsList = new ArrayList<NTVersion>();
+    versionsList = new ArrayList<PageVersion>();
   }
   
   String compareAction = uicomponent.COMPARE_ACTION;
@@ -58,7 +57,6 @@
             if(index != 1){
               isCurrentVersion = false;
             }
-            NTFrozenNode frozenNode = version.getNTFrozenNode();
             String versionNumber = version.getName();
             String vertionId = uicomponent.VERSION_NAME_PREFIX + "_" + versionNumber;
             String versionLabel = _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase()+"." + versionNumber;
@@ -66,8 +64,8 @@
             if(isCurrentVersion){
               versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " ( " + _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase()+"." + versionNumber + ")";
             }
-            String author = Utils.getFullName(frozenNode.getAuthor());
-            String comment = StringEscapeUtils.escapeHtml(frozenNode.getComment());
+            String author = Utils.getFullName(version.getAuthor());
+            String comment = StringEscapeUtils.escapeHtml(version.getComment());
             String viewLink = uicomponent.event(uicomponent.VIEW_REVISION, versionNumber);
             String viewLinkId=  UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.VIEW_REVISION + "_" + versionNumber;
         %>
@@ -83,7 +81,7 @@
 	          	<a id="$viewLinkId" onclick="$viewLink" style="display:none"></a>
           	</label>  
           </td>
-          <td><%=df.format(frozenNode.getUpdatedDate())%></td>
+          <td><%=df.format(version.getUpdatedDate())%></td>
           <td><%=author%></td>
           <td><%=((comment != null) ? comment : "")%></td>
           <td class="center">

@@ -80,9 +80,6 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
       WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
       HttpSession session = Util.getPortalRequestContext().getRequest().getSession(false);
       String draftId = (String) session.getAttribute(Utils.getDraftIdSessionKey());
-      // Check to remove temp draft
-      if (draftId == null)
-        wservice.removeDraft(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
       
       DraftPage draftPage = draftId == null ? null : wservice.getDraft(draftId);
  

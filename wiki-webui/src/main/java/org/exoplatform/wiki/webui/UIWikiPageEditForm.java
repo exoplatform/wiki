@@ -16,18 +16,6 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -47,6 +35,7 @@ import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.SessionManager;
@@ -54,6 +43,10 @@ import org.exoplatform.wiki.webui.control.UIEditorTabs;
 import org.exoplatform.wiki.webui.control.UISubmitToolBar;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.popup.UIWikiPagePreview;
+
+import javax.servlet.http.HttpSession;
+import java.net.URLEncoder;
+import java.util.*;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -108,6 +101,8 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   public static final String CLOSE = "Close";
 
+  private WikiService wikiService;
+
   public UIWikiPageEditForm() throws Exception {
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.EDITPAGE, WikiMode.ADDPAGE, WikiMode.EDITTEMPLATE, WikiMode.ADDTEMPLATE });
     addChild(UIWikiPageTitleControlArea.class, null, TITLE_CONTROL).toInputMode();
@@ -123,9 +118,11 @@ public class UIWikiPageEditForm extends UIWikiForm {
     UIFormStringInput commentInput = new UIFormStringInput(FIELD_COMMENT, FIELD_COMMENT, "");
     addUIFormInput(commentInput);
     addUIFormInput(new UICheckBoxInput(FIELD_PUBLISH_ACTIVITY_BOTTOM, FIELD_PUBLISH_ACTIVITY_BOTTOM, false));
+
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
-  protected void checkToDissplayNotification() throws Exception {
+  protected void checkToDisplayNotification() throws Exception {
     if ("__anonim".equals(org.exoplatform.wiki.utils.Utils.getCurrentUser())) {
       isRunAutoSave = false;
       return;
@@ -138,11 +135,12 @@ public class UIWikiPageEditForm extends UIWikiForm {
     notificationMessages.clear();
     isRunAutoSave = true;
     if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-      DraftPage draftPage = wikiService.getDraft(pageParams);
+      Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId());
+      DraftPage draftPage = wikiService.getDraftOfPage(page);
       if (draftPage != null) {
         if (!draftPage.getName().equals(initDraftName)) {
           isRunAutoSave = false;
-          if (draftPage.isOutDate()) {
+          if (wikiService.isDraftOutDated(draftPage)) {
             notificationMessages.add(createDraftOutdateNotification());
           } else {
             notificationMessages.add(createDraftExistNotification(draftPage.getUpdatedDate()));
@@ -289,7 +287,12 @@ public class UIWikiPageEditForm extends UIWikiForm {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
       Page page = Utils.getCurrentWikiPage();
-      return org.exoplatform.wiki.utils.Utils.getLastRevisionOfPage(page).getName();
+      List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+      if(versions != null && !versions.isEmpty()) {
+        return versions.get(0).getName();
+      } else {
+        return null;
+      }
     }
     return StringUtils.EMPTY;
   }
@@ -371,7 +374,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     public void execute(Event<UIWikiPageEditForm> event) throws Exception {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-      wikiService.removeDraft(pageParams);
+      wikiService.removeDraftOfPage(pageParams);
       event.getRequestContext().addUIComponentToUpdateByAjax(event.getSource());
     }
   }
@@ -385,7 +388,8 @@ public class UIWikiPageEditForm extends UIWikiForm {
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        DraftPage draftPage = wikiService.getDraft(pageParams);
+        Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId());
+        DraftPage draftPage = wikiService.getDraftOfPage(page);
         if (draftPage != null) {
           UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
           UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
@@ -416,7 +420,8 @@ public class UIWikiPageEditForm extends UIWikiForm {
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        DraftPage draftPage = wikiService.getDraft(pageParams);
+        Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId());
+        DraftPage draftPage = wikiService.getDraftOfPage(page);
         if (draftPage != null) {
           WebuiRequestContext context = WebuiRequestContext.getCurrentInstance() ;
           ResourceBundle res = context.getApplicationResourceBundle() ;
@@ -442,11 +447,11 @@ public class UIWikiPageEditForm extends UIWikiForm {
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
 
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        wikiService.removeDraft(pageParams);
+        wikiService.removeDraftOfPage(pageParams);
       } else {
         DraftPage draftPage = wikiService.getLastestDraft();
         if (draftPage.isNewPage()) {
-          draftPage.remove();
+          wikiService.removeDraft(draftPage.getName());
         }
       }
       Utils.redirect(pageParams, WikiMode.VIEW);

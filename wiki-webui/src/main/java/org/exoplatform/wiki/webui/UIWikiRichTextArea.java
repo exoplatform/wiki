@@ -65,10 +65,10 @@ public class UIWikiRichTextArea extends UIContainer {
       return "target:blank";
     }
   }
-  
-  
+
+
   protected String getSyntax() throws Exception {
-    return Utils.getCurrentPreferences().getPreferencesSyntax().getDefaultSyntax();
+    return Utils.getDefaultSyntax();
   }
   
   protected WikiPageParams getCurrentWikiPageParams() {

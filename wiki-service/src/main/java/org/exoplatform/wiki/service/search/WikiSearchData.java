@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 
 public class WikiSearchData extends SearchData {
 

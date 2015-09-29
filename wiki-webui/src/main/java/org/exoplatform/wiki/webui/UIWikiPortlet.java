@@ -23,8 +23,7 @@ import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -41,12 +40,12 @@ import org.exoplatform.wiki.WikiPortletPreference;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.resolver.PageResolver;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.webui.UIWikiPermissionForm.Scope;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
@@ -87,6 +86,8 @@ public class UIWikiPortlet extends UIPortletApplication {
   
   private ResourceBundle resourceBundle;
 
+  private WikiService wikiService;
+
   private PortletMode portletMode;
   
   public static enum PopupLevel {
@@ -98,6 +99,7 @@ public class UIWikiPortlet extends UIPortletApplication {
   public UIWikiPortlet() throws Exception {
     super();
     try {
+      wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       addChild(UIWikiEmptyAjaxBlock.class, null, null);
       addChild(UIWikiPortletPreferences.class, null, null);
       addChild(UIWikiUpperArea.class, null, null);
@@ -150,8 +152,11 @@ public class UIWikiPortlet extends UIPortletApplication {
         return;
       } else {
         if (WikiMode.VIEW.equals(this.getWikiMode())) {
-          ((PageImpl)page).migrateLegacyData();
-          ((PageImpl)page).migrateAttachmentPermission();
+          // TODO need migration methods
+          /*
+          page.migrateLegacyData();
+          page.migrateAttachmentPermission();
+          */
         }
         if (mode.equals(WikiMode.PAGE_NOT_FOUND)) {
           changeMode(WikiMode.VIEW);
@@ -164,8 +169,9 @@ public class UIWikiPortlet extends UIPortletApplication {
       }
       
       // Check if page url is null then create url for it
-      if (StringUtils.isEmpty(page.getURL())) {
-        page.setURL(Utils.getURLFromParams(new WikiPageParams(page.getWiki().getType(), page.getWiki().getOwner(), page.getName())));
+      if (StringUtils.isEmpty(page.getUrl())) {
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+        page.setUrl(Utils.getURLFromParams(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName())));
       }
       
       

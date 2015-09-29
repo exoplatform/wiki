@@ -22,7 +22,6 @@ import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Property;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 /**
  * Created by The eXo Platform SAS

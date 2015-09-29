@@ -16,199 +16,188 @@
  */
 package org.exoplatform.wiki.mow.api;
 
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 
-import javax.jcr.Node;
+public class Page {
 
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.service.PermissionType;
+  private String id;
 
-/**
- * @version $Revision$
- */
-public interface Page {
+  private String name;
 
-  /**
-   * Get jcr node name
-   * 
-   * @return jcr node name
-   */
-  String getName();
-  
-  /**
-   * set jcr node name
-   * 
-   * @param name Nodename
-   */
-  void setName(String name);
-  
-  /**
-   * Get the owner of the page
-   * 
-   * @return
-   */
-  String getOwner();
+  private String owner;
 
-  /**
-   * The Author is changed when any part of the document changes (content, attachments).
-   */
-  String getAuthor();
-  
-  /**
-   * The date when creating page.
-   */
-  Date getCreatedDate();
-  
-  /**
-   * The date when any part of the document changes (content, attachments).
-   */
-  Date getUpdatedDate();
-  
-  /**
-   * Get the actual content of the page
-   * 
-   * @return
-   */
-  Attachment getContent();
-  
-  /**
-   * Get the syntax used in that page
-   * 
-   * @return
-   */
-  String getSyntax();
+  private String author;
 
-  void setSyntax(String syntax);
+  private Date createdDate;
 
-  String getTitle();
+  private Date updatedDate;
 
-  void setTitle(String title);
-  
-  String getComment();
-  
-  void setComment(String comment);
+  private Attachment content;
 
-  /**
-   * Get the attachments of this page
-   * 
-   * @return
-   * @throws Exception 
-   */
-  Collection<? extends Attachment> getAttachments() throws Exception;
-  
-  boolean hasPermission(PermissionType permissionType) throws Exception;
-  
-  /**
-   * Check if user has permisison on page or not
-   * 
-   * @param permissionType The type of permisison to check {@link PermissionType}}
-   * @param user The user to check
-   * @return User has permisison on page or not
-   * @throws Exception
-   */
-  boolean hasPermission(PermissionType permissionType, Identity user) throws Exception;
-  
-  /**
-   * Get map of permission of page
-   * 
-   * @return
-   * @throws Exception
-   */
-  HashMap<String, String[]> getPermission() throws Exception;
-  
-  /**
-   * Set permission to page
-   * 
-   * @param permissions
-   * @throws Exception
-   */
-  void setPermission(HashMap<String, String[]> permissions) throws Exception;
-  
-  /**
-   * get URL of page. The domain part of link can be fixed.
-   */
-  String getURL();
-  
-  /**
-   * Add a wiki page as child page
-   * 
-   * @param page 
-   */
-  void addWikiPage(Page page);
-  
-  /**
-   * Get JCR node of wiki page
-   * 
-   * @return JCR node of wiki page
-   * @throws Exception
-   */
-  Node getJCRPageNode() throws Exception;
-  
-  /**
-   * get Versionable Mixin
-   * 
-   * @return Versionable Mixin
-   */
-  VersionableMixin getVersionableMixin();
-  
-  /**
-   * Detroy wiki page
-   */
-  void remove();
-  
-  /**
-   * get Wiki of page
-   * 
-   * @return Wiki of page
-   */
-  Wiki getWiki();
-  
-  /**
-   * is page in minor edit or not
-   * 
-   * @param isMinorEdit
-   */
-  void setMinorEdit(boolean isMinorEdit);
-  
-  /**
-   * is page in minor edit or not
-   * 
-   * @return
-   */
-  public boolean isMinorEdit();
-  
-  /**
-   * set url
-   * 
-   * @param url
-   */
-  void setURL(String url);
-  
-  /**
-   * get the parent page
-   * 
-   * @return the parent page
-   */
-  PageImpl getParentPage();
-  
-  /**
-   * Add a public wiki page
-   * 
-   * @param page 
-   * @throws Exception
-   */
-  void addPublicPage(Page page) throws Exception;
-  
-  /**
-   * Reset page permisison
-   * 
-   * @throws Exception
-   */
-  void setNonePermission() throws Exception;
+  private String syntax;
 
-  String getID() throws Exception;
+  private String title;
+
+  private String comment;
+
+  private String path;
+
+  private HashMap<String, String[]> permission;
+
+  private String url;
+
+  private String wikiId;
+
+  private String wikiType;
+
+  private String wikiOwner;
+
+  private boolean isMinorEdit;
+
+  public Page() {
+    content = new Attachment();
+  }
+
+  public Page(String name, String title) {
+    this();
+    this.name = name;
+    this.title = title;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public void setOwner(String owner) {
+    this.owner = owner;
+  }
+
+  public String getAuthor() {
+    return author;
+  }
+
+  public void setAuthor(String author) {
+    this.author = author;
+  }
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
+  }
+
+  public Date getUpdatedDate() {
+    return updatedDate;
+  }
+
+  public void setUpdatedDate(Date updatedDate) {
+    this.updatedDate = updatedDate;
+  }
+
+  public Attachment getContent() {
+    return content;
+  }
+
+  public void setContent(Attachment content) {
+    this.content = content;
+  }
+
+  public String getSyntax() {
+    return syntax;
+  }
+
+  public void setSyntax(String syntax) {
+    this.syntax = syntax;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getComment() {
+    return comment;
+  }
+
+  public void setComment(String comment) {
+    this.comment = comment;
+  }
+
+  public String getPath() {
+    return path;
+  }
+
+  public void setPath(String path) {
+    this.path = path;
+  }
+
+  public HashMap<String, String[]> getPermission() {
+    return permission;
+  }
+
+  public void setPermission(HashMap<String, String[]> permission) {
+    this.permission = permission;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
+  }
+
+  public String getWikiId() {
+    return wikiId;
+  }
+
+  public void setWikiId(String wikiId) {
+    this.wikiId = wikiId;
+  }
+
+  public String getWikiType() {
+    return wikiType;
+  }
+
+  public void setWikiType(String wikiType) {
+    this.wikiType = wikiType;
+  }
+
+  public String getWikiOwner() {
+    return wikiOwner;
+  }
+
+  public void setWikiOwner(String wikiOwner) {
+    this.wikiOwner = wikiOwner;
+  }
+
+  public boolean isMinorEdit() {
+    return isMinorEdit;
+  }
+
+  public void setMinorEdit(boolean isMinorEdit) {
+    this.isMinorEdit = isMinorEdit;
+  }
 }

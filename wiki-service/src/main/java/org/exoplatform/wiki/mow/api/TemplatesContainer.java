@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2011 eXo Platform SAS.
+ * Copyright (C) 2003-2009 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -14,22 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.wiki.mow.core.api.wiki;
+package org.exoplatform.wiki.mow.api;
 
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Property;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+public interface TemplatesContainer {
 
+  public String getPath();
 
-@PrimaryType(name = WikiNodeType.WIKI_TEMPLATE)
-public abstract class Template extends PageImpl {
-  
-  public static final String TEMPLATE    = "Template";
+  public void setPath(String path);
 
-  public static final String TEMPLATE_ID = "TemplateId";
-  
-  @Property(name = WikiNodeType.Definition.DESCRIPTION)
-  public abstract String getDescription();
+  public Template createTemplatePage();
 
-  public abstract void setDescription(String description);
+  public Template addPage(String name, Template template);
 }

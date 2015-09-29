@@ -16,25 +16,17 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import java.net.URLEncoder;
-import java.util.Map;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
-import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.MetaDataPage;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -47,6 +39,10 @@ import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.wiki.WikiModel;
+
+import javax.inject.Inject;
+import java.net.URLEncoder;
+import java.util.Map;
 
 @Component
 public class DefaultWikiModel implements WikiModel {
@@ -131,18 +127,21 @@ public class DefaultWikiModel implements WikiModel {
                                                            wikiMarkupContext.getOwner(),
                                                            wikiMarkupContext.getPageId(),
                                                            wikiMarkupContext.getAttachmentName()));
-      PageImpl page = null;
-      WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+      Page page;
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       if (ResourceType.ATTACHMENT.equals(resourceType)) {
-        page = (PageImpl) wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageId());
+        page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageId());
       } else {
-        page = (PageImpl) wikiService.getMetaDataPage(MetaDataPage.EMOTION_ICONS_PAGE);
+        page = wikiService.getMetaDataPage(MetaDataPage.EMOTION_ICONS_PAGE);
       }
       if (page != null) {
-        sb.append(page.getWorkspace());
+        // TODO how to get full path (not hardcoded) ?
+        sb.append("collaboration");
         sb.append(page.getPath());
         sb.append("/");
-        AttachmentImpl att = page.getAttachment(TitleResolver.getId(wikiMarkupContext.getAttachmentName(), false));
+        // TODO need page.getAttachment(name)
+        //AttachmentImpl att = page.getAttachment(TitleResolver.getId(wikiMarkupContext.getAttachmentName(), false));
+        Attachment att = null;
         if (att != null) {
           sb.append(URLEncoder.encode(att.getName(), "UTF-8"));
         }
@@ -188,9 +187,9 @@ public class DefaultWikiModel implements WikiModel {
       if (!Utils.isWikiAvailable(wikiMarkupContext.getType(), wikiMarkupContext.getOwner())) {
         return false;
       } else {
-        page = wikiService.getPageById(wikiMarkupContext.getType(),
-                                       wikiMarkupContext.getOwner(),
-                                       wikiMarkupContext.getPageId());
+        page = wikiService.getPageOfWikiByName(wikiMarkupContext.getType(),
+                wikiMarkupContext.getOwner(),
+                wikiMarkupContext.getPageId());
         if (page == null) {
           page = wikiService.getRelatedPage(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageId());
           if (page != null) {
@@ -217,13 +216,13 @@ public class DefaultWikiModel implements WikiModel {
 
   private String getDocumentViewURL(WikiContext context) {
     try {
-      WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-      PageImpl page = (PageImpl) wikiService.getPageById(context.getType(), context.getOwner(), context.getPageId());
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+      Page page = wikiService.getPageOfWikiByName(context.getType(), context.getOwner(), context.getPageId());
       if (page == null) {
-        page = (PageImpl) wikiService.getRelatedPage(context.getType(), context.getOwner(), context.getPageId());
+        page = wikiService.getRelatedPage(context.getType(), context.getOwner(), context.getPageId());
       }
       if (page != null) {
-        Wiki wiki = page.getWiki();
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
         context.setType(wiki.getType());
         context.setOwner(wiki.getOwner());
         context.setPageId(page.getName());

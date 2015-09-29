@@ -27,6 +27,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.PermissionEntry;
 import org.exoplatform.wiki.webui.UIWikiPermissionForm;
@@ -74,7 +75,7 @@ public class PagePermissionActionComponent extends AbstractEventActionComponent 
       UIWikiPermissionForm uiWikiPermissionForm = uiPopupContainer.createUIComponent(UIWikiPermissionForm.class, null, "UIWikiPagePermissionForm");
       uiPopupContainer.activate(uiWikiPermissionForm, 800, 0);
       uiWikiPermissionForm.setScope(Scope.PAGE);
-      PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
+      Page page = Utils.getCurrentWikiPage();
       HashMap<String, String[]> permissionMap = page.getPermission();
       List<PermissionEntry> permissionEntries = org.exoplatform.wiki.utils.Utils.convertToPermissionEntryList(permissionMap);
       uiWikiPermissionForm.setPermission(permissionEntries);

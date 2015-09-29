@@ -27,21 +27,25 @@ public class WikiChromatticLifeCycle extends ChromatticLifeCycle {
 
   private MOWService mowService;
   
-  private WikiService wService;
+  //private WikiService wService;
   
-  private RenderingService renderingService;
+  //private RenderingService renderingService;
 
   public void setMOWService(MOWService mowService) {
     this.mowService = mowService;
   }
-  
+
+  /*
   public void setWikiService(WikiService wService) {
     this.wService = wService;
   }
-  
+  */
+
+  /*
   public void setRenderingService(RenderingService renderingService) {
     this.renderingService = renderingService;
   }
+  **/
 
   public WikiChromatticLifeCycle(InitParams params) {
     super(params);
@@ -49,7 +53,7 @@ public class WikiChromatticLifeCycle extends ChromatticLifeCycle {
 
   @Override
   protected void onOpenSession(SessionContext context) {
-    context.getSession().addEventListener(new Injector(mowService, wService, renderingService));
+    context.getSession().addEventListener(new Injector(mowService));
   }
 
 }

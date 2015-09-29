@@ -28,7 +28,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
  * @version $Revision$
  */
 @PrimaryType(name = "wiki:link")
-public abstract class WikiLink extends AbstractContentItem implements Link {
+public abstract class WikiLink extends AbstractContentItem {
 
   @Property(name = "alias")
   public abstract String getAlias();

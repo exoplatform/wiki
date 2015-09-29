@@ -16,43 +16,29 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.*;
+import org.chromattic.ext.ntdef.NTFile;
+import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
+import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.mow.core.api.MOWService;
+import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.utils.Utils;
+
+import javax.jcr.Node;
+import javax.jcr.version.Version;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import javax.jcr.Node;
-import javax.jcr.version.Version;
-
-import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.RelationshipType;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.Destroy;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.WorkspaceName;
-import org.chromattic.ext.ntdef.NTFile;
-import org.chromattic.ext.ntdef.Resource;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
-import org.exoplatform.wiki.mow.api.Attachment;
-import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.utils.Utils;
-
 
 @PrimaryType(name = WikiNodeType.WIKI_ATTACHMENT)
-public abstract class AttachmentImpl extends NTFile implements Attachment, Comparable<AttachmentImpl> {
+public abstract class AttachmentImpl extends NTFile implements Comparable<AttachmentImpl> {
 
   private Permission permission = new PermissionImpl();
   
@@ -102,7 +88,7 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
     StringBuilder sb = new StringBuilder();
     String mimeType = getContentResource().getMimeType();
     PageImpl page = this.getParentPage();
-    Wiki wiki = page.getWiki();
+    WikiImpl wiki = page.getWiki();
     if (mimeType != null && mimeType.startsWith("image/") && wiki != null) {
       // Build REST url to view image
       sb.append(Utils.getDefaultRestBaseURI())

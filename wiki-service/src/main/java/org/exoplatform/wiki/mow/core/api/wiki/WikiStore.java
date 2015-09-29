@@ -14,13 +14,15 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.wiki.mow.api;
+package org.exoplatform.wiki.mow.core.api.wiki;
 
 import java.util.Collection;
 
 import org.chromattic.api.ChromatticSession;
+import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
 
 /**
  * @version $Revision$
@@ -32,7 +34,7 @@ public interface WikiStore {
    * 
    * @return
    */
-  Collection<Wiki> getWikis();
+  Collection<WikiImpl> getWikis();
 
   /**
    * Get a wiki of a given type
@@ -41,7 +43,7 @@ public interface WikiStore {
    * @param name
    * @return
    */
-  Wiki getWiki(WikiType wikiType, String name);
+  WikiImpl getWiki(WikiType wikiType, String name);
 
   /**
    * Add a new wiki of a given type
@@ -57,7 +59,7 @@ public interface WikiStore {
    * @param wikiType The wiki type
    * @return Wiki container
    */
-  public  <W extends Wiki>WikiContainer<W> getWikiContainer(WikiType wikiType);
+  public <W extends WikiImpl>WikiContainer<W> getWikiContainer(WikiType wikiType);
   
   /** 
    * get the container that store draft for new page

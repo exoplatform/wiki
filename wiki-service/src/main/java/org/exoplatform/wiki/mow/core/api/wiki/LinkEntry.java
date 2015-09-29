@@ -22,7 +22,6 @@ import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 
 @PrimaryType(name = WikiNodeType.LINK_ENTRY)

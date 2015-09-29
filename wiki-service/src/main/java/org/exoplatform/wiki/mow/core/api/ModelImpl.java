@@ -22,9 +22,9 @@ import javax.jcr.RepositoryException;
 
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.UndeclaredRepositoryException;
-import org.exoplatform.wiki.mow.api.Model;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.api.WikiStore;
+import org.exoplatform.wiki.mow.core.api.wiki.Model;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiStore;
 
 /**
  * @version $Revision$

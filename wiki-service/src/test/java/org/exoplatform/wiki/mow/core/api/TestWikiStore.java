@@ -16,17 +16,9 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
-import org.exoplatform.wiki.mow.api.Model;
+import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.WikiStore;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.GroupWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 
 public class TestWikiStore extends AbstractMOWTestcase {
 
@@ -82,7 +74,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    Page wikiHomePage = wiki.getWikiHome();
+    PageImpl wikiHomePage = wiki.getWikiHome();
     assertNotNull(wikiHomePage);
   }
   

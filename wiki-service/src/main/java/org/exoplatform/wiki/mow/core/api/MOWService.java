@@ -30,11 +30,11 @@ public class MOWService {
 
   private WikiChromatticLifeCycle chromatticLifeCycle;
 
-  public MOWService(ChromatticManager chromatticManager, WikiService wService, RenderingService renderingService) {
+  public MOWService(ChromatticManager chromatticManager) {
     this.chromatticLifeCycle = (WikiChromatticLifeCycle) chromatticManager.getLifeCycle("wiki");
     this.chromatticLifeCycle.setMOWService(this);
-    this.chromatticLifeCycle.setWikiService(wService);
-    this.chromatticLifeCycle.setRenderingService(renderingService);
+    //this.chromatticLifeCycle.setWikiService(wService);
+    //this.chromatticLifeCycle.setRenderingService(renderingService);
   }
 
   public ModelImpl getModel() {

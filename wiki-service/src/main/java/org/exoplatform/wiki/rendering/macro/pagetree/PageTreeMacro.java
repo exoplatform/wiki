@@ -16,16 +16,12 @@
  */
 package org.exoplatform.wiki.rendering.macro.pagetree;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.service.WikiContext;
@@ -48,6 +44,10 @@ import org.xwiki.rendering.syntax.SyntaxType;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 import org.xwiki.rendering.wiki.WikiModel;
 
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
+
 @Component("pagetree")
 public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
   private Log log = ExoLogger.getLogger(this.getClass());
@@ -66,13 +66,13 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
   
   @Inject
   private Execution execution;
-  
+
   /**
    * Used to get the build context for document
    */
   @Inject
   private MarkupContextManager markupContextManager;
-  
+
   private boolean excerpt;
   
   public PageTreeMacro() {
@@ -97,20 +97,21 @@ public class PageTreeMacro extends AbstractMacro<PageTreeMacroParameters> {
     }
     Block root;
     try {
-      WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       
       // Check if root page exist
-      PageImpl wikiPage = (PageImpl) wikiService.getPageById(params.getType(), params.getOwner(), params.getPageId());
+      Page wikiPage = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageId());
       if (wikiPage == null) {
         // if root page was renamed then find it
-        wikiPage = (PageImpl) wikiService.getRelatedPage(params.getType(), params.getOwner(), params.getPageId());
+        wikiPage = wikiService.getRelatedPage(params.getType(), params.getOwner(), params.getPageId());
         if (wikiPage != null) {
-          params = new WikiPageParams(wikiPage.getWiki().getType(), wikiPage.getWiki().getOwner(), wikiPage.getName());
+          Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiPage.getWikiType(), wikiPage.getWikiOwner());
+          params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiPage.getName());
         }
       }
       
       root = generateTree(params, startDepth);
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
+      PageRenderingCacheService renderingCacheService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
       WikiContext wikiContext = getWikiContext();
       renderingCacheService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
                                         new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));

@@ -16,9 +16,6 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.NoSuchNodeException;
 import org.chromattic.api.UndeclaredRepositoryException;
@@ -28,9 +25,11 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.utils.Utils;
+
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
 
 /**
  * @version $Revision$
@@ -94,7 +93,6 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
         throw new UndeclaredRepositoryException(e.getMessage());
     }
     UserWiki uwiki = session.findByNode(UserWiki.class, wikiNode);
-    uwiki.setWikiService(getwService());
     uwiki.setUserWikis(this);
     if (isCreatedWikiObject) {
       uwiki.setOwner(wikiOwner);

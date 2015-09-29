@@ -1,8 +1,14 @@
 <%
-  import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+  import org.exoplatform.wiki.mow.api.Page;
   import org.exoplatform.web.application.JavascriptManager;
-  PageImpl currentPage = (PageImpl) org.exoplatform.wiki.commons.Utils.getCurrentWikiPage();
-  def relatedPages = currentPage.getRelatedPages();
+  import org.exoplatform.container.ExoContainerContext;
+  import org.exoplatform.wiki.service.WikiService;
+  import org.exoplatform.wiki.service.WikiPageParams;
+  import org.exoplatform.wiki.commons.Utils;
+
+  WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+  Page currentPage = Utils.getCurrentWikiPage();
+  def relatedPages = wikiService.getRelatedPagesOfPage(currentPage);
 
   def rcontext = _ctx.getRequestContext();
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
@@ -14,7 +20,7 @@
 	<div class="wikiBox">
 	  <h6 class="titleWikiBox"><%= _ctx.appRes("UIWikiMiddleArea.label.related-pages") %></h6>
 	  <div class="relateContent">
-		<%= org.exoplatform.wiki.commons.Utils.renderMacroToXHtml(uicomponent, "{{related}}", org.xwiki.rendering.syntax.Syntax.XWIKI_2_0.toIdString()); %>
+		<%= Utils.renderMacroToXHtml(uicomponent, "{{related}}", org.xwiki.rendering.syntax.Syntax.XWIKI_2_0.toIdString()); %>
 	  </div>
 	</div>
 	<% } %>

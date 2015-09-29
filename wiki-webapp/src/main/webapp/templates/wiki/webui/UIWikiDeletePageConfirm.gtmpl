@@ -1,8 +1,8 @@
 <%
-  import org.exoplatform.wiki.mow.core.api.wiki.PageImpl ;
+  import org.exoplatform.wiki.mow.api.Page ;
   import org.exoplatform.wiki.commons.Utils ;
 
-  PageImpl page = uicomponent.getCurrentPage() ;
+  Page page = uicomponent.getCurrentPage() ;
 %>
 
 <div class="uiWikiDeletePageConfirm">

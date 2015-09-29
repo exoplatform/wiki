@@ -29,7 +29,7 @@ import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -130,9 +130,9 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
                              newTitle);
       
       // Post activity
-      Page renamedPage = wikiService.getPageById(pageParams.getType(), pageParams.getOwner(), newName);
+      Page renamedPage = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), newName);
       pageParams.setPageId(newName);
-      renamedPage.setURL(Utils.getURLFromParams(pageParams));
+      renamedPage.setUrl(Utils.getURLFromParams(pageParams));
       wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), newName, renamedPage, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
     }
     pageParams.setPageId(newName);

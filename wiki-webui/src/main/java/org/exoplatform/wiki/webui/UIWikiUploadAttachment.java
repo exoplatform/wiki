@@ -16,11 +16,6 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.List;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.upload.UploadResource;
@@ -33,8 +28,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiResource;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
@@ -42,6 +35,11 @@ import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
 import org.exoplatform.wiki.webui.control.listener.UIWikiPortletActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.form.UIWikiFormUploadInput;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.List;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -147,7 +145,9 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       if (attachfile != null) {
         try {          
           Page page = wikiAttachmentArea.getCurrentWikiPage();
-          AttachmentImpl att = ((PageImpl) page).createAttachment(attachfile.getName(), attachfile);
+          // TODO create attachment
+          /*
+          AttachmentImpl att = page.createAttachment(attachfile.getName(), attachfile);
 
           att.setTitle(uploadResource.getFileName());
           if (uploadResource.getFileName().lastIndexOf(".") > 0) {
@@ -155,6 +155,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
           }
           att.setCreator(event.getRequestContext().getRemoteUser());
           input.removeUploadId(id);
+          */
         } catch (Exception e) {
           log.error("An exception happens when saving attach file:" + attachfile.getName(), e);
           event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIApplication.msg.unknown-error",

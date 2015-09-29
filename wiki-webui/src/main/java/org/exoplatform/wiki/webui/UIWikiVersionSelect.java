@@ -16,11 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -29,12 +25,17 @@ import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.ext.UIExtensionManager;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PageVersion;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.control.action.RestoreRevisionActionComponent;
 import org.exoplatform.wiki.webui.control.action.ShowHistoryActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -59,8 +60,11 @@ public class UIWikiVersionSelect extends UIWikiContainer {
   public static final String VIEW_REVISION  = "ViewRevision";
   
   public static final String EXTENSION_TYPE = "org.exoplatform.wiki.webui.UIWikiVersionSelect";
+
+  private static WikiService wikiService;
   
   public UIWikiVersionSelect() throws Exception {
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     this.accept_Modes = Arrays.asList(new WikiMode[] {WikiMode.VIEWREVISION });
     addChild(RestoreRevisionActionComponent.class, null, null);
   }
@@ -79,8 +83,10 @@ public class UIWikiVersionSelect extends UIWikiContainer {
   }
   
   protected boolean isHasNextVersion() throws Exception {
-    PageImpl wikipage = (PageImpl) Utils.getCurrentWikiPage();
-    int versionTotals = wikipage.getVersionableMixin().getVersionHistory().getChildren().size() - 1;
+    Page wikipage = Utils.getCurrentWikiPage();
+    // TODO work on versions
+    //int versionTotals = wikipage.getVersionableMixin().getVersionHistory().getChildren().size() - 1;
+    int versionTotals = 0;
     int version = Integer.valueOf(versionName);
     return (version < versionTotals) ? true : false;
   }
@@ -108,8 +114,8 @@ public class UIWikiVersionSelect extends UIWikiContainer {
     @Override
     public void execute(Event<UIComponent> event) throws Exception {
       UIWikiVersionSelect versionSelect = (UIWikiVersionSelect) event.getSource();
-      List<NTVersion> versionsList = Utils.getCurrentPageRevisions();
-      this.setVersionToCompare(new ArrayList<NTVersion>(versionsList));
+      List<PageVersion> versionsList = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
+      this.setVersionToCompare(versionsList);
       this.setTo(0);
       for (int i = 0; i < versionsList.size(); i++) {
         if (versionsList.get(i).getName().equals(versionSelect.versionName)) {

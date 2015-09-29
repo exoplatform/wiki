@@ -25,13 +25,14 @@ import javax.jcr.query.QueryResult;
 
 import junit.framework.TestCase;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.StandaloneContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.wiki.mow.api.Model;
+import org.exoplatform.wiki.mow.core.api.wiki.Model;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.GroupWiki;
@@ -41,6 +42,9 @@ import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
+
+import java.nio.file.Files;
+import java.nio.file.attribute.FileAttribute;
 
 /**
  * @version $Revision$
@@ -57,17 +61,17 @@ public abstract class AbstractMOWTestcase extends TestCase {
 
   protected static MOWService          mowService;
 
-  static {
-    initContainer();
-    //initJCR();
-  }
-
   protected void begin() {
+    initContainer();
+
     RequestLifeCycle.begin(container);
   }
 
   protected void end() {
     RequestLifeCycle.end();
+
+    // TODO stopping or disposing the container does not delete data. We should find a way to do it after each test to make sure tests are really independent.
+    stopContainer();
   }
 
   protected void setUp() throws Exception {
@@ -80,21 +84,32 @@ public abstract class AbstractMOWTestcase extends TestCase {
     end();
   }
 
-  private static void initContainer() {
+  private void initContainer() {
     try {
       String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/configuration.xml").toString();
       StandaloneContainer.addConfigurationURL(containerConf);
       //
       String loginConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/login.conf").toString();
       System.setProperty("java.security.auth.login.config", loginConf);
+      //System.setProperty("gatein.data.dir", Files.createTempDirectory("wiki-data", null).getFileName().toString());
       //
       container = StandaloneContainer.getInstance();
-      mowService = (MOWService) container.getComponentInstanceOfType(MOWService.class);
+
+      mowService = container.getComponentInstanceOfType(MOWService.class);
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialize standalone container: " + e.getMessage(), e);
     }
   }
-  
+
+  private void stopContainer() {
+    try {
+      container = StandaloneContainer.getInstance();
+      container.dispose();
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to stop standalone container: " + e.getMessage(), e);
+    }
+  }
+
   private static void initJCR() {
     try {
       repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
@@ -127,7 +142,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
     }
   }
   
-  protected Wiki getWiki(WikiType wikiType, String wikiName, Model model) {
+  protected WikiImpl getWiki(WikiType wikiType, String wikiName, Model model) {
     Model mod = model;
     if (mod == null) {
       mod = mowService.getModel();

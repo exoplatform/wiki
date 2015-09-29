@@ -38,6 +38,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WatchedMixin;
 import org.exoplatform.wiki.rendering.RenderingService;
@@ -68,11 +69,13 @@ public class WatchPageActionComponent extends UIComponent {
                                                                               .getComponentInstanceOfType(RenderingService.class);
     ConversationState conversationState = ConversationState.getCurrent();
     String currentUserId = conversationState.getIdentity().getUserId();
-    PageImpl currentPage = (PageImpl) Utils.getCurrentWikiPage();
+    Page currentPage = Utils.getCurrentWikiPage();
+    boolean isWatched = false;
+    // TODO use wikiService
+    /*
     currentPage.makeWatched();
     WatchedMixin mixin = currentPage.getWatchedMixin();
     List<String> watchers = mixin.getWatchers();
-    boolean isWatched = false;
     for (String watcher : watchers) {
       if (watcher.equals(currentUserId))
         isWatched = true;
@@ -95,6 +98,7 @@ public class WatchPageActionComponent extends UIComponent {
       mixin.setWatchers(watchers);
       currentPage.setWatchedMixin(mixin);
     }
+    */
     return isWatched;
   }
 

@@ -30,6 +30,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.UIExtensionEventListener;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.webui.UIWikiAttachmentUploadListForm;
@@ -75,9 +77,10 @@ public class RemoveAttachmentActionComponent extends UIContainer {
       UIWikiAttachmentUploadListForm attachmentUploadListForm = wikiPortlet.findFirstComponentOfType(UIWikiAttachmentUploadListForm.class);
       UIWikiBottomArea bottomArea= wikiPortlet.findFirstComponentOfType(UIWikiBottomArea.class);
       
-      PageImpl page = (PageImpl) attachmentUploadListForm.getCurrentWikiPage();
+      Page page = attachmentUploadListForm.getCurrentWikiPage();
       String attachmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
-      page.removeAttachment(attachmentName);      
+      // TODO need removeAttachment
+      //page.removeAttachment(attachmentName);
       event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea);
       if (WikiMode.VIEW.equals(wikiPortlet.getWikiMode())) {
         event.getRequestContext().addUIComponentToUpdateByAjax(contentArea);
@@ -88,10 +91,12 @@ public class RemoveAttachmentActionComponent extends UIContainer {
     protected Map<String, Object> createContext(Event<RemoveAttachmentActionComponent> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       UIWikiAttachmentUploadListForm attachmentUploadListForm = wikiPortlet.findFirstComponentOfType(UIWikiAttachmentUploadListForm.class);
-      PageImpl page = (PageImpl) attachmentUploadListForm.getCurrentWikiPage();
+      Page page = attachmentUploadListForm.getCurrentWikiPage();
       String attacmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
-      AttachmentImpl attachment = page.getAttachment(attacmentName);
-      Map<String, Object> context = new HashMap<String, Object>();
+      // TODO need page.getAttachment(attacmentName)
+      //Attachment attachment = page.getAttachment(attacmentName);
+      Attachment attachment = null;
+      Map<String, Object> context = new HashMap<>();
       context.put(RemoveAttachmentPermissionFilter.ATTACHMENT_KEY, attachment);
       return context;
     }

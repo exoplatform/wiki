@@ -16,10 +16,6 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
-import java.util.Arrays;
-import java.util.List;
-
-import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -35,19 +31,18 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
-import org.exoplatform.wiki.mow.core.api.wiki.Template;
+import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.WikiNameValidator;
-import org.exoplatform.wiki.webui.UIWikiPageEditForm;
-import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
-import org.exoplatform.wiki.webui.UIWikiPortlet;
-import org.exoplatform.wiki.webui.UIWikiTemplateDescriptionContainer;
-import org.exoplatform.wiki.webui.WikiMode;
+import org.exoplatform.wiki.webui.*;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddTemplateModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UISubmitToolBarActionListener;
 import org.exoplatform.wiki.webui.extension.UITemplateSettingForm;
+
+import java.util.Arrays;
+import java.util.List;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/SaveTemplateActionComponent.gtmpl",                   
@@ -147,11 +142,15 @@ public class SaveTemplateActionComponent extends UIComponent {
           Template template = wikiService.getTemplatePage(pageParams, pageEditForm.getTemplateId());
           wikiService.modifyTemplate(pageParams, template, title, description, markup, syntaxId);
         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE) {
+          // TODO should create template with a Template object
+          /*
           Template template = wikiService.createTemplatePage(title, pageParams);
           template.setDescription(StringEscapeUtils.escapeHtml(description));
           template.getContent().setText(markup);
           template.setSyntax(syntaxId);
-          template.setNonePermission();
+          template.setPermission(null);
+          */
+          wikiService.createTemplatePage(title, pageParams);
           ApplicationMessage message = new ApplicationMessage("SaveTemplateAction.msg.Create-template-successfully", msgArg, ApplicationMessage.INFO);
           message.setArgsLocalized(false);
           event.getRequestContext().getUIApplication().addMessage(message);

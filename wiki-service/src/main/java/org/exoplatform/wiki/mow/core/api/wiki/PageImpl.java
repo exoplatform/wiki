@@ -16,83 +16,45 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import javax.jcr.LoginException;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionIterator;
-
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.RelationshipType;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.DefaultValue;
-import org.chromattic.api.annotations.Destroy;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.*;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.ext.ntdef.NTFolder;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
-import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.rendering.converter.ConfluenceToXWiki2Transformer;
 import org.exoplatform.wiki.rendering.util.Utils;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.rendering.syntax.Syntax;
 
+import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
+import java.util.*;
+import java.util.Map.Entry;
+
 @PrimaryType(name = WikiNodeType.WIKI_PAGE)
-public abstract class PageImpl extends NTFolder implements Page {
+public abstract class PageImpl extends NTFolder {
   
   private static final Log      LOG               = ExoLogger.getLogger(PageImpl.class.getName());
   
   private MOWService mowService;
-  
-  private WikiService wService;
   
   private Permission permission = new PermissionImpl();
   
@@ -116,10 +78,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   public MOWService getMOWService() {
     return mowService;
   }
-  
-  public void setWikiService(WikiService wService) {
-    this.wService = wService;
-  }
 
   public ChromatticSession getChromatticSession() {
     return mowService.getSession();
@@ -127,10 +85,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   public Session getJCRSession() {
     return getChromatticSession().getJCRSession();
-  }
-  
-  public WikiService getWikiService(){
-    return wService;
   }
   
   public void setComponentManager(ComponentManager componentManager) {
@@ -162,7 +116,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   @Create
   protected abstract AttachmentImpl createContent();
 
-  @Override
   public AttachmentImpl getContent() {
     AttachmentImpl content = getContentByChromattic();
     if (content == null) {
@@ -184,13 +137,11 @@ public abstract class PageImpl extends NTFolder implements Page {
   public abstract String getTitleByChromattic();
   public abstract void setTitleByChromattic(String title);
   
-  @Override
   public String getTitle() {
     String title = getTitleByChromattic();
     return (title != null) ? title : getName();
   }
   
-  @Override
   public void setTitle(String title) {
     setTitleByChromattic(title);
   }
@@ -349,7 +300,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   @OneToMany
   public abstract Collection<AttachmentImpl> getAttachmentsByChromattic();
 
-  @Override
   public Collection<AttachmentImpl> getAttachments() {
     return getAttachmentsByChromattic();
   }
@@ -432,7 +382,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   protected abstract Map<String, PageImpl> getChildrenContainer();
   
   public Map<String, PageImpl> getChildPages() throws Exception {
-    TreeMap<String, PageImpl> result = new TreeMap<String, PageImpl>(new Comparator<String>() {
+    TreeMap<String, PageImpl> result = new TreeMap<>(new Comparator<String>() {
       @Override
       public int compare(String o1, String o2) {
         return o1.compareTo(o2);
@@ -471,22 +421,18 @@ public abstract class PageImpl extends NTFolder implements Page {
   public abstract boolean getOverridePermission();
   public abstract void setOverridePermission(boolean isOverridePermission);
   
-  @Override
   public boolean hasPermission(PermissionType permissionType) throws Exception {
     return permission.hasPermission(permissionType, getPath());
   }
   
-  @Override
   public boolean hasPermission(PermissionType permissionType, Identity user) throws Exception {
     return permission.hasPermission(permissionType, getPath(), user);
   }
   
-  @Override
   public HashMap<String, String[]> getPermission() throws Exception {
     return permission.getPermission(getPath());
   }
   
-  @Override
   public void setPermission(HashMap<String, String[]> permissions) throws Exception {
     permission.setPermission(permissions, getPath());
   }
@@ -495,28 +441,19 @@ public abstract class PageImpl extends NTFolder implements Page {
     setPermission(null);
   }
   
-  protected void addPage(String pageName, Page page) {
-    if (pageName == null) {
-      throw new NullPointerException();
-    }
-    if (page == null) {
-      throw new NullPointerException();
-    }
+  protected void addPage(String pageName, PageImpl page) {
     Map<String, PageImpl> children = getChildrenContainer();
     if (children.containsKey(pageName)) {
-      throw new IllegalStateException();
+      throw new IllegalStateException("Page with name " + pageName + " already exists");
     }
-    children.put(pageName, (PageImpl) page);
+    children.put(pageName, page);
   }
   
-  public void addWikiPage(Page page) {
-    if (page == null) {
-      throw new NullPointerException();
-    }
+  public void addWikiPage(PageImpl page) {
     addPage(page.getName(), page);
   }
   
-  public void addPublicPage(Page page) throws Exception {
+  public void addPublicPage(PageImpl page) throws Exception {
     addWikiPage(page);
     page.setNonePermission();
   }
@@ -533,7 +470,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     return null ;
   }
   
-  public Wiki getWiki() {
+  public WikiImpl getWiki() {
     WikiHome wikiHome = getWikiHome();
     if (wikiHome != null) {
       PortalWiki portalWiki = wikiHome.getPortalWiki();
@@ -602,7 +539,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   public List<PageImpl> getRelatedPages() throws Exception {
     if (relatedPages == null) {
-      relatedPages = new ArrayList<PageImpl>();
+      relatedPages = new ArrayList<>();
       Iterator<Entry<String, Value>> refferedIter = getReferredUUIDs().entrySet().iterator();
       ChromatticSession chSession = getChromatticSession();
       while (refferedIter.hasNext()) {
@@ -613,7 +550,7 @@ public abstract class PageImpl extends NTFolder implements Page {
         }
       }
     }
-    return new ArrayList<PageImpl>(relatedPages);
+    return new ArrayList<>(relatedPages);
   }
   
   /**

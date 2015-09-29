@@ -1,7 +1,7 @@
 package org.exoplatform.wiki.service.search;
 
 import java.util.Calendar;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.services.deployment.Utils;
 
 public class SearchResult {

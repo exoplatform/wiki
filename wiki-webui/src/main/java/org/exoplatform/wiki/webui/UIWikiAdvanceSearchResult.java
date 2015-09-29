@@ -29,10 +29,10 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.RenamedMixin;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
@@ -75,14 +75,15 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
     return df.format(cal.getTime());
   }
   
-  protected PageImpl getPage(SearchResult result) {
-    PageImpl page = null;
+  protected Page getPage(SearchResult result) {
+    Page page = null;
     try {
       if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
-        AttachmentImpl searchContent = (AttachmentImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
-        page = searchContent.getParentPage();
+        // TODO use wikiService
+        //Attachment searchContent = (Attachment) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
+        //page = searchContent.getParentPage();
       } else if (WikiNodeType.WIKI_PAGE.equals(result.getType()) || WikiNodeType.WIKI_HOME.equals(result.getType())) {
-        page = (PageImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
+        //page = (Page) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
       }
       return page;
     } catch (Exception e) {
@@ -90,17 +91,15 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
     }
   }
 
-  protected Wiki getWiki(PageImpl page) {
-    return (page != null ? page.getWiki() : null);
-  }
-
-  protected String getOldPageTitleInSearchResult(PageImpl page, String pageTitle) throws Exception {
+  protected String getOldPageTitleInSearchResult(Page page, String pageTitle) throws Exception {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     UIWikiAdvanceSearchForm advanceSearchForm = wikiPortlet.findFirstComponentOfType(UIWikiAdvanceSearchForm.class);
     String keyword = advanceSearchForm.getKeyword();
     if (pageTitle.indexOf(keyword) >= 0) {
       return "";
     }
+    // TODO ???
+    /*
     if (page.getRenamedMixin() != null) {
       RenamedMixin mix = page.getRenamedMixin();
       for (String id : mix.getOldPageIds()) {
@@ -109,6 +108,7 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
         }
       }
     }
+    */
     return "";
   }
   

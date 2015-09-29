@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2012 eXo Platform SAS.
+ * Copyright (C) 2003-2011 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -19,17 +19,16 @@ package org.exoplatform.wiki.mow.core.api.wiki;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
 
-@PrimaryType(name = WikiNodeType.WIKI_DRAFT_PAGE)
-public abstract class DraftPageImpl extends PageImpl {
-  @Property(name = WikiNodeType.Definition.DRAFT_TARGET_PAGE)
-  public abstract String getTargetPage();
-  public abstract void setTargetPage(String targetPage);
+
+@PrimaryType(name = WikiNodeType.WIKI_TEMPLATE)
+public abstract class TemplateImpl extends PageImpl {
   
-  @Property(name = WikiNodeType.Definition.DRAFT_TARGET_REVISION)
-  public abstract String getTargetRevision();
-  public abstract void setTargetRevision(String targetRevision);
+  public static final String TEMPLATE    = "Template";
+
+  public static final String TEMPLATE_ID = "TemplateId";
   
-  @Property(name = WikiNodeType.Definition.DRAFT_IS_NEW_PAGE)
-  public abstract boolean isNewPage();
-  public abstract void setNewPage(boolean isNewPage);
+  @Property(name = WikiNodeType.Definition.DESCRIPTION)
+  public abstract String getDescription();
+
+  public abstract void setDescription(String description);
 }

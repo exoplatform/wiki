@@ -16,19 +16,13 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
-import java.util.Collection;
 import java.util.Iterator;
 
-import org.chromattic.ext.ntdef.NTResource;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.junit.Assert;
 
 public class TestVersioning extends AbstractMOWTestcase {
 

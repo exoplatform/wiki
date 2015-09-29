@@ -16,11 +16,15 @@
  */
 package org.exoplatform.wiki.mow.api;
 
-public interface Model {
+public class Template extends Page {
 
-  WikiStore getWikiStore();
+  private String description;
 
-  void save();
+  public String getDescription() {
+    return description;
+  }
 
-  void close();
+  public void setDescription(String description) {
+    this.description = description;
+  }
 }

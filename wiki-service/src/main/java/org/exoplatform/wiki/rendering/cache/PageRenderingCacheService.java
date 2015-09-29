@@ -16,13 +16,12 @@
  */
 package org.exoplatform.wiki.rendering.cache;
 
-import java.util.Map;
-import java.util.Set;
-
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
+
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Manages the Rendering Cache of wiki pages.
@@ -63,7 +62,7 @@ public interface PageRenderingCacheService {
    * @param targetSyntax the syntax to be display
    * @return the attachment size
    */
-  public int getAttachmentCount(PageImpl page);
+  public int getAttachmentCount(Page page);
   
   /**
    * Gets the rendering cache.

@@ -16,11 +16,6 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -28,11 +23,15 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.ext.UIExtensionManager;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.webui.control.action.RemoveAttachmentActionComponent;
 import org.exoplatform.wiki.webui.control.filter.RemoveAttachmentPermissionFilter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
@@ -49,12 +48,13 @@ public class UIWikiAttachmentUploadListForm extends UIForm {
     addChild(RemoveAttachmentActionComponent.class, null, null);
   }
   
-  protected Collection<AttachmentImpl> getAttachmentsList() {
-    Collection<AttachmentImpl> attachments = new ArrayList<AttachmentImpl>();
+  protected Collection<Attachment> getAttachmentsList() {
+    Collection<Attachment> attachments = new ArrayList<>();
     try {
       Page page = getCurrentWikiPage();
       if (page != null) {
-        attachments = ((PageImpl) page).getAttachmentsExcludeContent();
+        // TODO attachements
+        //attachments = page.getAttachments();
       }
     } catch (Exception e) {
       log.warn("An error happened when get attachments list", e);
@@ -80,9 +80,11 @@ public class UIWikiAttachmentUploadListForm extends UIForm {
     component.setAttachmentName(attName);
     UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
     
-    PageImpl page = (PageImpl) getCurrentWikiPage();
-    AttachmentImpl attachment = page.getAttachment(attName);
-    
+    Page page = getCurrentWikiPage();
+    // TODO need page.getAttachment(attName)
+    //Attachment attachment = page.getAttachment(attName);
+    Attachment attachment = null;
+
     // Create context
     Map<String, Object> context = new HashMap<String, Object>();
     context.put(RemoveAttachmentPermissionFilter.ATTACHMENT_KEY, attachment);

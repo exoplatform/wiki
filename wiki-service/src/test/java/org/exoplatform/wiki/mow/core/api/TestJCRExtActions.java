@@ -18,7 +18,7 @@ package org.exoplatform.wiki.mow.core.api;
 
 import java.util.Date;
 
-import org.exoplatform.wiki.mow.api.Model;
+import org.exoplatform.wiki.mow.core.api.wiki.Model;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;

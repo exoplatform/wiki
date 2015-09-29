@@ -16,28 +16,30 @@
  */
 package org.exoplatform.wiki.webui.control.filter;
 
-import java.util.Map;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.service.WikiService;
+
+import java.util.Map;
 
 /**
  * This filter is used to deny component if it is installed on Wiki home page.
  */
 public class DeniedOnWikiHomePageFilter implements UIExtensionFilter {
 
+  private WikiService wikiService;
+
+  public DeniedOnWikiHomePageFilter() {
+    this.wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+  }
+
   @Override
   public boolean accept(Map<String, Object> context) throws Exception {
     Page page = Utils.getCurrentWikiPage();
-    if (page != null && page instanceof PageImpl) {
-      PageImpl pageImpl = (PageImpl) page;
-      // a page is wiki home page if its parent page is null.
-      return pageImpl.getParentPage() != null; 
-    }
-    return false;
+    return (page != null && wikiService.getParentPageOf(page) != null);
   }
 
   @Override

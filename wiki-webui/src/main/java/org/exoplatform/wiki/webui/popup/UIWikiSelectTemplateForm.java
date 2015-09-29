@@ -31,8 +31,8 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.Template;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.webui.EditorMode;
 import org.exoplatform.wiki.webui.UIWikiMaskWorkspace;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
@@ -123,7 +123,7 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       String templateId = event.getRequestContext().getRequestParameter(OBJECTID);
       Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(),
                                                         templateId);
-      AttachmentImpl content = template.getContent();
+      Attachment content = template.getContent();
       wikiPagePreview.renderWikiMarkup(content.getText(), template.getSyntax());
       String pageTitle = template.getTitle();
       if (pageTitle != null) wikiPagePreview.setPageTitle(pageTitle);

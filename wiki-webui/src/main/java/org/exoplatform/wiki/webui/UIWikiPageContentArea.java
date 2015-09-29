@@ -16,22 +16,24 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.Arrays;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
+
+import java.util.Arrays;
+import java.util.List;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -41,7 +43,11 @@ public class UIWikiPageContentArea extends UIWikiContainer {
 
   public static final String VIEW_DISPLAY = "UIViewContentDisplay";
 
+  private static WikiService wikiService;
+
   public UIWikiPageContentArea() throws Exception{
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.HELP, WikiMode.VIEWREVISION });
     this.addChild(UIWikiPageControlArea.class, null, null);
     this.addChild(UIWikiVersionSelect.class, null, null);
@@ -61,7 +67,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
     UIWikiContentDisplay contentDisplay = this.getChildById(VIEW_DISPLAY);
 
-    PageImpl wikipage = (PageImpl) Utils.getCurrentWikiPage();
+    Page wikipage = Utils.getCurrentWikiPage();
 
     //Setup wiki context
     Utils.setUpWikiContext(wikiPortlet);
@@ -80,10 +86,17 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     }
     // Render select version content
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
-        NTVersion version = wikipage.getVersionableMixin().getVersionHistory().getVersion(currentVersionName);
-        if (version!= null) {
-          NTFrozenNode frozenNode = version.getNTFrozenNode();
-          String pageContent = frozenNode.getContentString();
+        // TODO add getVersion(versionName)
+        List<PageVersion> versions = wikiService.getVersionsOfPage(wikipage);
+        PageVersion version = null;
+        for(PageVersion pageVersion : versions) {
+          if(pageVersion.getName().equals(currentVersionName)) {
+            version = pageVersion;
+            break;
+          }
+        }
+        if (version != null) {
+          String pageContent = version.getContent();
           String pageSyntax = wikipage.getSyntax();
           contentDisplay.setHtmlOutput(renderingService.render(pageContent, pageSyntax, Syntax.XHTML_1_0.toIdString(), false));
         }

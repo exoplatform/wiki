@@ -16,15 +16,16 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
-import java.util.ArrayList;
-
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.webui.UIWikiPageVersionsCompare;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CompareRevisionActionListener extends EventListener<UIComponent> {
   
@@ -32,13 +33,13 @@ public class CompareRevisionActionListener extends EventListener<UIComponent> {
 
   private int                  to               = 0;
   
-  private ArrayList<NTVersion> versionToCompare = new ArrayList<NTVersion>();  
+  private List<PageVersion> versionToCompare = new ArrayList<>();
   
-  public ArrayList<NTVersion> getVersionToCompare() {
+  public List<PageVersion> getVersionToCompare() {
     return versionToCompare;
   }
 
-  public void setVersionToCompare(ArrayList<NTVersion> versionToCompare) {
+  public void setVersionToCompare(List<PageVersion> versionToCompare) {
     this.versionToCompare = versionToCompare;
   }
 

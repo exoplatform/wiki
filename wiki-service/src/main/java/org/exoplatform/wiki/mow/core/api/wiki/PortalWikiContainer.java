@@ -16,18 +16,17 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-import javax.jcr.RepositoryException;
-
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.utils.Utils;
+
+import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 
 /**
  * @version $Revision$
@@ -77,7 +76,6 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
       throw new UndeclaredRepositoryException(e);
     }
     PortalWiki pwiki = session.findByNode(PortalWiki.class, wikiNode);
-    pwiki.setWikiService(getwService());
     pwiki.setPortalWikis(this);
     if (isCreatedWikiObject) {
       pwiki.setOwner(wikiOwner);

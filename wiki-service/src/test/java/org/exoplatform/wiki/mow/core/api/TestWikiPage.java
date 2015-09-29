@@ -16,14 +16,9 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
-import org.exoplatform.wiki.mow.api.Model;
+import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.service.WikiService;
 
 
@@ -76,8 +71,8 @@ public class TestWikiPage extends AbstractMOWTestcase {
     
     model.save() ;
     
-    WikiService wService = (WikiService)container.getComponentInstanceOfType(WikiService.class) ;
-    Page page = wService.getPageById("portal", "classic", "SubWikiPage-001") ;
+    WikiService wService = container.getComponentInstanceOfType(WikiService.class) ;
+    Page page = wService.getPageOfWikiByName("portal", "classic", "SubWikiPage-001") ;
     assertNotNull(page) ;
   }
   
@@ -134,7 +129,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
     PageImpl childpage = wiki.createWikiPage();
     childpage.setName("ChildPage");
     parrentpage.addWikiPage(childpage);
-    Wiki childPageWiki = childpage.getWiki();
+    WikiImpl childPageWiki = childpage.getWiki();
     
     assertEquals(childPageWiki.getOwner(), "classic");    
   }

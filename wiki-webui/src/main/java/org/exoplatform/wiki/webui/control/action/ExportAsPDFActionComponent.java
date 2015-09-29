@@ -1,23 +1,11 @@
 package org.exoplatform.wiki.webui.control.action;
 
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.List;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
+import com.lowagie.text.pdf.BaseFont;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.download.DownloadService;
 import org.exoplatform.download.InputStreamDownloadResource;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -25,7 +13,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
@@ -36,11 +24,12 @@ import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.resource.FSEntityResolver;
 import org.xwiki.rendering.syntax.Syntax;
-import org.exoplatform.services.log.ExoLogger;
-import org.exoplatform.services.log.Log;
 
-
-import com.lowagie.text.pdf.BaseFont;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.*;
+import java.util.Arrays;
+import java.util.List;
 
 
 @ComponentConfig (
@@ -77,7 +66,7 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
           .getComponentInstanceOfType(RenderingService.class);  
     	
-      PageImpl currentPage = (PageImpl) Utils.getCurrentWikiPage();      
+      Page currentPage = Utils.getCurrentWikiPage();
       InputStream in = getClass().getResourceAsStream("/css/PDFStylesheet.css");
       DataInputStream dataIn = new DataInputStream(in);
       String line;

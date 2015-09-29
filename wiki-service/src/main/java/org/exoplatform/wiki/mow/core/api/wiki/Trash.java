@@ -22,7 +22,6 @@ import java.util.Map;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 @PrimaryType(name = WikiNodeType.WIKI_TRASH)
 public abstract class Trash {

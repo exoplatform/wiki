@@ -27,7 +27,7 @@ import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Properties;
 import org.chromattic.api.annotations.Property;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 
 @PrimaryType(name = "nt:frozenNode")

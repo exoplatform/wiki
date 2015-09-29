@@ -20,19 +20,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.*;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiService;
@@ -41,7 +32,7 @@ import org.xwiki.rendering.syntax.Syntax;
 /**
  * @version $Revision$
  */
-public abstract class WikiImpl implements Wiki {
+public abstract class WikiImpl {
 
   private static final Log LOG           = ExoLogger.getLogger(WikiImpl.class);
   
@@ -50,20 +41,12 @@ public abstract class WikiImpl implements Wiki {
 
   public abstract WikiType getWikiType();
   
-  
-  private WikiService wService;
-
-  public WikiService getWikiService() {
-    return this.wService;
-  }
-
-  public void setWikiService(WikiService wService) {
-    this.wService = wService;
-  }
-
   public void initTemplate() {
+    // TODO launch the template init at service level
+    /*
     String path = getPreferences().getPath();
     wService.initDefaultTemplatePage(path);
+    */
   }
   
   public WikiHome getWikiHome() {
@@ -81,7 +64,8 @@ public abstract class WikiImpl implements Wiki {
       
       if (getType().equals(PortalConfig.GROUP_TYPE)) {
         try{
-          spaceName = wService.getSpaceNameByGroupId(getOwner());
+          // TODO launch the wiki home creation at service level
+          //spaceName = wService.getSpaceNameByGroupId(getOwner());
         } catch (Exception e) {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Can't get Space name by group ID : " + getOwner(), e);
@@ -149,13 +133,12 @@ public abstract class WikiImpl implements Wiki {
     return trash;
   }
   
-  public Preferences getPreferences()
+  public PreferencesImpl getPreferences()
   {
-    Preferences preferences = getPreferencesByChromattic();
+    PreferencesImpl preferences = getPreferencesByChromattic();
     if (preferences == null) {
       preferences = createPreferences();
       setPreferencesByChromattic(preferences);
-      preferences.getPreferencesSyntax().setDefaultSyntax(wService.getDefaultWikiSyntaxId());
     }
     return preferences;
   }
@@ -219,10 +202,10 @@ public abstract class WikiImpl implements Wiki {
   @OneToOne
   @Owner
   @MappedBy(WikiNodeType.Definition.PREFERENCES)
-  protected abstract Preferences getPreferencesByChromattic();
-  protected abstract void setPreferencesByChromattic(Preferences preferences);
+  protected abstract PreferencesImpl getPreferencesByChromattic();
+  protected abstract void setPreferencesByChromattic(PreferencesImpl preferences);
   
   @Create
-  protected abstract Preferences createPreferences();
+  protected abstract PreferencesImpl createPreferences();
   
 }
