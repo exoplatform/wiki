@@ -585,9 +585,13 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
+  public void createVersionOfPage(Page page) throws Exception {
+    dataStorage.addPageVersion(page);
+  }
+
+  @Override
   public void updatePage(Page page) throws Exception {
     dataStorage.updatePage(page);
-    dataStorage.addPageVersion(page);
   }
 
   /******* Template *******/

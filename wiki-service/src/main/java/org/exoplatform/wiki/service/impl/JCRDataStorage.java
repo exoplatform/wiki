@@ -21,6 +21,7 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.mow.core.api.MOWService;
@@ -80,7 +81,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   /**
-   * Create a wiki page with the given pageId, under the node of the parentPage node
+   * Create a wiki page with the given pageId, under the node of the parentPage node.
    * @param wiki
    * @param parentPage
    * @param page
@@ -112,7 +113,11 @@ public class JCRDataStorage implements DataStorage {
       text = page.getContent().getText();
     }
     pageImpl.getContent().setText(text);
+
+    // create a first version
     pageImpl.makeVersionable();
+    pageImpl.checkin();
+    pageImpl.checkout();
 
     //update LinkRegistry
     LinkRegistry linkRegistry = wikiImpl.getLinkRegistry();
@@ -1157,21 +1162,23 @@ public class JCRDataStorage implements DataStorage {
   @Override
   public List<PageVersion> getVersionsOfPage(Page page) throws Exception {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
-    Iterator<NTVersion> iter = pageImpl.getVersionableMixin().getVersionHistory().iterator();
+
     List<PageVersion> versions = new ArrayList<>();
-    while (iter.hasNext()) {
-      NTVersion version = iter.next();
-      if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {
-        PageVersion pageVersion = new PageVersion();
-        pageVersion.setName(version.getName());
-        pageVersion.setAuthor(version.getNTFrozenNode().getAuthor());
-        pageVersion.setCreatedDate(version.getCreated());
-        pageVersion.setUpdatedDate(version.getNTFrozenNode().getUpdatedDate());
-        //pageVersion.setPredecessors(version.getPredecessors());
-        //pageVersion.setSuccessors(version.getSuccessors());
-        pageVersion.setContent(version.getNTFrozenNode().getContentString());
-        pageVersion.setComment(version.getNTFrozenNode().getComment());
-        versions.add(pageVersion);
+    VersionableMixin versionableMixin = pageImpl.getVersionableMixin();
+    if(versionableMixin != null) {
+      for (NTVersion version : versionableMixin.getVersionHistory()) {
+        if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {
+          PageVersion pageVersion = new PageVersion();
+          pageVersion.setName(version.getName());
+          pageVersion.setAuthor(version.getNTFrozenNode().getAuthor());
+          pageVersion.setCreatedDate(version.getCreated());
+          pageVersion.setUpdatedDate(version.getNTFrozenNode().getUpdatedDate());
+          //pageVersion.setPredecessors(version.getPredecessors());
+          //pageVersion.setSuccessors(version.getSuccessors());
+          pageVersion.setContent(version.getNTFrozenNode().getContentString());
+          pageVersion.setComment(version.getNTFrozenNode().getComment());
+          versions.add(pageVersion);
+        }
       }
     }
     Collections.sort(versions, new VersionNameComparatorDesc());
@@ -1181,7 +1188,9 @@ public class JCRDataStorage implements DataStorage {
   @Override
   public void addPageVersion(Page page) throws Exception {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
-    pageImpl.makeVersionable();
+    if(pageImpl.getVersionableMixin() == null) {
+      pageImpl.makeVersionable();
+    }
     pageImpl.checkin();
     pageImpl.checkout();
   }

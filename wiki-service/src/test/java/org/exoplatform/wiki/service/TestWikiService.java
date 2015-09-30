@@ -623,12 +623,16 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals(draftPage.getTargetRevision(), draftPage1.getTargetRevision());
     
     // Create a wiki page for test
-    Page page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", new Page("new page", "new page"));
-    wService.updatePage(page);
+    Page page = new Page("new page", "new page");
     Attachment content = new Attachment();
     content.setText("Page content");
     page.setContent(content);
+    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", page);
+
+    // update it and create a version
+    page.getContent().setText("Page content updated");
     wService.updatePage(page);
+    wService.createVersionOfPage(page);
 
     // Test create draft for exist wiki page
     WikiPageParams param = new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", page.getName());

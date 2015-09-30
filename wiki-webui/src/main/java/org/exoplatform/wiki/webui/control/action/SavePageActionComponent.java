@@ -214,8 +214,9 @@ public class SavePageActionComponent extends UIComponent {
                 pageParams.setPageId(newPageName);
               }
 
-              // update the page
+              // update the page and create a version
               wikiService.updatePage(page);
+              wikiService.createVersionOfPage(page);
 
               if (!"__anonim".equals(currentUser)) {
                 wikiService.removeDraftOfPage(pageParams);

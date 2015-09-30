@@ -42,16 +42,14 @@ import java.util.Map;
 public interface WikiService {
 
   /**
-   * Creates a new wiki page.
+   * Create a new wiki page in the given wiki, under the given parent page.
    *
-   * @param wikiType It can be Portal, Group, or User.
-   * @param wikiOwner The Wiki owner.
-   * @param title Title of the wiki page.
-   * @param parentId Id of the parent wiki page.
+   * @param wiki It can be Portal, Group, or User.
+   * @param parentPageName Name of the parent wiki page.
    * @return The new wiki page.
    * @throws Exception
    */
-  public Page createPage(Wiki wiki, String parentId, Page page) throws Exception;
+  public Page createPage(Wiki wiki, String parentPageName, Page page) throws Exception;
 
   /**
    * Creates a new Wiki template.
@@ -684,5 +682,13 @@ public interface WikiService {
 
   public List<PageVersion> getVersionsOfPage(Page page) throws Exception;
 
+  public void createVersionOfPage(Page page) throws Exception;
+
+  /**
+   * Update the given page. This does not automatically create a new version.
+   * If a new version must be created it should be explicitly done by calling createVersionOfPage().
+   * @param page
+   * @throws Exception
+   */
   public void updatePage(Page page) throws Exception;
 }

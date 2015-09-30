@@ -532,6 +532,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
         page.setPermission(permissionMap);
         // TODO need page.setOverridePermission
         //page.setOverridePermission(true);
+        wikiService.updatePage(page);
 
         HashMap<String, String[]> pagePermissions = page.getPermission();
         // TODO need getAttachmentsExcludeContentByRootPermisison
