@@ -192,7 +192,9 @@ public class SavePageActionComponent extends UIComponent {
                                      page.getName(),
                                      newPageName,
                                      title);
-              page.setName(newPageName);
+              if(!WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName())) {
+                page.setName(newPageName);
+              }
             }
   
             synchronized (page.getId()) {
