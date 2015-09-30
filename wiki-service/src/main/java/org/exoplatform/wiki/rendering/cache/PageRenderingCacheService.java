@@ -43,11 +43,11 @@ public interface PageRenderingCacheService {
   
   /**
    * Gets the rendered content of a wiki page.
-   * @param param The parameter which specifies the wiki page.
+   * @param page The wiki page.
    * @param targetSyntax The syntax to be displayed.
    * @return The rendered content.
    */
-  public String getRenderedContent(WikiPageParams param, String targetSyntax);
+  public String getRenderedContent(Page page, String targetSyntax);
   
   /**
    * Gets the wiki page object by params

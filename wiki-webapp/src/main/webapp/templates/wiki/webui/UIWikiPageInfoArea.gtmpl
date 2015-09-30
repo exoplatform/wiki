@@ -11,6 +11,7 @@
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
   
   currentWikiPage = uicomponent.getCurrentWikiPage();
+
   String creator = Utils.getFullName(currentWikiPage.getOwner());
   String author = Utils.getFullName(currentWikiPage.getAuthor());
   def createdDate = df.format(currentWikiPage.getCreatedDate());
@@ -20,9 +21,7 @@
         .getComponentInstanceOfType(PageRenderingCacheService.class);
   
   int attachmentsTotal =  cacheService.getAttachmentCount(currentWikiPage);
-  //int versionsTotal = currentWikiPage.getVersionableMixin().getVersionHistory().getChildren().size() -1 ;
-  // TODO ???
-  int versionsTotal = 1;
+  int versionsTotal = uicomponent.getNumberOfVersions(currentWikiPage) ;
 
   String viewChangeSufix = "_changes";
   String viewChangeAnchor = "#" + uicomponent.COMPARE_REVISION +viewChangeSufix;
@@ -37,7 +36,8 @@
   String totalAttachmentsLabel = attachmentsTotal;
   String restrictLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.restrict-link");
   String publicLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.public-link");
-  boolean isCurrentPagePublic = uicomponent.isCurrentPagePublic();
+
+  boolean isCurrentPagePublic = uicomponent.isPagePublic(currentWikiPage);
 %>
 <div id="$uicomponent.id" class="uiWikiPageInfoArea">
   <div class="txtFeed">

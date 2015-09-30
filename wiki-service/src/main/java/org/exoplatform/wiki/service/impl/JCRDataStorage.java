@@ -1540,7 +1540,7 @@ public class JCRDataStorage implements DataStorage {
    * @return
    */
   private PageImpl fetchPageImpl(String wikiType, String wikiOwner, String pageName) throws Exception {
-    if(pageName.equals("WikiHome")) {
+    if(pageName.equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
       WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner, true);
       return wikiImpl.getWikiHome();
     }

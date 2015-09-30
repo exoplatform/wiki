@@ -75,8 +75,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     // Render current content
     if (currentMode.equals(WikiMode.VIEW)) {
         PageRenderingCacheService renderingCacheService = getApplicationComponent(PageRenderingCacheService.class);
-        WikiPageParams param = Utils.getCurrentWikiPageParams();
-        contentDisplay.setHtmlOutput(renderingCacheService.getRenderedContent(param, Syntax.XHTML_1_0.toIdString()));
+        contentDisplay.setHtmlOutput(renderingCacheService.getRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
     }
     if (currentMode.equals(WikiMode.HELP)) {
         contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent().getText(),

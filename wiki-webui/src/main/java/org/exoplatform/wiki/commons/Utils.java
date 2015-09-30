@@ -176,11 +176,15 @@ public class Utils {
     
     return wikiService.canPublicAndRetrictPage(currentPage, currentUser);
   }
-  
-  public static boolean isCurrentPagePublic() throws Exception {
+
+  public static boolean isPagePublic(Page page) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    return (page != null) && wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
+  }
+
+  public static boolean isCurrentPagePublic() throws Exception {
     Page currentPage = Utils.getCurrentWikiPage();
-    return (currentPage != null) && wikiService.hasPermissionOnPage(currentPage, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
+    return isPagePublic(currentPage);
   }
   
   public static String getSpaceHomeURL(String spaceGroupId) {

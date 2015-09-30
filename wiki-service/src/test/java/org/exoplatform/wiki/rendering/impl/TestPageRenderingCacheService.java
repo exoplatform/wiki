@@ -153,10 +153,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
     setupWikiContext(new WikiPageParams(PortalConfig.PORTAL_TYPE, "aca", "WikiHome"));
-    String acaHomeContent = renderingCacheService.getRenderedContent(new WikiPageParams(PortalConfig.PORTAL_TYPE,
-                                                                                             "aca",
-                                                                                             "WikiHome"),
-                                                                          Syntax.XHTML_1_0.toIdString());
+    String acaHomeContent = renderingCacheService.getRenderedContent(acaHome, Syntax.XHTML_1_0.toIdString());
     assertEquals("<p><span class=\"wikicreatelink\"><a href=\"WikiHome?action=AddPage&amp;pageTitle=childaca&amp;wiki=aca&amp;wikiType=portal\"><span class=\"wikigeneratedlinkcontent\">childaca</span></a></span></p>",
                  acaHomeContent);
     RequestLifeCycle.end();
@@ -164,27 +161,18 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     wikiService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "aca"), "WikiHome", new Page("childaca", "childaca"));
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
-    acaHomeContent = renderingCacheService.getRenderedContent(new WikiPageParams(PortalConfig.PORTAL_TYPE,
-                                                                                            "aca",
-                                                                                            "WikiHome"),
-                                                                         Syntax.XHTML_1_0.toIdString());
+    acaHomeContent = renderingCacheService.getRenderedContent(acaHome, Syntax.XHTML_1_0.toIdString());
     assertEquals("<p><span class=\"wikilink\"><a href=\"childaca\"><span class=\"wikigeneratedlinkcontent\">childaca</span></a></span></p>",
                  acaHomeContent);
     wikiService.renamePage(PortalConfig.PORTAL_TYPE, "aca", "childaca", "childaca1", "childac1");
 
-    acaHomeContent = renderingCacheService.getRenderedContent(new WikiPageParams(PortalConfig.PORTAL_TYPE,
-                                                                                            "aca",
-                                                                                            "WikiHome"),
-                                                                         Syntax.XHTML_1_0.toIdString());
+    acaHomeContent = renderingCacheService.getRenderedContent(acaHome, Syntax.XHTML_1_0.toIdString());
     assertEquals("<p><span class=\"wikilink\"><a href=\"childaca1\"><span class=\"wikigeneratedlinkcontent\">childaca</span></a></span></p>",
                  acaHomeContent);
     
     wikiService.movePage(new WikiPageParams(PortalConfig.PORTAL_TYPE, "aca", "childaca1"),
                          new WikiPageParams(PortalConfig.PORTAL_TYPE, "intranet", "WikiHome"));
-    acaHomeContent = renderingCacheService.getRenderedContent(new WikiPageParams(PortalConfig.PORTAL_TYPE,
-                                                                                 "aca",
-                                                                                 "WikiHome"),
-                                                              Syntax.XHTML_1_0.toIdString());
+    acaHomeContent = renderingCacheService.getRenderedContent(acaHome, Syntax.XHTML_1_0.toIdString());
     assertEquals("<p><span class=\"wikicreatelink\"><a href=\"WikiHome?action=AddPage&amp;pageTitle=childaca&amp;wiki=aca&amp;wikiType=portal\"><span class=\"wikigeneratedlinkcontent\">childaca</span></a></span></p>",
                  acaHomeContent);
     RequestLifeCycle.end();
@@ -193,10 +181,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
     acaHome.getContent().setText("[[childaca10]]");
-    acaHomeContent = renderingCacheService.getRenderedContent(new WikiPageParams(PortalConfig.PORTAL_TYPE,
-                                                                                 "aca",
-                                                                                 "WikiHome"),
-                                                              Syntax.XHTML_1_0.toIdString());
+    acaHomeContent = renderingCacheService.getRenderedContent(acaHome, Syntax.XHTML_1_0.toIdString());
     assertEquals("<p><span class=\"wikilink\"><a href=\"childaca10\"><span class=\"wikigeneratedlinkcontent\">childaca10</span></a></span></p>",
                  acaHomeContent);
     RequestLifeCycle.end();
@@ -204,10 +189,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     wikiService.deletePage(PortalConfig.PORTAL_TYPE, "aca", "childaca10");
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
-    acaHomeContent = renderingCacheService.getRenderedContent(new WikiPageParams(PortalConfig.PORTAL_TYPE,
-                                                                                 "aca",
-                                                                                 "WikiHome"),
-                                                              Syntax.XHTML_1_0.toIdString());
+    acaHomeContent = renderingCacheService.getRenderedContent(acaHome, Syntax.XHTML_1_0.toIdString());
     assertEquals("<p><span class=\"wikicreatelink\"><a href=\"WikiHome?action=AddPage&amp;pageTitle=childaca10&amp;wiki=aca&amp;wikiType=portal\"><span class=\"wikigeneratedlinkcontent\">childaca10</span></a></span></p>",
                  acaHomeContent);
     

@@ -79,9 +79,24 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
     }
     return currentPage;
   }
+
+  protected int getNumberOfVersions(Page page) {
+    int nbOfversions = 0;
+    try {
+      List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+      if (versions != null && !versions.isEmpty()) {
+        nbOfversions = versions.size();
+      }
+    } catch (Exception e) {
+      log.error("Cannot get versions of page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName()
+              + " - Cause : " + e.getMessage(), e);
+    }
+
+    return nbOfversions;
+  }
   
-  protected boolean isCurrentPagePublic() throws Exception {
-    return Utils.isCurrentPagePublic();
+  protected boolean isPagePublic(Page page) throws Exception {
+    return Utils.isPagePublic(page);
   }
   
   public static class PermalinkActionListener extends EventListener<UIWikiPageInfoArea> {

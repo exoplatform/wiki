@@ -69,25 +69,26 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
   }
   
   @Override
-  public String getRenderedContent(WikiPageParams param, String targetSyntax) {
+  public String getRenderedContent(Page page, String targetSyntax) {
     String renderedContent = StringUtils.EMPTY;
     try {
-      Page page = wikiService.getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageId());
       boolean supportSectionEdit = wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
-      MarkupKey key = new MarkupKey(new WikiPageParams(param.getType(), param.getOwner(), param.getPageId()), page.getSyntax(), targetSyntax, supportSectionEdit);
+      MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, supportSectionEdit);
       //get content from cache only when page is not uncached mixin
       // TODO add uncached property to page object
-      //if (page.getUncachedMixin() == null) {
+      /*
+      if (page.getUncachedMixin() == null) {
         MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
         if (cachedData != null) {
           return cachedData.build();
         }
-      //}
+      }
+      */
       String markup = page.getContent().getText();
       renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
       renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
-      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", param.getType(), param.getOwner(), param.getPageId(), targetSyntax), e);
+      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", page.getWikiType(), page.getWikiOwner(), page.getName(), targetSyntax), e);
     }
     return renderedContent;
   }
