@@ -16,17 +16,14 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToMany;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.service.WikiService;
+
+import java.util.Collection;
 
 /**
  * @version $Revision$
@@ -34,8 +31,6 @@ import org.exoplatform.wiki.service.WikiService;
 public abstract class WikiContainer<T extends WikiImpl> {
   
   private static final Log      log               = ExoLogger.getLogger(WikiContainer.class);
-
-  private WikiService wService;
   
   @OneToMany(type = RelationshipType.REFERENCE)
   @MappedBy(WikiNodeType.Definition.WIKI_CONTAINER_REFERENCE)
@@ -55,19 +50,7 @@ public abstract class WikiContainer<T extends WikiImpl> {
   }
 
   public T getWiki(String wikiOwner, boolean hasAdminPermission) {
-    T wiki = contains(wikiOwner);
-    if (wiki != null)
-      return wiki;
-    else {
-      if(hasAdminPermission){
-        wiki = addWiki(wikiOwner);
-        if(wiki != null) {
-          wiki.createWikiHome();
-          wiki.initTemplate();
-        }
-      }
-      return wiki;
-    }
+    return contains(wikiOwner);
   }
 
   public Collection<T> getAllWikis() {

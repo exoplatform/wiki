@@ -16,18 +16,17 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import org.chromattic.api.annotations.*;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.rendering.syntax.Syntax;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @version $Revision$
@@ -40,14 +39,6 @@ public abstract class WikiImpl {
   public abstract PageImpl createWikiPage();
 
   public abstract WikiType getWikiType();
-  
-  public void initTemplate() {
-    // TODO launch the template init at service level
-    /*
-    String path = getPreferences().getPath();
-    wService.initDefaultTemplatePage(path);
-    */
-  }
   
   public WikiHome getWikiHome() {
     WikiHome home = getHome();

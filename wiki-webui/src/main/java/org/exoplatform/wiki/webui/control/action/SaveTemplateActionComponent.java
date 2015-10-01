@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -32,6 +33,7 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Template;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -143,14 +145,12 @@ public class SaveTemplateActionComponent extends UIComponent {
           wikiService.modifyTemplate(pageParams, template, title, description, markup, syntaxId);
         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE) {
           // TODO should create template with a Template object
-          /*
-          Template template = wikiService.createTemplatePage(title, pageParams);
+          Template template = new Template();
           template.setDescription(StringEscapeUtils.escapeHtml(description));
           template.getContent().setText(markup);
           template.setSyntax(syntaxId);
           template.setPermission(null);
-          */
-          wikiService.createTemplatePage(title, pageParams);
+          wikiService.createTemplatePage(Utils.getCurrentWiki(), template);
           ApplicationMessage message = new ApplicationMessage("SaveTemplateAction.msg.Create-template-successfully", msgArg, ApplicationMessage.INFO);
           message.setArgsLocalized(false);
           event.getRequestContext().getUIApplication().addMessage(message);

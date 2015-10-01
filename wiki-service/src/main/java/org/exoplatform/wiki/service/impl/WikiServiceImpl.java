@@ -119,7 +119,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       // TODO Why do we need this ?
       //removeHelpPages();
       try {
-        getWikiByTypeAndOwner(PortalConfig.GROUP_TYPE, "sandbox").getWikiHome();
+        createWiki(PortalConfig.GROUP_TYPE, "sandbox");
       } catch (Exception e) {
         log.warn("Can not init sandbox wiki ...");
       }
@@ -261,7 +261,25 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Wiki createWiki(String wikiType, String owner) throws Exception {
-    return dataStorage.createWiki(wikiType, owner);
+    Wiki wiki = dataStorage.createWiki(wikiType, owner);
+
+    // init templates
+    for(WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
+      if (templatePlugin != null && templatePlugin.getSourcePaths() != null) {
+        for (String templateSourcePath : templatePlugin.getSourcePaths()) {
+          //InputStream templateContent = configManager.getInputStream(templateSourcePath);
+          Template template = new Template();
+          template.setName("MyTemplate");
+          template.setTitle("My Great Template !");
+          Attachment templateContent = new Attachment();
+          templateContent.setText("My Great Template !");
+          template.setContent(templateContent);
+          dataStorage.createTemplatePage(wiki, template);
+        }
+      }
+    }
+
+    return wiki;
   }
 
   /******* Page *******/
@@ -597,19 +615,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   /******* Template *******/
 
   @Override
-  public void initDefaultTemplatePage(String path) {
-    for(WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
-      if (templatePlugin != null && templatePlugin.getSourcePaths() != null) {
-        for (String templateSourcePath : templatePlugin.getSourcePaths()) {
-          dataStorage.createTemplatePage(configManager, templateSourcePath, path);
-        }
-      }
-    }
-  }
-
-  @Override
-  public void createTemplatePage(String title, WikiPageParams params) throws Exception {
-    dataStorage.createTemplatePage(title, params);
+  public void createTemplatePage(Wiki wiki, Template template) throws Exception {
+    dataStorage.createTemplatePage(wiki, template);
   }
 
   @Override

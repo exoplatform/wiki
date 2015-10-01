@@ -42,8 +42,8 @@ import org.xwiki.rendering.syntax.Syntax;
 
 @SuppressWarnings("deprecation")
 public class TestWikiService extends AbstractMOWTestcase {
-  private WikiService wService ; 
-  public void setUp() throws Exception{
+  private WikiService wService;
+  public void setUp() throws Exception {
     super.setUp() ;
     wService = container.getComponentInstanceOfType(WikiService.class) ;
   }
@@ -54,12 +54,12 @@ public class TestWikiService extends AbstractMOWTestcase {
 
   public void testCreateWiki() throws Exception {
     Wiki wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
+    assertNull(wiki);
+
+    wService.createWiki(PortalConfig.PORTAL_TYPE, "wiki1");
+
+    wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
     assertNotNull(wiki);
-
-    //wService.createWiki(WikiType.PORTAL.toString(), "wiki1");
-
-    //wiki = wService.getWikiByTypeAndOwner(WikiType.PORTAL.toString(), "wiki1");
-    //assertNotNull(wiki);
 
   }
 
@@ -133,19 +133,82 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testCreateTemplatePage() throws Exception {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    model.save();
+    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplate1");
 
-    WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", null);
-    wService.createTemplatePage("SampleChart", params);
-    assertNotNull(wService.getTemplatePage(params, "SampleChart"));
+    Template template = new Template();
+    template.setName("MyTemplate");
+    template.setTitle("My Template");
+    Attachment templateContent = new Attachment();
+    templateContent.setText("My Great Template !");
+    template.setContent(templateContent);
+    wService.createTemplatePage(wiki, template);
+
+    WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE, "wikiForTemplate1", null);
+    Template myTemplate = wService.getTemplatePage(params, "MyTemplate");
+    assertNotNull(myTemplate);
+    assertEquals("MyTemplate", myTemplate.getName());
+    assertEquals("My Template", myTemplate.getTitle());
+    assertEquals("My Great Template !", myTemplate.getContent().getText());
+  }
+
+  public void testDeleteTemplatePage() throws Exception{
+    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplate2");
+
+    Template template = new Template();
+    template.setName("MyTemplate");
+    template.setTitle("My Template");
+    Attachment templateContent = new Attachment();
+    templateContent.setText("My Great Template !");
+    template.setContent(templateContent);
+    wService.createTemplatePage(wiki, template);
+
+    WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE, "wikiForTemplate2", null);
+    assertNotNull(wService.getTemplatePage(params, "MyTemplate"));
+
+    wService.deleteTemplatePage(PortalConfig.PORTAL_TYPE, "wikiForTemplate2", "MyTemplate");
+    assertNull(wService.getTemplatePage(params, "MyTemplate"));
+  }
+
+  public void testSearchTemplate() throws Exception {
+    Wiki wiki1 = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplateSearch");
+    WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE,  "wikiForTemplateSearch", null);
+    Template template1 = new Template();
+    template1.setName("MyTemplate");
+    template1.setTitle("My Template");
+    wService.createTemplatePage(wiki1, template1);
+    assertNotNull(wService.getTemplatePage(params, "MyTemplate"));
+
+    Wiki wiki2 = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    params = new WikiPageParams(PortalConfig.GROUP_TYPE,  "/platform/guests", null);
+    Template template2 = new Template();
+    template2.setName("Sample_Group_Search_Template");
+    template2.setTitle("Sample Group Search Template");
+    wService.createTemplatePage(wiki2, template2);
+    assertNotNull(wService.getTemplatePage(params, "Sample_Group_Search_Template"));
+
+    Wiki wiki3 = wService.createWiki(PortalConfig.USER_TYPE, "demo");
+    params = new WikiPageParams(PortalConfig.USER_TYPE,  "demo", null);
+    Template template3 = new Template();
+    template3.setName("Sample_User_Search_Template");
+    template3.setTitle("Sample User Search Template");
+    wService.createTemplatePage(wiki3, template3);
+    assertNotNull(wService.getTemplatePage(params, "Sample_User_Search_Template"));
+
+    TemplateSearchData data = new TemplateSearchData("Template", PortalConfig.PORTAL_TYPE, "wikiForTemplateSearch");
+    List<TemplateSearchResult> result = wService.searchTemplate(data);
+    assertEquals(1, result.size());
+
+    data = new TemplateSearchData("Template", PortalConfig.GROUP_TYPE, "/platform/guests");
+    result = wService.searchTemplate(data);
+    assertEquals(1, result.size());
+
+    data = new TemplateSearchData("Template", PortalConfig.USER_TYPE, "demo");
+    result = wService.searchTemplate(data);
+    assertEquals(1, result.size());
   }
 
   public void testGetBreadcumb() throws Exception {
-    Wiki portalWiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("Breadcumb1", "Breadcumb1")) ;
     wService.createPage(portalWiki, "Breadcumb1", new Page("Breadcumb2", "Breadcumb2")) ;
     wService.createPage(portalWiki, "Breadcumb2", new Page("Breadcumb3", "Breadcumb3")) ;
@@ -155,7 +218,8 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals("Breadcumb1", breadCumbs.get(1).getId());
     assertEquals("Breadcumb2", breadCumbs.get(2).getId());
     assertEquals("Breadcumb3", breadCumbs.get(3).getId());
-    Wiki groupWiki = new Wiki(PortalConfig.GROUP_TYPE, "platform/users");
+
+    Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "platform/users");
     wService.createPage(groupWiki, "WikiHome", new Page("GroupBreadcumb1", "GroupBreadcumb1")) ;
     wService.createPage(groupWiki, "GroupBreadcumb1", new Page("GroupBreadcumb2", "GroupBreadcumb2")) ;
     wService.createPage(groupWiki, "GroupBreadcumb2", new Page("GroupBreadcumb3", "GroupBreadcumb3")) ;
@@ -165,7 +229,8 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals("GroupBreadcumb1", breadCumbs.get(1).getId());
     assertEquals("GroupBreadcumb2", breadCumbs.get(2).getId());
     assertEquals("GroupBreadcumb3", breadCumbs.get(3).getId());
-    Wiki userWiki = new Wiki(PortalConfig.USER_TYPE, "john");
+
+    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "john");
     wService.createPage(userWiki, "WikiHome", new Page("UserBreadcumb1", "UserBreadcumb1")) ;
     wService.createPage(userWiki, "UserBreadcumb1", new Page("UserBreadcumb2", "UserBreadcumb2")) ;
     wService.createPage(userWiki, "UserBreadcumb2", new Page("UserBreadcumb3", "UserBreadcumb3")) ;
@@ -179,7 +244,7 @@ public class TestWikiService extends AbstractMOWTestcase {
 
   public void testMovePage() throws Exception{
     //moving page in same space
-    Wiki portalWiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("oldParent", "oldParent")) ;
     wService.createPage(portalWiki, "oldParent", new Page("child", "child")) ;
     wService.createPage(portalWiki, "WikiHome", new Page("newParent", "newParent")) ;
@@ -200,7 +265,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertTrue(wService.movePage(currentLocationParams,newLocationParams)) ;
 
     //moving page from different spaces
-    Wiki userWiki = new Wiki(PortalConfig.USER_TYPE, "demo");
+    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
     wService.createPage(userWiki, "WikiHome", new Page("acmePage", "acmePage")) ;
     wService.createPage(portalWiki, "WikiHome", new Page("classicPage", "classicPage")) ;
 
@@ -216,7 +281,8 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertTrue(wService.movePage(currentLocationParams,newLocationParams)) ;
 
     // moving a page to another read-only page
-    wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "demo"), "WikiHome", new Page("toMovedPage", "toMovedPage"));
+    Wiki demoWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "demo");
+    wService.createPage(demoWiki, "WikiHome", new Page("toMovedPage", "toMovedPage"));
     Page page = wService.createPage(userWiki, "WikiHome", new Page("privatePage", "privatePage"));
     HashMap<String, String[]> permissionMap = new HashMap<>();
     permissionMap.put("any", new String[] {PermissionType.VIEWPAGE.toString(), PermissionType.EDITPAGE.toString()});
@@ -238,33 +304,26 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testDeletePage() throws Exception{
-    Wiki portalWiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("deletePage", "deletePage")) ;
     assertTrue(wService.deletePage(PortalConfig.PORTAL_TYPE, "classic", "deletePage")) ;
     //wait(10) ;
     wService.createPage(portalWiki, "WikiHome", new Page("deletePage", "deletePage")) ;
-    assertTrue(wService.deletePage(PortalConfig.PORTAL_TYPE, "classic", "deletePage")) ;    
+    assertTrue(wService.deletePage(PortalConfig.PORTAL_TYPE, "classic", "deletePage")) ;
     assertNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "deletePage")) ;
     assertFalse(wService.deletePage(PortalConfig.PORTAL_TYPE, "classic", "WikiHome")) ;
   }
-  
-  public void testDeleteTemplatePage() throws Exception{
-    WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", null);
-    wService.createTemplatePage("SampleExcel", params);
-    assertNotNull(wService.getTemplatePage(params, "SampleExcel"));
-    wService.deleteTemplatePage(PortalConfig.PORTAL_TYPE, "classic", "SampleExcel");
-    assertNull(wService.getTemplatePage(params, "SampleExcel"));
-  }
+
 
   public void testRenamePage() throws Exception{
-    Wiki portalWiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("currentPage", "currentPage")) ;
     assertTrue(wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "currentPage", "renamedPage", "renamedPage")) ;
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "renamedPage")) ;
   }
 
   public void testSearchRenamedPage() throws Exception{
-    Wiki portalWiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page page = wService.createPage(portalWiki, "WikiHome", new Page("Page", "Page"));
     page.getContent().setText("This is a rename page test");
     RequestLifeCycle.end();
@@ -274,7 +333,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     RequestLifeCycle.begin(container);
     assertEquals(1, wService.searchRenamedPage(PortalConfig.PORTAL_TYPE, "classic", "Page").size());
 
-    Wiki groupWiki = new Wiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
     Page guestPage = wService.createPage(groupWiki, "WikiHome", new Page("Page", "Page"));
     guestPage.getContent().setText("This is a rename guest page test");
     RequestLifeCycle.end();
@@ -284,7 +343,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
 
-    Wiki userWiki = new Wiki(PortalConfig.USER_TYPE, "demo");
+    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
     Page demoPage = wService.createPage(userWiki, "WikiHome", new Page("Page", "Page"));
     demoPage.getContent().setText("This is a rename demo page test");
     RequestLifeCycle.end();
@@ -296,21 +355,21 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testSearchContent() throws Exception {
-    Wiki classicWiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki classicWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page kspage = new Page("knowledge suite", "knowledge suite");
     Attachment ksContent = new Attachment();
     ksContent.setText("forum faq wiki");
     kspage.setContent(ksContent);
     wService.createPage(classicWiki, "WikiHome", kspage);
 
-    Wiki extWiki = new Wiki(PortalConfig.PORTAL_TYPE, "ext");
+    Wiki extWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "ext");
     Page ksExtPage = new Page("knowledge suite", "knowledge suite");
     Attachment content = new Attachment();
     content.setText("forum faq wiki");
     ksExtPage.setContent(content);
     wService.createPage(extWiki, "WikiHome", ksExtPage);
 
-    Wiki demoWiki = new Wiki(PortalConfig.USER_TYPE, "demo");
+    Wiki demoWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
     Page ksSocialPage = new Page("knowledge suite", "knowledge suite");
     Attachment ksSocialContent = new Attachment();
     ksSocialContent.setText("forum faq wiki");
@@ -323,7 +382,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     csPage.setContent(csContent);
     wService.createPage(classicWiki, "WikiHome", csPage);
 
-    Wiki guestWiki = new Wiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    Wiki guestWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
     Page guestPage = new Page("Guest page", "Guest page");
     Attachment guestContent = new Attachment();
     guestContent.setText("Playground");
@@ -364,25 +423,25 @@ public class TestWikiService extends AbstractMOWTestcase {
     data = new WikiSearchData("Playground", "Playground", PortalConfig.GROUP_TYPE, "/platform/guests");
     result = wService.search(data);
     assertEquals(1, result.getAll().size());
-    
+
     data = new WikiSearchData("forum", "forum", PortalConfig.USER_TYPE, null);
     result = wService.search(data);
     assertEquals(1, result.getAll().size());
-    
+
     data = new WikiSearchData("forum", "forum", PortalConfig.USER_TYPE, "demo");
     result = wService.search(data);
     assertEquals(1, result.getAll().size());
   }
 
   public void testSearch() throws Exception {
-    Wiki wiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page kspage = new Page("test search service", "test search service");
     Attachment content = new Attachment();
     content.setText("forum faq wiki exoplatform");
     kspage.setContent(content);
     wService.createPage(wiki, "WikiHome", kspage) ;
 
-    Wiki wikiExt = new Wiki(PortalConfig.PORTAL_TYPE, "ext");
+    Wiki wikiExt = wService.createWiki(PortalConfig.PORTAL_TYPE, "ext");
     Page extPage = new Page("test search service ext", "test search service ext");
     Attachment extPageContent = new Attachment();
     extPageContent.setText("forum faq wiki exoplatform");
@@ -397,14 +456,14 @@ public class TestWikiService extends AbstractMOWTestcase {
     attachment1.setContentResource(Resource.createPlainText("exoplatform content mamagement")) ;
     */
 
-    Wiki groupWiki = new Wiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
     Page guestPage = new Page("guest platform", "guest platform");
     Attachment guestPageContent = new Attachment();
     guestPageContent.setText("exoplatform");
     guestPage.setContent(guestPageContent);
     wService.createPage(groupWiki, "WikiHome", guestPage);
 
-    Wiki userWiki = new Wiki(PortalConfig.USER_TYPE, "demo");
+    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
     Page userPage = new Page("demo", "demo");
     Attachment userPageContent = new Attachment();
     userPageContent.setText("exoplatform");
@@ -443,6 +502,9 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testSearchTitle() throws Exception {
+    wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    wService.createWiki(PortalConfig.USER_TYPE, "demo");
     wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", new Page("dumpPage", "dumpPage"));
     wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "/platform/guests"), "WikiHome", new Page("Dump guest Page", "Dump guest Page"));
     wService.createPage(new Wiki(PortalConfig.USER_TYPE, "demo"), "WikiHome", new Page("Dump demo Page", "Dump demo Page"));
@@ -485,33 +547,6 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals(1, result.size());
   }
 
-  public void testSearchTemplate() throws Exception {
-    WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE,  "classic", null);
-    wService.createTemplatePage("Sample Search Template", params);
-    assertNotNull(wService.getTemplatePage(params, "Sample_Search_Template"));
-
-    params= new WikiPageParams(PortalConfig.GROUP_TYPE,  "/platform/guests", null);
-    wService.createTemplatePage("Sample Group Search Template", params);
-    assertNotNull(wService.getTemplatePage(params, "Sample_Group_Search_Template"));
-
-    params= new WikiPageParams(PortalConfig.USER_TYPE,  "demo", null);
-    wService.createTemplatePage("Sample User Search Template", params);
-    assertNotNull(wService.getTemplatePage(params, "Sample_User_Search_Template"));
-
-    TemplateSearchData data = new TemplateSearchData("Template", PortalConfig.PORTAL_TYPE, "classic");
-    List<TemplateSearchResult> result = wService.searchTemplate(data);
-    assertEquals(1, result.size());
-
-    data = new TemplateSearchData("Template", PortalConfig.GROUP_TYPE, "/platform/guests");
-    result = wService.searchTemplate(data);
-    assertEquals(1, result.size());
-
-    data = new TemplateSearchData("Template", PortalConfig.USER_TYPE, "demo");
-    result = wService.searchTemplate(data);
-    assertEquals(1, result.size());
-  }
-  /*
-  */
 
   // TODO ???
   /*

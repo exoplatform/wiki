@@ -23,7 +23,6 @@ import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
@@ -74,6 +73,8 @@ public class JCRDataStorage implements DataStorage {
 
     WikiContainer wikiContainer = wStore.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase()));
     WikiImpl wikiImpl = wikiContainer.addWiki(owner);
+    // create wiki home page
+    wikiImpl.getWikiHome();
 
     model.save();
 
@@ -113,6 +114,7 @@ public class JCRDataStorage implements DataStorage {
       text = page.getContent().getText();
     }
     pageImpl.getContent().setText(text);
+    pageImpl.setSyntax(page.getSyntax());
 
     // create a first version
     pageImpl.makeVersionable();
@@ -214,56 +216,20 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void createTemplatePage(ConfigurationManager configurationManager, String templateSourcePath, String targetPath) {
-    Model model = getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    ChromatticSession session = wStore.getSession();
-    if (templateSourcePath != null) {
-      InputStream is = null;
-      try {
-        is = configurationManager.getInputStream(templateSourcePath);
-        int type = ImportUUIDBehavior.IMPORT_UUID_CREATE_NEW;
-        if(((Node)session.getJCRSession().getItem(targetPath)).hasNode(WikiNodeType.WIKI_TEMPLATE_CONTAINER)) {
-          type = ImportUUIDBehavior.IMPORT_UUID_COLLISION_REPLACE_EXISTING;
-        }
-        session.getJCRSession().importXML(targetPath, is, type);
-        session.save();
-      } catch(Exception e) {
-        // TODO
-        e.printStackTrace();
-      } finally {
-        if (is != null) {
-          try {
-            is.close();
-          } catch (IOException e) {
-            // TODO
-            e.printStackTrace();
-          }
-        }
-      }
-    }
-  }
+  public void createTemplatePage(Wiki wiki, Template template) throws Exception {
+    TemplateContainer templatesContainer = getTemplatesContainer(wiki.getType(), wiki.getOwner());
 
-  @Override
-  public void createTemplatePage(String title, WikiPageParams params) throws Exception {
-    Model model = getModel();
-    TemplateContainer templatesContainer = getTemplatesContainer(params.getType(), params.getOwner());
-    ConversationState conversationState = ConversationState.getCurrent();
     try {
-      TemplateImpl template = templatesContainer.createTemplatePage();
-      String pageId = TitleResolver.getId(title, false);
-      template.setName(pageId);
-      templatesContainer.addPage(template.getName(), template);
-      String creator = null;
-      if (conversationState != null && conversationState.getIdentity() != null) {
-        creator = conversationState.getIdentity().getUserId();
-      }
-      template.setOwner(creator);
-      template.setTitle(title);
-      template.getContent().setText("");
-      model.save();
-    } catch (Exception e) {
-      log.error("Can not create Template page", e);
+      TemplateImpl templatePage = templatesContainer.createTemplatePage();
+      templatePage = templatesContainer.addPage(template.getName(), templatePage);
+
+      templatePage.setName(template.getName());
+      templatePage.setTitle(template.getTitle());
+      templatePage.getContent().setText(template.getContent().getText());
+
+    } catch(Exception e) {
+      throw new Exception("Cannot create template " + template.getName() + " in wiki " + wiki.getType() + ":" + wiki.getOwner()
+              + " - Cause : " + e.getMessage(), e);
     }
   }
 
@@ -336,13 +302,15 @@ public class JCRDataStorage implements DataStorage {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     UserWiki userWiki = (UserWiki) wStore.getWiki(WikiType.USER, username);
-    PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
-    Map<String, PageImpl> childPages = draftPagesContainer.getChildPages();
-    for(PageImpl childPage : childPages.values()) {
-      String targetPageId = ((DraftPageImpl) childPage).getTargetPage();
-      if(targetPageId != null && targetPageId.equals(page.getId())) {
-        childPage.remove();
-        return;
+    if(userWiki != null) {
+      PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
+      Map<String, PageImpl> childPages = draftPagesContainer.getChildPages();
+      for (PageImpl childPage : childPages.values()) {
+        String targetPageId = ((DraftPageImpl) childPage).getTargetPage();
+        if (targetPageId != null && targetPageId.equals(page.getId())) {
+          childPage.remove();
+          return;
+        }
       }
     }
 
@@ -780,13 +748,14 @@ public class JCRDataStorage implements DataStorage {
 
     // check to get draft if exist
     Model model = getModel();
-    UserWiki userWiki = null;
+    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+
+    UserWiki userWiki;
 
     // Check if in the case that access to wiki page by rest service of xwiki
     if ((username == null) && (pageId.contains(Utils.SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE))) {
       String[] texts = pageId.split(Utils.SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE);
       username = texts[0];
-      WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
       WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
       userWiki = userWikiContainer.getWiki(username, true);
       Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildrenByRootPermission().values();
@@ -798,6 +767,10 @@ public class JCRDataStorage implements DataStorage {
         }
       }
     } else {
+      userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username, false);
+      if(userWiki == null) {
+        userWiki = (UserWiki) wStore.addWiki(WikiType.USER, username);
+      }
       // Get draft page
       DraftPage draftPage = getDraft(pageId, username);
       if (draftPage != null) {
@@ -806,9 +779,6 @@ public class JCRDataStorage implements DataStorage {
     }
 
     // Get draft page container
-    if (userWiki == null) {
-      userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username, false);
-    }
     PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
 
     // Create new draft
@@ -898,14 +868,16 @@ public class JCRDataStorage implements DataStorage {
 
     // Get all draft of user
     UserWiki userWiki = (UserWiki) getModel().getWikiStore().getWiki(WikiType.USER, username);
-    Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildPages().values();
+    if(userWiki != null) {
+      Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildPages().values();
 
-    // Change collection to List
-    for (PageImpl page : childPages) {
-      DraftPage draftPage = convertDraftPageImplToDraftPage((DraftPageImpl) page);
-      draftPage.setWikiType(userWiki.getType());
-      draftPage.setWikiOwner(userWiki.getOwner());
-      draftPages.add(draftPage);
+      // Change collection to List
+      for (PageImpl page : childPages) {
+        DraftPage draftPage = convertDraftPageImplToDraftPage((DraftPageImpl) page);
+        draftPage.setWikiType(userWiki.getType());
+        draftPage.setWikiOwner(userWiki.getOwner());
+        draftPages.add(draftPage);
+      }
     }
 
     return draftPages;
@@ -917,6 +889,9 @@ public class JCRDataStorage implements DataStorage {
     WikiStore wikiStore = model.getWikiStore();
 
     UserWiki userWiki = (UserWiki) wikiStore.getWiki(WikiType.USER, username);
+    if(userWiki == null) {
+      userWiki = (UserWiki) wikiStore.addWiki(WikiType.USER, username);
+    }
     PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
 
     // Create draft page
@@ -1704,8 +1679,12 @@ public class JCRDataStorage implements DataStorage {
     Template template = null;
     if(templateImpl != null) {
       template = new Template();
+      template.setName(templateImpl.getName());
+      template.setTitle(templateImpl.getTitle());
       template.setDescription(templateImpl.getDescription());
-      // TODO to complete
+      Attachment content = new Attachment();
+      content.setText(templateImpl.getContent().getText());
+      template.setContent(content);
     }
     return template;
   }

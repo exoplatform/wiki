@@ -16,39 +16,52 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.service.WikiService;
 
 
 public class TestPageContent extends AbstractMOWTestcase {
 
+  private WikiService wikiService;
+
+  public void setUp() throws Exception {
+    super.setUp();
+    wikiService = container.getComponentInstanceOfType(WikiService.class);
+  }
+
   public void testGetPageContent() throws Exception {
-    PageImpl wikipage = createWikiPage(WikiType.PORTAL, "classic", "AddPageContent-001");
-    AttachmentImpl content = wikipage.getContent();
-    assertNotNull(content);
-    wikipage.setSyntax("xwiki_2.0");
-    content.setText("This is a content of page");
-    assertEquals(wikipage.getSyntax(), "xwiki_2.0");
-    assertEquals(content.getText(), "This is a content of page");
+    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "classic");
+    Page page = new Page("AddPageContent-001", "AddPageContent-001");
+    page.setSyntax("xwiki_2.0");
+    page.getContent().setText("This is a content of page");
+    wikiService.createPage(wiki, "WikiHome", page);
+
+    page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "AddPageContent-001");
+    assertNotNull(page);
+    assertEquals("xwiki_2.0", page.getSyntax());
+    assertEquals("This is a content of page", page.getContent().getText());
   }
 
   public void testUpdatePageContent() throws Exception {
-    PageImpl wikipage = createWikiPage(WikiType.PORTAL, "classic", "UpdatePageContent-001");
-    AttachmentImpl content = wikipage.getContent();
-    assertNotNull(content);
-    wikipage.setSyntax("xwiki_2.0");
+    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "classic");
+    Page page = new Page("UpdatePageContent-001", "UpdatePageContent-001");
+    page.setSyntax("xwiki_2.0");
+    Attachment content = new Attachment();
     content.setText("This is a content of page");
-    assertEquals(wikipage.getSyntax(), "xwiki_2.0");
-    assertEquals(content.getText(), "This is a content of page");
-    wikipage.checkin();
-    wikipage.checkout();
-    content.setText("This is a content of page - edited");
-    wikipage.setSyntax("xwiki_2.1");
+    page.setContent(content);
+    wikiService.createPage(wiki, "WikiHome", page);
 
-    AttachmentImpl updatedContent = wikipage.getContent();
-    assertEquals(wikipage.getSyntax(), "xwiki_2.1");
-    assertEquals(updatedContent.getText(), "This is a content of page - edited");
+    content.setText("This is a content of page - edited");
+    page.setSyntax("xwiki_2.1");
+    wikiService.updatePage(page);
+
+    page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "UpdatePageContent-001");
+    assertNotNull(page);
+    assertEquals(page.getSyntax(), "xwiki_2.1");
+    assertEquals(page.getContent().getText(), "This is a content of page - edited");
   }
 
 }

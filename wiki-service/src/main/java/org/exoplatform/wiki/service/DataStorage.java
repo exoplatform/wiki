@@ -44,9 +44,7 @@ public interface DataStorage {
 
   public List<Page> getChildrenPageOf(Page page) throws Exception;
 
-  public void createTemplatePage(ConfigurationManager configurationManager, String templateSourcePath, String targetPath);
-
-  public void createTemplatePage(String title, WikiPageParams params) throws Exception;
+  public void createTemplatePage(Wiki wiki, Template template) throws Exception;
 
   public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws Exception;
 

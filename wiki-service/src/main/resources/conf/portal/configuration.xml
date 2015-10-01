@@ -246,6 +246,8 @@
           <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer</value>
           <value>org.exoplatform.wiki.mow.core.api.wiki.UserWiki</value>
           <value>org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.TemplateImpl</value>
           <value>org.exoplatform.wiki.mow.core.api.content.ParagraphImpl</value>
           <value>org.exoplatform.wiki.mow.core.api.content.MarkupImpl</value>
           <value>org.exoplatform.wiki.mow.core.api.content.WikiLink</value>

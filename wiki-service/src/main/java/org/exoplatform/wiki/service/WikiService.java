@@ -54,19 +54,12 @@ public interface WikiService {
   /**
    * Creates a new Wiki template.
    *
-   * @param title Title of the Wiki template.
-   * @param params The params object which is used for creating the new Wiki template.
+   * @param wiki Wiki of the template
+   * @param template The params object which is used for creating the new Wiki template.
    * @return The new Wiki template.
    * @throws Exception
    */
-  public void createTemplatePage(String title, WikiPageParams params) throws Exception;
-
-  /**
-   * Initializes a default Wiki template.
-   *
-   * @param path The path in which the default Wiki template is initialized.
-   */
-  public void initDefaultTemplatePage(String path) ;
+  public void createTemplatePage(Wiki wiki, Template template) throws Exception;
 
   /**
    * Deletes a wiki page.

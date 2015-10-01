@@ -144,6 +144,12 @@ public class UIWikiPortlet extends UIPortletApplication {
                                      .getChild(UIWikiBreadCrumb.class)
                                      .setRendered(portletPreferences.isShowBreadcrumb());     
       String requestURL = Utils.getCurrentRequestURL();
+
+      WikiPageParams wikiPageParams = Utils.getCurrentWikiPageParams();
+      Wiki wiki = Utils.getCurrentWiki();
+      if(wiki == null) {
+        wiki = wikiService.createWiki(wikiPageParams.getType(), wikiPageParams.getOwner());
+      }
       Page page = Utils.getCurrentWikiPage();
       
       if (page == null) {
@@ -170,13 +176,10 @@ public class UIWikiPortlet extends UIPortletApplication {
       
       // Check if page url is null then create url for it
       if (StringUtils.isEmpty(page.getUrl())) {
-        Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
         page.setUrl(Utils.getURLFromParams(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName())));
       }
       
-      
-      WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-      if (WikiContext.ADDPAGE.equalsIgnoreCase(pageParams.getParameter(WikiContext.ACTION))) {
+      if (WikiContext.ADDPAGE.equalsIgnoreCase(wikiPageParams.getParameter(WikiContext.ACTION))) {
         AddPageActionComponent addPageComponent = this.findFirstComponentOfType(AddPageActionComponent.class);
         if (addPageComponent != null) {
           Event<UIComponent> xEvent = addPageComponent.createEvent(AddPageActionComponent.ACTION, Event.Phase.PROCESS, context);
@@ -184,7 +187,7 @@ public class UIWikiPortlet extends UIPortletApplication {
             xEvent.broadcast();
           }
         }
-      }else if (org.exoplatform.wiki.utils.Utils.COMPARE_REVISION.equalsIgnoreCase(pageParams.getParameter(WikiContext.ACTION))) {
+      }else if (org.exoplatform.wiki.utils.Utils.COMPARE_REVISION.equalsIgnoreCase(wikiPageParams.getParameter(WikiContext.ACTION))) {
         //UIWikiPageInfoArea.COMPARE_REVISION
         UIWikiPageInfoArea pageInfoArea = this.findFirstComponentOfType(UIWikiPageInfoArea.class);
         if (pageInfoArea != null) {

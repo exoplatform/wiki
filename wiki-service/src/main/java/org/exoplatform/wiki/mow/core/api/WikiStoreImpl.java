@@ -48,8 +48,8 @@ public abstract class WikiStoreImpl implements WikiStore {
     return session;
   }
 
-  public void addWiki(WikiType wikiType, String name) {
-    getWikiContainer(wikiType).addWiki(name);
+  public WikiImpl addWiki(WikiType wikiType, String name) {
+    return getWikiContainer(wikiType).addWiki(name);
   }
 
   public WikiImpl getWiki(WikiType wikiType, String name) {

@@ -172,17 +172,6 @@ public abstract class AbstractMOWTestcase extends TestCase {
     return wikiHomePage;
   }
   
-  protected PageImpl createWikiPage(WikiType wikiType, String wikiName, String pageName) {
-    Model model = mowService.getModel();
-    WikiImpl wiki = (WikiImpl) getWiki(wikiType, wikiName, model);
-    WikiHome wikiHomePage = (WikiHome) wiki.getWikiHome();
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName(pageName);
-    wikiHomePage.addWikiPage(wikipage);
-    wikipage.makeVersionable();
-    return wikipage;
-  }
-  
   protected void startSessionAs(String user) {
     Identity userIdentity = new Identity(user);
     ConversationState.setCurrent(new ConversationState(userIdentity));

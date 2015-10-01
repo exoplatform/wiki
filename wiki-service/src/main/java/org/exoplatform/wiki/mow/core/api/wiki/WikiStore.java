@@ -51,7 +51,7 @@ public interface WikiStore {
    * @param wikiType
    * @param name
    */
-  void addWiki(WikiType wikiType, String name);
+  WikiImpl addWiki(WikiType wikiType, String name);
 
   /** 
    * get wiki container
