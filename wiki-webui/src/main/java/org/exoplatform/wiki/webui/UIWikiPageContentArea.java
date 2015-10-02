@@ -26,7 +26,6 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
-import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 import org.xwiki.rendering.converter.ConversionException;
@@ -78,7 +77,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
         contentDisplay.setHtmlOutput(renderingCacheService.getRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
     }
     if (currentMode.equals(WikiMode.HELP)) {
-        contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent().getText(),
+        contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent(),
                                                              wikipage.getSyntax(),
                                                              Syntax.XHTML_1_0.toIdString(),
                                                              false));

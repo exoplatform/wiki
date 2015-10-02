@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.upload.UploadResource;
@@ -27,8 +28,9 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.service.WikiResource;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
 import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
@@ -57,7 +59,10 @@ public class UIWikiUploadAttachment extends UIWikiForm {
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new EditPagesPermissionFilter() });
 
+  private static WikiService wikiService;
+
   public UIWikiUploadAttachment() throws Exception {
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW,WikiMode.EDITPAGE,WikiMode.ADDPAGE});   
     SIZE_LIMIT = Utils.getLimitUploadSize();
     UIWikiFormUploadInput uiInput = new UIWikiFormUploadInput(FIELD_UPLOAD, FIELD_UPLOAD, SIZE_LIMIT);
@@ -82,7 +87,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
     public void processEvent(Event<UIWikiUploadAttachment> event) throws Exception {                 
       UIWikiUploadAttachment wikiAttachmentArea = event.getSource();
       String id = event.getRequestContext().getRequestParameter(OBJECTID);
-      UIWikiFormUploadInput input = (UIWikiFormUploadInput) wikiAttachmentArea.getUIInput(FIELD_UPLOAD);
+      UIWikiFormUploadInput input = wikiAttachmentArea.getUIInput(FIELD_UPLOAD);
       UploadResource uploadResource = input.getUploadResource(id);
       
       String fileName = null;
@@ -107,7 +112,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       }
       
       byte[] imageBytes;
-      WikiResource attachfile = null;
+      Attachment attachment = null;
       if (uploadResource != null) {
         long fileSize = ((long) uploadResource.getUploadedSize());
         if (SIZE_LIMIT > 0 && fileSize >= SIZE_LIMIT * 1024 * 1024) {
@@ -137,27 +142,23 @@ public class UIWikiUploadAttachment extends UIWikiForm {
         
         imageBytes = new byte[is.available()];
         is.read(imageBytes);
-        attachfile = new WikiResource(uploadResource.getMimeType(), "UTF-8", imageBytes);
-        attachfile.setName(fileName);
-        attachfile.setResourceId(uploadResource.getUploadId());
+        attachment = new Attachment();
+        attachment.setName(fileName);
+        if (uploadResource.getFileName().lastIndexOf(".") > 0) {
+          attachment.setTitle(uploadResource.getFileName().substring(0, uploadResource.getFileName().lastIndexOf(".")));
+        }
+        attachment.setMimeType(uploadResource.getMimeType());
+        attachment.setContent(imageBytes);
+        attachment.setCreator(event.getRequestContext().getRemoteUser());
       }
       
-      if (attachfile != null) {
+      if (attachment != null) {
         try {          
           Page page = wikiAttachmentArea.getCurrentWikiPage();
-          // TODO create attachment
-          /*
-          AttachmentImpl att = page.createAttachment(attachfile.getName(), attachfile);
-
-          att.setTitle(uploadResource.getFileName());
-          if (uploadResource.getFileName().lastIndexOf(".") > 0) {
-            att.setTitle(uploadResource.getFileName().substring(0, uploadResource.getFileName().lastIndexOf(".")));
-          }
-          att.setCreator(event.getRequestContext().getRemoteUser());
+          wikiService.addAttachmentToPage(attachment, page);
           input.removeUploadId(id);
-          */
         } catch (Exception e) {
-          log.error("An exception happens when saving attach file:" + attachfile.getName(), e);
+          log.error("An exception happens when saving attach file:" + attachment.getName(), e);
           event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIApplication.msg.unknown-error",
                                                                                          null,
                                                                                          ApplicationMessage.ERROR));

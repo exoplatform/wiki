@@ -119,10 +119,9 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         currentPage.setPermission(permissions);
         
         // Remove any permission of all attachments when making a page restricted
-        // TODO need getAttachmentsExcludeContentByRootPermisison
-        //Collection<AttachmentImpl> attachments = currentPage.getAttachmentsExcludeContentByRootPermisison();
-        Collection<Attachment> attachments = null;
+        List<Attachment> attachments = wikiService.getAttachmentsOfPage(currentPage);
         for (Attachment attachment : attachments) {
+          // TODO need an updateAttachement ??
           HashMap<String, String[]> attachmentPermissions = attachment.getPermissions();
           attachmentPermissions.remove(IdentityConstants.ANY);
           attachment.setPermissions(attachmentPermissions);

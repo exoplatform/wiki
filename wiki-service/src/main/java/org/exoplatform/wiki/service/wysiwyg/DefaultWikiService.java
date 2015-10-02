@@ -25,7 +25,6 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
@@ -40,7 +39,6 @@ import org.xwiki.model.reference.DocumentReference;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -247,9 +245,7 @@ public class DefaultWikiService implements WikiService {
         return null;
       }
 
-      // TODO need getAttachmentByRootPermisison
-      //AttachmentImpl attachment = page.getAttachmentByRootPermisison(cleanedFileName);
-      AttachmentImpl attachment = null;
+      org.exoplatform.wiki.mow.api.Attachment attachment = wservice.getAttachmentsOfPageByName(cleanedFileName, page);
       if (attachment == null) {
         log.warn(String.format("Failed to get attachment: %s not found.", cleanedFileName));
         return null;
@@ -298,17 +294,15 @@ public class DefaultWikiService implements WikiService {
       List<Attachment> attachments = new ArrayList<Attachment>();
       org.exoplatform.wiki.service.WikiService wservice = (org.exoplatform.wiki.service.WikiService) PortalContainer.getComponent(org.exoplatform.wiki.service.WikiService.class);
       Page page = wservice.getExsitedOrNewDraftPageById(wikiName, spaceName, TitleResolver.getId(pageName, false));
-      // TODO need getAttachmentsExcludeContentByRootPermisison
-      //Collection<AttachmentImpl> attachs = page.getAttachmentsExcludeContentByRootPermisison();
-      Collection<AttachmentImpl> attachs = Collections.EMPTY_LIST;
-      for (AttachmentImpl attach : attachs) {
+      List<org.exoplatform.wiki.mow.api.Attachment> attachs = wservice.getAttachmentsOfPage(page);
+      for (org.exoplatform.wiki.mow.api.Attachment attach : attachs) {
         AttachmentReference attachmentReference = new AttachmentReference(attach.getName(), documentReference);
         EntityReference entityReference = attachmentReference.getEntityReference();
         entityReference.setType(org.xwiki.gwt.wysiwyg.client.wiki.EntityReference.EntityType.ATTACHMENT);
         Attachment currentAttach = new Attachment();
         currentAttach.setUrl(attach.getDownloadURL());
         currentAttach.setReference(entityReference);
-        currentAttach.setMimeType(attach.getContentResource().getMimeType());
+        currentAttach.setMimeType(attach.getMimeType());
         attachments.add(currentAttach);
       }
       return attachments;

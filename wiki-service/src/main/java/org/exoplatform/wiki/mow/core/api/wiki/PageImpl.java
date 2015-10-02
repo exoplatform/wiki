@@ -258,7 +258,7 @@ public abstract class PageImpl extends NTFolder {
   @Create
   public abstract AttachmentImpl createAttachment();
   
-  public AttachmentImpl createAttachment(String fileName, Resource contentResource) throws Exception {
+  public AttachmentImpl createAttachment(String fileName, Resource contentResource) throws WikiException {
     if (fileName == null) {
       throw new NullPointerException();
     }
@@ -288,7 +288,7 @@ public abstract class PageImpl extends NTFolder {
     return file;
   }
   
-  private void setFullPermissionForOwner(AttachmentImpl file) throws Exception {
+  private void setFullPermissionForOwner(AttachmentImpl file) throws WikiException {
     ConversationState conversationState = ConversationState.getCurrent();
 
     if (conversationState != null) {
@@ -305,7 +305,7 @@ public abstract class PageImpl extends NTFolder {
     return getAttachmentsByChromattic();
   }
   
-  public Collection<AttachmentImpl> getAttachmentsExcludeContent() throws Exception {
+  public Collection<AttachmentImpl> getAttachmentsExcludeContent() throws RepositoryException {
     List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>();
     String path = this.getPath();
     StringBuilder statement = new StringBuilder("SELECT * FROM ");
@@ -340,7 +340,7 @@ public abstract class PageImpl extends NTFolder {
     return atts;
   }
   
-  public AttachmentImpl getAttachment(String attachmentId) throws Exception {
+  public AttachmentImpl getAttachment(String attachmentId) {
     for (AttachmentImpl attachment : getAttachments()) {
       if (attachment.getName().equals(attachmentId)
           && (attachment.hasPermission(PermissionType.VIEW_ATTACHMENT)
@@ -364,7 +364,7 @@ public abstract class PageImpl extends NTFolder {
     getAttachments().add(attachment);
   }  
   
-  public void removeAttachment(String attachmentId) throws Exception {
+  public void removeAttachment(String attachmentId) {
     AttachmentImpl attachment = getAttachment(attachmentId);
     if(attachment != null){
       attachment.remove();

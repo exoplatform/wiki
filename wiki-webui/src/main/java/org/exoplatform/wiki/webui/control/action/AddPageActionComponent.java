@@ -16,11 +16,6 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
@@ -36,15 +31,16 @@ import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.webui.UIWikiPageEditForm;
-import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
-import org.exoplatform.wiki.webui.UIWikiPortlet;
-import org.exoplatform.wiki.webui.UIWikiRichTextArea;
-import org.exoplatform.wiki.webui.WikiMode;
+import org.exoplatform.wiki.webui.*;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
 import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.AddContainerActionListener;
+
+import javax.servlet.http.HttpSession;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
@@ -94,7 +90,7 @@ public class AddPageActionComponent extends AbstractEventActionComponent {
       titleInput.setValue("");
 
       titleInput.setEditable(true);
-      markupInput.setValue(draftPage == null ? "" : draftPage.getContent().getText());
+      markupInput.setValue(draftPage == null ? "" : draftPage.getContent());
       commentInput.setRendered(false);
 
       if (pageTitle != null && pageTitle.length() > 0) {

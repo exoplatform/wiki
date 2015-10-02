@@ -17,30 +17,29 @@
 package org.exoplatform.wiki.service;
 
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-
+import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.mow.core.api.wiki.Model;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.GroupWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
-import org.exoplatform.wiki.service.impl.WikiServiceImpl;
+import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.xwiki.rendering.syntax.Syntax;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
 
 @SuppressWarnings("deprecation")
 public class TestWikiService extends AbstractMOWTestcase {
@@ -140,9 +139,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     Template template = new Template();
     template.setName("MyTemplate");
     template.setTitle("My Template");
-    Attachment templateContent = new Attachment();
-    templateContent.setText("My Great Template !");
-    template.setContent(templateContent);
+    template.setContent("My Great Template !");
     wService.createTemplatePage(wiki, template);
 
     WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE, "wikiForTemplate1", null);
@@ -150,7 +147,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(myTemplate);
     assertEquals("MyTemplate", myTemplate.getName());
     assertEquals("My Template", myTemplate.getTitle());
-    assertEquals("My Great Template !", myTemplate.getContent().getText());
+    assertEquals("My Great Template !", myTemplate.getContent());
   }
 
   public void testDeleteTemplatePage() throws WikiException {
@@ -159,9 +156,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     Template template = new Template();
     template.setName("MyTemplate");
     template.setTitle("My Template");
-    Attachment templateContent = new Attachment();
-    templateContent.setText("My Great Template !");
-    template.setContent(templateContent);
+    template.setContent("My Great Template !");
     wService.createTemplatePage(wiki, template);
 
     WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE, "wikiForTemplate2", null);
@@ -327,7 +322,7 @@ public class TestWikiService extends AbstractMOWTestcase {
   public void testSearchRenamedPage() throws WikiException {
     Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page page = wService.createPage(portalWiki, "WikiHome", new Page("Page", "Page"));
-    page.getContent().setText("This is a rename page test");
+    page.setContent("This is a rename page test");
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
     assertTrue(wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "Page", "Page01", "Page01"));
@@ -337,7 +332,7 @@ public class TestWikiService extends AbstractMOWTestcase {
 
     Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
     Page guestPage = wService.createPage(groupWiki, "WikiHome", new Page("Page", "Page"));
-    guestPage.getContent().setText("This is a rename guest page test");
+    guestPage.setContent("This is a rename guest page test");
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
     assertTrue(wService.renamePage(PortalConfig.GROUP_TYPE, "/platform/guests", "Page", "Page01", "Page01"));
@@ -347,7 +342,7 @@ public class TestWikiService extends AbstractMOWTestcase {
 
     Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
     Page demoPage = wService.createPage(userWiki, "WikiHome", new Page("Page", "Page"));
-    demoPage.getContent().setText("This is a rename demo page test");
+    demoPage.setContent("This is a rename demo page test");
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
     assertTrue(wService.renamePage(PortalConfig.USER_TYPE, "demo", "Page", "Page01", "Page01"));
@@ -359,36 +354,26 @@ public class TestWikiService extends AbstractMOWTestcase {
   public void testSearchContent() throws Exception {
     Wiki classicWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page kspage = new Page("knowledge suite", "knowledge suite");
-    Attachment ksContent = new Attachment();
-    ksContent.setText("forum faq wiki");
-    kspage.setContent(ksContent);
+    kspage.setContent("forum faq wiki");
     wService.createPage(classicWiki, "WikiHome", kspage);
 
     Wiki extWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "ext");
     Page ksExtPage = new Page("knowledge suite", "knowledge suite");
-    Attachment content = new Attachment();
-    content.setText("forum faq wiki");
-    ksExtPage.setContent(content);
+    ksExtPage.setContent("forum faq wiki");
     wService.createPage(extWiki, "WikiHome", ksExtPage);
 
     Wiki demoWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
     Page ksSocialPage = new Page("knowledge suite", "knowledge suite");
-    Attachment ksSocialContent = new Attachment();
-    ksSocialContent.setText("forum faq wiki");
-    ksSocialPage.setContent(ksSocialContent);
+    ksSocialPage.setContent("forum faq wiki");
     wService.createPage(demoWiki, "WikiHome", ksSocialPage);
 
     Page csPage = new Page("collaboration suite", "collaboration suite");
-    Attachment csContent = new Attachment();
-    csContent.setText("calendar mail contact chat");
-    csPage.setContent(csContent);
+    csPage.setContent("calendar mail contact chat");
     wService.createPage(classicWiki, "WikiHome", csPage);
 
     Wiki guestWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
     Page guestPage = new Page("Guest page", "Guest page");
-    Attachment guestContent = new Attachment();
-    guestContent.setText("Playground");
-    guestPage.setContent(guestContent);
+    guestPage.setContent("Playground");
     wService.createPage(guestWiki, "WikiHome", guestPage);
 
     // fulltext search
@@ -438,38 +423,29 @@ public class TestWikiService extends AbstractMOWTestcase {
   public void testSearch() throws Exception {
     Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page kspage = new Page("test search service", "test search service");
-    Attachment content = new Attachment();
-    content.setText("forum faq wiki exoplatform");
-    kspage.setContent(content);
+    kspage.setContent("forum faq wiki exoplatform");
     wService.createPage(wiki, "WikiHome", kspage) ;
 
     Wiki wikiExt = wService.createWiki(PortalConfig.PORTAL_TYPE, "ext");
     Page extPage = new Page("test search service ext", "test search service ext");
-    Attachment extPageContent = new Attachment();
-    extPageContent.setText("forum faq wiki exoplatform");
-    extPage.setContent(extPageContent);
+    extPage.setContent("forum faq wiki exoplatform");
     wService.createPage(wikiExt, "WikiHome", extPage) ;
 
-    /*
-    AttachmentImpl attachment1 = wService.createAttachment("attachment1.txt", Resource.createPlainText("foo")) ;
-    attachment1.setCreator("you") ;
-    assertEquals(attachment1.getName(), "attachment1.txt") ;
-    assertNotNull(attachment1.getContentResource()) ;
-    attachment1.setContentResource(Resource.createPlainText("exoplatform content mamagement")) ;
-    */
+    Attachment attachment = new Attachment();
+    attachment.setName("attachment1.txt");
+    attachment.setContent("exoplatform content mamagement".getBytes());
+    attachment.setCreator("you") ;
+    attachment.setMimeType("text/plain"); ;
+    wService.addAttachmentToPage(attachment, extPage);
 
     Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
     Page guestPage = new Page("guest platform", "guest platform");
-    Attachment guestPageContent = new Attachment();
-    guestPageContent.setText("exoplatform");
-    guestPage.setContent(guestPageContent);
+    guestPage.setContent("exoplatform");
     wService.createPage(groupWiki, "WikiHome", guestPage);
 
     Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
     Page userPage = new Page("demo", "demo");
-    Attachment userPageContent = new Attachment();
-    userPageContent.setText("exoplatform");
-    userPage.setContent(userPageContent);
+    userPage.setContent("exoplatform");
     wService.createPage(userWiki, "WikiHome", userPage);
 
     WikiSearchData data = new WikiSearchData("exoplatform", "exoplatform", null, null);
@@ -511,13 +487,6 @@ public class TestWikiService extends AbstractMOWTestcase {
     wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "/platform/guests"), "WikiHome", new Page("Dump guest Page", "Dump guest Page"));
     wService.createPage(new Wiki(PortalConfig.USER_TYPE, "demo"), "WikiHome", new Page("Dump demo Page", "Dump demo Page"));
 
-    /*
-    AttachmentImpl attachment1 = kspage.createAttachment("dumpFile.txt", Resource.createPlainText("foo"));
-    assertEquals(attachment1.getName(), "dumpFile.txt");
-    assertNotNull(attachment1.getContentResource());
-    kspage.getChromatticSession().save();
-    */
-
     // limit size is 2
     WikiSearchData data = new WikiSearchData("dump", null, null, null);
     data.setLimit(2);
@@ -549,32 +518,48 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals(1, result.size());
   }
 
+  public void testAddAttachment() throws WikiException {
+    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Page page = new Page("AddAttachment", "AddAttachment");
+    page = wService.createPage(wiki, "WikiHome", page);
+    Attachment attachment = new Attachment();
+    attachment.setName("attachment1.txt");
+    attachment.setContent("foo".getBytes());
+    attachment.setCreator("you");
+    attachment.setMimeType("text/plain");
+    wService.addAttachmentToPage(attachment, page);
 
-  // TODO ???
-  /*
-  public void testGetPageTitleOfAttachment() throws Exception {
-    Page kspage = wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "GetPageTitleOfAttachment", "WikiHome") ;
-    kspage.getContent().setText("forum faq wiki platform") ;
-    AttachmentImpl attachment1 = kspage.createAttachment("attachment1.txt", Resource.createPlainText("foo")) ;
-    attachment1.setCreator("you") ;    
-    assertEquals(attachment1.getName(), "attachment1.txt") ;
-    assertNotNull(attachment1.getContentResource()) ;
-    attachment1.setContentResource(Resource.createPlainText("exo platform content mamagement")) ;
-    
-    assertEquals("GetPageTitleOfAttachment", wService.getPageTitleOfAttachment(attachment1.getJCRContentPath())) ;
-    
+    page = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
+    assertNotNull(page);
+    List<Attachment> attachments = wService.getAttachmentsOfPage(page);
+    assertNotNull(attachments);
+    assertEquals(1, attachments.size());
+    assertEquals("foo", new String(attachments.get(0).getContent()));
+    assertNotNull(attachments.get(0).getDownloadURL());
   }
-  
-  public void testGetAttachmentAsStream() throws Exception {
-    Page kspage = wService.createPage(PortalConfig.PORTAL_TYPE, "classic", "GetAttachmentAsStream", "WikiHome") ;
-    kspage.getContent().setText("forum faq wiki platform") ;
-    AttachmentImpl attachment1 = kspage.createAttachment("attachment.txt", Resource.createPlainText("this is a text attachment")) ;
-    attachment1.setCreator("john") ;    
-    assertEquals(attachment1.getName(), "attachment.txt") ;
-    assertNotNull(attachment1.getContentResource()) ;    
-    assertNotNull(wService.getAttachmentAsStream(attachment1.getPath()+"/jcr:content")) ;    
+
+  public void testAddImageAttachment() throws WikiException, IOException {
+    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Page page = new Page("AddImageAttachment", "AddImageAttachment");
+    page = wService.createPage(wiki, "WikiHome", page);
+    Attachment attachment = new Attachment();
+    attachment.setName("John.png");
+    InputStream imageInputStream = this.getClass().getClassLoader().getResourceAsStream("images/John.png");
+    byte[] content = IOUtils.toByteArray(imageInputStream);
+    attachment.setContent(content);
+    attachment.setCreator("you");
+    attachment.setMimeType("image/png");
+    wService.addAttachmentToPage(attachment, page);
+
+    page = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
+    assertNotNull(page);
+    List<Attachment> attachments = wService.getAttachmentsOfPage(page);
+    assertNotNull(attachments);
+    assertEquals(1, attachments.size());
+    byte[] content1 = attachments.get(0).getContent();
+    assertTrue(Arrays.equals(content, content1));
+    assertNotNull(attachments.get(0).getDownloadURL());
   }
-  */
 
   public void testGetSyntaxPage() throws WikiException {
     Page syntaxPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString());
@@ -661,13 +646,11 @@ public class TestWikiService extends AbstractMOWTestcase {
     
     // Create a wiki page for test
     Page page = new Page("new page", "new page");
-    Attachment content = new Attachment();
-    content.setText("Page content");
-    page.setContent(content);
+    page.setContent("Page content");
     page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", page);
 
     // update it and create a version
-    page.getContent().setText("Page content updated");
+    page.setContent("Page content updated");
     wService.updatePage(page);
     wService.createVersionOfPage(page);
 

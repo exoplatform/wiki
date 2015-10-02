@@ -36,32 +36,30 @@ public class TestPageContent extends AbstractMOWTestcase {
     Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "classic");
     Page page = new Page("AddPageContent-001", "AddPageContent-001");
     page.setSyntax("xwiki_2.0");
-    page.getContent().setText("This is a content of page");
+    page.setContent("This is a content of page");
     wikiService.createPage(wiki, "WikiHome", page);
 
     page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "AddPageContent-001");
     assertNotNull(page);
     assertEquals("xwiki_2.0", page.getSyntax());
-    assertEquals("This is a content of page", page.getContent().getText());
+    assertEquals("This is a content of page", page.getContent());
   }
 
   public void testUpdatePageContent() throws Exception {
     Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "classic");
     Page page = new Page("UpdatePageContent-001", "UpdatePageContent-001");
     page.setSyntax("xwiki_2.0");
-    Attachment content = new Attachment();
-    content.setText("This is a content of page");
-    page.setContent(content);
+    page.setContent("This is a content of page");
     wikiService.createPage(wiki, "WikiHome", page);
 
-    content.setText("This is a content of page - edited");
+    page.setContent("This is a content of page - edited");
     page.setSyntax("xwiki_2.1");
     wikiService.updatePage(page);
 
     page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "UpdatePageContent-001");
     assertNotNull(page);
     assertEquals(page.getSyntax(), "xwiki_2.1");
-    assertEquals(page.getContent().getText(), "This is a content of page - edited");
+    assertEquals(page.getContent(), "This is a content of page - edited");
   }
 
 }

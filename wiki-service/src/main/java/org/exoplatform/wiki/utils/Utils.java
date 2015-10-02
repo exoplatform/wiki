@@ -569,7 +569,7 @@ public class Utils {
     
     // Get differences
     String pageTitle = page.getTitle();
-    String currentVersionContent = content.getText();
+    String currentVersionContent = new String(content.getContent());
     List<PageVersion> versions = wikiService.getVersionsOfPage(page);
     String previousVersionContent = StringUtils.EMPTY;
     if(versions != null && !versions.isEmpty()) {

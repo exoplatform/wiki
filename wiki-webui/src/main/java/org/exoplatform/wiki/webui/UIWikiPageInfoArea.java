@@ -30,6 +30,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
+import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
@@ -78,6 +79,11 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
       log.warn("An error happened when getting current wiki page", e);
     }
     return currentPage;
+  }
+
+  protected int getNumberOfAttachments(Page page) {
+    PageRenderingCacheService cacheService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
+    return cacheService.getAttachmentCount(page);
   }
 
   protected int getNumberOfVersions(Page page) {

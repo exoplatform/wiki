@@ -201,7 +201,7 @@ public class UIWikiMyDraftsForm extends UIForm {
             UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
             UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
             String title = draftPage.getTitle();
-            String content = draftPage.getContent().getText();
+            String content = draftPage.getContent();
             titleInput.setReadOnly(false);
             titleInput.setValue(title);
             pageEditForm.setTitle(title);

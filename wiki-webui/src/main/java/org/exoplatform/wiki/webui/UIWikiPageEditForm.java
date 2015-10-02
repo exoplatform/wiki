@@ -395,7 +395,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
           UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
 
           String title = draftPage.getTitle();
-          String content = draftPage.getContent().getText();
+          String content = draftPage.getContent();
           titleInput.setEditable(true);
           titleInput.setValue(title);
           pageEditForm.setTitle(title);

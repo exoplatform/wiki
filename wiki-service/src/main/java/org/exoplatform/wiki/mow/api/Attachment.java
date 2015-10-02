@@ -69,11 +69,6 @@ public class Attachment {
   private String mimeType;
 
   /**
-   * Text representation of the content item
-   */
-  private String text;
-
-  /**
    * Permissions on the attachment
    */
   private HashMap<String, String[]> permissions;
@@ -156,14 +151,6 @@ public class Attachment {
 
   public void setMimeType(String mimeType) {
     this.mimeType = mimeType;
-  }
-
-  public String getText() {
-    return text;
-  }
-
-  public void setText(String text) {
-    this.text = text;
   }
 
   public HashMap<String, String[]> getPermissions() {

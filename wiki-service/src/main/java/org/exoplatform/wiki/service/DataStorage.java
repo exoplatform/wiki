@@ -95,9 +95,13 @@ public interface DataStorage {
 
   public List<SearchResult> searchRenamedPage(WikiSearchData data) throws WikiException;
 
+  public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException;
+
   public Page getPageOfAttachment(Attachment attachment) throws WikiException;
 
-  public InputStream getAttachmentAsStream(String path) throws WikiException;
+  public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException;
+
+  public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException;
 
   public Object findByPath(String path, String objectNodeType) throws WikiException;
 

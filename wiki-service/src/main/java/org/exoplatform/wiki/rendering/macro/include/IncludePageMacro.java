@@ -110,7 +110,7 @@ public class IncludePageMacro extends AbstractMacro<IncludePageMacroParameters> 
       ec.setProperty(WikiContext.WIKICONTEXT, includeCtx);      
       if (page != null) {
         includeContent.append("<div class=\"IncludePage \" >");
-        includeContent.append(getRenderingService().render(page.getContent().getText(),
+        includeContent.append(getRenderingService().render(page.getContent(),
                                                       page.getSyntax(),
                                                       Syntax.XHTML_1_0.toIdString(),
                                                       false));

@@ -295,6 +295,23 @@ public interface WikiService {
   public long getEditPageLivingTime();
 
   /**
+   * Gets attachments of the given page
+   * @param page The wiki page
+   * @return The attachments of the page
+   * @throws WikiException
+   */
+  public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException;
+
+  /**
+   * Get a attachment of a ther given page by name
+   * @param attachmentName The name of the attachment
+   * @param page The wiki page
+   * @return
+   * @throws WikiException
+   */
+  public Attachment getAttachmentsOfPageByName(String attachmentName, Page page) throws WikiException;
+
+  /**
    * Gets title of a wiki attachment.
    *
    * @param path Path of the attachment.
@@ -313,13 +330,20 @@ public interface WikiService {
   public Page getPageOfAttachment(Attachment attachment) throws WikiException;
 
   /**
-   * Gets a stream of a wiki attachment.
-   *
-   * @param path Path of the wiki attachment.
-   * @return The stream of the wiki attachment.
+   * Add the given attachment to the given page
+   * @param attachment The attachment to add
+   * @param page The wiki page
    * @throws WikiException
    */
-  public InputStream getAttachmentAsStream(String path) throws WikiException;
+  public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException;
+
+  /**
+   * Deletes the given attachment of the given page
+   * @param attachmentId Id of the attachment
+   * @param page The wiki page
+   * @throws WikiException
+   */
+  public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException;
 
   /**
    * Gets a Help wiki page based on a given syntax Id.

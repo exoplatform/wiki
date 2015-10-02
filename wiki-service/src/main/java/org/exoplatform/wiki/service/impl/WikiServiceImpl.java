@@ -10,7 +10,6 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.ComponentPlugin;
-import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
@@ -44,7 +43,6 @@ import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.rendering.syntax.Syntax;
 
-import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -267,9 +265,7 @@ public class WikiServiceImpl implements WikiService, Startable {
           Template template = new Template();
           template.setName("MyTemplate");
           template.setTitle("My Great Template !");
-          Attachment templateContent = new Attachment();
-          templateContent.setText("My Great Template !");
-          template.setContent(templateContent);
+          template.setContent("My Great Template !");
           dataStorage.createTemplatePage(wiki, template);
         }
       }
@@ -642,7 +638,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       //template = dataStorage.getTemplatesContainer(params).addPage(TitleResolver.getId(newTitle, false), template);
       template.setDescription(StringEscapeUtils.escapeHtml(newDescription));
       template.setTitle(newTitle);
-      template.getContent().setText(newContent);
+      template.setContent(newContent);
       template.setSyntax(newSyntaxId);
     }
   }
@@ -854,7 +850,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     DiffService diffService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(DiffService.class);
     DiffResult diffResult;
     try {
-      diffResult = diffService.getDifferencesAsHTML(targetContent, draftPage.getContent().getText(), true);
+      diffResult = diffService.getDifferencesAsHTML(targetContent, draftPage.getContent(), true);
     } catch (DifferentiationFailedException e) {
       throw new WikiException("Cannot get changes of draft " + draftPage.getWikiType() + ":"
               + draftPage.getWikiOwner() + ":" + draftPage.getName() + " - Cause : " + e.getMessage(), e);
@@ -865,6 +861,24 @@ public class WikiServiceImpl implements WikiService, Startable {
 
 
   /******* Attachment *******/
+
+  @Override
+  public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException {
+    return dataStorage.getAttachmentsOfPage(page);
+  }
+
+  @Override
+  public Attachment getAttachmentsOfPageByName(String attachmentName, Page page) throws WikiException {
+    Attachment attachment = null;
+    List<Attachment> attachments = dataStorage.getAttachmentsOfPage(page);
+    for(Attachment att : attachments) {
+      if(att.getName().equals(attachmentName)) {
+        attachment = att;
+        break;
+      }
+    }
+    return attachment;
+  }
 
   @Override
   public String getPageTitleOfAttachment(String path) throws WikiException {
@@ -879,12 +893,13 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public InputStream getAttachmentAsStream(String path) throws WikiException {
-    try {
-      return dataStorage.getAttachmentAsStream(path);
-    } catch (WikiException e) {
-      return null;
-    }
+  public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException {
+    dataStorage.addAttachmentToPage(attachment, page);
+  }
+
+  @Override
+  public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException {
+    dataStorage.deleteAttachmentOfPage(attachmentId, page);
   }
 
   /******* Spaces *******/

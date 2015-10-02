@@ -22,9 +22,8 @@ import javax.inject.Named;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.utils.Utils;
@@ -171,11 +170,9 @@ public class DefaultLinkService implements LinkService {
       wikiType = entityReference.getParent().getParent().getParent().getName();
       try {
         page = wservice.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
-        // TODO need getAttachmentByRootPermisison
-        //AttachmentImpl att = page.getAttachmentByRootPermisison(TitleResolver.getId(attachmentId, false));
-        AttachmentImpl att = null;
-        if (att != null) {
-          return att.getDownloadURL();
+        Attachment attachment = wservice.getAttachmentsOfPageByName(attachmentId, page);
+        if (attachment != null) {
+          return attachment.getDownloadURL();
         }
       } catch (Exception e) {
         log.error("Exception happen when finding attachment " + attachmentId, e);

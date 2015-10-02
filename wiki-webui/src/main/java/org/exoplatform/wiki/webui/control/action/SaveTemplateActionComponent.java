@@ -33,7 +33,6 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Template;
-import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -147,7 +146,7 @@ public class SaveTemplateActionComponent extends UIComponent {
           // TODO should create template with a Template object
           Template template = new Template();
           template.setDescription(StringEscapeUtils.escapeHtml(description));
-          template.getContent().setText(markup);
+          template.setContent(markup);
           template.setSyntax(syntaxId);
           template.setPermission(null);
           wikiService.createTemplatePage(Utils.getCurrentWiki(), template);

@@ -149,7 +149,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
 
   public void _testInvalidateCache2() throws Exception {
     Page acaHome = wikiService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "aca", "WikiHome");
-    acaHome.getContent().setText("[[childaca]]");
+    acaHome.setContent("[[childaca]]");
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
     setupWikiContext(new WikiPageParams(PortalConfig.PORTAL_TYPE, "aca", "WikiHome"));
@@ -180,7 +180,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     wikiService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "aca"), "WikiHome", new Page("childaca10", "childaca10"));
     RequestLifeCycle.end();
     RequestLifeCycle.begin(container);
-    acaHome.getContent().setText("[[childaca10]]");
+    acaHome.setContent("[[childaca10]]");
     acaHomeContent = renderingCacheService.getRenderedContent(acaHome, Syntax.XHTML_1_0.toIdString());
     assertEquals("<p><span class=\"wikilink\"><a href=\"childaca10\"><span class=\"wikigeneratedlinkcontent\">childaca10</span></a></span></p>",
                  acaHomeContent);

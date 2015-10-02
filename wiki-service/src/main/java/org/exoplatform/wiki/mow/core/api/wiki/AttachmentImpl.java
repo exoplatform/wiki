@@ -125,7 +125,11 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
   }
   
   public String getFullTitle() {
-    String fullTitle = (getFileType() == null) ? getTitle() : getTitle().concat(getFileType());
+    String title = getTitle();
+    if(title == null) {
+      return null;
+    }
+    String fullTitle = (getFileType() == null) ? title : title.concat(getFileType());
     return (fullTitle != null) ? fullTitle : getName();
   }
 

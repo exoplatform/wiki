@@ -162,7 +162,7 @@ public class UpdatePageRenderingCacheAction implements Action {
     PageRenderingCacheService pRenderingCacheService = (PageRenderingCacheService)
                         container.getComponentInstanceOfType(PageRenderingCacheService.class);
     
-    String content = page.getContent().getText();
+    String content = page.getContent();
     boolean found = false;
     for (String macro : pRenderingCacheService.getUncachedMacroes()) {
       String m1 = new StringBuilder().append("{{").append(macro).append("}}").toString();

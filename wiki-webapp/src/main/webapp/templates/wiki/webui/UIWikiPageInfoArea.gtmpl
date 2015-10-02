@@ -16,11 +16,8 @@
   String author = Utils.getFullName(currentWikiPage.getAuthor());
   def createdDate = df.format(currentWikiPage.getCreatedDate());
   def updatedDate = df.format(currentWikiPage.getUpdatedDate());
-  PageRenderingCacheService cacheService = 
-      (PageRenderingCacheService)ExoContainerContext.getCurrentContainer()
-        .getComponentInstanceOfType(PageRenderingCacheService.class);
-  
-  int attachmentsTotal =  cacheService.getAttachmentCount(currentWikiPage);
+
+  int attachmentsTotal =  uicomponent.getNumberOfAttachments(currentWikiPage);
   int versionsTotal = uicomponent.getNumberOfVersions(currentWikiPage) ;
 
   String viewChangeSufix = "_changes";

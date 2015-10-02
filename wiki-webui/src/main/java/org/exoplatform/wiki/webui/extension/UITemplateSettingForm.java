@@ -95,7 +95,7 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
       titleInput.setValue(template.getTitle());
       descriptionInput.setValue(template.getDescription());
       pageEditForm.setTitle(template.getTitle());
-      markupInput.setValue(template.getContent().getText());
+      markupInput.setValue(template.getContent());
       
       markupInput.setRendered(true);
       pageEditForm.getChild(UIWikiRichTextArea.class).setRendered(false);

@@ -31,11 +31,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.wiki.mow.api.DraftPage;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
@@ -44,6 +42,7 @@ import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
 import org.exoplatform.wiki.service.related.RelatedUtil;
 import org.exoplatform.wiki.service.rest.model.*;
+import org.exoplatform.wiki.service.rest.model.Attachment;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
@@ -187,24 +186,26 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
             imageBytes = null;
           }
           String fileName = Utils.escapeIllegalCharacterInName(fileItem.getName());
-          if (fileName != null)
+          if (fileName != null) {
             // It's necessary because IE posts full path of uploaded files
-            fileName = FilenameUtils.getName(fileName);          
-          String mimeType = new MimeTypeResolver().getMimeType(StringUtils.lowerCase(fileName));
-          WikiResource attachfile = new WikiResource(mimeType, "UTF-8", imageBytes);
-          attachfile.setName(fileName);
-          if (attachfile != null) {
-            WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-            Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
-            // TODO need createAttachment
-            //AttachmentImpl att = page.createAttachment(attachfile.getName(), attachfile);
-            ConversationState conversationState = ConversationState.getCurrent();
-            String creator = null;
-            if (conversationState != null && conversationState.getIdentity() != null) {
-              creator = conversationState.getIdentity().getUserId();
-            }
-            //att.setCreator(creator);
+            fileName = FilenameUtils.getName(fileName);
           }
+          String mimeType = new MimeTypeResolver().getMimeType(StringUtils.lowerCase(fileName));
+
+          WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+          Page page = wikiService.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
+          org.exoplatform.wiki.mow.api.Attachment attachment = new org.exoplatform.wiki.mow.api.Attachment();
+          attachment.setName(fileName);
+          if (fileName.lastIndexOf(".") > 0) {
+            attachment.setTitle(fileName.substring(0, fileName.lastIndexOf(".")));
+          }
+          attachment.setMimeType(mimeType);
+          attachment.setContent(imageBytes);
+          ConversationState conversationState = ConversationState.getCurrent();
+          if (conversationState != null && conversationState.getIdentity() != null) {
+            attachment.setCreator(conversationState.getIdentity().getUserId());
+          }
+          wikiService.addAttachmentToPage(attachment, page);
         }
       } catch (IllegalArgumentException e) {
         log.error("Special characters are not allowed in the name of an attachment.");
@@ -518,9 +519,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     Page page;
     try {
       page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
-      // TODO attachments
-      //List<org.exoplatform.wiki.mow.api.Attachment> pageAttachments = page.getAttachments();
-      List<org.exoplatform.wiki.mow.api.Attachment> pageAttachments = Collections.EMPTY_LIST;
+      List<org.exoplatform.wiki.mow.api.Attachment> pageAttachments = wikiService.getAttachmentsOfPage(page);
       for (org.exoplatform.wiki.mow.api.Attachment pageAttachment : pageAttachments) {
         attachments.getAttachments().add(createAttachment(objectFactory, uriInfo.getBaseUri(), pageAttachment, "attachment", "attachment"));
       }
@@ -554,7 +553,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       for (SearchResult searchResult : results) {
         String url = null;
         if (WikiNodeType.WIKI_ATTACHMENT.equals(searchResult.getType())) {
-          url = ((AttachmentImpl)Utils.getObject(searchResult.getPath(), searchResult.getType())).getDownloadURL();
+          // TODO need getAttachmentByPath ???
+          //url = ((AttachmentImpl)Utils.getObject(searchResult.getPath(), searchResult.getType())).getDownloadURL();
+          url = "";
           String attachmentName = searchResult.getPath().substring(searchResult.getPath().lastIndexOf("/")+1);
           titleSearchResults.add(new TitleSearchResult(attachmentName, searchResult.getPath(), searchResult.getType(), url));
         } else {
@@ -590,13 +591,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     InputStream result;
     try {
       ResizeImageService resizeImgService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
-      Page page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
+      org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
-      // TODO attachments
-      //List<org.exoplatform.wiki.mow.api.Attachment> attachments = page.getAttachments();
-      List<org.exoplatform.wiki.mow.api.Attachment> attachments = Collections.EMPTY_LIST;
+      List<org.exoplatform.wiki.mow.api.Attachment> attachments = wikiService.getAttachmentsOfPage(page);
       org.exoplatform.wiki.mow.api.Attachment imageAttachment = null;
       for(org.exoplatform.wiki.mow.api.Attachment attachment : attachments) {
         if(attachment.getName().equals(imageId)) {
@@ -692,7 +691,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     calendar.setTime(doc.getUpdatedDate());
     page.setModified(calendar);
 
-    page.setContent(doc.getContent().getText());
+    page.setContent(doc.getContent());
 
     if (self != null) {
       Link pageLink = objectFactory.createLink();
@@ -817,9 +816,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       pageSummary.getLinks().add(pageChildrenLink);
     }
 
-    // TODO attachments
-    /*
-    if (!page.getAttachments().isEmpty()) {
+    List<org.exoplatform.wiki.mow.api.Attachment> attachments = wikiService.getAttachmentsOfPage(page);
+    if (!attachments.isEmpty()) {
       String attachmentsUri;
       attachmentsUri = UriBuilder.fromUri(baseUri)
                                  .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}/attachments")
@@ -833,7 +831,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       attachmentsLink.setRel(Relations.ATTACHMENTS);
       pageSummary.getLinks().add(attachmentsLink);
     }
-    */
 
   }
   
@@ -915,7 +912,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       }
       
       // Get help page body
-      String body = renderingService.render(fullHelpPage.getContent().getText(), fullHelpPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
+      String body = renderingService.render(fullHelpPage.getContent(), fullHelpPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
       
       // Create javascript to load css
       StringBuilder script = new StringBuilder("<script type=\"text/javascript\">")
@@ -1048,7 +1045,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       } else {
         draftPage.setTitle(title);
       }
-      draftPage.getContent().setText(content);
+      draftPage.setContent(content);
       // TODO need an updatePage ? updateDraftPage ?
       //draftPage.getChromatticSession().save();
       

@@ -23,7 +23,6 @@ import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
@@ -171,9 +170,7 @@ public class WikiDataInjector extends DataInjector {
   private Page createPage(Page father, String title, String wikiOwner, String wikiType, int attSize) throws WikiException {
     Page newPage = new Page();
     newPage.setTitle(title);
-    Attachment content = new Attachment();
-    content.setText(randomParagraphs(10));
-    newPage.setContent(content);
+    newPage.setContent(randomParagraphs(10));
     Page page = wikiService.createPage(new Wiki(wikiType, wikiOwner), father.getName(), newPage);
     if (attSize > 0) {
       // TODO need createAttachment

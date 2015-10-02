@@ -349,7 +349,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       String title = pageToRename.getTitle();
-      String content = pageToRename.getContent().getText();
+      String content = pageToRename.getContent();
       titleInput.setEditable(true);
       titleInput.setValue(title);
       pageEditForm.setTitle(title);

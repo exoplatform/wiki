@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.common.IO;
 import org.chromattic.core.api.ChromatticSessionImpl;
+import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
@@ -41,10 +42,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.*;
 
 public class JCRDataStorage implements DataStorage {
@@ -112,7 +110,7 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setTitle(page.getTitle());
     String text = "";
     if(page.getContent() != null) {
-      text = page.getContent().getText();
+      text = page.getContent();
     }
     pageImpl.getContent().setText(text);
     pageImpl.setSyntax(page.getSyntax());
@@ -235,7 +233,7 @@ public class JCRDataStorage implements DataStorage {
 
     templatePage.setName(template.getName());
     templatePage.setTitle(template.getTitle());
-    templatePage.getContent().setText(template.getContent().getText());
+    templatePage.getContent().setText(template.getContent());
   }
 
   public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws WikiException {
@@ -1041,23 +1039,40 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
+  public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException {
+    List<Attachment> attachments = new ArrayList<>();
+
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    try {
+      for (AttachmentImpl attachmentImpl : pageImpl.getAttachmentsExcludeContent()) {
+        attachments.add(convertAttachmentImplToAttachment(attachmentImpl));
+      }
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot get attachments of page "
+              + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName(), e);
+    }
+
+    return attachments;
+  }
+
+  @Override
   public Page getPageOfAttachment(Attachment attachment) throws WikiException {
     // TODO
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public InputStream getAttachmentAsStream(String path) throws WikiException {
-    Model model = getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    ChromatticSession session = wStore.getSession();
+  public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException {
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    AttachmentImpl attachmentImpl = pageImpl.createAttachment(attachment.getName(), new Resource(attachment.getMimeType(), "UTF-8", attachment.getContent()));
+    attachmentImpl.setTitle(attachment.getTitle());
+    attachmentImpl.setCreator(attachment.getCreator());
+  }
 
-    try {
-      Node attContent = (Node) session.getJCRSession().getItem(path);
-      return attContent.getProperty(WikiNodeType.Definition.DATA).getStream();
-    } catch(RepositoryException e) {
-      throw new WikiException("Cannot get attachment " + path, e);
-    }
+  @Override
+  public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException {
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    pageImpl.removeAttachment(attachmentId);
   }
 
   @Override
@@ -1241,7 +1256,7 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setSyntax(page.getSyntax());
     pageImpl.setPermission(page.getPermission());
     pageImpl.setURL(page.getUrl());
-    pageImpl.getContent().setText(page.getContent().getText());
+    pageImpl.getContent().setText(page.getContent());
     pageImpl.setComment(page.getComment());
 
     model.save();
@@ -1699,7 +1714,7 @@ public class JCRDataStorage implements DataStorage {
       page.setUpdatedDate(pageImpl.getUpdatedDate());
       page.setPath(pageImpl.getPath());
       page.setComment(pageImpl.getComment());
-      page.setContent(convertAttachmentImplToAttachment(pageImpl.getContent()));
+      page.setContent(pageImpl.getContent().getText());
       page.setSyntax(pageImpl.getSyntax());
       page.setPermission(pageImpl.getPermission());
     }
@@ -1730,7 +1745,7 @@ public class JCRDataStorage implements DataStorage {
       draftPage.setUpdatedDate(draftPageImpl.getUpdatedDate());
       draftPage.setPath(draftPageImpl.getPath());
       draftPage.setComment(draftPageImpl.getComment());
-      draftPage.setContent(convertAttachmentImplToAttachment(draftPageImpl.getContent()));
+      draftPage.setContent(draftPageImpl.getContent().getText());
       draftPage.setSyntax(draftPageImpl.getSyntax());
       draftPage.setPermission(draftPageImpl.getPermission());
 
@@ -1753,10 +1768,8 @@ public class JCRDataStorage implements DataStorage {
       attachment.setUpdatedDate(attachmentImpl.getUpdatedDate());
       attachment.setContent(attachmentImpl.getContentResource().getData());
       attachment.setMimeType(attachmentImpl.getContentResource().getMimeType());
-      attachment.setText(attachmentImpl.getText());
       attachment.setPermissions(attachmentImpl.getPermission());
-      // TODO ???
-      //attachment.setDownloadURL(attachmentImpl.getDownloadURL());
+      attachment.setDownloadURL(attachmentImpl.getDownloadURL());
       attachment.setWeightInBytes(attachmentImpl.getWeightInBytes());
     }
     return attachment;
@@ -1769,9 +1782,7 @@ public class JCRDataStorage implements DataStorage {
       template.setName(templateImpl.getName());
       template.setTitle(templateImpl.getTitle());
       template.setDescription(templateImpl.getDescription());
-      Attachment content = new Attachment();
-      content.setText(templateImpl.getContent().getText());
-      template.setContent(content);
+      template.setContent(templateImpl.getContent().getText());
     }
     return template;
   }

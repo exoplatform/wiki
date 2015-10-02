@@ -71,7 +71,7 @@ public class UIWikiSidePanelArea extends UIContainer {
     Page syntaxHelpPage = wikiService.getHelpSyntaxPage(syntaxId);
     this.syntaxName = syntaxId.replace("/", " ").toUpperCase();
     if (syntaxHelpPage != null) {
-      String markup = syntaxHelpPage.getContent().getText();
+      String markup = syntaxHelpPage.getContent();
       this.htmlOutput = renderingService.render(markup, syntaxId, Syntax.XHTML_1_0.toIdString(), false);
       this.syntaxFullPageUrl = "/" + PortalContainer.getInstance().getRestContextName() + "/wiki/help/"
           + syntaxId.replace("/", Utils.SLASH).replace(".", Utils.DOT)

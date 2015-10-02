@@ -535,9 +535,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
         wikiService.updatePage(page);
 
         HashMap<String, String[]> pagePermissions = page.getPermission();
-        // TODO need getAttachmentsExcludeContentByRootPermisison
-        //Collection<AttachmentImpl> attachments = page.getAttachmentsExcludeContentByRootPermisison();
-        Collection<Attachment> attachments = Collections.EMPTY_LIST;
+        List<Attachment> attachments = wikiService.getAttachmentsOfPage(page);
         Set<String> permissionKeys = new HashSet<String> (pagePermissions.keySet());
         for (Attachment attachment : attachments) {
           HashMap<String, String[]> permissions = attachment.getPermissions();
@@ -554,6 +552,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
           for (String permissionEntry : permissionKeys) {
             permissions.put(permissionEntry, new String[] {org.exoplatform.wiki.utils.Utils.getReadPermissionText()});
           }
+          // TODO need an updateAttachement ??
           attachment.setPermissions(permissions);
         }
 

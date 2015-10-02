@@ -39,7 +39,7 @@ public class ExcerptUtils {
             params.getOwner(),
             params.getPageId());
 
-    return getExcerpts(page.getContent().getText(), page.getSyntax());
+    return getExcerpts(page.getContent(), page.getSyntax());
   }
   
   private static String getExcerpts(String markup, String sourceSyntax) throws Exception {

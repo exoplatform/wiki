@@ -16,8 +16,6 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
-import java.util.ResourceBundle;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -31,19 +29,14 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
-import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Template;
-import org.exoplatform.wiki.webui.EditorMode;
-import org.exoplatform.wiki.webui.UIWikiMaskWorkspace;
-import org.exoplatform.wiki.webui.UIWikiPageEditForm;
-import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
-import org.exoplatform.wiki.webui.UIWikiPortlet;
+import org.exoplatform.wiki.webui.*;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
-import org.exoplatform.wiki.webui.UIWikiTemplateDescriptionContainer;
-import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.commons.UIWikiGrid;
 import org.exoplatform.wiki.webui.commons.UIWikiTemplateForm;
 import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
+
+import java.util.ResourceBundle;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
@@ -98,7 +91,7 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
         titleInput.setValue(template.getTitle());
         descriptionInput.setValue(template.getDescription());
         pageEditForm.setTitle(template.getTitle());
-        markupInput.setValue(template.getContent().getText());
+        markupInput.setValue(template.getContent());
 
         if (EditorMode.RICHTEXT.equals(wikiPortlet.getEditorMode())) {
           Utils.feedDataForWYSIWYGEditor(pageEditForm, null);
@@ -123,8 +116,7 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
       String templateId = event.getRequestContext().getRequestParameter(OBJECTID);
       Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(),
                                                         templateId);
-      Attachment content = template.getContent();
-      wikiPagePreview.renderWikiMarkup(content.getText(), template.getSyntax());
+      wikiPagePreview.renderWikiMarkup(template.getContent(), template.getSyntax());
       String pageTitle = template.getTitle();
       if (pageTitle != null) wikiPagePreview.setPageTitle(pageTitle);
       mask.setUIComponent(wikiPagePreview);

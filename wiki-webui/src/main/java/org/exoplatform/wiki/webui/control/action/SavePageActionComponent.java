@@ -34,7 +34,6 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
-import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -52,7 +51,9 @@ import org.exoplatform.wiki.webui.control.filter.IsEditAddPageModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UISubmitToolBarActionListener;
 import org.xwiki.rendering.syntax.Syntax;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/SavePageActionComponent.gtmpl",
@@ -168,7 +169,7 @@ public class SavePageActionComponent extends UIComponent {
             if (wikiPortlet.getEditMode() == EditMode.SECTION) {
               newPageName = page.getName();
               title = page.getTitle();
-              markup = renderingService.updateContentOfSection(page.getContent().getText(),
+              markup = renderingService.updateContentOfSection(page.getContent(),
                                                                page.getSyntax(),
                                                                wikiPortlet.getSectionIndex(),
                                                                markup);
@@ -204,8 +205,8 @@ public class SavePageActionComponent extends UIComponent {
               pageParams.setPageId(page.getName());
               page.setUrl(Utils.getURLFromParams(pageParams));
               
-              if (!page.getContent().getText().equals(markup)) {
-                page.getContent().setText(markup);
+              if (!page.getContent().equals(markup)) {
+                page.setContent(markup);
                 isContentChange = true;
               }
 
@@ -239,9 +240,7 @@ public class SavePageActionComponent extends UIComponent {
             Page newPage = new Page();
             newPage.setName(title);
             newPage.setTitle(title);
-            Attachment content = new Attachment();
-            content.setText(markup);
-            newPage.setContent(content);
+            newPage.setContent(markup);
             newPage.setSyntax(syntaxId);
             Page createdPage = wikiService.createPage(wiki, page.getName(), newPage);
             pageParams.setPageId(newPageName);

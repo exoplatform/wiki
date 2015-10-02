@@ -22,6 +22,7 @@ import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.RenderingService;
@@ -84,7 +85,7 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
         }
       }
       */
-      String markup = page.getContent().getText();
+      String markup = page.getContent();
       renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
       renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
@@ -124,19 +125,23 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
     int attachmentCount = 0;
     Wiki wiki;
     try {
+      // TODO ??
+      /*
       wiki = wikiService.getWikiById(page.getWikiId());
       boolean supportSectionEdit = wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
-//      PageImpl page = (PageImpl) wikiService.getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageId());
-      MarkupKey key = new MarkupKey(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()), 
+      MarkupKey key = new MarkupKey(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()),
                                     page.getSyntax(), Syntax.XHTML_1_0.toIdString(), supportSectionEdit);
       AttachmentCountData cachedData = attachmentCountCache.get(new Integer(key.hashCode()));
       if (cachedData != null) {
         return cachedData.build();
       }
-      // TODO ???
-      //attachmentCount = page.getAttachmentsExcludeContent().size();
-      attachmentCount = 0;
-      attachmentCountCache.put(new Integer(key.hashCode()), new AttachmentCountData(attachmentCount));
+      */
+      List<Attachment> attachments = wikiService.getAttachmentsOfPage(page);
+      if(attachments != null) {
+        attachmentCount = attachments.size();
+      }
+      // TODO ??
+      //attachmentCountCache.put(new Integer(key.hashCode()), new AttachmentCountData(attachmentCount));
     } catch (Exception e) {
       LOG.error(String.format("Failed to get attachment count of page [%s]", page.getName()), e);
     }

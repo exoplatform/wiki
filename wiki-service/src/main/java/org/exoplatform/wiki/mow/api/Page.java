@@ -33,7 +33,7 @@ public class Page {
 
   private Date updatedDate;
 
-  private Attachment content;
+  private String content;
 
   private String syntax;
 
@@ -56,7 +56,6 @@ public class Page {
   private boolean isMinorEdit;
 
   public Page() {
-    content = new Attachment();
   }
 
   public Page(String name, String title) {
@@ -113,11 +112,11 @@ public class Page {
     this.updatedDate = updatedDate;
   }
 
-  public Attachment getContent() {
+  public String getContent() {
     return content;
   }
 
-  public void setContent(Attachment content) {
+  public void setContent(String content) {
     this.content = content;
   }
 

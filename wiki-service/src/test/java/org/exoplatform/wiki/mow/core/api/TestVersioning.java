@@ -54,10 +54,10 @@ public class TestVersioning extends AbstractMOWTestcase {
     page = wikiService.createPage(wiki, "WikiHome", page);
 
     page.setTitle("testCreateVersionHistoryTree");
-    page.getContent().setText("testCreateVersionHistoryTree-ver1.0");
+    page.setContent("testCreateVersionHistoryTree-ver1.0");
     wikiService.createVersionOfPage(page);
 
-    page.getContent().setText("testCreateVersionHistoryTree-ver2.0");
+    page.setContent("testCreateVersionHistoryTree-ver2.0");
     wikiService.createVersionOfPage(page);
 
     List<PageVersion> versions = wikiService.getVersionsOfPage(page);
