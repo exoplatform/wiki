@@ -32,6 +32,7 @@ import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.core.api.wiki.Model;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -142,7 +143,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
     }
   }
   
-  protected WikiImpl getWiki(WikiType wikiType, String wikiName, Model model) {
+  protected WikiImpl getWiki(WikiType wikiType, String wikiName, Model model) throws WikiException {
     Model mod = model;
     if (mod == null) {
       mod = mowService.getModel();
@@ -167,8 +168,8 @@ public abstract class AbstractMOWTestcase extends TestCase {
     return wiki;
   }
   
-  protected WikiHome getWikiHomeOfWiki(WikiType wikiType, String wikiName, Model model) {
-    WikiHome wikiHomePage = (WikiHome) getWiki(wikiType, wikiName, model).getWikiHome();
+  protected WikiHome getWikiHomeOfWiki(WikiType wikiType, String wikiName, Model model) throws WikiException {
+    WikiHome wikiHomePage = getWiki(wikiType, wikiName, model).getWikiHome();
     return wikiHomePage;
   }
   

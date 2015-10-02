@@ -21,6 +21,7 @@ import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.*;
 import org.chromattic.ext.ntdef.NTFile;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.Permission;
@@ -29,6 +30,8 @@ import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.utils.Utils;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -152,21 +155,21 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
     setContentResource(textContent);
   }
   
-  public boolean hasPermission(PermissionType permissionType) throws Exception {
+  public boolean hasPermission(PermissionType permissionType) {
     if (permission.getMOWService() == null) {
       permission.setMOWService(getParentPage().getMOWService());
     }
     return permission.hasPermission(permissionType, getPath());
   }
   
-  public HashMap<String, String[]> getPermission() throws Exception {
+  public HashMap<String, String[]> getPermission() throws WikiException {
     if (permission.getMOWService() == null) {
       permission.setMOWService(getParentPage().getMOWService());
     }
     return permission.getPermission(getPath());
   }
 
-  public void setPermission(HashMap<String, String[]> permissions) throws Exception {
+  public void setPermission(HashMap<String, String[]> permissions) throws WikiException {
     if (permission.getMOWService() == null) {
       permission.setMOWService(getParentPage().getMOWService());
     }
@@ -199,7 +202,7 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
   }
   
   //TODO: replace by @Checkin when Chromattic support
-  public NTVersion checkin() throws Exception {
+  public NTVersion checkin() throws RepositoryException {
     getChromatticSession().save();
     Node pageNode = getJCRNode();
     Version newVersion = pageNode.checkin();
@@ -208,7 +211,7 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
   }
   
   //TODO: replace by @Checkout when Chromattic support
-  public void checkout() throws Exception {
+  public void checkout() throws RepositoryException {
     Node pageNode = getJCRNode();
     pageNode.checkout();
   }
@@ -223,7 +226,7 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
     return org.exoplatform.wiki.rendering.util.Utils.getService(MOWService.class).getSession();
   }
   
-  public Node getJCRNode() throws Exception {
+  public Node getJCRNode() throws RepositoryException {
     return (Node) getChromatticSession().getJCRSession().getItem(getPath());
   }
   

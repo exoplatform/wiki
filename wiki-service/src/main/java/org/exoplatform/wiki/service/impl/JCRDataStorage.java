@@ -20,6 +20,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.*;
@@ -61,13 +62,13 @@ public class JCRDataStorage implements DataStorage {
 
   @Override
   // TODO check who has admin permission ?
-  public Wiki getWikiByTypeAndOwner(String wikiType, String wikiOwner, boolean hasAdminPermission) throws Exception {
+  public Wiki getWikiByTypeAndOwner(String wikiType, String wikiOwner, boolean hasAdminPermission) throws WikiException {
     WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner, hasAdminPermission);
     return convertWikiImplToWiki(wikiImpl);
   }
 
   @Override
-  public Wiki createWiki(String wikiType, String owner) throws Exception {
+  public Wiki createWiki(String wikiType, String owner) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
 
@@ -87,10 +88,10 @@ public class JCRDataStorage implements DataStorage {
    * @param parentPage
    * @param page
    * @return
-   * @throws Exception
+   * @throws WikiException
    */
   @Override
-  public Page createPage(Wiki wiki, Page parentPage, Page page) throws Exception {
+  public Page createPage(Wiki wiki, Page parentPage, Page page) throws WikiException {
     if (parentPage == null) {
       throw new IllegalArgumentException("Parent page cannot be null when creating the new page " + wiki.getType() + ":" + wiki.getOwner() + ":" + page.getName());
     }
@@ -116,10 +117,15 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.getContent().setText(text);
     pageImpl.setSyntax(page.getSyntax());
 
-    // create a first version
-    pageImpl.makeVersionable();
-    pageImpl.checkin();
-    pageImpl.checkout();
+    try {
+      // create a first version
+      pageImpl.makeVersionable();
+      pageImpl.checkin();
+      pageImpl.checkout();
+    } catch (Exception e) {
+      log.error("Cannot create first version of page " + wiki.getType() + ":" + wiki.getOwner() + ":" + page.getName()
+              + " - Cause : " + e.getMessage(), e);
+    }
 
     //update LinkRegistry
     LinkRegistry linkRegistry = wikiImpl.getLinkRegistry();
@@ -141,7 +147,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws Exception {
+  public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws WikiException {
     PageImpl pageImpl = null;
 
     WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, true);
@@ -172,7 +178,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Page getPageById(String id) throws Exception {
+  public Page getPageById(String id) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     ChromatticSession session = wStore.getSession();
@@ -181,7 +187,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Page getParentPageOf(Page page) throws Exception {
+  public Page getParentPageOf(Page page) throws WikiException {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
     PageImpl parentPageImpl = pageImpl.getParentPage();
 
@@ -196,44 +202,43 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<Page> getChildrenPageOf(Page page) throws Exception {
+  public List<Page> getChildrenPageOf(Page page) throws WikiException {
     List<Page> childrenPages = new ArrayList<>();
 
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
     if(pageImpl == null) {
-      throw new Exception("Page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName() + " does not exist, cannot get its children.");
+      throw new WikiException("Page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName() + " does not exist, cannot get its children.");
     }
 
-    Map<String, PageImpl> childrenPageImpls = pageImpl.getChildPages();
-    for(PageImpl childPageImpl : childrenPageImpls.values()) {
-      Page childPage = convertPageImplToPage(childPageImpl);
-      childPage.setWikiType(page.getWikiType());
-      childPage.setWikiOwner(page.getWikiOwner());
-      childrenPages.add(childPage);
+    try {
+      Map<String, PageImpl> childrenPageImpls = pageImpl.getChildPages();
+      for (PageImpl childPageImpl : childrenPageImpls.values()) {
+        Page childPage = convertPageImplToPage(childPageImpl);
+        childPage.setWikiType(page.getWikiType());
+        childPage.setWikiOwner(page.getWikiOwner());
+        childrenPages.add(childPage);
+      }
+    } catch(Exception e) {
+      log.error("Cannot get children pages of page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName()
+              + " - Cause : " + e.getMessage(), e);
     }
 
     return childrenPages;
   }
 
   @Override
-  public void createTemplatePage(Wiki wiki, Template template) throws Exception {
+  public void createTemplatePage(Wiki wiki, Template template) throws WikiException {
     TemplateContainer templatesContainer = getTemplatesContainer(wiki.getType(), wiki.getOwner());
 
-    try {
-      TemplateImpl templatePage = templatesContainer.createTemplatePage();
-      templatePage = templatesContainer.addPage(template.getName(), templatePage);
+    TemplateImpl templatePage = templatesContainer.createTemplatePage();
+    templatePage = templatesContainer.addPage(template.getName(), templatePage);
 
-      templatePage.setName(template.getName());
-      templatePage.setTitle(template.getTitle());
-      templatePage.getContent().setText(template.getContent().getText());
-
-    } catch(Exception e) {
-      throw new Exception("Cannot create template " + template.getName() + " in wiki " + wiki.getType() + ":" + wiki.getOwner()
-              + " - Cause : " + e.getMessage(), e);
-    }
+    templatePage.setName(template.getName());
+    templatePage.setTitle(template.getTitle());
+    templatePage.getContent().setText(template.getContent().getText());
   }
 
-  public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws Exception {
+  public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws WikiException {
     Model model = getModel();
     TemplateContainer templatesContainer = getTemplatesContainer(wikiType, wikiOwner);
     TemplateImpl templateImpl = templatesContainer.getTemplate(templateName);
@@ -242,12 +247,12 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void deletePage(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public void deletePage(String wikiType, String wikiOwner, String pageId) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     PageImpl page = fetchPageImpl(wikiType, wikiOwner, pageId);
     if(page == null) {
-      throw new Exception("Page " + wikiType + ":" + wikiOwner + ":" + pageId + " does not exist, cannot delete it.");
+      throw new WikiException("Page " + wikiType + ":" + wikiOwner + ":" + pageId + " does not exist, cannot delete it.");
     }
 
     ChromatticSession session = wStore.getSession();
@@ -278,12 +283,12 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Template getTemplatePage(WikiPageParams params, String templateId) throws Exception {
+  public Template getTemplatePage(WikiPageParams params, String templateId) throws WikiException {
     return convertTemplateImplToTemplate(getTemplatesContainer(params.getType(), params.getOwner()).getTemplate(templateId));
   }
 
   @Override
-  public Map<String, Template> getTemplates(WikiPageParams params) throws Exception {
+  public Map<String, Template> getTemplates(WikiPageParams params) throws WikiException {
     Map<String, Template> templates = new HashMap<>();
     Map<String, TemplateImpl> templatesImpl = getTemplatesContainer(params.getType(), params.getOwner()).getTemplates();
     for(String templateImplKey : templatesImpl.keySet()) {
@@ -292,25 +297,30 @@ public class JCRDataStorage implements DataStorage {
     return templates;
   }
 
-  private TemplateContainer getTemplatesContainer(String wikiType, String wikiOwner) throws Exception {
+  private TemplateContainer getTemplatesContainer(String wikiType, String wikiOwner) throws WikiException {
     WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, true);
     return wiki.getPreferences().getTemplateContainer();
   }
 
   @Override
-  public void deleteDraftOfPage(Page page, String username) throws Exception {
+  public void deleteDraftOfPage(Page page, String username) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     UserWiki userWiki = (UserWiki) wStore.getWiki(WikiType.USER, username);
     if(userWiki != null) {
       PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
-      Map<String, PageImpl> childPages = draftPagesContainer.getChildPages();
-      for (PageImpl childPage : childPages.values()) {
-        String targetPageId = ((DraftPageImpl) childPage).getTargetPage();
-        if (targetPageId != null && targetPageId.equals(page.getId())) {
-          childPage.remove();
-          return;
+      try {
+        Map<String, PageImpl> childPages = draftPagesContainer.getChildPages();
+        for (PageImpl childPage : childPages.values()) {
+          String targetPageId = ((DraftPageImpl) childPage).getTargetPage();
+          if (targetPageId != null && targetPageId.equals(page.getId())) {
+            childPage.remove();
+            return;
+          }
         }
+      } catch(Exception e) {
+        log.error("Cannot get drafts of page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName()
+                + " - Cause : " + e.getMessage(), e);
       }
     }
 
@@ -321,24 +331,28 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void deleteDraftById(String newDraftPageId, String username) throws Exception {
+  public void deleteDraftById(String newDraftPageId, String username) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     UserWiki userWiki = (UserWiki) wStore.getWiki(WikiType.USER, username);
     PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
-    Map<String, PageImpl> childPages = draftPagesContainer.getChildPages();
-    for(PageImpl childPage : childPages.values()) {
-      if(childPage.getName().equals(newDraftPageId)) {
-        childPage.remove();
-        return;
+    try {
+      Map<String, PageImpl> childPages = draftPagesContainer.getChildPages();
+      for (PageImpl childPage : childPages.values()) {
+        if (childPage.getName().equals(newDraftPageId)) {
+          childPage.remove();
+          return;
+        }
       }
+    } catch(Exception e) {
+      log.error("Cannot get drafts of user " + username + " - Cause : " + e.getMessage(), e);
     }
 
-    throw new Exception("Cannot delete draft page of " + newDraftPageId + " of user " + username + " because it does not exist.");
+    throw new WikiException("Cannot delete draft page of " + newDraftPageId + " of user " + username + " because it does not exist.");
   }
 
   @Override
-  public void renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle) throws Exception {
+  public void renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle) throws WikiException {
     PageImpl currentPage = fetchPageImpl(wikiType, wikiOwner, pageName);
     PageImpl parentPage = currentPage.getParentPage();
     RenamedMixin mix = currentPage.getRenamedMixin();
@@ -384,12 +398,12 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws Exception {
+  public void movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws WikiException {
     PageImpl destPage = fetchPageImpl(newLocationParams.getType(),
             newLocationParams.getOwner(),
             newLocationParams.getPageId());
     if (destPage == null || !destPage.hasPermission(PermissionType.EDITPAGE)) {
-      throw new Exception("Destination page " + newLocationParams.getType() + ":" +
+      throw new WikiException("Destination page " + newLocationParams.getType() + ":" +
               newLocationParams.getOwner() + ":" + newLocationParams.getPageId() + " does not exist");
     }
     Model model = getModel();
@@ -488,7 +502,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<PermissionEntry> getWikiPermission(String wikiType, String wikiOwner) throws Exception {
+  public List<PermissionEntry> getWikiPermission(String wikiType, String wikiOwner) throws WikiException {
     List<PermissionEntry> permissionEntries = new ArrayList<>();
 
     Model model = getModel();
@@ -564,7 +578,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws Exception {
+  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException {
     String view = new StringBuilder().append(PermissionType.VIEWPAGE).toString();
     String viewEdit = new StringBuilder().append(PermissionType.VIEWPAGE).append(",").append(PermissionType.EDITPAGE).toString();
     String all = new StringBuilder().append(PermissionType.VIEWPAGE)
@@ -582,18 +596,23 @@ public class JCRDataStorage implements DataStorage {
       permissions.add(new StringBuilder(all).append(":").append(entry.getValue()).append(":").append(entry.getKey()).toString());
     }
     if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-      UserPortalConfigService service = ExoContainerContext.getCurrentContainer()
+      UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(UserPortalConfigService.class);
-      PortalConfig portalConfig = service.getUserPortalConfig(wikiOwner, null).getPortalConfig();
-      String portalEditClause = new StringBuilder(all).append(":")
-              .append(IDType.MEMBERSHIP)
-              .append(":")
-              .append(portalConfig.getEditPermission())
-              .toString();
-      if (!permissions.contains(portalEditClause)) {
-        permissions.add(portalEditClause);
+      try {
+        PortalConfig portalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null).getPortalConfig();
+        String portalEditClause = new StringBuilder(all).append(":")
+                .append(IDType.MEMBERSHIP)
+                .append(":")
+                .append(portalConfig.getEditPermission())
+                .toString();
+        if (!permissions.contains(portalEditClause)) {
+          permissions.add(portalEditClause);
+        }
+        permissions.add(new StringBuilder(view).append(":").append(IDType.USER).append(":any").toString());
+      } catch (Exception e) {
+        throw new WikiException("Cannot get user portal config for wiki " + wikiType + ":" + wikiOwner
+                + " - Cause : " + e.getMessage(), e);
       }
-      permissions.add(new StringBuilder(view).append(":").append(IDType.USER).append(":any").toString());
     } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
       UserACL userACL = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
       String makableMTClause = new StringBuilder(all).append(":")
@@ -624,7 +643,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws Exception {
+  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException {
     WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, false);
     List<String> permissions = new ArrayList<>();
     HashMap<String, String[]> permMap = new HashMap<>();
@@ -667,19 +686,24 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<Page> getRelatedPagesOfPage(Page page) throws Exception {
+  public List<Page> getRelatedPagesOfPage(Page page) throws WikiException {
     List<Page> relatedPages = new ArrayList<>();
 
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
-    List<PageImpl> relatedPageImpls = pageImpl.getRelatedPages();
-    for (PageImpl relatedPageImpl : relatedPageImpls) {
-      relatedPages.add(convertPageImplToPage(relatedPageImpl));
+    try {
+      List<PageImpl> relatedPageImpls = pageImpl.getRelatedPages();
+      for (PageImpl relatedPageImpl : relatedPageImpls) {
+        relatedPages.add(convertPageImplToPage(relatedPageImpl));
+      }
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot get related pages of page " + page.getWikiType()
+              + ":" + page.getWikiOwner() + ":" + page.getName() + " - Cause : " + e.getMessage(), e);
     }
     return relatedPages;
   }
 
   @Override
-  public Page getRelatedPage(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public Page getRelatedPage(String wikiType, String wikiOwner, String pageId) throws WikiException {
     WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, false);
     LinkRegistry linkRegistry = wiki.getLinkRegistry();
     LinkEntry oldLinkEntry = linkRegistry.getLinkEntries().get(getLinkEntryName(wikiType, wikiOwner, pageId));
@@ -715,23 +739,37 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void addRelatedPage(Page page, Page relatedPage) throws Exception {
+  public void addRelatedPage(Page page, Page relatedPage) throws WikiException {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
     PageImpl relatedPageImpl = fetchPageImpl(relatedPage.getWikiType(), relatedPage.getWikiOwner(), relatedPage.getName());
 
-    pageImpl.addRelatedPage(relatedPageImpl);
+    try {
+      pageImpl.addRelatedPage(relatedPageImpl);
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot add related page "
+              + relatedPage.getWikiType() + ":" + relatedPage.getWikiOwner() + ":" + relatedPage.getName()
+              + " for page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName()
+              + " - Cause : " + e.getMessage(), e);
+    }
   }
 
   @Override
-  public void removeRelatedPage(Page page, Page relatedPage) throws Exception {
+  public void removeRelatedPage(Page page, Page relatedPage) throws WikiException {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
     PageImpl relatedPageImpl = fetchPageImpl(relatedPage.getWikiType(), relatedPage.getWikiOwner(), relatedPage.getName());
 
-    pageImpl.removeRelatedPage(relatedPageImpl);
+    try {
+      pageImpl.removeRelatedPage(relatedPageImpl);
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot remove related page "
+              + relatedPage.getWikiType() + ":" + relatedPage.getWikiOwner() + ":" + relatedPage.getName()
+              + " of page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName()
+              + " - Cause : " + e.getMessage(), e);
+    }
   }
 
   @Override
-  public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId, String username) throws Exception {
+  public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId, String username) throws WikiException {
     // if this is ANONIM then use draft in DraftNewPagesContainer
     if (IdentityConstants.ANONIM.equals(username)) {
       Model model = getModel();
@@ -797,7 +835,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public DraftPage getDraft(WikiPageParams param, String username) throws Exception {
+  public DraftPage getDraft(WikiPageParams param, String username) throws WikiException {
     if (IdentityConstants.ANONIM.equals(username)) {
       return null;
     }
@@ -820,11 +858,16 @@ public class JCRDataStorage implements DataStorage {
     for (PageImpl draft : childPages) {
       DraftPageImpl draftPage = (DraftPageImpl) draft;
       // If this draft is use for target page
-      if (draftPage.getTargetPage() != null && !draftPage.isNewPage() && draftPage.getTargetPage().equals(targetPage.getJCRPageNode().getUUID())) {
-        // Compare and get the lastest draft
-        if ((lastestDraft == null) || (lastestDraft.getUpdatedDate().getTime() < draftPage.getUpdatedDate().getTime())) {
-          lastestDraft = draftPage;
+      try {
+        if (draftPage.getTargetPage() != null && !draftPage.isNewPage() && draftPage.getTargetPage().equals(targetPage.getJCRPageNode().getUUID())) {
+          // Compare and get the lastest draft
+          if ((lastestDraft == null) || (lastestDraft.getUpdatedDate().getTime() < draftPage.getUpdatedDate().getTime())) {
+            lastestDraft = draftPage;
+          }
         }
+      } catch(RepositoryException e) {
+        log.error("Cannot get JCR node of page " + param.getType() + ":" + param.getOwner() + ":" + param.getPageId()
+          + " for user " + username + " - Cause : " + e.getMessage(), e);
       }
     }
 
@@ -833,7 +876,7 @@ public class JCRDataStorage implements DataStorage {
 
 
   @Override
-  public DraftPage getLastestDraft(String username) throws Exception {
+  public DraftPage getLastestDraft(String username) throws WikiException {
     // Get all draft pages
     UserWiki userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username, true);
     Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildPages().values();
@@ -851,7 +894,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public DraftPage getDraft(String draftName, String username) throws Exception {
+  public DraftPage getDraft(String draftName, String username) throws WikiException {
     List<DraftPage> drafts = getDraftPagesOfUser(username);
     for (DraftPage draftPage : drafts) {
       if (draftPage.getName().equals(draftName)) {
@@ -863,7 +906,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<DraftPage> getDraftPagesOfUser(String username) throws Exception {
+  public List<DraftPage> getDraftPagesOfUser(String username) throws WikiException {
     List<DraftPage> draftPages = new ArrayList<>();
 
     // Get all draft of user
@@ -884,7 +927,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void createDraftPageForUser(DraftPage draftPage, String username) throws Exception {
+  public void createDraftPageForUser(DraftPage draftPage, String username) throws WikiException {
     Model model = getModel();
     WikiStore wikiStore = model.getWikiStore();
 
@@ -906,7 +949,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public PageList<SearchResult> search(WikiSearchData data) throws Exception {
+  public PageList<SearchResult> search(WikiSearchData data) throws WikiException {
     List<SearchResult> resultList = new ArrayList<>();
     long numberOfSearchForTitleResult = 0;
 
@@ -914,117 +957,125 @@ public class JCRDataStorage implements DataStorage {
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     ChromatticSession session = wStore.getSession();
 
-    if (!StringUtils.isEmpty(data.getTitle())) {
-      // Search for title
-      String statement = data.getStatementForSearchingTitle();
-      QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
-      if(data.getOffset() > 0) {
-        q.setOffset(data.getOffset());
+    try {
+      if (!StringUtils.isEmpty(data.getTitle())) {
+        // Search for title
+        String statement = data.getStatementForSearchingTitle();
+        QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
+        if (data.getOffset() > 0) {
+          q.setOffset(data.getOffset());
+        }
+        if (data.getLimit() > 0) {
+          q.setLimit(data.getLimit());
+        }
+        QueryResult result = q.execute();
+        RowIterator iter = result.getRows();
+        numberOfSearchForTitleResult = iter.getSize();
+        if (numberOfSearchForTitleResult > 0) {
+          while (iter.hasNext()) {
+            SearchResult tempResult = getResult(iter.nextRow(), data);
+            // If contains, merges with the exist
+            if (tempResult != null && !isContains(resultList, tempResult)) {
+              resultList.add(tempResult);
+            }
+          }
+        }
       }
-      if(data.getLimit() > 0) {
-        q.setLimit(data.getLimit());
+
+      // if we have enough result then return
+      if ((resultList.size() >= data.getLimit()) || StringUtils.isEmpty(data.getContent())) {
+        return new ObjectPageList<>(resultList, resultList.size());
       }
-      QueryResult result = q.execute();
-      RowIterator iter = result.getRows();
-      numberOfSearchForTitleResult = iter.getSize();
-      if (numberOfSearchForTitleResult > 0) {       
+      // Search for wiki content
+      long searchForContentOffset = data.getOffset();
+      long searchForContentLimit = data.getLimit() - numberOfSearchForTitleResult;
+      if (data.getLimit() == Integer.MAX_VALUE) {
+        searchForContentLimit = Integer.MAX_VALUE;
+      }
+
+      if (searchForContentOffset >= 0 && searchForContentLimit > 0) {
+        String statement = data.getStatementForSearchingContent();
+        QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
+        q.setOffset(searchForContentOffset);
+        q.setLimit(searchForContentLimit);
+        QueryResult result = q.execute();
+        RowIterator iter = result.getRows();
         while (iter.hasNext()) {
           SearchResult tempResult = getResult(iter.nextRow(), data);
           // If contains, merges with the exist
-          if (tempResult != null && !isContains(resultList, tempResult)) {
+          if (tempResult != null && !isContains(resultList, tempResult) && !isDuplicateTitle(resultList, tempResult)) {
             resultList.add(tempResult);
           }
         }
       }
-    }
-    
-    // if we have enough result then return
-    if ((resultList.size() >= data.getLimit()) || StringUtils.isEmpty(data.getContent())) {
-      return new ObjectPageList<>(resultList, resultList.size());
-    }
-    // Search for wiki content
-    long searchForContentOffset = data.getOffset();
-    long searchForContentLimit = data.getLimit() - numberOfSearchForTitleResult;
-    if (data.getLimit() == Integer.MAX_VALUE) {
-      searchForContentLimit = Integer.MAX_VALUE;
-    }
-    
-    if (searchForContentOffset >= 0 && searchForContentLimit > 0) {
-      String statement = data.getStatementForSearchingContent();
-      QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
-      q.setOffset(searchForContentOffset);
-      q.setLimit(searchForContentLimit);
-      QueryResult result = q.execute();
-      RowIterator iter = result.getRows();
-      while (iter.hasNext()) {
-        SearchResult tempResult = getResult(iter.nextRow(), data);
-        // If contains, merges with the exist
-        if (tempResult != null && !isContains(resultList, tempResult) && !isDuplicateTitle(resultList, tempResult)) {
-          resultList.add(tempResult);
-        }
-      }
+    } catch (RepositoryException e) {
+      throw new WikiException("Cannot search in wiki " + data.getWikiType() + ":" + data.getWikiOwner(), e);
     }
     // Return all the result
     return new ObjectPageList<>(resultList, resultList.size());
   }
 
   @Override
-  public List<SearchResult> searchRenamedPage(WikiSearchData data) throws Exception {
+  public List<SearchResult> searchRenamedPage(WikiSearchData data) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     ChromatticSession session = wStore.getSession();
 
     List<SearchResult> resultList = new ArrayList<>() ;
     String statement = data.getStatementForRenamedPage() ;
-    Query q = ((ChromatticSessionImpl)session).getDomainSession().getSessionWrapper().createQuery(statement);
-    QueryResult result = q.execute();
-    NodeIterator iter = result.getNodes() ;
-    while(iter.hasNext()) {
-      try {
-        resultList.add(getResult(iter.nextNode()));
-      } catch (Exception e) {
-        log.debug("Failed to add item search result", e);
+    try {
+      Query q = ((ChromatticSessionImpl)session).getDomainSession().getSessionWrapper().createQuery(statement);
+      QueryResult result = q.execute();
+      NodeIterator iter = result.getNodes() ;
+      while(iter.hasNext()) {
+        try {
+          resultList.add(getResult(iter.nextNode()));
+        } catch (RepositoryException | IOException e) {
+          log.debug("Failed to add item search result", e);
+        }
       }
+    } catch (RepositoryException e) {
+      throw new WikiException("Cannot search in wiki " + data.getWikiType() + ":" + data.getWikiOwner(), e);
     }
     return resultList ;
   }
 
   @Override
-  public Page getPageOfAttachment(Attachment attachment) throws Exception {
+  public Page getPageOfAttachment(Attachment attachment) throws WikiException {
     // TODO
     throw new UnsupportedOperationException();
   }
 
   @Override
-  public InputStream getAttachmentAsStream(String path) throws Exception {
+  public InputStream getAttachmentAsStream(String path) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     ChromatticSession session = wStore.getSession();
 
-    Node attContent = (Node)session.getJCRSession().getItem(path) ;
-    return attContent.getProperty(WikiNodeType.Definition.DATA).getStream() ;
+    try {
+      Node attContent = (Node) session.getJCRSession().getItem(path);
+      return attContent.getProperty(WikiNodeType.Definition.DATA).getStream();
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot get attachment " + path, e);
+    }
   }
 
   @Override
-  public Object findByPath(String path, String objectNodeType) {
-    try {
-      Model model = getModel();
-      WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-      if (WikiNodeType.WIKI_PAGE.equals(objectNodeType)) {
-        return wStore.getSession().findByPath(PageImpl.class, path);
-      } else if (WikiNodeType.WIKI_ATTACHMENT.equals(objectNodeType)) {
-        return wStore.getSession().findByPath(AttachmentImpl.class, path);
-      } else if (WikiNodeType.WIKI_TEMPLATE.equals(objectNodeType)) {
-        return wStore.getSession().findByPath(Template.class, path);
-      }
-    } catch (Exception e) {
-      log.error("Can't find Object", e);
+  public Object findByPath(String path, String objectNodeType) throws WikiException {
+    Model model = getModel();
+    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    if (WikiNodeType.WIKI_PAGE.equals(objectNodeType)) {
+      return wStore.getSession().findByPath(PageImpl.class, path);
+    } else if (WikiNodeType.WIKI_ATTACHMENT.equals(objectNodeType)) {
+      return wStore.getSession().findByPath(AttachmentImpl.class, path);
+    } else if (WikiNodeType.WIKI_TEMPLATE.equals(objectNodeType)) {
+      return wStore.getSession().findByPath(Template.class, path);
     }
     return null;
   }
 
   @Override
-  public Page getHelpSyntaxPage(String syntaxId, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws Exception {
+  public Page getHelpSyntaxPage(String syntaxId, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     HelpPage helpPageByChromattic = wStore.getHelpPageByChromattic();
@@ -1047,13 +1098,13 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Page getEmotionIconsPage() throws Exception {
+  public Page getEmotionIconsPage() throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     return convertPageImplToPage(wStore.getEmotionIconsPage());
   }
 
-  private synchronized void createHelpPages(List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws Exception {
+  private synchronized void createHelpPages(List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     PageImpl helpPage = wStore.getHelpPagesContainer();
@@ -1070,14 +1121,14 @@ public class JCRDataStorage implements DataStorage {
           addSyntaxPage(wStore, syntaxPage, syntaxName, fullFile, " Full help Page");
           wStore.getSession().save();
         } catch (Exception e) {
-          log.error("Can not create Help page", e);
+          log.error("Can not create Help page " + syntaxhelpParam.getName() + " - Cause : " + e.getMessage(), e);
         }
       }
     }
   }
 
   @Override
-  public String getPortalOwner() {
+  public String getPortalOwner() throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     List<WikiImpl> portalWikis = new ArrayList<>(wStore.getWikiContainer(WikiType.PORTAL).getAllWikis());
@@ -1088,7 +1139,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public boolean hasAdminSpacePermission(String wikiType, String owner, Identity user) throws Exception {
+  public boolean hasAdminSpacePermission(String wikiType, String owner, Identity user) throws WikiException {
     List<AccessControlEntry> aces = getAccessControls(wikiType, owner);
     AccessControlList acl = new AccessControlList(owner, aces);
     String[] permission = new String[]{PermissionType.ADMINSPACE.toString()};
@@ -1096,7 +1147,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public boolean hasAdminPagePermission(String wikiType, String owner, Identity user) throws Exception {
+  public boolean hasAdminPagePermission(String wikiType, String owner, Identity user) throws WikiException {
     List<AccessControlEntry> aces = getAccessControls(wikiType, owner);
     AccessControlList acl = new AccessControlList(owner, aces);
     String[] permission = new String[]{PermissionType.ADMINPAGE.toString()};
@@ -1104,12 +1155,12 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws Exception {
+  public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws WikiException {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
     return pageImpl.hasPermission(permissionType, user);
   }
 
-  private List<AccessControlEntry> getAccessControls(String wikiType, String wikiOwner) throws Exception {
+  private List<AccessControlEntry> getAccessControls(String wikiType, String wikiOwner) throws WikiException {
     List<AccessControlEntry> aces = new ArrayList<>();
     try {
       List<PermissionEntry> permissionEntries = getWikiPermission(wikiType, wikiOwner);
@@ -1126,7 +1177,7 @@ public class JCRDataStorage implements DataStorage {
           aces.add(new AccessControlEntry(perm.getId(), action));
         }
       }
-    } catch (Exception e) {
+    } catch (WikiException e) {
       if (log.isDebugEnabled()) {
         log.debug("failed in method getAccessControls:", e);
       }
@@ -1135,7 +1186,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<PageVersion> getVersionsOfPage(Page page) throws Exception {
+  public List<PageVersion> getVersionsOfPage(Page page) throws WikiException {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
 
     List<PageVersion> versions = new ArrayList<>();
@@ -1143,16 +1194,22 @@ public class JCRDataStorage implements DataStorage {
     if(versionableMixin != null) {
       for (NTVersion version : versionableMixin.getVersionHistory()) {
         if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {
-          PageVersion pageVersion = new PageVersion();
-          pageVersion.setName(version.getName());
-          pageVersion.setAuthor(version.getNTFrozenNode().getAuthor());
-          pageVersion.setCreatedDate(version.getCreated());
-          pageVersion.setUpdatedDate(version.getNTFrozenNode().getUpdatedDate());
-          //pageVersion.setPredecessors(version.getPredecessors());
-          //pageVersion.setSuccessors(version.getSuccessors());
-          pageVersion.setContent(version.getNTFrozenNode().getContentString());
-          pageVersion.setComment(version.getNTFrozenNode().getComment());
-          versions.add(pageVersion);
+          try {
+            PageVersion pageVersion = new PageVersion();
+            pageVersion.setName(version.getName());
+            pageVersion.setAuthor(version.getNTFrozenNode().getAuthor());
+            pageVersion.setCreatedDate(version.getCreated());
+            pageVersion.setUpdatedDate(version.getNTFrozenNode().getUpdatedDate());
+            //pageVersion.setPredecessors(version.getPredecessors());
+            //pageVersion.setSuccessors(version.getSuccessors());
+            pageVersion.setContent(version.getNTFrozenNode().getContentString());
+            pageVersion.setComment(version.getNTFrozenNode().getComment());
+            versions.add(pageVersion);
+          } catch(RepositoryException e) {
+            log.error("Cannot get version " + version.getName() + " of page "
+                    + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName()
+                    + " - Cause : " + e.getMessage(), e);
+          }
         }
       }
     }
@@ -1161,17 +1218,22 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void addPageVersion(Page page) throws Exception {
+  public void addPageVersion(Page page) throws WikiException {
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
     if(pageImpl.getVersionableMixin() == null) {
       pageImpl.makeVersionable();
     }
-    pageImpl.checkin();
-    pageImpl.checkout();
+    try {
+      pageImpl.checkin();
+      pageImpl.checkout();
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot create new version of page "
+              + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName(), e);
+    }
   }
 
   @Override
-  public void updatePage(Page page) throws Exception {
+  public void updatePage(Page page) throws WikiException {
     Model model = getModel();
 
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
@@ -1189,27 +1251,44 @@ public class JCRDataStorage implements DataStorage {
                                  PageImpl parentPage,
                                  String name,
                                  InputStream content,
-                                 String type) throws Exception {
+                                 String type) throws WikiException {
     StringBuilder stringContent = new StringBuilder();
-    BufferedReader bufferReader;
+    BufferedReader bufferReader = null;
     String tempLine;
-    bufferReader = new BufferedReader(new InputStreamReader(content));
-    while ((tempLine = bufferReader.readLine()) != null) {
-      stringContent.append(tempLine).append("\n");
-    }
+    try {
+      bufferReader = new BufferedReader(new InputStreamReader(content));
+      while ((tempLine = bufferReader.readLine()) != null) {
+        stringContent.append(tempLine).append("\n");
+      }
 
-    HelpPage syntaxPage = wStore.createHelpPage();
-    String realName = name.replace("/", "");
-    syntaxPage.setName(realName + type);
-    parentPage.addPublicPage(syntaxPage);
-    AttachmentImpl pageContent = syntaxPage.getContent();
-    syntaxPage.setTitle(realName + type);
-    pageContent.setText(stringContent.toString());
-    syntaxPage.setSyntax(name);
-    syntaxPage.setNonePermission();
-    content.close();
-    bufferReader.close();
-    return syntaxPage;
+      HelpPage syntaxPage = wStore.createHelpPage();
+      String realName = name.replace("/", "");
+      syntaxPage.setName(realName + type);
+      parentPage.addPublicPage(syntaxPage);
+      AttachmentImpl pageContent = syntaxPage.getContent();
+      syntaxPage.setTitle(realName + type);
+      pageContent.setText(stringContent.toString());
+      syntaxPage.setSyntax(name);
+      syntaxPage.setNonePermission();
+      return syntaxPage;
+    } catch (IOException e) {
+      throw new WikiException("Cannot create help page " + type, e);
+    } finally {
+      if (content != null) {
+        try {
+          content.close();
+        } catch (IOException e) {
+          log.error("Cannot close input stream of help page " + type + " - Cause : " + e.getMessage(), e);
+        }
+      }
+      if (bufferReader != null) {
+        try {
+          bufferReader.close();
+        } catch (IOException e) {
+          log.error("Cannot close buffer reader of help page " + type + " - Cause : " + e.getMessage(), e);
+        }
+      }
+    }
   }
 
   private boolean isDuplicateTitle(List<SearchResult> list, SearchResult result) {
@@ -1221,7 +1300,7 @@ public class JCRDataStorage implements DataStorage {
     return false;
   }
 
-  private void updateAllPagesPermissions(String wikiType, String wikiOwner, HashMap<String, String[]> permMap) throws Exception {
+  private void updateAllPagesPermissions(String wikiType, String wikiOwner, HashMap<String, String[]> permMap) throws WikiException {
     PageImpl page = fetchWikiImpl(wikiType, wikiOwner, false).getWikiHome();
     Queue<PageImpl> queue = new LinkedList<>();
     queue.add(page);
@@ -1238,7 +1317,7 @@ public class JCRDataStorage implements DataStorage {
     }
   }
 
-  private Page getPageWithLinkEntry(LinkEntry entry) throws Exception {
+  private Page getPageWithLinkEntry(LinkEntry entry) throws WikiException {
     String linkEntryAlias = entry.getAlias();
     String[] splits = linkEntryAlias.split("@");
     String wikiType = splits[0];
@@ -1258,7 +1337,7 @@ public class JCRDataStorage implements DataStorage {
     return wikiType + "@" + wikiOwner + "@" + pageId;
   }
 
-  private void setFullPermissionForOwner(PageImpl page, String owner) throws Exception {
+  private void setFullPermissionForOwner(PageImpl page, String owner) throws WikiException {
     ConversationState conversationState = ConversationState.getCurrent();
 
     if (conversationState != null) {
@@ -1268,77 +1347,75 @@ public class JCRDataStorage implements DataStorage {
     }
   }
 
-  private Model getModel() {
+  private Model getModel() throws WikiException {
     return mowService.getModel();
   }
   
-  private SearchResult getResult(Row row, WikiSearchData data) throws Exception {
-    String type = row.getValue(WikiNodeType.Definition.PRIMARY_TYPE).getString();
-    String path = row.getValue(WikiNodeType.Definition.PATH).getString();
-    
-    String title = StringUtils.EMPTY;
-    String excerpt = StringUtils.EMPTY;
-    long jcrScore = row.getValue("jcr:score").getLong();
-    Calendar updateDate = GregorianCalendar.getInstance();
-    Calendar createdDate = GregorianCalendar.getInstance();
-    PageImpl page = null;
-    if (WikiNodeType.WIKI_ATTACHMENT.equals(type)) {
-      // Transform to Attachment result
-      type = WikiNodeType.WIKI_ATTACHMENT.toString();
-      if(!path.endsWith(WikiNodeType.Definition.CONTENT)){
-        AttachmentImpl searchAtt = (AttachmentImpl) Utils.getObject(path, WikiNodeType.WIKI_ATTACHMENT);
-        updateDate = searchAtt.getUpdatedDate();
-        page = searchAtt.getParentPage();
+  private SearchResult getResult(Row row, WikiSearchData data) throws WikiException {
+    try {
+      String type = row.getValue(WikiNodeType.Definition.PRIMARY_TYPE).getString();
+      String path = row.getValue(WikiNodeType.Definition.PATH).getString();
+
+      String title = StringUtils.EMPTY;
+      String excerpt = StringUtils.EMPTY;
+      long jcrScore = row.getValue("jcr:score").getLong();
+      Calendar updateDate = GregorianCalendar.getInstance();
+      Calendar createdDate = GregorianCalendar.getInstance();
+      PageImpl page = null;
+      if (WikiNodeType.WIKI_ATTACHMENT.equals(type)) {
+        // Transform to Attachment result
+        type = WikiNodeType.WIKI_ATTACHMENT.toString();
+        if (!path.endsWith(WikiNodeType.Definition.CONTENT)) {
+          AttachmentImpl searchAtt = (AttachmentImpl) Utils.getObject(path, WikiNodeType.WIKI_ATTACHMENT);
+          updateDate = searchAtt.getUpdatedDate();
+          page = searchAtt.getParentPage();
+          createdDate.setTime(page.getCreatedDate());
+          title = page.getTitle();
+        } else {
+          String pagePath = path.substring(0, path.lastIndexOf("/" + WikiNodeType.Definition.CONTENT));
+          type = WikiNodeType.WIKI_PAGE_CONTENT.toString();
+          page = (PageImpl) Utils.getObject(pagePath, WikiNodeType.WIKI_PAGE);
+          title = page.getTitle();
+          updateDate.setTime(page.getUpdatedDate());
+          createdDate.setTime(page.getCreatedDate());
+        }
+      } else if (WikiNodeType.WIKI_PAGE.equals(type)) {
+        page = (PageImpl) Utils.getObject(path, type);
+        updateDate.setTime(page.getUpdatedDate());
         createdDate.setTime(page.getCreatedDate());
         title = page.getTitle();
       } else {
-        String pagePath = path.substring(0, path.lastIndexOf("/" + WikiNodeType.Definition.CONTENT));
-        type = WikiNodeType.WIKI_PAGE_CONTENT.toString();
-        page = (PageImpl) Utils.getObject(pagePath, WikiNodeType.WIKI_PAGE);
-        title = page.getTitle();
-        updateDate.setTime(page.getUpdatedDate());
-        createdDate.setTime(page.getCreatedDate());
+        return null;
       }
-    } else if (WikiNodeType.WIKI_PAGE.equals(type)) {
-      page = (PageImpl) Utils.getObject(path, type);
-      updateDate.setTime(page.getUpdatedDate());
-      createdDate.setTime(page.getCreatedDate());
-      title = page.getTitle();
-    } else {
-      return null;
-    }
-    
-    //get the excerpt from row result
-    excerpt = getExcerpt(row, type);
 
-    if (page == null || !page.hasPermission(PermissionType.VIEWPAGE)) {
-      return null;
+      //get the excerpt from row result
+      excerpt = getExcerpt(row, type);
+
+      if (page == null || !page.hasPermission(PermissionType.VIEWPAGE)) {
+        return null;
+      }
+
+      SearchResult result = new SearchResult(excerpt, title, path, type, updateDate, createdDate);
+      result.setUrl(page.getURL());
+      result.setJcrScore(jcrScore);
+      return result;
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot get search result", e);
     }
-    
-    SearchResult result = new SearchResult(excerpt, title, path, type, updateDate, createdDate);
-    result.setUrl(page.getURL());
-    result.setJcrScore(jcrScore);
-    return result;
   }
 
-  private Wiki getWikiWithoutPermission(String wikiType, String owner, Model model) throws Exception {
+  private Wiki getWikiWithoutPermission(String wikiType, String owner, Model model) throws WikiException {
     WikiStore wStore = model.getWikiStore();
     WikiImpl wiki = null;
-    try {
-      if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-        WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-        wiki = portalWikiContainer.getWiki(owner, true);
-      } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
-        WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-        wiki = groupWikiContainer.getWiki(owner, true);
-      } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
-        WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-        wiki = userWikiContainer.getWiki(owner, true);
-      }
-    } catch (Exception e) {
-      if (log.isDebugEnabled()) {
-        log.debug("[WikiService] Cannot get wiki " + wikiType + ":" + owner, e);
-      }
+    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
+      wiki = portalWikiContainer.getWiki(owner, true);
+    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
+      WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
+      wiki = groupWikiContainer.getWiki(owner, true);
+    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
+      WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
+      wiki = userWikiContainer.getWiki(owner, true);
     }
     return convertWikiImplToWiki(wiki);
   }
@@ -1382,7 +1459,7 @@ public class JCRDataStorage implements DataStorage {
    * @throws ItemNotFoundException
    * @throws RepositoryException
    */
-  private String getExcerpt(Row row, String type) throws ItemNotFoundException, RepositoryException {
+  private String getExcerpt(Row row, String type) throws RepositoryException {
     StringBuilder ret = new StringBuilder();
     String[] properties = (WikiNodeType.WIKI_PAGE_CONTENT.equals(type) || WikiNodeType.WIKI_ATTACHMENT.equals(type)) ? 
                           new String[]{"."} :
@@ -1399,7 +1476,7 @@ public class JCRDataStorage implements DataStorage {
     return ret.toString();
   }
   
-  private SearchResult getResult(Node node)throws Exception {
+  private SearchResult getResult(Node node)throws RepositoryException, IOException {
     SearchResult result = new SearchResult() ;
     result.setPageName(node.getName()) ;
     String title = node.getProperty(WikiNodeType.Definition.TITLE).getString();
@@ -1412,7 +1489,7 @@ public class JCRDataStorage implements DataStorage {
     return result ;
   }
   
-  private boolean isContains(List<SearchResult> list, SearchResult result) throws Exception {
+  private boolean isContains(List<SearchResult> list, SearchResult result) throws WikiException {
     AttachmentImpl att = null;
     PageImpl page = null;
     if (WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
@@ -1454,39 +1531,48 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws Exception {
+  public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     ChromatticSession session = wStore.getSession();
 
     List<TemplateSearchResult> resultList = new ArrayList<>();
     String statement = data.getStatementForSearchingTitle();
-    Query q = ((ChromatticSessionImpl)session).getDomainSession().getSessionWrapper().createQuery(statement);
-    QueryResult result = q.execute();
-    RowIterator iter = result.getRows();
-    while (iter.hasNext()) {
-      TemplateSearchResult tempResult = getTemplateResult(iter.nextRow());
-      resultList.add(tempResult);
+
+    try {
+      Query q = ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
+      QueryResult result = q.execute();
+      RowIterator iter = result.getRows();
+      while (iter.hasNext()) {
+        TemplateSearchResult tempResult = getTemplateResult(iter.nextRow());
+        resultList.add(tempResult);
+      }
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot search templates in wiki " + data.getWikiType() + ":" + data.getWikiOwner(), e);
     }
    return resultList;
   }
 
-  private TemplateSearchResult getTemplateResult(Row row) throws Exception {
-    String type = row.getValue(WikiNodeType.Definition.PRIMARY_TYPE).getString();
+  private TemplateSearchResult getTemplateResult(Row row) throws WikiException {
+    try {
+      String type = row.getValue(WikiNodeType.Definition.PRIMARY_TYPE).getString();
 
-    String path = row.getValue(WikiNodeType.Definition.PATH).getString();
-    String title = (row.getValue(WikiNodeType.Definition.TITLE) == null ? null : row.getValue(WikiNodeType.Definition.TITLE).getString());
-    
-    TemplateImpl templateImpl = (TemplateImpl) Utils.getObject(path, WikiNodeType.WIKI_PAGE);
-    String description = templateImpl.getDescription();
-    TemplateSearchResult result = new TemplateSearchResult(templateImpl.getName(),
-                                                           title,
-                                                           path,
-                                                           type,
-                                                           null,
-                                                           null,
-                                                           description);
-    return result;
+      String path = row.getValue(WikiNodeType.Definition.PATH).getString();
+      String title = (row.getValue(WikiNodeType.Definition.TITLE) == null ? null : row.getValue(WikiNodeType.Definition.TITLE).getString());
+
+      TemplateImpl templateImpl = (TemplateImpl) Utils.getObject(path, WikiNodeType.WIKI_PAGE);
+      String description = templateImpl.getDescription();
+      TemplateSearchResult result = new TemplateSearchResult(templateImpl.getName(),
+                                                             title,
+                                                             path,
+                                                             type,
+                                                             null,
+                                                             null,
+                                                             description);
+      return result;
+  } catch(RepositoryException e) {
+    throw new WikiException("Cannot get template", e);
+  }
   }
 
   /**
@@ -1496,26 +1582,20 @@ public class JCRDataStorage implements DataStorage {
    * @param hasAdminPermission
    * @return
    */
-  private WikiImpl fetchWikiImpl(String wikiType, String wikiOwner, boolean hasAdminPermission) throws Exception {
+  private WikiImpl fetchWikiImpl(String wikiType, String wikiOwner, boolean hasAdminPermission) throws WikiException {
     WikiStoreImpl wStore = (WikiStoreImpl) getModel().getWikiStore();
     WikiImpl wiki = null;
-    try {
-      if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-        WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-        wiki = portalWikiContainer.getWiki(wikiOwner, hasAdminPermission);
-      } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
-        WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-        wiki = groupWikiContainer.getWiki(wikiOwner, hasAdminPermission);
-      } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
-        WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-        wiki = userWikiContainer.getWiki(wikiOwner, hasAdminPermission);
-      }
-      getModel().save();
-    } catch (Exception e) {
-      if (log.isDebugEnabled()) {
-        log.debug("[WikiService] Cannot get wiki " + wikiType + ":" + wikiOwner, e);
-      }
+    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
+      wiki = portalWikiContainer.getWiki(wikiOwner, hasAdminPermission);
+    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
+      WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
+      wiki = groupWikiContainer.getWiki(wikiOwner, hasAdminPermission);
+    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
+      WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
+      wiki = userWikiContainer.getWiki(wikiOwner, hasAdminPermission);
     }
+    getModel().save();
     return wiki;
   }
 
@@ -1523,7 +1603,7 @@ public class JCRDataStorage implements DataStorage {
    * Fetch a PageImpl object with Chrommatic
    * @return
    */
-  private PageImpl fetchPageImpl(String wikiType, String wikiOwner, String pageName) throws Exception {
+  private PageImpl fetchPageImpl(String wikiType, String wikiOwner, String pageName) throws WikiException {
     if(pageName.equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
       WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner, true);
       return wikiImpl.getWikiHome();
@@ -1558,7 +1638,7 @@ public class JCRDataStorage implements DataStorage {
     return wikiPage;
   }
 
-  private Wiki convertWikiImplToWiki(WikiImpl wikiImpl) throws Exception {
+  private Wiki convertWikiImplToWiki(WikiImpl wikiImpl) throws WikiException {
     Wiki wiki = null;
     if(wikiImpl != null) {
       wiki = new Wiki();
@@ -1593,13 +1673,17 @@ public class JCRDataStorage implements DataStorage {
    * Utility method to convert PageImpl object to Page object
    * @param pageImpl PageImpl object to convert
    * @return
-   * @throws Exception
+   * @throws WikiException
    */
-  private Page convertPageImplToPage(PageImpl pageImpl) throws Exception {
+  private Page convertPageImplToPage(PageImpl pageImpl) throws WikiException {
     Page page = null;
     if(pageImpl != null) {
       page = new Page();
-      page.setId(pageImpl.getID());
+      try {
+        page.setId(pageImpl.getID());
+      } catch(RepositoryException e) {
+        throw new WikiException("Cannot get page id", e);
+      }
       WikiImpl wiki = pageImpl.getWiki();
       if(wiki != null) {
         page.setWikiId(wiki.getName());
@@ -1626,14 +1710,17 @@ public class JCRDataStorage implements DataStorage {
    * Utility method to convert DraftPageImpl object to DraftPage object
    * @param draftPageImpl DraftPageImpl object to convert
    * @return
-   * @throws Exception
+   * @throws WikiException
    */
-  private DraftPage convertDraftPageImplToDraftPage(DraftPageImpl draftPageImpl) throws Exception {
+  private DraftPage convertDraftPageImplToDraftPage(DraftPageImpl draftPageImpl) throws WikiException {
     DraftPage draftPage = null;
     if(draftPageImpl != null) {
       draftPage = new DraftPage();
-      draftPage.setId(draftPageImpl.getID());
-      //draftPage.setWiki(convertWikiImplToWiki(draftPageImpl.getWiki()));
+      try {
+        draftPage.setId(draftPageImpl.getID());
+      } catch(RepositoryException e) {
+        throw new WikiException("Cannot get draft page id", e);
+      }
       draftPage.setOwner(draftPageImpl.getOwner());
       draftPage.setName(draftPageImpl.getName());
       draftPage.setAuthor(draftPageImpl.getAuthor());
@@ -1654,7 +1741,7 @@ public class JCRDataStorage implements DataStorage {
     return draftPage;
   }
 
-  private Attachment convertAttachmentImplToAttachment(AttachmentImpl attachmentImpl) throws Exception {
+  private Attachment convertAttachmentImplToAttachment(AttachmentImpl attachmentImpl) throws WikiException {
     Attachment attachment = null;
     if(attachmentImpl != null) {
       attachment = new Attachment();
@@ -1675,7 +1762,7 @@ public class JCRDataStorage implements DataStorage {
     return attachment;
   }
 
-  private Template convertTemplateImplToTemplate(TemplateImpl templateImpl) throws Exception {
+  private Template convertTemplateImplToTemplate(TemplateImpl templateImpl) throws WikiException {
     Template template = null;
     if(templateImpl != null) {
       template = new Template();

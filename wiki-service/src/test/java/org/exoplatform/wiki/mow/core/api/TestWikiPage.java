@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -24,7 +25,7 @@ import org.exoplatform.wiki.service.WikiService;
 
 public class TestWikiPage extends AbstractMOWTestcase {
 
-  public void testAddWikiHome() {
+  public void testAddWikiHome() throws WikiException {
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
@@ -33,7 +34,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
     assertNotNull(wikiHomePage) ;
   }
 
-  public void testAddWikiPage() throws Exception {
+  public void testAddWikiPage() throws WikiException {
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
@@ -116,7 +117,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
     assertNull(wikiHomePage.getWikiPage("DeleteWikiPage")) ;    
   }  
   
-  public void testGetWiki() {
+  public void testGetWiki() throws WikiException {
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);

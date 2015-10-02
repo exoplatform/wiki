@@ -30,6 +30,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
@@ -67,7 +68,7 @@ public abstract class PageImpl extends NTFolder {
   
   private boolean isMinorEdit = false;
   
-  public String getID() throws Exception{
+  public String getID() throws RepositoryException {
     return this.getJCRPageNode().getUUID();
   }
   public void setMOWService(MOWService mowService) {
@@ -91,7 +92,7 @@ public abstract class PageImpl extends NTFolder {
     this.componentManager = componentManager;
   }
 
-  public Node getJCRPageNode() throws Exception {
+  public Node getJCRPageNode() throws RepositoryException {
     return (Node) getChromatticSession().getJCRSession().getItem(getPath());
   }
   
@@ -234,7 +235,7 @@ public abstract class PageImpl extends NTFolder {
   
   
   //TODO: replace by @Checkin when Chromattic support
-  public NTVersion checkin() throws Exception {
+  public NTVersion checkin() throws RepositoryException {
     PageDescriptionMixin description = getContent().getPageDescriptionMixin();
     description.setAuthor(ConversationState.getCurrent().getIdentity().getUserId());
     description.setUpdatedDate(GregorianCalendar.getInstance().getTime());
@@ -245,7 +246,7 @@ public abstract class PageImpl extends NTFolder {
   }
 
   //TODO: replace by @Checkout when Chromattic support
-  public void checkout() throws Exception {
+  public void checkout() throws RepositoryException {
     getContent().checkout();
   }
 
@@ -327,7 +328,7 @@ public abstract class PageImpl extends NTFolder {
     return atts;
   }
   
-  public Collection<AttachmentImpl> getAttachmentsExcludeContentByRootPermisison() throws Exception {
+  public Collection<AttachmentImpl> getAttachmentsExcludeContentByRootPermisison() {
     Collection<AttachmentImpl> attachments = getAttachmentsByChromattic();
     List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>(attachments.size());
     for (AttachmentImpl attachment : attachments) {
@@ -381,7 +382,7 @@ public abstract class PageImpl extends NTFolder {
   @OneToMany
   protected abstract Map<String, PageImpl> getChildrenContainer();
   
-  public Map<String, PageImpl> getChildPages() throws Exception {
+  public Map<String, PageImpl> getChildPages() {
     TreeMap<String, PageImpl> result = new TreeMap<>(new Comparator<String>() {
       @Override
       public int compare(String o1, String o2) {
@@ -399,7 +400,7 @@ public abstract class PageImpl extends NTFolder {
     return result;
   }
   
-  public Map<String, PageImpl> getChildrenByRootPermission() throws Exception {
+  public Map<String, PageImpl> getChildrenByRootPermission() {
     TreeMap<String, PageImpl> result = new TreeMap<String, PageImpl>(new Comparator<String>() {
       @Override
       public int compare(String o1, String o2) {
@@ -421,23 +422,23 @@ public abstract class PageImpl extends NTFolder {
   public abstract boolean getOverridePermission();
   public abstract void setOverridePermission(boolean isOverridePermission);
   
-  public boolean hasPermission(PermissionType permissionType) throws Exception {
+  public boolean hasPermission(PermissionType permissionType) {
     return permission.hasPermission(permissionType, getPath());
   }
   
-  public boolean hasPermission(PermissionType permissionType, Identity user) throws Exception {
+  public boolean hasPermission(PermissionType permissionType, Identity user) {
     return permission.hasPermission(permissionType, getPath(), user);
   }
   
-  public HashMap<String, String[]> getPermission() throws Exception {
+  public HashMap<String, String[]> getPermission() throws WikiException {
     return permission.getPermission(getPath());
   }
   
-  public void setPermission(HashMap<String, String[]> permissions) throws Exception {
+  public void setPermission(HashMap<String, String[]> permissions) throws WikiException {
     permission.setPermission(permissions, getPath());
   }
   
-  public void setNonePermission() throws Exception {
+  public void setNonePermission() throws WikiException {
     setPermission(null);
   }
   
@@ -453,7 +454,7 @@ public abstract class PageImpl extends NTFolder {
     addPage(page.getName(), page);
   }
   
-  public void addPublicPage(PageImpl page) throws Exception {
+  public void addPublicPage(PageImpl page) throws WikiException {
     addWikiPage(page);
     page.setNonePermission();
   }
@@ -517,7 +518,7 @@ public abstract class PageImpl extends NTFolder {
    * @throws NullPointerException if the param is null
    * @throws Exception when any error occurs.
    */
-  public synchronized String addRelatedPage(PageImpl page) throws Exception {
+  public synchronized String addRelatedPage(PageImpl page) throws RepositoryException {
     Map<String, Value> referredUUIDs = getReferredUUIDs();
     Session jcrSession = getJCRSession();
     Node myJcrNode = (Node) jcrSession.getItem(getPath());
@@ -537,7 +538,7 @@ public abstract class PageImpl extends NTFolder {
     return referedUUID;
   }
   
-  public List<PageImpl> getRelatedPages() throws Exception {
+  public List<PageImpl> getRelatedPages() throws RepositoryException {
     if (relatedPages == null) {
       relatedPages = new ArrayList<>();
       Iterator<Entry<String, Value>> refferedIter = getReferredUUIDs().entrySet().iterator();
@@ -560,7 +561,7 @@ public abstract class PageImpl extends NTFolder {
    *         null if removing failed.
    * @throws Exception when an error is thrown.
    */
-  public synchronized String removeRelatedPage(PageImpl page) throws Exception {
+  public synchronized String removeRelatedPage(PageImpl page) throws RepositoryException {
     Map<String, Value> referedUUIDs = getReferredUUIDs();
     Session jcrSession = getJCRSession();
     Node referredJcrNode = (Node) jcrSession.getItem(page.getPath());
@@ -584,7 +585,7 @@ public abstract class PageImpl extends NTFolder {
    * @return Map<String, Value> map of referred uuids of current page 
    * @throws Exception when an error is thrown.
    */
-  public Map<String, Value> getReferredUUIDs() throws Exception {   
+  public Map<String, Value> getReferredUUIDs() throws RepositoryException {
     Session jcrSession = getJCRSession();
     Node myJcrNode = (Node) jcrSession.getItem(getPath());
     Map<String, Value> referedUUIDs = new HashMap<String, Value>();

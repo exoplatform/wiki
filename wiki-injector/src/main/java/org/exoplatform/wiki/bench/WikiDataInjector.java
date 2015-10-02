@@ -22,6 +22,7 @@ import org.exoplatform.services.bench.DataInjector;
 import org.exoplatform.services.jcr.access.PermissionType;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -167,7 +168,7 @@ public class WikiDataInjector extends DataInjector {
     return new StringBuilder(prefix).append("_").append(order).toString();
   }
   
-  private Page createPage(Page father, String title, String wikiOwner, String wikiType, int attSize) throws Exception {
+  private Page createPage(Page father, String title, String wikiOwner, String wikiType, int attSize) throws WikiException {
     Page newPage = new Page();
     newPage.setTitle(title);
     Attachment content = new Attachment();
@@ -189,7 +190,7 @@ public class WikiDataInjector extends DataInjector {
                              int totalPages,
                              String wikiOwner,
                              String wikiType,
-                             Page father) throws Exception {
+                             Page father) throws WikiException {
     int numOfPages = quantities.get(depth).intValue();
     String prefix = prefixes.get(depth);
     // Achieve 'prefix' pages
@@ -220,7 +221,7 @@ public class WikiDataInjector extends DataInjector {
     }
   }
   
-  private void injectData(HashMap<String, String> queryParams) throws Exception {
+  private void injectData(HashMap<String, String> queryParams) throws WikiException {
     log.info("Start to inject data ............... ");
     List<Integer> quantities = readQuantities(queryParams);
     List<String> prefixes = readPrefixes(queryParams);
@@ -232,7 +233,7 @@ public class WikiDataInjector extends DataInjector {
     log.info("Injecting data has been done successfully!");
   }
   
-  private void grantPermission(List<Integer> quantities, List<String> prefixes, int depth, Page father, String wikiOwner, String wikiType, HashMap<String, String[]> permissions, boolean isRecursive) throws Exception {
+  private void grantPermission(List<Integer> quantities, List<String> prefixes, int depth, Page father, String wikiOwner, String wikiType, HashMap<String, String[]> permissions, boolean isRecursive) throws WikiException {
     int numOfPages = quantities.get(depth).intValue();
     String prefix = prefixes.get(depth);
     QueryResult<Page> iter = getPagesByPrefix(prefix, father);
@@ -268,7 +269,7 @@ public class WikiDataInjector extends DataInjector {
     return sb.toString();
   }
   
-  private void grantPermission(HashMap<String, String> queryParams) throws Exception {
+  private void grantPermission(HashMap<String, String> queryParams) throws WikiException {
     log.info("Start to grant permissions ............... ");
     List<Integer> quantities = readQuantities(queryParams);
     List<String> prefixes = readPrefixes(queryParams);
@@ -281,7 +282,7 @@ public class WikiDataInjector extends DataInjector {
   }
   
   @Override
-  public void inject(HashMap<String, String> queryParams) throws Exception {
+  public void inject(HashMap<String, String> queryParams) throws WikiException {
     String type = queryParams.get(CONSTANTS.TYPE.getName());
     if (CONSTANTS.DATA.getName().equalsIgnoreCase(type)) {
       injectData(queryParams);
@@ -291,7 +292,7 @@ public class WikiDataInjector extends DataInjector {
   }
 
   @Override
-  public void reject(HashMap<String, String> params) throws Exception {
+  public void reject(HashMap<String, String> params) throws WikiException {
     log.info("Start to reject data ............. ");
     String wikiOwner = readWikiOwner(params);
     String wikiType = readWikiType(params);
@@ -334,7 +335,7 @@ public class WikiDataInjector extends DataInjector {
   }
 
   @Override
-  public Object execute(HashMap<String, String> params) throws Exception {
+  public Object execute(HashMap<String, String> params) throws WikiException {
     return new Object();
   }
 

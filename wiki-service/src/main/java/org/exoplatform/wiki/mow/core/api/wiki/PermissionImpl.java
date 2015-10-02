@@ -16,47 +16,57 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
+import org.exoplatform.services.jcr.access.AccessControlEntry;
+import org.exoplatform.services.jcr.access.AccessControlList;
+import org.exoplatform.services.jcr.core.ExtendedNode;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.utils.Utils;
+
+import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import org.exoplatform.services.jcr.access.AccessControlEntry;
-import org.exoplatform.services.jcr.access.AccessControlList;
-import org.exoplatform.services.jcr.core.ExtendedNode;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.utils.Utils;
-
 public class PermissionImpl extends Permission {
+  private static final Log log = ExoLogger.getLogger(PermissionImpl.class);
+
   @Override
-  public HashMap<String, String[]> getPermission(String jcrPath) throws Exception {
-    ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
-    HashMap<String, String[]> perm = new HashMap<String, String[]>();
-    AccessControlList acl = extendedNode.getACL();
-    List<AccessControlEntry> aceList = acl.getPermissionEntries();
-    for (int i = 0, length = aceList.size(); i < length; i++) {
-      AccessControlEntry ace = aceList.get(i);
-      String[] nodeActions = perm.get(ace.getIdentity());
-      List<String> actions = null;
-      if (nodeActions != null) {
-        actions = new ArrayList<String>(Arrays.asList(nodeActions));
-      } else {
-        actions = new ArrayList<String>();
+  public HashMap<String, String[]> getPermission(String jcrPath) throws WikiException {
+    try {
+      ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
+      HashMap<String, String[]> perm = new HashMap<>();
+      AccessControlList acl = extendedNode.getACL();
+      List<AccessControlEntry> aceList = acl.getPermissionEntries();
+      for (int i = 0, length = aceList.size(); i < length; i++) {
+        AccessControlEntry ace = aceList.get(i);
+        String[] nodeActions = perm.get(ace.getIdentity());
+        List<String> actions;
+        if (nodeActions != null) {
+          actions = new ArrayList<>(Arrays.asList(nodeActions));
+        } else {
+          actions = new ArrayList<>();
+        }
+        actions.add(ace.getPermission());
+        perm.put(ace.getIdentity(), actions.toArray(new String[actions.size()]));
       }
-      actions.add(ace.getPermission());
-      perm.put(ace.getIdentity(), actions.toArray(new String[actions.size()]));
+      return perm;
+    } catch (Exception e) {
+      throw new WikiException("Cannot get permissions of node " + jcrPath, e);
     }
-    return perm;
   }
 
   @Override
-  public boolean hasPermission(PermissionType permissionType, String jcrPath) throws Exception {
+  public boolean hasPermission(PermissionType permissionType, String jcrPath) {
     ConversationState conversationState = ConversationState.getCurrent();
-    Identity user = null;
+    Identity user;
     if (conversationState != null) {
       user = conversationState.getIdentity();
     } else {
@@ -66,7 +76,7 @@ public class PermissionImpl extends Permission {
   }
   
   @Override
-  public boolean hasPermission(PermissionType permissionType, String jcrPath, Identity user) throws Exception {
+  public boolean hasPermission(PermissionType permissionType, String jcrPath, Identity user) {
     // Convert permissionType to JCR permission
     String[] permission = new String[] {};
     if (PermissionType.VIEWPAGE.equals(permissionType) || PermissionType.VIEW_ATTACHMENT.equals(permissionType)) {
@@ -76,27 +86,37 @@ public class PermissionImpl extends Permission {
           org.exoplatform.services.jcr.access.PermissionType.REMOVE,
           org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY };
     }
-    
-    // Get ACL
-    ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
-    AccessControlList acl = extendedNode.getACL();
-    
-    return Utils.hasPermission(acl, permission, user);
+
+    try {
+      // Get ACL
+      ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
+      AccessControlList acl = extendedNode.getACL();
+
+      return Utils.hasPermission(acl, permission, user);
+    } catch(RepositoryException e) {
+      log.error("Cannot check permissions of user " + user.getUserId() + " on node " + jcrPath
+              + " - Cause : " + e.getMessage(), e);
+      return false;
+    }
   }
 
   @Override
-  public void setPermission(HashMap<String, String[]> permissions, String jcrPath) throws Exception {
+  public void setPermission(HashMap<String, String[]> permissions, String jcrPath) throws WikiException {
     getChromatticSession().save();
-    ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
-    if (extendedNode.canAddMixin("exo:privilegeable")) {
-      extendedNode.addMixin("exo:privilegeable");
-    }
-    
-    if (permissions != null && permissions.size() > 0) {
-      extendedNode.setPermissions(permissions);
-    } else {
-      extendedNode.clearACL();
-      extendedNode.setPermission(IdentityConstants.ANY, org.exoplatform.services.jcr.access.PermissionType.ALL);
+    try {
+      ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
+      if (extendedNode.canAddMixin("exo:privilegeable")) {
+        extendedNode.addMixin("exo:privilegeable");
+      }
+
+      if (permissions != null && permissions.size() > 0) {
+        extendedNode.setPermissions(permissions);
+      } else {
+        extendedNode.clearACL();
+        extendedNode.setPermission(IdentityConstants.ANY, org.exoplatform.services.jcr.access.PermissionType.ALL);
+      }
+    } catch(RepositoryException e) {
+      throw new WikiException("Cannot set permissions on node " + jcrPath, e);
     }
   }
 }

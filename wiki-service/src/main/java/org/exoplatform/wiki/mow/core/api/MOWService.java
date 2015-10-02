@@ -17,8 +17,12 @@
 package org.exoplatform.wiki.mow.core.api;
 
 import org.chromattic.api.Chromattic;
+import org.chromattic.api.ChromatticException;
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticManager;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiChromatticLifeCycle;
@@ -30,17 +34,23 @@ public class MOWService {
 
   private WikiChromatticLifeCycle chromatticLifeCycle;
 
+  private ChromatticManager chromatticManager;
+
   public MOWService(ChromatticManager chromatticManager) {
+    this.chromatticManager = chromatticManager;
     this.chromatticLifeCycle = (WikiChromatticLifeCycle) chromatticManager.getLifeCycle("wiki");
     this.chromatticLifeCycle.setMOWService(this);
-    //this.chromatticLifeCycle.setWikiService(wService);
-    //this.chromatticLifeCycle.setRenderingService(renderingService);
   }
 
-  public ModelImpl getModel() {
+  public ModelImpl getModel() throws WikiException {
+    RequestLifeCycle.begin(chromatticManager);
     Chromattic chromattic = chromatticLifeCycle.getChromattic();
-    ChromatticSession chromeSession = chromattic.openSession();
-    return new ModelImpl(chromeSession);
+    try {
+      ChromatticSession chromeSession = chromattic.openSession();
+      return new ModelImpl(chromeSession);
+    } catch(Exception e) {
+      throw new WikiException("Cannot open chromattic session - Cause : " + e.getMessage(), e);
+    }
   }
 
   public ChromatticSession getSession() {

@@ -20,6 +20,8 @@ import java.util.Date;
 import java.util.Map;
 
 import javax.jcr.Node;
+import javax.jcr.PathNotFoundException;
+import javax.jcr.RepositoryException;
 import javax.jcr.Value;
 
 import org.chromattic.api.annotations.OneToMany;
@@ -47,7 +49,7 @@ public abstract class NTFrozenNode {
   public abstract Map<String, Object> getProperties();
 
   // TODO: remove these API when Chromattic support versioning
-  public String getAuthor() throws Exception {
+  public String getAuthor() throws RepositoryException {
     Value value = getPropertyValue(WikiNodeType.Definition.AUTHOR);
     if (value != null) {
       return value.getString();
@@ -61,7 +63,7 @@ public abstract class NTFrozenNode {
     }
   }
 
-  public Date getUpdatedDate() throws Exception {
+  public Date getUpdatedDate() throws RepositoryException {
     Value value = getPropertyValue(WikiNodeType.Definition.UPDATED_DATE);
     if (value != null) {
       return value.getDate().getTime();
@@ -75,7 +77,7 @@ public abstract class NTFrozenNode {
     }
   }
   
-  public String getComment() throws Exception {
+  public String getComment() throws RepositoryException {
     Value value = getPropertyValue(WikiNodeType.Definition.COMMENT);
     if (value != null) {
       return value.getString();
@@ -84,7 +86,7 @@ public abstract class NTFrozenNode {
     }
   }
   
-  public String getContentString() throws Exception {
+  public String getContentString() throws RepositoryException {
     StringBuilder st = new StringBuilder(WikiNodeType.Definition.ATTACHMENT_CONTENT);
     st.append("/").append(WikiNodeType.Definition.DATA);
     Value value = getPropertyValue(st.toString());
@@ -102,7 +104,7 @@ public abstract class NTFrozenNode {
   @Path
   protected abstract String getPath();
 
-  private Value getPropertyValue(String propertyName) throws Exception {
+  private Value getPropertyValue(String propertyName) throws RepositoryException {
     Node pageNode = getJCRNode();
     if (pageNode.hasProperty(propertyName)) {
       javax.jcr.Property property = pageNode.getProperty(propertyName);
@@ -113,7 +115,7 @@ public abstract class NTFrozenNode {
     }
   }
 
-  public Node getJCRNode() throws Exception {
+  public Node getJCRNode() throws RepositoryException {
     return (Node) mowService.getSession().getJCRSession().getItem(getPath());
   }
 

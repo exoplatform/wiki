@@ -16,14 +16,15 @@
  */
 package org.exoplatform.wiki.mow.api;
 
-import java.util.HashMap;
-
-import javax.jcr.Node;
-
 import org.chromattic.api.ChromatticSession;
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.service.PermissionType;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import java.util.HashMap;
 
 public abstract class Permission {
   protected MOWService mowService;
@@ -40,15 +41,15 @@ public abstract class Permission {
     return mowService.getSession();
   }
   
-  protected Node getJCRNode(String path) throws Exception {
+  protected Node getJCRNode(String path) throws RepositoryException {
     return (Node) getChromatticSession().getJCRSession().getItem(path);
   }
   
-  public abstract HashMap<String, String[]> getPermission(String path) throws Exception;
+  public abstract HashMap<String, String[]> getPermission(String path) throws WikiException;
   
-  public abstract boolean hasPermission(PermissionType permissionType, String path) throws Exception;
+  public abstract boolean hasPermission(PermissionType permissionType, String path);
   
-  public abstract boolean hasPermission(PermissionType permissionType, String path, Identity user) throws Exception;
+  public abstract boolean hasPermission(PermissionType permissionType, String path, Identity user);
   
-  public abstract void setPermission(HashMap<String, String[]> permissions, String path) throws Exception;
+  public abstract void setPermission(HashMap<String, String[]> permissions, String path) throws WikiException;
 }

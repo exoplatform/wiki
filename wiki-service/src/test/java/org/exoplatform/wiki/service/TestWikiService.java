@@ -24,6 +24,7 @@ import java.util.List;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.wiki.Model;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
@@ -34,6 +35,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
+import org.exoplatform.wiki.service.impl.WikiServiceImpl;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
@@ -48,11 +50,11 @@ public class TestWikiService extends AbstractMOWTestcase {
     wService = container.getComponentInstanceOfType(WikiService.class) ;
   }
   
-  public void testWikiService() throws Exception{
+  public void testWikiService() {
     assertNotNull(wService) ;
   }
 
-  public void testCreateWiki() throws Exception {
+  public void testCreateWiki() throws WikiException {
     Wiki wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
     assertNull(wiki);
 
@@ -63,7 +65,7 @@ public class TestWikiService extends AbstractMOWTestcase {
 
   }
 
-  public void testGetPortalPageById() throws Exception {
+  public void testGetPortalPageById() throws WikiException {
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
@@ -84,7 +86,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     
   }
 
-  public void testGetGroupPageById() throws Exception{
+  public void testGetGroupPageById() throws WikiException {
 
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
@@ -104,7 +106,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "unknown", "WikiHome"));
   }
 
-  public void testGetUserPageById() throws Exception{
+  public void testGetUserPageById() throws WikiException {
 
     Model model = mowService.getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
@@ -124,7 +126,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "unknown", "WikiHome"));
   }
 
-  public void testCreatePageAndSubPage() throws Exception{
+  public void testCreatePageAndSubPage() throws WikiException {
     Wiki wiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(wiki, "WikiHome", new Page("parentPage", "parentPage")) ;
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "parentPage")) ;
@@ -132,7 +134,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "childPage")) ;
   }
 
-  public void testCreateTemplatePage() throws Exception {
+  public void testCreateTemplatePage() throws WikiException {
     Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplate1");
 
     Template template = new Template();
@@ -151,7 +153,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals("My Great Template !", myTemplate.getContent().getText());
   }
 
-  public void testDeleteTemplatePage() throws Exception{
+  public void testDeleteTemplatePage() throws WikiException {
     Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplate2");
 
     Template template = new Template();
@@ -169,7 +171,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNull(wService.getTemplatePage(params, "MyTemplate"));
   }
 
-  public void testSearchTemplate() throws Exception {
+  public void testSearchTemplate() throws WikiException {
     Wiki wiki1 = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplateSearch");
     WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE,  "wikiForTemplateSearch", null);
     Template template1 = new Template();
@@ -207,7 +209,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals(1, result.size());
   }
 
-  public void testGetBreadcumb() throws Exception {
+  public void testGetBreadcumb() throws WikiException {
     Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("Breadcumb1", "Breadcumb1")) ;
     wService.createPage(portalWiki, "Breadcumb1", new Page("Breadcumb2", "Breadcumb2")) ;
@@ -242,7 +244,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals("UserBreadcumb3", breadCumbs.get(3).getId());
   }
 
-  public void testMovePage() throws Exception{
+  public void testMovePage() throws WikiException {
     //moving page in same space
     Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("oldParent", "oldParent")) ;
@@ -303,7 +305,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertFalse(wService.movePage(currentLocationParams, newLocationParams));
   }
 
-  public void testDeletePage() throws Exception{
+  public void testDeletePage() throws WikiException {
     Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("deletePage", "deletePage")) ;
     assertTrue(wService.deletePage(PortalConfig.PORTAL_TYPE, "classic", "deletePage")) ;
@@ -315,14 +317,14 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
 
-  public void testRenamePage() throws Exception{
+  public void testRenamePage() throws WikiException {
     Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("currentPage", "currentPage")) ;
     assertTrue(wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "currentPage", "renamedPage", "renamedPage")) ;
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "renamedPage")) ;
   }
 
-  public void testSearchRenamedPage() throws Exception{
+  public void testSearchRenamedPage() throws WikiException {
     Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page page = wService.createPage(portalWiki, "WikiHome", new Page("Page", "Page"));
     page.getContent().setText("This is a rename page test");
@@ -574,12 +576,12 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
   */
 
-  public void testGetSyntaxPage() throws Exception {
+  public void testGetSyntaxPage() throws WikiException {
     Page syntaxPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString());
     assertNotNull(syntaxPage);
   }
 
-  public void testBrokenLink() throws Exception {
+  public void testBrokenLink() throws WikiException {
     Wiki wiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(wiki, "WikiHome", new Page("OriginalParentPage", "OriginalParentPage"));
     wService.createPage(wiki, "OriginalParentPage", new Page("OriginalPage", "OriginalPage"));
@@ -621,7 +623,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNull(wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage"));
   }
 
-  public void testCircularRename() throws Exception {
+  public void testCircularRename() throws WikiException {
     wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", new Page("CircularRename1", "CircularRename1"));
     Page relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "CircularRename1");
     assertEquals("CircularRename1", relatedPage.getName());
@@ -636,7 +638,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNull(relatedPage);
   }
 
-  public void testDraftPage() throws Exception {
+  public void testDraftPage() throws WikiException {
     startSessionAs("mary");
     
     // Get wiki home

@@ -29,6 +29,7 @@ import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
@@ -473,22 +474,22 @@ public class Utils {
     return null;
   }
   
-  public static Wiki[] getAllWikiSpace() {
+  public static Wiki[] getAllWikiSpace() throws WikiException {
     MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
     WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
     return store.getWikis().toArray(new Wiki[]{}) ;
   } 
   
-  public static boolean isDescendantPage(Page page, Page parentPage) throws Exception {
+  public static boolean isDescendantPage(Page page, Page parentPage) {
     return page.getPath().startsWith(parentPage.getPath());
   }
 
-  public static Object getObject(String path, String type) throws Exception {
+  public static Object getObject(String path, String type) throws WikiException {
     WikiService wservice = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     return wservice.findByPath(path, type) ;
   }
   
-  public static Object getObjectFromParams(WikiPageParams param) throws Exception {
+  public static Object getObjectFromParams(WikiPageParams param) throws WikiException {
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     String wikiType = param.getType();
     String wikiOwner = param.getOwner();
@@ -517,7 +518,7 @@ public class Utils {
     }
   }
   
-  public static Stack<WikiPageParams> getStackParams(Page page) throws Exception {
+  public static Stack<WikiPageParams> getStackParams(Page page) throws WikiException {
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     Stack<WikiPageParams> stack = new Stack<>();
     Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
@@ -669,7 +670,7 @@ public class Utils {
    *          user Identity
    * @return boolean
    */
-  public static boolean hasPermission( AccessControlList acl,String[] permission, Identity user){
+  public static boolean hasPermission( AccessControlList acl,String[] permission, Identity user) {
     
     String userId = user.getUserId();
     if (userId.equals(IdentityConstants.SYSTEM)) {

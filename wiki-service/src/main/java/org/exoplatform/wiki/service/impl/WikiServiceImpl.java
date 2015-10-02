@@ -10,6 +10,7 @@ import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.ComponentPlugin;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
@@ -24,6 +25,7 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.webui.application.WebuiRequestContext;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
@@ -39,9 +41,11 @@ import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.utils.Utils;
 import org.picocontainer.Startable;
+import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.rendering.syntax.Syntax;
 
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -114,18 +118,9 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void start() {
-    try {
-      addEmotionIcons();
-      // TODO Why do we need this ?
-      //removeHelpPages();
-      try {
-        createWiki(PortalConfig.GROUP_TYPE, "sandbox");
-      } catch (Exception e) {
-        log.warn("Can not init sandbox wiki ...");
-      }
-    } catch (Exception e) {
-      log.warn("Can not start WikiService ...", e);
-    }
+    addEmotionIcons();
+    // TODO Why do we need to remove help pages at each startup ?
+    //removeHelpPages();
   }
 
   @Override
@@ -185,38 +180,38 @@ public class WikiServiceImpl implements WikiService, Startable {
   /******* Wiki *******/
 
   @Override
-  public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws Exception {
+  public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws WikiException {
     boolean hasAdminPermission = false;
     try {
       hasAdminPermission = hasAdminPagePermission(wikiType, owner);
-    } catch (Exception e) {
+    } catch (WikiException e) {
       LOG.error("Cannot check permissions of connected user when getting wiki " + wikiType + ":" + owner, e);
     }
     return dataStorage.getWikiByTypeAndOwner(wikiType, owner, hasAdminPermission);
   }
 
   @Override
-  public Wiki getOrCreateUserWiki(String username) throws Exception {
+  public Wiki getOrCreateUserWiki(String username) throws WikiException {
     return getWikiByTypeAndOwner(PortalConfig.USER_TYPE, username);
   }
 
   @Override
-  public List<PermissionEntry> getWikiPermission(String wikiType, String wikiOwner) throws Exception {
+  public List<PermissionEntry> getWikiPermission(String wikiType, String wikiOwner) throws WikiException {
     return dataStorage.getWikiPermission(wikiType, wikiOwner);
   }
 
   @Override
-  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws Exception {
+  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException {
     dataStorage.setWikiPermission(wikiType, wikiOwner, permissionEntries);
   }
 
   @Override
-  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws Exception {
+  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException {
     return dataStorage.getWikiDefaultPermissions(wikiType, wikiOwner);
   }
 
   @Override
-  public Wiki getWikiById(String wikiId) throws Exception {
+  public Wiki getWikiById(String wikiId) throws WikiException {
     Wiki wiki;
     if (wikiId.startsWith("/spaces/")) {
       wiki = getWikiByTypeAndOwner(PortalConfig.GROUP_TYPE, wikiId);
@@ -233,7 +228,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public String getWikiNameById(String wikiId) throws Exception {
+  public String getWikiNameById(String wikiId) throws WikiException {
     Wiki wiki = getWikiById(wikiId);
     if (WikiType.PORTAL.equals(wiki.getType())) {
       String displayName = wiki.getId();
@@ -260,13 +255,14 @@ public class WikiServiceImpl implements WikiService, Startable {
 
 
   @Override
-  public Wiki createWiki(String wikiType, String owner) throws Exception {
+  public Wiki createWiki(String wikiType, String owner) throws WikiException {
     Wiki wiki = dataStorage.createWiki(wikiType, owner);
 
     // init templates
     for(WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
       if (templatePlugin != null && templatePlugin.getSourcePaths() != null) {
         for (String templateSourcePath : templatePlugin.getSourcePaths()) {
+          // TODO change the WikiTemplatePagePlugin plugin to not rely on JCR imports
           //InputStream templateContent = configManager.getInputStream(templateSourcePath);
           Template template = new Template();
           template.setName("MyTemplate");
@@ -285,12 +281,12 @@ public class WikiServiceImpl implements WikiService, Startable {
   /******* Page *******/
 
   @Override
-  public Page createPage(Wiki wiki, String parentPageName, Page page) throws Exception {
+  public Page createPage(Wiki wiki, String parentPageName, Page page) throws WikiException {
     String pageName = TitleResolver.getId(page.getTitle(), false);
     page.setName(pageName);
 
     if (isExisting(wiki.getType(), wiki.getOwner(), pageName)) {
-      throw new Exception("Page " + wiki.getType() + ":" + wiki.getOwner() + ":" + pageName + " already exists, cannot create it.");
+      throw new WikiException("Page " + wiki.getType() + ":" + wiki.getOwner() + ":" + pageName + " already exists, cannot create it.");
     }
 
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
@@ -301,14 +297,9 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws Exception {
+  public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws WikiException {
     // check in the cache first
-    PageRenderingCacheService pageRenderingCacheService = null;
-    try {
-      pageRenderingCacheService = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    PageRenderingCacheService pageRenderingCacheService = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class);
     // TODO re-activate cache
     //Page page = pageRenderingCacheService.getPageByParams(new WikiPageParams(wikiType, wikiOwner, pageName));
     Page page = null;
@@ -330,7 +321,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Page getPageById(String id) throws Exception {
+  public Page getPageById(String id) throws WikiException {
     if (id == null) {
       return null;
     }
@@ -339,22 +330,22 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Page getPageByRootPermission(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public Page getPageByRootPermission(String wikiType, String wikiOwner, String pageId) throws WikiException {
     return dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageId);
   }
 
   @Override
-  public Page getParentPageOf(Page page) throws Exception {
+  public Page getParentPageOf(Page page) throws WikiException {
     return dataStorage.getParentPageOf(page);
   }
 
   @Override
-  public List<Page> getChildrenPageOf(Page page) throws Exception {
+  public List<Page> getChildrenPageOf(Page page) throws WikiException {
     return dataStorage.getChildrenPageOf(page);
   }
 
   @Override
-  public boolean deletePage(String wikiType, String wikiOwner, String pageName) throws Exception {
+  public boolean deletePage(String wikiType, String wikiOwner, String pageName) throws WikiException {
     if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
       return false;
     }
@@ -390,7 +381,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         log.error("Can't delete page '" + pageName + "'. This page does not exist.");
         return false;
       }
-    } catch (Exception e) {
+    } catch (WikiException e) {
       log.error("Can't delete page '" + pageName + "' ", e);
       return false;
     }
@@ -402,7 +393,7 @@ public class WikiServiceImpl implements WikiService, Startable {
                             String wikiOwner,
                             String pageName,
                             String newName,
-                            String newTitle) throws Exception {
+                            String newTitle) throws WikiException {
     if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
       return false;
     }
@@ -419,7 +410,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public boolean movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws Exception {
+  public boolean movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws WikiException {
     try {
       Page movePage = getPageOfWikiByName(currentLocationParams.getType(),
               currentLocationParams.getOwner(),
@@ -431,7 +422,7 @@ public class WikiServiceImpl implements WikiService, Startable {
               .invalidateUUIDCache(currentLocationParams);
       // Post activity
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageWikiListener.MOVE_PAGE_TYPE);
-    } catch (Exception e) {
+    } catch (WikiException e) {
       log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
       return false;
     }
@@ -439,7 +430,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
 
-  private void invalidateUUIDCache(String wikiType, String wikiOwner, String pageId) throws Exception {
+  private void invalidateUUIDCache(String wikiType, String wikiOwner, String pageId) throws WikiException {
     Page page = getPageOfWikiByName(wikiType, wikiOwner, pageId);
 
     Queue<Page> queue = new LinkedList<>();
@@ -456,17 +447,17 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Page getRelatedPage(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public Page getRelatedPage(String wikiType, String wikiOwner, String pageId) throws WikiException {
     return dataStorage.getRelatedPage(wikiType, wikiOwner, pageId);
   }
 
   @Override
-  public boolean isExisting(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public boolean isExisting(String wikiType, String wikiOwner, String pageId) throws WikiException {
     return getPageByRootPermission(wikiType, wikiOwner, pageId) != null;
   }
 
   @Override
-  public PageList<SearchResult> search(WikiSearchData data) throws Exception {
+  public PageList<SearchResult> search(WikiSearchData data) throws WikiException {
     try {
       PageList<SearchResult> result = dataStorage.search(data);
 
@@ -488,19 +479,19 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
       return result;
     } catch (Exception e) {
-      log.error("Can't search", e);
+      log.error("Cannot search on wiki " + data.getWikiType() + ":" + data.getWikiOwner() + " - Cause : " + e.getMessage(), e);
     }
     return new ObjectPageList<>(new ArrayList<SearchResult>(), 0);
   }
 
   @Override
-  public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws WikiException {
     WikiSearchData data = new WikiSearchData(wikiType, wikiOwner, pageId);
     return dataStorage.searchRenamedPage(data);
   }
 
   @Override
-  public Object findByPath(String path, String objectNodeType) {
+  public Object findByPath(String path, String objectNodeType) throws WikiException {
     String relPath = path;
     if (relPath.startsWith("/")) {
       relPath = relPath.substring(1);
@@ -510,17 +501,17 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Page getPageOfAttachment(Attachment attachment) throws Exception {
+  public Page getPageOfAttachment(Attachment attachment) throws WikiException {
     return dataStorage.getPageOfAttachment(attachment);
   }
 
   @Override
-  public Page getHelpSyntaxPage(String syntaxId) throws Exception {
+  public Page getHelpSyntaxPage(String syntaxId) throws WikiException {
     return dataStorage.getHelpSyntaxPage(syntaxId, syntaxHelpParams, configManager);
   }
 
   @Override
-  public Page getMetaDataPage(MetaDataPage metaPage) throws Exception {
+  public Page getMetaDataPage(MetaDataPage metaPage) throws WikiException {
     if (MetaDataPage.EMOTION_ICONS_PAGE.equals(metaPage)) {
       return dataStorage.getEmotionIconsPage();
     }
@@ -528,7 +519,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public List<Page> getDuplicatePages(Page parentPage, Wiki targetWiki, List<Page> resultList) throws Exception {
+  public List<Page> getDuplicatePages(Page parentPage, Wiki targetWiki, List<Page> resultList) throws WikiException {
     if (resultList == null) {
       resultList = new ArrayList<>();
     }
@@ -552,12 +543,12 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws Exception {
+  public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws WikiException {
     return dataStorage.hasPermissionOnPage(page, permissionType, user);
   }
 
   @Override
-  public boolean canModifyPagePermission(Page currentPage, String currentUser) throws Exception{
+  public boolean canModifyPagePermission(Page currentPage, String currentUser) throws WikiException{
     boolean isPageOwner = currentPage.getOwner().equals(currentUser);
     String[] permissionOfCurrentUser = currentPage.getPermission().get(currentUser);
     boolean hasEditPagePermissionOnPage = false;
@@ -576,7 +567,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws Exception {
+  public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws WikiException {
     Wiki wiki = getWikiByTypeAndOwner(currentPage.getWikiType(), currentPage.getWikiOwner());
 
     boolean hasEditPagePermissionOnPage = false;
@@ -593,7 +584,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public List<PageVersion> getVersionsOfPage(Page page) throws Exception {
+  public List<PageVersion> getVersionsOfPage(Page page) throws WikiException {
     List<PageVersion> versions = dataStorage.getVersionsOfPage(page);
     if(versions == null || versions.isEmpty()) {
       dataStorage.addPageVersion(page);
@@ -603,37 +594,37 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public void createVersionOfPage(Page page) throws Exception {
+  public void createVersionOfPage(Page page) throws WikiException {
     dataStorage.addPageVersion(page);
   }
 
   @Override
-  public void updatePage(Page page) throws Exception {
+  public void updatePage(Page page) throws WikiException {
     dataStorage.updatePage(page);
   }
 
   /******* Template *******/
 
   @Override
-  public void createTemplatePage(Wiki wiki, Template template) throws Exception {
+  public void createTemplatePage(Wiki wiki, Template template) throws WikiException {
     dataStorage.createTemplatePage(wiki, template);
   }
 
   @Override
-  public Template getTemplatePage(WikiPageParams params, String templateId) throws Exception {
+  public Template getTemplatePage(WikiPageParams params, String templateId) throws WikiException {
     return dataStorage.getTemplatePage(params, templateId);
   }
 
   @Override
-  public Map<String, Template> getTemplates(WikiPageParams params) throws Exception {
+  public Map<String, Template> getTemplates(WikiPageParams params) throws WikiException {
     return dataStorage.getTemplates(params);
   }
 
   @Override
-  public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws Exception {
+  public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws WikiException {
     try {
       return dataStorage.searchTemplate(data);
-    } catch (Exception e) {
+    } catch (WikiException e) {
       log.error("Can't search", e);
     }
     return null;
@@ -645,7 +636,7 @@ public class WikiServiceImpl implements WikiService, Startable {
                              String newTitle,
                              String newDescription,
                              String newContent,
-                             String newSyntaxId) throws Exception {
+                             String newSyntaxId) throws WikiException {
     if (newTitle != null) {
       // TODO need updateTemplate
       //template = dataStorage.getTemplatesContainer(params).addPage(TitleResolver.getId(newTitle, false), template);
@@ -657,24 +648,24 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws Exception {
+  public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws WikiException {
     dataStorage.deleteTemplatePage(wikiType, wikiOwner, templateName);
   }
 
   @Override
-  public void addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception {
+  public void addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws WikiException {
     Page orginary = getPageOfWikiByName(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
     Page related = getPageOfWikiByName(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
     dataStorage.addRelatedPage(orginary, related);
   }
 
   @Override
-  public List<Page> getRelatedPagesOfPage(Page page) throws Exception {
+  public List<Page> getRelatedPagesOfPage(Page page) throws WikiException {
     return dataStorage.getRelatedPagesOfPage(page);
   }
 
   @Override
-  public void removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws Exception {
+  public void removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws WikiException {
     Page originary = getPageOfWikiByName(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
     Page related = getPageOfWikiByName(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
     dataStorage.removeRelatedPage(originary, related);
@@ -683,7 +674,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   /******* Draft *******/
 
   @Override
-  public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId) throws WikiException {
     Identity user = ConversationState.getCurrent().getIdentity();
     Page existedPage = getPageByRootPermission(wikiType, wikiOwner, pageId);
     if (existedPage != null) {
@@ -696,7 +687,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public DraftPage createDraftForNewPage(WikiPageParams targetPageParam, long clientTime) throws Exception {
+  public DraftPage createDraftForNewPage(WikiPageParams targetPageParam, long clientTime) throws WikiException {
     // Create suffix for draft name
     String draftSuffix = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date(clientTime));
 
@@ -721,7 +712,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public DraftPage createDraftForExistPage(WikiPageParams targetPageParam, String revision, long clientTime) throws Exception {
+  public DraftPage createDraftForExistPage(WikiPageParams targetPageParam, String revision, long clientTime) throws WikiException {
     // Create suffix for draft name
     String draftSuffix = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date(clientTime));
 
@@ -755,7 +746,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public DraftPage getDraftOfPage(Page page) throws Exception {
+  public DraftPage getDraftOfPage(Page page) throws WikiException {
     List<DraftPage> draftPages = getDraftsOfUser(Utils.getCurrentUser());
     for(DraftPage draftPage : draftPages) {
       if(draftPage.getTargetPage() != null && draftPage.getTargetPage().equals(page.getId())) {
@@ -766,7 +757,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public DraftPage getLastestDraft() throws Exception {
+  public DraftPage getLastestDraft() throws WikiException {
     String currentUser = Utils.getCurrentUser();
     if (IdentityConstants.ANONIM.equals(currentUser)) {
       return null;
@@ -776,7 +767,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public DraftPage getDraft(String draftName) throws Exception {
+  public DraftPage getDraft(String draftName) throws WikiException {
     if (draftName == null) {
       return null;
     }
@@ -790,18 +781,18 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public void removeDraftOfPage(WikiPageParams param) throws Exception {
+  public void removeDraftOfPage(WikiPageParams param) throws WikiException {
     Page page = getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageId());
     dataStorage.deleteDraftOfPage(page, Utils.getCurrentUser());
   }
 
   @Override
-  public void removeDraft(String draftName) throws Exception {
+  public void removeDraft(String draftName) throws WikiException {
     dataStorage.deleteDraftById(draftName, Utils.getCurrentUser());
   }
 
   @Override
-  public List<DraftPage> getDraftsOfUser(String username) throws Exception {
+  public List<DraftPage> getDraftsOfUser(String username) throws WikiException {
     List<DraftPage> draftPages = new ArrayList<>();
     if (!IdentityConstants.ANONIM.equals(username)) {
       draftPages = dataStorage.getDraftPagesOfUser(username);
@@ -810,7 +801,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public boolean isDraftOutDated(DraftPage draftPage) throws Exception {
+  public boolean isDraftOutDated(DraftPage draftPage) throws WikiException {
     String targetRevision = draftPage.getTargetRevision();
     if (targetRevision == null) {
       return false;
@@ -843,7 +834,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public DiffResult getDraftChanges(DraftPage draftPage) throws Exception {
+  public DiffResult getDraftChanges(DraftPage draftPage) throws WikiException {
     String targetContent = null;
 
     if (!draftPage.isNewPage()) {
@@ -861,33 +852,37 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
     }
     DiffService diffService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(DiffService.class);
-    return diffService.getDifferencesAsHTML(targetContent, draftPage.getContent().getText(), true);
+    DiffResult diffResult;
+    try {
+      diffResult = diffService.getDifferencesAsHTML(targetContent, draftPage.getContent().getText(), true);
+    } catch (DifferentiationFailedException e) {
+      throw new WikiException("Cannot get changes of draft " + draftPage.getWikiType() + ":"
+              + draftPage.getWikiOwner() + ":" + draftPage.getName() + " - Cause : " + e.getMessage(), e);
+    }
+
+    return diffResult;
   }
 
 
   /******* Attachment *******/
 
   @Override
-  public String getPageTitleOfAttachment(String path) throws Exception {
-    try {
-      String relPath = path;
-      if (relPath.startsWith("/")) {
-        relPath = relPath.substring(1);
-      }
-      String temp = relPath.substring(0, relPath.lastIndexOf("/"));
-      relPath = temp.substring(0, temp.lastIndexOf("/"));
-      Page page = (Page) findByPath(relPath, WikiNodeType.WIKI_PAGE);
-      return page.getTitle();
-    } catch (Exception e) {
-      return null;
+  public String getPageTitleOfAttachment(String path) throws WikiException {
+    String relPath = path;
+    if (relPath.startsWith("/")) {
+      relPath = relPath.substring(1);
     }
+    String temp = relPath.substring(0, relPath.lastIndexOf("/"));
+    relPath = temp.substring(0, temp.lastIndexOf("/"));
+    Page page = (Page) findByPath(relPath, WikiNodeType.WIKI_PAGE);
+    return page.getTitle();
   }
 
   @Override
-  public InputStream getAttachmentAsStream(String path) throws Exception {
+  public InputStream getAttachmentAsStream(String path) throws WikiException {
     try {
       return dataStorage.getAttachmentAsStream(path);
-    } catch (Exception e) {
+    } catch (WikiException e) {
       return null;
     }
   }
@@ -896,7 +891,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public List<SpaceBean> searchSpaces(String keyword) throws Exception {
+  public List<SpaceBean> searchSpaces(String keyword) throws WikiException {
     List<SpaceBean> spaceBeans = new ArrayList<>();
 
     // Get group wiki
@@ -942,6 +937,8 @@ public class WikiServiceImpl implements WikiService, Startable {
           }
         }
       }
+    } catch (Exception e) {
+      throw new WikiException("Error while searching in wikis for user " + currentUser + " - Cause : " + e.getMessage(), e);
     }
     return spaceBeans;
   }
@@ -951,13 +948,13 @@ public class WikiServiceImpl implements WikiService, Startable {
     try {
       Class linkProviderClass = Class.forName("org.exoplatform.social.core.service.LinkProvider");
       return linkProviderClass.getDeclaredField("SPACE_DEFAULT_AVATAR_URL").get(null).toString();
-    } catch (Exception e) {
+    } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
       return "";
     }
   }
 
   @Override
-  public boolean hasAdminSpacePermission(String wikiType, String owner) throws Exception {
+  public boolean hasAdminSpacePermission(String wikiType, String owner) throws WikiException {
     ConversationState conversationState = ConversationState.getCurrent();
     Identity user;
     UserACL acl;
@@ -988,15 +985,16 @@ public class WikiServiceImpl implements WikiService, Startable {
 
       // Check if user is the member of space or not
       return Boolean.valueOf(String.valueOf(spaceServiceClass.getDeclaredMethod("isMember", spaceClass, String.class).invoke(spaceService, space, userId)));
-    } catch (Exception e) {
-      log.debug("Can not check if user is space member", e);
+    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      log.error("Can not check if user " + userId + " is a member of the space " + spaceId + " - Cause : "
+              + e.getMessage(), e);
       return false;
     }
   }
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public boolean isHiddenSpace(String groupId) throws Exception {
+  public boolean isHiddenSpace(String groupId) {
     try {
       Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
       Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
@@ -1005,7 +1003,8 @@ public class WikiServiceImpl implements WikiService, Startable {
       String visibility = String.valueOf(spaceClass.getDeclaredMethod("getVisibility").invoke(space));
       String hiddenValue = String.valueOf(spaceClass.getDeclaredField("HIDDEN").get(space));
       return hiddenValue.equals(visibility);
-    } catch (ClassNotFoundException e) {
+    } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InvocationTargetException e) {
+      log.error("Can not check if space " + groupId + " is a hidden space - Cause : " + e.getMessage(), e);
       return true;
     }
   }
@@ -1013,15 +1012,20 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
-  public String getSpaceNameByGroupId(String groupId) throws Exception {
+  public String getSpaceNameByGroupId(String groupId) {
     try {
       Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
       Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
 
       Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
       Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
-      return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
-    } catch (Exception e) {
+      if(space != null) {
+        return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
+      } else {
+        return groupId.substring(groupId.lastIndexOf('/') + 1);
+      }
+    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      log.error("Can not find space of group " + groupId + " - Cause : " + e.getMessage(), e);
       return groupId.substring(groupId.lastIndexOf('/') + 1);
     }
   }
@@ -1031,74 +1035,50 @@ public class WikiServiceImpl implements WikiService, Startable {
   /******* Listeners *******/
   // TODO should not be in the interface
   @Override
-  public void postUpdatePage(final String wikiType, final String wikiOwner, final String pageId, Page page, String wikiUpdateType) throws Exception {
+  public void postUpdatePage(final String wikiType, final String wikiOwner, final String pageId, Page page, String wikiUpdateType) throws WikiException {
     List<PageWikiListener> listeners = getPageListeners();
     for (PageWikiListener l : listeners) {
       try {
         l.postUpdatePage(wikiType, wikiOwner, pageId, page, wikiUpdateType);
-      } catch (Exception e) {
+      } catch (WikiException e) {
         if (log.isWarnEnabled()) {
-          log.warn(String.format("executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
+          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
         }
       }
     }
   }
 
   @Override
-  public void postAddPage(final String wikiType, final String wikiOwner, final String pageId, Page page) throws Exception {
+  public void postAddPage(final String wikiType, final String wikiOwner, final String pageId, Page page) throws WikiException {
     List<PageWikiListener> listeners = getPageListeners();
     for (PageWikiListener l : listeners) {
       try {
         l.postAddPage(wikiType, wikiOwner, pageId, page);
-      } catch (Exception e) {
+      } catch (WikiException e) {
         if (log.isWarnEnabled()) {
-          log.warn(String.format("executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
+          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
         }
       }
     }
   }
 
   @Override
-  public void postDeletePage(String wikiType, String wikiOwner, String pageId, Page page) throws Exception {
+  public void postDeletePage(String wikiType, String wikiOwner, String pageId, Page page) throws WikiException {
     List<PageWikiListener> listeners = getPageListeners();
     for (PageWikiListener l : listeners) {
       try {
         l.postDeletePage(wikiType, wikiOwner, pageId, page);
-      } catch (Exception e) {
+      } catch (WikiException e) {
         if (log.isWarnEnabled()) {
-          log.warn(String.format("executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
+          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
         }
       }
     }
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   @Override
-  public List<BreadcrumbData> getBreadcumb(String wikiType, String wikiOwner, String pageId) throws Exception {
+  public List<BreadcrumbData> getBreadcumb(String wikiType, String wikiOwner, String pageId) throws WikiException {
     return getBreadcumb(null, wikiType, wikiOwner, pageId);
   }
 
@@ -1113,14 +1093,14 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public String getPortalOwner() {
+  public String getPortalOwner() throws WikiException {
     return dataStorage.getPortalOwner();
   }
 
 
 
   @Override
-  public boolean hasAdminPagePermission(String wikiType, String owner) throws Exception {
+  public boolean hasAdminPagePermission(String wikiType, String owner) throws WikiException {
     ConversationState conversationState = ConversationState.getCurrent();
     Identity user;
     if (conversationState != null) {
@@ -1166,12 +1146,12 @@ public class WikiServiceImpl implements WikiService, Startable {
    * @param wikiOwner
    * @param pageId
    * @return
-   * @throws Exception
+   * @throws WikiException
    */
   private List<BreadcrumbData> getBreadcumb(List<BreadcrumbData> list,
                                             String wikiType,
                                             String wikiOwner,
-                                            String pageId) throws Exception {
+                                            String pageId) throws WikiException {
     if (list == null) {
       list = new ArrayList<>(5);
     }
@@ -1201,7 +1181,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
       }
     } catch (Exception e) {
-      log.warn("Can not init emotion icons...");
+      log.warn("Can not init emotion icons", e);
     } finally {
       sessionProvider.close();
     }

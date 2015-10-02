@@ -47,7 +47,7 @@ public class SearchResult {
     this.excerpt = text;
   }
 
-  public String getExcerpt() throws ClassNotFoundException, IllegalArgumentException, SecurityException, IllegalAccessException, NoSuchMethodException {
+  public String getExcerpt() {
     return Utils.sanitize(excerpt);
   }
 
