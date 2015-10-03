@@ -21,6 +21,7 @@ import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
+import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
@@ -355,15 +356,6 @@ public interface WikiService {
   public Page getHelpSyntaxPage(String syntaxId) throws WikiException;
 
   /**
-   * Gets a wiki page of metadata.
-   *
-   * @param metaPage The metadata to use, mainly emoticons.
-   * @return The wiki page of metadata.
-   * @throws WikiException
-   */
-  public Page getMetaDataPage(MetaDataPage metaPage) throws WikiException;
-
-  /**
    * Gets a map of wiki templates based on a given params object.
    * 
    * @param params The params object which is used for getting the wiki templates.
@@ -418,6 +410,13 @@ public interface WikiService {
    * @param templatePlugin The wiki template plugin to be added.
    */
   public void addWikiTemplatePagePlugin(WikiTemplatePagePlugin templatePlugin);
+
+  /**
+   * Adds a Wiki emotion icons as plugin.
+   *
+   * @param plugin The wiki emotion icons plugin to be added.
+   */
+  public void addEmotionIconsPlugin(WikiEmotionIconsPlugin plugin);
 
   /**
    * Gets listeners of all wiki pages that are registered into the Wiki service.
@@ -709,4 +708,15 @@ public interface WikiService {
    * @throws WikiException
    */
   public void updatePage(Page page) throws WikiException;
+
+  /**
+   * Creates a emotion icon
+   * @param emotionIcon The emotion icon to add
+   * @throws WikiException
+   */
+  public void createEmotionIcon(EmotionIcon emotionIcon) throws WikiException;
+
+  public List<EmotionIcon> getEmotionIcons() throws WikiException;
+
+  public EmotionIcon getEmotionIconByName(String name) throws WikiException;
 }

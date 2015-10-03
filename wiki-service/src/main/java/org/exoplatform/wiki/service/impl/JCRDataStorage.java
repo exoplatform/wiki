@@ -8,6 +8,7 @@ import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
@@ -43,6 +44,7 @@ import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
 import java.io.*;
+import java.net.URLConnection;
 import java.util.*;
 
 public class JCRDataStorage implements DataStorage {
@@ -1113,10 +1115,80 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Page getEmotionIconsPage() throws WikiException {
+  public void createEmotionIcon(EmotionIcon emotionIcon) throws WikiException {
     Model model = getModel();
     WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    return convertPageImplToPage(wStore.getEmotionIconsPage());
+    PageImpl emotionIconsPage = wStore.getEmotionIconsContainer();
+
+    String mimetype;
+    try {
+      mimetype = URLConnection.guessContentTypeFromStream(new ByteArrayInputStream(emotionIcon.getImage()));
+    } catch (IOException e) {
+      log.warn("Cannot guess mimetype from inputstream for emotion icon " + emotionIcon.getName() + " - Cause : " + e.getMessage());
+      mimetype = URLConnection.guessContentTypeFromName(emotionIcon.getName());
+      if(mimetype == null) {
+        mimetype = "image/*";
+      }
+    }
+
+    AttachmentImpl emotionIconAttachment = emotionIconsPage.createAttachment(emotionIcon.getName(),
+            new Resource(mimetype, "UTF-8", emotionIcon.getImage()));
+    emotionIconsPage.addAttachment(emotionIconAttachment);
+  }
+
+  @Override
+  public List<EmotionIcon> getEmotionIcons() throws WikiException {
+    List<EmotionIcon> emotionIcons = null;
+
+    Model model = getModel();
+    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+
+    PageImpl emotionIconsPage = wStore.getEmotionIconsContainer();
+    if(emotionIconsPage != null) {
+      emotionIcons = new ArrayList<>();
+
+      String baseUrl = Utils.getCurrentRepositoryWebDavUri();
+
+      Collection<AttachmentImpl> emotionIconsAttachments = emotionIconsPage.getAttachments();
+      for(AttachmentImpl emotionIconAttachment : emotionIconsAttachments) {
+        EmotionIcon emotionIcon = new EmotionIcon();
+        emotionIcon.setName(emotionIconAttachment.getName());
+        StringBuilder sbUrl = new StringBuilder(baseUrl)
+                .append(wStore.getSession().getJCRSession().getWorkspace().getName())
+                .append(emotionIconsPage.getPath())
+                .append("/")
+                .append(emotionIconAttachment.getName());
+        emotionIcon.setUrl(sbUrl.toString());
+        emotionIcons.add(emotionIcon);
+      }
+    }
+    return emotionIcons;
+  }
+
+  @Override
+  public EmotionIcon getEmotionIconByName(String name) throws WikiException {
+    EmotionIcon emotionIcon = null;
+
+    Model model = getModel();
+    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+
+    String baseUrl = Utils.getCurrentRepositoryWebDavUri();
+
+    PageImpl emotionIconsPage = wStore.getEmotionIconsContainer();
+    if(emotionIconsPage != null) {
+      AttachmentImpl emotionIconAttachment = emotionIconsPage.getAttachment(name);
+      if(emotionIconAttachment != null) {
+        emotionIcon = new EmotionIcon();
+        emotionIcon.setName(name);
+        StringBuilder sbUrl = new StringBuilder(baseUrl)
+                .append(wStore.getSession().getJCRSession().getWorkspace().getName())
+                .append(emotionIconsPage.getPath())
+                .append("/")
+                .append(emotionIconAttachment.getName());
+        emotionIcon.setUrl(sbUrl.toString());
+      }
+    }
+    return emotionIcon;
   }
 
   private synchronized void createHelpPages(List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException {

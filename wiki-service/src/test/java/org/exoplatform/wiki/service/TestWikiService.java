@@ -536,6 +536,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals(1, attachments.size());
     assertEquals("foo", new String(attachments.get(0).getContent()));
     assertNotNull(attachments.get(0).getDownloadURL());
+    assertEquals("/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/AddAttachment/attachment1.txt", attachments.get(0).getDownloadURL());
   }
 
   public void testAddImageAttachment() throws WikiException, IOException {
@@ -559,6 +560,20 @@ public class TestWikiService extends AbstractMOWTestcase {
     byte[] content1 = attachments.get(0).getContent();
     assertTrue(Arrays.equals(content, content1));
     assertNotNull(attachments.get(0).getDownloadURL());
+  }
+
+  public void testAddEmotionIcons() throws WikiException, IOException {
+    EmotionIcon emotionIcon = new EmotionIcon();
+    emotionIcon.setName("thumb_up.gif");
+    InputStream emotionIconInputStream = this.getClass().getClassLoader().getResourceAsStream("images/thumb_up.gif");
+    byte[] emotionIconImage = IOUtils.toByteArray(emotionIconInputStream);
+    emotionIcon.setImage(emotionIconImage);
+    wService.createEmotionIcon(emotionIcon);
+
+    EmotionIcon emotionIconThumbUp = wService.getEmotionIconByName("thumb_up.gif");
+    assertNotNull(emotionIconThumbUp);
+    assertEquals("thumb_up.gif", emotionIconThumbUp.getName());
+    assertEquals("/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikimetadata/EmotionIconsPage/thumb_up.gif", emotionIconThumbUp.getUrl());
   }
 
   public void testGetSyntaxPage() throws WikiException {

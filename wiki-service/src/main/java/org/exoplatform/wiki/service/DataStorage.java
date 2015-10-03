@@ -107,7 +107,11 @@ public interface DataStorage {
 
   public Page getHelpSyntaxPage(String syntaxId, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException;
 
-  public Page getEmotionIconsPage() throws WikiException;
+  public void createEmotionIcon(EmotionIcon emotionIcon) throws WikiException;
+
+  public List<EmotionIcon> getEmotionIcons() throws WikiException;
+
+  public EmotionIcon getEmotionIconByName(String name) throws WikiException;
 
   public String getPortalOwner() throws WikiException;
 

@@ -1,6 +1,7 @@
 package org.exoplatform.wiki.service.impl;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.ListAccess;
@@ -16,8 +17,6 @@ import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.services.deployment.plugins.XMLDeploymentPlugin;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
@@ -27,6 +26,7 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
+import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.*;
@@ -43,6 +43,7 @@ import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.rendering.syntax.Syntax;
 
+import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -76,6 +77,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   private List<ComponentPlugin> plugins_ = new ArrayList<>();
 
   private List<WikiTemplatePagePlugin> templatePagePlugins_ = new ArrayList<>();
+
+  private List<WikiEmotionIconsPlugin> emotionIconsPlugins = new ArrayList<>();
 
   private static final Log log = ExoLogger.getLogger(WikiServiceImpl.class);
 
@@ -116,7 +119,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void start() {
-    addEmotionIcons();
+    initEmotionIcons();
     // TODO Why do we need to remove help pages at each startup ?
     //removeHelpPages();
   }
@@ -138,6 +141,13 @@ public class WikiServiceImpl implements WikiService, Startable {
   public void addWikiTemplatePagePlugin(WikiTemplatePagePlugin plugin) {
     if (plugin != null) {
       templatePagePlugins_.add(plugin);
+    }
+  }
+
+  @Override
+  public void addEmotionIconsPlugin(WikiEmotionIconsPlugin plugin) {
+    if (plugin != null) {
+      emotionIconsPlugins.add(plugin);
     }
   }
 
@@ -507,11 +517,13 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Page getMetaDataPage(MetaDataPage metaPage) throws WikiException {
-    if (MetaDataPage.EMOTION_ICONS_PAGE.equals(metaPage)) {
-      return dataStorage.getEmotionIconsPage();
-    }
-    return null;
+  public List<EmotionIcon> getEmotionIcons() throws WikiException {
+    return dataStorage.getEmotionIcons();
+  }
+
+  @Override
+  public EmotionIcon getEmotionIconByName(String name) throws WikiException {
+    return dataStorage.getEmotionIconByName(name);
   }
 
   @Override
@@ -1133,6 +1145,10 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
 
+  @Override
+  public void createEmotionIcon(EmotionIcon emotionIcon) throws WikiException {
+    dataStorage.createEmotionIcon(emotionIcon);
+  }
 
   /******* Private methods *******/
 
@@ -1186,29 +1202,27 @@ public class WikiServiceImpl implements WikiService, Startable {
     return list;
   }
 
-  private void addEmotionIcons() {
-    SessionProvider sessionProvider = SessionProvider.createSystemProvider();
+  /**
+   * Creates all the emoticons
+   */
+  private void initEmotionIcons() {
     try {
-      if (dataStorage.getEmotionIconsPage() == null) {
-        XMLDeploymentPlugin emotionIconsPlugin = getEmotionIconsPlugin();
-        if (emotionIconsPlugin != null) {
-          emotionIconsPlugin.deploy(sessionProvider);
+      List<EmotionIcon> emotionIcons = getEmotionIcons();
+      if (emotionIcons == null || emotionIcons.isEmpty()) {
+        for (WikiEmotionIconsPlugin emotionIconsPlugin : emotionIconsPlugins) {
+          for (EmotionIcon emotionIcon : emotionIconsPlugin.getEmotionIcons()) {
+            try {
+              InputStream imageInputStream = configManager.getInputStream(emotionIcon.getImageFilePath());
+              emotionIcon.setImage(IOUtils.toByteArray(imageInputStream));
+              createEmotionIcon(emotionIcon);
+            } catch (Exception e) {
+              log.error("Cannot create emoticon " + emotionIcon.getName() + " - Cause : " + e.getMessage(), e);
+            }
+          }
         }
       }
-    } catch (Exception e) {
-      log.warn("Can not init emotion icons", e);
-    } finally {
-      sessionProvider.close();
+    } catch(WikiException e) {
+      log.error("Cannot init emotion icons - Cause : " + e.getMessage(), e);
     }
   }
-
-  private XMLDeploymentPlugin getEmotionIconsPlugin() {
-    for (ComponentPlugin c : plugins_) {
-      if (c instanceof XMLDeploymentPlugin) {
-        return (XMLDeploymentPlugin) c;
-      }
-    }
-    return null;
-  }
-
 }

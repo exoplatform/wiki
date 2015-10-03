@@ -16,18 +16,18 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
-import org.exoplatform.wiki.service.MetaDataPage;
+import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -108,16 +108,16 @@ public class DefaultWikiModel implements WikiModel {
     String imageName = imageReference.getReference();
     StringBuilder sb = new StringBuilder();
     try {
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
-                                                                                                       .getComponentInstanceOfType(PageRenderingCacheService.class);
+      PageRenderingCacheService renderingCacheService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(PageRenderingCacheService.class);
       
       ResourceType resourceType = ResourceType.ICON.equals(imageReference.getType()) ? ResourceType.ICON : ResourceType.ATTACHMENT;
       WikiContext wikiMarkupContext = markupContextManager.getMarkupContext(imageName, resourceType);
       String portalContainerName = PortalContainer.getCurrentPortalContainerName();
       String portalURL = wikiMarkupContext.getPortalURL();
       String domainURL = portalURL.substring(0, portalURL.indexOf("/"+portalContainerName));
-      sb.append(domainURL).append(Utils.getCurrentRepositoryWebDavUri());
-      WikiContext context =getWikiContext();
+      sb.append(domainURL);
+      WikiContext context = getWikiContext();
       renderingCacheService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageId()),
                                         new WikiPageParams(wikiMarkupContext.getType(),
                                                            wikiMarkupContext.getOwner(),
@@ -129,25 +129,24 @@ public class DefaultWikiModel implements WikiModel {
                                                            wikiMarkupContext.getAttachmentName()));
       Page page;
       WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+      String attachmentName = TitleResolver.getId(wikiMarkupContext.getAttachmentName(), false);
       if (ResourceType.ATTACHMENT.equals(resourceType)) {
         page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageId());
-      } else {
-        page = wikiService.getMetaDataPage(MetaDataPage.EMOTION_ICONS_PAGE);
-      }
-      if (page != null) {
+
         // TODO how to get full path (not hardcoded) ?
         sb.append("collaboration");
         sb.append(page.getPath());
         sb.append("/");
-        // TODO need page.getAttachment(name)
-        //AttachmentImpl att = page.getAttachment(TitleResolver.getId(wikiMarkupContext.getAttachmentName(), false));
-        Attachment att = null;
+
+        Attachment att = wikiService.getAttachmentsOfPageByName(attachmentName, page);
         if (att != null) {
-          sb.append(URLEncoder.encode(att.getName(), "UTF-8"));
+          sb.append(att.getDownloadURL());
         }
       } else {
-        // If can not find the resource then return url empty
-        return StringUtils.EMPTY;
+        EmotionIcon emotionIcon = wikiService.getEmotionIconByName(attachmentName);
+        if(emotionIcon != null) {
+          sb.append(emotionIcon.getUrl());
+        }
       }
     } catch (Exception e) {
       if (LOG.isDebugEnabled()) {

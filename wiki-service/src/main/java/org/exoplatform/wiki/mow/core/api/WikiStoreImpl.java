@@ -100,12 +100,26 @@ public abstract class WikiStoreImpl implements WikiStore {
     }
     return page;
   }
-  
+
+  public PageImpl getEmotionIconsContainer() {
+    PageImpl page = getEmotionIconsPageByChromattic();
+    if (page == null) {
+      page = createEmotionIconsPage();
+      setEmotionIconsPageByChromattic(page);
+    }
+    return page;
+  }
+
   @OneToOne
   @Owner
   @MappedBy(WikiNodeType.Definition.EMOTION_ICONS_PAGE)
-  public abstract PageImpl getEmotionIconsPage();
-  
+  protected abstract PageImpl getEmotionIconsPageByChromattic();
+
+  protected abstract void setEmotionIconsPageByChromattic(PageImpl page);
+
+  @Create
+  protected abstract PageImpl createEmotionIconsPage();
+
   @OneToOne
   @Owner
   @MappedBy(WikiNodeType.Definition.PORTAL_WIKI_CONTAINER_NAME)
