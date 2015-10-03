@@ -19,20 +19,21 @@ package org.exoplatform.wiki.mow.core.api.wiki;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
+import org.exoplatform.wiki.utils.WikiConstants;
 
 @PrimaryType(name = WikiNodeType.WIKI_HOME)
 public abstract class WikiHome extends PageImpl {
 
   @OneToOne
-  @MappedBy(WikiNodeType.Definition.WIKI_HOME_NAME)
+  @MappedBy(WikiConstants.WIKI_HOME_NAME)
   public abstract PortalWiki getPortalWiki();
   
   @OneToOne
-  @MappedBy(WikiNodeType.Definition.WIKI_HOME_NAME)
+  @MappedBy(WikiConstants.WIKI_HOME_NAME)
   public abstract GroupWiki getGroupWiki();
   
   @OneToOne
-  @MappedBy(WikiNodeType.Definition.WIKI_HOME_NAME)
+  @MappedBy(WikiConstants.WIKI_HOME_NAME)
   public abstract UserWiki getUserWiki();
   
   /*public void addWikiPage(PageImpl wikiPage) throws DuplicateNameException {

@@ -24,13 +24,13 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.macro.ExcerptUtils;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.*;
 import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.WikiConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -49,7 +49,7 @@ public class TreeUtils {
     Object wikiObject = Utils.getObjectFromParams(params);
     if (wikiObject instanceof Page) {
       Page page = (Page) wikiObject;
-      if(params.getPageId().equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
+      if(params.getPageId().equals(WikiConstants.WIKI_HOME_NAME)) {
         WikiHomeTreeNode wikiHomeNode = new WikiHomeTreeNode(page);
         return wikiHomeNode;
       } else {

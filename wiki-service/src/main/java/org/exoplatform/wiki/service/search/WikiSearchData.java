@@ -1,20 +1,18 @@
 package org.exoplatform.wiki.service.search;
 
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
+import org.exoplatform.wiki.utils.WikiConstants;
+
+import java.util.List;
 
 public class WikiSearchData extends SearchData {
 
-  public static String WIKIHOME_PATH    = WikiNodeType.Definition.WIKI_HOME_NAME;
+  public static String ALL_PAGESPATH    = ALL_PATH + WikiConstants.WIKI_HOME_NAME;
 
-  public static String ALL_PAGESPATH    = ALL_PATH + WIKIHOME_PATH;
+  public static String PORTAL_PAGESPATH = PORTAL_PATH + WikiConstants.WIKI_HOME_NAME;
 
-  public static String PORTAL_PAGESPATH = PORTAL_PATH + WIKIHOME_PATH;
-
-  public static String GROUP_PAGESPATH  = GROUP_PATH + WIKIHOME_PATH;
+  public static String GROUP_PAGESPATH  = GROUP_PATH + WikiConstants.WIKI_HOME_NAME;
   
   public static String ASC_ORDER = "ASC";
   
@@ -55,7 +53,7 @@ public class WikiSearchData extends SearchData {
       pagePath = ALL_PAGESPATH;
     } else if (wikiType != null) {
       if (wikiType.equals(PortalConfig.USER_TYPE)){
-        pagePath = USER_PATH + WIKIHOME_PATH;
+        pagePath = USER_PATH + WikiConstants.WIKI_HOME_NAME;
       } else {
         if (wikiType.equals(PortalConfig.PORTAL_TYPE)) {
           pagePath = PORTAL_PAGESPATH;
@@ -142,7 +140,7 @@ public class WikiSearchData extends SearchData {
     String absPagePath = pagePath + "/" + pageId;
     String pageLikePath = pagePath + "/%/" + pageId;
     boolean isWikiHome = false;
-    if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageId)) {
+    if (WikiConstants.WIKI_HOME_NAME.equals(pageId)) {
       absPagePath = pagePath;
       isWikiHome = true;
     }

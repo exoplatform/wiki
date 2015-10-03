@@ -20,12 +20,12 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.WikiConstants;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -95,7 +95,7 @@ public class WikiHomeTreeNode extends TreeNode {
   public String buildPath() {
     try {
       Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiHome.getWikiType(), wikiHome.getWikiOwner());
-      WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(),WikiNodeType.Definition.WIKI_HOME_NAME );
+      WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), WikiConstants.WIKI_HOME_NAME);
       return TreeUtils.getPathFromPageParams(params);
     } catch (Exception e) {
       // TODO log

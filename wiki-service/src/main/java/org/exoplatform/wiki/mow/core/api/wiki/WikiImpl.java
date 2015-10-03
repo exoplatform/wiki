@@ -22,6 +22,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.xwiki.rendering.syntax.Syntax;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public abstract class WikiImpl {
       home.makeVersionable();
       home.setOwner(getOwner());
       AttachmentImpl content = home.getContent();
-      home.setTitle(WikiNodeType.Definition.WIKI_HOME_TITLE);
+      home.setTitle(WikiConstants.WIKI_HOME_TITLE);
       home.setSyntax(Syntax.XWIKI_2_0.toIdString());
       StringBuilder sb = new StringBuilder("= Welcome to ");
       String spaceName = getOwner();
@@ -165,7 +166,7 @@ public abstract class WikiImpl {
   
   @OneToOne
   @Owner
-  @MappedBy(WikiNodeType.Definition.WIKI_HOME_NAME)
+  @MappedBy(WikiConstants.WIKI_HOME_NAME)
   protected abstract WikiHome getHome();
   protected abstract void setHome(WikiHome homePage);
   

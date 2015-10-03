@@ -37,6 +37,7 @@ import org.exoplatform.wiki.service.search.TemplateSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
+import org.exoplatform.wiki.utils.WikiConstants;
 
 import javax.jcr.*;
 import javax.jcr.query.Query;
@@ -153,7 +154,7 @@ public class JCRDataStorage implements DataStorage {
     WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, true);
 
     if(wiki != null) {
-      if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
+      if (WikiConstants.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
         pageImpl = wiki.getWikiHome();
       } else {
         pageImpl = fetchPageImpl(wikiType, wikiOwner, pageName);
@@ -1691,7 +1692,7 @@ public class JCRDataStorage implements DataStorage {
    * @return
    */
   private PageImpl fetchPageImpl(String wikiType, String wikiOwner, String pageName) throws WikiException {
-    if(pageName.equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
+    if(pageName.equals(WikiConstants.WIKI_HOME_NAME)) {
       WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner, true);
       return wikiImpl.getWikiHome();
     }

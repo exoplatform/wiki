@@ -31,9 +31,10 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.wiki.mow.api.*;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
@@ -42,7 +43,6 @@ import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
 import org.exoplatform.wiki.service.related.RelatedUtil;
 import org.exoplatform.wiki.service.rest.model.*;
-import org.exoplatform.wiki.service.rest.model.Attachment;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
@@ -52,6 +52,7 @@ import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
 import org.exoplatform.wiki.tree.WikiTreeNode;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
@@ -66,11 +67,11 @@ import javax.ws.rs.core.Response.Status;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.Class;
+import java.lang.Object;
 import java.net.URI;
 import java.net.URLDecoder;
 import java.util.*;
-import java.lang.Class;
-import java.lang.Object;
 
 /**
  * {@inheritDoc}
@@ -334,7 +335,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     for (String spaceName : spaceNames) {
       try {
-        Page page = wikiService.getPageOfWikiByName(wikiType, spaceName, WikiNodeType.Definition.WIKI_HOME_NAME);
+        Page page = wikiService.getPageOfWikiByName(wikiType, spaceName, WikiConstants.WIKI_HOME_NAME);
         spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wikiType, spaceName, page));
       } catch (Exception e) {
         log.error(e.getMessage(), e);
@@ -383,7 +384,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         String groupId = getValueFromSpace(space, "getGroupId", String.class);
         String displayName = getValueFromSpace(space, "getDisplayName", String.class);
         Wiki wiki = wikiService.getWikiByTypeAndOwner(WikiType.GROUP.toString(), groupId);
-        Page page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), WikiNodeType.Definition.WIKI_HOME_NAME);
+        Page page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), WikiConstants.WIKI_HOME_NAME);
         spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wiki.getType(), displayName, page));
       }
     } catch (Exception e) {
@@ -408,7 +409,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                         @PathParam("wikiOwner") String wikiOwner) {
     Page page;
     try {
-      page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, WikiNodeType.Definition.WIKI_HOME_NAME);
+      page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, WikiConstants.WIKI_HOME_NAME);
     } catch (Exception e) {
       log.error(e.getMessage(), e);
       return objectFactory.createSpace();
@@ -440,7 +441,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     Page page;
     boolean isWikiHome = true;
     try {
-      String parentId = WikiNodeType.Definition.WIKI_HOME_NAME;
+      String parentId = WikiConstants.WIKI_HOME_NAME;
       if (parentFilterExpression != null && parentFilterExpression.length() > 0
           && !parentFilterExpression.startsWith("^(?!")) {
         parentId = parentFilterExpression;

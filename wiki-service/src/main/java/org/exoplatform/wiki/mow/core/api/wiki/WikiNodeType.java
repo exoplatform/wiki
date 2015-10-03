@@ -108,12 +108,8 @@ public interface WikiNodeType {
     public final static String DEFAULT_PERMISSIONS_INITED = "isDefaultPermissionsInited";
     
     public final static String NEW_LINK                   = "newlink";
-    
-    public final static String WIKI_HOME_NAME             = "WikiHome";
 
     public final static String TRASH_NAME                 = "Trash";
-
-    public final static String WIKI_HOME_TITLE            = "Wiki Home";
 
     public final static String OWNER                      = "owner";
 

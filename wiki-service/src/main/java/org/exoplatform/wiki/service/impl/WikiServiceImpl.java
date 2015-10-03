@@ -39,6 +39,7 @@ import org.exoplatform.wiki.service.search.TemplateSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.rendering.syntax.Syntax;
@@ -352,7 +353,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public boolean deletePage(String wikiType, String wikiOwner, String pageName) throws WikiException {
-    if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
+    if (WikiConstants.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
       return false;
     }
 
@@ -400,7 +401,7 @@ public class WikiServiceImpl implements WikiService, Startable {
                             String pageName,
                             String newName,
                             String newTitle) throws WikiException {
-    if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
+    if (WikiConstants.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
       return false;
     }
 

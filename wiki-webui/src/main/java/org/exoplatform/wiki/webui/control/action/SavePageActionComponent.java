@@ -141,7 +141,7 @@ public class SavePageActionComponent extends UIComponent {
         markup = markup.trim();
   
         String newPageName = TitleResolver.getId(title, false);
-        if (WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
+        if (org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
           // as wiki home page has fixed name (never edited anymore), every title changing is accepted.
           ;
         } else if (newPageName.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
@@ -193,7 +193,7 @@ public class SavePageActionComponent extends UIComponent {
                                      page.getName(),
                                      newPageName,
                                      title);
-              if(!WikiNodeType.Definition.WIKI_HOME_NAME.equals(page.getName())) {
+              if(!org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName())) {
                 page.setName(newPageName);
               }
             }

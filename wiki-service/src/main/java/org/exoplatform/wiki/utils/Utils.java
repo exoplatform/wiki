@@ -496,7 +496,7 @@ public class Utils {
     String wikiPageId = param.getPageId();
 
     if (wikiOwner != null && wikiPageId != null) {
-      if (!wikiPageId.equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
+      if (!wikiPageId.equals(WikiConstants.WIKI_HOME_NAME)) {
         // Object is a page
         Page expandPage = wikiService.getPageByRootPermission(wikiType, wikiOwner, wikiPageId);
         return expandPage;

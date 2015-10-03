@@ -40,6 +40,7 @@ import org.exoplatform.wiki.rendering.converter.ConfluenceToXWiki2Transformer;
 import org.exoplatform.wiki.rendering.util.Utils;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.rendering.syntax.Syntax;
 
@@ -460,7 +461,7 @@ public abstract class PageImpl extends NTFolder {
   }
   
   public PageImpl getWikiPage(String pageId) throws Exception{
-    if(WikiNodeType.Definition.WIKI_HOME_NAME.equalsIgnoreCase(pageId)){
+    if(WikiConstants.WIKI_HOME_NAME.equalsIgnoreCase(pageId)){
       return this;
     }
     Iterator<PageImpl> iter = getChildPages().values().iterator();
