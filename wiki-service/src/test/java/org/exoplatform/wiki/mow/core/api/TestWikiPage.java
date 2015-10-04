@@ -16,7 +16,9 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -24,6 +26,12 @@ import org.exoplatform.wiki.service.WikiService;
 
 
 public class TestWikiPage extends AbstractMOWTestcase {
+
+  private WikiService wService;
+
+  public void setUp() throws Exception {
+    wService = container.getComponentInstanceOfType(WikiService.class) ;
+  }
 
   public void testAddWikiHome() throws WikiException {
     Model model = mowService.getModel();
@@ -78,26 +86,20 @@ public class TestWikiPage extends AbstractMOWTestcase {
   }
   
   public void testUpdateWikiPage() throws Exception {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    WikiHome wikiHomePage = wiki.getWikiHome();
+    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "intranet");
+    Page page = new Page("UpdateWikiPage-001", "UpdateWikiPage-001");
+    page.setOwner("Root");
+    wService.createPage(wiki, "WikiHome", page);
+
+    page.setOwner("Demo");
+    page.setAuthor("Demo");
+    wService.updatePage(page);
     
-    PageImpl wikipage = wiki.createWikiPage();    
-    wikipage.setName("UpdateWikiPage-001");
-    wikiHomePage.addWikiPage(wikipage);
-    wikipage.setOwner("Root") ;
-    
-    PageImpl addedPage = wikiHomePage.getWikiPage("UpdateWikiPage-001") ;
-    assertNotNull(addedPage);
-    wikipage.setOwner("Demo") ;
-    
-    PageImpl editedPage = wikiHomePage.getWikiPage("UpdateWikiPage-001") ;
-    assertNotNull(editedPage) ;
-    assertEquals(editedPage.getOwner(), "Demo") ;  
-    assertNotNull(editedPage.getAuthor()) ;
-    assertNotNull(editedPage.getUpdatedDate()) ;
+    Page updatedPage = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "UpdateWikiPage-001") ;
+    assertNotNull(updatedPage) ;
+    assertEquals("Demo", updatedPage.getOwner()) ;
+    assertEquals("Demo", updatedPage.getAuthor()) ;
+    assertNotNull(updatedPage.getUpdatedDate()) ;
   }
   
   public void testDeleteWikiPage() throws Exception {

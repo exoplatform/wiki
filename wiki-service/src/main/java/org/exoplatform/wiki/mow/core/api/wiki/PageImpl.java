@@ -163,6 +163,7 @@ public abstract class PageImpl extends NTFolder {
   
   @Property(name = WikiNodeType.Definition.AUTHOR)
   public abstract String getAuthor();
+  public abstract void setAuthor(String author);
 
   @Property(name = WikiNodeType.Definition.CREATED_DATE)
   public abstract Date getCreatedDate();
@@ -170,6 +171,7 @@ public abstract class PageImpl extends NTFolder {
   
   @Property(name = WikiNodeType.Definition.UPDATED_DATE)
   public abstract Date getUpdatedDate();
+  public abstract void setUpdatedDate(Date date);
   
   @Property(name = WikiNodeType.Definition.URL)
   public abstract String getURL();

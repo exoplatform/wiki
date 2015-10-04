@@ -200,6 +200,7 @@ public class SavePageActionComponent extends UIComponent {
   
             synchronized (page.getId()) {
               page.setComment(commentInput.getValue());
+              page.setAuthor(currentUser);
               page.setSyntax(syntaxId);
               pageTitleControlForm.getUIFormInputInfo().setValue(title);
               pageParams.setPageId(page.getName());
@@ -240,6 +241,7 @@ public class SavePageActionComponent extends UIComponent {
             Page newPage = new Page();
             newPage.setName(title);
             newPage.setTitle(title);
+            newPage.setAuthor(currentUser);
             newPage.setContent(markup);
             newPage.setSyntax(syntaxId);
             Page createdPage = wikiService.createPage(wiki, page.getName(), newPage);

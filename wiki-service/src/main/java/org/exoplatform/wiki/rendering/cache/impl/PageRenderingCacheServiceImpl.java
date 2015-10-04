@@ -205,10 +205,10 @@ public class PageRenderingCacheServiceImpl implements PageRenderingCacheService 
   public Set<String> getUncachedMacroes() {
     return new HashSet<String>(uncachedMacroes);
   }
-  
+
+  @Override
   public void invalidateUUIDCache(WikiPageParams param) {
-    MarkupKey key = new MarkupKey(param, 
-                                  "", Syntax.XHTML_1_0.toIdString(), true);
+    MarkupKey key = new MarkupKey(param, "", Syntax.XHTML_1_0.toIdString(), true);
     uuidCache.remove(new Integer(key.hashCode()));
   }
 

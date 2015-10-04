@@ -25,9 +25,7 @@ import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.xwiki.rendering.syntax.Syntax;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 /**
  * @version $Revision$
@@ -50,6 +48,9 @@ public abstract class WikiImpl {
       home.setOwner(getOwner());
       AttachmentImpl content = home.getContent();
       home.setTitle(WikiConstants.WIKI_HOME_TITLE);
+      Date now = GregorianCalendar.getInstance().getTime();
+      home.setCreatedDate(now);
+      home.setUpdatedDate(now);
       home.setSyntax(Syntax.XWIKI_2_0.toIdString());
       StringBuilder sb = new StringBuilder("= Welcome to ");
       String spaceName = getOwner();

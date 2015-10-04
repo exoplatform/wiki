@@ -103,18 +103,17 @@ public class JCRDataStorage implements DataStorage {
     PageImpl pageImpl = wikiImpl.createWikiPage();
     pageImpl.setName(page.getName());
     parentPageImpl.addWikiPage(pageImpl);
-    ConversationState conversationState = ConversationState.getCurrent();
-    String creator = null;
-    if (conversationState != null && conversationState.getIdentity() != null) {
-      creator = conversationState.getIdentity().getUserId();
-    }
-    pageImpl.setOwner(creator);
-    setFullPermissionForOwner(pageImpl, creator);
+    pageImpl.setOwner(page.getOwner());
+    setFullPermissionForOwner(pageImpl, page.getOwner());
     pageImpl.setTitle(page.getTitle());
     String text = "";
     if(page.getContent() != null) {
       text = page.getContent();
     }
+    Date now = GregorianCalendar.getInstance().getTime();
+    pageImpl.setCreatedDate(now);
+    pageImpl.setUpdatedDate(now);
+    pageImpl.setAuthor(page.getAuthor());
     pageImpl.getContent().setText(text);
     pageImpl.setSyntax(page.getSyntax());
 
@@ -1326,11 +1325,14 @@ public class JCRDataStorage implements DataStorage {
 
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
     pageImpl.setTitle(page.getTitle());
+    pageImpl.setOwner(page.getOwner());
+    pageImpl.setAuthor(page.getAuthor());
     pageImpl.setSyntax(page.getSyntax());
     pageImpl.setPermission(page.getPermission());
     pageImpl.setURL(page.getUrl());
     pageImpl.getContent().setText(page.getContent());
     pageImpl.setComment(page.getComment());
+    pageImpl.setUpdatedDate(GregorianCalendar.getInstance().getTime());
 
     model.save();
   }

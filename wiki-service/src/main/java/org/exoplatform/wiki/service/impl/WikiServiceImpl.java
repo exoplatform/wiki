@@ -101,6 +101,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     this.configManager = configManager;
     this.dataStorage = dataStorage;
+
     if (initParams != null) {
       Iterator<ValuesParam> helps = initParams.getValuesParamIterator();
       if (helps != null)
@@ -425,9 +426,10 @@ public class WikiServiceImpl implements WikiService, Startable {
 
       dataStorage.movePage(currentLocationParams, newLocationParams);
 
-      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
-              .invalidateUUIDCache(currentLocationParams);
-      // Post activity
+      PageRenderingCacheService pageRenderingCacheService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(PageRenderingCacheService.class);
+      pageRenderingCacheService.invalidateUUIDCache(currentLocationParams);
+
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageWikiListener.MOVE_PAGE_TYPE);
     } catch (WikiException e) {
       log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
@@ -444,8 +446,9 @@ public class WikiServiceImpl implements WikiService, Startable {
     queue.add(page);
     while (!queue.isEmpty()) {
       Page currentPage = queue.poll();
-      org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
-              .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, currentPage.getName()));
+      PageRenderingCacheService pageRenderingCacheService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(PageRenderingCacheService.class);
+      pageRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, currentPage.getName()));
       List<Page> childrenPages = getChildrenPageOf(currentPage);
       for (Page child : childrenPages) {
         queue.add(child);
@@ -558,7 +561,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public boolean canModifyPagePermission(Page currentPage, String currentUser) throws WikiException{
-    boolean isPageOwner = currentPage.getOwner().equals(currentUser);
+    String owner = currentPage.getOwner();
+    boolean isPageOwner = owner != null && owner.equals(currentUser);
     String[] permissionOfCurrentUser = currentPage.getPermission().get(currentUser);
     boolean hasEditPagePermissionOnPage = false;
     if (permissionOfCurrentUser != null) {
@@ -610,6 +614,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void updatePage(Page page) throws WikiException {
     dataStorage.updatePage(page);
+
+    postUpdatePage(page.getWikiType(), page.getOwner(), page.getOwner(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
   }
 
   /******* Template *******/
