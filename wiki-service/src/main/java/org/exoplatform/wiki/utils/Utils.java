@@ -33,7 +33,6 @@ import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.Permission;
@@ -277,34 +276,6 @@ public class Utils {
     }
     return logByPage;
   }
-   
-
-  //The path should get from NodeHierarchyCreator 
-  public static String getPortalWikisPath() {    
-    String path = "/exo:applications/" 
-    + WikiNodeType.Definition.WIKI_APPLICATION + "/"
-    + WikiNodeType.Definition.WIKIS ; 
-    return path ;
-  }
-  /**
-   * @return 
-   *      <li> portal name if wiki is portal type</li>
-   *      <li> groupid if wiki is group type</li>
-   *      <li> userid if wiki is personal type</li>
-   * @throws IllegalArgumentException if jcr path is not of a wiki page node.
-   */
-  public static String getSpaceIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    String wikiType = getWikiType(jcrPath);
-    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-      return getPortalIdByJcrPath(jcrPath);
-    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
-      return getGroupIdByJcrPath(jcrPath);
-    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
-      return getUserIdByJcrPath(jcrPath);
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a wiki page node!");
-    }
-  }
   
   /**
    * @param jcrPath follows the format /Groups/$GROUP/ApplicationData/eXoWiki/[wikipage]
@@ -346,23 +317,6 @@ public class Utils {
       return jcrPath.substring(pos1 + "/Users/".length(), pos2);
     } else {
       throw new IllegalArgumentException(jcrPath + " is not jcr path of a personal wiki page node!");
-    }
-  }
-  
-  /**
-   * @param jcrPath follows the format /exo:applications/eXoWiki/wikis/$PORTAL/...
-   * @return $PORTAL of jcrPath
-   * @throws IllegalArgumentException if jcrPath is not as expected.
-   */
-  public static String getPortalIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    String portalPath = getPortalWikisPath();
-    int pos1 = jcrPath.indexOf(portalPath);
-    
-    if (pos1 >= 0) {
-      String restPath = jcrPath.substring(pos1 + portalPath.length() + 1);
-      return restPath.substring(0, restPath.indexOf("/"));
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a portal wiki page node!");
     }
   }
   

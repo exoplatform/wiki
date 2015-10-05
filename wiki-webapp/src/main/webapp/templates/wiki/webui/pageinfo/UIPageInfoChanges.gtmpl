@@ -22,7 +22,7 @@
 	<tbody>
 	  <%
 	    def isCurrentVersion = true;
-	    currentVersions.each {version ->
+	    currentVersions?.each {version ->
 
 	      def versionLabel = version.getName();
 	      def versionNumber= versionLabel;

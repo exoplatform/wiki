@@ -293,9 +293,15 @@ public class WikiServiceImpl implements WikiService, Startable {
       throw new WikiException("Page " + wiki.getType() + ":" + wiki.getOwner() + ":" + pageName + " already exists, cannot create it.");
     }
 
+    PageRenderingCacheService pageRenderingCacheService = ExoContainerContext.getCurrentContainer()
+            .getComponentInstanceOfType(PageRenderingCacheService.class);
+
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
 
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
+
+    pageRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));
+    pageRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
 
     return createdPage;
   }
@@ -424,7 +430,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
       PageRenderingCacheService pageRenderingCacheService = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(PageRenderingCacheService.class);
-      pageRenderingCacheService.invalidateUUIDCache(currentLocationParams);
+      pageRenderingCacheService.invalidateCache(currentLocationParams);
 
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageWikiListener.MOVE_PAGE_TYPE);
     } catch (WikiException e) {
@@ -600,6 +606,9 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void updatePage(Page page) throws WikiException {
     dataStorage.updatePage(page);
+
+    // TODO implement watch page here (should send an email only if there is a new version of the page content)
+    // Utils.sendMailOnChangeContent(content);
 
     postUpdatePage(page.getWikiType(), page.getOwner(), page.getOwner(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
   }

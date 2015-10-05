@@ -9,7 +9,6 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -49,14 +48,9 @@ public class UIWikiPageInfo extends UIWikiContainer {
   }
 
   protected List<PageVersion> getVersionList(Page page) {
-    List<PageVersion> versions = new ArrayList<>();
+    List<PageVersion> versions = null;
     try {
-      List<PageVersion> pageVersions = wikiService.getVersionsOfPage(page);
-      for(PageVersion pageVersion : pageVersions) {
-        if (!(WikiNodeType.Definition.ROOT_VERSION.equals(pageVersion.getName()))) {
-          versions.add(pageVersion);
-        }
-      }
+      versions = wikiService.getVersionsOfPage(page);
       Collections.sort(versions, new VersionNameComparatorDesc());
       return versions.subList(0,
                               versions.size() > NUMBER_OF_SHOWN_CHANGES ? NUMBER_OF_SHOWN_CHANGES : versions.size());

@@ -16,19 +16,13 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.event.LifeCycleListener;
 import org.chromattic.api.event.StateChangeListener;
-import org.chromattic.ext.ntdef.NTResource;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionHistory;
 import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.mow.core.api.wiki.*;
-import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 
 public class Injector implements LifeCycleListener, StateChangeListener {
   
@@ -107,37 +101,5 @@ public class Injector implements LifeCycleListener, StateChangeListener {
 
   @Override
   public void propertyChanged(String id, Object o, String propertyName, Object propertyValue) {
-
-    if (o instanceof NTResource) {
-      if ("jcr:data".equals(propertyName)) {
-        ChromatticSession session = mowService.getSession();
-        String path = session.getPath(o);
-        if (path.endsWith(WikiNodeType.Definition.CONTENT)) {
-          path = path.substring(0, path.lastIndexOf("/"));
-          if (path.startsWith("/")) {
-            path = path.substring(1);
-          }
-          AttachmentImpl content = session.findByPath(AttachmentImpl.class, path);
-          try {
-            PageImpl page = content.getParentPage();
-            WatchedMixin mixin = page.getWatchedMixin();
-            MigratingMixin migrateMix = page.getMigratingMixin();
-            if (mixin != null && migrateMix == null) {
-              boolean isWatched = !mixin.getWatchers().isEmpty();
-              WikiImpl wiki = page.getWiki();
-              if (wiki != null && isWatched) {
-                NTVersionHistory history = page.getVersionableMixin().getVersionHistory();
-                if (history != null && history.getChildren().size() > 1) {
-                  // TODO remove Chromattic from this class
-                  //Utils.sendMailOnChangeContent(content);
-                }
-              }
-            }
-          } catch (Exception e) {
-            log.warn("Can not notify wiki page changes by email !", e);
-          }
-        }
-      }
-    }
   }
 }

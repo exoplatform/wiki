@@ -59,7 +59,7 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
     ChromatticSession session = getMultiWiki().getSession();
     Node wikiNode = null;
     try {
-      Node wikisNode = (Node)session.getJCRSession().getItem(Utils.getPortalWikisPath()) ;
+      Node wikisNode = (Node)session.getJCRSession().getItem(getPortalWikisPath()) ;
       try {
         wikiNode = wikisNode.getNode(wikiOwner);
       } catch (PathNotFoundException e) {
@@ -82,5 +82,13 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
       session.save();
     }
     return pwiki;
+  }
+
+  //The path should get from NodeHierarchyCreator
+  public static String getPortalWikisPath() {
+    String path = "/exo:applications/"
+            + WikiNodeType.Definition.WIKI_APPLICATION + "/"
+            + WikiNodeType.Definition.WIKIS ;
+    return path ;
   }
 }
