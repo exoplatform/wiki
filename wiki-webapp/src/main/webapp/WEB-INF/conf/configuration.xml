@@ -578,13 +578,13 @@
     <component-plugin>
       <name>Emotion icons initializer</name>
       <set-method>addComponentPlugin</set-method>
-      <type>org.exoplatform.services.wcm.extensions.deployment.WCMPublicationDeploymentPlugin</type>
+      <type>org.exoplatform.services.deployment.plugins.XMLDeploymentPlugin</type>
       <description>XML Deployment Plugin</description>
       <init-params>
         <object-param>
           <name>Wiki emotion icons</name>
           <description>Deployment Descriptor</description>
-          <object type="org.exoplatform.services.wcm.extensions.deployment.WCMPublicationDeploymentDescriptor">
+          <object type="org.exoplatform.services.deployment.DeploymentDescriptor">
             <field name="target">
               <object type="org.exoplatform.services.deployment.DeploymentDescriptor$Target">
                 <field name="workspace">
