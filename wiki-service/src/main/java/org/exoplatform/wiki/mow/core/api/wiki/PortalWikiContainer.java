@@ -65,7 +65,6 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
       } catch (PathNotFoundException e) {
         if (createIfNonExist) {
           wikiNode = wikisNode.addNode(wikiOwner, WikiNodeType.PORTAL_WIKI);
-          //wikiNode.addNode(WikiNodeType.Definition.TRASH_NAME, WikiNodeType.WIKI_TRASH) ;
           wikisNode.save();
           isCreatedWikiObject = true;
         } else {

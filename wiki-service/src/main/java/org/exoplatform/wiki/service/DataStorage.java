@@ -6,10 +6,7 @@ import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.service.search.TemplateSearchData;
-import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.exoplatform.wiki.service.search.*;
 
 import java.io.InputStream;
 import java.util.List;
@@ -102,8 +99,6 @@ public interface DataStorage {
   public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException;
 
   public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException;
-
-  public Object findByPath(String path, String objectNodeType) throws WikiException;
 
   public Page getHelpSyntaxPage(String syntaxId, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException;
 

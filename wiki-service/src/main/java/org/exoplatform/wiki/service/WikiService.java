@@ -25,13 +25,9 @@ import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
-import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.service.search.TemplateSearchData;
-import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
@@ -265,16 +261,6 @@ public interface WikiService {
   public List<Page> getDuplicatePages(Page parentPage, Wiki targetWiki, List<Page> resultList) throws WikiException;
 
   /**
-   * Finds a wiki page based on its type and relative path.
-   *
-   * @param path The relative path to find.
-   * @param objectNodeType The node type can be page, attachment or template.
-   * @return A wiki object that can be page, attachement or template.
-   * @throws WikiException
-   */
-  public Object findByPath(String path, String objectNodeType) throws WikiException;
-
-  /**
    * Gets Id of a default Wiki syntax.
    *
    * @return The Id.
@@ -310,16 +296,7 @@ public interface WikiService {
    * @return
    * @throws WikiException
    */
-  public Attachment getAttachmentsOfPageByName(String attachmentName, Page page) throws WikiException;
-
-  /**
-   * Gets title of a wiki attachment.
-   *
-   * @param path Path of the attachment.
-   * @return Title of the attachment.
-   * @throws WikiException
-   */
-  public String getPageTitleOfAttachment(String path) throws WikiException;
+  public Attachment getAttachmentOfPageByName(String attachmentName, Page page) throws WikiException;
 
   /**
    * Gets parent page of a wiki attachment.

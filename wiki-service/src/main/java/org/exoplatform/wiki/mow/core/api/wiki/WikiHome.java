@@ -35,22 +35,4 @@ public abstract class WikiHome extends PageImpl {
   @OneToOne
   @MappedBy(WikiConstants.WIKI_HOME_NAME)
   public abstract UserWiki getUserWiki();
-  
-  /*public void addWikiPage(PageImpl wikiPage) throws DuplicateNameException {
-    getChildPages().add(wikiPage);
-  }
-  */
-  /*public PageImpl getWikiPage(String pageId){
-    if(WikiNodeType.Definition.WIKI_HOME_NAME.equalsIgnoreCase(pageId)){
-      return this;
-    }
-    Iterator<PageImpl> iter = getChildPages().iterator();
-    while(iter.hasNext()) {
-      PageImpl page = (PageImpl)iter.next() ;
-      if (pageId.equals(page.getPageId()))  return page ;         
-    }
-    return null ;
-  }*/
-  
-  
 }

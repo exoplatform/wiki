@@ -16,35 +16,40 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.StringTokenizer;
-
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.RenamedMixin;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+import java.util.StringTokenizer;
 
 @ComponentConfig(lifecycle = Lifecycle.class,
                  template = "app:/templates/wiki/webui/UIWikiAdvanceSearchResult.gtmpl",
                  events = {@EventConfig(listeners = UIWikiAdvanceSearchResult.ChangeMaxSizePageActionListener.class)})
 public class UIWikiAdvanceSearchResult extends UIContainer {
 
+  private static final Log LOG = ExoLogger.getLogger(UIWikiAdvanceSearchResult.class);
+
+  private WikiService wikiService;
+
   private PageList<SearchResult> results;
 
   public UIWikiAdvanceSearchResult() throws Exception {
+    this.wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     addChild(UIAdvancePageIterator.class, null, "SearchResultPageIterator");
   }
 
@@ -74,19 +79,12 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
     return df.format(cal.getTime());
   }
-  
+
   protected Page getPage(SearchResult result) {
-    Page page = null;
     try {
-      if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
-        // TODO use wikiService
-        //Attachment searchContent = (Attachment) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
-        //page = searchContent.getParentPage();
-      } else if (WikiNodeType.WIKI_PAGE.equals(result.getType()) || WikiNodeType.WIKI_HOME.equals(result.getType())) {
-        //page = (Page) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
-      }
-      return page;
+      return wikiService.getPageOfWikiByName(result.getWikiType(), result.getWikiOwner(), result.getPageName());
     } catch (Exception e) {
+      LOG.error("Cannot page for search result " + result.getWikiType() + ":" + result.getWikiOwner() + ":" + result.getPageName());
       return null;
     }
   }

@@ -25,7 +25,6 @@ import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.resolver.TitleResolver;
@@ -33,10 +32,7 @@ import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
-import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.service.search.TemplateSearchData;
-import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
@@ -480,8 +476,8 @@ public class WikiServiceImpl implements WikiService, Startable {
           Calendar wikiHomeUpdateDate = Calendar.getInstance();
           wikiHomeUpdateDate.setTime(homePage.getUpdatedDate());
 
-          SearchResult wikiHomeResult = new SearchResult(null, homePage.getTitle(), homePage.getPath(), WikiNodeType.WIKI_HOME, wikiHomeUpdateDate, wikiHomeCreateDate);
-          wikiHomeResult.setPageName(homePage.getName());
+          SearchResult wikiHomeResult = new SearchResult(data.getWikiType(), data.getWikiOwner(), data.getPageId(),
+                  null, null, homePage.getTitle(), homePage.getPath(), SearchResultType.PAGE, wikiHomeUpdateDate, wikiHomeCreateDate);
           List<SearchResult> tempSearchResult = result.getAll();
           tempSearchResult.add(wikiHomeResult);
           result = new ObjectPageList<>(tempSearchResult, result.getPageSize());
@@ -498,16 +494,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws WikiException {
     WikiSearchData data = new WikiSearchData(wikiType, wikiOwner, pageId);
     return dataStorage.searchRenamedPage(data);
-  }
-
-  @Override
-  public Object findByPath(String path, String objectNodeType) throws WikiException {
-    String relPath = path;
-    if (relPath.startsWith("/")) {
-      relPath = relPath.substring(1);
-    }
-
-    return dataStorage.findByPath(relPath, objectNodeType);
   }
 
   @Override
@@ -637,12 +623,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws WikiException {
-    try {
-      return dataStorage.searchTemplate(data);
-    } catch (WikiException e) {
-      log.error("Can't search", e);
-    }
-    return null;
+    return dataStorage.searchTemplate(data);
   }
 
   @Override
@@ -887,7 +868,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Attachment getAttachmentsOfPageByName(String attachmentName, Page page) throws WikiException {
+  public Attachment getAttachmentOfPageByName(String attachmentName, Page page) throws WikiException {
     Attachment attachment = null;
     List<Attachment> attachments = dataStorage.getAttachmentsOfPage(page);
     for(Attachment att : attachments) {
@@ -897,18 +878,6 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
     }
     return attachment;
-  }
-
-  @Override
-  public String getPageTitleOfAttachment(String path) throws WikiException {
-    String relPath = path;
-    if (relPath.startsWith("/")) {
-      relPath = relPath.substring(1);
-    }
-    String temp = relPath.substring(0, relPath.lastIndexOf("/"));
-    relPath = temp.substring(0, temp.lastIndexOf("/"));
-    Page page = (Page) findByPath(relPath, WikiNodeType.WIKI_PAGE);
-    return page.getTitle();
   }
 
   @Override

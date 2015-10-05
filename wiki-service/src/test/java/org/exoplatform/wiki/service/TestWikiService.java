@@ -26,14 +26,9 @@ import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
-import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.service.search.TemplateSearchData;
-import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.exoplatform.wiki.service.search.*;
 import org.xwiki.rendering.syntax.Syntax;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
@@ -353,12 +348,12 @@ public class TestWikiService extends AbstractMOWTestcase {
 
   public void testSearchContent() throws Exception {
     Wiki classicWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
-    Page kspage = new Page("knowledge suite", "knowledge suite");
+    Page kspage = new Page("knowledge suite 1", "knowledge suite 1");
     kspage.setContent("forum faq wiki");
     wService.createPage(classicWiki, "WikiHome", kspage);
 
     Wiki extWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "ext");
-    Page ksExtPage = new Page("knowledge suite", "knowledge suite");
+    Page ksExtPage = new Page("knowledge suite 2", "knowledge suite 2");
     ksExtPage.setContent("forum faq wiki");
     wService.createPage(extWiki, "WikiHome", ksExtPage);
 
@@ -380,6 +375,10 @@ public class TestWikiService extends AbstractMOWTestcase {
     WikiSearchData data = new WikiSearchData(null, "suite", "portal", "classic");
     PageList<SearchResult> result = wService.search(data);
     assertEquals(0, result.getAll().size());
+
+    data = new WikiSearchData(null, "forum", "portal", "classic");
+    result = wService.search(data);
+    assertEquals(1, result.getAll().size());
 
     data = new WikiSearchData("suite", "suite", "portal", null);
 
@@ -583,8 +582,8 @@ public class TestWikiService extends AbstractMOWTestcase {
 
   public void testBrokenLink() throws WikiException {
     Wiki wiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
-    wService.createPage(wiki, "WikiHome", new Page("OriginalParentPage", "OriginalParentPage"));
-    wService.createPage(wiki, "OriginalParentPage", new Page("OriginalPage", "OriginalPage"));
+    wService.createPage(wiki, "WikiHome", new Page("OriginalParentPage1", "OriginalParentPage1"));
+    wService.createPage(wiki, "OriginalParentPage1", new Page("OriginalPage", "OriginalPage"));
     Page relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
     assertEquals("OriginalPage", relatedPage.getName());
     wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage", "RenamedOriginalPage", "RenamedOriginalPage");
@@ -607,12 +606,12 @@ public class TestWikiService extends AbstractMOWTestcase {
     wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "RenamedOriginalPage2", "RenamedOriginalPage3", "RenamedOriginalPage3");
     relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
     assertEquals("RenamedOriginalPage3", relatedPage.getName());
-    wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "platform/users"), "WikiHome", new Page("OriginalParentPage", "OriginalParentPage"));
+    wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "platform/users"), "WikiHome", new Page("OriginalParentPag2", "OriginalParentPage2"));
     // Move RenamedOriginalPage3 from portal type to group type
     currentPageParams.setPageId("RenamedOriginalPage3");
     currentPageParams.setOwner("classic");
     currentPageParams.setType(PortalConfig.PORTAL_TYPE);
-    newPageParams.setPageId("OriginalParentPage");
+    newPageParams.setPageId("OriginalParentPage2");
     newPageParams.setOwner("platform/users");
     newPageParams.setType(PortalConfig.GROUP_TYPE);
     //

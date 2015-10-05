@@ -19,24 +19,24 @@ package org.exoplatform.wiki.service.search;
 public class TitleSearchResult {
   private String title;
 
-  private String type;
+  private SearchResultType type;
 
   private String path;
 
   private String url;
   
-  public TitleSearchResult(String title, String path, String type, String url) {
+  public TitleSearchResult(String title, String path, SearchResultType type, String url) {
     this.title = title;
     this.type = type;
     this.path = path;
     this.url = url;
   }
 
-  public String getType() {
+  public SearchResultType getType() {
     return type;
   }
 
-  public void setType(String type) {
+  public void setType(SearchResultType type) {
     this.type = type;
   }
 

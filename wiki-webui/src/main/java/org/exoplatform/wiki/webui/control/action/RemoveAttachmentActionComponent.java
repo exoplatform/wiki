@@ -94,7 +94,7 @@ public class RemoveAttachmentActionComponent extends UIContainer {
       UIWikiAttachmentUploadListForm attachmentUploadListForm = wikiPortlet.findFirstComponentOfType(UIWikiAttachmentUploadListForm.class);
       Page page = attachmentUploadListForm.getCurrentWikiPage();
       String attachmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
-      Attachment attachment = wikiService.getAttachmentsOfPageByName(attachmentName, page);
+      Attachment attachment = wikiService.getAttachmentOfPageByName(attachmentName, page);
       Map<String, Object> context = new HashMap<>();
       context.put(RemoveAttachmentPermissionFilter.ATTACHMENT_KEY, attachment);
       return context;

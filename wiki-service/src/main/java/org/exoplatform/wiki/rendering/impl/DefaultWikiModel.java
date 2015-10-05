@@ -41,7 +41,6 @@ import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.wiki.WikiModel;
 
 import javax.inject.Inject;
-import java.net.URLEncoder;
 import java.util.Map;
 
 @Component
@@ -138,7 +137,7 @@ public class DefaultWikiModel implements WikiModel {
         sb.append(page.getPath());
         sb.append("/");
 
-        Attachment att = wikiService.getAttachmentsOfPageByName(attachmentName, page);
+        Attachment att = wikiService.getAttachmentOfPageByName(attachmentName, page);
         if (att != null) {
           sb.append(att.getDownloadURL());
         }

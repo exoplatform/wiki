@@ -1,25 +1,31 @@
 package org.exoplatform.wiki.service.search;
 
-import java.util.Calendar;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.services.deployment.Utils;
 
+import java.util.Calendar;
+
 public class SearchResult {
-  protected String excerpt ;
-  protected String title ;
-  protected String path ;
-  protected String type ;
-  protected String pageName ;
+  protected String wikiType;
+  protected String wikiOwner;
+  protected String pageName;
+  protected String attachmentName;
+  protected String excerpt;
+  protected String title;
+  protected String path;
+  protected SearchResultType type;
   protected String url;
-  protected long   jcrScore;
+  protected long score;
   protected Calendar updatedDate;  
   protected Calendar createdDate;
-  
-  
-  
+
   public SearchResult() {}
   
-  public SearchResult(String excerpt, String title, String path, String type, Calendar updatedDate, Calendar createdDate) {
+  public SearchResult(String wikiType, String wikiOwner, String pageName, String attachmentName, String excerpt,
+                      String title, String path, SearchResultType type, Calendar updatedDate, Calendar createdDate) {
+    this.wikiType = wikiType;
+    this.wikiOwner = wikiOwner;
+    this.pageName = pageName;
+    this.attachmentName = attachmentName;
     this.excerpt = excerpt;
     this.title = title;
     this.path = path;
@@ -28,7 +34,39 @@ public class SearchResult {
     this.createdDate = createdDate;
     evaluatePageName(path);
   }
-  
+
+  public String getWikiType() {
+    return wikiType;
+  }
+
+  public void setWikiType(String wikiType) {
+    this.wikiType = wikiType;
+  }
+
+  public String getWikiOwner() {
+    return wikiOwner;
+  }
+
+  public void setPageName(String pageName) {
+    this.pageName = pageName;
+  }
+
+  public String getPageName() {
+    return pageName;
+  }
+
+  public void setWikiOwner(String wikiOwner) {
+    this.wikiOwner = wikiOwner;
+  }
+
+  public String getAttachmentName() {
+    return attachmentName;
+  }
+
+  public void setAttachmentName(String attachmentName) {
+    this.attachmentName = attachmentName;
+  }
+
   public void setTitle(String title) {
     this.title = title;
   }
@@ -51,29 +89,21 @@ public class SearchResult {
     return Utils.sanitize(excerpt);
   }
 
-  public void setType(String type) {
+  public void setType(SearchResultType type) {
     this.type = type;
   }
 
-  public String getType() {
+  public SearchResultType getType() {
     return type;
   }
   
   private void evaluatePageName(String path) {
-    if (WikiNodeType.WIKI_PAGE.equals(type)) {
+    if (SearchResultType.PAGE.equals(type)) {
       this.setPageName(path.substring(path.lastIndexOf("/")));
-    } else if (WikiNodeType.WIKI_ATTACHMENT.equals(type) || WikiNodeType.WIKI_PAGE_CONTENT.equals(type)) {
+    } else if (SearchResultType.ATTACHMENT.equals(type) || SearchResultType.PAGE_CONTENT.equals(type)) {
       String temp = path.substring(0, path.lastIndexOf("/"));
       this.setPageName(temp.substring(temp.lastIndexOf("/")));
     }
-  }
-
-  public void setPageName(String pageName) {
-    this.pageName = pageName;
-  }
-
-  public String getPageName() {
-    return pageName;
   }
   
   public void setUrl(String url) {
@@ -84,12 +114,12 @@ public class SearchResult {
     return url;
   }
   
-  public void setJcrScore(long jcrScore) {
-    this.jcrScore = jcrScore;
+  public void setScore(long score) {
+    this.score = score;
   }
   
-  public long getJcrScore() {
-    return jcrScore;
+  public long getScore() {
+    return score;
   }
 
   public Calendar getUpdatedDate() {

@@ -28,14 +28,16 @@ public class TemplateSearchResult extends SearchResult {
     super();
   }
 
-  public TemplateSearchResult(String name,
+  public TemplateSearchResult(String wikiType,
+                              String wikiOwner,
+                              String name,
                               String title,
                               String path,
-                              String type,
+                              SearchResultType type,
                               Calendar updatedDate,
                               Calendar createdDate,
                               String description) {
-    super(null, title, path, type, updatedDate, createdDate);
+    super(wikiType, wikiOwner, null, null, null, title, path, type, updatedDate, createdDate);
     this.description = description;
     this.name = name;
   }

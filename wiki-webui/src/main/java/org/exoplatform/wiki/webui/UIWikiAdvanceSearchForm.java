@@ -148,7 +148,9 @@ public class UIWikiAdvanceSearchForm extends UIForm {
   }
 
   public void gotoSearchPage(int pageIndex) throws Exception {
-    pageIndex = (int) Math.min(pageIndex, getPageAvailable());
+    if(numberOfSearchResult > 0) {
+      pageIndex = Math.min(pageIndex, getPageAvailable());
+    }
     WikiSearchData data = createSearchData();
     data.setOffset((pageIndex - 1) * itemPerPage);
     data.setLimit(itemPerPage);
@@ -191,7 +193,6 @@ public class UIWikiAdvanceSearchForm extends UIForm {
       }
     }
     WikiSearchData searchData = new WikiSearchData(text, text, wikiType, wikiOwner);
-    searchData.setNodeType("nt:base");
     return searchData;
   }
   

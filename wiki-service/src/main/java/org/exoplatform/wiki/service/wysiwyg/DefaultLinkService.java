@@ -170,7 +170,7 @@ public class DefaultLinkService implements LinkService {
       wikiType = entityReference.getParent().getParent().getParent().getName();
       try {
         page = wservice.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
-        Attachment attachment = wservice.getAttachmentsOfPageByName(attachmentId, page);
+        Attachment attachment = wservice.getAttachmentOfPageByName(attachmentId, page);
         if (attachment != null) {
           return attachment.getDownloadURL();
         }

@@ -483,11 +483,6 @@ public class Utils {
   public static boolean isDescendantPage(Page page, Page parentPage) {
     return page.getPath().startsWith(parentPage.getPath());
   }
-
-  public static Object getObject(String path, String type) throws WikiException {
-    WikiService wservice = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    return wservice.findByPath(path, type) ;
-  }
   
   public static Object getObjectFromParams(WikiPageParams param) throws WikiException {
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
