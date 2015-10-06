@@ -676,6 +676,8 @@ public interface WikiService {
 
   public List<PageVersion> getVersionsOfPage(Page page) throws WikiException;
 
+  public PageVersion getVersionOfPageByName(String versionName, Page page) throws WikiException;
+
   public void createVersionOfPage(Page page) throws WikiException;
 
   public void restoreVersionOfPage(String versionName, Page page) throws WikiException;

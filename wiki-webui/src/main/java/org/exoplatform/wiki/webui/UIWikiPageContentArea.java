@@ -71,28 +71,20 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     //Setup wiki context
     Utils.setUpWikiContext(wikiPortlet);
     try{
-    // Render current content
-    if (currentMode.equals(WikiMode.VIEW)) {
-        PageRenderingCacheService renderingCacheService = getApplicationComponent(PageRenderingCacheService.class);
-        contentDisplay.setHtmlOutput(renderingCacheService.getRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
-    }
-    if (currentMode.equals(WikiMode.HELP)) {
-        contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent(),
-                                                             wikipage.getSyntax(),
-                                                             Syntax.XHTML_1_0.toIdString(),
-                                                             false));
-    }
-    // Render select version content
+      // Render current content
+      if (currentMode.equals(WikiMode.VIEW)) {
+          PageRenderingCacheService renderingCacheService = getApplicationComponent(PageRenderingCacheService.class);
+          contentDisplay.setHtmlOutput(renderingCacheService.getRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
+      }
+      if (currentMode.equals(WikiMode.HELP)) {
+          contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent(),
+                                                               wikipage.getSyntax(),
+                                                               Syntax.XHTML_1_0.toIdString(),
+                                                               false));
+      }
+      // Render select version content
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
-        // TODO add getVersion(versionName)
-        List<PageVersion> versions = wikiService.getVersionsOfPage(wikipage);
-        PageVersion version = null;
-        for(PageVersion pageVersion : versions) {
-          if(pageVersion.getName().equals(currentVersionName)) {
-            version = pageVersion;
-            break;
-          }
-        }
+        PageVersion version = wikiService.getVersionOfPageByName(currentVersionName, wikipage);
         if (version != null) {
           String pageContent = version.getContent();
           String pageSyntax = wikipage.getSyntax();

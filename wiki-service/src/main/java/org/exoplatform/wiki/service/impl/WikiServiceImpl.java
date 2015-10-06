@@ -611,6 +611,21 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
+  public PageVersion getVersionOfPageByName(String versionName, Page page) throws WikiException {
+    List<PageVersion> versions = getVersionsOfPage(page);
+    PageVersion pageVersion = null;
+    if(versions != null) {
+      for(PageVersion version : versions) {
+        if(version.getName().equals(versionName)) {
+          pageVersion = version;
+          break;
+        }
+      }
+    }
+    return pageVersion;
+  }
+
+  @Override
   public void createVersionOfPage(Page page) throws WikiException {
     dataStorage.addPageVersion(page);
   }
