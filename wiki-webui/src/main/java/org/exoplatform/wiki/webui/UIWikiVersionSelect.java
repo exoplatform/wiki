@@ -82,13 +82,16 @@ public class UIWikiVersionSelect extends UIWikiContainer {
     return (version > 1) ? true : false;
   }
   
-  protected boolean isHasNextVersion() throws Exception {
+  protected boolean hasNextVersion() throws Exception {
     Page wikipage = Utils.getCurrentWikiPage();
-    // TODO work on versions
-    //int versionTotals = wikipage.getVersionableMixin().getVersionHistory().getChildren().size() - 1;
-    int versionTotals = 0;
-    int version = Integer.valueOf(versionName);
-    return (version < versionTotals) ? true : false;
+    List<PageVersion> versions = wikiService.getVersionsOfPage(wikipage);
+    int nbOfVersions = 0;
+    if(versions != null) {
+      nbOfVersions = versions.size();
+    }
+
+    int currentVersion = Integer.valueOf(versionName);
+    return (currentVersion < nbOfVersions) ? true : false;
   }
   
   protected boolean renderRestoreRevisionActions() throws Exception {
@@ -96,7 +99,7 @@ public class UIWikiVersionSelect extends UIWikiContainer {
     ResourceBundle bundle = context.getApplicationResourceBundle();
     RestoreRevisionActionComponent component = getChild(RestoreRevisionActionComponent.class);
     component.setVersionName(versionName);
-    component.setCurrentVersion(!isHasNextVersion());
+    component.setCurrentVersion(!hasNextVersion());
     component.setLabel(bundle.getString("UIWikiVersionSelect.label.RestoreThisVersion"));
     component.setTooltip(bundle.getString("UIWikiVersionSelect.label.RestoreThisVersion"));
     
