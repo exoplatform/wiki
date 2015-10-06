@@ -18,7 +18,6 @@ import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
@@ -102,7 +101,7 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setName(page.getName());
     parentPageImpl.addWikiPage(pageImpl);
     pageImpl.setOwner(page.getOwner());
-    setFullPermissionForOwner(pageImpl, page.getOwner());
+    pageImpl.setPermission(page.getPermission());
     pageImpl.setTitle(page.getTitle());
     String text = "";
     if(page.getContent() != null) {
@@ -1418,16 +1417,6 @@ public class JCRDataStorage implements DataStorage {
 
   private String getLinkEntryAlias(String wikiType, String wikiOwner, String pageId) {
     return wikiType + "@" + wikiOwner + "@" + pageId;
-  }
-
-  private void setFullPermissionForOwner(PageImpl page, String owner) throws WikiException {
-    ConversationState conversationState = ConversationState.getCurrent();
-
-    if (conversationState != null) {
-      HashMap<String, String[]> permissions = page.getPermission();
-      permissions.put(conversationState.getIdentity().getUserId(), org.exoplatform.services.jcr.access.PermissionType.ALL);
-      page.setPermission(permissions);
-    }
   }
 
   private Model getModel() throws WikiException {

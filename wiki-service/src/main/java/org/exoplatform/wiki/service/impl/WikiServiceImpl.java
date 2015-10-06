@@ -299,6 +299,17 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
 
+    // set full permissions for owner
+    ConversationState conversationState = ConversationState.getCurrent();
+    if (conversationState != null && conversationState.getIdentity() != null) {
+      HashMap<String, String[]> permissions = page.getPermission();
+      if(permissions == null) {
+        permissions = new HashMap<>();
+      }
+      permissions.put(conversationState.getIdentity().getUserId(), org.exoplatform.services.jcr.access.PermissionType.ALL);
+      page.setPermission(permissions);
+    }
+
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
 
     pageRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));

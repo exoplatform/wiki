@@ -16,202 +16,136 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-
-
-import org.chromattic.ext.ntdef.Resource;
-import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.Model;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.service.WikiService;
-import org.junit.FixMethodOrder;
-import org.junit.runners.MethodSorters;
 
-// TODO :
-// * Fix tests to not have to specify the order of execution like this
-// * The order of tests execution changed in Junit 4.11 (https://github.com/KentBeck/junit/blob/master/doc/ReleaseNotes4.11.md)
-@FixMethodOrder(MethodSorters.JVM)
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+
 public class TestPageAttachment extends AbstractMOWTestcase {
 
-  // TODO remove
-  public void testDummy() {
-    assertTrue(true);
+  private WikiService wikiService;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    wikiService = container.getComponentInstanceOfType(WikiService.class);
   }
 
-  // TODO ???
-  /*
   public void testAddPageAttachment() throws Exception {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    PageImpl wikiHomePage = (PageImpl) wiki.getWikiHome();
-    
-    AttachmentImpl attachment0 = addAttachment(wikiHomePage, "attachment0.jpg", "logo", "root");   
-    assertEquals(attachment0.getName(), "attachment0.jpg");
-    assertNotNull(attachment0.getContentResource());
-    attachment0.setContentResource(Resource.createPlainText("logo - Updated"));
-    
-    PageImpl wikipage = addWikiPage(wiki, "testAddPageAttachment");
-    wikiHomePage.addWikiPage(wikipage);
-    wikipage.makeVersionable();
-    
-    AttachmentImpl attachment1 = addAttachment(wikipage, "attachment1.jpg", "foo", "you");
-    assertEquals(attachment1.getName(), "attachment1.jpg");
-    assertNotNull(attachment1.getContentResource());
-    
-    AttachmentImpl attachment2 = addAttachment(wikipage, "attachment2.jpg", "bar", "me");    
-    assertEquals(attachment2.getName(), "attachment2.jpg");
-    assertNotNull(attachment2.getContentResource());
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "wikiAttachement1");
+    Page wikiHome = wiki.getWikiHome();
+
+    Attachment attachment = new Attachment();
+    attachment.setName("attachment1.png");
+    attachment.setContent("logo".getBytes());
+    attachment.setMimeType("image/png");
+    attachment.setCreator("root");
+    wikiService.addAttachmentToPage(attachment, wikiHome);
+
+    Attachment storedAttachment = wikiService.getAttachmentOfPageByName("attachment1.png", wikiHome);
+
+    assertNotNull(storedAttachment);
+    assertNotNull(storedAttachment.getName());
+    assertEquals(attachment.getName(), storedAttachment.getName());
+    assertNotNull(storedAttachment.getContent());
+    assertTrue(Arrays.equals(attachment.getContent(), storedAttachment.getContent()));
   }
-  
+
   public void testAttachmentPermission() throws Exception {
     startSessionAs("demo");
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    WikiHome wikiHomePage = wiki.getWikiHome();
+
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "wikiAttachement2");
+    Page wikiHome = wiki.getWikiHome();
 
     // Create permission entries
-    HashMap<String, String[]> expectedPermissions = new HashMap<String, String[]>();
+    HashMap<String, String[]> expectedPermissions = new HashMap<>();
     String[] permission = new String[] { org.exoplatform.services.jcr.access.PermissionType.READ,
         org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY };
     expectedPermissions.put("demo", permission);
 
     // Create new wiki page
-    PageImpl wikipage = addWikiPage(wiki, "testAttachmentPermissionPage");
-    wikiHomePage.addWikiPage(wikipage);
-    wikipage.setOwner("demo");
-    wikipage.setPermission(expectedPermissions);
+    Page page = new Page("testAttachmentPermissionPage", "testAttachmentPermissionPage");
+    page.setOwner("demo");
+    page.setPermission(expectedPermissions);
+    page = wikiService.createPage(wiki, wikiHome.getName(), page);
 
     // Create attachment
-    AttachmentImpl attachment0 = wikipage.createAttachment("AttachmentPermission.jpg", Resource.createPlainText("logo"));
-    attachment0.setCreator("demo");
-    AttachmentImpl attachment1 = wikipage.getAttachment("AttachmentPermission.jpg");
-    assertNotNull(attachment1);
+    Attachment attachment1 = new Attachment();
+    attachment1.setName("AttachmentPermission.jpg");
+    attachment1.setContent("logo".getBytes());
+    attachment1.setMimeType("image/png");
+    attachment1.setCreator("demo");
+    wikiService.addAttachmentToPage(attachment1, page);
+
+    attachment1 = wikiService.getAttachmentOfPageByName("AttachmentPermission.jpg", page);
 
     // Check if permission is correct
     expectedPermissions.put("demo", org.exoplatform.services.jcr.access.PermissionType.ALL);
-    expectedPermissions.put(IdentityConstants.ANY, new String[] {
-            org.exoplatform.services.jcr.access.PermissionType.READ});
-    HashMap<String, String[]> altualPermissions = attachment1.getPermission();
-    for (String key : altualPermissions.keySet()) {
+    HashMap<String, String[]> actualPermissions = attachment1.getPermissions();
+    assertNotNull(actualPermissions);
+    assertEquals(expectedPermissions.size(), actualPermissions.size());
+    for (String key : actualPermissions.keySet()) {
       String[] expectPermission = expectedPermissions.get(key);
-      String[] actualPermission = altualPermissions.get(key);
-      for (int i = 0; i < actualPermission.length; i++) {
-        assertEquals(expectPermission[i], actualPermission[i]);
-      }
+      String[] actualPermission = actualPermissions.get(key);
+      assertTrue(Arrays.equals(expectPermission, actualPermission));
     }
   }
-  
-  public void testGetPageAttachment() throws Exception{
-	  
-    //Init data
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("acme");
-    Page wikiHomePage = wiki.getWikiHome();
-    
-    AttachmentImpl attachment0 = addAttachment(wikiHomePage, "attachment0.jpg", "logo", "root");
-    attachment0.setContentResource(Resource.createPlainText("logo - Updated"));
-    
-    PageImpl wikiPage = addWikiPage(wiki, "testGetPageAttachment1");
-    wikiHomePage.addWikiPage(wikiPage);
-    wikiPage.makeVersionable();
-    
-    AttachmentImpl attachment1 = addAttachment(wikiPage, "attachment1.jpg", "foo", "you");
-    attachment1.setContentResource(Resource.createPlainText("foo - Updated"));
-    
-    AttachmentImpl attachment2 = addAttachment(wikiPage, "attachment2.jpg", "bar", "me");
-    attachment2.setContentResource(Resource.createPlainText("bar - Updated"));
 
-    wikiPage = addWikiPage(wiki, "testGetPageAttachment2");
-    wikiHomePage.addWikiPage(wikiPage);
-    wikiPage.makeVersionable();
+  public void testGetPageAttachment() throws Exception{
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "wikiAttachement3");
+    Page wikiHome = wiki.getWikiHome();
+
+    Attachment attachment1 = new Attachment();
+    attachment1.setName("attachment1.png");
+    attachment1.setContent("logo".getBytes());
+    attachment1.setMimeType("image/png");
+    attachment1.setCreator("root");
+    wikiService.addAttachmentToPage(attachment1, wikiHome);
+
+    Page page1 = wikiService.createPage(wiki, wikiHome.getName(), new Page("testGetPageAttachment1", "testGetPageAttachment1"));
+
+    Attachment attachment2 = new Attachment();
+    attachment2.setName("attachment2.png");
+    attachment2.setContent("foo - Updated".getBytes());
+    attachment2.setMimeType("image/png");
+    attachment2.setCreator("you");
+    wikiService.addAttachmentToPage(attachment2, page1);
+
+    Attachment attachment3 = new Attachment();
+    attachment3.setName("attachment3.png");
+    attachment3.setContent("bar - Updated".getBytes());
+    attachment3.setMimeType("image/png");
+    attachment3.setCreator("me");
+    wikiService.addAttachmentToPage(attachment3, page1);
 	  
-    WikiService wService = (WikiService)container.getComponentInstanceOfType(WikiService.class) ;
-    Page wikipage = wService.getPageOfWikiByName("portal", "acme", "WikiHome") ;
-    Collection<AttachmentImpl> attachments = wikipage.getAttachmentsExcludeContent() ;
-    assertEquals(attachments.size(), 1) ;
-    Iterator<AttachmentImpl> iter = attachments.iterator() ;
-    AttachmentImpl att0 = iter.next() ;
-    assertNotNull(att0.getContentResource()) ;
-    assertEquals(new String(att0.getContentResource().getData()), "logo - Updated") ;
-    assertEquals(att0.getWeightInBytes(), "logo - Updated".getBytes().length) ;
-    assertEquals(att0.getCreator(), "root") ;
-    
-    wikipage = wService.getPageOfWikiByName("portal", "acme", "testGetPageAttachment1") ;
-    attachments = wikipage.getAttachmentsExcludeContent() ;
-    assertEquals(attachments.size(), 2) ;
-    iter = attachments.iterator() ;
-    AttachmentImpl att1 = iter.next() ;
-    assertNotNull(att1.getContentResource()) ;
-    assertEquals(new String(att1.getContentResource().getData()), "foo - Updated") ;
+    Page page = wikiService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "wikiAttachement3", "WikiHome");
+    List<Attachment> attachments = wikiService.getAttachmentsOfPage(page);
+    assertNotNull(attachments);
+    assertEquals(attachments.size(), 1);
+    Attachment att0 = attachments.get(0);
+    assertNotNull(att0.getContent());
+    assertTrue(Arrays.equals(att0.getContent(), "logo".getBytes()));
+    assertEquals(att0.getWeightInBytes(), "logo".getBytes().length);
+    assertEquals(att0.getCreator(), "root");
+
+    page = wikiService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "wikiAttachement3", "testGetPageAttachment1");
+    attachments = wikiService.getAttachmentsOfPage(page);
+    assertEquals(attachments.size(), 2);
+    Attachment att1 = attachments.get(0);
+    assertNotNull(att1.getContent());
+    assertTrue(Arrays.equals(att1.getContent(), "foo - Updated".getBytes()));
     assertEquals(att1.getWeightInBytes(), "foo - Updated".getBytes().length) ;
     assertEquals(att1.getCreator(), "you") ;
     
-    AttachmentImpl att2 = iter.next() ;
-    assertNotNull(att2.getContentResource()) ;
-    assertEquals(new String(att2.getContentResource().getData()), "bar - Updated") ;
+    Attachment att2 = attachments.get(1);
+    assertNotNull(att2.getContent()) ;
+    assertTrue(Arrays.equals(att2.getContent(), "bar - Updated".getBytes()));
     assertEquals(att2.getWeightInBytes(), "bar - Updated".getBytes().length) ;
     assertEquals(att2.getCreator(), "me") ;
-    
-    //Add new attachment for page that still don't have any attachment
-    wikipage = wService.getPageOfWikiByName("portal", "acme", "testGetPageAttachment2");
-    AttachmentImpl att = addAttachment(wikipage, "attachment3.jpg", "attachment3", "me");
-    assertEquals(att.getName(), "attachment3.jpg") ;
-    assertNotNull(att.getContentResource()) ;
   }
-  
-  public void testGetNewPageAttachment() throws Exception{
-	  
-    //Init data
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("ecms");
-    PageImpl wikiHomePage = (PageImpl) wiki.getWikiHome();
-    
-    PageImpl wikiPage = addWikiPage(wiki, "testGetNewPageAttachment");
-    wikiHomePage.addWikiPage(wikiPage);
-    wikiPage.makeVersionable();
-    
-    AttachmentImpl attachment = addAttachment(wikiPage, "attachment3.jpg", "attachment3", "me");
-    attachment.setContentResource(Resource.createPlainText("attachment3 - Updated"));
-	  
-    WikiService wService = (WikiService)container.getComponentInstanceOfType(WikiService.class) ;
-    PageImpl wikipage = (PageImpl)wService.getPageOfWikiByName("portal", "ecms", "testGetNewPageAttachment") ;
-    Collection<AttachmentImpl> attachments = wikipage.getAttachmentsExcludeContent() ;
-    assertEquals(attachments.size(), 1) ;
-    Iterator<AttachmentImpl> iter = attachments.iterator() ;
-    AttachmentImpl att = iter.next();
-    assertNotNull(att.getContentResource()) ;
-    assertEquals(new String(att.getContentResource().getData()), "attachment3 - Updated") ;
-    assertEquals(att.getWeightInBytes(), "attachment3 - Updated".getBytes().length) ;
-    assertEquals(att.getCreator(), "me") ;
-  }
-  
-  private PageImpl addWikiPage(PortalWiki wiki, String pageName){
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName(pageName);
-    return wikipage;
-  }
-  
-  private AttachmentImpl addAttachment(Page wikiPage, String filename, String plainText, String creator) throws Exception{
-	AttachmentImpl attachment = wikiPage.createAttachment(filename, Resource.createPlainText(plainText));
-	attachment.setCreator(creator);
-	return attachment;
-  }
-  */
-  
 }
