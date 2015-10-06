@@ -233,6 +233,7 @@ public class JCRDataStorage implements DataStorage {
 
     templatePage.setName(template.getName());
     templatePage.setTitle(template.getTitle());
+    templatePage.setDescription(template.getDescription());
     templatePage.getContent().setText(template.getContent());
   }
 

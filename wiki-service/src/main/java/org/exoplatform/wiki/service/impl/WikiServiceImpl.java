@@ -33,13 +33,14 @@ import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.*;
-import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
+import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.rendering.syntax.Syntax;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -266,15 +267,15 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     // init templates
     for(WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
-      if (templatePlugin != null && templatePlugin.getSourcePaths() != null) {
-        for (String templateSourcePath : templatePlugin.getSourcePaths()) {
-          // TODO change the WikiTemplatePagePlugin plugin to not rely on JCR imports
-          //InputStream templateContent = configManager.getInputStream(templateSourcePath);
-          Template template = new Template();
-          template.setName("MyTemplate");
-          template.setTitle("My Great Template !");
-          template.setContent("My Great Template !");
-          dataStorage.createTemplatePage(wiki, template);
+      if (templatePlugin != null && templatePlugin.getTemplates() != null) {
+        for (Template template : templatePlugin.getTemplates()) {
+          try {
+            InputStream templateInputStream = configManager.getInputStream(template.getSourceFilePath());
+            template.setContent(IOUtils.toString(templateInputStream));
+            dataStorage.createTemplatePage(wiki, template);
+          } catch(Exception e) {
+            log.error("Cannot init template " + template.getName() + " - Cause : " + e.getMessage(), e);
+          }
         }
       }
     }

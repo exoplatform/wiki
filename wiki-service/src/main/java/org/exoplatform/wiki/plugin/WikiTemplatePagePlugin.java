@@ -14,25 +14,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.wiki.template.plugin;
+package org.exoplatform.wiki.plugin;
+
+import org.exoplatform.container.component.BaseComponentPlugin;
+import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.wiki.mow.api.Template;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.container.component.BaseComponentPlugin;
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.ValuesParam;
-
 public class WikiTemplatePagePlugin extends BaseComponentPlugin {
-  List<String> sourcePaths = new ArrayList<String>();
+  List<Template> templates = new ArrayList<>();
 
-  @SuppressWarnings("unchecked")
   public WikiTemplatePagePlugin(InitParams params) throws Exception {
-    ValuesParam vlsParam = params.getValuesParam("sourcePaths") ;
-    sourcePaths.addAll(vlsParam.getValues());
+    templates.addAll(params.getObjectParamValues(Template.class));
   }
 
-  public List<String> getSourcePaths() {
-    return this.sourcePaths;
+  public List<Template> getTemplates() {
+    return templates;
   }
 }

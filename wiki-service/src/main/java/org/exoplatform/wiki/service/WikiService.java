@@ -26,7 +26,7 @@ import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.*;
-import org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin;
+import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
 
 import java.util.List;
 import java.util.Map;

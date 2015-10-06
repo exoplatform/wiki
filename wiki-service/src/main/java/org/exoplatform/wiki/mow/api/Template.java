@@ -20,11 +20,21 @@ public class Template extends Page {
 
   private String description;
 
+  private String sourceFilePath;
+
   public String getDescription() {
     return description;
   }
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getSourceFilePath() {
+    return sourceFilePath;
+  }
+
+  public void setSourceFilePath(String sourceFilePath) {
+    this.sourceFilePath = sourceFilePath;
   }
 }

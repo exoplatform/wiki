@@ -737,15 +737,54 @@
     <component-plugin>
       <name>Template page initializer</name>
       <set-method>addWikiTemplatePagePlugin</set-method>
-      <type>org.exoplatform.wiki.template.plugin.WikiTemplatePagePlugin</type>
-      <description>XML Deployment Plugin</description>
+      <type>org.exoplatform.wiki.plugin.WikiTemplatePagePlugin</type>
+      <description>Template page initializer</description>
       <init-params>
-        <values-param>
-          <name>sourcePaths</name>
-          <description>path of file imported. </description>
-          <value>war:/conf/data/template.xml</value>
-          <!--value>war:/conf/data/file-name.xml</value -->
-        </values-param>
+        <object-param>
+          <name>Two-Column_Layout</name>
+          <object type="org.exoplatform.wiki.mow.api.Template">
+            <field name="name"><string>Two-Column_Layout</string></field>
+            <field name="title"><string>Two-Column Layout</string></field>
+            <field name="description"><string>Global</string></field>
+            <field name="sourceFilePath"><string>war:/conf/wiki/data/templates/Two-Column_Layout.tmpl</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Three-Column_Layout</name>
+          <object type="org.exoplatform.wiki.mow.api.Template">
+            <field name="name"><string>Three-Column_Layout</string></field>
+            <field name="title"><string>Three-Column Layout</string></field>
+            <field name="description"><string>Global</string></field>
+            <field name="sourceFilePath"><string>war:/conf/wiki/data/templates/Three-Column_Layout.tmpl</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Status_Meeting</name>
+          <object type="org.exoplatform.wiki.mow.api.Template">
+            <field name="name"><string>Status_Meeting</string></field>
+            <field name="title"><string>Status Meeting</string></field>
+            <field name="description"><string>Global</string></field>
+            <field name="sourceFilePath"><string>war:/conf/wiki/data/templates/Status_Meeting.tmpl</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>HOW-TO_Guide</name>
+          <object type="org.exoplatform.wiki.mow.api.Template">
+            <field name="name"><string>HOW-TO_Guide</string></field>
+            <field name="title"><string>HOW-TO Guide</string></field>
+            <field name="description"><string>Global</string></field>
+            <field name="sourceFilePath"><string>war:/conf/wiki/data/templates/HOW-TO_Guide.tmpl</string></field>
+          </object>
+        </object-param>
+        <object-param>
+          <name>Leave_Planning</name>
+          <object type="org.exoplatform.wiki.mow.api.Template">
+            <field name="name"><string>Leave_Planning</string></field>
+            <field name="title"><string>Leave Planning</string></field>
+            <field name="description"><string>Global</string></field>
+            <field name="sourceFilePath"><string>war:/conf/wiki/data/templates/Leave_Planning.tmpl</string></field>
+          </object>
+        </object-param>
       </init-params>
     </component-plugin>
   </external-component-plugins>
