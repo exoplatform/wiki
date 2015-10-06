@@ -34,6 +34,7 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -234,8 +235,11 @@ public class SavePageActionComponent extends UIComponent {
             }
           } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
             Page draftPage = Utils.getCurrentNewDraftWikiPage();
-            // TODO attachments
-            //Collection<Attachment> attachs = draftPage.getAttachments();
+
+            // Get attachments of the draft page
+            List<Attachment> attachments = wikiService.getAttachmentsOfPage(draftPage);
+
+            // Create page
             Wiki wiki = new Wiki(pageParams.getType(), pageParams.getOwner());
             Page newPage = new Page();
             newPage.setName(title);
@@ -243,20 +247,16 @@ public class SavePageActionComponent extends UIComponent {
             newPage.setAuthor(currentUser);
             newPage.setContent(markup);
             newPage.setSyntax(syntaxId);
+            newPage.setUrl(Utils.getURLFromParams(pageParams));
             Page createdPage = wikiService.createPage(wiki, page.getName(), newPage);
             pageParams.setPageId(newPageName);
-            createdPage.setUrl(Utils.getURLFromParams(pageParams));
-            // TODO attachments
-            //createdPage.getAttachments().addAll(attachs);
-            // TODO use wikiService
-            /*
-            UpdateAttachmentMixin updateAttachment = createdPage.createUpdateAttachmentMixin();
-            createdPage.setUpdateAttachmentMixin(updateAttachment);
-            createdPage.checkin();
-            createdPage.checkout();
-            draftPage.remove();
-            */
-            // remove the draft for new page
+
+            // Add all the attachments to the newly created page
+            for(Attachment attachment : attachments) {
+              wikiService.addAttachmentToPage(attachment, createdPage);
+            }
+
+            // Remove the draft for new page
             Page parentPage = wikiService.getParentPageOf(createdPage);
             DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
             if (contentDraftPage == null) {
@@ -266,12 +266,9 @@ public class SavePageActionComponent extends UIComponent {
                 wikiService.removeDraft(log.getDraftName());
               }
             } else {
-              // TODO use wikiService
-              //contentDraftPage.remove();
+              wikiService.removeDraftOfPage(new WikiPageParams(contentDraftPage.getWikiType(), contentDraftPage.getWikiOwner(), contentDraftPage.getName()));
             }
-            
-            // remove log edit page
-            
+
             // Post add activity
             wikiService.postAddPage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), createdPage);
           }

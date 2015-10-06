@@ -29,6 +29,7 @@ import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.*;
+import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.service.search.jcr.JCRTemplateSearchQueryBuilder;
 import org.exoplatform.wiki.service.search.jcr.JCRWikiSearchQueryBuilder;
