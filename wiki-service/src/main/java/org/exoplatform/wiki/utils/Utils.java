@@ -663,15 +663,14 @@ public class Utils {
    *          wikiPage parameter 
    * @return boolean
    */
-  public static boolean hasPermission( String[] permission, Identity user,WikiPageParams pageParams) {
+  public static boolean hasPermission(String[] permission, Identity user, WikiPageParams pageParams) {
     UserACL userACL = Util.getUIPortalApplication().getApplicationComponent(UserACL.class);
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    List<PermissionEntry> permissionEntries = new ArrayList<PermissionEntry>();
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    List<PermissionEntry> permissionEntries = new ArrayList<>();
     try {
       permissionEntries = wikiService.getWikiPermission(pageParams.getType(), pageParams.getOwner());
     } catch (Exception e) {
-      // TODO Auto-generated catch block
-      e.printStackTrace();
+      log_.error("Cannot get permissions of wiki " + pageParams.getType() + ":" + pageParams.getOwner() + " - Cause : " + e.getMessage(), e);
     }
     List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
     for (PermissionEntry permissionEntry : permissionEntries) {
