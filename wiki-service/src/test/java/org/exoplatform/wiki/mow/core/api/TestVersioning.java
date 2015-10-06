@@ -35,7 +35,7 @@ public class TestVersioning extends AbstractMOWTestcase {
   }
 
   public void testGetVersionHistory() throws Exception {
-    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning");
+    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning1");
     Page page = new Page("testGetVersionHistory-001", "testGetVersionHistory-001");
     page = wikiService.createPage(wiki, "WikiHome", page);
     wikiService.createVersionOfPage(page);
@@ -48,7 +48,7 @@ public class TestVersioning extends AbstractMOWTestcase {
   }
 
   public void testCreateVersionHistoryTree() throws Exception {
-    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning");
+    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning2");
     Page page = new Page("testCreateVersionHistoryTree-001", "testCreateVersionHistoryTree-001");
     page.setContent("testCreateVersionHistoryTree-ver0.0");
     page = wikiService.createPage(wiki, "WikiHome", page);

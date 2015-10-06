@@ -26,7 +26,10 @@ import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
-import org.exoplatform.wiki.service.search.*;
+import org.exoplatform.wiki.service.search.SearchResult;
+import org.exoplatform.wiki.service.search.TemplateSearchData;
+import org.exoplatform.wiki.service.search.TemplateSearchResult;
+import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.xwiki.rendering.syntax.Syntax;
 
 import java.io.IOException;
@@ -60,21 +63,20 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testGetPortalPageById() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     PortalWiki wikiACME = portalWikiContainer.addWiki("acme");
     wikiACME.getWikiHome() ;
     WikiHome wikiHomePage = wiki.getWikiHome();
-    model.save() ;
+    mowService.persist();
     
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "WikiHome")) ;
         
     PageImpl wikipage = wiki.createWikiPage();
     wikipage.setName("testGetPortalPageById-001");
     wikiHomePage.addWikiPage(wikipage);
-    model.save() ;
+    mowService.persist();
     
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "testGetPortalPageById-001")) ;
     
@@ -82,39 +84,36 @@ public class TestWikiService extends AbstractMOWTestcase {
 
   public void testGetGroupPageById() throws WikiException {
 
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
     GroupWiki wiki = groupWikiContainer.addWiki("platform/users");
     WikiHome wikiHomePage = wiki.getWikiHome();
-    model.save() ;
+    mowService.persist();
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "platform/users", "WikiHome")) ;
 
     PageImpl wikipage = wiki.createWikiPage();
     wikipage.setName("testGetGroupPageById-001");
     wikiHomePage.addWikiPage(wikipage);
-    model.save() ;
+    mowService.persist();
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "platform/users", "testGetGroupPageById-001")) ;
     assertNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "unknown", "WikiHome"));
   }
 
   public void testGetUserPageById() throws WikiException {
-
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
     UserWiki wiki = userWikiContainer.addWiki("john");
     WikiHome wikiHomePage = wiki.getWikiHome();
-    model.save() ;
+    mowService.persist();
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "john", "WikiHome")) ;
 
     PageImpl wikipage = wiki.createWikiPage();
     wikipage.setName("testGetUserPageById-001");
     wikiHomePage.addWikiPage(wikipage);
-    model.save() ;
+    mowService.persist();
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "john", "testGetUserPageById-001")) ;
     assertNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "unknown", "WikiHome"));
@@ -480,10 +479,10 @@ public class TestWikiService extends AbstractMOWTestcase {
 
   public void testSearchTitle() throws Exception {
     wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
-    wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/users");
     wService.createWiki(PortalConfig.USER_TYPE, "demo");
     wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", new Page("dumpPage", "dumpPage"));
-    wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "/platform/guests"), "WikiHome", new Page("Dump guest Page", "Dump guest Page"));
+    wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "/platform/users"), "WikiHome", new Page("Dump guest Page", "Dump guest Page"));
     wService.createPage(new Wiki(PortalConfig.USER_TYPE, "demo"), "WikiHome", new Page("Dump demo Page", "Dump demo Page"));
 
     // limit size is 2
@@ -504,7 +503,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     result = wService.search(data).getAll();
     assertEquals(1, result.size());
 
-    data = new WikiSearchData("dump", null,PortalConfig.GROUP_TYPE, "/platform/guests");
+    data = new WikiSearchData("dump", null,PortalConfig.GROUP_TYPE, "/platform/users");
     result = wService.search(data).getAll();
     assertEquals(1, result.size());
 

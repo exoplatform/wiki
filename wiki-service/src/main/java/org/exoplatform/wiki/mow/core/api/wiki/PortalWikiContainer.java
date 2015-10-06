@@ -56,7 +56,7 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
     if(wikiOwner == null){
       return null;
     }
-    ChromatticSession session = getMultiWiki().getSession();
+    ChromatticSession session = mowService.getSession();
     Node wikiNode = null;
     try {
       Node wikisNode = (Node)session.getJCRSession().getItem(getPortalWikisPath()) ;

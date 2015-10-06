@@ -430,7 +430,7 @@ public class Utils {
   
   public static Wiki[] getAllWikiSpace() throws WikiException {
     MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
+    WikiStoreImpl store = (WikiStoreImpl) mowService.getWikiStore();
     return store.getWikis().toArray(new Wiki[]{}) ;
   } 
   

@@ -30,12 +30,12 @@ public class TestWikiPage extends AbstractMOWTestcase {
   private WikiService wService;
 
   public void setUp() throws Exception {
+    super.setUp();
     wService = container.getComponentInstanceOfType(WikiService.class) ;
   }
 
   public void testAddWikiHome() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
@@ -43,8 +43,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   }
 
   public void testAddWikiPage() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
@@ -57,8 +56,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   }
   
   public void testGetWikiPageById() throws Exception {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
@@ -77,8 +75,8 @@ public class TestWikiPage extends AbstractMOWTestcase {
     wikipage.addWikiPage(subpage) ;
         
     assertNotNull(wikipage.getWikiPage("SubWikiPage-001")) ;
-    
-    model.save() ;
+
+    mowService.persist();
     
     WikiService wService = container.getComponentInstanceOfType(WikiService.class) ;
     Page page = wService.getPageOfWikiByName("portal", "classic", "SubWikiPage-001") ;
@@ -103,8 +101,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   }
   
   public void testDeleteWikiPage() throws Exception {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
@@ -120,8 +117,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   }  
   
   public void testGetWiki() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     

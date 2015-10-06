@@ -70,7 +70,7 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
     } catch (Exception ex) {
       return null;
     }
-    ChromatticSession session = getMultiWiki().getSession();
+    ChromatticSession session = mowService.getSession();
     Node wikiNode = null;
     try {      
       Node tempNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), wikiOwner);      

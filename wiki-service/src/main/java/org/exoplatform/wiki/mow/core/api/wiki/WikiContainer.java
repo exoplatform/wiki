@@ -22,6 +22,7 @@ import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToMany;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.core.api.MOWService;
 
 import java.util.Collection;
 
@@ -31,7 +32,13 @@ import java.util.Collection;
 public abstract class WikiContainer<T extends WikiImpl> {
   
   private static final Log      log               = ExoLogger.getLogger(WikiContainer.class);
-  
+
+  protected MOWService mowService;
+
+  public void setMOWService(MOWService mowService) {
+    this.mowService = mowService;
+  }
+
   @OneToMany(type = RelationshipType.REFERENCE)
   @MappedBy(WikiNodeType.Definition.WIKI_CONTAINER_REFERENCE)
   public abstract Collection<T> getWikis();

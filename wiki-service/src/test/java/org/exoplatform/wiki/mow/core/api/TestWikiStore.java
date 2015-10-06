@@ -17,21 +17,18 @@
 package org.exoplatform.wiki.mow.core.api;
 
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.core.api.wiki.*;
-import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.mow.core.api.wiki.*;
 
 public class TestWikiStore extends AbstractMOWTestcase {
 
   public void testGetWikiStore() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStore wStore = model.getWikiStore();
+    WikiStore wStore = mowService.getWikiStore();
     assertNotNull(wStore);
   }
 
   public void testGetWikiContainers() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> pwikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWikiContainer portalWikiContainer = (PortalWikiContainer) pwikiContainer;
     assertNotNull(portalWikiContainer);
@@ -44,8 +41,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   }
 
   public void testAddAndGetPortalClassicWiki() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     PortalWiki classicWiki = portalWikiContainer.getWiki("classic", true);
@@ -53,8 +49,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   }
 
   public void testAddAndGetAdministratorsGroupWiki() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
     GroupWiki wiki = groupWikiContainer.addWiki("/platform/administrators");
     GroupWiki organizationWiki = groupWikiContainer.getWiki("/platform/administrators", true);
@@ -62,8 +57,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   }
   
   public void testAddAndGetDemoUserWiki() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
     UserWiki wiki = userWikiContainer.addWiki("demo");
     UserWiki rootWiki = userWikiContainer.getWiki("demo", true);
@@ -71,8 +65,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   }
   
   public void testGetPortalClassicWikiHomePage() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     PageImpl wikiHomePage = wiki.getWikiHome();
@@ -80,8 +73,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   }
   
   public void testAddAndGetPortalClassicWikiPage() throws WikiException {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     assertNotNull(wiki) ;

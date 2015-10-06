@@ -73,18 +73,4 @@ public interface WikiStore {
    * @return new wiki page
    */
   public abstract PageImpl createPage();
-  
-  /**
-   * Set session to wiki store
-   * 
-   * @param chromatticSession
-   */
-  public void setSession(ChromatticSession chromatticSession);
-
-  /**
-   * get Chromattic session
-   * 
-   * @return Chromattic session
-   */
-  public ChromatticSession getSession();
 }

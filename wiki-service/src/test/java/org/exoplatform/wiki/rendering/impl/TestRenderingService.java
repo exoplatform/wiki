@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.rendering.impl;
 
 import org.chromattic.ext.ntdef.Resource;
-import org.exoplatform.wiki.mow.core.api.wiki.Model;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
@@ -43,8 +42,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
   }
   
   public void testRenderAnExistedInternalLink() throws Exception {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
@@ -52,7 +50,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     PageImpl wikipage = wiki.createWikiPage();    
     wikipage.setName("CreateWikiPage-002");
     wikiHomePage.addWikiPage(wikipage);
-    model.save();
+    mowService.persist();
     
     PageImpl wikipage1 = wikiHomePage.getWikiPage("CreateWikiPage-002");
     wikipage1.createAttachment("eXoWikiHome.png", Resource.createPlainText("logo"));
@@ -75,8 +73,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
   }
   
   public void testRenderCreatePageLink() throws Exception {
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     wiki.getWikiHome();

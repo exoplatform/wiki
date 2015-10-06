@@ -62,17 +62,19 @@ public abstract class AbstractMOWTestcase extends TestCase {
 
   protected static MOWService          mowService;
 
+  boolean syncStarted;
+
   protected void begin() {
     initContainer();
 
-    RequestLifeCycle.begin(container);
+    //syncStarted = mowService.startSynchronization();
   }
 
   protected void end() {
-    RequestLifeCycle.end();
+    //mowService.stopSynchronization(syncStarted);
 
     // TODO stopping or disposing the container does not delete data. We should find a way to do it after each test to make sure tests are really independent.
-    stopContainer();
+    //stopContainer();
   }
 
   protected void setUp() throws Exception {
@@ -144,11 +146,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
   }
   
   protected WikiImpl getWiki(WikiType wikiType, String wikiName, Model model) throws WikiException {
-    Model mod = model;
-    if (mod == null) {
-      mod = mowService.getModel();
-    }
-    WikiStoreImpl wStore = (WikiStoreImpl) mod.getWikiStore();
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiImpl wiki = null;
     switch (wikiType) {
       case PORTAL:
@@ -164,7 +162,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
         wiki = userWikiContainer.getWiki(wikiName, true);
         break;
     }
-    mod.save();
+    mowService.persist();
     return wiki;
   }
   

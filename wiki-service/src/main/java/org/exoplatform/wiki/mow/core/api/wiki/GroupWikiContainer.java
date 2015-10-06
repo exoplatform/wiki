@@ -66,7 +66,7 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
     } catch (Exception ex) {
       return null;
     }
-    ChromatticSession session = getMultiWiki().getSession();
+    ChromatticSession session = mowService.getSession();
     Node wikiNode = null;
     try {
       Node rootNode = session.getJCRSession().getRootNode();
