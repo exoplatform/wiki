@@ -143,7 +143,6 @@ public class SaveTemplateActionComponent extends UIComponent {
           Template template = wikiService.getTemplatePage(pageParams, pageEditForm.getTemplateId());
           wikiService.modifyTemplate(pageParams, template, title, description, markup, syntaxId);
         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE) {
-          // TODO should create template with a Template object
           Template template = new Template();
           template.setDescription(StringEscapeUtils.escapeHtml(description));
           template.setContent(markup);
