@@ -221,9 +221,14 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
   }
   
   //TODO: replace by @Restore when Chromattic support
-  public void restore(String versionName, boolean removeExisting) throws Exception {
-    Node attNode = getJCRNode();
-    attNode.restore(versionName, removeExisting);
+  public void restore(String versionName, boolean removeExisting) throws WikiException {
+    try {
+      Node attNode = getJCRNode();
+      attNode.restore(versionName, removeExisting);
+      attNode.checkout();
+    } catch (RepositoryException e) {
+      throw new WikiException("Cannot restore version " + versionName + " of page " + this.getName(), e);
+    }
   }
   
   public ChromatticSession getChromatticSession() {

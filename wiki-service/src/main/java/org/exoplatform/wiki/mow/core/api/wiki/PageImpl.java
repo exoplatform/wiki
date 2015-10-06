@@ -254,7 +254,7 @@ public abstract class PageImpl extends NTFolder {
   }
 
   //TODO: replace by @Restore when Chromattic support
-  public void restore(String versionName, boolean removeExisting) throws Exception {
+  public void restore(String versionName, boolean removeExisting) throws WikiException {
     getContent().restore(versionName, removeExisting);
   }
   

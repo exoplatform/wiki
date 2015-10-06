@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -31,6 +32,7 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPageVersionsList;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
@@ -48,7 +50,13 @@ public class RestoreRevisionActionComponent extends UIContainer {
   public static final String RESTORE_ACTION = "RestoreRevision";
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new EditPagesPermissionFilter() });
-  
+
+  private static WikiService wikiService;
+
+  public RestoreRevisionActionComponent() {
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+  }
+
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
@@ -84,13 +92,7 @@ public class RestoreRevisionActionComponent extends UIContainer {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       String versionName = event.getRequestContext().getRequestParameter(OBJECTID);
       Page wikipage = Utils.getCurrentWikiPage();
-      // TODO use wikiService
-      /*
-      wikipage.restore(versionName, false);
-      wikipage.checkout();
-      wikipage.checkin();
-      wikipage.checkout();
-      */
+      wikiService.restoreVersionOfPage(versionName, wikipage);
       wikiPortlet.changeMode(WikiMode.VIEW);
     }
 

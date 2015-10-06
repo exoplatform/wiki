@@ -678,6 +678,8 @@ public interface WikiService {
 
   public void createVersionOfPage(Page page) throws WikiException;
 
+  public void restoreVersionOfPage(String versionName, Page page) throws WikiException;
+
   /**
    * Update the given page. This does not automatically create a new version.
    * If a new version must be created it should be explicitly done by calling createVersionOfPage().

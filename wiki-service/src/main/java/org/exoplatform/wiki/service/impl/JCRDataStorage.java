@@ -1307,6 +1307,12 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
+  public void restoreVersionOfPage(String versionName, Page page) throws WikiException {
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    pageImpl.restore(versionName, false);
+  }
+
+  @Override
   public void updatePage(Page page) throws WikiException {
     Model model = getModel();
 

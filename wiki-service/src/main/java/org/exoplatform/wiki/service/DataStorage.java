@@ -120,5 +120,7 @@ public interface DataStorage {
 
   public void addPageVersion(Page page) throws WikiException;
 
+  public void restoreVersionOfPage(String versionName, Page page) throws WikiException;
+
   public void updatePage(Page page) throws WikiException;
 }
