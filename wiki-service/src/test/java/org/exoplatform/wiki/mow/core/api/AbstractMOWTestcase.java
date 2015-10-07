@@ -67,11 +67,11 @@ public abstract class AbstractMOWTestcase extends TestCase {
   protected void begin() {
     initContainer();
 
-    syncStarted = mowService.startSynchronization();
+    RequestLifeCycle.begin(container);
   }
 
   protected void end() {
-    mowService.stopSynchronization(syncStarted);
+    RequestLifeCycle.end();
 
     // TODO stopping or disposing the container does not delete data. We should find a way to do it after each test to make sure tests are really independent.
     //stopContainer();
