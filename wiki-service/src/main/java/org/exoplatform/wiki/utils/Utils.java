@@ -421,7 +421,7 @@ public class Utils {
         try {
           return wikiService.getWikiByTypeAndOwner(wikiType, owner);
         } catch (Exception e) {
-          // TODO Log and Exception
+          log_.error("Cannot get wiki " + wikiType + ":" + owner + " - Cause : " + e.getMessage(), e);
         }
       }
     }
@@ -489,7 +489,8 @@ public class Utils {
       WikiPageParams params = new WikiPageParams(wikiType, wiki.getOwner(), page.getName());
       return params;
     } catch(Exception e) {
-      // TODO Log exception
+      log_.error("Cannot build wiki page params from wiki page " + page.getWikiType() + ":" + page.getWikiOwner()
+              + ":" + page.getName() + " - Cause : " + e.getMessage(), e);
       return null;
     }
   }
