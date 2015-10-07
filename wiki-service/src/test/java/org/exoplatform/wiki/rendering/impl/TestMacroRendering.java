@@ -17,12 +17,17 @@
 package org.exoplatform.wiki.rendering.impl;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.service.WikiContext;
+import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentRepositoryException;
 import org.xwiki.context.Execution;
@@ -122,22 +127,14 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     assertEquals(1, (StringUtils.countMatches(renderedHTML, "<div class=\"IncludePage \" >")));        
   }
 
-  // TODO ???
-  /*
   public void testChildrenMacro() throws Exception {
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer()
-                                                               .getComponentInstanceOfType(WikiService.class);
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki portalWiki = portalWikiContainer.addWiki("classic");
-    portalWiki.getWikiHome();
-    model.save();
-    Wiki wiki = new Wiki(portalWiki.getType(), portalWiki.getOwner());
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wikiService.createPage(wiki, "WikiHome", new Page("samplePage", "samplePage"));
     wikiService.createPage(wiki, "samplePage", new Page("childPage1", "childPage1"));
     wikiService.createPage(wiki, "samplePage", new Page("childPage2", "childPage2"));
     wikiService.createPage(wiki, "childPage1", new Page("testPage", "testPage"));
+
     Execution ec = renderingService.getExecution();
     WikiContext wikiContext = (WikiContext) ec.getContext().getProperty(WikiContext.WIKICONTEXT);
     wikiContext.setPageId("samplePage");
@@ -149,25 +146,16 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
                                                             Syntax.XHTML_1_0.toIdString(),
                                                             false));
   }
-  */
 
-  // TODO ???
-  /*
   public void testRenderPageTreeMacro() throws Exception {
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
 
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer()
-                                                               .getComponentInstanceOfType(WikiService.class);
-    Model model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki portalWiki = portalWikiContainer.addWiki("classic");
-    portalWiki.getWikiHome();
-    model.save();
-    Wiki wiki = new Wiki(portalWiki.getType(), portalWiki.getOwner());
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     wikiService.createPage(wiki, "WikiHome", new Page("rootPage", "rootPage"));
     wikiService.createPage(wiki, "rootPage", new Page("testPageTree1", "testPageTree1"));
     wikiService.createPage(wiki, "rootPage", new Page("testPageTree2", "testPageTree2"));
     wikiService.createPage(wiki, "testPageTree1", new Page("testPageTree11", "testPageTree11"));
+
     Execution ec = renderingService.getExecution();
     WikiContext wikiContext = (WikiContext) ec.getContext().getProperty(WikiContext.WIKICONTEXT);
     wikiContext.setPageId("rootPage");
@@ -181,13 +169,13 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
                      .append("    <a class=\"SelectNode\" style=\"display:none\" href=\"http://localhost:8080/portal/classic/\" ></a>")
                      .append("  </div>")
                      .append("</div>");
+
     assertEquals(xwikiExpectedHtml.toString(), renderingService.render("{{pagetree /}}",
                                                                        Syntax.XWIKI_2_0.toIdString(),
                                                                        Syntax.XHTML_1_0.toIdString(),
                                                                        false));
   }
-  */
-  
+
   public void testExcerptMacro() throws Exception {    
     String expectedHtml = "<div style=\"display: block\" class=\"ExcerptClass\"><div class=\"box tipmessage\">Test excerpt</div></div>";
     assertEquals(expectedHtml, renderingService.render("{{excerpt}}{{tip}}Test excerpt{{/tip}}{{/excerpt}}",
