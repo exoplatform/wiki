@@ -19,6 +19,7 @@ package org.exoplatform.wiki.service;
 
 import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.WikiException;
@@ -26,6 +27,7 @@ import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
+import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
@@ -700,21 +702,4 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(drafts);
     assertEquals(0, drafts.size());
   }
-
-  /*
-  public void testDraftPageChanges() throws WikiException {
-    startSessionAs("mary");
-
-    // Get wiki home
-    Page wikiHome = wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "WikiHome");
-
-    // Test create draft for new page
-    DraftPage draftPage = wService.createDraftForNewPage(new DraftPage(), wikiHome, new Date().getTime());
-    assertNotNull(draftPage);
-    String draftNameForNewPage = draftPage.getName();
-    assertTrue(draftPage.isNewPage());
-    assertEquals(wikiHome.getId(), draftPage.getTargetPageId());
-    assertEquals("1", draftPage.getTargetPageRevision());
-  }
-  */
 }
