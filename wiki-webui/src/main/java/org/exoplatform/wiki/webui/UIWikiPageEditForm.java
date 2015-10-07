@@ -428,7 +428,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
           UIWikiMaskWorkspace uiMaskWS = wikiPortlet.getChild(UIWikiMaskWorkspace.class);
           UIWikiPagePreview wikiPagePreview = uiMaskWS.createUIComponent(UIWikiPagePreview.class, null, null);
           wikiPagePreview.setPageTitle(draftPage.getTitle());
-          wikiPagePreview.setContent(draftPage.getChanges().getDiffHTML());
+          wikiPagePreview.setContent(wikiService.getDraftChanges(draftPage).getDiffHTML());
           uiMaskWS.setUIComponent(wikiPagePreview);
           uiMaskWS.setShow(true);
           uiMaskWS.setPopupTitle(res.getString("DraftPage.title.draft-changes"));

@@ -1008,7 +1008,14 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       if (StringUtils.isEmpty(pageId) || (page == null)) {
         throw new IllegalArgumentException("Can not find the target page");
       }
-      
+
+      title = replaceSpecialCharacter(title);
+
+      // Convert conent to markup if need
+      if (StringUtils.isEmpty(isMarkup) || !isMarkup.toLowerCase().equals("true")) {
+        content = renderingService.render(content, Syntax.XHTML_1_0.toIdString(), wikiService.getDefaultWikiSyntaxId(), false);
+      }
+
       DraftPage draftPage = null;
       if (!isNewPage) {
         draftPage = wikiService.getDraftOfPage(page);
@@ -1023,34 +1030,32 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       
       // If draft page is not exist then create draft page
       if (draftPage == null) {
+        DraftPage newDraftPage = new DraftPage();
+        newDraftPage.setTitle(title);
+        newDraftPage.setContent(content);
         // if create draft for exist page, we need synchronized when create draft 
         if (!isNewPage) {
           synchronized (page.getId()) {
-            draftPage = wikiService.createDraftForExistPage(param, pageRevision, clientTime);
+            draftPage = wikiService.createDraftForExistPage(newDraftPage, page, pageRevision, clientTime);
           }
         } else {
-          draftPage = wikiService.createDraftForNewPage(param, clientTime);
+          draftPage = wikiService.createDraftForNewPage(newDraftPage, page, clientTime);
         }
-      }
-      
-      // Convert conent to markup if need
-      if (StringUtils.isEmpty(isMarkup) || !isMarkup.toLowerCase().equals("true")) {
-        content = renderingService.render(content, Syntax.XHTML_1_0.toIdString(), wikiService.getDefaultWikiSyntaxId(), false);
-      }
-      
-      // Store page content and page title in draft
-      title = replaceSpecialCharacter(title);
-      if ("".equals(title)) {
-        draftPage.setTitle(draftPage.getName());
       } else {
-        draftPage.setTitle(title);
+        // Store page content and page title in draft
+        if ("".equals(title)) {
+          draftPage.setTitle(draftPage.getName());
+        } else {
+          draftPage.setTitle(title);
+        }
+        draftPage.setContent(content);
+        // TODO need an updatePage ? updateDraftPage ?
+        //draftPage.getChromatticSession().save();
+
+        // Log the editting time for current user
+        Utils.logEditPageTime(param, Utils.getCurrentUser(), System.currentTimeMillis(), draftPage.getName(), isNewPage);
+
       }
-      draftPage.setContent(content);
-      // TODO need an updatePage ? updateDraftPage ?
-      //draftPage.getChromatticSession().save();
-      
-      // Log the editting time for current user
-      Utils.logEditPageTime(param, Utils.getCurrentUser(), System.currentTimeMillis(), draftPage.getName(), isNewPage);
       
       // Notify to client that saved draft success
       return Response.ok(new DraftData(draftPage.getName()), MediaType.APPLICATION_JSON).cacheControl(cc).build();

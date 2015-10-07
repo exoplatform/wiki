@@ -3,28 +3,28 @@ package org.exoplatform.wiki.mow.api;
 import org.exoplatform.wiki.service.diff.DiffResult;
 
 public class DraftPage extends Page {
-  private String targetPage;
+  private String targetPageId;
 
-  private String targetRevision;
+  private String targetPageRevision;
 
   private boolean newPage;
 
   private DiffResult changes;
 
-  public String getTargetPage() {
-    return targetPage;
+  public String getTargetPageId() {
+    return targetPageId;
   }
 
-  public void setTargetPage(String targetPage) {
-    this.targetPage = targetPage;
+  public void setTargetPageId(String targetPageId) {
+    this.targetPageId = targetPageId;
   }
 
-  public String getTargetRevision() {
-    return targetRevision;
+  public String getTargetPageRevision() {
+    return targetPageRevision;
   }
 
-  public void setTargetRevision(String targetRevision) {
-    this.targetRevision = targetRevision;
+  public void setTargetPageRevision(String targetPageRevision) {
+    this.targetPageRevision = targetPageRevision;
   }
 
   public boolean isNewPage() {

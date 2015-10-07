@@ -40,7 +40,6 @@ import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.rendering.syntax.Syntax;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
@@ -725,18 +724,18 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public DraftPage createDraftForNewPage(WikiPageParams targetPageParam, long clientTime) throws WikiException {
+  public DraftPage createDraftForNewPage(DraftPage draftPage, Page parentPage,  long clientTime) throws WikiException {
     // Create suffix for draft name
     String draftSuffix = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date(clientTime));
-
-    // Get targetPage
-    Page targetPage = getPageOfWikiByName(targetPageParam.getType(), targetPageParam.getOwner(), targetPageParam.getPageId());
-
-    DraftPage draftPage = new DraftPage();
-    draftPage.setName(UNTITLED_PREFIX + draftSuffix);
-    draftPage.setNewPage(true);
-    draftPage.setTargetPage(targetPage.getId());
-    draftPage.setTargetRevision("1");
+    
+    DraftPage newDraftPage = new DraftPage();
+    newDraftPage.setName(UNTITLED_PREFIX + draftSuffix);
+    newDraftPage.setNewPage(true);
+    newDraftPage.setTargetPageId(parentPage.getId());
+    newDraftPage.setTargetPageRevision("1");
+    newDraftPage.setContent(draftPage.getContent());
+    newDraftPage.setCreatedDate(new Date(clientTime));
+    newDraftPage.setUpdatedDate(new Date(clientTime));
 
     Wiki wiki = getWikiByTypeAndOwner(PortalConfig.USER_TYPE, Utils.getCurrentUser());
     if(wiki == null) {
@@ -744,32 +743,32 @@ public class WikiServiceImpl implements WikiService, Startable {
       createWiki(PortalConfig.USER_TYPE, Utils.getCurrentUser());
     }
 
-    dataStorage.createDraftPageForUser(draftPage, Utils.getCurrentUser());
+    dataStorage.createDraftPageForUser(newDraftPage, Utils.getCurrentUser());
 
-    return draftPage;
+    return newDraftPage;
   }
 
   @Override
-  public DraftPage createDraftForExistPage(WikiPageParams targetPageParam, String revision, long clientTime) throws WikiException {
+  public DraftPage createDraftForExistPage(DraftPage draftPage, Page targetPage, String revision, long clientTime) throws WikiException {
     // Create suffix for draft name
     String draftSuffix = new SimpleDateFormat("yyyyMMddHHmmssSSS").format(new Date(clientTime));
 
-    // Get targetPage
-    Page targetPage = getPageOfWikiByName(targetPageParam.getType(), targetPageParam.getOwner(), targetPageParam.getPageId());
-
-    DraftPage draftPage = new DraftPage();
-    draftPage.setName(targetPage.getName() + "_" + draftSuffix);
-    draftPage.setNewPage(false);
-    draftPage.setTargetPage(targetPage.getId());
+    DraftPage newDraftPage = new DraftPage();
+    newDraftPage.setName(targetPage.getName() + "_" + draftSuffix);
+    newDraftPage.setNewPage(false);
+    newDraftPage.setTargetPageId(targetPage.getId());
+    newDraftPage.setContent(draftPage.getContent());
+    newDraftPage.setCreatedDate(new Date(clientTime));
+    newDraftPage.setUpdatedDate(new Date(clientTime));
     if (StringUtils.isEmpty(revision)) {
       List<PageVersion> versions = getVersionsOfPage(targetPage);
       if(versions != null && !versions.isEmpty()) {
-        draftPage.setTargetRevision(versions.get(0).getName());
+        newDraftPage.setTargetPageRevision(versions.get(0).getName());
       } else {
-        draftPage.setTargetRevision("1");
+        newDraftPage.setTargetPageRevision("1");
       }
     } else {
-      draftPage.setTargetRevision(revision);
+      newDraftPage.setTargetPageRevision(revision);
     }
 
     Wiki wiki = getWikiByTypeAndOwner(PortalConfig.USER_TYPE, Utils.getCurrentUser());
@@ -778,16 +777,16 @@ public class WikiServiceImpl implements WikiService, Startable {
       createWiki(PortalConfig.USER_TYPE, Utils.getCurrentUser());
     }
 
-    dataStorage.createDraftPageForUser(draftPage, Utils.getCurrentUser());
+    dataStorage.createDraftPageForUser(newDraftPage, Utils.getCurrentUser());
 
-    return draftPage;
+    return newDraftPage;
   }
 
   @Override
   public DraftPage getDraftOfPage(Page page) throws WikiException {
     List<DraftPage> draftPages = getDraftsOfUser(Utils.getCurrentUser());
     for(DraftPage draftPage : draftPages) {
-      if(draftPage.getTargetPage() != null && draftPage.getTargetPage().equals(page.getId())) {
+      if(draftPage.getTargetPageId() != null && draftPage.getTargetPageId().equals(page.getId())) {
         return draftPage;
       }
     }
@@ -840,7 +839,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public boolean isDraftOutDated(DraftPage draftPage) throws WikiException {
-    String targetRevision = draftPage.getTargetRevision();
+    String targetRevision = draftPage.getTargetPageRevision();
     if (targetRevision == null) {
       return false;
     }
@@ -849,8 +848,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       targetRevision = "1";
     }
 
-    Wiki wiki = getWikiByTypeAndOwner(draftPage.getWikiType(), draftPage.getWikiOwner());
-    Page targetPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), draftPage.getTargetPage());
+    Page targetPage = getPageById(draftPage.getTargetPageId());
     if (targetPage == null) {
       return true;
     }
@@ -873,19 +871,16 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public DiffResult getDraftChanges(DraftPage draftPage) throws WikiException {
-    String targetContent = null;
+    String targetContent = StringUtils.EMPTY;
 
     if (!draftPage.isNewPage()) {
       Wiki wiki = getWikiByTypeAndOwner(draftPage.getWikiType(), draftPage.getWikiOwner());
-      Page targetPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), draftPage.getTargetPage());
+      Page targetPage = getPageById(draftPage.getTargetPageId());
       if (targetPage != null) {
         List<PageVersion> versions = getVersionsOfPage(targetPage);
         if(versions != null && !versions.isEmpty()) {
           PageVersion lastestRevision = versions.get(0);
           targetContent = lastestRevision.getContent();
-        }
-        if (targetContent == null) {
-          targetContent = StringUtils.EMPTY;
         }
       }
     }

@@ -60,8 +60,8 @@ public class UIWikiMyDraftsForm extends UIForm {
   
   public static final String[]  USER_ACTIONS    = {ACTION_VIEW, ACTION_DELETE};
 
-  private WikiService wikiService;
-  
+  private static WikiService wikiService;
+
   public UIWikiMyDraftsForm() throws Exception {
     UIWikiDraftGrid grid = addChild(UIWikiDraftGrid.class, null, DRAFT_GRID);
     grid.getUIPageIterator().setId(DRAFT_ITER);
@@ -90,9 +90,9 @@ public class UIWikiMyDraftsForm extends UIForm {
     
     // Get draft data
     for (DraftPage draftPage : drafts) {
-      if (draftPage.getTargetPage() != null) {
+      if (draftPage.getTargetPageId() != null) {
         // Create breadcrumb
-        Page page = wService.getPageById(draftPage.getTargetPage());
+        Page page = wService.getPageById(draftPage.getTargetPageId());
         if (page == null) {
           continue;
         }
@@ -153,6 +153,12 @@ public class UIWikiMyDraftsForm extends UIForm {
       Collections.sort(drafts, new Comparator<DraftBean>() {
         @Override
         public int compare(DraftBean o1, DraftBean o2) {
+          if(o1.getLastEditionInDate() == null) {
+            return 1;
+          }
+          if(o2.getLastEditionInDate() == null) {
+            return -1;
+          }
           return (int) (o1.getLastEditionInDate().getTime() - o2.getLastEditionInDate().getTime());
         }
       });
@@ -187,8 +193,8 @@ public class UIWikiMyDraftsForm extends UIForm {
       session.setAttribute(Utils.getDraftIdSessionKey(), draftId);
       
       if (draftPage != null) {
-        if (draftPage.getTargetPage() != null) {
-          Page targetPage = wikiService.getPageById(draftPage.getTargetPage());
+        if (draftPage.getTargetPageId() != null) {
+          Page targetPage = wikiService.getPageById(draftPage.getTargetPageId());
           if (targetPage != null) {
             Wiki wiki = wikiService.getWikiByTypeAndOwner(targetPage.getWikiType(), targetPage.getWikiOwner());
             WikiPageParams targetParam = new WikiPageParams(wiki.getType(), wiki.getOwner(), targetPage.getName());
@@ -234,7 +240,7 @@ public class UIWikiMyDraftsForm extends UIForm {
         UIWikiMaskWorkspace uiMaskWS = wikiPortlet.getChild(UIWikiMaskWorkspace.class);
         UIWikiPagePreview wikiPagePreview = uiMaskWS.createUIComponent(UIWikiPagePreview.class, null, null);
         wikiPagePreview.setPageTitle(draftPage.getTitle());
-        wikiPagePreview.setContent(draftPage.getChanges().getDiffHTML());
+        wikiPagePreview.setContent(wikiService.getDraftChanges(draftPage).getDiffHTML());
         uiMaskWS.setUIComponent(wikiPagePreview);
         uiMaskWS.setShow(true);
         uiMaskWS.setPopupTitle(res.getString("DraftPage.title.draft-changes"));

@@ -644,19 +644,19 @@ public class TestWikiService extends AbstractMOWTestcase {
     Page wikiHome = wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "WikiHome");
     
     // Test create draft for new page
-    DraftPage draftPage = wService.createDraftForNewPage(new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", "WikiHome"), new Date().getTime());
+    DraftPage draftPage = wService.createDraftForNewPage(new DraftPage(), wikiHome, new Date().getTime());
     assertNotNull(draftPage);
     String draftNameForNewPage = draftPage.getName();
     assertTrue(draftPage.isNewPage());
-    assertEquals(wikiHome.getId(), draftPage.getTargetPage());
-    assertEquals("1", draftPage.getTargetRevision());
+    assertEquals(wikiHome.getId(), draftPage.getTargetPageId());
+    assertEquals("1", draftPage.getTargetPageRevision());
     
     // Test get draft by draft name
     DraftPage draftPage1 = wService.getDraft(draftNameForNewPage);
     assertNotNull(draftPage1);
     assertEquals(draftPage.isNewPage(), draftPage1.isNewPage());
-    assertEquals(draftPage.getTargetPage(), draftPage1.getTargetPage());
-    assertEquals(draftPage.getTargetRevision(), draftPage1.getTargetRevision());
+    assertEquals(draftPage.getTargetPageId(), draftPage1.getTargetPageId());
+    assertEquals(draftPage.getTargetPageRevision(), draftPage1.getTargetPageRevision());
     
     // Create a wiki page for test
     Page page = new Page("new page", "new page");
@@ -670,18 +670,18 @@ public class TestWikiService extends AbstractMOWTestcase {
 
     // Test create draft for exist wiki page
     WikiPageParams param = new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", page.getName());
-    DraftPage draftPage2 = wService.createDraftForExistPage(param, null, new Date().getTime());
+    DraftPage draftPage2 = wService.createDraftForExistPage(new DraftPage(), page, null, new Date().getTime());
     assertNotNull(draftPage2);
     assertFalse(draftPage2.isNewPage());
-    assertEquals(page.getId(), draftPage2.getTargetPage());
-    assertEquals("2", draftPage2.getTargetRevision());
+    assertEquals(page.getId(), draftPage2.getTargetPageId());
+    assertEquals("2", draftPage2.getTargetPageRevision());
     
     // Test get draft for exist wiki page
     DraftPage draftPage3 = wService.getDraftOfPage(page);
     assertNotNull(draftPage3);
     assertFalse(draftPage3.isNewPage());
-    assertEquals(page.getId(), draftPage3.getTargetPage());
-    assertEquals("2", draftPage3.getTargetRevision());
+    assertEquals(page.getId(), draftPage3.getTargetPageId());
+    assertEquals("2", draftPage3.getTargetPageRevision());
     
     // Test list draft by user
     List<DraftPage> drafts = wService.getDraftsOfUser("mary");
@@ -701,4 +701,21 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(drafts);
     assertEquals(0, drafts.size());
   }
+
+  /*
+  public void testDraftPageChanges() throws WikiException {
+    startSessionAs("mary");
+
+    // Get wiki home
+    Page wikiHome = wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "WikiHome");
+
+    // Test create draft for new page
+    DraftPage draftPage = wService.createDraftForNewPage(new DraftPage(), wikiHome, new Date().getTime());
+    assertNotNull(draftPage);
+    String draftNameForNewPage = draftPage.getName();
+    assertTrue(draftPage.isNewPage());
+    assertEquals(wikiHome.getId(), draftPage.getTargetPageId());
+    assertEquals("1", draftPage.getTargetPageRevision());
+  }
+  */
 }

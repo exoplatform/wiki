@@ -293,7 +293,7 @@ public class SavePageActionComponent extends UIComponent {
       List<DraftPage> draftPages = wikiService.getDraftsOfUser(currentUser);
       for (DraftPage draftPage : draftPages) {
         if (draftPage.getTitle() != null && draftPage.getTitle().equals(pageTitle)
-                && draftPage.getTargetPage() != null && draftPage.getTargetPage().equals(parentUUID)) {
+                && draftPage.getTargetPageId() != null && draftPage.getTargetPageId().equals(parentUUID)) {
           return draftPage;
         }
       } 

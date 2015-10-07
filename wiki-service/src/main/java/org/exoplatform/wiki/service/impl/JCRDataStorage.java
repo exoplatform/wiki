@@ -29,7 +29,6 @@ import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.*;
-import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.service.search.jcr.JCRTemplateSearchQueryBuilder;
 import org.exoplatform.wiki.service.search.jcr.JCRWikiSearchQueryBuilder;
@@ -941,8 +940,12 @@ public class JCRDataStorage implements DataStorage {
     draftPageImpl.setName(draftPage.getName());
     draftPagesContainer.addWikiPage(draftPageImpl);
     draftPageImpl.setNewPage(draftPage.isNewPage());
-    draftPageImpl.setTargetPage(draftPage.getTargetPage());
-    draftPageImpl.setTargetRevision(draftPage.getTargetRevision());
+    draftPageImpl.setTitle(draftPage.getTitle());
+    draftPageImpl.getContent().setText(draftPage.getContent());
+    draftPageImpl.setTargetPage(draftPage.getTargetPageId());
+    draftPageImpl.setTargetRevision(draftPage.getTargetPageRevision());
+    draftPageImpl.setCreatedDate(draftPage.getCreatedDate());
+    draftPageImpl.setUpdatedDate(draftPage.getUpdatedDate());
 
     model.save();
   }
@@ -1835,8 +1838,8 @@ public class JCRDataStorage implements DataStorage {
       draftPage.setSyntax(draftPageImpl.getSyntax());
       draftPage.setPermission(draftPageImpl.getPermission());
 
-      draftPage.setTargetPage(draftPageImpl.getTargetPage());
-      draftPage.setTargetRevision(draftPageImpl.getTargetRevision());
+      draftPage.setTargetPageId(draftPageImpl.getTargetPage());
+      draftPage.setTargetPageRevision(draftPageImpl.getTargetRevision());
       draftPage.setNewPage(draftPageImpl.isNewPage());
     }
     return draftPage;

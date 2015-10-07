@@ -430,23 +430,23 @@ public interface WikiService {
   /**
    * Creates a draft page for a wiki page which is specified by a given param object.
    * 
-   * @param param The param object of the wiki page.
+   * @param targetPage The target wiki page.
    * @param revision The revision which is used for creating the draft page. If "null", this will be the last revision.
    * @param clientTime The time of client when the draft page is saved.
    * @return The draft page.
    * @throws WikiException if the draft page cannot be created.
    */
-  public DraftPage createDraftForExistPage(WikiPageParams param, String revision, long clientTime) throws WikiException;
+  public DraftPage createDraftForExistPage(DraftPage draftPage, Page targetPage, String revision, long clientTime) throws WikiException;
   
   /**
    * Creates a draft page for a new wiki page whose parent is specified by a given param object.
    * 
-   * @param parentPageParam The param object of the parent wiki page.
+   * @param parentPage The parent wiki page.
    * @param clientTime The time of client when the draft page is saved.
    * @return The draft page.
    * @throws WikiException if the draft page cannot be created.
    */
-  public DraftPage createDraftForNewPage(WikiPageParams parentPageParam, long clientTime) throws WikiException;
+  public DraftPage createDraftForNewPage(DraftPage draftPage, Page parentPage, long clientTime) throws WikiException;
   
   /**
    * Gets a draft page of a wiki page which is specified by a given param object.
