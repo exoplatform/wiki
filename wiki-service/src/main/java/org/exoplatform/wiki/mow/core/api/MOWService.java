@@ -34,8 +34,6 @@ public class MOWService {
 
   private WikiChromatticLifeCycle chromatticLifeCycle;
 
-  private WikiStoreImpl store;
-
   public MOWService(ChromatticManager chromatticManager) {
     this.chromatticLifeCycle = (WikiChromatticLifeCycle) chromatticManager.getLifeCycle(WikiChromatticLifeCycle.WIKI_LIFECYCLE_NAME);
   }
@@ -86,31 +84,29 @@ public class MOWService {
   public WikiStore getWikiStore() {
     boolean created = this.startSynchronization();
 
+    ChromatticSession session = chromatticLifeCycle.getSession();
+    WikiStoreImpl store = session.findByPath(WikiStoreImpl.class, "exo:applications" + "/"
+            + WikiNodeType.Definition.WIKI_APPLICATION + "/"
+            + WikiNodeType.Definition.WIKI_STORE_NAME);
     if (store == null) {
-      ChromatticSession session = chromatticLifeCycle.getSession();
-      store = session.findByPath(WikiStoreImpl.class, "exo:applications" + "/"
-              + WikiNodeType.Definition.WIKI_APPLICATION + "/"
-              + WikiNodeType.Definition.WIKI_STORE_NAME);
-      if (store == null) {
+      try {
+        Node rootNode = session.getJCRSession().getRootNode();
+        Node publicApplicationNode = rootNode.getNode("exo:applications");
+        Node eXoWiki = null;
         try {
-          Node rootNode = session.getJCRSession().getRootNode();
-          Node publicApplicationNode = rootNode.getNode("exo:applications");
-          Node eXoWiki = null;
-          try {
-            eXoWiki = publicApplicationNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
-          } catch (PathNotFoundException e) {
-            eXoWiki = publicApplicationNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION);
-            publicApplicationNode.save();
-          }
-          Node wikiMetadata = eXoWiki.addNode(WikiNodeType.Definition.WIKI_STORE_NAME,
-                  WikiNodeType.WIKI_STORE);
-          Node wikis = eXoWiki.addNode("wikis");
-          session.save();
-          store = session.findByNode(WikiStoreImpl.class, wikiMetadata);
-
-        } catch (RepositoryException e) {
-          throw new UndeclaredRepositoryException(e);
+          eXoWiki = publicApplicationNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
+        } catch (PathNotFoundException e) {
+          eXoWiki = publicApplicationNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION);
+          publicApplicationNode.save();
         }
+        Node wikiMetadata = eXoWiki.addNode(WikiNodeType.Definition.WIKI_STORE_NAME,
+                WikiNodeType.WIKI_STORE);
+        Node wikis = eXoWiki.addNode("wikis");
+        session.save();
+        store = session.findByNode(WikiStoreImpl.class, wikiMetadata);
+
+      } catch (RepositoryException e) {
+        throw new UndeclaredRepositoryException(e);
       }
     }
 

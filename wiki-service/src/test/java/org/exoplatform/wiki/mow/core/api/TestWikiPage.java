@@ -35,11 +35,13 @@ public class TestWikiPage extends AbstractMOWTestcase {
   }
 
   public void testAddWikiHome() throws WikiException {
+    boolean created = mowService.startSynchronization();
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
     PortalWiki wiki = portalWikiContainer.addWiki("classic");
     WikiHome wikiHomePage = wiki.getWikiHome();
     assertNotNull(wikiHomePage) ;
+    mowService.stopSynchronization(created);
   }
 
   public void testAddWikiPage() throws WikiException {
