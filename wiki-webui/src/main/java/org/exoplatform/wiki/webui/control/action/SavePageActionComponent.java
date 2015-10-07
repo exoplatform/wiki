@@ -32,6 +32,7 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Attachment;
@@ -257,16 +258,24 @@ public class SavePageActionComponent extends UIComponent {
             }
 
             // Remove the draft for new page
-            Page parentPage = wikiService.getParentPageOf(createdPage);
-            DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
-            if (contentDraftPage == null) {
-              Map<String, WikiPageHistory> pageLogs = org.exoplatform.wiki.utils.Utils.getLogOfPage(parentPage.getName());
-              WikiPageHistory log = pageLogs.get(currentUser);
-              if ((log != null) && log.isNewPage()) {
-                wikiService.removeDraft(log.getDraftName());
+            try {
+              Page parentPage = wikiService.getParentPageOf(createdPage);
+              DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
+              if (contentDraftPage == null) {
+                Map<String, WikiPageHistory> pageLogs = org.exoplatform.wiki.utils.Utils.getLogOfPage(parentPage.getName());
+                WikiPageHistory log = pageLogs.get(currentUser);
+                if ((log != null) && log.isNewPage()) {
+                  if(wikiService.getDraft(log.getDraftName()) != null) {
+                    wikiService.removeDraft(log.getDraftName());
+                  }
+                }
+              } else if(wikiService.getDraftOfPage(createdPage) != null) {
+                wikiService.removeDraftOfPage(new WikiPageParams(contentDraftPage.getWikiType(), contentDraftPage.getWikiOwner(), contentDraftPage.getName()));
               }
-            } else {
-              wikiService.removeDraftOfPage(new WikiPageParams(contentDraftPage.getWikiType(), contentDraftPage.getWikiOwner(), contentDraftPage.getName()));
+            } catch(WikiException e) {
+              log.error("Cannot delete draft of new page " + createdPage.getWikiType() + ":"
+                      + createdPage.getWikiOwner() + ":" + createdPage.getName()
+                      + " when saving it -  Cause : " + e.getMessage(), e);
             }
 
             // Post add activity
@@ -286,7 +295,7 @@ public class SavePageActionComponent extends UIComponent {
       }
     }
 
-    private DraftPage findTheMatchDraft(String pageTitle, Page parentPage) throws Exception {
+    private DraftPage findTheMatchDraft(String pageTitle, Page parentPage) throws WikiException {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       String parentUUID = parentPage.getId();
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();

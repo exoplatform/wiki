@@ -825,7 +825,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void removeDraft(String draftName) throws WikiException {
-    dataStorage.deleteDraftById(draftName, Utils.getCurrentUser());
+    dataStorage.deleteDraftByName(draftName, Utils.getCurrentUser());
   }
 
   @Override

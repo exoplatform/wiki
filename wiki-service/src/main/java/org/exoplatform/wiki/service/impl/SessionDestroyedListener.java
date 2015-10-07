@@ -51,7 +51,7 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
       WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
       RequestLifeCycle.begin(PortalContainer.getInstance());
       // TODO draftName = sessionId ???
-      wikiService.removeDraft(sessionId);
+      //wikiService.removeDraft(sessionId);
       RequestLifeCycle.end();
     }
   }

@@ -383,27 +383,32 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public void deleteDraftById(String newDraftPageId, String username) throws WikiException {
+  public void deleteDraftByName(String newDraftPageName, String username) throws WikiException {
     boolean created = mowService.startSynchronization();
 
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     UserWiki userWiki = (UserWiki) wStore.getWiki(WikiType.USER, username);
+    if(userWiki == null) {
+      mowService.stopSynchronization(created);
+      throw new WikiException("Cannot delete draft page with name " + newDraftPageName + " of user " + username + " because no user wiki has been found.");
+    }
+
     PageImpl draftPagesContainer = userWiki.getDraftPagesContainer();
     try {
       Map<String, PageImpl> childPages = draftPagesContainer.getChildPages();
       for (PageImpl childPage : childPages.values()) {
-        if (childPage.getName().equals(newDraftPageId)) {
+        if (newDraftPageName.equals(childPage.getName())) {
           childPage.remove();
           return;
         }
       }
     } catch(Exception e) {
-      log.error("Cannot get drafts of user " + username + " - Cause : " + e.getMessage(), e);
+      throw new WikiException("Cannot delete draft page of with name " + newDraftPageName + " of user " + username, e);
+    } finally {
+      mowService.stopSynchronization(created);
     }
 
-    mowService.stopSynchronization(created);
-
-    throw new WikiException("Cannot delete draft page of " + newDraftPageId + " of user " + username + " because it does not exist.");
+    throw new WikiException("Cannot delete draft page with name " + newDraftPageName + " of user " + username + " because it does not exist.");
   }
 
   @Override

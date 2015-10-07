@@ -54,7 +54,7 @@ public interface DataStorage {
 
   public void deleteDraftOfPage(Page page, String username) throws WikiException;
 
-  public void deleteDraftById(String newDraftPageId, String username) throws WikiException;
+  public void deleteDraftByName(String newDraftPageName, String username) throws WikiException;
 
   public void renamePage(String wikiType, String wikiOwner, String pageName, String newName, String newTitle) throws WikiException;
 
