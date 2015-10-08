@@ -24,6 +24,7 @@ import javax.portlet.PortletPreferences;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -169,7 +170,7 @@ public class UIWikiPortlet extends UIPortletApplication {
         }
 
         if((WikiMode.EDITPAGE.equals(this.getWikiMode()) || WikiMode.ADDPAGE.equals(this.getWikiMode()))
-                && !page.hasPermission(PermissionType.EDITPAGE) ){
+                && !wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity())) {
           changeMode(WikiMode.VIEW);
         }
       }
