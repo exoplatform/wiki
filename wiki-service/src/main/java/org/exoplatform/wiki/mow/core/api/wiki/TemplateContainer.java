@@ -24,10 +24,12 @@ import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.Path;
 import org.chromattic.api.annotations.PrimaryType;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.WikiException;
 
 @PrimaryType(name = WikiNodeType.WIKI_TEMPLATE_CONTAINER)
 public abstract class TemplateContainer {
-  
 
   @Create
   public abstract TemplateImpl createTemplatePage();
@@ -41,21 +43,17 @@ public abstract class TemplateContainer {
   
   public TemplateImpl addPage(String templateName, TemplateImpl template) {
     if (templateName == null) {
-      throw new NullPointerException();
+      throw new IllegalArgumentException("Template name cannot be null");
     }
     if (template == null) {
-      throw new NullPointerException();
+      throw new IllegalArgumentException("Template cannot be null");
     }
     Map<String, TemplateImpl> children = getTemplates();
     if (children.containsKey(templateName)) {
       return template;
     }
     children.put(templateName, template);
-    try {
-      template.setPermission(null);
-    } catch (Exception e) {
-      // TODO Ignore
-    }
+
     return template;
   }
   

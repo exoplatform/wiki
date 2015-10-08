@@ -144,6 +144,8 @@ public class SaveTemplateActionComponent extends UIComponent {
           wikiService.modifyTemplate(pageParams, template, title, description, markup, syntaxId);
         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE) {
           Template template = new Template();
+          template.setName(idTemp);
+          template.setTitle(title);
           template.setDescription(StringEscapeUtils.escapeHtml(description));
           template.setContent(markup);
           template.setSyntax(syntaxId);
