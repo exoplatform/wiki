@@ -21,6 +21,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -104,7 +105,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     Page home = wiki.getWikiHome();
     String content = "Test include contents of a page";
     home.setContent(content);
-    wikiService.updatePage(home);
+    wikiService.updatePage(home, PageUpdateType.EDIT_PAGE_CONTENT);
     String expectedHtml = "<div class=\"IncludePage \" ><p>" + content + "</p></div>";
     assertEquals(expectedHtml, renderingService.render("{{includepage page=\"Wiki Home\"/}}",
                                                        Syntax.XWIKI_2_0.toIdString(),
@@ -113,7 +114,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     // Test recursive inclusion
     String content2 = "{includepage:page=\"Wiki Home\"}";
     home.setContent(content2);
-    wikiService.updatePage(home);
+    wikiService.updatePage(home, PageUpdateType.EDIT_PAGE_CONTENT);
     String renderedHTML =   renderingService.render("{includepage:page=\"Wiki Home\"}",
                                                     Syntax.CONFLUENCE_1_0.toIdString(),
                                                     Syntax.XHTML_1_0.toIdString(),

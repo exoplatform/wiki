@@ -20,6 +20,7 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiService;
 
 import java.util.Iterator;
@@ -55,11 +56,11 @@ public class TestVersioning extends AbstractMOWTestcase {
 
     page.setTitle("testCreateVersionHistoryTree");
     page.setContent("testCreateVersionHistoryTree-ver1.0");
-    wikiService.updatePage(page);
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE);
     wikiService.createVersionOfPage(page);
 
     page.setContent("testCreateVersionHistoryTree-ver2.0");
-    wikiService.updatePage(page);
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
     wikiService.createVersionOfPage(page);
 
     List<PageVersion> versions = wikiService.getVersionsOfPage(page);
@@ -72,7 +73,7 @@ public class TestVersioning extends AbstractMOWTestcase {
     assertEquals("testCreateVersionHistoryTree-ver1.0", page.getContent());
 
     page.setContent("testCreateVersionHistoryTree-ver3.0");
-    wikiService.updatePage(page);
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
     wikiService.createVersionOfPage(page);
 
     versions = wikiService.getVersionsOfPage(page);

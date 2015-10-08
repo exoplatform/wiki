@@ -47,6 +47,8 @@ public class Page {
 
   private String url;
 
+  private String activityId;
+
   private String wikiId;
 
   private String wikiType;
@@ -166,6 +168,14 @@ public class Page {
 
   public void setUrl(String url) {
     this.url = url;
+  }
+
+  public String getActivityId() {
+    return activityId;
+  }
+
+  public void setActivityId(String activityId) {
+    this.activityId = activityId;
   }
 
   public String getWikiId() {

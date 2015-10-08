@@ -119,6 +119,11 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setAuthor(page.getAuthor());
     pageImpl.getContent().setText(text);
     pageImpl.setSyntax(page.getSyntax());
+    pageImpl.setURL(page.getUrl());
+
+    if(page.getActivityId() != null) {
+      pageImpl.setActivityId(page.getActivityId());
+    }
 
     try {
       // create a first version
@@ -1537,6 +1542,10 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setComment(page.getComment());
     pageImpl.setUpdatedDate(GregorianCalendar.getInstance().getTime());
 
+    if(page.getActivityId() != null) {
+      pageImpl.setActivityId(page.getActivityId());
+    }
+
     mowService.persist();
 
     mowService.stopSynchronization(created);
@@ -2080,6 +2089,7 @@ public class JCRDataStorage implements DataStorage {
       page.setContent(pageImpl.getContent().getText());
       page.setSyntax(pageImpl.getSyntax());
       page.setPermission(pageImpl.getPermission());
+      page.setActivityId(pageImpl.getActivityId());
 
       mowService.stopSynchronization(created);
     }

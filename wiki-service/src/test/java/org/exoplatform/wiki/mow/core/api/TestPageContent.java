@@ -16,10 +16,10 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
-import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiService;
 
 
@@ -54,7 +54,7 @@ public class TestPageContent extends AbstractMOWTestcase {
 
     page.setContent("This is a content of page - edited");
     page.setSyntax("xwiki_2.1");
-    wikiService.updatePage(page);
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
 
     page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "UpdatePageContent-001");
     assertNotNull(page);

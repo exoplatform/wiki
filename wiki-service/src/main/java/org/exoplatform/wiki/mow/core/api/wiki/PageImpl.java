@@ -176,6 +176,11 @@ public abstract class PageImpl extends NTFolder {
   @Property(name = WikiNodeType.Definition.URL)
   public abstract String getURL();
   public abstract void setURL(String url);
+
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract ActivityInfoMixin getActivityInfoMixin();
+  public abstract void setActivityInfoMixin(ActivityInfoMixin activity);
   
   @OneToOne(type = RelationshipType.EMBEDDED)
   @Owner
@@ -443,6 +448,28 @@ public abstract class PageImpl extends NTFolder {
   
   public void setNonePermission() throws WikiException {
     setPermission(null);
+  }
+
+  public String getActivityId() {
+    String activityId = null;
+    ActivityInfoMixin activityInfoMixin = this.getActivityInfoMixin();
+    if(activityInfoMixin != null) {
+      activityId = activityInfoMixin.getActivityId();
+    }
+    return activityId;
+  }
+
+  public void setActivityId(String activityId) {
+    ActivityInfoMixin activityInfoMixin = this.getActivityInfoMixin();
+    if(activityInfoMixin == null) {
+      ChromatticSession session = mowService.getSession();
+      this.setActivityInfoMixin(session.create(ActivityInfoMixin.class));
+      ActivityInfoMixin mixin = this.getActivityInfoMixin();
+      mixin.setActivityId(activityId);
+    } else if(!activityId.equals(activityInfoMixin.getActivityId())) {
+      ActivityInfoMixin mixin = this.getActivityInfoMixin();
+      mixin.setActivityId(activityId);
+    }
   }
   
   protected void addPage(String pageName, PageImpl page) {

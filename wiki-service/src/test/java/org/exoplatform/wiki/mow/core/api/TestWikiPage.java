@@ -23,6 +23,7 @@ import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.listener.PageWikiListener;
 
 
 public class TestWikiPage extends AbstractMOWTestcase {
@@ -93,7 +94,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
 
     page.setOwner("Demo");
     page.setAuthor("Demo");
-    wService.updatePage(page);
+    wService.updatePage(page, null);
     
     Page updatedPage = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "UpdateWikiPage-001") ;
     assertNotNull(updatedPage) ;

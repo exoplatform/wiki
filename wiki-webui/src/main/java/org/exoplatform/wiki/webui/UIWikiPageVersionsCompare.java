@@ -175,11 +175,18 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
   }
 
   public void renderVersionsDifference(List<PageVersion> versions, int from, int to) throws Exception {
+    if(versions == null) {
+      throw new IllegalArgumentException("Versions cannot be null");
+    }
+
     Collections.sort(versions, new VersionNameComparatorDesc());
     if (from < to) {
       int temp = to;
       to = from;
       from = temp;
+    }
+    if(from >= versions.size()) {
+      throw new Exception("Cannot compare versions " + to + " and " + from + ", the page only has " + versions.size() + " versions");
     }
     this.versions = versions;
     PageVersion toVersion = versions.get(to);

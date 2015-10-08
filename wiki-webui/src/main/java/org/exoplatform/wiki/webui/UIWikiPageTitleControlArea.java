@@ -16,25 +16,16 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
-import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormStringInput;
-import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.service.listener.PageWikiListener;
-import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.webui.control.UIWikiExtensionContainer;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -107,36 +98,6 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
   
   public boolean isInfoMode() {
     return getChildById(FIELD_TITLEINFO).isRendered();
-  }
-    
-  public void saveTitle(String newTitle, Event event) throws Exception {
-    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);    
-    WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-    String newName = TitleResolver.getId(newTitle, true);
-    Page page = Utils.getCurrentWikiPage();
-    boolean isRenameHome = WikiConstants.WIKI_HOME_NAME.equals(page.getName())
-        && !newName.equals(pageParams.getPageId());
-    page.setMinorEdit(false);
-    if (isRenameHome) {
-      page.setTitle(newTitle);
-      
-      // Post activity
-      wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), page.getName(), page, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
-    } else {
-      wikiService.renamePage(pageParams.getType(),
-                             pageParams.getOwner(),
-                             pageParams.getPageId(),
-                             newName,
-                             newTitle);
-      
-      // Post activity
-      Page renamedPage = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), newName);
-      pageParams.setPageId(newName);
-      renamedPage.setUrl(Utils.getURLFromParams(pageParams));
-      wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), newName, renamedPage, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
-    }
-    pageParams.setPageId(newName);
-    Utils.redirect(pageParams, WikiMode.VIEW);
   }
   
   protected boolean isAddMode() {

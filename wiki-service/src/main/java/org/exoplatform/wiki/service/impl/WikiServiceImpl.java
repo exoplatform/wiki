@@ -316,6 +316,9 @@ public class WikiServiceImpl implements WikiService, Startable {
     pageRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));
     pageRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
 
+    // call listeners
+    postAddPage(wiki.getType(), wiki.getOwner(), page.getName(), createdPage);
+
     return createdPage;
   }
 
@@ -395,6 +398,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
         dataStorage.deletePage(wikiType, wikiOwner, pageName);
 
+        postDeletePage(wikiType, wikiOwner, pageName, page);
+
         // Post delete activity for all children pages
         for(Page childPage : allChrildrenPages) {
           postDeletePage(childPage.getWikiType(), childPage.getWikiOwner(), childPage.getName(), childPage);
@@ -445,7 +450,7 @@ public class WikiServiceImpl implements WikiService, Startable {
               .getComponentInstanceOfType(PageRenderingCacheService.class);
       pageRenderingCacheService.invalidateCache(currentLocationParams);
 
-      postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageWikiListener.MOVE_PAGE_TYPE);
+      postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
     } catch (WikiException e) {
       log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
       return false;
@@ -638,13 +643,29 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public void updatePage(Page page) throws WikiException {
+  public void updatePage(Page page, PageUpdateType updateType) throws WikiException {
     dataStorage.updatePage(page);
 
     // TODO implement watch page here (should send an email only if there is a new version of the page content)
     // Utils.sendMailOnChangeContent(content);
 
-    postUpdatePage(page.getWikiType(), page.getOwner(), page.getOwner(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
+    /*
+    String eventType = null;
+    String pageContent = page.getContent();
+    if(!page.getTitle().equals(updatedPage.getTitle()) && !pageContent.equals(updatedPage.getContent())) {
+      eventType = PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE;
+    } else if(!page.getTitle().equals(updatedPage.getTitle())) {
+      eventType = PageWikiListener.EDIT_PAGE_TITLE;
+    } else if(!pageContent.equals(updatedPage.getContent())) {
+      eventType = PageWikiListener.EDIT_PAGE_CONTENT;
+    }
+    if(eventType != null) {
+      postUpdatePage(updatedPage.getWikiType(), updatedPage.getOwner(), updatedPage.getName(), updatedPage, eventType);
+    }
+    */
+    if(updateType != null) {
+      postUpdatePage(page.getWikiType(), page.getOwner(), page.getName(), page, updateType);
+    }
   }
 
   /******* Template *******/
@@ -1077,7 +1098,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   /******* Listeners *******/
   // TODO should not be in the interface
   @Override
-  public void postUpdatePage(final String wikiType, final String wikiOwner, final String pageId, Page page, String wikiUpdateType) throws WikiException {
+  public void postUpdatePage(final String wikiType, final String wikiOwner, final String pageId, Page page, PageUpdateType wikiUpdateType) throws WikiException {
     List<PageWikiListener> listeners = getPageListeners();
     for (PageWikiListener l : listeners) {
       try {

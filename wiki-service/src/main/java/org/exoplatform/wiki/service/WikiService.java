@@ -629,7 +629,7 @@ public interface WikiService {
    * @param wikiUpdateType The update type (edit title, edit content, or edit both).
    * @throws WikiException
    */
-  public void postUpdatePage(String wikiType, String wikiOwner, String pageId, Page page, String wikiUpdateType) throws WikiException;
+  public void postUpdatePage(String wikiType, String wikiOwner, String pageId, Page page, PageUpdateType wikiUpdateType) throws WikiException;
   
   /**
    * Creates an activity of a newly added wiki page.
@@ -685,10 +685,12 @@ public interface WikiService {
   /**
    * Update the given page. This does not automatically create a new version.
    * If a new version must be created it should be explicitly done by calling createVersionOfPage().
-   * @param page
+   * The second parameter is the type of update done (title only, content only, both, move, ...).
+   * @param page Updated page
+   * @param type Type of update
    * @throws WikiException
    */
-  public void updatePage(Page page) throws WikiException;
+  public void updatePage(Page page, PageUpdateType type) throws WikiException;
 
   /**
    * Creates a emotion icon

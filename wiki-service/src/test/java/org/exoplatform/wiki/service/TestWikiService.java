@@ -639,7 +639,7 @@ public class TestWikiService extends AbstractMOWTestcase {
 
     // update it and create a version
     page.setContent("Page content updated");
-    wService.updatePage(page);
+    wService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
     wService.createVersionOfPage(page);
 
     // Test create draft for exist wiki page

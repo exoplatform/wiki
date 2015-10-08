@@ -41,10 +41,10 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
-import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.webui.*;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddModeFilter;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddPageModeFilter;
@@ -218,7 +218,15 @@ public class SavePageActionComponent extends UIComponent {
               }
 
               // update the page and create a version
-              wikiService.updatePage(page);
+              PageUpdateType updateType = null;
+              if (isRenamedPage && isContentChange) {
+                updateType = PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE;
+              } else if (isRenamedPage) {
+                updateType = PageUpdateType.EDIT_PAGE_TITLE;
+              } else if (isContentChange) {
+                updateType = PageUpdateType.EDIT_PAGE_CONTENT;
+              }
+              wikiService.updatePage(page, updateType);
               wikiService.createVersionOfPage(page);
 
               if (!"__anonim".equals(currentUser)) {
@@ -226,14 +234,6 @@ public class SavePageActionComponent extends UIComponent {
               }
              }
             
-            // Post edit content activity
-            if (isRenamedPage && isContentChange) {
-              wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE_TYPE);
-            } else if (isRenamedPage) {
-              wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_TITLE_TYPE);
-            } else if (isContentChange) {
-              wikiService.postUpdatePage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), page, PageWikiListener.EDIT_PAGE_CONTENT_TYPE);
-            }
           } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
             Page draftPage = Utils.getCurrentNewDraftWikiPage();
 
@@ -277,9 +277,6 @@ public class SavePageActionComponent extends UIComponent {
                       + createdPage.getWikiOwner() + ":" + createdPage.getName()
                       + " when saving it -  Cause : " + e.getMessage(), e);
             }
-
-            // Post add activity
-            wikiService.postAddPage(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId(), createdPage);
           }
           org.exoplatform.wiki.utils.Utils.removeLogEditPage(pageParams, currentUser);
         } catch (Exception e) {
