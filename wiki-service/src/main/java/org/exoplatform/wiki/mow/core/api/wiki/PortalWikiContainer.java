@@ -21,8 +21,9 @@ import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.utils.Utils;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -37,51 +38,70 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
   @OneToOne
   @MappedBy(WikiNodeType.Definition.PORTAL_WIKI_CONTAINER_NAME)
   public abstract WikiStoreImpl getMultiWiki();
-  
-  public PortalWiki addWiki(String wikiOwner) {
-    return getWikiObject(wikiOwner, true);
+
+  @Override
+  public PortalWiki addWiki(Wiki wiki) throws WikiException {
+    PortalWiki portalWiki = getWikiObject(wiki.getOwner());
+    if(portalWiki == null) {
+      portalWiki = createWiki(wiki);
+    }
+    return portalWiki;
   }
   
   /**
    * Gets the portal wiki in current PortalWikiContainer by specified wiki owner
    * @param wikiOwner the wiki owner
-   * @param createIfNonExist if true, create the wiki when it does not exist
    * @return the wiki object
    */
-  protected PortalWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
-    //check if wiki object is created
-    boolean isCreatedWikiObject = false;
+  @Override
+  protected PortalWiki getWikiObject(String wikiOwner) {
     //Portal wikis is stored in /exo:applications/eXoWiki/wikis/$wikiOwner/WikiHome
     wikiOwner = validateWikiOwner(wikiOwner);
     if(wikiOwner == null){
       return null;
     }
     ChromatticSession session = mowService.getSession();
-    Node wikiNode = null;
+    Node wikiNode;
     try {
       Node wikisNode = (Node)session.getJCRSession().getItem(getPortalWikisPath()) ;
       try {
         wikiNode = wikisNode.getNode(wikiOwner);
       } catch (PathNotFoundException e) {
-        if (createIfNonExist) {
-          wikiNode = wikisNode.addNode(wikiOwner, WikiNodeType.PORTAL_WIKI);
-          wikisNode.save();
-          isCreatedWikiObject = true;
-        } else {
-          return null;
-        }
+        return null;
       }
     } catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
+
     PortalWiki pwiki = session.findByNode(PortalWiki.class, wikiNode);
     pwiki.setPortalWikis(this);
-    if (isCreatedWikiObject) {
+
+    return pwiki;
+  }
+
+  @Override
+  public PortalWiki createWiki(Wiki wiki) throws WikiException {
+    try {
+      String wikiOwner = validateWikiOwner(wiki.getOwner());
+      if(wikiOwner == null){
+        return null;
+      }
+
+      ChromatticSession session = mowService.getSession();
+      Node wikisNode = (Node)session.getJCRSession().getItem(getPortalWikisPath()) ;
+      Node wikiNode = wikisNode.addNode(wikiOwner, WikiNodeType.PORTAL_WIKI);
+      wikisNode.save();
+
+      PortalWiki pwiki = session.findByNode(PortalWiki.class, wikiNode);
+      pwiki.setPortalWikis(this);
       pwiki.setOwner(wikiOwner);
       pwiki.getPreferences();
       session.save();
+
+      return pwiki;
+    } catch (Exception e) {
+      throw new WikiException("Cannot create wiki " + wiki.getType() + ":" + wiki.getOwner(), e);
     }
-    return pwiki;
   }
 
   //The path should get from NodeHierarchyCreator

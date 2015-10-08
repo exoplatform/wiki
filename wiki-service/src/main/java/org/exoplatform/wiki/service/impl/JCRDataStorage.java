@@ -11,6 +11,7 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
@@ -66,22 +67,22 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Wiki createWiki(String wikiType, String owner) throws WikiException {
+  public Wiki createWiki(Wiki wiki) throws WikiException {
     boolean created = mowService.startSynchronization();
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
 
-    WikiContainer wikiContainer = wStore.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase()));
-    WikiImpl wikiImpl = wikiContainer.addWiki(owner);
+    WikiContainer wikiContainer = wStore.getWikiContainer(WikiType.valueOf(wiki.getType().toUpperCase()));
+    WikiImpl wikiImpl = wikiContainer.addWiki(wiki);
     // create wiki home page
     wikiImpl.getWikiHome();
 
     mowService.persist();
 
-    Wiki wiki = convertWikiImplToWiki(wikiImpl);
+    Wiki createdWiki = convertWikiImplToWiki(wikiImpl);
 
     mowService.stopSynchronization(created);
 
-    return wiki;
+    return createdWiki;
   }
 
   /**
@@ -670,14 +671,17 @@ public class JCRDataStorage implements DataStorage {
       UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(UserPortalConfigService.class);
       try {
-        PortalConfig portalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null).getPortalConfig();
-        String portalEditClause = new StringBuilder(all).append(":")
-                .append(IDType.MEMBERSHIP)
-                .append(":")
-                .append(portalConfig.getEditPermission())
-                .toString();
-        if (!permissions.contains(portalEditClause)) {
-          permissions.add(portalEditClause);
+        UserPortalConfig userPortalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null);
+        if(userPortalConfig != null) {
+          PortalConfig portalConfig = userPortalConfig.getPortalConfig();
+          String portalEditClause = new StringBuilder(all).append(":")
+                  .append(IDType.MEMBERSHIP)
+                  .append(":")
+                  .append(portalConfig.getEditPermission())
+                  .toString();
+          if (!permissions.contains(portalEditClause)) {
+            permissions.add(portalEditClause);
+          }
         }
         permissions.add(new StringBuilder(view).append(":").append(IDType.USER).append(":any").toString());
       } catch (Exception e) {

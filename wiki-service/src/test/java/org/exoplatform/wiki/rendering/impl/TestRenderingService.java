@@ -16,19 +16,26 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import org.chromattic.ext.ntdef.Resource;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.service.WikiContext;
+import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
 public class TestRenderingService extends AbstractRenderingTestCase {
+
+  private WikiService wikiService;
+
+  @Override
+  protected void setUp() throws Exception {
+    super.setUp();
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+  }
 
   public void testRender() throws Exception {
     assertEquals("<p>This is <strong>bold</strong></p>", renderingService.render("This is **bold**", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
@@ -42,18 +49,15 @@ public class TestRenderingService extends AbstractRenderingTestCase {
   }
   
   public void testRenderAnExistedInternalLink() throws Exception {
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    WikiHome wikiHomePage = wiki.getWikiHome();
-    
-    PageImpl wikipage = wiki.createWikiPage();    
-    wikipage.setName("CreateWikiPage-002");
-    wikiHomePage.addWikiPage(wikipage);
-    mowService.persist();
-    
-    PageImpl wikipage1 = wikiHomePage.getWikiPage("CreateWikiPage-002");
-    wikipage1.createAttachment("eXoWikiHome.png", Resource.createPlainText("logo"));
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+
+    Page page = wikiService.createPage(wiki, "WikiHome", new Page("CreateWikiPage-002", "CreateWikiPage-002"));
+
+    Attachment attachment = new Attachment();
+    attachment.setName("eXoWikiHome.png");
+    attachment.setMimeType("image/png");
+    attachment.setContent("logo".getBytes());
+    wikiService.addAttachmentToPage(attachment, page);
     
     Execution ec = renderingService.getExecution();
     ec.setContext(new ExecutionContext());
@@ -73,10 +77,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
   }
   
   public void testRenderCreatePageLink() throws Exception {
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    wiki.getWikiHome();
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     
     Execution ec = renderingService.getExecution();
     ec.setContext(new ExecutionContext());

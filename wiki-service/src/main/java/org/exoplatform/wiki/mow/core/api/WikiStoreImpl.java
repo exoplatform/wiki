@@ -25,6 +25,8 @@ import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiStore;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -44,8 +46,8 @@ public abstract class WikiStoreImpl implements WikiStore {
     this.mowService = mowService;
   }
 
-  public WikiImpl addWiki(WikiType wikiType, String name) {
-    return getWikiContainer(wikiType).addWiki(name);
+  public WikiImpl addWiki(WikiType wikiType, String name) throws WikiException {
+    return getWikiContainer(wikiType).addWiki(new Wiki(wikiType.toString(), name));
   }
 
   public WikiImpl getWiki(WikiType wikiType, String name) {

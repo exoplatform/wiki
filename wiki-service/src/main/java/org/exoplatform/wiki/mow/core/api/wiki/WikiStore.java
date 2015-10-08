@@ -19,6 +19,7 @@ package org.exoplatform.wiki.mow.core.api.wiki;
 import java.util.Collection;
 
 import org.chromattic.api.ChromatticSession;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
@@ -51,7 +52,7 @@ public interface WikiStore {
    * @param wikiType
    * @param name
    */
-  WikiImpl addWiki(WikiType wikiType, String name);
+  WikiImpl addWiki(WikiType wikiType, String name) throws WikiException;
 
   /** 
    * get wiki container

@@ -38,7 +38,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
     boolean created = mowService.startSynchronization();
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
+    PortalWiki wiki = portalWikiContainer.addWiki(new Wiki(PortalConfig.PORTAL_TYPE, "classic"));
     WikiHome wikiHomePage = wiki.getWikiHome();
     assertNotNull(wikiHomePage) ;
     mowService.stopSynchronization(created);
@@ -47,7 +47,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   public void testAddWikiPage() throws WikiException {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
+    PortalWiki wiki = portalWikiContainer.addWiki(new Wiki(PortalConfig.PORTAL_TYPE, "classic"));
     WikiHome wikiHomePage = wiki.getWikiHome();
     
     PageImpl wikipage = wiki.createWikiPage();
@@ -60,7 +60,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   public void testGetWikiPageById() throws Exception {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
+    PortalWiki wiki = portalWikiContainer.addWiki(new Wiki(PortalConfig.PORTAL_TYPE, "classic"));
     WikiHome wikiHomePage = wiki.getWikiHome();
     
     PageImpl wikipage = wikiHomePage.getWikiPage("CreateWikiPage-001");
@@ -105,7 +105,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   public void testDeleteWikiPage() throws Exception {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
+    PortalWiki wiki = portalWikiContainer.addWiki(new Wiki(PortalConfig.PORTAL_TYPE, "classic"));
     WikiHome wikiHomePage = wiki.getWikiHome();
     
     PageImpl wikipage = wiki.createWikiPage();
@@ -121,7 +121,7 @@ public class TestWikiPage extends AbstractMOWTestcase {
   public void testGetWiki() throws WikiException {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
+    PortalWiki wiki = portalWikiContainer.addWiki(new Wiki(PortalConfig.PORTAL_TYPE, "classic"));
     
     WikiHome wikiHomePage = wiki.getWikiHome();
     PageImpl parrentpage = wiki.createWikiPage();

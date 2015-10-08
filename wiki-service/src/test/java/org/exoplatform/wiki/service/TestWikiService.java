@@ -19,15 +19,11 @@ package org.exoplatform.wiki.service;
 
 import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
-import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.*;
-import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
@@ -65,57 +61,34 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testGetPortalPageById() throws WikiException {
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    PortalWiki wikiACME = portalWikiContainer.addWiki("acme");
-    wikiACME.getWikiHome() ;
-    WikiHome wikiHomePage = wiki.getWikiHome();
-    mowService.persist();
-    
+    Wiki wikiClassic = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wikiAcme = wService.createWiki(PortalConfig.PORTAL_TYPE, "acme");
+
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "WikiHome")) ;
-        
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName("testGetPortalPageById-001");
-    wikiHomePage.addWikiPage(wikipage);
-    mowService.persist();
-    
+
+    wService.createPage(wikiClassic, "WikiHome", new Page("testGetPortalPageById-001", "testGetPortalPageById-001"));
+
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "testGetPortalPageById-001")) ;
     
   }
 
   public void testGetGroupPageById() throws WikiException {
-
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
-    WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-    GroupWiki wiki = groupWikiContainer.addWiki("platform/users");
-    WikiHome wikiHomePage = wiki.getWikiHome();
-    mowService.persist();
+    Wiki wiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/users");
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "platform/users", "WikiHome")) ;
 
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName("testGetGroupPageById-001");
-    wikiHomePage.addWikiPage(wikipage);
-    mowService.persist();
+    wService.createPage(wiki, "WikiHome", new Page("testGetGroupPageById-001", "testGetGroupPageById-001"));
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "platform/users", "testGetGroupPageById-001")) ;
     assertNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "unknown", "WikiHome"));
   }
 
   public void testGetUserPageById() throws WikiException {
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
-    WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-    UserWiki wiki = userWikiContainer.addWiki("john");
-    WikiHome wikiHomePage = wiki.getWikiHome();
-    mowService.persist();
+    Wiki wiki = wService.createWiki(PortalConfig.USER_TYPE, "john");
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "john", "WikiHome")) ;
 
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName("testGetUserPageById-001");
-    wikiHomePage.addWikiPage(wikipage);
-    mowService.persist();
+    wService.createPage(wiki, "WikiHome", new Page("testGetUserPageById-001", "testGetUserPageById-001"));
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "john", "testGetUserPageById-001")) ;
     assertNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "unknown", "WikiHome"));

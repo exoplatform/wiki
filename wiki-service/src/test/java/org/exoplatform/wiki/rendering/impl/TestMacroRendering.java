@@ -21,11 +21,6 @@ import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -104,22 +99,21 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
   }
   
   public void testIncludePageMacro() throws Exception {
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
-    WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
-    WikiHome home = wiki.getWikiHome();
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Page home = wiki.getWikiHome();
     String content = "Test include contents of a page";
-    home.getContent().setText(content);
+    home.setContent(content);
+    wikiService.updatePage(home);
     String expectedHtml = "<div class=\"IncludePage \" ><p>" + content + "</p></div>";
-    mowService.persist();
     assertEquals(expectedHtml, renderingService.render("{{includepage page=\"Wiki Home\"/}}",
                                                        Syntax.XWIKI_2_0.toIdString(),
                                                        Syntax.XHTML_1_0.toIdString(),
                                                        false));
     // Test recursive inclusion
     String content2 = "{includepage:page=\"Wiki Home\"}";
-    home.getContent().setText(content2);
-    mowService.persist();
+    home.setContent(content2);
+    wikiService.updatePage(home);
     String renderedHTML =   renderingService.render("{includepage:page=\"Wiki Home\"}",
                                                     Syntax.CONFLUENCE_1_0.toIdString(),
                                                     Syntax.XHTML_1_0.toIdString(),

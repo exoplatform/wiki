@@ -16,7 +16,7 @@ public interface DataStorage {
 
   public Wiki getWikiByTypeAndOwner(String wikiType, String owner, boolean hasAdminPermission) throws WikiException;
 
-  public Wiki createWiki(String wikiType, String owner) throws WikiException;
+  public Wiki createWiki(Wiki wiki) throws WikiException;
 
   public Page createPage(Wiki wiki, Page parentPage, Page page) throws WikiException;
 

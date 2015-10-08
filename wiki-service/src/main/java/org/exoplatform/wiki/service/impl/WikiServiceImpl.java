@@ -262,7 +262,9 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Wiki createWiki(String wikiType, String owner) throws WikiException {
-    Wiki wiki = dataStorage.createWiki(wikiType, owner);
+    Wiki wiki = new Wiki(wikiType, owner);
+    wiki.setPermissions(getWikiDefaultPermissions(wikiType, owner));
+    Wiki createdWiki = dataStorage.createWiki(wiki);
 
     // init templates
     for(WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
@@ -271,7 +273,7 @@ public class WikiServiceImpl implements WikiService, Startable {
           try {
             InputStream templateInputStream = configManager.getInputStream(template.getSourceFilePath());
             template.setContent(IOUtils.toString(templateInputStream));
-            dataStorage.createTemplatePage(wiki, template);
+            dataStorage.createTemplatePage(createdWiki, template);
           } catch(Exception e) {
             log.error("Cannot init template " + template.getName() + " - Cause : " + e.getMessage(), e);
           }
@@ -279,7 +281,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
     }
 
-    return wiki;
+    return createdWiki;
   }
 
   /******* Page *******/

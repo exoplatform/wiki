@@ -45,7 +45,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   public void testAddAndGetPortalClassicWiki() throws WikiException {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
+    PortalWiki wiki = portalWikiContainer.addWiki(new Wiki(PortalConfig.PORTAL_TYPE, "classic"));
     PortalWiki classicWiki = portalWikiContainer.getWiki("classic", true);
     assertSame(wiki, classicWiki);
   }
@@ -53,7 +53,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   public void testAddAndGetAdministratorsGroupWiki() throws WikiException {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-    GroupWiki wiki = groupWikiContainer.addWiki("/platform/administrators");
+    GroupWiki wiki = groupWikiContainer.addWiki(new Wiki(PortalConfig.GROUP_TYPE, "/platform/administrators"));
     GroupWiki organizationWiki = groupWikiContainer.getWiki("/platform/administrators", true);
     assertSame(wiki, organizationWiki);
   }
@@ -61,7 +61,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   public void testAddAndGetDemoUserWiki() throws WikiException {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-    UserWiki wiki = userWikiContainer.addWiki("demo");
+    UserWiki wiki = userWikiContainer.addWiki(new Wiki(PortalConfig.USER_TYPE, "demo"));
     UserWiki rootWiki = userWikiContainer.getWiki("demo", true);
     assertSame(wiki, rootWiki);
   }
@@ -69,7 +69,7 @@ public class TestWikiStore extends AbstractMOWTestcase {
   public void testGetPortalClassicWikiHomePage() throws WikiException {
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-    PortalWiki wiki = portalWikiContainer.addWiki("classic");
+    PortalWiki wiki = portalWikiContainer.addWiki(new Wiki(PortalConfig.PORTAL_TYPE, "classic"));
     PageImpl wikiHomePage = wiki.getWikiHome();
     assertNotNull(wikiHomePage);
   }
