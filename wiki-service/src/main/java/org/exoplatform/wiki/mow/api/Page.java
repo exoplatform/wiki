@@ -17,7 +17,7 @@
 package org.exoplatform.wiki.mow.api;
 
 import java.util.Date;
-import java.util.HashMap;
+import java.util.List;
 
 public class Page {
 
@@ -43,7 +43,7 @@ public class Page {
 
   private String path;
 
-  private HashMap<String, String[]> permission;
+  private List<PermissionEntry> permissions;
 
   private String url;
 
@@ -154,12 +154,12 @@ public class Page {
     this.path = path;
   }
 
-  public HashMap<String, String[]> getPermission() {
-    return permission;
+  public List<PermissionEntry> getPermissions() {
+    return permissions;
   }
 
-  public void setPermission(HashMap<String, String[]> permission) {
-    this.permission = permission;
+  public void setPermissions(List<PermissionEntry> permissions) {
+    this.permissions = permissions;
   }
 
   public String getUrl() {

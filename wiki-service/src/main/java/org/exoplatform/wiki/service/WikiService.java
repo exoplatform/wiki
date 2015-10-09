@@ -373,7 +373,7 @@ public interface WikiService {
    * @return The list of Wiki default permissions.
    * @throws WikiException
    */
-  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException;
+  public List<PermissionEntry> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException;
   
   /**
    * Registers a component plugin into the Wiki service.
@@ -671,8 +671,6 @@ public interface WikiService {
   public String getWikiNameById(String wikiId) throws WikiException;
 
   public boolean canModifyPagePermission(Page currentPage, String currentUser) throws WikiException;
-
-  public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws WikiException;
 
   public List<PageVersion> getVersionsOfPage(Page page) throws WikiException;
 

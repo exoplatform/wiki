@@ -26,10 +26,9 @@ import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.JCRUtils;
 
 import javax.jcr.Node;
 import javax.jcr.RepositoryException;
@@ -102,7 +101,7 @@ public class PermissionImpl {
       ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
       AccessControlList acl = extendedNode.getACL();
 
-      return Utils.hasPermission(acl, permission, user);
+      return JCRUtils.hasPermission(acl, permission, user);
     } catch(RepositoryException e) {
       log.error("Cannot check permissions of user " + user.getUserId() + " on node " + jcrPath
               + " - Cause : " + e.getMessage(), e);

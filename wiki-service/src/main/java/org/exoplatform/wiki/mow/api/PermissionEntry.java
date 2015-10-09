@@ -26,7 +26,17 @@ public class PermissionEntry {
   private IDType idType;
 
   private Permission[] permissions;
-  
+
+  public PermissionEntry() {
+  }
+
+  public PermissionEntry(String id, String fullName, IDType idType, Permission[] permissions) {
+    this.id = id;
+    this.fullName = fullName;
+    this.idType = idType;
+    this.permissions = permissions;
+  }
+
   public String getId() {
     return id;
   }

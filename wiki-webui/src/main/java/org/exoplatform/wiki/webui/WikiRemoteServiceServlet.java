@@ -62,8 +62,7 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
     } catch (Exception e) {
       try {
         sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
-        portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId + 
-                                        org.exoplatform.wiki.utils.Utils.getRepositoryName()));
+        portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId));
       } catch (Exception ex) {
         return RPC.encodeResponseForFailure(null, ex);
       }
@@ -77,8 +76,7 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
       RPCRequest req = RPC.decodeRequest(payload, null, this);
       RenderingServiceImpl renderingService = (RenderingServiceImpl) portalContainer.getComponentInstanceOfType(RenderingService.class);
       Object obj = sessionId == null ? null : sessionManager.getSessionContext(sessionId);
-      WikiContext wikiContext = obj == null ? (WikiContext) sessionManager.getSessionContext(userId
-                                             + org.exoplatform.wiki.utils.Utils.getRepositoryName()) 
+      WikiContext wikiContext = obj == null ? (WikiContext) sessionManager.getSessionContext(userId)
                                             : (WikiContext) obj;
       Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
       if (ec.getContext() == null) {

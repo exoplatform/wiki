@@ -16,14 +16,20 @@
  */
 package org.exoplatform.wiki.webui.control.filter;
 
-import java.util.Map;
-
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.service.WikiService;
+
+import java.util.Map;
 
 public class AdminPagesPermissionFilter extends UIExtensionAbstractFilter {
+
+  private WikiService wikiService;
 
   public AdminPagesPermissionFilter() {
     this(null);
@@ -31,11 +37,13 @@ public class AdminPagesPermissionFilter extends UIExtensionAbstractFilter {
 
   public AdminPagesPermissionFilter(String messageKey) {
     super(messageKey, UIExtensionFilterType.MANDATORY);
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   @Override
   public boolean accept(Map<String, Object> context) throws Exception {
-    return Utils.hasPermission(new String[] { PermissionType.ADMINPAGE.toString() });
+    Page page = Utils.getCurrentWikiPage();
+    return wikiService.hasPermissionOnPage(page, PermissionType.ADMINPAGE, ConversationState.getCurrent().getIdentity());
   }
 
   @Override

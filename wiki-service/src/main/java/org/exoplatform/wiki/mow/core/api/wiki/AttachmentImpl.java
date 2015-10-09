@@ -26,6 +26,7 @@ import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
 import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
+import org.exoplatform.wiki.utils.JCRUtils;
 import org.exoplatform.wiki.utils.Utils;
 
 import javax.jcr.Node;
@@ -109,7 +110,7 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
         sb.append("/").append(this.getName());
       }
     } else {
-      sb.append(Utils.getCurrentRepositoryWebDavUri());
+      sb.append(JCRUtils.getCurrentRepositoryWebDavUri());
       sb.append(getWorkspace());
       String path = getPath();
       try {

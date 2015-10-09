@@ -26,6 +26,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
+import org.exoplatform.wiki.utils.JCRUtils;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -115,7 +116,7 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
       gwiki.setOwner(wiki.getOwner());
       gwiki.getPreferences();
       if(wiki.getPermissions() != null) {
-        gwiki.setWikiPermissions(wiki.getPermissions());
+        gwiki.setWikiPermissions(JCRUtils.convertPermissionEntryListToWikiPermissions(wiki.getPermissions()));
         gwiki.setDefaultPermissionsInited(true);
       }
       session.save();

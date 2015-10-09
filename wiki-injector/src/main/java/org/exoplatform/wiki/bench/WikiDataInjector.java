@@ -239,7 +239,8 @@ public class WikiDataInjector extends DataInjector {
       Page page = iter.next();
       if (isRecursive || depth == (quantities.size() - 1)) {
         log.info(String.format("Grant permissions %1$s for page: %2$s .........", permissionsToString(permissions), page.getTitle()));
-        page.setPermission(permissions);
+        // TODO ???
+        //page.setPermissions(permissions);
         if (depth < quantities.size() - 1) {
           grantPermission(quantities, prefixes, depth + 1, page, wikiOwner, wikiType, permissions, isRecursive);
         }

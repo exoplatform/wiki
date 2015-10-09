@@ -8,7 +8,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.service.search.WikiSearchData;
-import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.JCRUtils;
 import org.exoplatform.wiki.utils.WikiConstants;
 
 import javax.jcr.Node;
@@ -55,7 +55,7 @@ public class JCRWikiSearchQueryBuilder {
       NodeHierarchyCreator nodeHierachyCreator = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
       try {
         if (wikiSearchData.getWikiOwner() != null && wikiSearchData.getWikiOwner().length() > 0) {
-          Node userNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), wikiSearchData.getWikiOwner());
+          Node userNode = nodeHierachyCreator.getUserApplicationNode(JCRUtils.createSystemProvider(), wikiSearchData.getWikiOwner());
           USER_PATH = userNode.getPath() + "/" + WikiNodeType.Definition.WIKI_APPLICATION + "/";
         }
       } catch (Exception e) {

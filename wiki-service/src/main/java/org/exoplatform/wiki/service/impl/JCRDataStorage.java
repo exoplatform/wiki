@@ -26,11 +26,11 @@ import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.DataStorage;
-import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.service.search.jcr.JCRTemplateSearchQueryBuilder;
 import org.exoplatform.wiki.service.search.jcr.JCRWikiSearchQueryBuilder;
+import org.exoplatform.wiki.utils.JCRUtils;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
 import org.exoplatform.wiki.utils.WikiConstants;
@@ -104,7 +104,7 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setName(page.getName());
     parentPageImpl.addWikiPage(pageImpl);
     pageImpl.setOwner(page.getOwner());
-    pageImpl.setPermission(page.getPermission());
+    pageImpl.setPermission(JCRUtils.convertToPermissionMap(page.getPermissions()));
     pageImpl.setTitle(page.getTitle());
     String text = "";
     if(page.getContent() != null) {
@@ -582,47 +582,7 @@ public class JCRDataStorage implements DataStorage {
     }
 
     List<String> permissions = wikiImpl.getWikiPermissions();
-    if(permissions != null) {
-      for (String perm : permissions) {
-        String[] actions = perm.substring(0, perm.indexOf(":")).split(",");
-        perm = perm.substring(perm.indexOf(":") + 1);
-        String idType = perm.substring(0, perm.indexOf(":"));
-        String id = perm.substring(perm.indexOf(":") + 1);
-
-        PermissionEntry entry = new PermissionEntry();
-        if (IDType.USER.toString().equals(idType)) {
-          entry.setIdType(IDType.USER);
-        } else if (IDType.GROUP.toString().equals(idType)) {
-          entry.setIdType(IDType.GROUP);
-        } else if (IDType.MEMBERSHIP.toString().equals(idType)) {
-          entry.setIdType(IDType.MEMBERSHIP);
-        }
-        entry.setId(id);
-        Permission[] perms = new Permission[4];
-        perms[0] = new Permission();
-        perms[0].setPermissionType(PermissionType.VIEWPAGE);
-        perms[1] = new Permission();
-        perms[1].setPermissionType(PermissionType.EDITPAGE);
-        perms[2] = new Permission();
-        perms[2].setPermissionType(PermissionType.ADMINPAGE);
-        perms[3] = new Permission();
-        perms[3].setPermissionType(PermissionType.ADMINSPACE);
-        for (String action : actions) {
-          if (PermissionType.VIEWPAGE.toString().equals(action)) {
-            perms[0].setAllowed(true);
-          } else if (PermissionType.EDITPAGE.toString().equals(action)) {
-            perms[1].setAllowed(true);
-          } else if (PermissionType.ADMINPAGE.toString().equals(action)) {
-            perms[2].setAllowed(true);
-          } else if (PermissionType.ADMINSPACE.toString().equals(action)) {
-            perms[3].setAllowed(true);
-          }
-        }
-        entry.setPermissions(perms);
-
-        permissionEntries.add(entry);
-      }
-    }
+    permissionEntries = JCRUtils.convertWikiPermissionsToPermissionEntryList(permissions);
 
     mowService.stopSynchronization(created);
 
@@ -1207,7 +1167,7 @@ public class JCRDataStorage implements DataStorage {
     if(emotionIconsPage != null) {
       emotionIcons = new ArrayList<>();
 
-      String baseUrl = Utils.getCurrentRepositoryWebDavUri();
+      String baseUrl = JCRUtils.getCurrentRepositoryWebDavUri();
 
       Collection<AttachmentImpl> emotionIconsAttachments = emotionIconsPage.getAttachments();
       for(AttachmentImpl emotionIconAttachment : emotionIconsAttachments) {
@@ -1236,7 +1196,7 @@ public class JCRDataStorage implements DataStorage {
 
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
 
-    String baseUrl = Utils.getCurrentRepositoryWebDavUri();
+    String baseUrl = JCRUtils.getCurrentRepositoryWebDavUri();
 
     PageImpl emotionIconsPage = wStore.getEmotionIconsContainer();
     if(emotionIconsPage != null) {
@@ -1307,7 +1267,7 @@ public class JCRDataStorage implements DataStorage {
     List<AccessControlEntry> aces = getAccessControls(wikiType, owner);
     AccessControlList acl = new AccessControlList(owner, aces);
     String[] permission = new String[]{PermissionType.ADMINSPACE.toString()};
-    boolean hasPermission = Utils.hasPermission(acl, permission, user);
+    boolean hasPermission = JCRUtils.hasPermission(acl, permission, user);
 
     mowService.stopSynchronization(created);
 
@@ -1321,7 +1281,7 @@ public class JCRDataStorage implements DataStorage {
     List<AccessControlEntry> aces = getAccessControls(wikiType, owner);
     AccessControlList acl = new AccessControlList(owner, aces);
     String[] permission = new String[]{PermissionType.ADMINPAGE.toString()};
-    boolean hasPermission = Utils.hasPermission(acl, permission, user);
+    boolean hasPermission = JCRUtils.hasPermission(acl, permission, user);
 
     mowService.stopSynchronization(created);
 
@@ -1441,7 +1401,8 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setOwner(page.getOwner());
     pageImpl.setAuthor(page.getAuthor());
     pageImpl.setSyntax(page.getSyntax());
-    pageImpl.setPermission(page.getPermission());
+
+    pageImpl.setPermission(JCRUtils.convertToPermissionMap(page.getPermissions()));
     pageImpl.setURL(page.getUrl());
     pageImpl.getContent().setText(page.getContent());
     pageImpl.setComment(page.getComment());
@@ -1831,7 +1792,6 @@ public class JCRDataStorage implements DataStorage {
 
   /**
    * Fetch a WikiImpl object with Chrommatic
-   * @param hasAdminPermission
    * @param wikiType
    * @param wikiOwner
    * @return
@@ -1916,7 +1876,7 @@ public class JCRDataStorage implements DataStorage {
       wikiHome.setWikiType(wikiImpl.getType());
       wikiHome.setWikiOwner(wikiImpl.getOwner());
       wiki.setWikiHome(wikiHome);
-      wiki.setPermissions(wikiImpl.getWikiPermissions());
+      wiki.setPermissions(JCRUtils.convertWikiPermissionsToPermissionEntryList(wikiImpl.getWikiPermissions()));
       wiki.setDefaultPermissionsInited(wikiImpl.getDefaultPermissionsInited());
       PreferencesImpl preferencesImpl = wikiImpl.getPreferences();
       if (preferencesImpl != null) {
@@ -1971,7 +1931,7 @@ public class JCRDataStorage implements DataStorage {
       page.setComment(pageImpl.getComment());
       page.setContent(pageImpl.getContent().getText());
       page.setSyntax(pageImpl.getSyntax());
-      page.setPermission(pageImpl.getPermission());
+      page.setPermissions(JCRUtils.convertToPermissionEntryList(pageImpl.getPermission()));
       page.setActivityId(pageImpl.getActivityId());
 
       mowService.stopSynchronization(created);
@@ -2007,7 +1967,7 @@ public class JCRDataStorage implements DataStorage {
       draftPage.setComment(draftPageImpl.getComment());
       draftPage.setContent(draftPageImpl.getContent().getText());
       draftPage.setSyntax(draftPageImpl.getSyntax());
-      draftPage.setPermission(draftPageImpl.getPermission());
+      draftPage.setPermissions(JCRUtils.convertToPermissionEntryList(draftPageImpl.getPermission()));
 
       draftPage.setTargetPageId(draftPageImpl.getTargetPage());
       draftPage.setTargetPageRevision(draftPageImpl.getTargetRevision());
@@ -2032,7 +1992,7 @@ public class JCRDataStorage implements DataStorage {
       attachment.setUpdatedDate(attachmentImpl.getUpdatedDate());
       attachment.setContent(attachmentImpl.getContentResource().getData());
       attachment.setMimeType(attachmentImpl.getContentResource().getMimeType());
-      attachment.setPermissions(attachmentImpl.getPermission());
+      attachment.setPermissions(JCRUtils.convertToPermissionEntryList(attachmentImpl.getPermission()));
       attachment.setDownloadURL(attachmentImpl.getDownloadURL());
       attachment.setWeightInBytes(attachmentImpl.getWeightInBytes());
 

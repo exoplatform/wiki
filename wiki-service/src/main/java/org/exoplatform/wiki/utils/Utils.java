@@ -11,11 +11,6 @@ import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.access.AccessControlEntry;
-import org.exoplatform.services.jcr.access.AccessControlList;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.mail.MailService;
@@ -23,18 +18,17 @@ import org.exoplatform.services.mail.Message;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.service.*;
+import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.WikiContext;
+import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
@@ -42,11 +36,9 @@ import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.xwiki.rendering.syntax.Syntax;
 
-import javax.jcr.RepositoryException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import java.util.*;
-import java.util.Map.Entry;
 
 public class Utils {
   public static final String SLASH = "SLASH";
@@ -58,8 +50,6 @@ public class Utils {
   public static final String  PAGE                        = "page";
   
   private static final Log      log_               = ExoLogger.getLogger(Utils.class);
-  
-  private static final String JCR_WEBDAV_SERVICE_BASE_URI = "/jcr";
   
   public static final String COMPARE_REVISION = "CompareRevision";
   
@@ -73,7 +63,7 @@ public class Utils {
   
   private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-\"";
   
-  private static final String ILLEGAL_JCR_NAME_CHARACTERS = "*|\":[]/'"; 
+  private static final String ILLEGAL_NAME_CHARACTERS = "*|\":[]/'";
 
   public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
   
@@ -98,7 +88,7 @@ public class Utils {
       if (first != -1 && first == last && ( first == 0 || last == name.length() - 1)) {
         name = name.replace('.', '_');
       } 
-      for (char c : ILLEGAL_JCR_NAME_CHARACTERS.toCharArray())
+      for (char c : ILLEGAL_NAME_CHARACTERS.toCharArray())
         name = name.replace(c, '_');
       name = name.replace("%20", "_");
       return name;
@@ -277,65 +267,6 @@ public class Utils {
   }
   
   /**
-   * @param jcrPath follows the format /Groups/$GROUP/ApplicationData/eXoWiki/[wikipage]
-   * @return $GROUP of jcrPath
-   * @throws IllegalArgumentException if jcrPath is not as expected.
-   */
-  public static String getGroupIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    int pos1 = jcrPath.indexOf("/Groups/");
-    int pos2 = jcrPath.indexOf("/ApplicationData");
-    if (pos1 >= 0 && pos2 > 0) {
-      return jcrPath.substring(pos1 + "/Groups/".length(), pos2);
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a group wiki page node!");
-    }
-  }
-  
-  public static String getRepositoryName(){
-    ExoContainer container = ExoContainerContext.getCurrentContainer();
-    try {
-      return ((RepositoryService)container.getComponentInstanceOfType(RepositoryService.class))
-          .getCurrentRepository().getConfiguration().getName();
-    } catch (RepositoryException e) {
-      if (log_.isDebugEnabled()) {
-        log_.debug(String.format("Failed to get Repository name"), e);
-      }
-    }
-    return "";
-  }
-  
-  /**
-   * @param jcrPath follows the format /Users/$USERNAME/ApplicationData/eXoWiki/...
-   * @return $USERNAME of jcrPath
-   * @throws IllegalArgumentException if jcrPath is not as expected.
-   */
-  public static String getUserIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    int pos1 = jcrPath.indexOf("/Users/");
-    int pos2 = jcrPath.indexOf("/ApplicationData");
-    if (pos1 >= 0 && pos2 > 0) {
-      return jcrPath.substring(pos1 + "/Users/".length(), pos2);
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a personal wiki page node!");
-    }
-  }
-  
-  /**
-   * @param jcrPath absolute jcr path of page node.
-   * @return type of wiki page. 
-   */
-  public static String getWikiType(String jcrPath) throws IllegalArgumentException {
-    if (jcrPath.startsWith("/exo:applications/")) {
-      return PortalConfig.PORTAL_TYPE;
-    } else if (jcrPath.startsWith("/Groups/")) {
-      return PortalConfig.GROUP_TYPE;
-    } else if (jcrPath.startsWith("/Users/")) {
-      return PortalConfig.USER_TYPE;
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a wiki page node!");
-    }
-  }
-  
-  /**
    * Validate {@code wikiOwner} depending on {@code wikiType}. <br>
    * If wikiType is {@link PortalConfig#GROUP_TYPE}, {@code wikiOwner} is checked to removed slashes at the begin and the end point of it.
    * @param wikiType
@@ -360,21 +291,6 @@ public class Utils {
     sb.append(PortalContainer.getCurrentPortalContainerName());
     sb.append("/");
     sb.append(PortalContainer.getCurrentRestContextName());
-    return sb.toString();
-  }
-
-  public static String getCurrentRepositoryWebDavUri() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(getDefaultRestBaseURI());
-    sb.append(JCR_WEBDAV_SERVICE_BASE_URI);
-    sb.append("/");
-    RepositoryService repositoryService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
-    try {
-      sb.append(repositoryService.getCurrentRepository().getConfiguration().getName());
-    } catch (RepositoryException e) {
-      sb.append(repositoryService.getConfig().getDefaultRepositoryName());
-    }
-    sb.append("/");
     return sb.toString();
   }
   
@@ -426,12 +342,6 @@ public class Utils {
     }
     return null;
   }
-  
-  public static Wiki[] getAllWikiSpace() throws WikiException {
-    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getWikiStore();
-    return store.getWikis().toArray(new Wiki[]{}) ;
-  } 
   
   public static boolean isDescendantPage(Page page, Page parentPage) {
     return page.getPath().startsWith(parentPage.getPath());
@@ -584,22 +494,9 @@ public class Utils {
     return email;
   }
   
-  public static boolean isWikiAvailable(String wikiType, String wikiOwner) {
-    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-
-    Wiki wiki;
-    try {
-      wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
-    } catch (Exception e) {
-      return false;
-    }
-
-    return (wiki != null);
-  }
-  
   public static HashMap<String, IDType> getACLForAdmins() {
     HashMap<String, IDType> permissionMap = new HashMap<String, IDType>();
-    UserACL userACL = (UserACL) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
+    UserACL userACL = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
     permissionMap.put(userACL.getSuperUser(), IDType.USER);
     for (String group : userACL.getPortalCreatorGroups()) {
       if (!StringUtils.isEmpty(group)) {
@@ -608,104 +505,7 @@ public class Utils {
     }
     return permissionMap;
   }
-  /**
-   * Has permission.
-   * 
-   * @param acl
-   *          access control list 
-   * @param permission
-   *          permissions array
-   * @param user
-   *          user Identity
-   * @return boolean
-   */
-  public static boolean hasPermission( AccessControlList acl,String[] permission, Identity user) {
-    
-    String userId = user.getUserId();
-    if (userId.equals(IdentityConstants.SYSTEM)) {
-      // SYSTEM has permission everywhere
-      return true;
-    } else if (userId.equals(acl.getOwner())) {
-      // Current user is owner of node so has all privileges
-      return true;
-    } else if (userId.equals(IdentityConstants.ANONIM)) {
-      List<String> anyPermissions = acl.getPermissions(IdentityConstants.ANY);
 
-      if (anyPermissions.size() < permission.length)
-        return false;
-
-      for (int i = 0; i < permission.length; i++) {
-        if (!anyPermissions.contains(permission[i]))
-          return false;
-      }
-      return true;
-    } else {
-      if (acl.getPermissionsSize() > 0 && permission.length > 0) {
-        // check permission to perform all of the listed actions
-        for (int i = 0; i < permission.length; i++) {
-          // check specific actions
-          if (!isPermissionMatch(acl.getPermissionEntries(), permission[i], user))
-            return false;
-        }
-        return true;
-      }
-      return false;
-    }
-  }
-  /**
-   * Has permission.
-   * 
-   * @param permission
-   *          permissions array
-   * @param user
-   *          user Identity
-   * @param pageParams
-   *          wikiPage parameter 
-   * @return boolean
-   */
-  public static boolean hasPermission(String[] permission, Identity user, WikiPageParams pageParams) {
-    UserACL userACL = Util.getUIPortalApplication().getApplicationComponent(UserACL.class);
-    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    List<PermissionEntry> permissionEntries = new ArrayList<>();
-    try {
-      permissionEntries = wikiService.getWikiPermission(pageParams.getType(), pageParams.getOwner());
-    } catch (Exception e) {
-      log_.error("Cannot get permissions of wiki " + pageParams.getType() + ":" + pageParams.getOwner() + " - Cause : " + e.getMessage(), e);
-    }
-    List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-    for (PermissionEntry permissionEntry : permissionEntries) {
-      Permission[] perms = permissionEntry.getPermissions();
-      for (Permission perm : perms) {
-        if (perm.isAllowed()) {
-          AccessControlEntry ace = new AccessControlEntry(permissionEntry.getId(), perm.getPermissionType().toString());
-          aces.add(ace);
-        }
-      }
-    }
-    AccessControlList acl = new AccessControlList(userACL.getSuperUser(), aces);
-    return hasPermission(acl,permission,user);
-  }
-  
-  private static boolean isPermissionMatch(List<AccessControlEntry> existedPermission, String testPermission, Identity user) {
-    for (int i = 0, length = existedPermission.size(); i < length; i++) {
-      AccessControlEntry ace = existedPermission.get(i);
-      // match action
-      if (testPermission.equals(ace.getPermission())) {
-        // match any
-        if (IdentityConstants.ANY.equals(ace.getIdentity()))
-          return true;
-        else if (ace.getIdentity().indexOf(":") == -1) {
-          // just user
-          if (ace.getIdentity().equals(user.getUserId()))
-            return true;
-
-        } else if (user.isMemberOf(ace.getMembershipEntry()))
-          return true;
-      }
-    }
-    return false;
-  }
-  
   private static String makeNotificationSender(String from) {
     InternetAddress addr = null;
     if (from == null) return null;
@@ -752,11 +552,6 @@ public class Utils {
     return strBuffer.toString();
   }
   
-  public static SessionProvider createSystemProvider() {
-    SessionProviderService sessionProviderService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SessionProviderService.class);
-    return sessionProviderService.getSystemSessionProvider(null);
-  }
-  
   public static long countSearchResult(WikiSearchData data) throws Exception {
     data.setOffset(0);
     data.setLimit(Integer.MAX_VALUE);
@@ -766,7 +561,7 @@ public class Utils {
 
   }
   
-  public static String getNodeTypeCssClass(Attachment attachment, String append) throws Exception {
+  public static String getAttachmentCssClass(Attachment attachment, String append) throws Exception {
     Class<?> dmsMimeTypeResolverClass = Class.forName("org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver");
     Object dmsMimeTypeResolverObject =
         dmsMimeTypeResolverClass.getDeclaredMethod("getInstance", null).invoke(null, null);
@@ -792,88 +587,5 @@ public class Utils {
    */
   public static String getRestContextName() {
     return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
-  }
-  
-  public static String[] getAllPermissionText(){
-    return new String[] {
-        org.exoplatform.services.jcr.access.PermissionType.READ, 
-        org.exoplatform.services.jcr.access.PermissionType.ADD_NODE,
-        org.exoplatform.services.jcr.access.PermissionType.REMOVE,
-        org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY};
-  }
-  
-  public static String getReadPermissionText(){
-    return org.exoplatform.services.jcr.access.PermissionType.READ;
-  }
-  
-  private static String getAddNodePermissionText(){
-    return org.exoplatform.services.jcr.access.PermissionType.ADD_NODE;
-  }
-  
-  private static String getRemovePermissionText(){
-    return org.exoplatform.services.jcr.access.PermissionType.REMOVE;
-  }
-  
-  private static String getSetPropertyPermissionText(){
-    return org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY;
-  }
-
-  public static List<PermissionEntry> convertToPermissionEntryList(HashMap<String, String[]> permissions) {
-    List<PermissionEntry> permissionEntries = new ArrayList<PermissionEntry>();
-    Set<Entry<String, String[]>> entries = permissions.entrySet();
-    for (Entry<String, String[]> entry : entries) {
-      PermissionEntry permissionEntry = new PermissionEntry();
-      String key = entry.getKey();
-      IDType idType = IDType.USER;
-      if (key.indexOf(":") > 0) {
-        idType = IDType.MEMBERSHIP;
-      } else if (key.indexOf("/") == 0) {
-        idType = IDType.GROUP;
-      }
-      permissionEntry.setIdType(idType);
-      permissionEntry.setId(key);
-      Permission[] perms = new Permission[2];
-      perms[0] = new Permission();
-      perms[0].setPermissionType(PermissionType.VIEWPAGE);
-      perms[1] = new Permission();
-      perms[1].setPermissionType(PermissionType.EDITPAGE);
-      for (String action : entry.getValue()) {
-        if (Utils.getReadPermissionText().equals(action)) {
-          perms[0].setAllowed(true);
-        } else if (Utils.getAddNodePermissionText().equals(action)
-            || Utils.getRemovePermissionText().equals(action)
-            || Utils.getSetPropertyPermissionText().equals(action)) {
-          perms[1].setAllowed(true);
-        }
-      }
-      permissionEntry.setPermissions(perms);
-
-      permissionEntries.add(permissionEntry);
-    }
-    return permissionEntries;
-  }
-  
-  public static HashMap<String, String[]> convertToPermissionMap(List<PermissionEntry> permissionEntries) {
-    HashMap<String, String[]> permissionMap = new HashMap<String, String[]>();
-    for (PermissionEntry permissionEntry : permissionEntries) {
-      Permission[] permissions = permissionEntry.getPermissions();
-      List<String> permlist = new ArrayList<String>();
-      for (int i = 0; i < permissions.length; i++) {
-        Permission permission = permissions[i];
-        if (permission.isAllowed()) {
-          if (permission.getPermissionType().equals(PermissionType.VIEWPAGE)) {
-            permlist.add(Utils.getReadPermissionText());
-          } else if (permission.getPermissionType().equals(PermissionType.EDITPAGE)) {
-            permlist.add(Utils.getAddNodePermissionText());
-            permlist.add(Utils.getRemovePermissionText());
-            permlist.add(Utils.getSetPropertyPermissionText());
-          }
-        }
-      }
-      if (permlist.size() > 0) {
-        permissionMap.put(permissionEntry.getId(), permlist.toArray(new String[permlist.size()]));
-      }
-    }
-    return permissionMap;
   }
 }

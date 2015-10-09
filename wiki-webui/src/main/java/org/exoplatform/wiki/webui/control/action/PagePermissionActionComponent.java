@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.webui.control.action;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -75,8 +74,7 @@ public class PagePermissionActionComponent extends AbstractEventActionComponent 
       uiPopupContainer.activate(uiWikiPermissionForm, 800, 0);
       uiWikiPermissionForm.setScope(Scope.PAGE);
       Page page = Utils.getCurrentWikiPage();
-      HashMap<String, String[]> permissionMap = page.getPermission();
-      List<PermissionEntry> permissionEntries = org.exoplatform.wiki.utils.Utils.convertToPermissionEntryList(permissionMap);
+      List<PermissionEntry> permissionEntries = page.getPermissions();
       uiWikiPermissionForm.setPermission(permissionEntries);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
       super.processEvent(event);

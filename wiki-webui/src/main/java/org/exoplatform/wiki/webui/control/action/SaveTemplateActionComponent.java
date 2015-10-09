@@ -149,7 +149,7 @@ public class SaveTemplateActionComponent extends UIComponent {
           template.setDescription(StringEscapeUtils.escapeHtml(description));
           template.setContent(markup);
           template.setSyntax(syntaxId);
-          template.setPermission(null);
+          template.setPermissions(null);
           wikiService.createTemplatePage(Utils.getCurrentWiki(), template);
           ApplicationMessage message = new ApplicationMessage("SaveTemplateAction.msg.Create-template-successfully", msgArg, ApplicationMessage.INFO);
           message.setArgsLocalized(false);

@@ -21,6 +21,7 @@ import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
@@ -32,10 +33,7 @@ import org.xwiki.rendering.syntax.Syntax;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @SuppressWarnings("deprecation")
 public class TestWikiService extends AbstractMOWTestcase {
@@ -252,7 +250,13 @@ public class TestWikiService extends AbstractMOWTestcase {
     Page page = wService.createPage(userWiki, "WikiHome", new Page("privatePage", "privatePage"));
     HashMap<String, String[]> permissionMap = new HashMap<>();
     permissionMap.put("any", new String[] {PermissionType.VIEWPAGE.toString(), PermissionType.EDITPAGE.toString()});
-    page.setPermission(permissionMap);
+    List<PermissionEntry> permissionEntries = new ArrayList<>();
+    PermissionEntry permissionEntry = new PermissionEntry(IdentityConstants.ANY.toString(), "", IDType.USER, new Permission[]{
+            new Permission(PermissionType.VIEWPAGE, true),
+            new Permission(PermissionType.EDITPAGE, true)
+    });
+    permissionEntries.add(permissionEntry);
+    page.setPermissions(permissionEntries);
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "demo", "toMovedPage"));
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "demo", "privatePage"));

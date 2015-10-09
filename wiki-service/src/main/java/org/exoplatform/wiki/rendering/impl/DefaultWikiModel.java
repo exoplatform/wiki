@@ -182,7 +182,7 @@ public class DefaultWikiModel implements WikiModel {
       LOG.warn(String.format("Failed to link incoming pages for page %s", documentReference.toString()), e);
     }
     try {
-      if (!Utils.isWikiAvailable(wikiMarkupContext.getType(), wikiMarkupContext.getOwner())) {
+      if (wikiService.getWikiByTypeAndOwner(wikiMarkupContext.getType(), wikiMarkupContext.getOwner()) == null) {
         return false;
       } else {
         page = wikiService.getPageOfWikiByName(wikiMarkupContext.getType(),

@@ -41,7 +41,7 @@ public class Wiki {
    */
   private Page wikiHome;
 
-  private List<String> permissions;
+  private List<PermissionEntry> permissions;
   
   private WikiPreferences preferences;
   
@@ -87,11 +87,11 @@ public class Wiki {
     this.wikiHome = wikiHome;
   }
 
-  public List<String> getPermissions() {
+  public List<PermissionEntry> getPermissions() {
     return permissions;
   }
 
-  public void setPermissions(List<String> permissions) {
+  public void setPermissions(List<PermissionEntry> permissions) {
     this.permissions = permissions;
   }
 

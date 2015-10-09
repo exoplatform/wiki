@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.mow.core.api.wiki;
 
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
@@ -27,7 +26,7 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.JCRUtils;
 
 import javax.jcr.Node;
 
@@ -77,7 +76,7 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
     ChromatticSession session = mowService.getSession();
     Node wikiNode;
     try {
-      Node tempNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), wikiOwner);
+      Node tempNode = nodeHierachyCreator.getUserApplicationNode(JCRUtils.createSystemProvider(), wikiOwner);
       Node userDataNode = (Node) session.getJCRSession().getItem(tempNode.getPath());
       wikiNode = userDataNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
     } catch (Exception e) {
@@ -97,7 +96,7 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
     try {
       NodeHierarchyCreator nodeHierachyCreator = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(NodeHierarchyCreator.class);
-      Node tempNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), wiki.getOwner());
+      Node tempNode = nodeHierachyCreator.getUserApplicationNode(JCRUtils.createSystemProvider(), wiki.getOwner());
       Node userDataNode = (Node) session.getJCRSession().getItem(tempNode.getPath());
       Node wikiNode = userDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.USER_WIKI);
       userDataNode.save();
@@ -106,7 +105,7 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
       uwiki.setOwner(wiki.getOwner());
       uwiki.getPreferences();
       if(wiki.getPermissions() != null) {
-        uwiki.setWikiPermissions(wiki.getPermissions());
+        uwiki.setWikiPermissions(JCRUtils.convertPermissionEntryListToWikiPermissions(wiki.getPermissions()));
         uwiki.setDefaultPermissionsInited(true);
       }
       session.save();

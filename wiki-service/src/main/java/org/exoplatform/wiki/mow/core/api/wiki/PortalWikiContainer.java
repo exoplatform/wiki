@@ -24,6 +24,7 @@ import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
+import org.exoplatform.wiki.utils.JCRUtils;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -96,7 +97,7 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
       pwiki.setPortalWikis(this);
       pwiki.setOwner(wikiOwner);
       if(wiki.getPermissions() != null) {
-        pwiki.setWikiPermissions(wiki.getPermissions());
+        pwiki.setWikiPermissions(JCRUtils.convertPermissionEntryListToWikiPermissions(wiki.getPermissions()));
         pwiki.setDefaultPermissionsInited(true);
       }
       pwiki.getPreferences();

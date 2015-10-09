@@ -16,15 +16,14 @@
  */
 package org.exoplatform.wiki.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import junit.framework.TestCase;
-
 import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.mow.api.PermissionEntry;
 import org.exoplatform.wiki.mow.api.PermissionType;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by The eXo Platform SAS
@@ -43,7 +42,7 @@ public class TestUtils extends TestCase {
     per.setId("ID");
     per.setPermissions(new Permission[]{permission});
     permissionEntries.add(per);
-    String[] pers = Utils.convertToPermissionMap(permissionEntries).get("ID");
+    String[] pers = JCRUtils.convertToPermissionMap(permissionEntries).get("ID");
     assertNotNull(pers);    
     assertEquals(1, pers.length);
   }
@@ -51,7 +50,7 @@ public class TestUtils extends TestCase {
   public void testConvertToPermissionEntryList(){
     HashMap<String, String[]> permissions = new HashMap<String, String[]>();
     permissions.put("ID", new String[]{"read"});
-    List<PermissionEntry> permissionEntries = Utils.convertToPermissionEntryList(permissions);
+    List<PermissionEntry> permissionEntries = JCRUtils.convertToPermissionEntryList(permissions);
     assertEquals(1, permissionEntries.size());
     assertEquals("ID", permissionEntries.get(0).getId());
   }

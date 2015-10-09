@@ -17,7 +17,7 @@
 package org.exoplatform.wiki.mow.api;
 
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.List;
 
 public class Attachment {
 
@@ -71,7 +71,7 @@ public class Attachment {
   /**
    * Permissions on the attachment
    */
-  private HashMap<String, String[]> permissions;
+  private List<PermissionEntry> permissions;
 
   public String getName() {
     return name;
@@ -153,11 +153,11 @@ public class Attachment {
     this.mimeType = mimeType;
   }
 
-  public HashMap<String, String[]> getPermissions() {
+  public List<PermissionEntry> getPermissions() {
     return permissions;
   }
 
-  public void setPermissions(HashMap<String, String[]> permissions) {
+  public void setPermissions(List<PermissionEntry> permissions) {
     this.permissions = permissions;
   }
 }

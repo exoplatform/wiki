@@ -21,6 +21,14 @@ public class Permission {
 
   private boolean isAllowed = false;
 
+  public Permission() {
+  }
+
+  public Permission(PermissionType permissionType, boolean isAllowed) {
+    this.permissionType = permissionType;
+    this.isAllowed = isAllowed;
+  }
+
   public PermissionType getPermissionType() {
     return permissionType;
   }

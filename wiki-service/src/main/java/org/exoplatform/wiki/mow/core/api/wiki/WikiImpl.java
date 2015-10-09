@@ -20,6 +20,8 @@ import org.chromattic.api.annotations.*;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.utils.WikiConstants;
@@ -33,7 +35,9 @@ import java.util.*;
 public abstract class WikiImpl {
 
   private static final Log LOG           = ExoLogger.getLogger(WikiImpl.class);
-  
+
+  private PermissionImpl permission = new PermissionImpl();
+
   @Create
   public abstract PageImpl createWikiPage();
 

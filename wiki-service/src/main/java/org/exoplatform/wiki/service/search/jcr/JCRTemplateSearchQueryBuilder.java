@@ -10,7 +10,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.service.search.SearchData;
-import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.JCRUtils;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -57,7 +57,7 @@ public class JCRTemplateSearchQueryBuilder {
       NodeHierarchyCreator nodeHierachyCreator = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(NodeHierarchyCreator.class);
       try {
         if (searchData.getWikiOwner() != null && searchData.getWikiOwner().length() > 0) {
-          Node userNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), searchData.getWikiOwner());
+          Node userNode = nodeHierachyCreator.getUserApplicationNode(JCRUtils.createSystemProvider(), searchData.getWikiOwner());
           USER_PATH = userNode.getPath() + "/" + WikiNodeType.Definition.WIKI_APPLICATION + "/";
         }
       } catch (Exception e) {

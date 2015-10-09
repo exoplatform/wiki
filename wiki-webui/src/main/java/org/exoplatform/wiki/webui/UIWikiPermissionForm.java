@@ -39,15 +39,21 @@ import org.exoplatform.webui.organization.UIGroupMembershipSelector;
 import org.exoplatform.webui.organization.account.UIGroupSelector;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.service.*;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions;
 import org.exoplatform.wiki.webui.form.UIFormInputWithActions.ActionData;
 
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @ComponentConfigs({
 @ComponentConfig(
@@ -527,35 +533,11 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
 
       } else if (Scope.PAGE.equals(scope)) {
         Page page = Utils.getCurrentWikiPage();
-        HashMap<String, String[]> permissionMap = org.exoplatform.wiki.utils.Utils.convertToPermissionMap(uiWikiPermissionForm.permissionEntries);
-        page.setPermission(permissionMap);
+        page.setPermissions(uiWikiPermissionForm.permissionEntries);
         // TODO need page.setOverridePermission
         //page.setOverridePermission(true);
         wikiService.updatePage(page, null);
 
-        HashMap<String, String[]> pagePermissions = page.getPermission();
-        List<Attachment> attachments = wikiService.getAttachmentsOfPage(page);
-        Set<String> permissionKeys = new HashSet<String> (pagePermissions.keySet());
-        for (Attachment attachment : attachments) {
-          HashMap<String, String[]> permissions = attachment.getPermissions();
-          Iterator<Entry<String, String[]>> permissionIterator = permissions.entrySet().iterator();
-          while (permissionIterator.hasNext()) {
-            Entry<String, String[]> attachmentPermissionEntry = permissionIterator.next();
-            String attachmentPermissionKey = attachmentPermissionEntry.getKey();
-            if (permissionKeys.contains(attachmentPermissionKey)) {
-              permissionKeys.remove(attachmentPermissionKey);
-            } else {
-              permissionIterator.remove();
-            }
-          }
-          for (String permissionEntry : permissionKeys) {
-            permissions.put(permissionEntry, new String[] {org.exoplatform.wiki.utils.Utils.getReadPermissionText()});
-          }
-          // TODO need an updateAttachement ??
-          attachment.setPermissions(permissions);
-        }
-
-        
         // Update page info area
         UIWikiPortlet uiWikiPortlet = uiWikiPermissionForm.getAncestorOfType(UIWikiPortlet.class);
         if (wikiService.hasPermissionOnPage(page, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())) {
