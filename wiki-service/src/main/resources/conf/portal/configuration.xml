@@ -104,35 +104,6 @@
     <type>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</type>
   </component>
   
-  
-  
-  <component>
-    <key>org.exoplatform.wiki.service.webdav.WebDavService</key>
-    <type>org.exoplatform.wiki.service.webdav.WebDavServiceImpl</type>
-    <init-params>
-      <value-param>
-        <name>auto-mix-lockable</name>
-        <value>false</value>
-      </value-param>
-      <value-param>
-        <name>def-folder-node-type</name>
-        <value>wiki:page</value>
-      </value-param>
-      <value-param>
-        <name>def-file-node-type</name>
-        <value>wiki:attachment</value>
-      </value-param>
-      <value-param>
-        <name>def-file-mimetype</name>
-        <value>text/plain</value>
-      </value-param>
-      <value-param>
-        <name>update-policy</name>
-        <value>create-version</value>
-      </value-param>
-    </init-params>
-  </component>
-  
   <!-- Only used for debugging and tracing -->
   <!--component>
     <key>org.exoplatform.services.log.LogConfigurationInitializer</key>
