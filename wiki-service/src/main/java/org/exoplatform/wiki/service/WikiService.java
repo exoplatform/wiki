@@ -22,11 +22,14 @@ import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
+import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
-import org.exoplatform.wiki.service.search.*;
-import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
+import org.exoplatform.wiki.service.search.SearchResult;
+import org.exoplatform.wiki.service.search.TemplateSearchData;
+import org.exoplatform.wiki.service.search.TemplateSearchResult;
+import org.exoplatform.wiki.service.search.WikiSearchData;
 
 import java.util.List;
 import java.util.Map;
@@ -613,40 +616,6 @@ public interface WikiService {
    * @throws WikiException
    */
   public boolean hasAdminPagePermission(String wikiType, String owner) throws WikiException;
-  
-  /**
-   * Creates an activity once a wiki page is updated.
-   *
-   * @param wikiType It can be Portal, Group, or User.
-   * @param wikiOwner The Wiki owner.
-   * @param pageId Id of the wiki page.
-   * @param page The wiki page.
-   * @param wikiUpdateType The update type (edit title, edit content, or edit both).
-   * @throws WikiException
-   */
-  public void postUpdatePage(String wikiType, String wikiOwner, String pageId, Page page, PageUpdateType wikiUpdateType) throws WikiException;
-  
-  /**
-   * Creates an activity of a newly added wiki page.
-   *
-   * @param wikiType It can be Portal, Group, or User.
-   * @param wikiOwner The Wiki owner.
-   * @param pageId Id of the new wiki page.
-   * @param page The wiki page.
-   * @throws WikiException
-   */
-  public void postAddPage(final String wikiType, final String wikiOwner, final String pageId, Page page) throws WikiException;
-  
-  /**
-   * Removes all activities related to a deleted wiki page.
-   *
-   * @param wikiType It can be Portal, Group, or User.
-   * @param wikiOwner The Wiki owner.
-   * @param pageId Id of the deleted wiki page.
-   * @param page The deleted wiki page.
-   * @throws WikiException
-   */
-  public void postDeletePage(String wikiType, String wikiOwner, String pageId, Page page) throws WikiException;
 
   /**
    * Gets a Wiki by its Id.

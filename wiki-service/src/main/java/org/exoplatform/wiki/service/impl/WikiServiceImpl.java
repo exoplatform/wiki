@@ -1103,8 +1103,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
 
   /******* Listeners *******/
-  // TODO should not be in the interface
-  @Override
+
   public void postUpdatePage(final String wikiType, final String wikiOwner, final String pageId, Page page, PageUpdateType wikiUpdateType) throws WikiException {
     List<PageWikiListener> listeners = getPageListeners();
     for (PageWikiListener l : listeners) {
@@ -1118,7 +1117,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
 
-  @Override
   public void postAddPage(final String wikiType, final String wikiOwner, final String pageId, Page page) throws WikiException {
     List<PageWikiListener> listeners = getPageListeners();
     for (PageWikiListener l : listeners) {
@@ -1132,7 +1130,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
 
-  @Override
   public void postDeletePage(String wikiType, String wikiOwner, String pageId, Page page) throws WikiException {
     List<PageWikiListener> listeners = getPageListeners();
     for (PageWikiListener l : listeners) {
