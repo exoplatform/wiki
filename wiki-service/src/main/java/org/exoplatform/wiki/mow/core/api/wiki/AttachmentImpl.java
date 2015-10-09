@@ -24,13 +24,11 @@ import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
-import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.utils.Utils;
 
 import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.version.Version;
 import java.io.UnsupportedEncodingException;
@@ -43,7 +41,7 @@ import java.util.HashMap;
 @PrimaryType(name = WikiNodeType.WIKI_ATTACHMENT)
 public abstract class AttachmentImpl extends NTFile implements Comparable<AttachmentImpl> {
 
-  private Permission permission = new PermissionImpl();
+  private PermissionImpl permission = new PermissionImpl();
   
   @Name
   public abstract String getName();
@@ -160,7 +158,8 @@ public abstract class AttachmentImpl extends NTFile implements Comparable<Attach
   }
   
   public boolean hasPermission(PermissionType permissionType) {
-    if (permission.getMOWService() == null) {
+    if (permission
+               .getMOWService() == null) {
       permission.setMOWService(getParentPage().getMOWService());
     }
     return permission.hasPermission(permissionType, getPath());

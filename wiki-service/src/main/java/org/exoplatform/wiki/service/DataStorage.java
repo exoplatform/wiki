@@ -8,13 +8,12 @@ import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.service.search.*;
 
-import java.io.InputStream;
 import java.util.List;
 import java.util.Map;
 
 public interface DataStorage {
 
-  public Wiki getWikiByTypeAndOwner(String wikiType, String owner, boolean hasAdminPermission) throws WikiException;
+  public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws WikiException;
 
   public Wiki createWiki(Wiki wiki) throws WikiException;
 
@@ -62,9 +61,7 @@ public interface DataStorage {
 
   public List<PermissionEntry> getWikiPermission(String wikiType, String wikiOwner) throws WikiException;
 
-  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException;
-
-  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException;
+  public void updateWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException;
 
   public List<Page> getRelatedPagesOfPage(Page page) throws WikiException;
 

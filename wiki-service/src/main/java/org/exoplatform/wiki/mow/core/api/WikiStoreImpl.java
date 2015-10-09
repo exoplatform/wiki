@@ -19,7 +19,6 @@ package org.exoplatform.wiki.mow.core.api;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
@@ -51,7 +50,7 @@ public abstract class WikiStoreImpl implements WikiStore {
   }
 
   public WikiImpl getWiki(WikiType wikiType, String name) {
-    return getWikiContainer(wikiType).getWiki(name, true);
+    return getWikiContainer(wikiType).getWiki(name);
   }
 
   public Collection<WikiImpl> getWikis() {

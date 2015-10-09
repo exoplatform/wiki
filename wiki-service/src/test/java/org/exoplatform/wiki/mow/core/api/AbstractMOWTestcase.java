@@ -25,7 +25,6 @@ import javax.jcr.query.QueryResult;
 
 import junit.framework.TestCase;
 
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.StandaloneContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -34,18 +33,13 @@ import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.core.api.wiki.Model;
-import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.GroupWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
-
-import java.nio.file.Files;
-import java.nio.file.attribute.FileAttribute;
 
 /**
  * @version $Revision$
@@ -151,15 +145,15 @@ public abstract class AbstractMOWTestcase extends TestCase {
     switch (wikiType) {
       case PORTAL:
         WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-        wiki = portalWikiContainer.getWiki(wikiName, true);
+        wiki = portalWikiContainer.getWiki(wikiName);
         break;
       case GROUP:
         WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-        wiki = groupWikiContainer.getWiki(wikiName, true);
+        wiki = groupWikiContainer.getWiki(wikiName);
         break;
       case USER:
         WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-        wiki = userWikiContainer.getWiki(wikiName, true);
+        wiki = userWikiContainer.getWiki(wikiName);
         break;
     }
     mowService.persist();

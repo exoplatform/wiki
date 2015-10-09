@@ -7,12 +7,8 @@ import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
-import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
@@ -29,7 +25,9 @@ import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.*;
+import org.exoplatform.wiki.service.DataStorage;
+import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.service.search.jcr.JCRTemplateSearchQueryBuilder;
 import org.exoplatform.wiki.service.search.jcr.JCRWikiSearchQueryBuilder;
@@ -60,9 +58,8 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  // TODO check who has admin permission ?
-  public Wiki getWikiByTypeAndOwner(String wikiType, String wikiOwner, boolean hasAdminPermission) throws WikiException {
-    WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner, hasAdminPermission);
+  public Wiki getWikiByTypeAndOwner(String wikiType, String wikiOwner) throws WikiException {
+    WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner);
     return convertWikiImplToWiki(wikiImpl);
   }
 
@@ -101,7 +98,7 @@ public class JCRDataStorage implements DataStorage {
 
     boolean created = mowService.startSynchronization();
 
-    WikiImpl wikiImpl = fetchWikiImpl(wiki.getType(), wiki.getOwner(), true);
+    WikiImpl wikiImpl = fetchWikiImpl(wiki.getType(), wiki.getOwner());
     PageImpl parentPageImpl = fetchPageImpl(parentPage.getWikiType(), parentPage.getWikiOwner(), parentPage.getName());
     PageImpl pageImpl = wikiImpl.createWikiPage();
     pageImpl.setName(page.getName());
@@ -164,7 +161,7 @@ public class JCRDataStorage implements DataStorage {
 
     boolean created = mowService.startSynchronization();
 
-    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, true);
+    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner);
 
     if(wiki != null) {
       if (WikiConstants.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
@@ -299,7 +296,7 @@ public class JCRDataStorage implements DataStorage {
     calendar.setTimeInMillis(new Date().getTime());
     mix.setRemovedDate(calendar.getTime());
     mix.setParentPath(page.getParentPage().getPath());
-    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, false);
+    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner);
     Trash trash = wiki.getTrash();
     if (trash.isHasPage(page.getName())) {
       PageImpl oldDeleted = trash.getPage(page.getName());
@@ -349,7 +346,7 @@ public class JCRDataStorage implements DataStorage {
   private TemplateContainer getTemplatesContainer(String wikiType, String wikiOwner) throws WikiException {
     boolean created = mowService.startSynchronization();
 
-    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, true);
+    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner);
     TemplateContainer templateContainer = wiki.getPreferences().getTemplateContainer();
 
     mowService.stopSynchronization(created);
@@ -579,72 +576,52 @@ public class JCRDataStorage implements DataStorage {
 
     boolean created = mowService.startSynchronization();
 
-    Wiki wiki = getWikiWithoutPermission(wikiType, wikiOwner);
-    if (wiki == null) {
+    WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner);
+    if (wikiImpl == null) {
       return permissionEntries;
     }
-    if (!wiki.isDefaultPermissionsInited()) {
-      List<String> permissions = getWikiDefaultPermissions(wikiType, wikiOwner);
-      wiki.setPermissions(permissions);
-      wiki.setDefaultPermissionsInited(true);
-      HashMap<String, String[]> permMap = new HashMap<>();
+
+    List<String> permissions = wikiImpl.getWikiPermissions();
+    if(permissions != null) {
       for (String perm : permissions) {
         String[] actions = perm.substring(0, perm.indexOf(":")).split(",");
         perm = perm.substring(perm.indexOf(":") + 1);
+        String idType = perm.substring(0, perm.indexOf(":"));
         String id = perm.substring(perm.indexOf(":") + 1);
-        List<String> jcrActions = new ArrayList<>();
+
+        PermissionEntry entry = new PermissionEntry();
+        if (IDType.USER.toString().equals(idType)) {
+          entry.setIdType(IDType.USER);
+        } else if (IDType.GROUP.toString().equals(idType)) {
+          entry.setIdType(IDType.GROUP);
+        } else if (IDType.MEMBERSHIP.toString().equals(idType)) {
+          entry.setIdType(IDType.MEMBERSHIP);
+        }
+        entry.setId(id);
+        Permission[] perms = new Permission[4];
+        perms[0] = new Permission();
+        perms[0].setPermissionType(PermissionType.VIEWPAGE);
+        perms[1] = new Permission();
+        perms[1].setPermissionType(PermissionType.EDITPAGE);
+        perms[2] = new Permission();
+        perms[2].setPermissionType(PermissionType.ADMINPAGE);
+        perms[3] = new Permission();
+        perms[3].setPermissionType(PermissionType.ADMINSPACE);
         for (String action : actions) {
           if (PermissionType.VIEWPAGE.toString().equals(action)) {
-            jcrActions.add(org.exoplatform.services.jcr.access.PermissionType.READ);
+            perms[0].setAllowed(true);
           } else if (PermissionType.EDITPAGE.toString().equals(action)) {
-            jcrActions.add(org.exoplatform.services.jcr.access.PermissionType.ADD_NODE);
-            jcrActions.add(org.exoplatform.services.jcr.access.PermissionType.REMOVE);
-            jcrActions.add(org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY);
+            perms[1].setAllowed(true);
+          } else if (PermissionType.ADMINPAGE.toString().equals(action)) {
+            perms[2].setAllowed(true);
+          } else if (PermissionType.ADMINSPACE.toString().equals(action)) {
+            perms[3].setAllowed(true);
           }
         }
-        permMap.put(id, jcrActions.toArray(new String[jcrActions.size()]));
-      }
-      updateAllPagesPermissions(wikiType, wikiOwner, permMap);
-    }
-    List<String> permissions = wiki.getPermissions();
-    for (String perm : permissions) {
-      String[] actions = perm.substring(0, perm.indexOf(":")).split(",");
-      perm = perm.substring(perm.indexOf(":") + 1);
-      String idType = perm.substring(0, perm.indexOf(":"));
-      String id = perm.substring(perm.indexOf(":") + 1);
+        entry.setPermissions(perms);
 
-      PermissionEntry entry = new PermissionEntry();
-      if (IDType.USER.toString().equals(idType)) {
-        entry.setIdType(IDType.USER);
-      } else if (IDType.GROUP.toString().equals(idType)) {
-        entry.setIdType(IDType.GROUP);
-      } else if (IDType.MEMBERSHIP.toString().equals(idType)) {
-        entry.setIdType(IDType.MEMBERSHIP);
+        permissionEntries.add(entry);
       }
-      entry.setId(id);
-      org.exoplatform.wiki.service.Permission[] perms = new org.exoplatform.wiki.service.Permission[4];
-      perms[0] = new org.exoplatform.wiki.service.Permission();
-      perms[0].setPermissionType(PermissionType.VIEWPAGE);
-      perms[1] = new org.exoplatform.wiki.service.Permission();
-      perms[1].setPermissionType(PermissionType.EDITPAGE);
-      perms[2] = new org.exoplatform.wiki.service.Permission();
-      perms[2].setPermissionType(PermissionType.ADMINPAGE);
-      perms[3] = new org.exoplatform.wiki.service.Permission();
-      perms[3].setPermissionType(PermissionType.ADMINSPACE);
-      for (String action : actions) {
-        if (PermissionType.VIEWPAGE.toString().equals(action)) {
-          perms[0].setAllowed(true);
-        } else if (PermissionType.EDITPAGE.toString().equals(action)) {
-          perms[1].setAllowed(true);
-        } else if (PermissionType.ADMINPAGE.toString().equals(action)) {
-          perms[2].setAllowed(true);
-        } else if (PermissionType.ADMINSPACE.toString().equals(action)) {
-          perms[3].setAllowed(true);
-        }
-      }
-      entry.setPermissions(perms);
-
-      permissionEntries.add(entry);
     }
 
     mowService.stopSynchronization(created);
@@ -653,95 +630,22 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException {
+  public void updateWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException {
     boolean created = mowService.startSynchronization();
 
-    String view = new StringBuilder().append(PermissionType.VIEWPAGE).toString();
-    String viewEdit = new StringBuilder().append(PermissionType.VIEWPAGE).append(",").append(PermissionType.EDITPAGE).toString();
-    String all = new StringBuilder().append(PermissionType.VIEWPAGE)
-            .append(",")
-            .append(PermissionType.EDITPAGE)
-            .append(",")
-            .append(PermissionType.ADMINPAGE)
-            .append(",")
-            .append(PermissionType.ADMINSPACE)
-            .toString();
-    List<String> permissions = new ArrayList<>();
-    Iterator<Map.Entry<String, IDType>> iter = Utils.getACLForAdmins().entrySet().iterator();
-    while (iter.hasNext()) {
-      Map.Entry<String, IDType> entry = iter.next();
-      permissions.add(new StringBuilder(all).append(":").append(entry.getValue()).append(":").append(entry.getKey()).toString());
-    }
-    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-      UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
-              .getComponentInstanceOfType(UserPortalConfigService.class);
-      try {
-        UserPortalConfig userPortalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null);
-        if(userPortalConfig != null) {
-          PortalConfig portalConfig = userPortalConfig.getPortalConfig();
-          String portalEditClause = new StringBuilder(all).append(":")
-                  .append(IDType.MEMBERSHIP)
-                  .append(":")
-                  .append(portalConfig.getEditPermission())
-                  .toString();
-          if (!permissions.contains(portalEditClause)) {
-            permissions.add(portalEditClause);
-          }
-        }
-        permissions.add(new StringBuilder(view).append(":").append(IDType.USER).append(":any").toString());
-      } catch (Exception e) {
-        throw new WikiException("Cannot get user portal config for wiki " + wikiType + ":" + wikiOwner
-                + " - Cause : " + e.getMessage(), e);
-      }
-    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
-      UserACL userACL = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
-      String makableMTClause = new StringBuilder(all).append(":")
-              .append(IDType.MEMBERSHIP)
-              .append(":")
-              .append(userACL.getMakableMT())
-              .append(":")
-              .append(wikiOwner)
-              .toString();
-      if (!permissions.contains(makableMTClause)) {
-        permissions.add(makableMTClause);
-      }
-      String ownerClause = new StringBuilder(viewEdit).append(":")
-              .append(IDType.MEMBERSHIP)
-              .append(":*:")
-              .append(wikiOwner)
-              .toString();
-      if (!permissions.contains(ownerClause)) {
-        permissions.add(ownerClause);
-      }
-    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
-      String ownerClause = new StringBuilder(all).append(":").append(IDType.USER).append(":").append(wikiOwner).toString();
-      if (!permissions.contains(ownerClause)) {
-        permissions.add(ownerClause);
-      }
-    }
-
-    mowService.stopSynchronization(created);
-
-    return permissions;
-  }
-
-  @Override
-  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException {
-    boolean created = mowService.startSynchronization();
-
-    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, false);
+    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner);
     List<String> permissions = new ArrayList<>();
     HashMap<String, String[]> permMap = new HashMap<>();
     for (PermissionEntry entry : permissionEntries) {
       StringBuilder actions = new StringBuilder();
-      org.exoplatform.wiki.service.Permission[] pers = entry.getPermissions();
+      Permission[] pers = entry.getPermissions();
       List<String> permlist = new ArrayList<>();
       // Permission strings has the format:
       // VIEWPAGE,EDITPAGE,ADMINPAGE,ADMINSPACE:USER:john
       // VIEWPAGE:GROUP:/platform/users
       // VIEWPAGE,EDITPAGE,ADMINPAGE,ADMINSPACE:MEMBERSHIP:manager:/platform/administrators
       for (int i = 0; i < pers.length; i++) {
-        org.exoplatform.wiki.service.Permission perm = pers[i];
+        Permission perm = pers[i];
         if (perm.isAllowed()) {
           actions.append(perm.getPermissionType().toString());
           if (i < pers.length - 1) {
@@ -768,6 +672,7 @@ public class JCRDataStorage implements DataStorage {
     wiki.setWikiPermissions(permissions);
     // TODO: study performance
     updateAllPagesPermissions(wikiType, wikiOwner, permMap);
+    mowService.persist();
 
     mowService.stopSynchronization(created);
   }
@@ -798,7 +703,7 @@ public class JCRDataStorage implements DataStorage {
   public Page getRelatedPage(String wikiType, String wikiOwner, String pageId) throws WikiException {
     boolean created = mowService.startSynchronization();
 
-    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner, false);
+    WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner);
     LinkRegistry linkRegistry = wiki.getLinkRegistry();
     LinkEntry oldLinkEntry = linkRegistry.getLinkEntries().get(getLinkEntryName(wikiType, wikiOwner, pageId));
     LinkEntry newLinkEntry = null;
@@ -901,7 +806,7 @@ public class JCRDataStorage implements DataStorage {
       String[] texts = pageId.split(Utils.SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE);
       username = texts[0];
       WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-      userWiki = userWikiContainer.getWiki(username, true);
+      userWiki = userWikiContainer.getWiki(username);
       Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildrenByRootPermission().values();
 
       // Change collection to List
@@ -911,7 +816,7 @@ public class JCRDataStorage implements DataStorage {
         }
       }
     } else {
-      userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username, false);
+      userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username);
       if(userWiki == null) {
         userWiki = (UserWiki) wStore.addWiki(WikiType.USER, username);
       }
@@ -962,7 +867,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     // Get all draft pages
-    UserWiki userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username, true);
+    UserWiki userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username);
     Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildPages().values();
 
     // Find the lastest draft of target page
@@ -996,7 +901,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     // Get all draft pages
-    UserWiki userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username, true);
+    UserWiki userWiki = (UserWiki) fetchWikiImpl(PortalConfig.USER_TYPE, username);
     Collection<PageImpl> childPages = userWiki.getDraftPagesContainer().getChildPages().values();
 
     // Find the lastest draft
@@ -1442,9 +1347,9 @@ public class JCRDataStorage implements DataStorage {
     try {
       List<PermissionEntry> permissionEntries = getWikiPermission(wikiType, wikiOwner);
       for (PermissionEntry perm : permissionEntries) {
-        org.exoplatform.wiki.service.Permission[] permissions = perm.getPermissions();
+        Permission[] permissions = perm.getPermissions();
         List<String> actions = new ArrayList<>();
-        for (org.exoplatform.wiki.service.Permission permission : permissions) {
+        for (Permission permission : permissions) {
           if (permission.isAllowed()) {
             actions.add(permission.getPermissionType().toString());
           }
@@ -1611,7 +1516,7 @@ public class JCRDataStorage implements DataStorage {
   private void updateAllPagesPermissions(String wikiType, String wikiOwner, HashMap<String, String[]> permMap) throws WikiException {
     boolean created = mowService.startSynchronization();
 
-    PageImpl page = fetchWikiImpl(wikiType, wikiOwner, false).getWikiHome();
+    PageImpl page = fetchWikiImpl(wikiType, wikiOwner).getWikiHome();
     Queue<PageImpl> queue = new LinkedList<>();
     queue.add(page);
     while (queue.peek() != null) {
@@ -1740,28 +1645,6 @@ public class JCRDataStorage implements DataStorage {
     } finally {
       mowService.stopSynchronization(created);
     }
-  }
-
-  private Wiki getWikiWithoutPermission(String wikiType, String owner) throws WikiException {
-    boolean created = mowService.startSynchronization();
-
-    WikiStore wStore = mowService.getWikiStore();
-    WikiImpl wikiImpl = null;
-    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-      WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-      wikiImpl = portalWikiContainer.getWiki(owner, true);
-    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
-      WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-      wikiImpl = groupWikiContainer.getWiki(owner, true);
-    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
-      WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-      wikiImpl = userWikiContainer.getWiki(owner, true);
-    }
-    Wiki wiki = convertWikiImplToWiki(wikiImpl);
-
-    mowService.stopSynchronization(created);
-
-    return wiki;
   }
 
   private void processCircularRename(LinkEntry entry, LinkEntry newEntry) {
@@ -1948,25 +1831,25 @@ public class JCRDataStorage implements DataStorage {
 
   /**
    * Fetch a WikiImpl object with Chrommatic
+   * @param hasAdminPermission
    * @param wikiType
    * @param wikiOwner
-   * @param hasAdminPermission
    * @return
    */
-  private WikiImpl fetchWikiImpl(String wikiType, String wikiOwner, boolean hasAdminPermission) throws WikiException {
+  private WikiImpl fetchWikiImpl(String wikiType, String wikiOwner) throws WikiException {
     boolean created = mowService.startSynchronization();
 
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiImpl wiki = null;
     if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
       WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-      wiki = portalWikiContainer.getWiki(wikiOwner, hasAdminPermission);
+      wiki = portalWikiContainer.getWiki(wikiOwner);
     } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
       WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-      wiki = groupWikiContainer.getWiki(wikiOwner, hasAdminPermission);
+      wiki = groupWikiContainer.getWiki(wikiOwner);
     } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
       WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-      wiki = userWikiContainer.getWiki(wikiOwner, hasAdminPermission);
+      wiki = userWikiContainer.getWiki(wikiOwner);
     }
     mowService.persist();
 
@@ -1984,7 +1867,7 @@ public class JCRDataStorage implements DataStorage {
 
     PageImpl wikiPage = null;
     if(pageName.equals(WikiConstants.WIKI_HOME_NAME)) {
-      WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner, true);
+      WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner);
       wikiPage = wikiImpl.getWikiHome();
     } else {
       ChromatticSession session = mowService.getSession();

@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
+import org.chromattic.api.ChromatticSession;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.core.ExtendedNode;
@@ -26,19 +27,30 @@ import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.utils.Utils;
 
+import javax.jcr.Node;
 import javax.jcr.RepositoryException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-public class PermissionImpl extends Permission {
+public class PermissionImpl {
   private static final Log log = ExoLogger.getLogger(PermissionImpl.class);
 
-  @Override
+  protected MOWService mowService;
+
+  public void setMOWService(MOWService mowService) {
+    this.mowService = mowService;
+  }
+
+  public MOWService getMOWService() {
+    return mowService;
+  }
+
   public HashMap<String, String[]> getPermission(String jcrPath) throws WikiException {
     try {
       ExtendedNode extendedNode = (ExtendedNode) getJCRNode(jcrPath);
@@ -63,7 +75,6 @@ public class PermissionImpl extends Permission {
     }
   }
 
-  @Override
   public boolean hasPermission(PermissionType permissionType, String jcrPath) {
     ConversationState conversationState = ConversationState.getCurrent();
     Identity user;
@@ -74,8 +85,7 @@ public class PermissionImpl extends Permission {
     }
     return hasPermission(permissionType, jcrPath, user);
   }
-  
-  @Override
+
   public boolean hasPermission(PermissionType permissionType, String jcrPath, Identity user) {
     // Convert permissionType to JCR permission
     String[] permission = new String[] {};
@@ -100,7 +110,6 @@ public class PermissionImpl extends Permission {
     }
   }
 
-  @Override
   public void setPermission(HashMap<String, String[]> permissions, String jcrPath) throws WikiException {
     getChromatticSession().save();
     try {
@@ -118,5 +127,13 @@ public class PermissionImpl extends Permission {
     } catch(RepositoryException e) {
       throw new WikiException("Cannot set permissions on node " + jcrPath, e);
     }
+  }
+
+  protected ChromatticSession getChromatticSession() {
+    return mowService.getSession();
+  }
+
+  protected Node getJCRNode(String path) throws RepositoryException {
+    return (Node) getChromatticSession().getJCRSession().getItem(path);
   }
 }

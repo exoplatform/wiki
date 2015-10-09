@@ -39,7 +39,7 @@ import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.rendering.converter.ConfluenceToXWiki2Transformer;
 import org.exoplatform.wiki.rendering.util.Utils;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.rendering.syntax.Syntax;
@@ -58,7 +58,7 @@ public abstract class PageImpl extends NTFolder {
   
   private MOWService mowService;
   
-  private Permission permission = new PermissionImpl();
+  private PermissionImpl permission = new PermissionImpl();
   
   private ComponentManager componentManager;
   

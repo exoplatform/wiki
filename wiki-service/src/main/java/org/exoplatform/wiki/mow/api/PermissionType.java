@@ -14,46 +14,19 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see<http://www.gnu.org/licenses/>.
  */
-package org.exoplatform.wiki.service;
+package org.exoplatform.wiki.mow.api;
 
-public class PermissionEntry {
-  private String id;
+public enum PermissionType {
+
+  VIEWPAGE,
+
+  EDITPAGE,
+
+  ADMINPAGE,
+
+  ADMINSPACE,
   
-  private String fullName;
-
-  private IDType idType;
-
-  private Permission[] permissions;
+  VIEW_ATTACHMENT,
   
-  public String getId() {
-    return id;
-  }
-
-  public void setId(String id) {
-    this.id = id;
-  }
-  
-  public String getFullName() {
-    return fullName;
-  }
-  
-  public void setFullName(String fullName) {
-    this.fullName = fullName;
-  }
-
-  public IDType getIdType() {
-    return idType;
-  }
-
-  public void setIdType(IDType idType) {
-    this.idType = idType;
-  }
-
-  public Permission[] getPermissions() {
-    return permissions;
-  }
-
-  public void setPermissions(Permission[] permissions) {
-    this.permissions = permissions;
-  }
+  EDIT_ATTACHMENT
 }

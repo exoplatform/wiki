@@ -16,24 +16,46 @@
  */
 package org.exoplatform.wiki.mow.api;
 
-public class Permission {
-  private PermissionType permissionType;
+import org.exoplatform.wiki.service.*;
 
-  private boolean isAllowed = false;
+public class PermissionEntry {
+  private String id;
+  
+  private String fullName;
 
-  public PermissionType getPermissionType() {
-    return permissionType;
+  private IDType idType;
+
+  private Permission[] permissions;
+  
+  public String getId() {
+    return id;
   }
 
-  public void setPermissionType(PermissionType permissionType) {
-    this.permissionType = permissionType;
+  public void setId(String id) {
+    this.id = id;
+  }
+  
+  public String getFullName() {
+    return fullName;
+  }
+  
+  public void setFullName(String fullName) {
+    this.fullName = fullName;
   }
 
-  public boolean isAllowed() {
-    return isAllowed;
+  public IDType getIdType() {
+    return idType;
   }
 
-  public void setAllowed(boolean isAllowed) {
-    this.isAllowed = isAllowed;
+  public void setIdType(IDType idType) {
+    this.idType = idType;
+  }
+
+  public Permission[] getPermissions() {
+    return permissions;
+  }
+
+  public void setPermissions(Permission[] permissions) {
+    this.permissions = permissions;
   }
 }

@@ -16,6 +16,8 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -187,13 +189,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws WikiException {
-    boolean hasAdminPermission = false;
-    try {
-      hasAdminPermission = hasAdminPagePermission(wikiType, owner);
-    } catch (WikiException e) {
-      LOG.error("Cannot check permissions of connected user when getting wiki " + wikiType + ":" + owner, e);
-    }
-    return dataStorage.getWikiByTypeAndOwner(wikiType, owner, hasAdminPermission);
+    return dataStorage.getWikiByTypeAndOwner(wikiType, owner);
   }
 
   @Override
@@ -207,13 +203,77 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException {
-    dataStorage.setWikiPermission(wikiType, wikiOwner, permissionEntries);
+  public void updateWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException {
+    dataStorage.updateWikiPermission(wikiType, wikiOwner, permissionEntries);
   }
 
   @Override
   public List<String> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException {
-    return dataStorage.getWikiDefaultPermissions(wikiType, wikiOwner);
+    String view = new StringBuilder().append(PermissionType.VIEWPAGE).toString();
+    String viewEdit = new StringBuilder().append(PermissionType.VIEWPAGE).append(",").append(PermissionType.EDITPAGE).toString();
+    String all = new StringBuilder().append(PermissionType.VIEWPAGE)
+            .append(",")
+            .append(PermissionType.EDITPAGE)
+            .append(",")
+            .append(PermissionType.ADMINPAGE)
+            .append(",")
+            .append(PermissionType.ADMINSPACE)
+            .toString();
+    List<String> permissions = new ArrayList<>();
+    Iterator<Map.Entry<String, IDType>> iter = Utils.getACLForAdmins().entrySet().iterator();
+    while (iter.hasNext()) {
+      Map.Entry<String, IDType> entry = iter.next();
+      permissions.add(new StringBuilder(all).append(":").append(entry.getValue()).append(":").append(entry.getKey()).toString());
+    }
+    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(UserPortalConfigService.class);
+      try {
+        UserPortalConfig userPortalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null);
+        if(userPortalConfig != null) {
+          PortalConfig portalConfig = userPortalConfig.getPortalConfig();
+          String portalEditClause = new StringBuilder(all).append(":")
+                  .append(IDType.MEMBERSHIP)
+                  .append(":")
+                  .append(portalConfig.getEditPermission())
+                  .toString();
+          if (!permissions.contains(portalEditClause)) {
+            permissions.add(portalEditClause);
+          }
+        }
+        permissions.add(new StringBuilder(view).append(":").append(IDType.USER).append(":any").toString());
+      } catch (Exception e) {
+        throw new WikiException("Cannot get user portal config for wiki " + wikiType + ":" + wikiOwner
+                + " - Cause : " + e.getMessage(), e);
+      }
+    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
+      UserACL userACL = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
+      String makableMTClause = new StringBuilder(all).append(":")
+              .append(IDType.MEMBERSHIP)
+              .append(":")
+              .append(userACL.getMakableMT())
+              .append(":")
+              .append(wikiOwner)
+              .toString();
+      if (!permissions.contains(makableMTClause)) {
+        permissions.add(makableMTClause);
+      }
+      String ownerClause = new StringBuilder(viewEdit).append(":")
+              .append(IDType.MEMBERSHIP)
+              .append(":*:")
+              .append(wikiOwner)
+              .toString();
+      if (!permissions.contains(ownerClause)) {
+        permissions.add(ownerClause);
+      }
+    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
+      String ownerClause = new StringBuilder(all).append(":").append(IDType.USER).append(":").append(wikiOwner).toString();
+      if (!permissions.contains(ownerClause)) {
+        permissions.add(ownerClause);
+      }
+    }
+
+    return permissions;
   }
 
   @Override
@@ -300,15 +360,17 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
 
-    // set full permissions for owner
-    ConversationState conversationState = ConversationState.getCurrent();
-    if (conversationState != null && conversationState.getIdentity() != null) {
-      HashMap<String, String[]> permissions = page.getPermission();
-      if(permissions == null) {
-        permissions = new HashMap<>();
+    HashMap<String, String[]> permissions = page.getPermission();
+    // if permissions are not set, init with default permissions
+    if(permissions == null) {
+      List<String> wikiDefaultPermissions = this.getWikiDefaultPermissions(wiki.getType(), wiki.getOwner());
+      permissions = convertWikiPermissions(wikiDefaultPermissions);
+      // set full permissions for owner
+      ConversationState conversationState = ConversationState.getCurrent();
+      if (conversationState != null && conversationState.getIdentity() != null) {
+        permissions.put(conversationState.getIdentity().getUserId(), org.exoplatform.services.jcr.access.PermissionType.ALL);
+        page.setPermission(permissions);
       }
-      permissions.put(conversationState.getIdentity().getUserId(), org.exoplatform.services.jcr.access.PermissionType.ALL);
-      page.setPermission(permissions);
     }
 
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
@@ -649,20 +711,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     // TODO implement watch page here (should send an email only if there is a new version of the page content)
     // Utils.sendMailOnChangeContent(content);
 
-    /*
-    String eventType = null;
-    String pageContent = page.getContent();
-    if(!page.getTitle().equals(updatedPage.getTitle()) && !pageContent.equals(updatedPage.getContent())) {
-      eventType = PageWikiListener.EDIT_PAGE_CONTENT_AND_TITLE;
-    } else if(!page.getTitle().equals(updatedPage.getTitle())) {
-      eventType = PageWikiListener.EDIT_PAGE_TITLE;
-    } else if(!pageContent.equals(updatedPage.getContent())) {
-      eventType = PageWikiListener.EDIT_PAGE_CONTENT;
-    }
-    if(eventType != null) {
-      postUpdatePage(updatedPage.getWikiType(), updatedPage.getOwner(), updatedPage.getName(), updatedPage, eventType);
-    }
-    */
     if(updateType != null) {
       postUpdatePage(page.getWikiType(), page.getOwner(), page.getName(), page, updateType);
     }
@@ -1261,4 +1309,27 @@ public class WikiServiceImpl implements WikiService, Startable {
       log.error("Cannot init emotion icons - Cause : " + e.getMessage(), e);
     }
   }
+
+  private HashMap<String, String[]> convertWikiPermissions(List<String> permissions) {
+    HashMap<String, String[]> permMap = new HashMap<>();
+    for (String perm : permissions) {
+      String[] actions = perm.substring(0, perm.indexOf(":")).split(",");
+      perm = perm.substring(perm.indexOf(":") + 1);
+      String id = perm.substring(perm.indexOf(":") + 1);
+      List<String> allowedActions = new ArrayList<>();
+      for (String action : actions) {
+        if (PermissionType.VIEWPAGE.toString().equals(action)) {
+          allowedActions.add(org.exoplatform.services.jcr.access.PermissionType.READ);
+        } else if (PermissionType.EDITPAGE.toString().equals(action)) {
+          allowedActions.add(org.exoplatform.services.jcr.access.PermissionType.ADD_NODE);
+          allowedActions.add(org.exoplatform.services.jcr.access.PermissionType.REMOVE);
+          allowedActions.add(org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY);
+        }
+      }
+      permMap.put(id, allowedActions.toArray(new String[allowedActions.size()]));
+    }
+
+    return permMap;
+  }
+
 }

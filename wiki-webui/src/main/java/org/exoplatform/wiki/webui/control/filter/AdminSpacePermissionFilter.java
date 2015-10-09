@@ -21,7 +21,7 @@ import java.util.Map;
 import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.PermissionType;
 
 public class AdminSpacePermissionFilter extends UIExtensionAbstractFilter {
 

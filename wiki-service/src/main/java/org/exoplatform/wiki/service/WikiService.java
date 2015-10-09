@@ -121,7 +121,7 @@ public interface WikiService {
    * @param permissionEntries The list of permissions.
    * @throws WikiException
    */
-  public void setWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException;
+  public void updateWikiPermission(String wikiType, String wikiOwner, List<PermissionEntry> permissionEntries) throws WikiException;
 
   /**
    * Gets a wiki page by its unique name in the wiki.

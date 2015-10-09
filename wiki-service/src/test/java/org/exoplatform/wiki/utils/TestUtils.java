@@ -22,9 +22,9 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.exoplatform.wiki.service.Permission;
-import org.exoplatform.wiki.service.PermissionEntry;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
+import org.exoplatform.wiki.mow.api.PermissionType;
 
 /**
  * Created by The eXo Platform SAS

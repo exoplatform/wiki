@@ -61,7 +61,7 @@ public abstract class WikiContainer<T extends WikiImpl> {
     return wikiOwner;
   }
 
-  public T getWiki(String wikiOwner, boolean hasAdminPermission) {
+  public T getWiki(String wikiOwner) {
     return contains(wikiOwner);
   }
 
