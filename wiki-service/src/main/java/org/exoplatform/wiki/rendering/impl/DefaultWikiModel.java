@@ -132,11 +132,6 @@ public class DefaultWikiModel implements WikiModel {
       if (ResourceType.ATTACHMENT.equals(resourceType)) {
         page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageId());
 
-        // TODO how to get full path (not hardcoded) ?
-        sb.append("collaboration");
-        sb.append(page.getPath());
-        sb.append("/");
-
         Attachment att = wikiService.getAttachmentOfPageByName(attachmentName, page);
         if (att != null) {
           sb.append(att.getDownloadURL());
