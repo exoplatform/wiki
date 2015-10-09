@@ -710,20 +710,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public void modifyTemplate(WikiPageParams params,
-                             Template template,
-                             String newTitle,
-                             String newDescription,
-                             String newContent,
-                             String newSyntaxId) throws WikiException {
-    if (newTitle != null) {
-      // TODO need updateTemplate
-      //template = dataStorage.getTemplatesContainer(params).addPage(TitleResolver.getId(newTitle, false), template);
-      template.setDescription(StringEscapeUtils.escapeHtml(newDescription));
-      template.setTitle(newTitle);
-      template.setContent(newContent);
-      template.setSyntax(newSyntaxId);
-    }
+  public void updateTemplate(Template template) throws WikiException {
+    dataStorage.updateTemplatePage(template);
   }
 
   @Override

@@ -344,15 +344,10 @@ public interface WikiService {
   /**
    * Modifies an existing wiki template.
    *
-   * @param params The params object which is used for getting the wiki template.
-   * @param template The wiki template to be modified.
-   * @param newName New name of the wiki template.
-   * @param newDescription New description of the wiki template.
-   * @param newContent New content of the wiki template.
-   * @param newSyntaxId New syntax Id of the wiki template.
+   * @param template The updated wiki template.
    * @throws WikiException
    */
-  public void modifyTemplate(WikiPageParams params, Template template, String newName, String newDescription, String newContent, String newSyntaxId) throws WikiException;
+  public void updateTemplate(Template template) throws WikiException;
 
   /**
    * Checks if a wiki page exists or not.

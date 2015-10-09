@@ -260,7 +260,6 @@ public class JCRDataStorage implements DataStorage {
     TemplateImpl templatePage = templatesContainer.createTemplatePage();
     templatePage = templatesContainer.addPage(template.getName(), templatePage);
 
-    templatePage.setName(template.getName());
     templatePage.setTitle(template.getTitle());
     templatePage.setDescription(template.getDescription());
     templatePage.getContent().setText(template.getContent());
@@ -268,6 +267,24 @@ public class JCRDataStorage implements DataStorage {
     mowService.stopSynchronization(created);
   }
 
+  @Override
+  public void updateTemplatePage(Template template) throws WikiException {
+    boolean created = mowService.startSynchronization();
+
+    TemplateContainer templatesContainer = getTemplatesContainer(template.getWikiType(), template.getWikiOwner());
+    TemplateImpl templateImpl = templatesContainer.getTemplate(template.getName());
+
+    templateImpl.setTitle(template.getTitle());
+    templateImpl.setDescription(template.getDescription());
+    templateImpl.getContent().setText(template.getContent());
+    templateImpl.setSyntax(template.getSyntax());
+
+    mowService.persist();
+
+    mowService.stopSynchronization(created);
+  }
+
+  @Override
   public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws WikiException {
     boolean created = mowService.startSynchronization();
 
@@ -321,7 +338,12 @@ public class JCRDataStorage implements DataStorage {
   public Template getTemplatePage(WikiPageParams params, String templateId) throws WikiException {
     boolean created = mowService.startSynchronization();
 
-    Template template = convertTemplateImplToTemplate(getTemplatesContainer(params.getType(), params.getOwner()).getTemplate(templateId));
+    TemplateContainer templatesContainer = getTemplatesContainer(params.getType(), params.getOwner());
+    Template template = convertTemplateImplToTemplate(templatesContainer.getTemplate(templateId));
+    if(template != null) {
+      template.setWikiType(params.getType());
+      template.setWikiOwner(params.getOwner());
+    }
 
     mowService.stopSynchronization(created);
 
@@ -335,7 +357,10 @@ public class JCRDataStorage implements DataStorage {
     Map<String, Template> templates = new HashMap<>();
     Map<String, TemplateImpl> templatesImpl = getTemplatesContainer(params.getType(), params.getOwner()).getTemplates();
     for(String templateImplKey : templatesImpl.keySet()) {
-      templates.put(templateImplKey, convertTemplateImplToTemplate(templatesImpl.get(templateImplKey)));
+      Template template = convertTemplateImplToTemplate(templatesImpl.get(templateImplKey));
+      template.setWikiType(params.getType());
+      template.setWikiOwner(params.getOwner());
+      templates.put(templateImplKey, template);
     }
 
     mowService.stopSynchronization(created);

@@ -43,6 +43,8 @@ public interface DataStorage {
 
   public void createTemplatePage(Wiki wiki, Template template) throws WikiException;
 
+  public void updateTemplatePage(Template template) throws WikiException;
+
   public void deleteTemplatePage(String wikiType, String wikiOwner, String templateName) throws WikiException;
 
   public void deletePage(String wikiType, String wikiOwner, String pageId) throws WikiException;

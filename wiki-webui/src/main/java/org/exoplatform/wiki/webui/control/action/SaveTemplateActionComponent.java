@@ -141,7 +141,11 @@ public class SaveTemplateActionComponent extends UIComponent {
         }
         if (wikiPortlet.getWikiMode() == WikiMode.EDITTEMPLATE) {
           Template template = wikiService.getTemplatePage(pageParams, pageEditForm.getTemplateId());
-          wikiService.modifyTemplate(pageParams, template, title, description, markup, syntaxId);
+          template.setTitle(title);
+          template.setDescription(description);
+          template.setContent(markup);
+          template.setSyntax(syntaxId);
+          wikiService.updateTemplate(template);
         } else if (wikiPortlet.getWikiMode() == WikiMode.ADDTEMPLATE) {
           Template template = new Template();
           template.setName(idTemp);
