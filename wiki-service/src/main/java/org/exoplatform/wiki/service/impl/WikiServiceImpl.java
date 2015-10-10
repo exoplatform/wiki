@@ -761,6 +761,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     DraftPage newDraftPage = new DraftPage();
     newDraftPage.setName(UNTITLED_PREFIX + draftSuffix);
     newDraftPage.setNewPage(true);
+    newDraftPage.setTitle(draftPage.getTitle());
     newDraftPage.setTargetPageId(parentPage.getId());
     newDraftPage.setTargetPageRevision("1");
     newDraftPage.setContent(draftPage.getContent());
@@ -786,6 +787,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     DraftPage newDraftPage = new DraftPage();
     newDraftPage.setName(targetPage.getName() + "_" + draftSuffix);
     newDraftPage.setNewPage(false);
+    newDraftPage.setTitle(draftPage.getTitle());
     newDraftPage.setTargetPageId(targetPage.getId());
     newDraftPage.setContent(draftPage.getContent());
     newDraftPage.setCreatedDate(new Date(clientTime));

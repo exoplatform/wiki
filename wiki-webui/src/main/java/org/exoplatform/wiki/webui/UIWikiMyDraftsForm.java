@@ -104,8 +104,6 @@ public class UIWikiMyDraftsForm extends UIForm {
           continue;
         }
 
-        draftPage.setTitle(page.getTitle());
-
         List<BreadcrumbData> breadcrumbDatas = wService.getBreadcumb(wiki.getType(), wiki.getOwner(), page.getName());
         grid.putBreadCrumbDatas(draftPage.getName(), breadcrumbDatas);
         String draftTitle = draftPage.getTitle();

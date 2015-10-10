@@ -259,6 +259,8 @@ public class SavePageActionComponent extends UIComponent {
 
             // Remove the draft for new page
             try {
+              wikiService.removeDraft(draftPage.getName());
+
               Page parentPage = wikiService.getParentPageOf(createdPage);
               DraftPage contentDraftPage = findTheMatchDraft(title, parentPage);
               if (contentDraftPage == null) {
@@ -269,8 +271,8 @@ public class SavePageActionComponent extends UIComponent {
                     wikiService.removeDraft(log.getDraftName());
                   }
                 }
-              } else if(wikiService.getDraftOfPage(createdPage) != null) {
-                wikiService.removeDraftOfPage(new WikiPageParams(contentDraftPage.getWikiType(), contentDraftPage.getWikiOwner(), contentDraftPage.getName()));
+              } else {
+                wikiService.removeDraft(contentDraftPage.getName());
               }
             } catch(WikiException e) {
               log.error("Cannot delete draft of new page " + createdPage.getWikiType() + ":"
