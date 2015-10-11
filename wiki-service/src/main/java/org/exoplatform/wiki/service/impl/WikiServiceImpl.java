@@ -148,8 +148,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void start() {
     initEmotionIcons();
-    // TODO Why do we need to remove help pages at each startup ?
-    //removeHelpPages();
   }
 
   @Override
