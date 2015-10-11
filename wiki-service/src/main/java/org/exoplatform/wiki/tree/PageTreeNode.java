@@ -17,6 +17,8 @@
 package org.exoplatform.wiki.tree;
 
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PermissionType;
@@ -30,6 +32,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 
 public class PageTreeNode extends TreeNode {
+  private static final Log log = ExoLogger.getLogger(PageTreeNode.class);
+
   private Page page;
 
   private WikiService wikiService;
@@ -87,8 +91,8 @@ public class PageTreeNode extends TreeNode {
       WikiPageParams params = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
       return TreeUtils.getPathFromPageParams(params);
     } catch (Exception e) {
-      // TODO log
-      e.printStackTrace();
+      log.error("Cannot build path of wiki page " + page.getWikiType() + ":" + page.getWikiOwner() + ":"
+              + page.getName() + " - Cause : " + e.getMessage(), e);
       return null;
     }
   }
