@@ -25,14 +25,12 @@ import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
 
 import java.util.Arrays;
-import java.util.List;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -73,8 +71,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     try{
       // Render current content
       if (currentMode.equals(WikiMode.VIEW)) {
-          PageRenderingCacheService renderingCacheService = getApplicationComponent(PageRenderingCacheService.class);
-          contentDisplay.setHtmlOutput(renderingCacheService.getRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
+          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
       }
       if (currentMode.equals(WikiMode.HELP)) {
           contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent(),

@@ -5,8 +5,7 @@
   import org.exoplatform.wiki.webui.UIWikiPortlet;
   import org.exoplatform.wiki.commons.Utils;
   import org.exoplatform.container.ExoContainerContext;
-  import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
-  
+
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
   

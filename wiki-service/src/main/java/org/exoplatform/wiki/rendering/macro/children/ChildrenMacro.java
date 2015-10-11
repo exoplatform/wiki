@@ -23,7 +23,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.builder.ReferenceBuilder;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.rendering.macro.ExcerptUtils;
 import org.exoplatform.wiki.service.WikiContext;
@@ -116,9 +115,8 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
       }
       
       root = generateTree(params, descendant, childrenNum, depth, context);
-      PageRenderingCacheService renderingCacheService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
       WikiContext wikiContext = getWikiContext();
-      renderingCacheService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
+      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
                                         new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
       return Collections.singletonList(root);
     } catch (Exception e) {

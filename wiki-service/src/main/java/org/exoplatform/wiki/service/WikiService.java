@@ -180,6 +180,16 @@ public interface WikiService {
   public Page getPageById(String id) throws WikiException;
 
   /**
+   * Get renderd content of a page
+   * @param page The wiki page
+   * @param targetSyntax The syntax
+   * @return The rendered content
+   */
+  public String getPageRenderedContent(Page page, String targetSyntax);
+
+  public void addPageLink(WikiPageParams param, WikiPageParams entity);
+
+  /**
    * Get parent page of a wiki page
    * @param page Wiki page.
    * @return The list of children pages

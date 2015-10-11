@@ -19,7 +19,6 @@ package org.exoplatform.wiki.rendering.macro.include;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -81,12 +80,12 @@ public class IncludePageMacro extends AbstractMacro<IncludePageMacroParameters> 
     Page page = null;
     try {
       page = getWikiService().getPageOfWikiByName(includeParams.getType(), includeParams.getOwner(), includeParams.getPageId());
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
-                                                                                                       .getComponentInstanceOfType(PageRenderingCacheService.class);
-      renderingCacheService.addPageLink(new WikiPageParams(currentCtx.getType(), currentCtx.getOwner(), currentCtx.getPageId()),
-                                        new WikiPageParams(includeParams.getType(),
-                                                           includeParams.getOwner(),
-                                                           includeParams.getPageId()));
+      WikiService wikiService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(WikiService.class);
+      wikiService.addPageLink(new WikiPageParams(currentCtx.getType(), currentCtx.getOwner(), currentCtx.getPageId()),
+              new WikiPageParams(includeParams.getType(),
+                      includeParams.getOwner(),
+                      includeParams.getPageId()));
       if (page == null) {
         return Collections.emptyList();
       }

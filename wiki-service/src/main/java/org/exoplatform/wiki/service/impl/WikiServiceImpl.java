@@ -2,7 +2,6 @@ package org.exoplatform.wiki.service.impl;
 
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.ObjectPageList;
@@ -19,6 +18,8 @@ import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfig;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.services.cache.CacheService;
+import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
@@ -28,14 +29,17 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
+import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
+import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
+import org.exoplatform.wiki.rendering.cache.MarkupData;
+import org.exoplatform.wiki.rendering.cache.MarkupKey;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.*;
-import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.picocontainer.Startable;
@@ -48,6 +52,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class WikiServiceImpl implements WikiService, Startable {
 
@@ -65,7 +70,15 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private static final long DEFAULT_SAVE_DRAFT_SEQUENCE_TIME = 30000;
 
+  public static final String CACHE_NAME = "wiki.PageRenderingCache";
+
+  public static final String ATT_CACHE_NAME = "wiki.PageRenderingCache.attachment";
+
+  public static final String UUID_CACHE_NAME = "wiki.PageRenderingCache.pageUuid";
+
   private ConfigurationManager configManager;
+
+  private RenderingService renderingService;
 
   private DataStorage dataStorage;
 
@@ -87,8 +100,18 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private String wikiWebappUri;
 
+  private ExoCache<Integer, MarkupData> renderingCache;
+  private ExoCache<Integer, AttachmentCountData> attachmentCountCache;
+  private ExoCache<Integer, String> uuidCache;
+
+  private Map<WikiPageParams, List<WikiPageParams>> pageLinksMap = new ConcurrentHashMap<>();
+
+  private Set<String> uncachedMacroes = new HashSet<>();
+
   public WikiServiceImpl(ConfigurationManager configManager,
                          DataStorage dataStorage,
+                         RenderingService renderingService,
+                         CacheService cacheService,
                          InitParams initParams) {
     String autoSaveIntervalProperty = System.getProperty("wiki.autosave.interval");
     if ((autoSaveIntervalProperty == null) || autoSaveIntervalProperty.isEmpty()) {
@@ -98,7 +121,12 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
     this.configManager = configManager;
+    this.renderingService = renderingService;
     this.dataStorage = dataStorage;
+
+    this.renderingCache = cacheService.getCacheInstance(CACHE_NAME);
+    this.attachmentCountCache = cacheService.getCacheInstance(ATT_CACHE_NAME);
+    this.uuidCache = cacheService.getCacheInstance(UUID_CACHE_NAME);
 
     if (initParams != null) {
       Iterator<ValuesParam> helps = initParams.getValuesParamIterator();
@@ -126,6 +154,18 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void stop() {
+  }
+
+  public ExoCache<Integer, String> getUuidCache() {
+    return uuidCache;
+  }
+
+  public ExoCache<Integer, MarkupData> getRenderingCache() {
+    return renderingCache;
+  }
+
+  public Map<WikiPageParams, List<WikiPageParams>> getPageLinksMap() {
+    return pageLinksMap;
   }
 
   /******* Configuration *******/
@@ -338,9 +378,6 @@ public class WikiServiceImpl implements WikiService, Startable {
       throw new WikiException("Page " + wiki.getType() + ":" + wiki.getOwner() + ":" + pageName + " already exists, cannot create it.");
     }
 
-    PageRenderingCacheService pageRenderingCacheService = ExoContainerContext.getCurrentContainer()
-            .getComponentInstanceOfType(PageRenderingCacheService.class);
-
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
 
     List<PermissionEntry> permissions = page.getPermissions();
@@ -352,8 +389,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
 
-    pageRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), parentPage.getName()));
-    pageRenderingCacheService.invalidateCache(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
+    invalidateCache(parentPage);
+    invalidateCache(page);
 
     // call listeners
     postAddPage(wiki.getType(), wiki.getOwner(), page.getName(), createdPage);
@@ -363,20 +400,29 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws WikiException {
-    // check in the cache first
-    PageRenderingCacheService pageRenderingCacheService = org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class);
-    // TODO re-activate cache
-    //Page page = pageRenderingCacheService.getPageByParams(new WikiPageParams(wikiType, wikiOwner, pageName));
     Page page = null;
 
-    Identity user = ConversationState.getCurrent().getIdentity();
+    // check in the cache first
+    MarkupKey key = new MarkupKey(new WikiPageParams(wikiType, wikiOwner, pageName), "", Syntax.XHTML_1_0.toIdString(), true);
+    String uuid  = uuidCache.get(new Integer(key.hashCode()));
+    if (uuid != null) {
+      page = getPageById(uuid);
+    }
 
-    if (page != null) {
-      if(!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
+    // if uuid not found in the cache
+    if (page == null) {
+      page = dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageName);
+      if (page != null) {
+        uuid = page.getId();
+        uuidCache.put(new Integer(key.hashCode()), uuid);
+      }
+    }
+
+    if(page != null) {
+      Identity user = ConversationState.getCurrent().getIdentity();
+      if (!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
         page = null;
       }
-    } else {
-      page = dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageName);
     }
 
     // Check to remove the domain in page url
@@ -417,7 +463,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     try {
       Page page = getPageOfWikiByName(wikiType, wikiOwner, pageName);
-      invalidateUUIDCache(wikiType, wikiOwner, pageName);
+      invalidateCachesOfPageTree(page);
 
       if(page != null) {
 
@@ -468,10 +514,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     dataStorage.renamePage(wikiType, wikiOwner, pageName, newName, newTitle);
 
     // Invaliding cache
-    org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
-            .invalidateCache(new WikiPageParams(wikiType, wikiOwner, pageName));
-    org.exoplatform.wiki.rendering.util.Utils.getService(PageRenderingCacheService.class)
-            .invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, pageName));
+    Page page = new Page(pageName);
+    page.setWikiType(wikiType);
+    page.setWikiOwner(wikiOwner);
+    invalidateCache(page);
+    invalidateUUIDCache(page);
 
     return true;
   }
@@ -485,9 +532,10 @@ public class WikiServiceImpl implements WikiService, Startable {
 
       dataStorage.movePage(currentLocationParams, newLocationParams);
 
-      PageRenderingCacheService pageRenderingCacheService = ExoContainerContext.getCurrentContainer()
-              .getComponentInstanceOfType(PageRenderingCacheService.class);
-      pageRenderingCacheService.invalidateCache(currentLocationParams);
+      Page page = new Page(currentLocationParams.getPageId());
+      page.setWikiType(currentLocationParams.getType());
+      page.setWikiOwner(currentLocationParams.getOwner());
+      invalidateCache(page);
 
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
     } catch (WikiException e) {
@@ -497,17 +545,110 @@ public class WikiServiceImpl implements WikiService, Startable {
     return true;
   }
 
+  @Override
+  public String getPageRenderedContent(Page page, String targetSyntax) {
+    String renderedContent = StringUtils.EMPTY;
+    try {
+      boolean supportSectionEdit = hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
+      MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, supportSectionEdit);
+      //get content from cache only when page is not uncached mixin
+      //if (page.getUncachedMixin() == null) {
+      MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
+      if (cachedData != null) {
+        return cachedData.build();
+      }
+      //}
+      String markup = page.getContent();
+      renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
+      renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
+    } catch (Exception e) {
+      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", page.getWikiType(), page.getWikiOwner(), page.getName(), targetSyntax), e);
+    }
+    return renderedContent;
+  }
 
-  private void invalidateUUIDCache(String wikiType, String wikiOwner, String pageId) throws WikiException {
-    Page page = getPageOfWikiByName(wikiType, wikiOwner, pageId);
+  @Override
+  public void addPageLink(WikiPageParams param, WikiPageParams entity) {
+    List<WikiPageParams> linkParams = this.pageLinksMap.get(entity);
+    if (linkParams == null) {
+      linkParams = new ArrayList<>();
+      this.pageLinksMap.put(entity, linkParams);
+    }
+    linkParams.add(param);
+  }
 
+  protected void invalidateCache(Page page) {
+    WikiPageParams params = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
+    List<WikiPageParams> linkedPages = pageLinksMap.get(params);
+    if (linkedPages == null) {
+      linkedPages = new ArrayList<>();
+    } else {
+      linkedPages = new ArrayList<>(linkedPages);
+    }
+    linkedPages.add(params);
+
+    for (WikiPageParams wikiPageParams : linkedPages) {
+      try {
+        MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        renderingCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        renderingCache.remove(new Integer(key.hashCode()));
+
+        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        renderingCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        renderingCache.remove(new Integer(key.hashCode()));
+      } catch (Exception e) {
+        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
+      }
+    }
+  }
+
+  protected void invalidateUUIDCache(Page page) {
+    MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()),
+            "", Syntax.XHTML_1_0.toIdString(), true);
+    uuidCache.remove(new Integer(key.hashCode()));
+  }
+
+  protected void invalidateAttachmentCache(WikiPageParams param) {
+    List<WikiPageParams> linkedPages = pageLinksMap.get(param);
+    if (linkedPages == null) {
+      linkedPages = new ArrayList<>();
+    } else {
+      linkedPages = new ArrayList<>(linkedPages);
+    }
+    linkedPages.add(param);
+
+    for (WikiPageParams wikiPageParams : linkedPages) {
+      try {
+        MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+
+        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        attachmentCountCache.remove(new Integer(key.hashCode()));
+      } catch (Exception e) {
+        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
+      }
+    }
+  }
+
+
+  /**
+   * Invalidate all caches of a page and all its descendants
+   * @param page root page
+   * @throws WikiException
+   */
+  protected void invalidateCachesOfPageTree(Page page) throws WikiException {
     Queue<Page> queue = new LinkedList<>();
     queue.add(page);
     while (!queue.isEmpty()) {
       Page currentPage = queue.poll();
-      PageRenderingCacheService pageRenderingCacheService = ExoContainerContext.getCurrentContainer()
-              .getComponentInstanceOfType(PageRenderingCacheService.class);
-      pageRenderingCacheService.invalidateUUIDCache(new WikiPageParams(wikiType, wikiOwner, currentPage.getName()));
+      invalidateCache(currentPage);
+      invalidateUUIDCache(currentPage);
       List<Page> childrenPages = getChildrenPageOf(currentPage);
       for (Page child : childrenPages) {
         queue.add(child);
@@ -678,6 +819,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void updatePage(Page page, PageUpdateType updateType) throws WikiException {
     dataStorage.updatePage(page);
+
+    invalidateCache(page);
 
     // TODO implement watch page here (should send an email only if there is a new version of the page content)
     // Utils.sendMailOnChangeContent(content);

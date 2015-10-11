@@ -27,17 +27,17 @@ import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -82,8 +82,16 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
   }
 
   protected int getNumberOfAttachments(Page page) {
-    PageRenderingCacheService cacheService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
-    return cacheService.getAttachmentCount(page);
+    // TODO use cache instead
+    int nbOfAttachments = 0;
+    try {
+      List<Attachment> attachments = wikiService.getAttachmentsOfPage(page);
+      nbOfAttachments = attachments == null ? 0 : attachments.size();
+    } catch (WikiException e) {
+      log.error("Cannot get number of attachments of " + page.getWikiType() + ":" + page.getWikiOwner()
+              + ":" + page.getName() + " - Cause : " + e.getMessage(), e);
+    }
+    return nbOfAttachments;
   }
 
   protected int getNumberOfVersions(Page page) {

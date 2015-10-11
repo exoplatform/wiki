@@ -60,6 +60,10 @@ public class Page {
   public Page() {
   }
 
+  public Page(String name) {
+    this.name = name;
+  }
+
   public Page(String name, String title) {
     this();
     this.name = name;
