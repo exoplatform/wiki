@@ -93,8 +93,6 @@ public interface DataStorage {
 
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException;
 
-  public Page getPageOfAttachment(Attachment attachment) throws WikiException;
-
   public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException;
 
   public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException;

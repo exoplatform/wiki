@@ -320,15 +320,6 @@ public interface WikiService {
   public Attachment getAttachmentOfPageByName(String attachmentName, Page page) throws WikiException;
 
   /**
-   * Gets parent page of a wiki attachment.
-   *
-   * @param attachment Attachment.
-   * @return Page of the attachment.
-   * @throws WikiException
-   */
-  public Page getPageOfAttachment(Attachment attachment) throws WikiException;
-
-  /**
    * Add the given attachment to the given page
    * @param attachment The attachment to add
    * @param page The wiki page

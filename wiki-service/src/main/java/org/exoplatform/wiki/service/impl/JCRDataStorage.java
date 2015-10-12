@@ -1106,12 +1106,6 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Page getPageOfAttachment(Attachment attachment) throws WikiException {
-    // TODO
-    throw new UnsupportedOperationException();
-  }
-
-  @Override
   public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException {
     boolean created = mowService.startSynchronization();
 

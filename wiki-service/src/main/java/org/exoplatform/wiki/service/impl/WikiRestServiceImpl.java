@@ -31,8 +31,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.wiki.mow.api.*;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.service.*;
@@ -40,8 +41,6 @@ import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
 import org.exoplatform.wiki.service.related.RelatedUtil;
 import org.exoplatform.wiki.service.rest.model.*;
-import org.exoplatform.wiki.service.rest.model.Attachment;
-import org.exoplatform.wiki.service.rest.model.Page;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.SearchResultType;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
@@ -522,7 +521,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
       List<org.exoplatform.wiki.mow.api.Attachment> pageAttachments = wikiService.getAttachmentsOfPage(page);
       for (org.exoplatform.wiki.mow.api.Attachment pageAttachment : pageAttachments) {
-        attachments.getAttachments().add(createAttachment(objectFactory, uriInfo.getBaseUri(), pageAttachment, "attachment", "attachment"));
+        attachments.getAttachments().add(createAttachment(objectFactory, uriInfo.getBaseUri(), pageAttachment, page, "attachment", "attachment"));
       }
     } catch (Exception e) {
       log.error(e.getMessage(), e);
@@ -723,18 +722,16 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   public Attachment createAttachment(ObjectFactory objectFactory,
                                      URI baseUri,
                                      org.exoplatform.wiki.mow.api.Attachment pageAttachment,
+                                     org.exoplatform.wiki.mow.api.Page page,
                                      String xwikiRelativeUrl,
                                      String xwikiAbsoluteUrl) throws Exception {
     Attachment attachment = objectFactory.createAttachment();
 
-    fillAttachment(attachment, objectFactory, baseUri, pageAttachment, xwikiRelativeUrl, xwikiAbsoluteUrl);
-
-    org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfAttachment(pageAttachment);
-    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+    fillAttachment(attachment, objectFactory, baseUri, pageAttachment, page, xwikiRelativeUrl, xwikiAbsoluteUrl);
 
     String attachmentUri = UriBuilder.fromUri(baseUri)
                                      .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}/attachments/{attachmentName}")
-            .build(wiki.getType(), wiki.getOwner(), page.getName(), pageAttachment.getName())
+            .build(page.getWikiType(), page.getWikiOwner(), page.getName(), pageAttachment.getName())
                                      .toString();
     Link attachmentLink = objectFactory.createLink();
     attachmentLink.setHref(attachmentUri);
@@ -838,11 +835,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                               ObjectFactory objectFactory,
                               URI baseUri,
                               org.exoplatform.wiki.mow.api.Attachment pageAttachment,
+                              org.exoplatform.wiki.mow.api.Page page,
                               String xwikiRelativeUrl,
                               String xwikiAbsoluteUrl) throws Exception {
-    org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfAttachment(pageAttachment);
-    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
-
     attachment.setId(String.format("%s@%s", page.getName(), pageAttachment.getName()));
     attachment.setName(pageAttachment.getName());
     attachment.setSize((int) pageAttachment.getWeightInBytes());
@@ -861,7 +856,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
     String pageUri = UriBuilder.fromUri(baseUri)
                                .path("/wiki/{wikiName}/spaces/{spaceName}/pages/{pageName}")
-                               .build(wiki.getType(), wiki.getOwner(), page.getName())
+                               .build(page.getWikiType(), page.getWikiOwner(), page.getName())
                                .toString();
     Link pageLink = objectFactory.createLink();
     pageLink.setHref(pageUri);
