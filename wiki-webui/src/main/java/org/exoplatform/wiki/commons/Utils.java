@@ -224,8 +224,9 @@ public class Utils {
   }
   
   public static Wiki getCurrentWiki() throws Exception {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    return org.exoplatform.wiki.utils.Utils.getWiki(params);
+    return wikiService.getWikiByTypeAndOwner(params.getType(), params.getOwner());
   }
 
   public static WikiContext setUpWikiContext(UIWikiPortlet wikiPortlet) throws Exception {

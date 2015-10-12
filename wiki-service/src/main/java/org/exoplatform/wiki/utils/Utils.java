@@ -323,22 +323,6 @@ public class Utils {
     return null; 
   }
   
-  public static Wiki getWiki(WikiPageParams params) {
-    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    if (params != null) {
-      String wikiType = params.getType();
-      String owner = params.getOwner();
-      if (!StringUtils.isEmpty(wikiType) && !StringUtils.isEmpty(owner)) {
-        try {
-          return wikiService.getWikiByTypeAndOwner(wikiType, owner);
-        } catch (Exception e) {
-          log_.error("Cannot get wiki " + wikiType + ":" + owner + " - Cause : " + e.getMessage(), e);
-        }
-      }
-    }
-    return null;
-  }
-  
   public static boolean isDescendantPage(Page page, Page parentPage) {
     return page.getPath().startsWith(parentPage.getPath());
   }

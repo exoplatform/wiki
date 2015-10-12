@@ -742,7 +742,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   }  
  
   private List<JsonNodeData> getJsonTree(WikiPageParams params,HashMap<String, Object> context) throws Exception {
-    Wiki wiki = Utils.getWiki(params);
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(params.getType(), params.getOwner());
     WikiTreeNode wikiNode = new WikiTreeNode(wiki);
     wikiNode.pushDescendants(context);
     return TreeUtils.tranformToJson(wikiNode, context);
