@@ -1117,13 +1117,21 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
-    try {
-      for (AttachmentImpl attachmentImpl : pageImpl.getAttachmentsExcludeContent()) {
-        attachments.add(convertAttachmentImplToAttachment(attachmentImpl));
+    if(pageImpl != null) {
+      try {
+        Collection<AttachmentImpl> attachmentsExcludeContent = pageImpl.getAttachmentsExcludeContent();
+        if(attachmentsExcludeContent != null) {
+          for (AttachmentImpl attachmentImpl : attachmentsExcludeContent) {
+            attachments.add(convertAttachmentImplToAttachment(attachmentImpl));
+          }
+        }
+      } catch (RepositoryException e) {
+        throw new WikiException("Cannot get attachments of page "
+                + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName(), e);
       }
-    } catch(RepositoryException e) {
+    } else {
       throw new WikiException("Cannot get attachments of page "
-              + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName(), e);
+              + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName() + " because the page does not exist.");
     }
 
     mowService.stopSynchronization(created);
