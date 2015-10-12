@@ -557,6 +557,14 @@ public interface WikiService {
   public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws WikiException;
 
   /**
+   * Gets all wikis of the given type
+   * @param wikiType Type of wiki
+   * @return Wikis of the given type
+   * @throws WikiException
+   */
+  public List<Wiki> getWikisByType(String wikiType) throws WikiException;
+
+  /**
    * Creates a wiki with the given type and owner
    * @param wikiType It can be Portal, Group, or User.
    * @param owner The Wiki owner.

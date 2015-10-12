@@ -15,6 +15,8 @@ public interface DataStorage {
 
   public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws WikiException;
 
+  public List<Wiki> getWikisByType(String wikiType) throws WikiException;
+
   public Wiki createWiki(Wiki wiki) throws WikiException;
 
   public Page createPage(Wiki wiki, Page parentPage, Page page) throws WikiException;

@@ -233,6 +233,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
+  public List<Wiki> getWikisByType(String wikiType) throws WikiException {
+    return dataStorage.getWikisByType(wikiType);
+  }
+
+  @Override
   public Wiki getOrCreateUserWiki(String username) throws WikiException {
     return getWikiByTypeAndOwner(PortalConfig.USER_TYPE, username);
   }
@@ -1197,7 +1202,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         spaceBeans.add(new SpaceBean(groupId, spaceName, PortalConfig.GROUP_TYPE, avatarUrl));
       }
     } catch (ClassNotFoundException e) {
-      Collection<Wiki> wikis = Utils.getWikisByType(WikiType.GROUP);
+      Collection<Wiki> wikis = getWikisByType(WikiType.GROUP.toString());
       if (keyword != null) {
         keyword = keyword.trim();
       }

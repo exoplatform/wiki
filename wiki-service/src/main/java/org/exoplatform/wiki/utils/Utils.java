@@ -323,13 +323,6 @@ public class Utils {
     return null; 
   }
   
-  public static Collection<Wiki> getWikisByType(WikiType wikiType) {
-    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    // TODO need getAllWikis
-    //return store.getWikiContainer(wikiType).getAllWikis();
-    return Collections.EMPTY_LIST;
-  }
-  
   public static Wiki getWiki(WikiPageParams params) {
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     if (params != null) {

@@ -31,6 +31,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -327,18 +328,17 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                           @QueryParam("start") Integer start,
                           @QueryParam("number") Integer number) {
     Spaces spaces = objectFactory.createSpaces();
-    List<String> spaceNames = new ArrayList<String>();
-    Collection<Wiki> wikis = Utils.getWikisByType(WikiType.valueOf(wikiType.toUpperCase()));
-    for (Wiki wiki : wikis) {
-      spaceNames.add(wiki.getOwner());
-    }
-    for (String spaceName : spaceNames) {
-      try {
-        org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(wikiType, spaceName, WikiConstants.WIKI_HOME_NAME);
-        spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wikiType, spaceName, page));
-      } catch (Exception e) {
-        log.error(e.getMessage(), e);
+    List<String> spaceNames = new ArrayList<>();
+    try {
+      Collection<Wiki> wikis = wikiService.getWikisByType(wikiType.toUpperCase());
+      for (Wiki wiki : wikis) {
+        for (String spaceName : spaceNames) {
+          org.exoplatform.wiki.mow.api.Page page = wiki.getWikiHome();
+          spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wikiType, spaceName, page));
+        }
       }
+    } catch(WikiException e) {
+      log.error("Cannot get spaces of wiki type " + wikiType + " - Cause : " + e.getMessage(), e);
     }
     return spaces;
   }

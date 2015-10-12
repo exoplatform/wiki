@@ -65,6 +65,31 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
+  public List<Wiki> getWikisByType(String wikiType) throws WikiException {
+    boolean created = mowService.startSynchronization();
+
+    List wikis = new ArrayList();
+
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
+    if(wStore != null) {
+      WikiContainer<WikiImpl> wikiContainer = wStore.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase()));
+      if(wikiContainer != null) {
+        Collection<WikiImpl> allWikis = wikiContainer.getAllWikis();
+
+        if(allWikis != null) {
+          for (WikiImpl wikiImpl : allWikis) {
+            wikis.add(convertWikiImplToWiki(wikiImpl));
+          }
+        }
+      }
+    }
+
+    mowService.stopSynchronization(created);
+
+    return wikis;
+  }
+
+  @Override
   public Wiki createWiki(Wiki wiki) throws WikiException {
     boolean created = mowService.startSynchronization();
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();

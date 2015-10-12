@@ -18,20 +18,23 @@ package org.exoplatform.wiki.service.wysiwyg;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.WikiContext;
+import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.xwiki.component.annotation.Component;
 import org.xwiki.context.Execution;
 import org.xwiki.gwt.wysiwyg.client.wiki.*;
+import org.xwiki.gwt.wysiwyg.client.wiki.WikiService;
 import org.xwiki.model.reference.DocumentReference;
 
 import javax.inject.Inject;
@@ -92,11 +95,17 @@ public class DefaultWikiService implements WikiService {
    * @see WikiService#getSpaceNames(String)
    */
   @Override
-  public List<String> getSpaceNames(String wikiName) {
-    List<String> spaceNames = new ArrayList<String>();
-    Collection<Wiki> wikis = Utils.getWikisByType(WikiType.valueOf(wikiName.toUpperCase()));
-    for (Wiki wiki : wikis) {
-      spaceNames.add(wiki.getOwner());
+  public List<String> getSpaceNames(String wikiType) {
+    List<String> spaceNames = new ArrayList<>();
+    org.exoplatform.wiki.service.WikiService wikiService = ExoContainerContext.getCurrentContainer()
+            .getComponentInstanceOfType(org.exoplatform.wiki.service.WikiService.class);
+    try {
+      Collection<Wiki> wikis = wikiService.getWikisByType(wikiType);
+      for (Wiki wiki : wikis) {
+        spaceNames.add(wiki.getOwner());
+      }
+    } catch(WikiException e) {
+      log.error("Cannot get space names - Cause : " + e.getMessage(), e);
     }
     return spaceNames;
   }

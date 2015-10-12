@@ -94,35 +94,6 @@ public class UIWikiAdvanceSearchForm extends UIForm {
     allSpaceOptions.addOption(new SelectOption(getLabel("AllUserWikis"), PortalConfig.USER_TYPE));
     return allSpaceOptions;
   }
-
-  public SelectOptionGroup getPortalWikiOptions() throws Exception {
-    SelectOptionGroup portalSpaceOptions = new SelectOptionGroup(getLabel("PortalWikis"));
-    Collection<Wiki> portalWikis = Utils.getWikisByType(WikiType.PORTAL);
-    for (Wiki wiki : portalWikis) {
-      portalSpaceOptions.addOption(new SelectOption(wiki.getOwner(), PortalConfig.PORTAL_TYPE + "/"
-          + wiki.getOwner()));
-    }
-    return portalSpaceOptions;
-  }
-
-  public SelectOptionGroup getGroupWikiOptions() throws Exception {
-    SelectOptionGroup groupSpaceOptions = new SelectOptionGroup(getLabel("GroupWikis"));
-    Collection<Wiki> groupWikis = Utils.getWikisByType(WikiType.GROUP);
-    for (Wiki wiki : groupWikis) {
-      groupSpaceOptions.addOption(new SelectOption(wiki.getOwner(), PortalConfig.GROUP_TYPE + "/"
-          + Utils.validateWikiOwner(wiki.getType(), wiki.getOwner())));
-    }
-    return groupSpaceOptions;
-  }
-
-  public SelectOptionGroup getUserWikiOptions() throws Exception {
-    SelectOptionGroup userSpaceOptions = new SelectOptionGroup(getLabel("UserWikis"));
-    Collection<Wiki> userWikis = Utils.getWikisByType(WikiType.USER);
-    for (Wiki wiki : userWikis) {
-      userSpaceOptions.addOption(new SelectOption(wiki.getOwner(), PortalConfig.USER_TYPE + "/" + wiki.getOwner()));
-    }
-    return userSpaceOptions;
-  }
   
   public void processSearchAction() throws Exception {
     WikiSearchData data = createSearchData();
