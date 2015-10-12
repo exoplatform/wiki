@@ -16,16 +16,16 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-import javax.servlet.http.HttpSessionEvent;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.utils.Utils;
+
+import javax.servlet.http.HttpSessionEvent;
 
 public class SessionDestroyedListener extends Listener<PortalContainer, HttpSessionEvent> {
 
@@ -39,7 +39,7 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
       LOG.trace("Removing the key: " + sessionId);
     }
     try {
-      SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
+      SessionManager sessionManager = container.getComponentInstanceOfType(SessionManager.class);
       sessionManager.removeSessionContainer(sessionId);
     } catch (Exception e) {
       LOG.warn("Can't remove the key: " + sessionId, e);
@@ -50,8 +50,7 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
     if (container.isStarted()) {
       WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
       RequestLifeCycle.begin(PortalContainer.getInstance());
-      // TODO draftName = sessionId ???
-      //wikiService.removeDraft(sessionId);
+      wikiService.removeDraft(Utils.getPageNameForAddingPage());
       RequestLifeCycle.end();
     }
   }
