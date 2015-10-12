@@ -1442,6 +1442,77 @@ public class JCRDataStorage implements DataStorage {
     mowService.stopSynchronization(created);
   }
 
+  @Override
+  public List<String> getWatchersOfPage(Page page) throws WikiException {
+    boolean created = mowService.startSynchronization();
+
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    if(pageImpl != null) {
+      pageImpl.makeWatched();
+      List<String> watchers = pageImpl.getWatchedMixin().getWatchers();
+
+      mowService.stopSynchronization(created);
+
+      return watchers;
+    } else {
+      mowService.stopSynchronization(created);
+
+      throw new WikiException("Cannot get watchers of page " + page.getWikiType() + ":"
+              + page.getWikiOwner() + ":" + page.getName() + " because the page does not exist.");
+    }
+  }
+
+  @Override
+  public void addWatcherToPage(String username, Page page) throws WikiException {
+    boolean created = mowService.startSynchronization();
+
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    if(pageImpl != null) {
+      pageImpl.makeWatched();
+      List<String> watchers = pageImpl.getWatchedMixin().getWatchers();
+      if (watchers == null) {
+        watchers = new ArrayList<>();
+      }
+      if (!watchers.contains(username)) {
+        watchers.add(username);
+        pageImpl.getWatchedMixin().setWatchers(watchers);
+      }
+
+      mowService.persist();
+
+      mowService.stopSynchronization(created);
+    } else {
+      mowService.stopSynchronization(created);
+
+      throw new WikiException("Cannot add watcher " + username + " to page " + page.getWikiType() + ":"
+              + page.getWikiOwner() + ":" + page.getName() + " because the page does not exist.");
+    }
+  }
+
+  @Override
+  public void deleteWatcherOfPage(String username, Page page) throws WikiException {
+    boolean created = mowService.startSynchronization();
+
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    if(pageImpl != null) {
+      pageImpl.makeWatched();
+      List<String> watchers = pageImpl.getWatchedMixin().getWatchers();
+      if (watchers != null && watchers.contains(username)) {
+        watchers.remove(username);
+        pageImpl.getWatchedMixin().setWatchers(watchers);
+      }
+
+      mowService.persist();
+
+      mowService.stopSynchronization(created);
+    } else {
+      mowService.stopSynchronization(created);
+
+      throw new WikiException("Cannot delete watcher " + username + " of page " + page.getWikiType() + ":"
+              + page.getWikiOwner() + ":" + page.getName() + " because the page does not exist.");
+    }
+  }
+
   private HelpPage addSyntaxPage(WikiStoreImpl wStore,
                                  PageImpl parentPage,
                                  String name,

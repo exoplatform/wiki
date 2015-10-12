@@ -75,6 +75,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
     begin();
     Identity systemIdentity = new Identity(IdentityConstants.SYSTEM);
     ConversationState.setCurrent(new ConversationState(systemIdentity));
+    System.setProperty("gatein.email.domain.url", "localhost");
   }
 
   protected void tearDown() throws Exception {

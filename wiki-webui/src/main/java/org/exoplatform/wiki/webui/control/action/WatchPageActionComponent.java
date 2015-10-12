@@ -37,6 +37,7 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
@@ -63,21 +64,14 @@ public class WatchPageActionComponent extends UIComponent {
   }
   
   public boolean detectWatched(boolean isChangeState) throws Exception {
-    RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
-                                                                              .getComponentInstanceOfType(RenderingService.class);
+    RenderingService renderingService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RenderingService.class);
+    WikiService wikiService = ExoContainerContext.getCurrentContainer() .getComponentInstanceOfType(WikiService.class);
     ConversationState conversationState = ConversationState.getCurrent();
     String currentUserId = conversationState.getIdentity().getUserId();
     Page currentPage = Utils.getCurrentWikiPage();
     boolean isWatched = false;
-    // TODO use wikiService
-    /*
-    currentPage.makeWatched();
-    WatchedMixin mixin = currentPage.getWatchedMixin();
-    List<String> watchers = mixin.getWatchers();
-    for (String watcher : watchers) {
-      if (watcher.equals(currentUserId))
-        isWatched = true;
-    }
+
+    List<String> watchers = wikiService.getWatchersOfPage(currentPage);
     for (String watcher : watchers) {
       if (watcher.equals(currentUserId))
         isWatched = true;
@@ -85,18 +79,15 @@ public class WatchPageActionComponent extends UIComponent {
     if (isChangeState) {
       if (isWatched) {
         // Stop watching
-        watchers.remove(currentUserId);
+        wikiService.deleteWatcherOfPage(currentUserId, currentPage);
       } else {
         // Begin watching
-        watchers.add(currentUserId);        
+        wikiService.addWatcherToPage(currentUserId, currentPage);
       }
       if (renderingService.getCssURL() == null) {
         renderingService.setCssURL(getPortletCssLink());
       }
-      mixin.setWatchers(watchers);
-      currentPage.setWatchedMixin(mixin);
     }
-    */
     return isWatched;
   }
 

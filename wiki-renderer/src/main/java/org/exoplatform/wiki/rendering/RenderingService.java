@@ -21,6 +21,7 @@ import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.component.manager.ComponentRepositoryException;
 import org.xwiki.context.Execution;
 import org.xwiki.rendering.block.XDOM;
+import org.xwiki.rendering.converter.ConversionException;
 
 /**
  * Renders a wiki page from its markup to something readable, such as HTML.
@@ -56,7 +57,7 @@ public interface RenderingService {
    * @return The readable content of the rendered wiki page.
    * @throws Exception
    */
-  public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) throws Exception;
+  public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) throws ConversionException, ComponentLookupException;
 
   /**
    * Gets content of a section.

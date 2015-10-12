@@ -34,6 +34,9 @@ import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.suigeneris.jrcs.diff.DifferentiationFailedException;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
 
 import javax.mail.internet.AddressException;
@@ -404,7 +407,8 @@ public class Utils {
     }
   }
   
-  public static void sendMailOnChangeContent(Attachment content) throws Exception {
+  public static void sendMailOnChangeContent(Page page)
+          throws WikiException, DifferentiationFailedException, ComponentLookupException, ConversionException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
     DiffService diffService = container.getComponentInstanceOfType(DiffService.class);
@@ -415,20 +419,21 @@ public class Utils {
     String author = conversationState.getIdentity().getUserId();
 
     // Get watchers' mails
-    Page page = wikiService.getPageOfAttachment(content);
-    // TODO need page watchers
-    //List<String> list = page.getWatchedMixin().getWatchers();
-    List<String> list = Collections.EMPTY_LIST;
-            List<String> emailList = new ArrayList<String>();
+    List<String> list = wikiService.getWatchersOfPage(page);
+    List<String> emailList = new ArrayList<>();
     for (int i = 0; i < list.size(); i++) {
-      if (isEnabledUser(list.get(i))) {
-        emailList.add(getEmailUser(list.get(i)));
+      try {
+        if (isEnabledUser(list.get(i))) {
+          emailList.add(getEmailUser(list.get(i)));
+        }
+      } catch (WikiException e) {
+        log_.error("Cannot get email address of user " + list.get(i) + " - Cause : " + e.getMessage(), e);
       }
     }   
     
     // Get differences
     String pageTitle = page.getTitle();
-    String currentVersionContent = new String(content.getContent());
+    String currentVersionContent = page.getContent() != null ? new String(page.getContent()) : StringUtils.EMPTY;
     List<PageVersion> versions = wikiService.getVersionsOfPage(page);
     String previousVersionContent = StringUtils.EMPTY;
     if(versions != null && !versions.isEmpty()) {
@@ -447,51 +452,69 @@ public class Utils {
       diffResult.setDiffHTML("No changes, new revision is created.");
     } 
     
+    String currentDomain = CommonsUtils.getCurrentDomain();
     StringBuilder sbt = new StringBuilder();
     sbt.append("<html>")
-       .append("  <head>")
-       .append("     <link rel=\"stylesheet\" href=\""+renderingService.getCssURL() +"\" type=\"text/css\">")
-       .append("  </head>")
-       .append("  <body>")
-       .append("    Page <a href=\""+CommonsUtils.getCurrentDomain()+page.getUrl()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
-       .append("    <br/><br/>")
-       .append("    Changes("+ diffResult.getChanges()+")")
-       .append("    <br/><br/>")
-       .append(     insertStyle(diffResult.getDiffHTML()))
-       .append("    Full content: ")
-       .append("    <br/><br/>")
-       .append(     fullContent)
-       .append("  </body>")
-       .append("</html>");
+        .append("  <head>")
+        .append("     <link rel=\"stylesheet\" href=\"")
+        .append(renderingService.getCssURL())
+        .append("\" type=\"text/css\">")
+        .append("  </head>")
+        .append("  <body>")
+        .append("    Page <a href=\"")
+        .append(currentDomain)
+        .append(page.getUrl())
+        .append("\">")
+        .append(page.getTitle())
+        .append("</a> is modified by ")
+        .append(page.getAuthor())
+        .append("    <br/><br/>")
+        .append("    Changes(")
+            .append(diffResult.getChanges())
+            .append(")")
+            .append("    <br/><br/>")
+            .append(insertStyle(diffResult.getDiffHTML()))
+            .append("    Full content: ")
+            .append("    <br/><br/>")
+            .append(     fullContent)
+            .append("  </body>")
+            .append("</html>");
     // Create message
     message.setFrom(makeNotificationSender(author));
     message.setSubject("\"" + pageTitle + "\" page was modified");
     message.setMimeType(MIMETYPE_TEXTHTML);
     message.setBody(sbt.toString());
-    MailService mailService = (MailService) container.getComponentInstanceOfType(MailService.class);
+    MailService mailService = container.getComponentInstanceOfType(MailService.class);
     for (String address : emailList) {
       message.setTo(address);
       try {
         mailService.sendMessage(message);
       } catch (Exception e) {
-        if (log_.isDebugEnabled()) {
-          log_.debug(String.format("Failed to send notification email to user: %s", address), e);
-        }
+        log_.error(String.format("Failed to send notification email to user: %s", address), e);
       }
     }
   }
   
-  private static boolean isEnabledUser(String userName) throws Exception {
+  private static boolean isEnabledUser(String userName) throws WikiException {
     OrganizationService orgService = org.exoplatform.wiki.rendering.util.Utils.getService(OrganizationService.class);
-    return orgService.getUserHandler().findUserByName(userName) != null;
+    try {
+      return orgService.getUserHandler().findUserByName(userName) != null;
+    } catch (Exception e) {
+      throw new WikiException("Cannot check if user " + userName + " is enabled", e);
+    }
   }
   
-  public static String getEmailUser(String userName) throws Exception {
-    OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
-                                                                                       .getComponentInstanceOfType(OrganizationService.class);
-    User user = organizationService.getUserHandler().findUserByName(userName);
-    String email = user.getEmail();
-    return email;
+  public static String getEmailUser(String userName) throws WikiException {
+    OrganizationService organizationService = ExoContainerContext.getCurrentContainer()
+            .getComponentInstanceOfType(OrganizationService.class);
+    User user;
+    try {
+      user = organizationService.getUserHandler().findUserByName(userName);
+      String email = user.getEmail();
+      return email;
+    } catch (Exception e) {
+      throw new WikiException("Cannot get email of user " + userName, e);
+    }
   }
   
   public static HashMap<String, IDType> getACLForAdmins() {

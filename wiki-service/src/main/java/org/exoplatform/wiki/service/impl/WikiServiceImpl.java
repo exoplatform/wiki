@@ -44,6 +44,8 @@ import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
 
 import java.io.InputStream;
@@ -820,8 +822,14 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     invalidateCache(page);
 
-    // TODO implement watch page here (should send an email only if there is a new version of the page content)
-    // Utils.sendMailOnChangeContent(content);
+    if(PageUpdateType.EDIT_PAGE_CONTENT.equals(updateType) || PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE.equals(updateType)) {
+      try {
+        Utils.sendMailOnChangeContent(page);
+      } catch (WikiException | DifferentiationFailedException | ComponentLookupException | ConversionException e) {
+        log.error("Cannot send notification email on page change - Cause : " + e.getMessage(), e);
+      }
+    }
+
 
     if(updateType != null) {
       postUpdatePage(page.getWikiType(), page.getOwner(), page.getName(), page, updateType);
@@ -1098,6 +1106,23 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException {
     dataStorage.deleteAttachmentOfPage(attachmentId, page);
+  }
+
+  /******* Watch *******/
+
+  @Override
+  public List<String> getWatchersOfPage(Page page) throws WikiException {
+    return dataStorage.getWatchersOfPage(page);
+  }
+
+  @Override
+  public void addWatcherToPage(String username, Page page) throws WikiException {
+    dataStorage.addWatcherToPage(username, page);
+  }
+
+  @Override
+  public void deleteWatcherOfPage(String username, Page page) throws WikiException {
+    dataStorage.deleteWatcherOfPage(username, page);
   }
 
   /******* Spaces *******/

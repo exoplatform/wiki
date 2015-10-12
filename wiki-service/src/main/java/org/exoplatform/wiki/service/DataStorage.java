@@ -122,4 +122,10 @@ public interface DataStorage {
   public void restoreVersionOfPage(String versionName, Page page) throws WikiException;
 
   public void updatePage(Page page) throws WikiException;
+
+  public List<String> getWatchersOfPage(Page page) throws WikiException;
+
+  public void addWatcherToPage(String username, Page page) throws WikiException;
+
+  public void deleteWatcherOfPage(String username, Page page) throws WikiException;
 }

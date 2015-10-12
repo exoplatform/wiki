@@ -674,4 +674,27 @@ public interface WikiService {
   public List<EmotionIcon> getEmotionIcons() throws WikiException;
 
   public EmotionIcon getEmotionIconByName(String name) throws WikiException;
+
+  /**
+   * Get all the watchers of a page
+   * @param page The wiki page
+   * @throws WikiException
+   */
+  public List<String> getWatchersOfPage(Page page) throws WikiException;
+
+  /**
+   * Add the given user as watcher of the wiki page
+   * @param username Username of the user to add as watcher
+   * @param page The wiki page
+   * @throws WikiException
+   */
+  public void addWatcherToPage(String username, Page page) throws WikiException;
+
+  /**
+   * Delete a user as watcher of the given page
+   * @param username Username of the user to delete as watcher
+   * @param page The wiki page
+   * @throws WikiException
+   */
+  public void deleteWatcherOfPage(String username, Page page) throws WikiException;
 }
