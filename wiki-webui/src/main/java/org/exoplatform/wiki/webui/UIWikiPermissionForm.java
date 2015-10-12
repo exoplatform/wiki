@@ -534,8 +534,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       } else if (Scope.PAGE.equals(scope)) {
         Page page = Utils.getCurrentWikiPage();
         page.setPermissions(uiWikiPermissionForm.permissionEntries);
-        // TODO need page.setOverridePermission
-        //page.setOverridePermission(true);
         wikiService.updatePage(page, null);
 
         // Update page info area

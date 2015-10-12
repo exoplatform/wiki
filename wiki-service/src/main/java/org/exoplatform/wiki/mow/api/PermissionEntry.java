@@ -18,6 +18,8 @@ package org.exoplatform.wiki.mow.api;
 
 import org.exoplatform.wiki.service.*;
 
+import java.util.Arrays;
+
 public class PermissionEntry {
   private String id;
   
@@ -67,5 +69,29 @@ public class PermissionEntry {
 
   public void setPermissions(Permission[] permissions) {
     this.permissions = permissions;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof PermissionEntry)) return false;
+
+    PermissionEntry that = (PermissionEntry) o;
+
+    if (fullName != null ? !fullName.equals(that.fullName) : that.fullName != null) return false;
+    if (id != null ? !id.equals(that.id) : that.id != null) return false;
+    if (idType != that.idType) return false;
+    if (!Arrays.equals(permissions, that.permissions)) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = id != null ? id.hashCode() : 0;
+    result = 31 * result + (fullName != null ? fullName.hashCode() : 0);
+    result = 31 * result + (idType != null ? idType.hashCode() : 0);
+    result = 31 * result + (permissions != null ? Arrays.hashCode(permissions) : 0);
+    return result;
   }
 }

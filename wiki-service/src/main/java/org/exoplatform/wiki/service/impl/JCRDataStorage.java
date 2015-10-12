@@ -1,5 +1,6 @@
 package org.exoplatform.wiki.service.impl;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.common.IO;
@@ -1428,7 +1429,11 @@ public class JCRDataStorage implements DataStorage {
     pageImpl.setAuthor(page.getAuthor());
     pageImpl.setSyntax(page.getSyntax());
 
-    pageImpl.setPermission(JCRUtils.convertToPermissionMap(page.getPermissions()));
+    List<PermissionEntry> currentPermissions = JCRUtils.convertToPermissionEntryList(pageImpl.getPermission());
+    if(!CollectionUtils.isEqualCollection(currentPermissions, page.getPermissions())) {
+      pageImpl.setPermission(JCRUtils.convertToPermissionMap(page.getPermissions()));
+      pageImpl.setOverridePermission(true);
+    }
     pageImpl.setURL(page.getUrl());
     pageImpl.getContent().setText(page.getContent());
     pageImpl.setComment(page.getComment());

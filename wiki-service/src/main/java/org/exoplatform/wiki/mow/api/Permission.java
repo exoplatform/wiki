@@ -44,4 +44,24 @@ public class Permission {
   public void setAllowed(boolean isAllowed) {
     this.isAllowed = isAllowed;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Permission)) return false;
+
+    Permission that = (Permission) o;
+
+    if (isAllowed != that.isAllowed) return false;
+    if (permissionType != that.permissionType) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = permissionType != null ? permissionType.hashCode() : 0;
+    result = 31 * result + (isAllowed ? 1 : 0);
+    return result;
+  }
 }
