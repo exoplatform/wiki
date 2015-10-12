@@ -1049,8 +1049,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           draftPage.setTitle(title);
         }
         draftPage.setContent(content);
-        // TODO need an updatePage ? updateDraftPage ?
-        //draftPage.getChromatticSession().save();
+        wikiService.updatePage(draftPage, null);
 
         // Log the editting time for current user
         Utils.logEditPageTime(param, Utils.getCurrentUser(), System.currentTimeMillis(), draftPage.getName(), isNewPage);
