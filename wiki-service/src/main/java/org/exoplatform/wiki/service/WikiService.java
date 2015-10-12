@@ -187,6 +187,11 @@ public interface WikiService {
    */
   public String getPageRenderedContent(Page page, String targetSyntax);
 
+  /**
+   * Add a link between 2 pages
+   * @param param First page
+   * @param entity Second page
+   */
   public void addPageLink(WikiPageParams param, WikiPageParams entity);
 
   /**
@@ -651,14 +656,46 @@ public interface WikiService {
    */
   public String getWikiNameById(String wikiId) throws WikiException;
 
+  /**
+   * Check if the given user can update the page
+   * @param currentPage The page to update
+   * @param currentUser The user that needs to update the page
+   * @return true if the user can update the page
+   * @throws WikiException
+   */
   public boolean canModifyPagePermission(Page currentPage, String currentUser) throws WikiException;
 
+  /**
+   * Gets all the versions of the given page
+   * @param page The wiki page
+   * @return All the versions of the page
+   * @throws WikiException
+   */
   public List<PageVersion> getVersionsOfPage(Page page) throws WikiException;
 
+  /**
+   * Gets a specific version by name of the given page
+   * @param versionName The name of the version
+   * @param page The wiki page
+   * @return The version of the wiki page
+   * @throws WikiException
+   */
   public PageVersion getVersionOfPageByName(String versionName, Page page) throws WikiException;
 
+  /**
+   * Creates a version of a page. This method only tag the current page data as a new version,
+   * it does not update the page data
+   * @param page The wiki page
+   * @throws WikiException
+   */
   public void createVersionOfPage(Page page) throws WikiException;
 
+  /**
+   * Restores a version of a page
+   * @param versionName The name of the version to restore
+   * @param page The wiki page
+   * @throws WikiException
+   */
   public void restoreVersionOfPage(String versionName, Page page) throws WikiException;
 
   /**
@@ -686,8 +723,19 @@ public interface WikiService {
    */
   public void createEmotionIcon(EmotionIcon emotionIcon) throws WikiException;
 
+  /**
+   * Gets all the emotion icons
+   * @return All the emotion icons
+   * @throws WikiException
+   */
   public List<EmotionIcon> getEmotionIcons() throws WikiException;
 
+  /**
+   * Gets an emotion icon by name
+   * @param name The name of the emotion icon
+   * @return The emotion icon
+   * @throws WikiException
+   */
   public EmotionIcon getEmotionIconByName(String name) throws WikiException;
 
   /**
