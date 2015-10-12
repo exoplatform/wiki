@@ -1443,6 +1443,29 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
+  public List<String> getPreviousNamesOfPage(Page page) throws WikiException {
+    boolean created = mowService.startSynchronization();
+
+    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+    if(pageImpl != null) {
+      List<String> previousNames = new ArrayList<>();
+      RenamedMixin renamedMixin = pageImpl.getRenamedMixin();
+      if(renamedMixin != null) {
+        previousNames = Arrays.asList(renamedMixin.getOldPageIds());
+      }
+
+      mowService.stopSynchronization(created);
+
+      return previousNames;
+    } else {
+      mowService.stopSynchronization(created);
+
+      throw new WikiException("Cannot get previous names of page " + page.getWikiType() + ":"
+              + page.getWikiOwner() + ":" + page.getName() + " because the page does not exist.");
+    }
+  }
+
+  @Override
   public List<String> getWatchersOfPage(Page page) throws WikiException {
     boolean created = mowService.startSynchronization();
 

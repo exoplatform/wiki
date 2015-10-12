@@ -34,6 +34,7 @@ import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
 
 import java.text.DateFormat;
 import java.util.Calendar;
+import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 
@@ -96,17 +97,16 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
     if (pageTitle.indexOf(keyword) >= 0) {
       return "";
     }
-    // TODO ???
-    /*
-    if (page.getRenamedMixin() != null) {
-      RenamedMixin mix = page.getRenamedMixin();
-      for (String id : mix.getOldPageIds()) {
-        if (id.indexOf(keyword) >= 0) {
-          return replaceUnderscorebySpace(id);
+
+    List<String> previousNames = wikiService.getPreviousNamesOfPage(page);
+    if(previousNames != null) {
+      for (String name : previousNames) {
+        if (name.indexOf(keyword) >= 0) {
+          return replaceUnderscorebySpace(name);
         }
       }
     }
-    */
+
     return "";
   }
   

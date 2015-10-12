@@ -673,6 +673,14 @@ public interface WikiService {
   public void updatePage(Page page, PageUpdateType type) throws WikiException;
 
   /**
+   * Get previous names of a page
+   * @param page The wiki page
+   * @return List of all the previous names of the page
+   * @throws WikiException
+   */
+  public List<String> getPreviousNamesOfPage(Page page) throws WikiException;
+
+  /**
    * Creates a emotion icon
    * @param emotionIcon The emotion icon to add
    * @throws WikiException

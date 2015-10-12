@@ -843,6 +843,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
 
+  @Override
+  public List<String> getPreviousNamesOfPage(Page page) throws WikiException {
+    return dataStorage.getPreviousNamesOfPage(page);
+  }
+
   /******* Template *******/
 
   @Override
