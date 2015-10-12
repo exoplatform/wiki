@@ -44,7 +44,7 @@ public class UIWikiPageNotFound extends UIWikiComponent {
   protected Page getRelatedPage() {
     try {
       WikiPageParams params = Utils.getCurrentWikiPageParams();
-      return wservice.getRelatedPage(params.getType(), params.getOwner(), params.getPageId());
+      return wservice.getRelatedPage(params.getType(), params.getOwner(), params.getPageName());
     } catch (Exception e) {
      log.debug("Failed to get related page", e);
     }
@@ -52,7 +52,7 @@ public class UIWikiPageNotFound extends UIWikiComponent {
   }
 
   protected String getHomeURL(WikiPageParams param) throws Exception {
-    param.setPageId(WikiConstants.WIKI_HOME_NAME);
+    param.setPageName(WikiConstants.WIKI_HOME_NAME);
     return Utils.getURLFromParams(param);
   }
 }

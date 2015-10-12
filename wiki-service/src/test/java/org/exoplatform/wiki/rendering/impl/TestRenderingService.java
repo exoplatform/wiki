@@ -66,7 +66,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     wikiContext.setPortletURI("wiki");
     wikiContext.setType("portal");
     wikiContext.setOwner("classic");
-    wikiContext.setPageId("CreateWikiPage-002");
+    wikiContext.setPageName("CreateWikiPage-002");
     
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     
@@ -86,7 +86,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     wikiContext.setPortletURI("wiki");
     wikiContext.setType("portal");
     wikiContext.setOwner("classic");
-    wikiContext.setPageId("WikiHome");
+    wikiContext.setPageName("WikiHome");
     
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     
@@ -119,7 +119,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     wikiContext.setPortletURI("wiki");
     wikiContext.setType("portal");
     wikiContext.setOwner("classic");
-    wikiContext.setPageId("CreateWikiPage-003");
+    wikiContext.setPageName("CreateWikiPage-003");
     
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     

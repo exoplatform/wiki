@@ -116,19 +116,19 @@ public class DefaultWikiModel implements WikiModel {
       String domainURL = portalURL.substring(0, portalURL.indexOf("/"+portalContainerName));
       sb.append(domainURL);
       WikiContext context = getWikiContext();
-      wikiService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageId()),
+      wikiService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageName()),
                                         new WikiPageParams(wikiMarkupContext.getType(),
                                                            wikiMarkupContext.getOwner(),
-                                                           wikiMarkupContext.getPageId()));
-      wikiService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageId()),
+                                                           wikiMarkupContext.getPageName()));
+      wikiService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageName()),
                                         new WikiPageParams(wikiMarkupContext.getType(),
                                                            wikiMarkupContext.getOwner(),
-                                                           wikiMarkupContext.getPageId(),
+                                                           wikiMarkupContext.getPageName(),
                                                            wikiMarkupContext.getAttachmentName()));
       Page page;
       String attachmentName = TitleResolver.getId(wikiMarkupContext.getAttachmentName(), false);
       if (ResourceType.ATTACHMENT.equals(resourceType)) {
-        page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageId());
+        page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageName());
 
         Attachment att = wikiService.getAttachmentOfPageByName(attachmentName, page);
         if (att != null) {
@@ -165,10 +165,10 @@ public class DefaultWikiModel implements WikiModel {
     WikiContext wikiMarkupContext = markupContextManager.getMarkupContext(documentName, type);
     WikiContext wikiContext = getWikiContext();
     try {
-      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
+      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageName()),
                                         new WikiPageParams(wikiMarkupContext.getType(),
                                                            wikiMarkupContext.getOwner(),
-                                                           wikiMarkupContext.getPageId()));
+                                                           wikiMarkupContext.getPageName()));
     } catch (Exception e) {
       LOG.warn(String.format("Failed to link incoming pages for page %s", documentReference.toString()), e);
     }
@@ -178,13 +178,13 @@ public class DefaultWikiModel implements WikiModel {
       } else {
         page = wikiService.getPageOfWikiByName(wikiMarkupContext.getType(),
                 wikiMarkupContext.getOwner(),
-                wikiMarkupContext.getPageId());
+                wikiMarkupContext.getPageName());
         if (page == null) {
-          page = wikiService.getRelatedPage(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageId());
+          page = wikiService.getRelatedPage(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageName());
           if (page != null) {
             wikiService.addPageLink(new WikiPageParams(wikiContext.getType(),
                                                                  wikiContext.getOwner(),
-                                                                 wikiContext.getPageId()),
+                                                                 wikiContext.getPageName()),
                                               new WikiPageParams(wikiMarkupContext.getType(),
                                                                  wikiMarkupContext.getOwner(),
                                                                  page.getName()));
@@ -206,15 +206,15 @@ public class DefaultWikiModel implements WikiModel {
   private String getDocumentViewURL(WikiContext context) {
     try {
       WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-      Page page = wikiService.getPageOfWikiByName(context.getType(), context.getOwner(), context.getPageId());
+      Page page = wikiService.getPageOfWikiByName(context.getType(), context.getOwner(), context.getPageName());
       if (page == null) {
-        page = wikiService.getRelatedPage(context.getType(), context.getOwner(), context.getPageId());
+        page = wikiService.getRelatedPage(context.getType(), context.getOwner(), context.getPageName());
       }
       if (page != null) {
         Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
         context.setType(wiki.getType());
         context.setOwner(wiki.getOwner());
-        context.setPageId(page.getName());
+        context.setPageName(page.getName());
       }
     } catch (Exception e) {
       if (LOG.isDebugEnabled()) {

@@ -104,10 +104,10 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
       WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
             
       // Check if root page exist
-      Page wikiPage = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageId());
+      Page wikiPage = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
       if (wikiPage == null) {
         // if root page was renamed then find it
-        wikiPage = wikiService.getRelatedPage(params.getType(), params.getOwner(), params.getPageId());
+        wikiPage = wikiService.getRelatedPage(params.getType(), params.getOwner(), params.getPageName());
         if (wikiPage != null) {
           Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiPage.getWikiType(), wikiPage.getWikiOwner());
           params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiPage.getName());
@@ -116,8 +116,8 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
       
       root = generateTree(params, descendant, childrenNum, depth, context);
       WikiContext wikiContext = getWikiContext();
-      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
-                                        new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
+      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageName()),
+                                        new WikiPageParams(params.getType(), params.getOwner(), params.getPageName()));
       return Collections.singletonList(root);
     } catch (Exception e) {
       log.debug("Failed to ", e);
@@ -141,7 +141,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
     List<Block> blocks = new ArrayList<Block>();
     
     WikiPageParams params = TreeUtils.getPageParamsFromPath(node.getPath());
-    Page page = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageId());
+    Page page = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
     DocumentResourceReference link = new DocumentResourceReference(getReferenceBuilder(context).build(params));
     List<Block> content = new ArrayList<Block>();
     content.add(new WordBlock(page.getTitle()));

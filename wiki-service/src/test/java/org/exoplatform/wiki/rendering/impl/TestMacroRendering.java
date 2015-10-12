@@ -132,7 +132,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
 
     Execution ec = renderingService.getExecution();
     WikiContext wikiContext = (WikiContext) ec.getContext().getProperty(WikiContext.WIKICONTEXT);
-    wikiContext.setPageId("samplePage");
+    wikiContext.setPageName("samplePage");
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     String xwikiExpectedHtml = "<div><ul><li><span class=\"wikilink\"><a href=\"http://localhost:8080/portal/classic/wiki/childPage1\">childPage1</a></span><ul><li><span class=\"wikilink\"><a href=\"http://localhost:8080/portal/classic/wiki/testPage\">testPage</a></span><ul></ul></li></ul></li><li><span class=\"wikilink\"><a href=\"http://localhost:8080/portal/classic/wiki/childPage2\">childPage2</a></span><ul></ul></li></ul></div>";
 
@@ -153,7 +153,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
 
     Execution ec = renderingService.getExecution();
     WikiContext wikiContext = (WikiContext) ec.getContext().getProperty(WikiContext.WIKICONTEXT);
-    wikiContext.setPageId("rootPage");
+    wikiContext.setPageName("rootPage");
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     StringBuilder xwikiExpectedHtml = new StringBuilder();
     xwikiExpectedHtml.append("<div class=\"uiTreeExplorer PageTreeMacro\">")
@@ -226,7 +226,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     wikiContext.setBaseUrl("http://localhost:8080/portal/classic/wiki");
     wikiContext.setType("portal");
     wikiContext.setOwner("classic");
-    wikiContext.setPageId("WikiHome");
+    wikiContext.setPageName("WikiHome");
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
   }
   

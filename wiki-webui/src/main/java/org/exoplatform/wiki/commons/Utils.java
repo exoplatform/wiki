@@ -186,8 +186,8 @@ public class Utils {
       }
       //spaceUrl.append("wiki/");
       spaceUrl.append(getWikiAppNameInSpace(params.getOwner())).append("/");
-      if (!StringUtils.isEmpty(params.getPageId())) {
-        spaceUrl.append(params.getPageId());
+      if (!StringUtils.isEmpty(params.getPageName())) {
+        spaceUrl.append(params.getPageName());
       }
       return spaceUrl.toString();
     }
@@ -319,15 +319,15 @@ public class Utils {
       wikiContext.setSyntax(getDefaultSyntax());
     } else {
       WikiService service = (WikiService) PortalContainer.getComponent(WikiService.class);
-      Page currentPage = service.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageId());
+      Page currentPage = service.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
       if (currentPage != null) {
         wikiContext.setSyntax(currentPage.getSyntax());
       }
     }
     if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-      wikiContext.setPageId(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
+      wikiContext.setPageName(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
     } else {
-      wikiContext.setPageId(params.getPageId());
+      wikiContext.setPageName(params.getPageName());
     }
     wikiContext.setBaseUrl(getBaseUrl());
     return wikiContext;
@@ -335,7 +335,7 @@ public class Utils {
   
   public static String getBaseUrl() throws Exception {
     WikiPageParams params = getCurrentWikiPageParams();
-    params.setPageId(null);
+    params.setPageName(null);
     return getURLFromParams(params);
   }
   
@@ -356,7 +356,7 @@ public class Utils {
   */
   public static String getPageLink() throws Exception {    
     WikiPageParams params = getCurrentWikiPageParams();
-    params.setPageId(null);
+    params.setPageName(null);
     if (PortalConfig.PORTAL_TYPE.equals(params.getType())) {
       String navigationURI = Util.getUIPortal().getNavPath().getURI();
       String requestURI = Util.getPortalRequestContext().getRequestURI();
@@ -373,7 +373,7 @@ public class Utils {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     if (PortalConfig.GROUP_TYPE.equals(Utils.getCurrentWiki().getType())) {
-      pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+      pageParams.setPageName(URLEncoder.encode(pageParams.getPageName(), "UTF-8"));
     }
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }
@@ -402,8 +402,8 @@ public class Utils {
     StringBuffer sb = new StringBuffer();
     sb.append(getURLFromParams(pageParams));
 //    sb.append(getPageLink());
-//    if(!StringUtils.isEmpty(pageParams.getPageId())){
-//      sb.append(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+//    if(!StringUtils.isEmpty(pageParams.getPageName())){
+//      sb.append(URLEncoder.encode(pageParams.getPageName(), "UTF-8"));
 //    }
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));

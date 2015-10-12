@@ -40,19 +40,19 @@ public class TestURLResolver extends AbstractResolverTestcase {
     WikiPageParams params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.PORTAL_TYPE, params.getType()) ;
     assertEquals("classic", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/classic/wiki/WikiHome" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.PORTAL_TYPE, params.getType()) ;
     assertEquals("classic", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/classic/wiki/pageId" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.PORTAL_TYPE, params.getType()) ;
     assertEquals("classic", params.getOwner()) ;
-    assertEquals("pageId", params.getPageId()) ;
+    assertEquals("pageId", params.getPageName()) ;
   }
   
   public void testResolveGroupURL() throws Exception{
@@ -62,39 +62,39 @@ public class TestURLResolver extends AbstractResolverTestcase {
     WikiPageParams params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.GROUP_TYPE, params.getType()) ;
     assertEquals("/platform", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;  
+    assertEquals("WikiHome", params.getPageName()) ;
     
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/group/platform" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.GROUP_TYPE, params.getType()) ;
     assertEquals("/platform", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
     
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/group/platform/users/pageId/" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.GROUP_TYPE, params.getType()) ;
     assertEquals("/platform/users", params.getOwner()) ;
-    assertEquals("pageId", params.getPageId()) ;
+    assertEquals("pageId", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/group/platform/users/pageId" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.GROUP_TYPE, params.getType()) ;
     assertEquals("/platform/users", params.getOwner()) ;
-    assertEquals("pageId", params.getPageId()) ;
+    assertEquals("pageId", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/group/platform/users/WikiHome" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.GROUP_TYPE, params.getType()) ;
     assertEquals("/platform/users", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/group/platform/users" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.GROUP_TYPE, params.getType()) ;
     assertEquals("/platform/users", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
   }
   
   public void testResolveUserURL() throws Exception{
@@ -104,25 +104,25 @@ public class TestURLResolver extends AbstractResolverTestcase {
     WikiPageParams params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.USER_TYPE, params.getType()) ;
     assertEquals("john", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;  
+    assertEquals("WikiHome", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/user/john/" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.USER_TYPE, params.getType()) ;
     assertEquals("john", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/user/john/WikiHome" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.USER_TYPE, params.getType()) ;
     assertEquals("john", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
     
     url = "http://hostname/$CONTAINER/$ACCESS/$SITE/wiki/user/john/WikiHome/" ;
     params = resolver.extractPageParams(url, usernode) ;
     assertEquals(PortalConfig.USER_TYPE, params.getType()) ;
     assertEquals("john", params.getOwner()) ;
-    assertEquals("WikiHome", params.getPageId()) ;
+    assertEquals("WikiHome", params.getPageName()) ;
     
   }
 }

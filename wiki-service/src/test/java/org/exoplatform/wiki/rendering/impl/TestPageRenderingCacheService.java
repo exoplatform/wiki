@@ -16,7 +16,6 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -86,7 +85,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     WikiContext wikiContext = new WikiContext();
     wikiContext.setType(params.getType());
     wikiContext.setOwner(params.getOwner());
-    wikiContext.setPageId(params.getPageId());
+    wikiContext.setPageName(params.getPageName());
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
   }
 

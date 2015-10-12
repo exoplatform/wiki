@@ -45,7 +45,7 @@ import org.apache.commons.lang.StringEscapeUtils;
           def page = uicomponent.getPage(result);
 				  WikiPageParams pageParams = new WikiPageParams(result.getWikiType(), result.getWikiOwner(), result.getPageName());
 					String pageURI = Utils.getURLFromParams(pageParams);
-					pageParams.setPageId(WikiPageParams.WIKI_HOME);
+					pageParams.setPageName(WikiPageParams.WIKI_HOME);
 					String wikiURI = Utils.getURLFromParams(pageParams);
 					String space = result.getWikiOwner();
 					String wikiType= result.getWikiType();

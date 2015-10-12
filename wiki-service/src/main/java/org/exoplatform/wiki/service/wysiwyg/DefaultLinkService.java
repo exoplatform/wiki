@@ -153,7 +153,7 @@ public class DefaultLinkService implements LinkService {
       String wikiType = entityReference.getParent().getParent().getName();
       context.setType(wikiType);
       context.setOwner(wikiOwner);
-      context.setPageId(pageId);
+      context.setPageName(pageId);
       try {
         boolean isPageExisted = wservice.isExisting(wikiType, wikiOwner, pageId);
         if (isPageExisted) {

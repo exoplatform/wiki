@@ -25,7 +25,6 @@ import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -116,7 +115,7 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
     String newName = TitleResolver.getId(newTitle, true);
     Page page = Utils.getCurrentWikiPage();
     boolean isRenameHome = WikiConstants.WIKI_HOME_NAME.equals(page.getName())
-        && !newName.equals(pageParams.getPageId());
+        && !newName.equals(pageParams.getPageName());
     page.setMinorEdit(false);
     if (isRenameHome) {
       page.setTitle(newTitle);
@@ -125,17 +124,17 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
     } else {
       wikiService.renamePage(pageParams.getType(),
                              pageParams.getOwner(),
-                             pageParams.getPageId(),
+                             pageParams.getPageName(),
                              newName,
                              newTitle);
       page.setName(newName);
       page.setTitle(newTitle);
 
-      pageParams.setPageId(newName);
+      pageParams.setPageName(newName);
       page.setUrl(Utils.getURLFromParams(pageParams));
       wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_TITLE);
     }
-    pageParams.setPageId(newName);
+    pageParams.setPageName(newName);
     Utils.redirect(pageParams, WikiMode.VIEW);
   }
   

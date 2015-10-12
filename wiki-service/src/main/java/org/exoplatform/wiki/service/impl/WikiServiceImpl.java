@@ -536,11 +536,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     try {
       Page movePage = getPageOfWikiByName(currentLocationParams.getType(),
               currentLocationParams.getOwner(),
-              currentLocationParams.getPageId());
+              currentLocationParams.getPageName());
 
       dataStorage.movePage(currentLocationParams, newLocationParams);
 
-      Page page = new Page(currentLocationParams.getPageId());
+      Page page = new Page(currentLocationParams.getPageName());
       page.setWikiType(currentLocationParams.getType());
       page.setWikiOwner(currentLocationParams.getOwner());
       invalidateCache(page);
@@ -548,7 +548,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
     } catch (WikiException e) {
-      log.error("Can't move page '" + currentLocationParams.getPageId() + "' ", e);
+      log.error("Can't move page '" + currentLocationParams.getPageName() + "' ", e);
       return false;
     }
     return true;
@@ -608,7 +608,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         key.setSupportSectionEdit(true);
         renderingCache.remove(new Integer(key.hashCode()));
       } catch (Exception e) {
-        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
+        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageName()));
       }
     }
   }
@@ -643,7 +643,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         attachmentCountCache.remove(new Integer(key.hashCode()));
       } catch (Exception e) {
         LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", linkedWikiPageParams.getType(),
-                linkedWikiPageParams.getOwner(), linkedWikiPageParams.getPageId()));
+                linkedWikiPageParams.getOwner(), linkedWikiPageParams.getPageName()));
       }
     }
   }
@@ -882,8 +882,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws WikiException {
-    Page orginary = getPageOfWikiByName(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
-    Page related = getPageOfWikiByName(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
+    Page orginary = getPageOfWikiByName(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageName());
+    Page related = getPageOfWikiByName(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageName());
     dataStorage.addRelatedPage(orginary, related);
   }
 
@@ -894,8 +894,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws WikiException {
-    Page originary = getPageOfWikiByName(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageId());
-    Page related = getPageOfWikiByName(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageId());
+    Page originary = getPageOfWikiByName(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageName());
+    Page related = getPageOfWikiByName(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageName());
     dataStorage.removeRelatedPage(originary, related);
   }
 
@@ -1012,7 +1012,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void removeDraftOfPage(WikiPageParams param) throws WikiException {
-    Page page = getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageId());
+    Page page = getPageOfWikiByName(param.getType(), param.getOwner(), param.getPageName());
     dataStorage.deleteDraftOfPage(page, Utils.getCurrentUser());
   }
 

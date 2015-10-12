@@ -59,8 +59,8 @@ public class RelatedMacro extends AbstractMacro<RelatedPagesMacroParameters>{
       WikiService wikiService = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(WikiService.class);
       WikiContext wikiContext = getWikiContext();
-      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
-              new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
+      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageName()),
+              new WikiPageParams(params.getType(), params.getOwner(), params.getPageName()));
     } catch (Exception e) {
       if (log_.isWarnEnabled()) log_.warn("generate related macro failed", e);
       return Collections.emptyList();

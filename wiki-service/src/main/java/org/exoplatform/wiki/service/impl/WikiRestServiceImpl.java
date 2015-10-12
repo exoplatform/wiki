@@ -245,7 +245,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         currentPath = URLDecoder.decode(currentPath, "utf-8");
         context.put(TreeNode.CURRENT_PATH, currentPath);
         WikiPageParams currentPageParam = TreeUtils.getPageParamsFromPath(currentPath);
-        org.exoplatform.wiki.mow.api.Page currentPage = wikiService.getPageOfWikiByName(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageId());
+        org.exoplatform.wiki.mow.api.Page currentPage = wikiService.getPageOfWikiByName(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageName());
         context.put(TreeNode.CURRENT_PAGE, currentPage);
       }
       
@@ -253,7 +253,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       path = URLDecoder.decode(path, "utf-8");
       context.put(TreeNode.PATH, path);
       WikiPageParams pageParam = TreeUtils.getPageParamsFromPath(path);
-      org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(pageParam.getType(), pageParam.getOwner(), pageParam.getPageId());
+      org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(pageParam.getType(), pageParam.getOwner(), pageParam.getPageName());
       if (page == null) {
         log.warn("User [{}] can not get wiki path [{}]. Wiki Home is used instead",
                  ConversationState.getCurrent().getIdentity().getUserId(), path);
@@ -298,7 +298,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
     try {
       WikiPageParams params = TreeUtils.getPageParamsFromPath(path);
-      org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageId());
+      org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
       if (page != null) {
         List<org.exoplatform.wiki.mow.api.Page> relatedPages = wikiService.getRelatedPagesOfPage(page);
         List<JsonRelatedData> relatedData = RelatedUtil.pageToJson(relatedPages);

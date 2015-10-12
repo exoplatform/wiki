@@ -135,7 +135,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
     notificationMessages.clear();
     isRunAutoSave = true;
     if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-      Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId());
+      Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageName());
       DraftPage draftPage = wikiService.getDraftOfPage(page);
       if (draftPage != null) {
         if (!draftPage.getName().equals(initDraftName)) {
@@ -148,7 +148,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
         }
       }
 
-      List<String> edittingUsers = org.exoplatform.wiki.utils.Utils.getListOfUserEditingPage(pageParams.getPageId());
+      List<String> edittingUsers = org.exoplatform.wiki.utils.Utils.getListOfUserEditingPage(pageParams.getPageName());
       if (edittingUsers.size() > 0) {
         notificationMessages.add(createCocurrentEdittingNotification(edittingUsers));
       }
@@ -280,7 +280,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
 
   protected String getCurrentPageId() throws Exception {
     WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-    return URLEncoder.encode(pageParams.getPageId(),"utf-8");
+    return URLEncoder.encode(pageParams.getPageName(),"utf-8");
   }
 
   protected String getCurrentPageRevision() throws Exception {
@@ -388,7 +388,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId());
+        Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageName());
         DraftPage draftPage = wikiService.getDraftOfPage(page);
         if (draftPage != null) {
           UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
@@ -420,7 +420,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-        Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageId());
+        Page page = wikiService.getPageOfWikiByName(pageParams.getType(), pageParams.getOwner(), pageParams.getPageName());
         DraftPage draftPage = wikiService.getDraftOfPage(page);
         if (draftPage != null) {
           WebuiRequestContext context = WebuiRequestContext.getCurrentInstance() ;

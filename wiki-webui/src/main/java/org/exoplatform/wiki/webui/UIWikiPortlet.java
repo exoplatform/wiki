@@ -317,7 +317,7 @@ public class UIWikiPortlet extends UIPortletApplication {
     HashMap<String, Object> context = new HashMap<String, Object>();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
     context.put(WikiConstants.WIKI_MODE, this.mode);
-    context.put(WikiConstants.CURRENT_PAGE, params.getPageId());
+    context.put(WikiConstants.CURRENT_PAGE, params.getPageName());
     context.put(WikiConstants.CURRENT_WIKI_OWNER, params.getOwner());
     context.put(WikiConstants.CURRENT_WIKI_TYPE, params.getType());
     UIWikiPageArea wikiPageArea = this.findFirstComponentOfType(UIWikiPageArea.class);

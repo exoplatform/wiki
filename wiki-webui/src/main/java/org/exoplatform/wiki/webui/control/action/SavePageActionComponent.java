@@ -164,7 +164,7 @@ public class SavePageActionComponent extends UIComponent {
           Utils.redirect(pageParams, wikiPortlet.getWikiMode());
           return;
         }
-        pageParams.setPageId(newPageName);
+        pageParams.setPageName(newPageName);
         try {
           if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
             if (wikiPortlet.getEditMode() == EditMode.SECTION) {
@@ -204,7 +204,7 @@ public class SavePageActionComponent extends UIComponent {
               page.setAuthor(currentUser);
               page.setSyntax(syntaxId);
               pageTitleControlForm.getUIFormInputInfo().setValue(title);
-              pageParams.setPageId(page.getName());
+              pageParams.setPageName(page.getName());
               page.setUrl(Utils.getURLFromParams(pageParams));
               
               if (!page.getContent().equals(markup)) {
@@ -214,7 +214,7 @@ public class SavePageActionComponent extends UIComponent {
 
               if (!pageEditForm.getTitle().equals(title)) {
                 page.setTitle(title);
-                pageParams.setPageId(newPageName);
+                pageParams.setPageName(newPageName);
               }
 
               // update the page and create a version
@@ -250,7 +250,7 @@ public class SavePageActionComponent extends UIComponent {
             newPage.setSyntax(syntaxId);
             newPage.setUrl(Utils.getURLFromParams(pageParams));
             Page createdPage = wikiService.createPage(wiki, page.getName(), newPage);
-            pageParams.setPageId(newPageName);
+            pageParams.setPageName(newPageName);
 
             // Add all the attachments to the newly created page
             for(Attachment attachment : attachments) {

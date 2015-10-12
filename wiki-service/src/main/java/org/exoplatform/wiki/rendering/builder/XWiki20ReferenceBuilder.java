@@ -29,7 +29,7 @@ public class XWiki20ReferenceBuilder implements ReferenceBuilder {
       .append(wikiSpaceSeparator)
       .append(params.getOwner())
       .append(spacePageSeparator)
-      .append(params.getPageId().replace(".", "\\."));
+      .append(params.getPageName().replace(".", "\\."));
     return (sb.toString());
   }
 

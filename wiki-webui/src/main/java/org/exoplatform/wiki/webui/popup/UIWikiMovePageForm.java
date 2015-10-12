@@ -230,7 +230,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       //If exist page same with move page name in new location
       Page movepage = wservice.getPageOfWikiByName(currentLocationParams.getType(),
               currentLocationParams.getOwner(),
-              currentLocationParams.getPageId());
+              currentLocationParams.getPageName());
       
       // If user move page across spaces
       if (!currentLocationParams.getType().equals(newLocationParams.getType()) ||
@@ -266,7 +266,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       // Redirect to new location
       UIPopupContainer popupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);    
       popupContainer.cancelPopupAction();
-      newLocationParams.setPageId(currentLocationParams.getPageId());
+      newLocationParams.setPageName(currentLocationParams.getPageName());
       String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams, false);
       org.exoplatform.wiki.commons.Utils.redirect(permalink);
       RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
@@ -322,7 +322,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       // Change the breadcrum
       UIWikiLocationContainer uiWikiLocationContainer = uiWikiMovePageForm.getChild(UIWikiLocationContainer.class);
       UIWikiBreadCrumb newlocation = uiWikiLocationContainer.getChildById(UIWikiLocationContainer.NEW_LOCATION);
-      newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
+      newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageName()));
       event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiMovePageForm.getParent());
     }
   }

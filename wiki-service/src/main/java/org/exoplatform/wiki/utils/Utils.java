@@ -126,7 +126,7 @@ public class Utils {
    * @param isNewPage Is the wiki page a draft or not
    */
   public static void logEditPageTime(WikiPageParams pageParams, String username, long updateTime, String draftName, boolean isNewPage) {
-    String pageId = pageParams.getPageId();
+    String pageId = pageParams.getPageName();
     Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
     if (logByPage == null) {
       logByPage = new HashMap<String, WikiPageHistory>();
@@ -146,7 +146,7 @@ public class Utils {
    * @param user
    */
   public static void removeLogEditPage(WikiPageParams pageParams, String user) {
-    String pageId = pageParams.getPageId();
+    String pageId = pageParams.getPageName();
     Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
     if (logByPage != null) {
       logByPage.remove(user);
@@ -219,8 +219,8 @@ public class Utils {
       sb.append("/");
     }
     
-    if (params.getPageId() != null) {
-      sb.append(params.getPageId());
+    if (params.getPageName() != null) {
+      sb.append(params.getPageName());
     }
     
     if (hasDowmainUrl) {
@@ -314,7 +314,7 @@ public class Utils {
   
   public static String getDocumentURL(WikiContext wikiContext) {
     if (wikiContext.getPortalURL() == null && wikiContext.getPortletURI() == null) {
-      return wikiContext.getPageId();
+      return wikiContext.getPageName();
     }
     StringBuilder sb = new StringBuilder();
     sb.append(wikiContext.getPortalURL());
@@ -326,7 +326,7 @@ public class Utils {
       sb.append(Utils.validateWikiOwner(wikiContext.getType(), wikiContext.getOwner()));
       sb.append("/");
     }
-    sb.append(wikiContext.getPageId());
+    sb.append(wikiContext.getPageName());
     return sb.toString();
   }
   
@@ -346,7 +346,7 @@ public class Utils {
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     String wikiType = param.getType();
     String wikiOwner = param.getOwner();
-    String wikiPageId = param.getPageId();
+    String wikiPageId = param.getPageName();
 
     if (wikiOwner != null && wikiPageId != null) {
       if (!wikiPageId.equals(WikiConstants.WIKI_HOME_NAME)) {

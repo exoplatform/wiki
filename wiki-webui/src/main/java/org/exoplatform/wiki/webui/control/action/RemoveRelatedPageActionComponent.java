@@ -73,7 +73,7 @@ public class RemoveRelatedPageActionComponent extends UIComponent {
   String getRemovePageActionLink(WikiPageParams wikiParams) {
     Parameter[] params = new Parameter[] { new Parameter(WIKI_TYPE, wikiParams.getType()),
         new Parameter(PAGE_OWNER, wikiParams.getOwner()),
-        new Parameter(PAGE_ID, wikiParams.getPageId()) };
+        new Parameter(PAGE_ID, wikiParams.getPageName()) };
     try {
       return event("RemoveRelatedPage", null, params);
     } catch (Exception e) {

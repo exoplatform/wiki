@@ -219,10 +219,10 @@ public class TestWikiService extends AbstractMOWTestcase {
 
     WikiPageParams currentLocationParams= new WikiPageParams();
     WikiPageParams newLocationParams= new WikiPageParams();
-    currentLocationParams.setPageId("child");
+    currentLocationParams.setPageName("child");
     currentLocationParams.setType(PortalConfig.PORTAL_TYPE);
     currentLocationParams.setOwner("classic");
-    newLocationParams.setPageId("newParent");
+    newLocationParams.setPageName("newParent");
     newLocationParams.setType(PortalConfig.PORTAL_TYPE);
     newLocationParams.setOwner("classic");
 
@@ -236,10 +236,10 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "demo", "acmePage")) ;
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "classicPage")) ;
 
-    currentLocationParams.setPageId("acmePage");
+    currentLocationParams.setPageName("acmePage");
     currentLocationParams.setType(PortalConfig.USER_TYPE);
     currentLocationParams.setOwner("demo");
-    newLocationParams.setPageId("classicPage");
+    newLocationParams.setPageName("classicPage");
     newLocationParams.setType(PortalConfig.PORTAL_TYPE);
     newLocationParams.setOwner("classic");
     assertTrue(wService.movePage(currentLocationParams,newLocationParams)) ;
@@ -261,10 +261,10 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "demo", "toMovedPage"));
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "demo", "privatePage"));
 
-    currentLocationParams.setPageId("toMovedPage");
+    currentLocationParams.setPageName("toMovedPage");
     currentLocationParams.setType(PortalConfig.PORTAL_TYPE);
     currentLocationParams.setOwner("demo");
-    newLocationParams.setPageId("privatePage");
+    newLocationParams.setPageName("privatePage");
     newLocationParams.setType(PortalConfig.USER_TYPE);
     newLocationParams.setOwner("demo");
 
@@ -571,11 +571,11 @@ public class TestWikiService extends AbstractMOWTestcase {
     relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
     assertEquals("RenamedOriginalPage2", relatedPage.getName());
     WikiPageParams currentPageParams= new WikiPageParams();
-    currentPageParams.setPageId("RenamedOriginalPage2");
+    currentPageParams.setPageName("RenamedOriginalPage2");
     currentPageParams.setOwner("classic");
     currentPageParams.setType(PortalConfig.PORTAL_TYPE);
     WikiPageParams newPageParams= new WikiPageParams();
-    newPageParams.setPageId("WikiHome");
+    newPageParams.setPageName("WikiHome");
     newPageParams.setOwner("classic");
     newPageParams.setType(PortalConfig.PORTAL_TYPE);
     wService.movePage(currentPageParams,newPageParams);
@@ -586,10 +586,10 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertEquals("RenamedOriginalPage3", relatedPage.getName());
     wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "platform/users"), "WikiHome", new Page("OriginalParentPag2", "OriginalParentPage2"));
     // Move RenamedOriginalPage3 from portal type to group type
-    currentPageParams.setPageId("RenamedOriginalPage3");
+    currentPageParams.setPageName("RenamedOriginalPage3");
     currentPageParams.setOwner("classic");
     currentPageParams.setType(PortalConfig.PORTAL_TYPE);
-    newPageParams.setPageId("OriginalParentPage2");
+    newPageParams.setPageName("OriginalParentPage2");
     newPageParams.setOwner("platform/users");
     newPageParams.setType(PortalConfig.GROUP_TYPE);
     //

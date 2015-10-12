@@ -80,7 +80,7 @@ public class UIWikiRichTextArea extends UIContainer {
     }
     UIWikiPortlet wikiPortlet = this.getAncestorOfType(UIWikiPortlet.class);
     if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-      wikiPageParams.setPageId(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
+      wikiPageParams.setPageName(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
     }
     return wikiPageParams;
   }

@@ -51,7 +51,7 @@ public class UIWikiApplicationControlArea extends UIContainer {
     if (!StringUtils.isEmpty(currentSpaceName)) {
       uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(currentSpaceName));
     }
-    wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
+    wikiBreadCrumb.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageName()));
     wikiBreadCrumb.setActionLabel(currentActionLabel);
     super.processRender(context);
   }

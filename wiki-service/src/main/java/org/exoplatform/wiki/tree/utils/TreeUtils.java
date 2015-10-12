@@ -49,7 +49,7 @@ public class TreeUtils {
     Object wikiObject = Utils.getObjectFromParams(params);
     if (wikiObject instanceof Page) {
       Page page = (Page) wikiObject;
-      if(params.getPageId().equals(WikiConstants.WIKI_HOME_NAME)) {
+      if(params.getPageName().equals(WikiConstants.WIKI_HOME_NAME)) {
         WikiHomeTreeNode wikiHomeNode = new WikiHomeTreeNode(page);
         return wikiHomeNode;
       } else {
@@ -167,7 +167,7 @@ public class TreeUtils {
           if (oService.getGroupHandler().findGroupById(groupId) != null) {
             result.setOwner(groupId);
           } else {
-            result.setPageId(path.substring(path.lastIndexOf("/") + 1));
+            result.setPageName(path.substring(path.lastIndexOf("/") + 1));
             String owner = path.substring(path.indexOf("/"), path.lastIndexOf("/"));
             while (oService.getGroupHandler().findGroupById(owner) == null) {
               owner = owner.substring(0,owner.lastIndexOf("/"));
@@ -177,7 +177,7 @@ public class TreeUtils {
         } else {
           // if (array[0].equals(PortalConfig.PORTAL_TYPE) || array[0].equals(PortalConfig.USER_TYPE))
           result.setOwner(array[1]);
-          result.setPageId(array[array.length-1]);
+          result.setPageName(array[array.length - 1]);
         }
       }
     }
@@ -192,8 +192,8 @@ public class TreeUtils {
     if (param.getOwner() != null) {
       sb.append("/").append(Utils.validateWikiOwner(param.getType(), param.getOwner()));
     }
-    if (param.getPageId() != null) {
-      sb.append("/").append(param.getPageId());
+    if (param.getPageName() != null) {
+      sb.append("/").append(param.getPageName());
     }
     return sb.toString();
   }

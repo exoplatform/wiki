@@ -62,7 +62,7 @@ public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent 
     try {
       WikiPageParams params = Utils.getCurrentWikiPageParams();
       WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-      return wservice.searchRenamedPage(params.getType(), params.getOwner(), params.getPageId());
+      return wservice.searchRenamedPage(params.getType(), params.getOwner(), params.getPageName());
     } catch (Exception e) {
       return new ArrayList<SearchResult>();
     }
@@ -84,10 +84,10 @@ public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent 
   protected Page getCurrentPage() {
     try {
       WikiPageParams params = Utils.getCurrentWikiPageParams();
-      pageID = params.getPageId();
+      pageID = params.getPageName();
       owner = params.getOwner();
       WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-      return wservice.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageId());
+      return wservice.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
     } catch (Exception e) {
       return null;
     }
@@ -118,7 +118,7 @@ public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent 
       WikiService wService = (WikiService) PortalContainer.getComponent(WikiService.class);
       WikiPageParams params = Utils.getCurrentWikiPageParams();
       wService.removeDraftOfPage(params);
-      wService.deletePage(params.getType(), params.getOwner(), params.getPageId());
+      wService.deletePage(params.getType(), params.getOwner(), params.getPageName());
       UIWikiPortlet wikiPortlet = uiWikiDeletePageConfirm.getAncestorOfType(UIWikiPortlet.class);
       wikiPortlet.changeMode(WikiMode.VIEW);
       UIWikiBreadCrumb breadcumb = wikiPortlet.findFirstComponentOfType(UIWikiBreadCrumb.class);

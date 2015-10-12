@@ -37,7 +37,7 @@ public class ExcerptUtils {
                                                                .getComponentInstanceOfType(WikiService.class);
     Page page = wikiService.getPageOfWikiByName(params.getType(),
             params.getOwner(),
-            params.getPageId());
+            params.getPageName());
 
     return getExcerpts(page.getContent(), page.getSyntax());
   }

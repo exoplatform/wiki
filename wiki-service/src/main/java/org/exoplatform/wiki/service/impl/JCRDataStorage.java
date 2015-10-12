@@ -528,15 +528,15 @@ public class JCRDataStorage implements DataStorage {
 
     PageImpl destPage = fetchPageImpl(newLocationParams.getType(),
             newLocationParams.getOwner(),
-            newLocationParams.getPageId());
+            newLocationParams.getPageName());
     if (destPage == null || !destPage.hasPermission(PermissionType.EDITPAGE)) {
       throw new WikiException("Destination page " + newLocationParams.getType() + ":" +
-              newLocationParams.getOwner() + ":" + newLocationParams.getPageId() + " does not exist");
+              newLocationParams.getOwner() + ":" + newLocationParams.getPageName() + " does not exist");
     }
     ChromatticSession session = mowService.getSession();
     PageImpl movePage = fetchPageImpl(currentLocationParams.getType(),
             currentLocationParams.getOwner(),
-            currentLocationParams.getPageId());
+            currentLocationParams.getPageName());
     WikiImpl sourceWiki = (WikiImpl) movePage.getWiki();
     MovedMixin mix = movePage.getMovedMixin();
     if (mix == null) {
@@ -598,16 +598,16 @@ public class JCRDataStorage implements DataStorage {
       LinkRegistry destLinkRegistry = destWiki.getLinkRegistry();
       String newEntryName = getLinkEntryName(newLocationParams.getType(),
               newLocationParams.getOwner(),
-              currentLocationParams.getPageId());
+              currentLocationParams.getPageName());
       String newEntryAlias = getLinkEntryAlias(newLocationParams.getType(),
               newLocationParams.getOwner(),
-              currentLocationParams.getPageId());
+              currentLocationParams.getPageName());
       LinkEntry newEntry = destLinkRegistry.getLinkEntries().get(newEntryName);
       LinkEntry entry =
               sourceLinkRegistry.getLinkEntries().get(
                       getLinkEntryName(currentLocationParams.getType(),
                               currentLocationParams.getOwner(),
-                              currentLocationParams.getPageId()));
+                              currentLocationParams.getPageName()));
       if (newEntry == null) {
         newEntry = destLinkRegistry.createLinkEntry();
         destLinkRegistry.getLinkEntries().put(newEntryName, newEntry);
@@ -873,12 +873,12 @@ public class JCRDataStorage implements DataStorage {
       return null;
     }
 
-    if ((param.getPageId() == null) || (param.getOwner() == null) || (param.getType() == null)) {
+    if ((param.getPageName() == null) || (param.getOwner() == null) || (param.getType() == null)) {
       return null;
     }
 
-    PageImpl targetPage = fetchPageImpl(param.getType(), param.getOwner(), param.getPageId());
-    if ((param.getPageId() == null) || (targetPage == null)) {
+    PageImpl targetPage = fetchPageImpl(param.getType(), param.getOwner(), param.getPageName());
+    if ((param.getPageName() == null) || (targetPage == null)) {
       return null;
     }
 
@@ -901,7 +901,7 @@ public class JCRDataStorage implements DataStorage {
           }
         }
       } catch(RepositoryException e) {
-        log.error("Cannot get JCR node of page " + param.getType() + ":" + param.getOwner() + ":" + param.getPageId()
+        log.error("Cannot get JCR node of page " + param.getType() + ":" + param.getOwner() + ":" + param.getPageName()
           + " for user " + username + " - Cause : " + e.getMessage(), e);
       }
     }

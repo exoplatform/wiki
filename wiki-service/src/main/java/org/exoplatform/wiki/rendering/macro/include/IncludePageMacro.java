@@ -79,13 +79,13 @@ public class IncludePageMacro extends AbstractMacro<IncludePageMacroParameters> 
     WikiPageParams includeParams = markupContextManager.getMarkupContext(parameters.getPage(), ResourceType.DOCUMENT);
     Page page = null;
     try {
-      page = getWikiService().getPageOfWikiByName(includeParams.getType(), includeParams.getOwner(), includeParams.getPageId());
+      page = getWikiService().getPageOfWikiByName(includeParams.getType(), includeParams.getOwner(), includeParams.getPageName());
       WikiService wikiService = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(WikiService.class);
-      wikiService.addPageLink(new WikiPageParams(currentCtx.getType(), currentCtx.getOwner(), currentCtx.getPageId()),
+      wikiService.addPageLink(new WikiPageParams(currentCtx.getType(), currentCtx.getOwner(), currentCtx.getPageName()),
               new WikiPageParams(includeParams.getType(),
                       includeParams.getOwner(),
-                      includeParams.getPageId()));
+                      includeParams.getPageName()));
       if (page == null) {
         return Collections.emptyList();
       }
