@@ -16,20 +16,19 @@
  */
 package org.exoplatform.wiki.bench;
 
-import org.chromattic.api.query.QueryResult;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.services.bench.DataInjector;
-import org.exoplatform.services.jcr.access.PermissionType;
+import org.exoplatform.services.jcr.util.IdGenerator;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
+import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -133,33 +132,33 @@ public class WikiDataInjector extends DataInjector {
     return recursive;
   }
   
-  private List<String> readPermission(HashMap<String, String> queryParams) {
+  private List<Permission> readPermission(HashMap<String, String> queryParams) {
     String permString = queryParams.get(PERMISSION);
-    List<String> permissions = new LinkedList<String>();
+    List<Permission> permissions = new LinkedList<>();
     boolean flag = Integer.parseInt(permString.substring(0, 1)) > 0;
     if (flag) // check read permission
-      permissions.add(PermissionType.READ);
+      permissions.add(new Permission(PermissionType.VIEWPAGE, true));
     
     flag = Integer.parseInt(permString.substring(1, 2)) > 0;
     if (flag) { // check edit permission
-      permissions.add(PermissionType.ADD_NODE);
-      permissions.add(PermissionType.SET_PROPERTY);
-      permissions.add(PermissionType.REMOVE);
+      permissions.add(new Permission(PermissionType.EDITPAGE, true));
     }
     return permissions;
   }
   
-  private HashMap<String, String[]> readPermissions(HashMap<String, String> queryParams) {
-    HashMap<String, String[]> permissions = new HashMap<String, String[]>();
-    List<String> identities = new LinkedList<String>();
-    String[] permsArr = readPermission(queryParams).toArray(new String[] {});
-    identities.addAll(readGroupsIfExist(queryParams));
-    identities.addAll(readUsersIfExist(queryParams));
-    identities.addAll(readMembershipIfExist(queryParams));
-    for (String identity : identities) {
-      permissions.put(identity, permsArr);
+  private List<PermissionEntry> readPermissions(HashMap<String, String> queryParams) {
+    List<PermissionEntry> permissionEntries = new ArrayList<>();
+    Permission[] permissions = readPermission(queryParams).toArray(new Permission[] {});
+    for (String identity : readGroupsIfExist(queryParams)) {
+      permissionEntries.add(new PermissionEntry(identity, "", IDType.GROUP, permissions));
     }
-    return permissions;
+    for (String identity : readUsersIfExist(queryParams)) {
+      permissionEntries.add(new PermissionEntry(identity, "", IDType.USER, permissions));
+    }
+    for (String identity : readMembershipIfExist(queryParams)) {
+      permissionEntries.add(new PermissionEntry(identity, "", IDType.MEMBERSHIP, permissions));
+    }
+    return permissionEntries;
   }
   
    
@@ -173,9 +172,11 @@ public class WikiDataInjector extends DataInjector {
     newPage.setContent(randomParagraphs(10));
     Page page = wikiService.createPage(new Wiki(wikiType, wikiOwner), father.getName(), newPage);
     if (attSize > 0) {
-      // TODO need createAttachment
-      //page.createAttachment("att" + IdGenerator.generate() + ".txt",
-      //                      Resource.createPlainText(createTextResource(attSize)));
+      Attachment attachment = new Attachment();
+      attachment.setName("att" + IdGenerator.generate() + ".txt");
+      attachment.setContent(createTextResource(attSize).getBytes());
+      attachment.setMimeType("text/plain");
+      wikiService.addAttachmentToPage(attachment, page);
     }
     return page;
   }
@@ -191,15 +192,14 @@ public class WikiDataInjector extends DataInjector {
     int numOfPages = quantities.get(depth).intValue();
     String prefix = prefixes.get(depth);
     // Achieve 'prefix' pages
-    QueryResult<Page> iter = getPagesByPrefix(prefix, father);
-    while (iter.hasNext()) {
-      Page page = iter.next();
-      log.info(String.format("%1$" + ((depth + 1)*4) + "s Process page: %2$s in depth %3$s .......", " ", page.getTitle(), depth + 1));
+    List<Page> childrenPagesWithPrefix = getPagesByPrefix(prefix, father);
+    for(Page childPage : childrenPagesWithPrefix) {
+      log.info(String.format("%1$" + ((depth + 1) * 4) + "s Process page: %2$s in depth %3$s .......", " ", childPage.getTitle(), depth + 1));
       if (depth < quantities.size() - 1) {
-        generatePages(quantities, prefixes, depth + 1, attSize, totalPages, wikiOwner, wikiType, page);
+        generatePages(quantities, prefixes, depth + 1, attSize, totalPages, wikiOwner, wikiType, childPage);
       }
     }
-    int prefixSize = iter.size();    
+    int prefixSize = childrenPagesWithPrefix.size();
     // Check and add more pages to be equals to numOfPages
     if (prefixSize < numOfPages) {
       for (int i = prefixSize; i < numOfPages; i++) {
@@ -226,38 +226,39 @@ public class WikiDataInjector extends DataInjector {
     int totalPages = readMaxPagesIfExist(queryParams);
     String wikiOwner = readWikiOwner(queryParams);
     String wikiType = readWikiType(queryParams);    
-    generatePages(quantities, prefixes, 0, attSize, totalPages, wikiOwner, wikiType, wikiService.getPageOfWikiByName(wikiType, wikiOwner, null));
+    generatePages(quantities, prefixes, 0, attSize, totalPages, wikiOwner, wikiType, wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner).getWikiHome());
     log.info("Injecting data has been done successfully!");
   }
   
-  private void grantPermission(List<Integer> quantities, List<String> prefixes, int depth, Page father, String wikiOwner, String wikiType, HashMap<String, String[]> permissions, boolean isRecursive) throws WikiException {
+  private void grantPermission(List<Integer> quantities, List<String> prefixes, int depth, Page father, String wikiOwner, String wikiType, List<PermissionEntry> permissions, boolean isRecursive) throws WikiException {
     int numOfPages = quantities.get(depth).intValue();
     String prefix = prefixes.get(depth);
-    QueryResult<Page> iter = getPagesByPrefix(prefix, father);
-    while (iter.hasNext() && numOfPages > 0) {
-      numOfPages--;
-      Page page = iter.next();
+    List<Page> childrenPagesWithPrefix = getPagesByPrefix(prefix, father);
+    for(Page childPage : childrenPagesWithPrefix) {
+      if(numOfPages-- <= 0) {
+        break;
+      }
       if (isRecursive || depth == (quantities.size() - 1)) {
-        log.info(String.format("Grant permissions %1$s for page: %2$s .........", permissionsToString(permissions), page.getTitle()));
-        // TODO ???
-        //page.setPermissions(permissions);
+        log.info(String.format("Grant permissions %1$s for page: %2$s", permissionsToString(permissions), childPage.getTitle()));
+        childPage.setPermissions(permissions);
+        wikiService.updatePage(childPage, null);
         if (depth < quantities.size() - 1) {
-          grantPermission(quantities, prefixes, depth + 1, page, wikiOwner, wikiType, permissions, isRecursive);
+          grantPermission(quantities, prefixes, depth + 1, childPage, wikiOwner, wikiType, permissions, isRecursive);
         }
       }
     }
   }
   
-  private String permissionsToString(HashMap<String, String[]> permission) {
+  private String permissionsToString(List<PermissionEntry> permissions) {
     StringBuilder sb = new StringBuilder();
-    Iterator<String> itr = permission.keySet().iterator();
     sb.append("(");
-    while (itr.hasNext()) {
-      String key = itr.next();
-      String[] value = permission.get(key);
-      sb.append("[" + key + ":");
-      for (String s : value) {
-        sb.append(s).append(",");
+    for(PermissionEntry permissionEntry : permissions) {
+      Permission[] value = permissionEntry.getPermissions();
+      sb.append("[" + permissionEntry.getIdType() + ":" + permissionEntry.getId() + ":");
+      for (Permission permission : value) {
+        if(permission.isAllowed()) {
+          sb.append(permission.getPermissionType().toString()).append(",");
+        }
       }
       sb.delete(sb.length() - 1, sb.length());
       sb.append("],");
@@ -273,9 +274,9 @@ public class WikiDataInjector extends DataInjector {
     List<String> prefixes = readPrefixes(queryParams);
     String wikiOwner = readWikiOwner(queryParams);
     String wikiType = readWikiType(queryParams);
-    HashMap<String, String[]> permissions = readPermissions(queryParams);
+    List<PermissionEntry> permissions = readPermissions(queryParams);
     boolean isRecursive = readRecursive(queryParams);    
-    grantPermission(quantities, prefixes, 0, wikiService.getPageOfWikiByName(wikiType, wikiOwner, null), wikiOwner, wikiType, permissions, isRecursive);
+    grantPermission(quantities, prefixes, 0, wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner).getWikiHome(), wikiOwner, wikiType, permissions, isRecursive);
     log.info("Permissions have been granted successfully!");
   }
   
@@ -310,21 +311,17 @@ public class WikiDataInjector extends DataInjector {
     
     log.info("Rejecting data has been done successfully!");
   }
-  
-  public QueryResult<Page> getPagesByPrefix(String prefix, Page father) {
-    // TODO need getPagesByPrefix in wikiService ?
-    /*
-    StringBuilder statement = new StringBuilder("(title LIKE '").append(prefix)
-                                                                .append("_%'")
-                                                                .append(") AND (")
-                                                                .append("jcr:path LIKE '");
-    if (father != null) {
-      statement.append(father.getPath());
+
+  public List<Page> getPagesByPrefix(String prefix, Page father) throws WikiException {
+    List<Page> childrenPagesWithPrefix = new ArrayList<>();
+    List<Page> childrenPages = wikiService.getChildrenPageOf(father);
+    for(Page childPage : childrenPages) {
+      if(childPage.getTitle() != null && childPage.getTitle().startsWith(prefix)) {
+        childrenPagesWithPrefix.add(childPage);
+      }
     }
-    statement.append("/%')");
-    return father.getChromatticSession().createQueryBuilder(PageImp.class).where(statement.toString()).get().objects();
-    */
-    throw new UnsupportedOperationException();
+
+    return childrenPagesWithPrefix;
   }
 
   @Override

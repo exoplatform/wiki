@@ -273,12 +273,14 @@ public class WikiServiceImpl implements WikiService, Startable {
       UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(UserPortalConfigService.class);
       try {
-        UserPortalConfig userPortalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null);
-        if(userPortalConfig != null) {
-          PortalConfig portalConfig = userPortalConfig.getPortalConfig();
-          PermissionEntry portalPermissionEntry = new PermissionEntry(portalConfig.getEditPermission(),
-                  "", IDType.MEMBERSHIP, allPermissions);
-          permissions.add(portalPermissionEntry);
+        if(userPortalConfigService != null) {
+          UserPortalConfig userPortalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null);
+          if (userPortalConfig != null) {
+            PortalConfig portalConfig = userPortalConfig.getPortalConfig();
+            PermissionEntry portalPermissionEntry = new PermissionEntry(portalConfig.getEditPermission(),
+                    "", IDType.MEMBERSHIP, allPermissions);
+            permissions.add(portalPermissionEntry);
+          }
         }
         PermissionEntry userPermissionEntry = new PermissionEntry("any", "", IDType.USER, viewPermissions);
         permissions.add(userPermissionEntry);

@@ -26,6 +26,7 @@ import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.bench.WikiDataInjector.CONSTANTS;
 import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.service.WikiService;
 
 import javax.jcr.Node;
@@ -35,6 +36,9 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryManager;
 import javax.jcr.query.QueryResult;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 public class TestWikiDataInjector extends TestCase {
 
   private static StandaloneContainer container;
@@ -59,7 +63,7 @@ public class TestWikiDataInjector extends TestCase {
     begin();
     Identity systemIdentity = new Identity(IdentityConstants.SYSTEM);
     ConversationState.setCurrent(new ConversationState(systemIdentity));
-    this.wikiService = (WikiService) container.getComponentInstanceOfType(WikiService.class);
+    this.wikiService = container.getComponentInstanceOfType(WikiService.class);
     this.injector = new WikiDataInjector(wikiService, null);
   }
 
@@ -81,7 +85,7 @@ public class TestWikiDataInjector extends TestCase {
   
   private static void initJCR() {
     try {
-      RepositoryService  repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
+      RepositoryService  repositoryService = container.getComponentInstanceOfType(RepositoryService.class);
       assertNotNull(repositoryService);
       Session session = repositoryService.getCurrentRepository().getSystemSession(WIKI_WS);
    // Remove old data before to starting test case.
@@ -137,35 +141,34 @@ public class TestWikiDataInjector extends TestCase {
     return queryParams;
   }
 
-  // TODO ???
-  public void testDummy() {
-    assertTrue(true);
-  }
-
-  /*
   public void testInjectData() throws Exception {
-    Page wikiHome = wikiService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", null);
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Page wikiHome = wiki.getWikiHome();
     HashMap<String, String> injectParams = createInjectPageParam("2", "a", "100", "100", "classic", PortalConfig.PORTAL_TYPE);
     injector.inject(injectParams);
     assertTrue(injector.getPagesByPrefix("a", wikiHome).size() == 2);
     
     injectParams = createInjectPageParam("2,3", "a,b", "100", "100", "classic", PortalConfig.PORTAL_TYPE);
     injector.inject(injectParams);
-    org.chromattic.api.query.QueryResult<Page> iter = injector.getPagesByPrefix("a", wikiHome);
-    assertTrue(iter.size() == 2);
+    List<Page> pages = injector.getPagesByPrefix("a", wikiHome);
+    Iterator<Page> iter = pages.iterator();
+    assertTrue(pages.size() == 2);
     assertTrue(injector.getPagesByPrefix("b", iter.next()).size() == 3);
     
     injectParams = createInjectPageParam("1,2", "c,b", "100", "100", "classic", PortalConfig.PORTAL_TYPE);
     injector.inject(injectParams);
-    iter = injector.getPagesByPrefix("c", wikiHome);
+    pages = injector.getPagesByPrefix("c", wikiHome);
+    iter = pages.iterator();
     assertTrue(injector.getPagesByPrefix("b", iter.next()).size() == 2);
-    
-    iter = injector.getPagesByPrefix("a", wikiHome);
+
+    pages = injector.getPagesByPrefix("a", wikiHome);
+    iter = pages.iterator();
     assertTrue(injector.getPagesByPrefix("b", iter.next()).size() == 3);
   }
   
   public void testRejectData() throws Exception {
-    Page wikiHome = wikiService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", null);
+    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Page wikiHome = wiki.getWikiHome();
     HashMap<String, String> injectParams = createInjectPageParam("2", "e", "100", "100", "classic", PortalConfig.PORTAL_TYPE);
     injector.inject(injectParams);
     assertTrue(injector.getPagesByPrefix("e", wikiHome).size() == 2);
@@ -173,6 +176,5 @@ public class TestWikiDataInjector extends TestCase {
     injector.reject(rejectParams);
     assertTrue(injector.getPagesByPrefix("e", wikiHome).size() == 0);
   }
-  */
 
 }
