@@ -644,7 +644,7 @@ public abstract class PageImpl extends NTFolder {
    * based on the history of page node, 2.remove the mix:versionable from page node. 
    * @throws Exception
    */
-  public void migrateLegacyData() throws Exception {
+  public void migrateLegacyData() throws RepositoryException {
     //migrate only when the current Page Node is mix:versionable
     if (this.getJCRPageNode().isNodeType(WikiNodeType.MIX_VERSIONABLE) && 
         (this.getContent().getVersionableMixinByChromattic() == null)) {
@@ -714,7 +714,7 @@ public abstract class PageImpl extends NTFolder {
   public abstract UpdateAttachmentMixin createUpdateAttachmentMixin();
 
   /* Grant read permission for any for all attachments */
-  public void migrateAttachmentPermission() throws Exception {
+  public void migrateAttachmentPermission() throws WikiException {
 
     boolean isGroupWiki = PortalConfig.GROUP_TYPE.equals(this.getWiki().getType());
     UpdateAttachmentMixin updateAttachment = this.getUpdateAttachmentMixin();

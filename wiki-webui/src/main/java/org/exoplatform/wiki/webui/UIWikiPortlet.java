@@ -158,13 +158,6 @@ public class UIWikiPortlet extends UIPortletApplication {
         super.processRender(app, context);
         return;
       } else {
-        if (WikiMode.VIEW.equals(this.getWikiMode())) {
-          // TODO need migration methods
-          /*
-          page.migrateLegacyData();
-          page.migrateAttachmentPermission();
-          */
-        }
         if (mode.equals(WikiMode.PAGE_NOT_FOUND)) {
           changeMode(WikiMode.VIEW);
         }
