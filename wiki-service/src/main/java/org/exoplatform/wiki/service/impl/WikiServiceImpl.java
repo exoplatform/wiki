@@ -465,9 +465,10 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     try {
       Page page = getPageOfWikiByName(wikiType, wikiOwner, pageName);
-      invalidateCachesOfPageTree(page);
 
       if(page != null) {
+        invalidateCachesOfPageTree(page);
+        invalidateAttachmentCache(page);
 
         // Store all children to launch post deletion listeners
         List<Page> allChrildrenPages = new ArrayList<>();
@@ -538,6 +539,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       page.setWikiType(currentLocationParams.getType());
       page.setWikiOwner(currentLocationParams.getOwner());
       invalidateCache(page);
+      invalidateAttachmentCache(page);
 
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
     } catch (WikiException e) {
@@ -612,28 +614,31 @@ public class WikiServiceImpl implements WikiService, Startable {
     uuidCache.remove(new Integer(key.hashCode()));
   }
 
-  protected void invalidateAttachmentCache(WikiPageParams param) {
-    List<WikiPageParams> linkedPages = pageLinksMap.get(param);
+  protected void invalidateAttachmentCache(Page page) {
+    WikiPageParams wikiPageParams = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
+
+    List<WikiPageParams> linkedPages = pageLinksMap.get(wikiPageParams);
     if (linkedPages == null) {
       linkedPages = new ArrayList<>();
     } else {
       linkedPages = new ArrayList<>(linkedPages);
     }
-    linkedPages.add(param);
+    linkedPages.add(wikiPageParams);
 
-    for (WikiPageParams wikiPageParams : linkedPages) {
+    for (WikiPageParams linkedWikiPageParams : linkedPages) {
       try {
-        MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        MarkupKey key = new MarkupKey(linkedWikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
         attachmentCountCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         attachmentCountCache.remove(new Integer(key.hashCode()));
 
-        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        key = new MarkupKey(linkedWikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
         attachmentCountCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         attachmentCountCache.remove(new Integer(key.hashCode()));
       } catch (Exception e) {
-        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", wikiPageParams.getType(), wikiPageParams.getOwner(), wikiPageParams.getPageId()));
+        LOG.warn(String.format("Failed to invalidate cache of page [%s:%s:%s]", linkedWikiPageParams.getType(),
+                linkedWikiPageParams.getOwner(), linkedWikiPageParams.getPageId()));
       }
     }
   }
@@ -1088,6 +1093,29 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
+  public int getNbOfAttachmentsOfPage(Page page) throws WikiException {
+    int nbOfAttachments = 0;
+
+    WikiPageParams wikiPageParams = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
+    MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+    Integer cacheKey = new Integer(key.hashCode());
+    AttachmentCountData cachedNbOfAttachments = attachmentCountCache.get(cacheKey);
+    if(cachedNbOfAttachments != null) {
+      nbOfAttachments = cachedNbOfAttachments.build();
+    } else {
+      try {
+        List<Attachment> attachments = getAttachmentsOfPage(page);
+        nbOfAttachments = attachments == null ? 0 : attachments.size();
+        attachmentCountCache.put(cacheKey, new AttachmentCountData(nbOfAttachments));
+      } catch (WikiException e) {
+        log.error("Cannot get number of attachments of " + page.getWikiType() + ":" + page.getWikiOwner()
+                + ":" + page.getName() + " - Cause : " + e.getMessage(), e);
+      }
+    }
+    return nbOfAttachments;
+  }
+
+  @Override
   public Attachment getAttachmentOfPageByName(String attachmentName, Page page) throws WikiException {
     Attachment attachment = null;
     List<Attachment> attachments = dataStorage.getAttachmentsOfPage(page);
@@ -1103,11 +1131,15 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException {
     dataStorage.addAttachmentToPage(attachment, page);
+
+    invalidateAttachmentCache(page);
   }
 
   @Override
   public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException {
     dataStorage.deleteAttachmentOfPage(attachmentId, page);
+
+    invalidateAttachmentCache(page);
   }
 
   /******* Watch *******/

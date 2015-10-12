@@ -303,6 +303,14 @@ public interface WikiService {
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException;
 
   /**
+   * Get the number of attachment of the given page
+   * @param page The wiki page
+   * @return The number of attachments of the page
+   * @throws WikiException
+   */
+  public int getNbOfAttachmentsOfPage(Page page) throws WikiException;
+
+  /**
    * Get a attachment of a ther given page by name
    * @param attachmentName The name of the attachment
    * @param page The wiki page

@@ -82,11 +82,9 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
   }
 
   protected int getNumberOfAttachments(Page page) {
-    // TODO use cache instead
     int nbOfAttachments = 0;
     try {
-      List<Attachment> attachments = wikiService.getAttachmentsOfPage(page);
-      nbOfAttachments = attachments == null ? 0 : attachments.size();
+      nbOfAttachments = wikiService.getNbOfAttachmentsOfPage(page);
     } catch (WikiException e) {
       log.error("Cannot get number of attachments of " + page.getWikiType() + ":" + page.getWikiOwner()
               + ":" + page.getName() + " - Cause : " + e.getMessage(), e);
