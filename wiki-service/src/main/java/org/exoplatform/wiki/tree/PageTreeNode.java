@@ -57,8 +57,6 @@ public class PageTreeNode extends TreeNode {
 
   @Override
   protected void addChildren(HashMap<String, Object> context) throws Exception {
-    // TODO need getChildrenByRootPermission ?
-    //Collection<Page> pages = page.getChildrenByRootPermission().values();
     Collection<Page> pages = wikiService.getChildrenPageOf(page);
     Iterator<Page> childPageIterator = pages.iterator();
     int count = 0;
