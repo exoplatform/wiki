@@ -127,7 +127,9 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
       String path = getPath();
       try {
         String parentPath = path.substring(0, path.lastIndexOf("/"));
-        sb.append(parentPath + "/" + URLEncoder.encode(getName(), "UTF-8"));
+        String basePath = parentPath.substring(0, parentPath.lastIndexOf("/"));
+        String pageName = URLEncoder.encode(parentPath.substring(basePath.length()+1), "UTF-8");
+        sb.append(basePath + "/" +pageName+ "/" + URLEncoder.encode(getName(), "UTF-8"));
       } catch (UnsupportedEncodingException e) {
         sb.append(path);
       }
