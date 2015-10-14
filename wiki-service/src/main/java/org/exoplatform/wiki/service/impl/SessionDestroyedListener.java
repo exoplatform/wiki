@@ -22,6 +22,7 @@ import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 
@@ -32,7 +33,7 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
   private static Log LOG = ExoLogger.getLogger("SessionDestroyedListener");
 
   @Override
-  public void onEvent(Event<PortalContainer, HttpSessionEvent> event) throws Exception {    
+  public void onEvent(Event<PortalContainer, HttpSessionEvent> event) {
     PortalContainer container = event.getSource();
     String sessionId = event.getData().getSession().getId();
     if (LOG.isTraceEnabled()) {
@@ -50,7 +51,15 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
     if (container.isStarted()) {
       WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
       RequestLifeCycle.begin(PortalContainer.getInstance());
-      wikiService.removeDraft(Utils.getPageNameForAddingPage(sessionId));
+      String draftPageName = Utils.getPageNameForAddingPage(sessionId);
+      try {
+        wikiService.removeDraft(draftPageName);
+      } catch (WikiException e) {
+        if(LOG.isDebugEnabled()) {
+          LOG.debug("No draft page to be removed for user " + Utils.getCurrentUser()
+                  + " (page name = " + draftPageName + ") on logout.", e);
+        }
+      }
       RequestLifeCycle.end();
     }
   }
