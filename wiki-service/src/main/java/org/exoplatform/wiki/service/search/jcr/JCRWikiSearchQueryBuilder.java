@@ -67,6 +67,8 @@ public class JCRWikiSearchQueryBuilder {
       }
     }
     this.propertyConstraints = new ArrayList<>();
+
+    initJcrQueryPath();
   }
 
   public List<String> getPropertyConstraints() {
@@ -85,7 +87,7 @@ public class JCRWikiSearchQueryBuilder {
     }
   }
 
-  public String createJcrQueryPath() {
+  public void initJcrQueryPath() {
     if (wikiSearchData.getWikiType() == null && wikiSearchData.getWikiOwner() == null) {
       pagePath = ALL_PAGESPATH;
     } else if (wikiSearchData.getWikiType() != null) {
@@ -103,14 +105,12 @@ public class JCRWikiSearchQueryBuilder {
         }
       }
     }
-
-    return "(jcr:path LIKE '" + pagePath + "/%')";
   }
 
   public String getStatementForSearchingTitle() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT title, jcr:primaryType, path, excerpt(.) FROM nt:base WHERE ");
-    statement.append(createJcrQueryPath());
+    statement.append(createJcrQueryPathClause());
     statement.append(searchTitleCondition());
     statement.append(createOrderClause());
     return statement.toString();
@@ -119,7 +119,7 @@ public class JCRWikiSearchQueryBuilder {
   public String getStatementForSearchingContent() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT jcr:primaryType, path, excerpt(.) FROM wiki:attachment WHERE ");
-    statement.append(createJcrQueryPath());
+    statement.append(createJcrQueryPathClause());
     statement.append(searchContentCondition());
     statement.append(createOrderClause());
     return statement.toString();
@@ -128,12 +128,16 @@ public class JCRWikiSearchQueryBuilder {
   public String getStatementForRenamedPage() {
     StringBuilder statement = new StringBuilder();
     statement.append("SELECT * ").append("FROM wiki:renamed ").append("WHERE ");
-    statement.append(createJcrQueryPath());
+    statement.append(createJcrQueryPathClause());
     if (wikiSearchData.getPageId() != null && wikiSearchData.getPageId().length() > 0) {
       statement.append(" AND ");
       statement.append(" oldPageIds = '").append(wikiSearchData.getPageId()).append("'");
     }
     return statement.toString();
+  }
+
+  private String createJcrQueryPathClause() {
+    return "(jcr:path LIKE '" + pagePath + "/%')";
   }
 
   private String createOrderClause() {
