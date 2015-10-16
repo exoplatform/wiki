@@ -821,6 +821,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   public void restoreVersionOfPage(String versionName, Page page) throws WikiException {
     dataStorage.restoreVersionOfPage(versionName, page);
     createVersionOfPage(page);
+
+    invalidateCache(page);
   }
 
   @Override
