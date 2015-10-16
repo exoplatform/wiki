@@ -80,6 +80,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private ConfigurationManager configManager;
 
+  private UserACL userACL;
+
   private RenderingService renderingService;
 
   private DataStorage dataStorage;
@@ -111,6 +113,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   private Set<String> uncachedMacroes = new HashSet<>();
 
   public WikiServiceImpl(ConfigurationManager configManager,
+                         UserACL userACL,
                          DataStorage dataStorage,
                          RenderingService renderingService,
                          CacheService cacheService,
@@ -123,6 +126,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
     this.configManager = configManager;
+    this.userACL = userACL;
     this.renderingService = renderingService;
     this.dataStorage = dataStorage;
 
@@ -294,9 +298,9 @@ public class WikiServiceImpl implements WikiService, Startable {
                 + " - Cause : " + e.getMessage(), e);
       }
     } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
-      PermissionEntry groupPermissionEntry = new PermissionEntry(wikiOwner, "", IDType.MEMBERSHIP, allPermissions);
+      PermissionEntry groupPermissionEntry = new PermissionEntry(userACL.getMakableMT() + ":" + wikiOwner, "", IDType.MEMBERSHIP, allPermissions);
       permissions.add(groupPermissionEntry);
-      PermissionEntry ownerPermissionEntry = new PermissionEntry(wikiOwner, "", IDType.MEMBERSHIP, viewEditPermissions);
+      PermissionEntry ownerPermissionEntry = new PermissionEntry("*:" + wikiOwner, "", IDType.MEMBERSHIP, viewEditPermissions);
       permissions.add(ownerPermissionEntry);
     } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
       PermissionEntry ownerPermissionEntry = new PermissionEntry(wikiOwner, "", IDType.USER, allPermissions);
