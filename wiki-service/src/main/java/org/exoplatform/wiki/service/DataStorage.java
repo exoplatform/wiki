@@ -107,8 +107,6 @@ public interface DataStorage {
 
   public EmotionIcon getEmotionIconByName(String name) throws WikiException;
 
-  public String getPortalOwner() throws WikiException;
-
   public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws WikiException;
 
   public boolean hasAdminSpacePermission(String wikiType, String owner, Identity user) throws WikiException;

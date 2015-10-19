@@ -1372,11 +1372,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     return null;
   }
 
-  @Override
-  public String getPortalOwner() throws WikiException {
-    return dataStorage.getPortalOwner();
-  }
-
 
 
   @Override

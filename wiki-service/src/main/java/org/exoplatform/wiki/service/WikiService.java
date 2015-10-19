@@ -578,13 +578,6 @@ public interface WikiService {
   public Wiki createWiki(String wikiType, String owner) throws WikiException;
   
   /**
-   * Gets a portal owner.
-   * 
-   * @return The portal owner.
-   */
-  public String getPortalOwner() throws WikiException;
-  
-  /**
    * Gets a Wiki webapp URI.
    * 
    * @return The Wiki webapp URI.

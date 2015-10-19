@@ -1305,22 +1305,6 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public String getPortalOwner() throws WikiException {
-    boolean created = mowService.startSynchronization();
-
-    String portalOwner = null;
-    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
-    List<WikiImpl> portalWikis = new ArrayList<>(wStore.getWikiContainer(WikiType.PORTAL).getAllWikis());
-    if (portalWikis.size() > 0) {
-      portalOwner = portalWikis.get(0).getOwner();
-    }
-
-    mowService.stopSynchronization(created);
-
-    return portalOwner;
-  }
-
-  @Override
   public boolean hasAdminSpacePermission(String wikiType, String owner, Identity user) throws WikiException {
     boolean created = mowService.startSynchronization();
 
