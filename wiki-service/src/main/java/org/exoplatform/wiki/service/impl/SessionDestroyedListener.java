@@ -49,18 +49,23 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
       LOG.trace("Removed the key: " + sessionId);
     }
     if (container.isStarted()) {
-      WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
-      RequestLifeCycle.begin(PortalContainer.getInstance());
-      String draftPageName = Utils.getPageNameForAddingPage(sessionId);
-      try {
-        wikiService.removeDraft(draftPageName);
-      } catch (WikiException e) {
-        if(LOG.isDebugEnabled()) {
-          LOG.debug("No draft page to be removed for user " + Utils.getCurrentUser()
-                  + " (page name = " + draftPageName + ") on logout.", e);
+      String currentUser = Utils.getCurrentUser();
+      if(currentUser != null) {
+        WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
+        String draftPageName = null;
+        try {
+          RequestLifeCycle.begin(PortalContainer.getInstance());
+          draftPageName = Utils.getPageNameForAddingPage(sessionId);
+          wikiService.removeDraft(draftPageName);
+        } catch (WikiException e) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("No draft page to be removed for user " + currentUser
+                    + " (page name = " + draftPageName + ") on logout.", e);
+          }
+        } finally {
+          RequestLifeCycle.end();
         }
       }
-      RequestLifeCycle.end();
     }
   }
 }

@@ -445,6 +445,13 @@ public class JCRDataStorage implements DataStorage {
 
   @Override
   public void deleteDraftByName(String newDraftPageName, String username) throws WikiException {
+    if(newDraftPageName == null || StringUtils.isEmpty(newDraftPageName)) {
+      throw new IllegalArgumentException("Draft page name cannot be null or empty");
+    }
+    if(username == null || StringUtils.isEmpty(username)) {
+      throw new IllegalArgumentException("Username cannot be null or empty");
+    }
+
     boolean created = mowService.startSynchronization();
 
     WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
