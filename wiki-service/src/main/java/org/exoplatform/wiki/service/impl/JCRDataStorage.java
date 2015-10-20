@@ -1343,10 +1343,19 @@ public class JCRDataStorage implements DataStorage {
   public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws WikiException {
     boolean created = mowService.startSynchronization();
 
-    PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
-    boolean hasPermission = pageImpl.hasPermission(permissionType, user);
+    boolean hasPermission = false;
 
-    mowService.stopSynchronization(created);
+    try {
+      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      if (pageImpl != null) {
+        hasPermission = pageImpl.hasPermission(permissionType, user);
+      } else {
+        log.error("Cannot check permissions on page " + page.getWikiType() + ":" + page.getWikiOwner()
+                + ":" + page.getName() + " because page cannot be fetched");
+      }
+    } finally {
+      mowService.stopSynchronization(created);
+    }
 
     return hasPermission;
   }
