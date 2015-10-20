@@ -41,8 +41,6 @@ public class Page {
 
   private String comment;
 
-  private String path;
-
   private List<PermissionEntry> permissions;
 
   private String url;
@@ -148,14 +146,6 @@ public class Page {
 
   public void setComment(String comment) {
     this.comment = comment;
-  }
-
-  public String getPath() {
-    return path;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
   }
 
   public List<PermissionEntry> getPermissions() {

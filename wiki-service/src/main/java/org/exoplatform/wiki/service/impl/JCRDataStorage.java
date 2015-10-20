@@ -2069,7 +2069,6 @@ public class JCRDataStorage implements DataStorage {
       page.setUrl(pageImpl.getURL());
       page.setCreatedDate(pageImpl.getCreatedDate());
       page.setUpdatedDate(pageImpl.getUpdatedDate());
-      page.setPath(pageImpl.getPath());
       page.setComment(pageImpl.getComment());
       page.setContent(pageImpl.getContent().getText());
       page.setSyntax(pageImpl.getSyntax());
@@ -2105,7 +2104,6 @@ public class JCRDataStorage implements DataStorage {
       draftPage.setUrl(draftPageImpl.getURL());
       draftPage.setCreatedDate(draftPageImpl.getCreatedDate());
       draftPage.setUpdatedDate(draftPageImpl.getUpdatedDate());
-      draftPage.setPath(draftPageImpl.getPath());
       draftPage.setComment(draftPageImpl.getComment());
       draftPage.setContent(draftPageImpl.getContent().getText());
       draftPage.setSyntax(draftPageImpl.getSyntax());

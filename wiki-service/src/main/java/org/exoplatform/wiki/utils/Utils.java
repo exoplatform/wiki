@@ -338,8 +338,26 @@ public class Utils {
     return null; 
   }
   
-  public static boolean isDescendantPage(Page page, Page parentPage) {
-    return page.getPath().startsWith(parentPage.getPath());
+  public static boolean isDescendantPage(Page page, Page parentPage) throws WikiException {
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    // if page and parentPage are the same page, it is considered as a descendant
+    if(page.getWikiType().equals(parentPage.getWikiType()) && page.getWikiOwner().equals(parentPage.getWikiOwner())
+            && page.getName().equals(parentPage.getName())) {
+      return true;
+    }
+    Page parentOfPage = wikiService.getParentPageOf(page);
+    // we reach the Wiki root
+    if(parentOfPage == null) {
+      return false;
+    }
+    // if the parent of the given page is the same than the parentPage, page is a descendant of parentPage
+    if(parentOfPage.getWikiType().equals(parentPage.getWikiType()) && parentOfPage.getWikiOwner().equals(parentPage.getWikiOwner())
+            && parentOfPage.getName().equals(parentPage.getName())) {
+      return true;
+    } else {
+      // otherwise we continue to go up in the page tree
+      return isDescendantPage(parentOfPage, parentPage);
+    }
   }
   
   public static Object getObjectFromParams(WikiPageParams param) throws WikiException {

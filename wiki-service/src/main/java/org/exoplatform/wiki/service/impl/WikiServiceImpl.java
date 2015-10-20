@@ -697,7 +697,7 @@ public class WikiServiceImpl implements WikiService, Startable {
           wikiHomeUpdateDate.setTime(homePage.getUpdatedDate());
 
           SearchResult wikiHomeResult = new SearchResult(data.getWikiType(), data.getWikiOwner(), data.getPageId(),
-                  null, null, homePage.getTitle(), homePage.getPath(), SearchResultType.PAGE, wikiHomeUpdateDate, wikiHomeCreateDate);
+                  null, null, homePage.getTitle(), null, SearchResultType.PAGE, wikiHomeUpdateDate, wikiHomeCreateDate);
           List<SearchResult> tempSearchResult = result.getAll();
           tempSearchResult.add(wikiHomeResult);
           result = new ObjectPageList<>(tempSearchResult, result.getPageSize());
@@ -1324,7 +1324,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         l.postUpdatePage(wikiType, wikiOwner, pageId, page, wikiUpdateType);
       } catch (WikiException e) {
         if (log.isWarnEnabled()) {
-          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
+          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getName()), e);
         }
       }
     }
@@ -1337,7 +1337,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         l.postAddPage(wikiType, wikiOwner, pageId, page);
       } catch (WikiException e) {
         if (log.isWarnEnabled()) {
-          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
+          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getName()), e);
         }
       }
     }
@@ -1350,7 +1350,7 @@ public class WikiServiceImpl implements WikiService, Startable {
         l.postDeletePage(wikiType, wikiOwner, pageId, page);
       } catch (WikiException e) {
         if (log.isWarnEnabled()) {
-          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getPath()), e);
+          log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getName()), e);
         }
       }
     }
@@ -1441,7 +1441,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (page == null) {
       return list;
     }
-    list.add(0, new BreadcrumbData(page.getName(), page.getPath(), page.getTitle(), wikiType, wikiOwner));
+    list.add(0, new BreadcrumbData(page.getName(), page.getTitle(), wikiType, wikiOwner));
     Page parentPage = getParentPageOf(page);
     if (parentPage != null) {
       getBreadcumb(list, wikiType, wikiOwner, parentPage.getName());
