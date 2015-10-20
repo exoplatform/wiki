@@ -107,10 +107,12 @@ public class MOWService {
 
       } catch (RepositoryException e) {
         throw new UndeclaredRepositoryException(e);
+      } finally {
+        this.stopSynchronization(created);
       }
+    } else {
+      this.stopSynchronization(created);
     }
-
-    this.stopSynchronization(created);
 
     return store;
   }
