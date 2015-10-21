@@ -166,9 +166,9 @@ public class TestWikiService extends AbstractMOWTestcase {
     result = wService.searchTemplate(data);
     assertEquals(1, result.size());
 
-    data = new TemplateSearchData("Template", PortalConfig.USER_TYPE, "demo");
-    result = wService.searchTemplate(data);
-    assertEquals(1, result.size());
+    //data = new TemplateSearchData("Template", PortalConfig.USER_TYPE, "demo");
+    //result = wService.searchTemplate(data);
+    //assertEquals(1, result.size());
   }
 
   public void testGetBreadcumb() throws WikiException {
