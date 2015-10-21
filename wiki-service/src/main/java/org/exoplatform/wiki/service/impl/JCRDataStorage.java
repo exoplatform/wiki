@@ -130,7 +130,7 @@ public class JCRDataStorage implements DataStorage {
 
     try {
       WikiImpl wikiImpl = fetchWikiImpl(wiki.getType(), wiki.getOwner());
-      PageImpl parentPageImpl = fetchPageImpl(parentPage.getWikiType(), parentPage.getWikiOwner(), parentPage.getName());
+      PageImpl parentPageImpl = fetchPageImpl(parentPage);
       PageImpl pageImpl = wikiImpl.createWikiPage();
       pageImpl.setName(page.getName());
       parentPageImpl.addWikiPage(pageImpl);
@@ -199,7 +199,10 @@ public class JCRDataStorage implements DataStorage {
         if (WikiConstants.WIKI_HOME_NAME.equals(pageName) || pageName == null) {
           pageImpl = wiki.getWikiHome();
         } else {
-          pageImpl = fetchPageImpl(wikiType, wikiOwner, pageName);
+          Page page = new Page(pageName);
+          page.setWikiType(wikiType);
+          page.setWikiOwner(wikiOwner);
+          pageImpl = fetchPageImpl(page);
           if (pageImpl == null && (pageImpl = wiki.getWikiHome()) != null) {
             String wikiHomeId = TitleResolver.getId(pageImpl.getTitle(), true);
             if (!wikiHomeId.equals(pageName)) {
@@ -248,7 +251,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       PageImpl parentPageImpl = pageImpl.getParentPage();
 
       Page parentPage = convertPageImplToPage(parentPageImpl);
@@ -271,7 +274,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl == null) {
         throw new WikiException("Page " + page.getWikiType() + ":" + page.getWikiOwner() + ":" + page.getName() + " does not exist, cannot get its children.");
       }
@@ -351,28 +354,31 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl page = fetchPageImpl(wikiType, wikiOwner, pageId);
-      if(page == null) {
+      Page page = new Page(pageId);
+      page.setWikiType(wikiType);
+      page.setWikiOwner(wikiOwner);
+      PageImpl pageImpl = fetchPageImpl(page);
+      if(pageImpl == null) {
         throw new WikiException("Page " + wikiType + ":" + wikiOwner + ":" + pageId + " does not exist, cannot delete it.");
       }
 
       ChromatticSession session = mowService.getSession();
       RemovedMixin mix = session.create(RemovedMixin.class);
-      session.setEmbedded(page, RemovedMixin.class, mix);
+      session.setEmbedded(pageImpl, RemovedMixin.class, mix);
       mix.setRemovedBy(Utils.getCurrentUser());
       Calendar calendar = GregorianCalendar.getInstance();
       calendar.setTimeInMillis(new Date().getTime());
       mix.setRemovedDate(calendar.getTime());
-      mix.setParentPath(page.getParentPage().getPath());
+      mix.setParentPath(pageImpl.getParentPage().getPath());
       WikiImpl wiki = fetchWikiImpl(wikiType, wikiOwner);
       Trash trash = wiki.getTrash();
-      if (trash.isHasPage(page.getName())) {
-        PageImpl oldDeleted = trash.getPage(page.getName());
+      if (trash.isHasPage(pageImpl.getName())) {
+        PageImpl oldDeleted = trash.getPage(pageImpl.getName());
         String removedDate = oldDeleted.getRemovedMixin().getRemovedDate().toGMTString();
-        String newName = page.getName() + "_" + removedDate.replaceAll(" ", "-").replaceAll(":", "-");
+        String newName = pageImpl.getName() + "_" + removedDate.replaceAll(" ", "-").replaceAll(":", "-");
         trash.addChild(newName, oldDeleted);
       }
-      trash.addRemovedWikiPage(page);
+      trash.addRemovedWikiPage(pageImpl);
 
       //update LinkRegistry
       LinkRegistry linkRegistry = wiki.getLinkRegistry();
@@ -512,7 +518,10 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl currentPage = fetchPageImpl(wikiType, wikiOwner, pageName);
+      Page page = new Page(pageName);
+      page.setWikiType(wikiType);
+      page.setWikiOwner(wikiOwner);
+      PageImpl currentPage = fetchPageImpl(page);
       PageImpl parentPage = currentPage.getParentPage();
       RenamedMixin mix = currentPage.getRenamedMixin();
       if (mix == null) {
@@ -564,32 +573,34 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl destPage = fetchPageImpl(newLocationParams.getType(),
-              newLocationParams.getOwner(),
-              newLocationParams.getPageName());
-      if (destPage == null || !destPage.hasPermission(PermissionType.EDITPAGE)) {
+      Page destPage = new Page(newLocationParams.getPageName());
+      destPage.setWikiType(newLocationParams.getType());
+      destPage.setWikiOwner(newLocationParams.getOwner());
+      PageImpl destPageImpl = fetchPageImpl(destPage);
+      if (destPageImpl == null || !destPageImpl.hasPermission(PermissionType.EDITPAGE)) {
         throw new WikiException("Destination page " + newLocationParams.getType() + ":" +
                 newLocationParams.getOwner() + ":" + newLocationParams.getPageName() + " does not exist");
       }
       ChromatticSession session = mowService.getSession();
-      PageImpl movePage = fetchPageImpl(currentLocationParams.getType(),
-              currentLocationParams.getOwner(),
-              currentLocationParams.getPageName());
-      WikiImpl sourceWiki = (WikiImpl) movePage.getWiki();
-      MovedMixin mix = movePage.getMovedMixin();
+      Page movePage = new Page(currentLocationParams.getPageName());
+      destPage.setWikiType(currentLocationParams.getType());
+      destPage.setWikiOwner(currentLocationParams.getOwner());
+      PageImpl movePageImpl = fetchPageImpl(movePage);
+      WikiImpl sourceWiki = (WikiImpl) movePageImpl.getWiki();
+      MovedMixin mix = movePageImpl.getMovedMixin();
       if (mix == null) {
-        movePage.setMovedMixin(session.create(MovedMixin.class));
-        mix = movePage.getMovedMixin();
-        mix.setTargetPage(movePage.getParentPage());
+        movePageImpl.setMovedMixin(session.create(MovedMixin.class));
+        mix = movePageImpl.getMovedMixin();
+        mix.setTargetPage(movePageImpl.getParentPage());
       }
-      mix.setTargetPage(destPage);
-      WikiImpl destWiki = (WikiImpl) destPage.getWiki();
-      movePage.setParentPage(destPage);
-      movePage.setMinorEdit(false);
+      mix.setTargetPage(destPageImpl);
+      WikiImpl destWiki = (WikiImpl) destPageImpl.getWiki();
+      movePageImpl.setParentPage(destPageImpl);
+      movePageImpl.setMinorEdit(false);
 
       // Update permission if moving page to other space or other wiki
-      Collection<AttachmentImpl> attachments = movePage.getAttachmentsExcludeContentByRootPermisison();
-      HashMap<String, String[]> pagePermission = movePage.getPermission();
+      Collection<AttachmentImpl> attachments = movePageImpl.getAttachmentsExcludeContentByRootPermisison();
+      HashMap<String, String[]> pagePermission = movePageImpl.getPermission();
       if (PortalConfig.GROUP_TYPE.equals(currentLocationParams.getType())
               && (!currentLocationParams.getOwner().equals(newLocationParams.getOwner())
               || !PortalConfig.GROUP_TYPE.equals(newLocationParams.getType()))) {
@@ -615,11 +626,11 @@ public class JCRDataStorage implements DataStorage {
       }
 
       // Update permission by inherit from parent
-      HashMap<String, String[]> parentPermissions = destPage.getPermission();
+      HashMap<String, String[]> parentPermissions = destPageImpl.getPermission();
       pagePermission.putAll(parentPermissions);
 
       // Set permission to page
-      movePage.setPermission(pagePermission);
+      movePageImpl.setPermission(pagePermission);
 
       for (AttachmentImpl attachment : attachments) {
         HashMap<String, String[]> attachmentPermission = attachment.getPermission();
@@ -651,7 +662,7 @@ public class JCRDataStorage implements DataStorage {
           destLinkRegistry.getLinkEntries().put(newEntryName, newEntry);
           newEntry.setAlias(newEntryAlias);
           newEntry.setNewLink(newEntry);
-          newEntry.setTitle(destPage.getTitle());
+          newEntry.setTitle(destPageImpl.getTitle());
           if (entry != null) {
             entry.setNewLink(newEntry);
           }
@@ -745,7 +756,7 @@ public class JCRDataStorage implements DataStorage {
     try {
       List<Page> relatedPages = new ArrayList<>();
 
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       List<PageImpl> relatedPageImpls = pageImpl.getRelatedPages();
       for (PageImpl relatedPageImpl : relatedPageImpls) {
         relatedPages.add(convertPageImplToPage(relatedPageImpl));
@@ -809,8 +820,8 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
-      PageImpl relatedPageImpl = fetchPageImpl(relatedPage.getWikiType(), relatedPage.getWikiOwner(), relatedPage.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
+      PageImpl relatedPageImpl = fetchPageImpl(relatedPage);
       pageImpl.addRelatedPage(relatedPageImpl);
     } catch(RepositoryException e) {
       throw new WikiException("Cannot add related page "
@@ -827,8 +838,8 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
-      PageImpl relatedPageImpl = fetchPageImpl(relatedPage.getWikiType(), relatedPage.getWikiOwner(), relatedPage.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
+      PageImpl relatedPageImpl = fetchPageImpl(relatedPage);
       pageImpl.removeRelatedPage(relatedPageImpl);
     } catch(RepositoryException e) {
       throw new WikiException("Cannot remove related page "
@@ -922,7 +933,10 @@ public class JCRDataStorage implements DataStorage {
       return null;
     }
 
-    PageImpl targetPage = fetchPageImpl(param.getType(), param.getOwner(), param.getPageName());
+    Page page = new Page(param.getPageName());
+    page.setWikiType(param.getType());
+    page.setWikiOwner(param.getOwner());
+    PageImpl targetPage = fetchPageImpl(page);
     if ((param.getPageName() == null) || (targetPage == null)) {
       return null;
     }
@@ -1172,7 +1186,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl != null) {
         try {
           Collection<AttachmentImpl> attachmentsExcludeContent = pageImpl.getAttachmentsExcludeContent();
@@ -1201,7 +1215,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       AttachmentImpl attachmentImpl = pageImpl.createAttachment(attachment.getName(), new Resource(attachment.getMimeType(), "UTF-8", attachment.getContent()));
       attachmentImpl.setTitle(attachment.getTitle());
       attachmentImpl.setCreator(attachment.getCreator());
@@ -1215,7 +1229,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       pageImpl.removeAttachment(attachmentId);
     } finally {
       mowService.stopSynchronization(created);
@@ -1414,7 +1428,7 @@ public class JCRDataStorage implements DataStorage {
     boolean hasPermission = false;
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if (pageImpl != null) {
         hasPermission = pageImpl.hasPermission(permissionType, user);
       } else {
@@ -1463,7 +1477,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
 
       List<PageVersion> versions = new ArrayList<>();
       VersionableMixin versionableMixin = pageImpl.getVersionableMixin();
@@ -1502,7 +1516,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl.getVersionableMixin() == null) {
         pageImpl.makeVersionable();
       }
@@ -1520,7 +1534,7 @@ public class JCRDataStorage implements DataStorage {
   public void restoreVersionOfPage(String versionName, Page page) throws WikiException {
     boolean created = mowService.startSynchronization();
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       pageImpl.restore(versionName, false);
     } finally {
       mowService.stopSynchronization(created);
@@ -1532,7 +1546,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       pageImpl.setTitle(page.getTitle());
       pageImpl.setOwner(page.getOwner());
       pageImpl.setAuthor(page.getAuthor());
@@ -1563,7 +1577,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl != null) {
         List<String> previousNames = new ArrayList<>();
         RenamedMixin renamedMixin = pageImpl.getRenamedMixin();
@@ -1586,7 +1600,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl != null) {
         pageImpl.makeWatched();
         List<String> watchers = pageImpl.getWatchedMixin().getWatchers();
@@ -1606,7 +1620,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl != null) {
         pageImpl.makeWatched();
         List<String> watchers = pageImpl.getWatchedMixin().getWatchers();
@@ -1633,7 +1647,7 @@ public class JCRDataStorage implements DataStorage {
     boolean created = mowService.startSynchronization();
 
     try {
-      PageImpl pageImpl = fetchPageImpl(page.getWikiType(), page.getWikiOwner(), page.getName());
+      PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl != null) {
         pageImpl.makeWatched();
         List<String> watchers = pageImpl.getWatchedMixin().getWatchers();
@@ -2071,39 +2085,43 @@ public class JCRDataStorage implements DataStorage {
    * Fetch a PageImpl object with Chrommatic
    * @return
    */
-  private PageImpl fetchPageImpl(String wikiType, String wikiOwner, String pageName) throws WikiException {
+  private PageImpl fetchPageImpl(Page page) throws WikiException {
     boolean created = mowService.startSynchronization();
 
     try {
       PageImpl wikiPage = null;
-      if(pageName.equals(WikiConstants.WIKI_HOME_NAME)) {
-        WikiImpl wikiImpl = fetchWikiImpl(wikiType, wikiOwner);
-        wikiPage = wikiImpl.getWikiHome();
+      ChromatticSession session = mowService.getSession();
+
+      if(page.getId() != null && !StringUtils.isEmpty(page.getId())) {
+        wikiPage = session.findById(PageImpl.class, page.getId());
       } else {
-        ChromatticSession session = mowService.getSession();
+        if (WikiConstants.WIKI_HOME_NAME.equals(page.getName())) {
+          WikiImpl wikiImpl = fetchWikiImpl(page.getWikiType(), page.getWikiOwner());
+          wikiPage = wikiImpl.getWikiHome();
+        } else {
+          WikiSearchData searchData = new WikiSearchData(page.getWikiType(), page.getWikiOwner(), page.getName());
+          JCRWikiSearchQueryBuilder queryBuilder = new JCRWikiSearchQueryBuilder(searchData);
+          String statement = queryBuilder.getPageConstraint();
 
-        WikiSearchData searchData = new WikiSearchData(wikiType, wikiOwner, pageName);
-        JCRWikiSearchQueryBuilder queryBuilder = new JCRWikiSearchQueryBuilder(searchData);
-        String statement = queryBuilder.getPageConstraint();
-
-        if (statement != null) {
-          Iterator<PageImpl> result = session.createQueryBuilder(PageImpl.class)
-                  .where(statement)
-                  .get()
-                  .objects();
-          if (result.hasNext()) {
-            wikiPage = result.next();
+          if (statement != null) {
+            Iterator<PageImpl> result = session.createQueryBuilder(PageImpl.class)
+                    .where(statement)
+                    .get()
+                    .objects();
+            if (result.hasNext()) {
+              wikiPage = result.next();
+            }
           }
-        }
-        // TODO: still don't know reason but following code is necessary.
-        if (wikiPage != null) {
-          String path = wikiPage.getPath();
-          if (path.startsWith("/")) {
-            path = path.substring(1, path.length());
+          // TODO: still don't know reason but following code is necessary.
+          if (wikiPage != null) {
+            String path = wikiPage.getPath();
+            if (path.startsWith("/")) {
+              path = path.substring(1, path.length());
+            }
+            wikiPage = session.findByPath(PageImpl.class, path);
           }
-          wikiPage = session.findByPath(PageImpl.class, path);
-        }
-        if (wikiPage != null) {
+          if (wikiPage != null) {
+          }
         }
       }
 
