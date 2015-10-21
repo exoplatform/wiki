@@ -2060,7 +2060,6 @@ public class JCRDataStorage implements DataStorage {
         WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
         wiki = userWikiContainer.getWiki(wikiOwner);
       }
-      mowService.persist();
 
       return wiki;
     } finally {
