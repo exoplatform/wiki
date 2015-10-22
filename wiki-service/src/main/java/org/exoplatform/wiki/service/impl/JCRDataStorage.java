@@ -218,8 +218,8 @@ public class JCRDataStorage implements DataStorage {
           pageImpl.migrateLegacyData();
           pageImpl.migrateAttachmentPermission();
         } catch(WikiException | RepositoryException e) {
-          log.error("Cannot migrate page " + page.getWikiType() + ":" + page.getWikiOwner() + ":"
-                  + page.getName() + " - Cause : " + e.getMessage(), e);
+          log.error("Cannot migrate page " + wikiType + ":" + wikiOwner + ":"
+                  + pageName + " - Cause : " + e.getMessage(), e);
         }
         page = convertPageImplToPage(pageImpl);
         page.setWikiId(wiki.getName());
