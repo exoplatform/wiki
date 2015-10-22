@@ -99,7 +99,7 @@ public interface DataStorage {
 
   public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException;
 
-  public Page getHelpSyntaxPage(String syntaxId, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException;
+  public Page getHelpSyntaxPage(String syntaxId, boolean fullContent, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException;
 
   public void createEmotionIcon(EmotionIcon emotionIcon) throws WikiException;
 

@@ -886,12 +886,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     
     syntaxId = syntaxId.replace(Utils.SLASH, "/").replace(Utils.DOT, ".");
     try {
-      org.exoplatform.wiki.mow.api.Page page = wikiService.getHelpSyntaxPage(syntaxId);
-      if (page == null) {
+      org.exoplatform.wiki.mow.api.Page fullHelpPage = wikiService.getHelpSyntaxPage(syntaxId, true);
+      if (fullHelpPage == null) {
         return Response.status(HTTPStatus.NOT_FOUND).cacheControl(cc).build();
       }
-      org.exoplatform.wiki.mow.api.Page fullHelpPage = wikiService.getChildrenPageOf(page).iterator().next();
-      
+
       // Build wiki context
       if (!StringUtils.isEmpty(portalUrl)) {
         RenderingService renderingService = ExoContainerContext.getCurrentContainer()

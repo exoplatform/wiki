@@ -1237,7 +1237,7 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public Page getHelpSyntaxPage(String syntaxId, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException {
+  public Page getHelpSyntaxPage(String syntaxId, boolean fullContent, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException {
     boolean created = mowService.startSynchronization();
 
     try {
@@ -1248,7 +1248,7 @@ public class JCRDataStorage implements DataStorage {
         createHelpPages(syntaxHelpParams, configurationManager);
       }
 
-      Page page = null;
+      PageImpl helpPageImpl = null;
       Iterator<PageImpl> syntaxPageIterator = wStore.getHelpPagesContainer()
               .getChildPages()
               .values()
@@ -1256,12 +1256,20 @@ public class JCRDataStorage implements DataStorage {
       while (syntaxPageIterator.hasNext()) {
         PageImpl syntaxPage = syntaxPageIterator.next();
         if (syntaxPage.getSyntax().equals(syntaxId)) {
-          page = convertPageImplToPage(syntaxPage);
+          helpPageImpl = syntaxPage;
           break;
         }
       }
 
-      return page;
+      // the full help page is stored as a child page of the small help page
+      if(helpPageImpl != null && fullContent) {
+        Map<String, PageImpl> childPages = helpPageImpl.getChildPages();
+        if(childPages != null && childPages.size() > 0) {
+          helpPageImpl = childPages.values().iterator().next();
+        }
+      }
+
+      return convertPageImplToPage(helpPageImpl);
     } finally {
       mowService.stopSynchronization(created);
     }

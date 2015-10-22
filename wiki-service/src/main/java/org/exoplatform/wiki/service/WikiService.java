@@ -344,10 +344,11 @@ public interface WikiService {
    * Gets a Help wiki page based on a given syntax Id.
    *
    * @param syntaxId Id of the syntax.
+   * @param fullContent true to get the full help page content, false to get an excerpt
    * @return The Help wiki page.
    * @throws WikiException
    */
-  public Page getHelpSyntaxPage(String syntaxId) throws WikiException;
+  public Page getHelpSyntaxPage(String syntaxId, boolean fullContent) throws WikiException;
 
   /**
    * Gets a map of wiki templates based on a given params object.

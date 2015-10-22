@@ -717,8 +717,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public Page getHelpSyntaxPage(String syntaxId) throws WikiException {
-    return dataStorage.getHelpSyntaxPage(syntaxId, syntaxHelpParams, configManager);
+  public Page getHelpSyntaxPage(String syntaxId, boolean fullContent) throws WikiException {
+    return dataStorage.getHelpSyntaxPage(syntaxId, fullContent, syntaxHelpParams, configManager);
   }
 
   @Override

@@ -554,8 +554,10 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testGetSyntaxPage() throws WikiException {
-    Page syntaxPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString());
-    assertNotNull(syntaxPage);
+    Page syntaxSmallPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString(), false);
+    assertNotNull(syntaxSmallPage);
+    Page syntaxFullPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString(), true);
+    assertNotNull(syntaxFullPage);
   }
 
   public void testBrokenLink() throws WikiException {

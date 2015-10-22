@@ -68,7 +68,7 @@ public class UIWikiSidePanelArea extends UIContainer {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     WikiContext wikiContext = org.exoplatform.wiki.commons.Utils.setUpWikiContext(wikiPortlet); 
     
-    Page syntaxHelpPage = wikiService.getHelpSyntaxPage(syntaxId);
+    Page syntaxHelpPage = wikiService.getHelpSyntaxPage(syntaxId, false);
     this.syntaxName = syntaxId.replace("/", " ").toUpperCase();
     if (syntaxHelpPage != null) {
       String markup = syntaxHelpPage.getContent();
