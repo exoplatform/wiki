@@ -577,44 +577,61 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
    * @param imageId Id of the image attached to the wiki page
    * @param width expected width of the image, it will keep the ratio
    * @return The response with the image
+   * @deprecated use /attachments/{wikiType}/space/{wikiOwner:.+}/page/{pageId}/{attachmentId} instead
    */
   @GET
   @Path("/images/{wikiType}/space/{wikiOwner:.+}/page/{pageId}/{imageId}")
-  @Produces("image")
   public Response getImage(@Context UriInfo uriInfo,
                            @PathParam("wikiType") String wikiType,
                            @PathParam("wikiOwner") String wikiOwner,
                            @PathParam("pageId") String pageId,
                            @PathParam("imageId") String imageId,
                            @QueryParam("width") Integer width) {
+    return getAttachment(uriInfo, wikiType, wikiOwner, pageId, imageId, width);
+  }
+
+  /**
+   * Return an attchment attached to the wiki page.
+   * In case of an image, the width can be specified (the size ratio is kept).
+   * @param uriInfo Uri of the wiki
+   * @param wikiType It can be a Portal, Group, User type of wiki
+   * @param wikiOwner Is the owner of the wiki
+   * @param pageId Id of the wiki page
+   * @param attachmentId Id of the attachment of the wiki page
+   * @param width in case of an image, expected width of the image, it will keep the ratio
+   * @return The response with the attachment
+   */
+  @GET
+  @Path("/attachments/{wikiType}/space/{wikiOwner:.+}/page/{pageId}/{attachmentId}")
+  public Response getAttachment(@Context UriInfo uriInfo,
+                           @PathParam("wikiType") String wikiType,
+                           @PathParam("wikiOwner") String wikiOwner,
+                           @PathParam("pageId") String pageId,
+                           @PathParam("attachmentId") String attachmentId,
+                           @QueryParam("width") Integer width) {
     InputStream result;
     try {
-      ResizeImageService resizeImgService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
       org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
-      List<org.exoplatform.wiki.mow.api.Attachment> attachments = wikiService.getAttachmentsOfPage(page);
-      org.exoplatform.wiki.mow.api.Attachment imageAttachment = null;
-      for(org.exoplatform.wiki.mow.api.Attachment attachment : attachments) {
-        if(attachment.getName().equals(imageId)) {
-          imageAttachment = attachment;
-          break;
-        }
-      }
-      if (imageAttachment == null) {
+      org.exoplatform.wiki.mow.api.Attachment attachment = wikiService.getAttachmentOfPageByName(attachmentId, page);
+
+      if (attachment == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
-      ByteArrayInputStream bis = new ByteArrayInputStream(imageAttachment.getContent());
+
+      ByteArrayInputStream bis = new ByteArrayInputStream(attachment.getContent());
       if (width != null) {
-        result = resizeImgService.resizeImageByWidth(imageId, bis, width);
+        ResizeImageService resizeImgService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(ResizeImageService.class);
+        result = resizeImgService.resizeImageByWidth(attachmentId, bis, width);
       } else {
         result = bis;
       }
-      return Response.ok(result, "image").cacheControl(cc).build();
+      return Response.ok(result).cacheControl(cc).build();
     } catch (Exception e) {
       if (log.isDebugEnabled()) {
-        log.debug(String.format("Can't get image name: %s of page %s", imageId, pageId), e);
+        log.debug(String.format("Can't get attachment name: %s of page %s", attachmentId, pageId), e);
       }
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
