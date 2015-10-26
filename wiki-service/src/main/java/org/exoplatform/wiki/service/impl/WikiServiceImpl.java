@@ -711,12 +711,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws WikiException {
-    WikiSearchData data = new WikiSearchData(wikiType, wikiOwner, pageId);
-    return dataStorage.searchRenamedPage(data);
-  }
-
-  @Override
   public Page getHelpSyntaxPage(String syntaxId, boolean fullContent) throws WikiException {
     return dataStorage.getHelpSyntaxPage(syntaxId, fullContent, syntaxHelpParams, configManager);
   }

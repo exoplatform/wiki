@@ -1151,35 +1151,6 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
-  public List<SearchResult> searchRenamedPage(WikiSearchData data) throws WikiException {
-    boolean created = mowService.startSynchronization();
-
-    try {
-      ChromatticSession session = mowService.getSession();
-
-      List<SearchResult> resultList = new ArrayList<>();
-      JCRWikiSearchQueryBuilder queryBuilder = new JCRWikiSearchQueryBuilder(data);
-      String statement = queryBuilder.getStatementForRenamedPage();
-      Query q = ((ChromatticSessionImpl)session).getDomainSession().getSessionWrapper().createQuery(statement);
-      QueryResult result = q.execute();
-      NodeIterator iter = result.getNodes() ;
-      while(iter.hasNext()) {
-        try {
-          resultList.add(getResult(iter.nextNode()));
-        } catch (RepositoryException | IOException e) {
-          log.debug("Failed to add item search result", e);
-        }
-      }
-
-      return resultList ;
-    } catch (RepositoryException e) {
-      throw new WikiException("Cannot search in wiki " + data.getWikiType() + ":" + data.getWikiOwner(), e);
-    } finally {
-      mowService.stopSynchronization(created);
-    }
-  }
-
-  @Override
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException {
     List<Attachment> attachments = new ArrayList<>();
 

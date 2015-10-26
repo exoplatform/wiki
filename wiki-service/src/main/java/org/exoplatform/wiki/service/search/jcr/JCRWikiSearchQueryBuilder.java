@@ -125,17 +125,6 @@ public class JCRWikiSearchQueryBuilder {
     return statement.toString();
   }
 
-  public String getStatementForRenamedPage() {
-    StringBuilder statement = new StringBuilder();
-    statement.append("SELECT * ").append("FROM wiki:renamed ").append("WHERE ");
-    statement.append(createJcrQueryPathClause());
-    if (wikiSearchData.getPageId() != null && wikiSearchData.getPageId().length() > 0) {
-      statement.append(" AND ");
-      statement.append(" oldPageIds = '").append(wikiSearchData.getPageId()).append("'");
-    }
-    return statement.toString();
-  }
-
   private String createJcrQueryPathClause() {
     return "(jcr:path LIKE '" + pagePath + "/%')";
   }

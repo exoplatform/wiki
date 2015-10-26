@@ -91,8 +91,6 @@ public interface DataStorage {
 
   public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws WikiException;
 
-  public List<SearchResult> searchRenamedPage(WikiSearchData data) throws WikiException;
-
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException;
 
   public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException;

@@ -292,38 +292,6 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "renamedPage")) ;
   }
 
-  public void testSearchRenamedPage() throws WikiException {
-    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
-    Page page = wService.createPage(portalWiki, "WikiHome", new Page("Page", "Page"));
-    page.setContent("This is a rename page test");
-    RequestLifeCycle.end();
-    RequestLifeCycle.begin(container);
-    assertTrue(wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "Page", "Page01", "Page01"));
-    RequestLifeCycle.end();
-    RequestLifeCycle.begin(container);
-    assertEquals(1, wService.searchRenamedPage(PortalConfig.PORTAL_TYPE, "classic", "Page").size());
-
-    Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
-    Page guestPage = wService.createPage(groupWiki, "WikiHome", new Page("Page", "Page"));
-    guestPage.setContent("This is a rename guest page test");
-    RequestLifeCycle.end();
-    RequestLifeCycle.begin(container);
-    assertTrue(wService.renamePage(PortalConfig.GROUP_TYPE, "/platform/guests", "Page", "Page01", "Page01"));
-    assertEquals(1, wService.searchRenamedPage(PortalConfig.GROUP_TYPE, "/platform/guests", "Page").size());
-    RequestLifeCycle.end();
-    RequestLifeCycle.begin(container);
-
-    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
-    Page demoPage = wService.createPage(userWiki, "WikiHome", new Page("Page", "Page"));
-    demoPage.setContent("This is a rename demo page test");
-    RequestLifeCycle.end();
-    RequestLifeCycle.begin(container);
-    assertTrue(wService.renamePage(PortalConfig.USER_TYPE, "demo", "Page", "Page01", "Page01"));
-    RequestLifeCycle.end();
-    RequestLifeCycle.begin(container);
-    assertEquals(1, wService.searchRenamedPage(PortalConfig.USER_TYPE, "demo", "Page").size());
-  }
-
   public void testSearchContent() throws Exception {
     Wiki classicWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page kspage = new Page("knowledge suite 1", "knowledge suite 1");

@@ -256,17 +256,6 @@ public interface WikiService {
   public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws WikiException;
 
   /**
-   * Searches from a list of renamed pages to find the pages whose old Ids are equal to the given page Id.
-   *
-   * @param wikiType It can be Portal, Group, or User.
-   * @param wikiOwner The Wiki owner.
-   * @param pageId Id of the page before it is renamed.
-   * @return The pages whose old Ids are equal to 'pageId'.
-   * @throws WikiException
-   */
-  public List<SearchResult> searchRenamedPage(String wikiType, String wikiOwner, String pageId) throws WikiException;
-
-  /**
    * Checks if a page and its children are duplicated with ones in the target Wiki or not,
    * then gets a list of duplicated pages if any.
    * 

@@ -57,16 +57,6 @@ public class UIWikiDeletePageConfirm extends UIForm implements UIPopupComponent 
   public UIWikiDeletePageConfirm() throws Exception {
     addChild(UIWikiBreadCrumb.class, null, BREADCRUM_NAME).setLink(false).setShowWikiType(false);
   }
-
-  protected List<SearchResult> getRelativePages() {
-    try {
-      WikiPageParams params = Utils.getCurrentWikiPageParams();
-      WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-      return wservice.searchRenamedPage(params.getType(), params.getOwner(), params.getPageName());
-    } catch (Exception e) {
-      return new ArrayList<SearchResult>();
-    }
-  }
   
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
