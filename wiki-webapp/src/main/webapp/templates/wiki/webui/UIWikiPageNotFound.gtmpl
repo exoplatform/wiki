@@ -1,6 +1,5 @@
 <%
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.commons.DateTimeFomatter;
@@ -22,9 +21,8 @@ import org.exoplatform.wiki.commons.DateTimeFomatter;
 		
 		if(relatedPage != null) {
 			WikiPageParams param = Utils.getWikiPageParams(relatedPage);
-			Wiki relatedWiki = relatedPage.getWiki();
-			String relatedLocation = relatedWiki.getType() +" : " +relatedWiki.getOwner();
-			String content = relatedPage.getContent().getText();
+			String relatedLocation = relatedPage.getWikiType() +" : " +relatedPage.getWikiOwner();
+			String content = relatedPage.getContent();
 			String summaryContent =  (content.length() >100) ? content.substring(0,100) + " ..." : content ;
 			String url = org.exoplatform.wiki.commons.Utils.getURLFromParams(param);
 			String updateDate =  DateTimeFomatter.getLongFormatted(relatedPage.getUpdatedDate());
