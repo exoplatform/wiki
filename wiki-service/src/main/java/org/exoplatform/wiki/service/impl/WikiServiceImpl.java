@@ -548,6 +548,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       page.setWikiType(currentLocationParams.getType());
       page.setWikiOwner(currentLocationParams.getOwner());
       invalidateCache(page);
+      invalidateUUIDCache(page);
       invalidateAttachmentCache(page);
 
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
