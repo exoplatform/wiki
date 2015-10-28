@@ -122,7 +122,6 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
   static public class AddTemplateActionListener extends EventListener<UITemplateSettingForm> {
     public void execute(Event<UITemplateSettingForm> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
-      WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
       ResourceBundle res = event.getSource().getRes();
       UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
       UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class)
@@ -130,12 +129,7 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
-      String currentDefaultSyntaxt = Utils.getCurrentPreferences()
-                                          .getWikiPreferencesSyntax()
-                                          .getDefaultSyntax();
-      if (currentDefaultSyntaxt == null) {
-        currentDefaultSyntaxt = wservice.getDefaultWikiSyntaxId();
-      }
+
       titleInput.setValue(res.getString("UIWikiPageEditForm.label.SampleTemplateTitle"));
       descriptionInput.setValue(res.getString("UIWikiPageEditForm.label.Description"));
       titleInput.setEditable(true);
