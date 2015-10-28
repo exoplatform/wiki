@@ -246,6 +246,7 @@ public class SavePageActionComponent extends UIComponent {
             newPage.setName(title);
             newPage.setTitle(title);
             newPage.setAuthor(currentUser);
+            newPage.setOwner(currentUser);
             newPage.setContent(markup);
             newPage.setSyntax(syntaxId);
             newPage.setUrl(Utils.getURLFromParams(pageParams));
