@@ -113,7 +113,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                                      @FormParam("html") String data) {
     EnvironmentContext env = EnvironmentContext.getCurrent();
     WikiContext wikiContext = new WikiContext();
-    String currentSyntax = Syntax.XWIKI_2_0.toIdString();
+    String currentSyntax = wikiService.getDefaultWikiSyntaxId();
     HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
     try {
       if (data == null) {
@@ -123,7 +123,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       }
       if (wikiContextKey != null && wikiContextKey.length() > 0) {
         wikiContext = (WikiContext) request.getSession().getAttribute(wikiContextKey);
-        if (wikiContext != null)
+        if (wikiContext != null && wikiContext.getSyntax() != null)
           currentSyntax = wikiContext.getSyntax();
       }
       Execution ec = ((RenderingServiceImpl) renderingService).getExecution();

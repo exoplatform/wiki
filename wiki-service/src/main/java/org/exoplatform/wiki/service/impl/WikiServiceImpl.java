@@ -358,6 +358,12 @@ public class WikiServiceImpl implements WikiService, Startable {
   public Wiki createWiki(String wikiType, String owner) throws WikiException {
     Wiki wiki = new Wiki(wikiType, owner);
     wiki.setPermissions(getWikiDefaultPermissions(wikiType, owner));
+    // set wiki syntax
+    WikiPreferences wikiPreferences = new WikiPreferences();
+    WikiPreferencesSyntax wikiPreferencesSyntax = new WikiPreferencesSyntax();
+    wikiPreferencesSyntax.setDefaultSyntax(getDefaultWikiSyntaxId());
+    wikiPreferences.setWikiPreferencesSyntax(wikiPreferencesSyntax);
+    wiki.setPreferences(wikiPreferences);
     Wiki createdWiki = dataStorage.createWiki(wiki);
 
     // init templates
