@@ -164,7 +164,7 @@ public class SavePageActionComponent extends UIComponent {
           Utils.redirect(pageParams, wikiPortlet.getWikiMode());
           return;
         }
-        pageParams.setPageName(newPageName);
+
         try {
           if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
             if (wikiPortlet.getEditMode() == EditMode.SECTION) {
@@ -188,15 +188,14 @@ public class SavePageActionComponent extends UIComponent {
             }
             
             // Rename page if need
-            if (!page.getName().equals(newPageName)) {
+            if (!org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName())
+                    && !page.getName().equals(newPageName)) {
               wikiService.renamePage(pageParams.getType(),
                                      pageParams.getOwner(),
                                      page.getName(),
                                      newPageName,
                                      title);
-              if(!org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName())) {
-                page.setName(newPageName);
-              }
+              page.setName(newPageName);
             }
   
             synchronized (page.getId()) {
@@ -214,7 +213,6 @@ public class SavePageActionComponent extends UIComponent {
 
               if (!pageEditForm.getTitle().equals(title)) {
                 page.setTitle(title);
-                pageParams.setPageName(newPageName);
               }
 
               // update the page and create a version
