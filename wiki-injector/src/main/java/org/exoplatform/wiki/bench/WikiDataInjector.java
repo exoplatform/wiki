@@ -169,7 +169,7 @@ public class WikiDataInjector extends DataInjector {
   private Page createPage(Page father, String title, String wikiOwner, String wikiType, int attSize) throws WikiException {
     Page newPage = new Page();
     newPage.setTitle(title);
-    newPage.setContent(randomParagraphs(10));
+    newPage.setContent(title + "_content " + randomParagraphs(10));
     Page page = wikiService.createPage(new Wiki(wikiType, wikiOwner), father.getName(), newPage);
     if (attSize > 0) {
       Attachment attachment = new Attachment();
@@ -178,6 +178,7 @@ public class WikiDataInjector extends DataInjector {
       attachment.setTitle(attachmentTitle);
       int sizeInBytes = attSize * 1024;
       StringBuilder content = new StringBuilder(sizeInBytes);
+      content.append(attachment.getName()).append("_content ");
       while(content.length() <= sizeInBytes) {
         content.append(randomParagraphs(1));
       }
