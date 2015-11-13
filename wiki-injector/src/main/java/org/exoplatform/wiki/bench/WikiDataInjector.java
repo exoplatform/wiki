@@ -173,8 +173,15 @@ public class WikiDataInjector extends DataInjector {
     Page page = wikiService.createPage(new Wiki(wikiType, wikiOwner), father.getName(), newPage);
     if (attSize > 0) {
       Attachment attachment = new Attachment();
-      attachment.setName("att" + IdGenerator.generate() + ".txt");
-      attachment.setContent(createTextResource(attSize).getBytes());
+      String attachmentTitle = "att" + IdGenerator.generate();
+      attachment.setName(attachmentTitle + ".txt");
+      attachment.setTitle(attachmentTitle);
+      int sizeInBytes = attSize * 1024;
+      StringBuilder content = new StringBuilder(sizeInBytes);
+      while(content.length() <= sizeInBytes) {
+        content.append(randomParagraphs(1));
+      }
+      attachment.setContent(content.toString().getBytes());
       attachment.setMimeType("text/plain");
       wikiService.addAttachmentToPage(attachment, page);
     }
