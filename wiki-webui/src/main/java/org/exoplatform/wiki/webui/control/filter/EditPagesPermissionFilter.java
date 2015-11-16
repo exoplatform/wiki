@@ -16,15 +16,20 @@
  */
 package org.exoplatform.wiki.webui.control.filter;
 
-import java.util.Map;
-
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.service.WikiService;
+
+import java.util.Map;
 
 public class EditPagesPermissionFilter extends UIExtensionAbstractFilter {
+
+  private WikiService wikiService;
 
   public EditPagesPermissionFilter() {
     this(null);
@@ -32,15 +37,16 @@ public class EditPagesPermissionFilter extends UIExtensionAbstractFilter {
 
   public EditPagesPermissionFilter(String messageKey) {
     super(messageKey, UIExtensionFilterType.MANDATORY);
+    this.wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
   
   @Override
   public boolean accept(Map<String, Object> context) throws Exception {
-    PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
+    Page page = Utils.getCurrentWikiPage();
     if (page == null) {
       return false;
     }
-    return page.hasPermission(PermissionType.EDITPAGE);
+    return wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
   }
 
   @Override

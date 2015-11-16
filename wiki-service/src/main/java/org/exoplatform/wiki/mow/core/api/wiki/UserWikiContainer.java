@@ -16,21 +16,19 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import javax.jcr.Node;
-import javax.jcr.PathNotFoundException;
-
 import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.NoSuchNodeException;
-import org.chromattic.api.UndeclaredRepositoryException;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.JCRUtils;
+
+import javax.jcr.Node;
 
 /**
  * @version $Revision$
@@ -41,29 +39,33 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
   @OneToOne
   @MappedBy(WikiNodeType.Definition.USER_WIKI_CONTAINER_NAME )
   public abstract WikiStoreImpl getMultiWiki();
-  
 
-  public UserWiki addWiki(String wikiOwner) {
-    return getWikiObject(wikiOwner, true);
+  @Override
+  public UserWiki addWiki(Wiki wiki) throws WikiException {
+    UserWiki userWiki = getWikiObject(wiki.getOwner());
+    if(userWiki == null) {
+      userWiki = createWiki(wiki);
+    }
+    return userWiki;
   }
   
   /**
    * Gets the user wiki in current UserWikiContainer by specified wiki owner
    * @param wikiOwner the wiki owner
-   * @param createIfNonExist if true, create the wiki when it does not exist
    * @return the wiki object
    */
-  protected UserWiki getWikiObject(String wikiOwner, boolean createIfNonExist) {
-    //check if wiki object is created
-    boolean isCreatedWikiObject = false;
-    NodeHierarchyCreator nodeHierachyCreator = (NodeHierarchyCreator) ExoContainerContext.getCurrentContainer()
-                                                                                         .getComponentInstanceOfType(NodeHierarchyCreator.class);    
+  @Override
+  protected UserWiki getWikiObject(String wikiOwner) {
+    NodeHierarchyCreator nodeHierachyCreator = ExoContainerContext.getCurrentContainer()
+            .getComponentInstanceOfType(NodeHierarchyCreator.class);
+    OrganizationService organizationService = ExoContainerContext.getCurrentContainer()
+            .getComponentInstanceOfType(OrganizationService.class);
+
     wikiOwner = validateWikiOwner(wikiOwner);
     if(wikiOwner == null){
       return null;
     }
-    OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
-                                                                                       .getComponentInstanceOfType(OrganizationService.class);
+
     try {
       if (organizationService.getUserHandler().findUserByName(wikiOwner) == null) {
         return null;
@@ -71,37 +73,46 @@ public abstract class UserWikiContainer extends WikiContainer<UserWiki> {
     } catch (Exception ex) {
       return null;
     }
-    ChromatticSession session = getMultiWiki().getSession();
-    Node wikiNode = null;
-    try {      
-      Node tempNode = nodeHierachyCreator.getUserApplicationNode(Utils.createSystemProvider(), wikiOwner);      
-      Node userDataNode = (Node) session.getJCRSession().getItem(tempNode.getPath());        
-      try {
-        wikiNode = userDataNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
-      } catch (PathNotFoundException e) {
-        if (createIfNonExist) {
-          wikiNode = userDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.USER_WIKI);
-          userDataNode.save();
-          isCreatedWikiObject = true;
-        } else {
-          return null;
-        }
-      }
+    ChromatticSession session = mowService.getSession();
+    Node wikiNode;
+    try {
+      Node tempNode = nodeHierachyCreator.getUserApplicationNode(JCRUtils.createSystemProvider(), wikiOwner);
+      Node userDataNode = (Node) session.getJCRSession().getItem(tempNode.getPath());
+      wikiNode = userDataNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
     } catch (Exception e) {
-      if (e instanceof PathNotFoundException)
-        throw new NoSuchNodeException(e);
-      else
-        throw new UndeclaredRepositoryException(e.getMessage());
+      return null;
     }
+
     UserWiki uwiki = session.findByNode(UserWiki.class, wikiNode);
-    uwiki.setWikiService(getwService());
     uwiki.setUserWikis(this);
-    if (isCreatedWikiObject) {
-      uwiki.setOwner(wikiOwner);
-      uwiki.getPreferences();
-      initDefaultPermisisonForWiki(uwiki);
-      session.save();
-    }
+
     return uwiki;
+  }
+
+
+  @Override
+  public UserWiki createWiki(Wiki wiki) throws WikiException {
+    ChromatticSession session = mowService.getSession();
+    try {
+      NodeHierarchyCreator nodeHierachyCreator = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(NodeHierarchyCreator.class);
+      Node tempNode = nodeHierachyCreator.getUserApplicationNode(JCRUtils.createSystemProvider(), wiki.getOwner());
+      Node userDataNode = (Node) session.getJCRSession().getItem(tempNode.getPath());
+      Node wikiNode = userDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.USER_WIKI);
+      userDataNode.save();
+      UserWiki uwiki = session.findByNode(UserWiki.class, wikiNode);
+      uwiki.setUserWikis(this);
+      uwiki.setOwner(wiki.getOwner());
+      uwiki.getPreferences();
+      if(wiki.getPermissions() != null) {
+        uwiki.setWikiPermissions(JCRUtils.convertPermissionEntryListToWikiPermissions(wiki.getPermissions()));
+        uwiki.setDefaultPermissionsInited(true);
+      }
+      session.save();
+
+      return uwiki;
+    } catch (Exception e) {
+      throw new WikiException("Cannot create wiki " + wiki.getType() + ":" + wiki.getOwner(), e);
+    }
   }
 }

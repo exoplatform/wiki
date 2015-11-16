@@ -16,13 +16,9 @@
  */
 package org.exoplatform.wiki.webui.extension;
 
-import java.util.ResourceBundle;
-
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
-import org.exoplatform.webui.core.UIGrid;
 import org.exoplatform.webui.core.UIPopupContainer;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
@@ -30,21 +26,15 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.Template;
+import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.webui.UIWikiBottomArea;
-import org.exoplatform.wiki.webui.UIWikiPageContainer;
-import org.exoplatform.wiki.webui.UIWikiPageEditForm;
-import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
-import org.exoplatform.wiki.webui.UIWikiPortlet;
+import org.exoplatform.wiki.webui.*;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
-import org.exoplatform.wiki.webui.UIWikiRichTextArea;
-import org.exoplatform.wiki.webui.UIWikiSidePanelArea;
-import org.exoplatform.wiki.webui.UIWikiTemplateDescriptionContainer;
-import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.commons.UIWikiGrid;
 import org.exoplatform.wiki.webui.commons.UIWikiTemplateForm;
+
+import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -105,7 +95,7 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
       titleInput.setValue(template.getTitle());
       descriptionInput.setValue(template.getDescription());
       pageEditForm.setTitle(template.getTitle());
-      markupInput.setValue(template.getContent().getText());
+      markupInput.setValue(template.getContent());
       
       markupInput.setRendered(true);
       pageEditForm.getChild(UIWikiRichTextArea.class).setRendered(false);
@@ -132,7 +122,6 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
   static public class AddTemplateActionListener extends EventListener<UITemplateSettingForm> {
     public void execute(Event<UITemplateSettingForm> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
-      WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
       ResourceBundle res = event.getSource().getRes();
       UIWikiPageEditForm pageEditForm = wikiPortlet.findFirstComponentOfType(UIWikiPageEditForm.class);
       UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class)
@@ -140,12 +129,7 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
-      String currentDefaultSyntaxt = Utils.getCurrentPreferences()
-                                          .getPreferencesSyntax()
-                                          .getDefaultSyntax();
-      if (currentDefaultSyntaxt == null) {
-        currentDefaultSyntaxt = wservice.getDefaultWikiSyntaxId();
-      }
+
       titleInput.setValue(res.getString("UIWikiPageEditForm.label.SampleTemplateTitle"));
       descriptionInput.setValue(res.getString("UIWikiPageEditForm.label.Description"));
       titleInput.setEditable(true);

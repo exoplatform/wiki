@@ -16,20 +16,13 @@
  */
 package org.exoplatform.wiki.rendering.macro.children;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.builder.ReferenceBuilder;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.rendering.macro.ExcerptUtils;
 import org.exoplatform.wiki.service.WikiContext;
@@ -42,19 +35,19 @@ import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
-import org.xwiki.rendering.block.Block;
-import org.xwiki.rendering.block.BulletedListBlock;
-import org.xwiki.rendering.block.GroupBlock;
-import org.xwiki.rendering.block.LinkBlock;
-import org.xwiki.rendering.block.ListItemBlock;
-import org.xwiki.rendering.block.RawBlock;
-import org.xwiki.rendering.block.WordBlock;
+import org.xwiki.rendering.block.*;
 import org.xwiki.rendering.listener.reference.DocumentResourceReference;
 import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.macro.AbstractMacro;
 import org.xwiki.rendering.macro.MacroExecutionException;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
+
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 @Component("children")
 public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
@@ -108,23 +101,23 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
     }
     Block root;
     try {
-      WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
             
       // Check if root page exist
-      PageImpl wikiPage = (PageImpl) wikiService.getPageById(params.getType(), params.getOwner(), params.getPageId());
+      Page wikiPage = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
       if (wikiPage == null) {
         // if root page was renamed then find it
-        wikiPage = (PageImpl) wikiService.getRelatedPage(params.getType(), params.getOwner(), params.getPageId());
+        wikiPage = wikiService.getRelatedPage(params.getType(), params.getOwner(), params.getPageName());
         if (wikiPage != null) {
-          params = new WikiPageParams(wikiPage.getWiki().getType(), wikiPage.getWiki().getOwner(), wikiPage.getName());
+          Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiPage.getWikiType(), wikiPage.getWikiOwner());
+          params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiPage.getName());
         }
       }
       
       root = generateTree(params, descendant, childrenNum, depth, context);
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(PageRenderingCacheService.class);
       WikiContext wikiContext = getWikiContext();
-      renderingCacheService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
-                                        new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
+      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageName()),
+                                        new WikiPageParams(params.getType(), params.getOwner(), params.getPageName()));
       return Collections.singletonList(root);
     } catch (Exception e) {
       log.debug("Failed to ", e);
@@ -148,7 +141,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
     List<Block> blocks = new ArrayList<Block>();
     
     WikiPageParams params = TreeUtils.getPageParamsFromPath(node.getPath());
-    PageImpl page = (PageImpl) wikiService.getPageById(params.getType(), params.getOwner(), params.getPageId());
+    Page page = wikiService.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
     DocumentResourceReference link = new DocumentResourceReference(getReferenceBuilder(context).build(params));
     List<Block> content = new ArrayList<Block>();
     content.add(new WordBlock(page.getTitle()));

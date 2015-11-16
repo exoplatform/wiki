@@ -16,15 +16,9 @@
  */
 package org.exoplatform.wiki.rendering.macro.include;
 
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -42,6 +36,10 @@ import org.xwiki.rendering.macro.MacroExecutionException;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
 import org.xwiki.rendering.wiki.WikiModel;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.List;
 
 @Component("includepage")
 public class IncludePageMacro extends AbstractMacro<IncludePageMacroParameters> {
@@ -79,15 +77,15 @@ public class IncludePageMacro extends AbstractMacro<IncludePageMacroParameters> 
     WikiContext currentCtx = (WikiContext) ec.getProperty(WikiContext.WIKICONTEXT);
     WikiContext includeCtx = currentCtx.clone();
     WikiPageParams includeParams = markupContextManager.getMarkupContext(parameters.getPage(), ResourceType.DOCUMENT);
-    PageImpl page = null;
+    Page page = null;
     try {
-      page = (PageImpl) getWikiService().getPageById(includeParams.getType(), includeParams.getOwner(), includeParams.getPageId());
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
-                                                                                                       .getComponentInstanceOfType(PageRenderingCacheService.class);
-      renderingCacheService.addPageLink(new WikiPageParams(currentCtx.getType(), currentCtx.getOwner(), currentCtx.getPageId()),
-                                        new WikiPageParams(includeParams.getType(),
-                                                           includeParams.getOwner(),
-                                                           includeParams.getPageId()));
+      page = getWikiService().getPageOfWikiByName(includeParams.getType(), includeParams.getOwner(), includeParams.getPageName());
+      WikiService wikiService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(WikiService.class);
+      wikiService.addPageLink(new WikiPageParams(currentCtx.getType(), currentCtx.getOwner(), currentCtx.getPageName()),
+              new WikiPageParams(includeParams.getType(),
+                      includeParams.getOwner(),
+                      includeParams.getPageName()));
       if (page == null) {
         return Collections.emptyList();
       }
@@ -111,7 +109,7 @@ public class IncludePageMacro extends AbstractMacro<IncludePageMacroParameters> 
       ec.setProperty(WikiContext.WIKICONTEXT, includeCtx);      
       if (page != null) {
         includeContent.append("<div class=\"IncludePage \" >");
-        includeContent.append(getRenderingService().render(page.getContent().getText(),
+        includeContent.append(getRenderingService().render(page.getContent(),
                                                       page.getSyntax(),
                                                       Syntax.XHTML_1_0.toIdString(),
                                                       false));

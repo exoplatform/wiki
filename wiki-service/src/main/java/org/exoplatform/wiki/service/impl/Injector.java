@@ -16,51 +16,38 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.event.LifeCycleListener;
 import org.chromattic.api.event.StateChangeListener;
-import org.chromattic.ext.ntdef.NTResource;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionHistory;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.MigratingMixin;
+import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.WatchedMixin;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.utils.Utils;
 
 public class Injector implements LifeCycleListener, StateChangeListener {
   
   private final MOWService mowService;
-
-  private final WikiService wService;
   
-  private final RenderingService renderingService;
-  
-  private static final Log log = ExoLogger.getLogger("org.exoplatform.wiki.service.impl.Injector");
+  private static final Log log = ExoLogger.getLogger(Injector.class);
 
-  public Injector(MOWService mowService,WikiService wService, RenderingService renderingService) {
-    this.mowService = mowService;
-    this.wService = wService;
-    this.renderingService = renderingService;
+  public Injector() {
+    this.mowService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MOWService.class);
   }
 
   @Override
   public void added(String id, String path, String name, Object o) {
+    if (o instanceof WikiStoreImpl) {
+      ((WikiStoreImpl) o).setMOWService(mowService);
+    }
+    if (o instanceof WikiContainer) {
+      ((WikiContainer) o).setMOWService(mowService);
+    }
     if (o instanceof PageImpl) {
       ((PageImpl) o).setMOWService(mowService);
-      ((PageImpl) o).setWikiService(wService);
-      ((PageImpl) o).setComponentManager(renderingService.getComponentManager());
-    }
-    if(o instanceof WikiContainer<?>) {
-      ((WikiContainer<?>) o).setwService(wService);
+      //((PageImpl) o).setComponentManager(renderingService.getComponentManager());
     }
     if (o instanceof NTFrozenNode) {
       ((NTFrozenNode) o).setMOWService(mowService);
@@ -69,13 +56,15 @@ public class Injector implements LifeCycleListener, StateChangeListener {
 
   @Override
   public void created(Object o) {
+    if (o instanceof WikiStoreImpl) {
+      ((WikiStoreImpl) o).setMOWService(mowService);
+    }
+    if (o instanceof WikiContainer) {
+      ((WikiContainer) o).setMOWService(mowService);
+    }
     if (o instanceof PageImpl) {
       ((PageImpl) o).setMOWService(mowService);
-      ((PageImpl) o).setWikiService(wService);
-      ((PageImpl) o).setComponentManager(renderingService.getComponentManager());
-    }
-    if(o instanceof WikiContainer<?>) {
-      ((WikiContainer<?>) o).setwService(wService);
+      //((PageImpl) o).setComponentManager(renderingService.getComponentManager());
     }
     if (o instanceof NTFrozenNode) {
       ((NTFrozenNode) o).setMOWService(mowService);
@@ -84,13 +73,15 @@ public class Injector implements LifeCycleListener, StateChangeListener {
 
   @Override
   public void loaded(String id, String path, String name, Object o) {
+    if (o instanceof WikiStoreImpl) {
+      ((WikiStoreImpl) o).setMOWService(mowService);
+    }
+    if (o instanceof WikiContainer) {
+      ((WikiContainer) o).setMOWService(mowService);
+    }
     if (o instanceof PageImpl) {
       ((PageImpl) o).setMOWService(mowService);
-      ((PageImpl) o).setWikiService(wService);
-      ((PageImpl) o).setComponentManager(renderingService.getComponentManager());
-    }
-    if(o instanceof WikiContainer<?>) {
-      ((WikiContainer<?>) o).setwService(wService);
+      //((PageImpl) o).setComponentManager(renderingService.getComponentManager());
     }
     if (o instanceof NTFrozenNode) {
       ((NTFrozenNode) o).setMOWService(mowService);
@@ -99,10 +90,15 @@ public class Injector implements LifeCycleListener, StateChangeListener {
 
   @Override
   public void removed(String id, String path, String name, Object o) {
+    if (o instanceof WikiStoreImpl) {
+      ((WikiStoreImpl) o).setMOWService(mowService);
+    }
+    if (o instanceof WikiContainer) {
+      ((WikiContainer) o).setMOWService(mowService);
+    }
     if (o instanceof PageImpl) {
       ((PageImpl) o).setMOWService(mowService);
-      ((PageImpl) o).setWikiService(wService);
-      ((PageImpl) o).setComponentManager(renderingService.getComponentManager());
+      //((PageImpl) o).setComponentManager(renderingService.getComponentManager());
     }
     if (o instanceof NTFrozenNode) {
       ((NTFrozenNode) o).setMOWService(mowService);
@@ -111,36 +107,5 @@ public class Injector implements LifeCycleListener, StateChangeListener {
 
   @Override
   public void propertyChanged(String id, Object o, String propertyName, Object propertyValue) {
-
-    if (o instanceof NTResource) {
-      if ("jcr:data".equals(propertyName)) {
-        ChromatticSession session = mowService.getSession();
-        String path = session.getPath(o);
-        if (path.endsWith(WikiNodeType.Definition.CONTENT)) {
-          path = path.substring(0, path.lastIndexOf("/"));
-          if (path.startsWith("/")) {
-            path = path.substring(1);
-          }
-          AttachmentImpl content = session.findByPath(AttachmentImpl.class, path);
-          try {
-            PageImpl page = content.getParentPage();
-            WatchedMixin mixin = page.getWatchedMixin();
-            MigratingMixin migrateMix = page.getMigratingMixin();
-            if (mixin != null && migrateMix == null) {
-              boolean isWatched = !mixin.getWatchers().isEmpty();
-              Wiki wiki = page.getWiki();
-              if (wiki != null && isWatched) {
-                NTVersionHistory history = page.getVersionableMixin().getVersionHistory();
-                if (history != null && history.getChildren().size() > 1) {
-                  Utils.sendMailOnChangeContent(content);
-                }
-              }
-            }
-          } catch (Exception e) {
-            log.warn("Can not notify wiki page changes by email !", e);
-          }
-        }
-      }
-    }
   }
 }

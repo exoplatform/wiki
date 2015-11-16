@@ -21,7 +21,7 @@ import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormInputSet;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
+import org.exoplatform.wiki.mow.api.WikiPreferences;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UISyntaxSelectBoxFactory;
 
@@ -44,8 +44,8 @@ public class UIWikiSyntaxPreferences extends UIFormInputSet {
 
   public void updateData() throws Exception {
     WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-    Preferences currentPreferences = Utils.getCurrentPreferences();
-    String currentDefaultSyntaxt = currentPreferences.getPreferencesSyntax().getDefaultSyntax();
+    WikiPreferences currentPreferences = Utils.getCurrentPreferences();
+    String currentDefaultSyntaxt = currentPreferences.getWikiPreferencesSyntax().getDefaultSyntax();
     if (currentDefaultSyntaxt == null) {
       currentDefaultSyntaxt = wservice.getDefaultWikiSyntaxId();
     }
@@ -54,7 +54,7 @@ public class UIWikiSyntaxPreferences extends UIFormInputSet {
     selectSyntax.setValue(currentDefaultSyntaxt);
 
     UIFormCheckBoxInput<Boolean> allowSelect = getUIFormCheckBoxInput(FIELD_ALLOW);
-    boolean currentAllow = currentPreferences.getPreferencesSyntax().getAllowMutipleSyntaxes();
+    boolean currentAllow = currentPreferences.getWikiPreferencesSyntax().isAllowMultipleSyntaxes();
     allowSelect.setChecked(currentAllow);
   }
 }

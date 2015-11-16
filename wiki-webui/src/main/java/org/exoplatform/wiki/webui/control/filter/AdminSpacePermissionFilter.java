@@ -16,14 +16,18 @@
  */
 package org.exoplatform.wiki.webui.control.filter;
 
-import java.util.Map;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.service.WikiService;
+
+import java.util.Map;
 
 public class AdminSpacePermissionFilter extends UIExtensionAbstractFilter {
+
+  private WikiService wikiService;
 
   public AdminSpacePermissionFilter() {
     this(null);
@@ -31,11 +35,13 @@ public class AdminSpacePermissionFilter extends UIExtensionAbstractFilter {
 
   public AdminSpacePermissionFilter(String messageKey) {
     super(messageKey, UIExtensionFilterType.MANDATORY);
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   @Override
   public boolean accept(Map<String, Object> context) throws Exception {
-    return Utils.hasPermission(new String[] { PermissionType.ADMINSPACE.toString() });
+    Wiki wiki = Utils.getCurrentWiki();
+    return wikiService.hasAdminSpacePermission(wiki.getType(), wiki.getOwner());
   }
 
   @Override

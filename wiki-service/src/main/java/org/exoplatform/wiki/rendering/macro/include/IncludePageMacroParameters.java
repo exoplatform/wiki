@@ -34,7 +34,7 @@ public class IncludePageMacroParameters {
   }
 
   /**
-   * @param parentPage parent of children
+   * @param page parent of children
    */
   @PropertyDescription("REQUIRED. To specify a page in a different space, use space.Page Title.")
   public void setPage(String page) {

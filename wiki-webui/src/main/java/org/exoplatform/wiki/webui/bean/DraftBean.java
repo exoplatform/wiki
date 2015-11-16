@@ -65,6 +65,10 @@ public class DraftBean {
   }
   
   private String getEditTimeInString(Date date) {
+    if(date == null) {
+      return null;
+    }
+
     long asecond = 1000;
     long aminute = asecond * 60;
     long ahour = aminute * 60;

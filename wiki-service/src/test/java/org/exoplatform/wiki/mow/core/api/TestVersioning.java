@@ -16,61 +16,84 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
-import java.util.Collection;
-import java.util.Iterator;
-
-import org.chromattic.ext.ntdef.NTResource;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.OrganizationService;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PageVersion;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.junit.Assert;
+import org.exoplatform.wiki.service.PageUpdateType;
+import org.exoplatform.wiki.service.WikiService;
+
+import java.util.Iterator;
+import java.util.List;
 
 public class TestVersioning extends AbstractMOWTestcase {
 
+  private WikiService wikiService;
+
+  public void setUp() throws Exception {
+    super.setUp();
+    wikiService = container.getComponentInstanceOfType(WikiService.class);
+  }
+
   public void testGetVersionHistory() throws Exception {
-    PageImpl wikipage = createWikiPage(WikiType.PORTAL, "versioning", "testGetVersionHistory-001");
-    assertNotNull(wikipage.getVersionableMixin());
-    assertNotNull(wikipage.getVersionableMixin().getVersionHistory().getRootVersion().getCreated());
-    assertTrue(wikipage.getVersionableMixin().isCheckedOut());
+    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning1");
+    Page page = new Page("testGetVersionHistory-001", "testGetVersionHistory-001");
+    page = wikiService.createPage(wiki, "WikiHome", page);
+    wikiService.createVersionOfPage(page);
+
+    page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "testGetVersionHistory-001");
+    assertNotNull(page);
+    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    assertNotNull(versions);
+    assertEquals(2, versions.size());
   }
 
   public void testCreateVersionHistoryTree() throws Exception {
-    PageImpl wikipage = createWikiPage(WikiType.PORTAL, "versioning", "testCreateVersionHistoryTree-001");
-    wikipage.setTitle("testCreateVersionHistoryTree");
-    wikipage.getContent().setText("testCreateVersionHistoryTree-ver1.0");
-    NTVersion ver1 = wikipage.checkin();
-    assertNotNull(ver1);
-    wikipage.checkout();
-    wikipage.getContent().setText("testCreateVersionHistoryTree-ver2.0");
-    NTVersion ver2 = wikipage.checkin();
-    assertNotNull(ver2);
-    assertNotSame(ver1, ver2);
-    wikipage.checkout();
-    wikipage.restore(ver1.getName(), false);
-    assertEquals("testCreateVersionHistoryTree-ver1.0", wikipage.getContent().getText());
-    wikipage.checkout();
-    wikipage.getContent().setText("testCreateVersionHistoryTree-ver3.0");
-    NTVersion ver3 = wikipage.checkin();
-    wikipage.checkout();
-    Iterator<NTVersion> iter = wikipage.getVersionableMixin().getVersionHistory().iterator();
-    NTVersion version = iter.next();
-    assertEquals(WikiNodeType.Definition.ROOT_VERSION, version.getName());
-    version = iter.next();
-    NTFrozenNode frozenNode = version.getNTFrozenNode();
-    assertEquals("testCreateVersionHistoryTree-ver1.0",
-                 frozenNode.getContentString());
-    version = iter.next();
-    frozenNode = version.getNTFrozenNode();
-    assertEquals("testCreateVersionHistoryTree-ver2.0",
-                 frozenNode.getContentString());
-    version = iter.next();
-    frozenNode = version.getNTFrozenNode();
-    assertEquals("testCreateVersionHistoryTree-ver3.0",
-                 frozenNode.getContentString());
+    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning2");
+    Page page = new Page("testCreateVersionHistoryTree-001", "testCreateVersionHistoryTree-001");
+    page.setContent("testCreateVersionHistoryTree-ver0.0");
+    page = wikiService.createPage(wiki, "WikiHome", page);
+
+    page.setTitle("testCreateVersionHistoryTree");
+    page.setContent("testCreateVersionHistoryTree-ver1.0");
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE);
+    wikiService.createVersionOfPage(page);
+
+    page.setContent("testCreateVersionHistoryTree-ver2.0");
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
+    wikiService.createVersionOfPage(page);
+
+    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    assertNotNull(versions);
+    assertEquals(3, versions.size());
+
+    // restore to previous version (testCreateVersionHistoryTree-ver1.0)
+    wikiService.restoreVersionOfPage(versions.get(1).getName(), page);
+    page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
+    assertEquals("testCreateVersionHistoryTree-ver1.0", page.getContent());
+
+    page.setContent("testCreateVersionHistoryTree-ver3.0");
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
+    wikiService.createVersionOfPage(page);
+
+    versions = wikiService.getVersionsOfPage(page);
+    assertNotNull(versions);
+    assertEquals(5, versions.size());
+
+    Iterator<PageVersion> itVersions = versions.iterator();
+    PageVersion pageVersion = itVersions.next();
+    assertEquals("testCreateVersionHistoryTree-ver3.0", pageVersion.getContent());
+
+    pageVersion = itVersions.next();
+    assertEquals("testCreateVersionHistoryTree-ver1.0", pageVersion.getContent());
+
+    pageVersion = itVersions.next();
+    assertEquals("testCreateVersionHistoryTree-ver2.0", pageVersion.getContent());
+
+    pageVersion = itVersions.next();
+    assertEquals("testCreateVersionHistoryTree-ver1.0", pageVersion.getContent());
+
+    pageVersion = itVersions.next();
+    assertEquals("testCreateVersionHistoryTree-ver0.0", pageVersion.getContent());
   }
 }

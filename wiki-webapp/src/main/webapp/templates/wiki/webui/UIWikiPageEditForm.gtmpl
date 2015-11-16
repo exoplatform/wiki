@@ -2,7 +2,7 @@
   import java.util.List;
   import org.apache.commons.lang.StringEscapeUtils;
   
-  uicomponent.checkToDissplayNotification();
+  uicomponent.checkToDisplayNotification();
   def rcontext = _ctx.getRequestContext() ;    
   def saveDraftSuccessMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("DraftPage.msg.save-draft-success"));
   def discardDraftConfirmMessage = StringEscapeUtils.escapeJavaScript(_ctx.appRes("DraftPage.msg.keep-draft-question"));

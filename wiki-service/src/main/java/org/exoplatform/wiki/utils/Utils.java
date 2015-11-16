@@ -1,24 +1,16 @@
 package org.exoplatform.wiki.utils;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.container.RootContainer;
-import org.exoplatform.container.definition.PortalContainerConfig;
-import org.exoplatform.container.xml.PortalContainerInfo;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.access.AccessControlEntry;
-import org.exoplatform.services.jcr.access.AccessControlList;
-import org.exoplatform.services.jcr.ext.app.SessionProviderService;
-import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.mail.MailService;
@@ -26,24 +18,12 @@ import org.exoplatform.services.mail.Message;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.mow.core.api.ModelImpl;
-import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiContext;
@@ -54,22 +34,15 @@ import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.suigeneris.jrcs.diff.DifferentiationFailedException;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
 
-import javax.jcr.RepositoryException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Stack;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 public class Utils {
   public static final String SLASH = "SLASH";
@@ -81,8 +54,6 @@ public class Utils {
   public static final String  PAGE                        = "page";
   
   private static final Log      log_               = ExoLogger.getLogger(Utils.class);
-  
-  private static final String JCR_WEBDAV_SERVICE_BASE_URI = "/jcr";
   
   public static final String COMPARE_REVISION = "CompareRevision";
   
@@ -96,7 +67,7 @@ public class Utils {
   
   private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-\"";
   
-  private static final String ILLEGAL_JCR_NAME_CHARACTERS = "*|\":[]/'"; 
+  private static final String ILLEGAL_NAME_CHARACTERS = "*|\":[]/'";
 
   public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
   
@@ -121,7 +92,7 @@ public class Utils {
       if (first != -1 && first == last && ( first == 0 || last == name.length() - 1)) {
         name = name.replace('.', '_');
       } 
-      for (char c : ILLEGAL_JCR_NAME_CHARACTERS.toCharArray())
+      for (char c : ILLEGAL_NAME_CHARACTERS.toCharArray())
         name = name.replace(c, '_');
       name = name.replace("%20", "_");
       return name;
@@ -155,7 +126,7 @@ public class Utils {
    * @param isNewPage Is the wiki page a draft or not
    */
   public static void logEditPageTime(WikiPageParams pageParams, String username, long updateTime, String draftName, boolean isNewPage) {
-    String pageId = pageParams.getPageId();
+    String pageId = pageParams.getPageName();
     Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
     if (logByPage == null) {
       logByPage = new HashMap<String, WikiPageHistory>();
@@ -175,7 +146,7 @@ public class Utils {
    * @param user
    */
   public static void removeLogEditPage(WikiPageParams pageParams, String user) {
-    String pageId = pageParams.getPageId();
+    String pageId = pageParams.getPageName();
     Map<String, WikiPageHistory> logByPage = editPageLogs.get(pageId);
     if (logByPage != null) {
       logByPage.remove(user);
@@ -248,8 +219,8 @@ public class Utils {
       sb.append("/");
     }
     
-    if (params.getPageId() != null) {
-      sb.append(params.getPageId());
+    if (params.getPageName() != null) {
+      sb.append(params.getPageName());
     }
     
     if (hasDowmainUrl) {
@@ -257,10 +228,24 @@ public class Utils {
     }
     return fillPortalName(sb.toString());
   }
-  
+
   public static String getPageNameForAddingPage() {
-    String sessionId = Util.getPortalRequestContext().getRequest().getSession(false).getId();
-    String username = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    return Utils.getPageNameForAddingPage(null);
+  }
+
+  public static String getPageNameForAddingPage(String sessionId) {
+    if(sessionId == null || sessionId.isEmpty()) {
+      sessionId = StringUtils.EMPTY;
+      PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
+      if(portalRequestContext != null) {
+        HttpServletRequest request = portalRequestContext.getRequest();
+        if(request != null && request.getSession(false) != null) {
+          sessionId = request.getSession(false).getId();
+        }
+      }
+
+    }
+    String username = Utils.getCurrentUser();
     return username + SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE + sessionId;
   }
   
@@ -298,122 +283,6 @@ public class Utils {
     }
     return logByPage;
   }
-   
-
-  //The path should get from NodeHierarchyCreator 
-  public static String getPortalWikisPath() {    
-    String path = "/exo:applications/" 
-    + WikiNodeType.Definition.WIKI_APPLICATION + "/"
-    + WikiNodeType.Definition.WIKIS ; 
-    return path ;
-  }
-  /**
-   * @return 
-   *      <li> portal name if wiki is portal type</li>
-   *      <li> groupid if wiki is group type</li>
-   *      <li> userid if wiki is personal type</li>
-   * @throws IllegalArgumentException if jcr path is not of a wiki page node.
-   */
-  public static String getSpaceIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    String wikiType = getWikiType(jcrPath);
-    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-      return getPortalIdByJcrPath(jcrPath);
-    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
-      return getGroupIdByJcrPath(jcrPath);
-    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
-      return getUserIdByJcrPath(jcrPath);
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a wiki page node!");
-    }
-  }
-  
-  /**
-   * @param jcrPath follows the format /Groups/$GROUP/ApplicationData/eXoWiki/[wikipage]
-   * @return $GROUP of jcrPath
-   * @throws IllegalArgumentException if jcrPath is not as expected.
-   */
-  public static String getGroupIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    int pos1 = jcrPath.indexOf("/Groups/");
-    int pos2 = jcrPath.indexOf("/ApplicationData");
-    if (pos1 >= 0 && pos2 > 0) {
-      return jcrPath.substring(pos1 + "/Groups/".length(), pos2);
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a group wiki page node!");
-    }
-  }
-
-  public static List<NTVersion> getCurrentPageRevisions(Page wikipage) throws Exception {
-    List<NTVersion> versionsList = getPageRevisions((PageImpl) wikipage);
-    if (versionsList.size() == 0) {
-      PageImpl pageImpl = (PageImpl) wikipage;
-      pageImpl.checkin();
-      pageImpl.checkout();
-      pageImpl.getJCRSession().save();
-      versionsList = getPageRevisions((PageImpl) wikipage);
-    }
-    return versionsList;
-  }
-  
-  private static List<NTVersion> getPageRevisions(PageImpl pageImpl) throws Exception {
-    Iterator<NTVersion> iter = pageImpl.getVersionableMixin().getVersionHistory().iterator();
-    List<NTVersion> versionsList = new ArrayList<NTVersion>();
-    while (iter.hasNext()) {
-      NTVersion version = iter.next();
-      if (!(WikiNodeType.Definition.ROOT_VERSION.equals(version.getName()))) {
-        versionsList.add(version);
-      }
-    }
-    Collections.sort(versionsList, new VersionNameComparatorDesc());
-    return versionsList;
-  }
-  
-  /**
-   * @param jcrPath follows the format /Users/$USERNAME/ApplicationData/eXoWiki/...
-   * @return $USERNAME of jcrPath
-   * @throws IllegalArgumentException if jcrPath is not as expected.
-   */
-  public static String getUserIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    int pos1 = jcrPath.indexOf("/Users/");
-    int pos2 = jcrPath.indexOf("/ApplicationData");
-    if (pos1 >= 0 && pos2 > 0) {
-      return jcrPath.substring(pos1 + "/Users/".length(), pos2);
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a personal wiki page node!");
-    }
-  }
-  
-  /**
-   * @param jcrPath follows the format /exo:applications/eXoWiki/wikis/$PORTAL/...
-   * @return $PORTAL of jcrPath
-   * @throws IllegalArgumentException if jcrPath is not as expected.
-   */
-  public static String getPortalIdByJcrPath(String jcrPath) throws IllegalArgumentException {
-    String portalPath = getPortalWikisPath();
-    int pos1 = jcrPath.indexOf(portalPath);
-    
-    if (pos1 >= 0) {
-      String restPath = jcrPath.substring(pos1 + portalPath.length() + 1);
-      return restPath.substring(0, restPath.indexOf("/"));
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a portal wiki page node!");
-    }
-  }
-  
-  /**
-   * @param jcrPath absolute jcr path of page node.
-   * @return type of wiki page. 
-   */
-  public static String getWikiType(String jcrPath) throws IllegalArgumentException {
-    if (jcrPath.startsWith("/exo:applications/")) {
-      return PortalConfig.PORTAL_TYPE;
-    } else if (jcrPath.startsWith("/Groups/")) {
-      return PortalConfig.GROUP_TYPE;
-    } else if (jcrPath.startsWith("/Users/")) {
-      return PortalConfig.USER_TYPE;
-    } else {
-      throw new IllegalArgumentException(jcrPath + " is not jcr path of a wiki page node!");
-    }
-  }
   
   /**
    * Validate {@code wikiOwner} depending on {@code wikiType}. <br>
@@ -423,10 +292,7 @@ public class Utils {
    * @return wikiOwner after validated.
    */ 
   public static String validateWikiOwner(String wikiType, String wikiOwner){
-    if(wikiType != null && wikiType.equals(PortalConfig.GROUP_TYPE)) {
-      if(wikiOwner == null || wikiOwner.length() == 0){
-        return "";
-      }
+    if(wikiType != null && wikiType.equals(PortalConfig.GROUP_TYPE) && StringUtils.isNotEmpty(wikiOwner)) {
       if(wikiOwner.startsWith("/")){
         wikiOwner = wikiOwner.substring(1,wikiOwner.length());
       }
@@ -445,25 +311,10 @@ public class Utils {
     sb.append(PortalContainer.getCurrentRestContextName());
     return sb.toString();
   }
-
-  public static String getCurrentRepositoryWebDavUri() {
-    StringBuilder sb = new StringBuilder();
-    sb.append(getDefaultRestBaseURI());
-    sb.append(JCR_WEBDAV_SERVICE_BASE_URI);
-    sb.append("/");
-    RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
-    try {
-      sb.append(repositoryService.getCurrentRepository().getConfiguration().getName());
-    } catch (RepositoryException e) {
-      sb.append(repositoryService.getConfig().getDefaultRepositoryName());
-    }
-    sb.append("/");
-    return sb.toString();
-  }
   
   public static String getDocumentURL(WikiContext wikiContext) {
     if (wikiContext.getPortalURL() == null && wikiContext.getPortletURI() == null) {
-      return wikiContext.getPageId();
+      return wikiContext.getPageName();
     }
     StringBuilder sb = new StringBuilder();
     sb.append(wikiContext.getPortalURL());
@@ -475,7 +326,7 @@ public class Utils {
       sb.append(Utils.validateWikiOwner(wikiContext.getType(), wikiContext.getOwner()));
       sb.append("/");
     }
-    sb.append(wikiContext.getPageId());
+    sb.append(wikiContext.getPageName());
     return sb.toString();
   }
   
@@ -487,66 +338,48 @@ public class Utils {
     return null; 
   }
   
-  public static Collection<Wiki> getWikisByType(WikiType wikiType) {
-    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
-    return store.getWikiContainer(wikiType).getAllWikis();
-  }
-  
-  public static Wiki getWiki(WikiPageParams params) {
-    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
-    if (params != null) {
-      String wikiType = params.getType();
-      String owner = params.getOwner();
-      if (!StringUtils.isEmpty(wikiType) && !StringUtils.isEmpty(owner)) {
-        return store.getWiki(WikiType.valueOf(wikiType.toUpperCase()), owner);
-      }
+  public static boolean isDescendantPage(Page page, Page parentPage) throws WikiException {
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    // if page and parentPage are the same page, it is considered as a descendant
+    if(page.getWikiType().equals(parentPage.getWikiType()) && page.getWikiOwner().equals(parentPage.getWikiOwner())
+            && page.getName().equals(parentPage.getName())) {
+      return true;
     }
-    return null;
+    Page parentOfPage = wikiService.getParentPageOf(page);
+    // we reach the Wiki root
+    if(parentOfPage == null) {
+      return false;
+    }
+    // if the parent of the given page is the same than the parentPage, page is a descendant of parentPage
+    if(parentOfPage.getWikiType().equals(parentPage.getWikiType()) && parentOfPage.getWikiOwner().equals(parentPage.getWikiOwner())
+            && parentOfPage.getName().equals(parentPage.getName())) {
+      return true;
+    } else {
+      // otherwise we continue to go up in the page tree
+      return isDescendantPage(parentOfPage, parentPage);
+    }
   }
   
-  public static Wiki[] getAllWikiSpace() {
-    MOWService mowService = (MOWService) PortalContainer.getComponent(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
-    return store.getWikis().toArray(new Wiki[]{}) ;
-  } 
-  
-  public static boolean isDescendantPage(PageImpl page, PageImpl parentPage) throws Exception {
-    return page.getPath().startsWith(parentPage.getPath());
-  }
-
-  public static Object getObject(String path, String type) throws Exception {
-    WikiService wservice = (WikiService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    return wservice.findByPath(path, type) ;
-  }
-
-  public static NTVersion getLastRevisionOfPage(Page wikipage) throws Exception {
-    return getCurrentPageRevisions(wikipage).get(0);
-  }
-  
-  public static Object getObjectFromParams(WikiPageParams param) throws Exception {
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(MOWService.class);
-    WikiStoreImpl store = (WikiStoreImpl) mowService.getModel().getWikiStore();
+  public static Object getObjectFromParams(WikiPageParams param) throws WikiException {
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     String wikiType = param.getType();
     String wikiOwner = param.getOwner();
-    String wikiPageId = param.getPageId();
+    String wikiPageId = param.getPageName();
 
     if (wikiOwner != null && wikiPageId != null) {
-      if (!wikiPageId.equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
+      if (!wikiPageId.equals(WikiConstants.WIKI_HOME_NAME)) {
         // Object is a page
-        Page expandPage = (Page) wikiService.getPageByRootPermission(wikiType, wikiOwner, wikiPageId);
+        Page expandPage = wikiService.getPageByRootPermission(wikiType, wikiOwner, wikiPageId);
         return expandPage;
       } else {
         // Object is a wiki home page
-        Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase())).getWiki(wikiOwner, true);
-        WikiHome wikiHome = (WikiHome) wiki.getWikiHome();
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType.toUpperCase(), wikiOwner);
+        Page wikiHome = wiki.getWikiHome();
         return wikiHome;
       }
     } else if (wikiOwner != null) {
       // Object is a wiki
-      Wiki wiki = store.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase())).getWiki(wikiOwner, true);
+      Wiki wiki =  wikiService.getWikiByTypeAndOwner(wikiType.toUpperCase(), wikiOwner);
       return wiki;
     } else if (wikiType != null) {
       // Object is a space
@@ -556,13 +389,14 @@ public class Utils {
     }
   }
   
-  public static Stack<WikiPageParams> getStackParams(PageImpl page) throws Exception {
-    Stack<WikiPageParams> stack = new Stack<WikiPageParams>();
-    Wiki wiki = page.getWiki();
+  public static Stack<WikiPageParams> getStackParams(Page page) throws WikiException {
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    Stack<WikiPageParams> stack = new Stack<>();
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
     if (wiki != null) {
       while (page != null) {
         stack.push(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName()));
-        page = page.getParentPage();
+        page = wikiService.getParentPageOf(page);
       }      
     }
     return stack;
@@ -570,36 +404,52 @@ public class Utils {
   
   
   public static WikiPageParams getWikiPageParams(Page page) {
-    Wiki wiki = ((PageImpl) page).getWiki();
-    String wikiType = wiki.getType();
-    WikiPageParams params = new WikiPageParams(wikiType, wiki.getOwner(), page.getName());
-    return params;
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    try {
+      Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+      String wikiType = wiki.getType();
+      WikiPageParams params = new WikiPageParams(wikiType, wiki.getOwner(), page.getName());
+      return params;
+    } catch(Exception e) {
+      log_.error("Cannot build wiki page params from wiki page " + page.getWikiType() + ":" + page.getWikiOwner()
+              + ":" + page.getName() + " - Cause : " + e.getMessage(), e);
+      return null;
+    }
   }
   
-  public static void sendMailOnChangeContent(AttachmentImpl content) throws Exception {
+  public static void sendMailOnChangeContent(Page page)
+          throws WikiException, DifferentiationFailedException, ComponentLookupException, ConversionException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
-    DiffService diffService = (DiffService) container.getComponentInstanceOfType(DiffService.class);
-    RenderingService renderingService = (RenderingService) container.getComponentInstanceOfType(RenderingService.class);
+    WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
+    DiffService diffService = container.getComponentInstanceOfType(DiffService.class);
+    RenderingService renderingService = container.getComponentInstanceOfType(RenderingService.class);
     Message message = new Message();
     ConversationState conversationState = ConversationState.getCurrent();
     // Get author
     String author = conversationState.getIdentity().getUserId();
 
     // Get watchers' mails
-    PageImpl page = content.getParentPage();
-    List<String> list = page.getWatchedMixin().getWatchers();
-    List<String> emailList = new ArrayList<String>();
+    List<String> list = wikiService.getWatchersOfPage(page);
+    List<String> emailList = new ArrayList<>();
     for (int i = 0; i < list.size(); i++) {
-      if (isEnabledUser(list.get(i))) {
-        emailList.add(getEmailUser(list.get(i)));
+      try {
+        if (isEnabledUser(list.get(i))) {
+          emailList.add(getEmailUser(list.get(i)));
+        }
+      } catch (WikiException e) {
+        log_.error("Cannot get email address of user " + list.get(i) + " - Cause : " + e.getMessage(), e);
       }
     }   
     
     // Get differences
     String pageTitle = page.getTitle();
-    String currentVersionContent = content.getText();
-    NTVersion previousVersion = page.getVersionableMixin().getBaseVersion();    
-    String previousVersionContent = previousVersion.getNTFrozenNode().getContentString();
+    String currentVersionContent = page.getContent() != null ? new String(page.getContent()) : StringUtils.EMPTY;
+    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    String previousVersionContent = StringUtils.EMPTY;
+    if(versions != null && !versions.isEmpty()) {
+      PageVersion previousVersion = versions.get(0);
+      previousVersionContent = previousVersion.getContent();
+    }
     DiffResult diffResult = diffService.getDifferencesAsHTML(previousVersionContent,
                                                              currentVersionContent,
                                                              false);
@@ -612,65 +462,74 @@ public class Utils {
       diffResult.setDiffHTML("No changes, new revision is created.");
     } 
     
+    String currentDomain = CommonsUtils.getCurrentDomain();
     StringBuilder sbt = new StringBuilder();
     sbt.append("<html>")
-       .append("  <head>")
-       .append("     <link rel=\"stylesheet\" href=\""+renderingService.getCssURL() +"\" type=\"text/css\">")
-       .append("  </head>")
-       .append("  <body>")
-       .append("    Page <a href=\""+CommonsUtils.getCurrentDomain()+page.getURL()+"\">" + page.getTitle() +"</a> is modified by " +page.getAuthor())
-       .append("    <br/><br/>")
-       .append("    Changes("+ diffResult.getChanges()+")")
-       .append("    <br/><br/>")
-       .append(     insertStyle(diffResult.getDiffHTML()))
-       .append("    Full content: ")
-       .append("    <br/><br/>")
-       .append(     fullContent)
-       .append("  </body>")
-       .append("</html>");
+        .append("  <head>")
+        .append("     <link rel=\"stylesheet\" href=\"")
+        .append(renderingService.getCssURL())
+        .append("\" type=\"text/css\">")
+        .append("  </head>")
+        .append("  <body>")
+        .append("    Page <a href=\"")
+        .append(currentDomain)
+        .append(page.getUrl())
+        .append("\">")
+        .append(page.getTitle())
+        .append("</a> is modified by ")
+        .append(page.getAuthor())
+        .append("    <br/><br/>")
+        .append("    Changes(")
+            .append(diffResult.getChanges())
+            .append(")")
+            .append("    <br/><br/>")
+            .append(insertStyle(diffResult.getDiffHTML()))
+            .append("    Full content: ")
+            .append("    <br/><br/>")
+            .append(     fullContent)
+            .append("  </body>")
+            .append("</html>");
     // Create message
     message.setFrom(makeNotificationSender(author));
     message.setSubject("\"" + pageTitle + "\" page was modified");
     message.setMimeType(MIMETYPE_TEXTHTML);
     message.setBody(sbt.toString());
-    MailService mailService = (MailService) container.getComponentInstanceOfType(MailService.class);
+    MailService mailService = container.getComponentInstanceOfType(MailService.class);
     for (String address : emailList) {
       message.setTo(address);
       try {
         mailService.sendMessage(message);
       } catch (Exception e) {
-        if (log_.isDebugEnabled()) {
-          log_.debug(String.format("Failed to send notification email to user: %s", address), e);
-        }
+        log_.error(String.format("Failed to send notification email to user: %s", address), e);
       }
     }
   }
   
-  private static boolean isEnabledUser(String userName) throws Exception {
+  private static boolean isEnabledUser(String userName) throws WikiException {
     OrganizationService orgService = org.exoplatform.wiki.rendering.util.Utils.getService(OrganizationService.class);
-    return orgService.getUserHandler().findUserByName(userName) != null;
+    try {
+      return orgService.getUserHandler().findUserByName(userName) != null;
+    } catch (Exception e) {
+      throw new WikiException("Cannot check if user " + userName + " is enabled", e);
+    }
   }
   
-  public static String getEmailUser(String userName) throws Exception {
-    OrganizationService organizationService = (OrganizationService) ExoContainerContext.getCurrentContainer()
-                                                                                       .getComponentInstanceOfType(OrganizationService.class);
-    User user = organizationService.getUserHandler().findUserByName(userName);
-    String email = user.getEmail();
-    return email;
-  }
-  
-  public static boolean isWikiAvailable(String wikiType, String wikiOwner) {
-    MOWService mowService = (MOWService) ExoContainerContext.getCurrentContainer()
-                                                            .getComponentInstanceOfType(MOWService.class);
-    ModelImpl model = mowService.getModel();
-    WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
-    WikiContainer<Wiki> container = wStore.getWikiContainer(WikiType.valueOf(wikiType.toUpperCase()));
-    return (container.contains(wikiOwner) != null);
+  public static String getEmailUser(String userName) throws WikiException {
+    OrganizationService organizationService = ExoContainerContext.getCurrentContainer()
+            .getComponentInstanceOfType(OrganizationService.class);
+    User user;
+    try {
+      user = organizationService.getUserHandler().findUserByName(userName);
+      String email = user.getEmail();
+      return email;
+    } catch (Exception e) {
+      throw new WikiException("Cannot get email of user " + userName, e);
+    }
   }
   
   public static HashMap<String, IDType> getACLForAdmins() {
     HashMap<String, IDType> permissionMap = new HashMap<String, IDType>();
-    UserACL userACL = (UserACL) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
+    UserACL userACL = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(UserACL.class);
     permissionMap.put(userACL.getSuperUser(), IDType.USER);
     for (String group : userACL.getPortalCreatorGroups()) {
       if (!StringUtils.isEmpty(group)) {
@@ -679,72 +538,7 @@ public class Utils {
     }
     return permissionMap;
   }
-  
-  /**
-   * Has permission.
-   * 
-   * @param acl
-   *          access control list
-   * @param permission
-   *          permissions array
-   * @param user
-   *          user Identity
-   * @return boolean
-   */
-  public static boolean hasPermission(AccessControlList acl, String[] permission, Identity user) {
-   
-    String userId = user.getUserId();
-    if (userId.equals(IdentityConstants.SYSTEM)) {
-      // SYSTEM has permission everywhere
-      return true;
-    } else if (userId.equals(acl.getOwner())) {
-      // Current user is owner of node so has all privileges
-      return true;
-    } else if (userId.equals(IdentityConstants.ANONIM)) {
-      List<String> anyPermissions = acl.getPermissions(IdentityConstants.ANY);
 
-      if (anyPermissions.size() < permission.length)
-        return false;
-
-      for (int i = 0; i < permission.length; i++) {
-        if (!anyPermissions.contains(permission[i]))
-          return false;
-      }
-      return true;
-    } else {
-      if (acl.getPermissionsSize() > 0 && permission.length > 0) {
-        // check permission to perform all of the listed actions
-        for (int i = 0; i < permission.length; i++) {
-          // check specific actions
-          if (!isPermissionMatch(acl.getPermissionEntries(), permission[i], user))
-            return false;
-        }
-        return true;
-      }
-      return false;
-    }
-  }
-  
-  private static boolean isPermissionMatch(List<AccessControlEntry> existedPermission, String testPermission, Identity user) {
-    for (int i = 0, length = existedPermission.size(); i < length; i++) {
-      AccessControlEntry ace = existedPermission.get(i);
-      // match action
-      if (testPermission.equals(ace.getPermission())) {
-        // match any
-        if (IdentityConstants.ANY.equals(ace.getIdentity()))
-          return true;
-        else if (ace.getIdentity().indexOf(":") == -1) {
-          // just user
-          if (ace.getIdentity().equals(user.getUserId()))
-            return true;
-
-        } else if (user.isMemberOf(ace.getMembershipEntry()))
-          return true;
-      }
-    }
-    return false;
-  }
-  
   private static String makeNotificationSender(String from) {
     InternetAddress addr = null;
     if (from == null) return null;
@@ -786,14 +580,9 @@ public class Utils {
    * get URL to public on social activity
    */
   public static String getURL(String url, String verName){
-    StringBuffer strBuffer = new StringBuffer(url);
-    strBuffer.append("?").append(WikiContext.ACTION).append("=").append(COMPARE_REVISION).append("&").append(VER_NAME).append("=").append(verName);
+    StringBuffer strBuffer = new StringBuffer();
+    strBuffer.append(url).append("?").append(WikiContext.ACTION).append("=").append(COMPARE_REVISION).append("&").append(VER_NAME).append("=").append(verName);
     return strBuffer.toString();
-  }
-  
-  public static SessionProvider createSystemProvider() {
-    SessionProviderService sessionProviderService = (SessionProviderService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SessionProviderService.class);
-    return sessionProviderService.getSystemSessionProvider(null);
   }
   
   public static long countSearchResult(WikiSearchData data) throws Exception {
@@ -805,7 +594,7 @@ public class Utils {
 
   }
   
-  public static String getNodeTypeCssClass(AttachmentImpl attachment, String append) throws Exception {
+  public static String getAttachmentCssClass(Attachment attachment, String append) throws Exception {
     Class<?> dmsMimeTypeResolverClass = Class.forName("org.exoplatform.services.cms.mimetype.DMSMimeTypeResolver");
     Object dmsMimeTypeResolverObject =
         dmsMimeTypeResolverClass.getDeclaredMethod("getInstance", null).invoke(null, null);
@@ -832,5 +621,4 @@ public class Utils {
   public static String getRestContextName() {
     return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
   }
-
 }

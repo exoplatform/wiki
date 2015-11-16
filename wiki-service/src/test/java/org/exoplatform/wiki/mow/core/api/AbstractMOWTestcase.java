@@ -31,11 +31,10 @@ import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.wiki.mow.api.Model;
-import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.core.api.wiki.Model;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.core.api.wiki.GroupWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
 import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
@@ -57,44 +56,58 @@ public abstract class AbstractMOWTestcase extends TestCase {
 
   protected static MOWService          mowService;
 
-  static {
-    initContainer();
-    //initJCR();
-  }
+  boolean syncStarted;
 
   protected void begin() {
+    initContainer();
+
     RequestLifeCycle.begin(container);
   }
 
   protected void end() {
     RequestLifeCycle.end();
+
+    // TODO stopping or disposing the container does not delete data. We should find a way to do it after each test to make sure tests are really independent.
+    //stopContainer();
   }
 
   protected void setUp() throws Exception {
     begin();
     Identity systemIdentity = new Identity(IdentityConstants.SYSTEM);
     ConversationState.setCurrent(new ConversationState(systemIdentity));
+    System.setProperty("gatein.email.domain.url", "localhost");
   }
 
   protected void tearDown() throws Exception {
     end();
   }
 
-  private static void initContainer() {
+  private void initContainer() {
     try {
       String containerConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/configuration.xml").toString();
       StandaloneContainer.addConfigurationURL(containerConf);
       //
       String loginConf = Thread.currentThread().getContextClassLoader().getResource("conf/standalone/login.conf").toString();
       System.setProperty("java.security.auth.login.config", loginConf);
+      //System.setProperty("gatein.data.dir", Files.createTempDirectory("wiki-data", null).getFileName().toString());
       //
       container = StandaloneContainer.getInstance();
-      mowService = (MOWService) container.getComponentInstanceOfType(MOWService.class);
+
+      mowService = container.getComponentInstanceOfType(MOWService.class);
     } catch (Exception e) {
       throw new RuntimeException("Failed to initialize standalone container: " + e.getMessage(), e);
     }
   }
-  
+
+  private void stopContainer() {
+    try {
+      container = StandaloneContainer.getInstance();
+      container.dispose();
+    } catch (Exception e) {
+      throw new RuntimeException("Failed to stop standalone container: " + e.getMessage(), e);
+    }
+  }
+
   private static void initJCR() {
     try {
       repositoryService = (RepositoryService) container.getComponentInstanceOfType(RepositoryService.class);
@@ -127,45 +140,30 @@ public abstract class AbstractMOWTestcase extends TestCase {
     }
   }
   
-  protected Wiki getWiki(WikiType wikiType, String wikiName, Model model) {
-    Model mod = model;
-    if (mod == null) {
-      mod = mowService.getModel();
-    }
-    WikiStoreImpl wStore = (WikiStoreImpl) mod.getWikiStore();
+  protected WikiImpl getWiki(WikiType wikiType, String wikiName, Model model) throws WikiException {
+    WikiStoreImpl wStore = (WikiStoreImpl) mowService.getWikiStore();
     WikiImpl wiki = null;
     switch (wikiType) {
       case PORTAL:
         WikiContainer<PortalWiki> portalWikiContainer = wStore.getWikiContainer(WikiType.PORTAL);
-        wiki = portalWikiContainer.getWiki(wikiName, true);
+        wiki = portalWikiContainer.getWiki(wikiName);
         break;
       case GROUP:
         WikiContainer<GroupWiki> groupWikiContainer = wStore.getWikiContainer(WikiType.GROUP);
-        wiki = groupWikiContainer.getWiki(wikiName, true);
+        wiki = groupWikiContainer.getWiki(wikiName);
         break;
       case USER:
         WikiContainer<UserWiki> userWikiContainer = wStore.getWikiContainer(WikiType.USER);
-        wiki = userWikiContainer.getWiki(wikiName, true);
+        wiki = userWikiContainer.getWiki(wikiName);
         break;
     }
-    mod.save();
+    mowService.persist();
     return wiki;
   }
   
-  protected WikiHome getWikiHomeOfWiki(WikiType wikiType, String wikiName, Model model) {
-    WikiHome wikiHomePage = (WikiHome) getWiki(wikiType, wikiName, model).getWikiHome();
+  protected WikiHome getWikiHomeOfWiki(WikiType wikiType, String wikiName, Model model) throws WikiException {
+    WikiHome wikiHomePage = getWiki(wikiType, wikiName, model).getWikiHome();
     return wikiHomePage;
-  }
-  
-  protected PageImpl createWikiPage(WikiType wikiType, String wikiName, String pageName) {
-    Model model = mowService.getModel();
-    WikiImpl wiki = (WikiImpl) getWiki(wikiType, wikiName, model);
-    WikiHome wikiHomePage = (WikiHome) wiki.getWikiHome();
-    PageImpl wikipage = wiki.createWikiPage();
-    wikipage.setName(pageName);
-    wikiHomePage.addWikiPage(wikipage);
-    wikipage.makeVersionable();
-    return wikipage;
   }
   
   protected void startSessionAs(String user) {

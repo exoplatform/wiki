@@ -16,40 +16,51 @@
  */
 package org.exoplatform.wiki.tree;
 
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.tree.utils.TreeUtils;
+import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.WikiConstants;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.tree.utils.TreeUtils;
-import org.exoplatform.wiki.utils.Utils;
-
 public class WikiHomeTreeNode extends TreeNode {
-  private WikiHome           wikiHome;  
+  private static final Log log = ExoLogger.getLogger(WikiHomeTreeNode.class);
 
-  public WikiHomeTreeNode(WikiHome wikiHome) throws Exception {
+  private Page wikiHome;
+
+  private WikiService wikiService;
+
+  public WikiHomeTreeNode(Page wikiHome) throws Exception {
     super(wikiHome.getTitle(), TreeNodeType.WIKIHOME);
+
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
     this.wikiHome = wikiHome;
     this.path = this.buildPath();
-    this.hasChild = wikiHome.getChildPages().size() > 0;
   }
 
   @Override
   protected void addChildren(HashMap<String, Object> context) throws Exception {
-    Collection<PageImpl> pages = wikiHome.getChildrenByRootPermission().values();
-    Iterator<PageImpl> childPageIterator = pages.iterator();
+    Collection<Page> pages = wikiService.getChildrenPageOf(wikiHome);
+    Iterator<Page> childPageIterator = pages.iterator();
     int count = 0;
     int size = getNumberOfChildren(context, pages.size());
-    PageImpl currentPage = (PageImpl) context.get(TreeNode.SELECTED_PAGE);
+    Page currentPage = (Page) context.get(TreeNode.SELECTED_PAGE);
     while (childPageIterator.hasNext() && count < size) {
-      PageImpl childPage = childPageIterator.next();
-      if (childPage.hasPermission(PermissionType.VIEWPAGE) ||  (currentPage != null && Utils.isDescendantPage(currentPage, childPage))) {
+      Page childPage = childPageIterator.next();
+      if (wikiService.hasPermissionOnPage(childPage, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())
+              ||  (currentPage != null && Utils.isDescendantPage(currentPage, childPage))) {
         PageTreeNode child = new PageTreeNode(childPage);
         this.children.add(child);
       }
@@ -58,7 +69,7 @@ public class WikiHomeTreeNode extends TreeNode {
     super.addChildren(context);
   }
 
-  public WikiHome getWikiHome() {
+  public Page getWikiHome() {
     return wikiHome;
   }
 
@@ -86,8 +97,14 @@ public class WikiHomeTreeNode extends TreeNode {
   
   @Override
   public String buildPath() {
-    Wiki wiki = this.wikiHome.getWiki();
-    WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(),WikiNodeType.Definition.WIKI_HOME_NAME );
-    return TreeUtils.getPathFromPageParams(params);
+    try {
+      Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiHome.getWikiType(), wikiHome.getWikiOwner());
+      WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), WikiConstants.WIKI_HOME_NAME);
+      return TreeUtils.getPathFromPageParams(params);
+    } catch (Exception e) {
+      log.error("Cannot build path of wiki page " + wikiHome.getWikiType() + ":" + wikiHome.getWikiOwner() + ":"
+              + wikiHome.getName() + " - Cause : " + e.getMessage(), e);
+      return null;
+    }
   }
 }

@@ -16,30 +16,31 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-import javax.servlet.http.HttpSessionEvent;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.listener.Event;
 import org.exoplatform.services.listener.Listener;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.utils.Utils;
+
+import javax.servlet.http.HttpSessionEvent;
 
 public class SessionDestroyedListener extends Listener<PortalContainer, HttpSessionEvent> {
 
   private static Log LOG = ExoLogger.getLogger("SessionDestroyedListener");
 
   @Override
-  public void onEvent(Event<PortalContainer, HttpSessionEvent> event) throws Exception {    
+  public void onEvent(Event<PortalContainer, HttpSessionEvent> event) {
     PortalContainer container = event.getSource();
     String sessionId = event.getData().getSession().getId();
     if (LOG.isTraceEnabled()) {
       LOG.trace("Removing the key: " + sessionId);
     }
     try {
-      SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
+      SessionManager sessionManager = container.getComponentInstanceOfType(SessionManager.class);
       sessionManager.removeSessionContainer(sessionId);
     } catch (Exception e) {
       LOG.warn("Can't remove the key: " + sessionId, e);
@@ -48,10 +49,23 @@ public class SessionDestroyedListener extends Listener<PortalContainer, HttpSess
       LOG.trace("Removed the key: " + sessionId);
     }
     if (container.isStarted()) {
-      WikiService wikiService = (WikiService) container.getComponentInstanceOfType(WikiService.class);
-      RequestLifeCycle.begin(PortalContainer.getInstance());
-      wikiService.deleteDraftNewPage(sessionId);
-      RequestLifeCycle.end();
+      String currentUser = Utils.getCurrentUser();
+      if(currentUser != null) {
+        WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
+        String draftPageName = null;
+        try {
+          RequestLifeCycle.begin(PortalContainer.getInstance());
+          draftPageName = Utils.getPageNameForAddingPage(sessionId);
+          wikiService.removeDraft(draftPageName);
+        } catch (WikiException e) {
+          if (LOG.isDebugEnabled()) {
+            LOG.debug("No draft page to be removed for user " + currentUser
+                    + " (page name = " + draftPageName + ") on logout.", e);
+          }
+        } finally {
+          RequestLifeCycle.end();
+        }
+      }
     }
   }
 }

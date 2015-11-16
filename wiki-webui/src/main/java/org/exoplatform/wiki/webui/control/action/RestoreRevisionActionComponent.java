@@ -16,10 +16,7 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -29,11 +26,16 @@ import org.exoplatform.webui.ext.UIExtensionEventListener;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPageVersionsList;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 
 @ComponentConfig(
     lifecycle = Lifecycle.class,
@@ -47,7 +49,13 @@ public class RestoreRevisionActionComponent extends UIContainer {
   public static final String RESTORE_ACTION = "RestoreRevision";
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new EditPagesPermissionFilter() });
-  
+
+  private static WikiService wikiService;
+
+  public RestoreRevisionActionComponent() {
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+  }
+
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
@@ -82,11 +90,8 @@ public class RestoreRevisionActionComponent extends UIContainer {
     public void processEvent(Event<RestoreRevisionActionComponent> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       String versionName = event.getRequestContext().getRequestParameter(OBJECTID);
-      PageImpl wikipage = (PageImpl) Utils.getCurrentWikiPage();
-      wikipage.restore(versionName, false);
-      wikipage.checkout();
-      wikipage.checkin();
-      wikipage.checkout();
+      Page wikipage = Utils.getCurrentWikiPage();
+      wikiService.restoreVersionOfPage(versionName, wikipage);
       wikiPortlet.changeMode(WikiMode.VIEW);
     }
 

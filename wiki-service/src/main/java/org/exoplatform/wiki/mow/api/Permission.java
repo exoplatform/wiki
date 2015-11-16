@@ -16,39 +16,52 @@
  */
 package org.exoplatform.wiki.mow.api;
 
-import java.util.HashMap;
+public class Permission {
+  private PermissionType permissionType;
 
-import javax.jcr.Node;
+  private boolean isAllowed = false;
 
-import org.chromattic.api.ChromatticSession;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.service.PermissionType;
-
-public abstract class Permission {
-  protected MOWService mowService;
-  
-  public void setMOWService(MOWService mowService) {
-    this.mowService = mowService;
-  }
-  
-  public MOWService getMOWService() {
-    return mowService;
+  public Permission() {
   }
 
-  protected ChromatticSession getChromatticSession() {
-    return mowService.getSession();
+  public Permission(PermissionType permissionType, boolean isAllowed) {
+    this.permissionType = permissionType;
+    this.isAllowed = isAllowed;
   }
-  
-  protected Node getJCRNode(String path) throws Exception {
-    return (Node) getChromatticSession().getJCRSession().getItem(path);
+
+  public PermissionType getPermissionType() {
+    return permissionType;
   }
-  
-  public abstract HashMap<String, String[]> getPermission(String path) throws Exception;
-  
-  public abstract boolean hasPermission(PermissionType permissionType, String path) throws Exception;
-  
-  public abstract boolean hasPermission(PermissionType permissionType, String path, Identity user) throws Exception;
-  
-  public abstract void setPermission(HashMap<String, String[]> permissions, String path) throws Exception;
+
+  public void setPermissionType(PermissionType permissionType) {
+    this.permissionType = permissionType;
+  }
+
+  public boolean isAllowed() {
+    return isAllowed;
+  }
+
+  public void setAllowed(boolean isAllowed) {
+    this.isAllowed = isAllowed;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Permission)) return false;
+
+    Permission that = (Permission) o;
+
+    if (isAllowed != that.isAllowed) return false;
+    if (permissionType != that.permissionType) return false;
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = permissionType != null ? permissionType.hashCode() : 0;
+    result = 31 * result + (isAllowed ? 1 : 0);
+    return result;
+  }
 }

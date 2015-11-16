@@ -294,20 +294,16 @@ public class MockDataStorage implements DataStorage,Startable {
    */
   @Override
   public void save() throws Exception {
-    // TODO Auto-generated method stub
-    
   }
 
 	@Override
 	public String[] getSiteInfo(String applicationStorageId) throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public <S> Application<S> getApplicationModel(String applicationStorageId)
 			throws Exception {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

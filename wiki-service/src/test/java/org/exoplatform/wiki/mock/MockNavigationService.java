@@ -101,7 +101,6 @@ public class MockNavigationService implements NavigationService {
 	@Override
 	public List<NavigationContext> loadNavigations(SiteType type)
 			throws NullPointerException, NavigationServiceException {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

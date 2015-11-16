@@ -18,7 +18,6 @@ package org.exoplatform.wiki.webui;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.ResourceBundle;
@@ -35,10 +34,10 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
+import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.service.IDType;
-import org.exoplatform.wiki.service.Permission;
-import org.exoplatform.wiki.service.PermissionEntry;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
+import org.exoplatform.wiki.mow.api.PermissionType;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,

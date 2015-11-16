@@ -29,7 +29,7 @@ public class ConfluenceReferenceBuilder implements ReferenceBuilder {
       .append(spacePageSeparator)
       .append(params.getOwner())
       .append(wikiSpaceSeparator)
-      .append(params.getPageId());
+      .append(params.getPageName());
     return (sb.toString());
   }
 

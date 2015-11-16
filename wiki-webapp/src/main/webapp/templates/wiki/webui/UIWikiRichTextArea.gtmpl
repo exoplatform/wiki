@@ -6,7 +6,7 @@
   WikiPageParams wikiPageParams = uicomponent.getCurrentWikiPageParams();
   String wikiType = wikiPageParams.getType();
   String wikiOwner = wikiPageParams.getOwner();
-  String pageId = wikiPageParams.getPageId();
+  String pageId = wikiPageParams.getPageName();
   String selectedSyntax = uicomponent.getSyntax();  
   def requireJs = rcontext.getJavascriptManager().getRequireJS();
   requireJs.require("SHARED/UIWikiRichTextArea", "UIWikiRichTextArea");

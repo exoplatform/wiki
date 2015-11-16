@@ -78,7 +78,7 @@ public class PageTreeMacroParameters {
   }
 
   /**
-   * @param hidden the value show excerpt to set
+   * @param excerpt the value show excerpt to set
    */
   @PropertyDescription("Include Excerpts")
   public void setExcerpt(boolean excerpt) {

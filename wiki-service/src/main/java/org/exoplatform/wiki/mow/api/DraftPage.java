@@ -2,17 +2,44 @@ package org.exoplatform.wiki.mow.api;
 
 import org.exoplatform.wiki.service.diff.DiffResult;
 
-public interface DraftPage extends Page {
-  String getTargetPage();
-  void setTargetPage(String targetPage);
-  
-  String getTargetRevision();
-  void setTargetRevision(String targetRevision);
-  
-  boolean isNewPage();
-  void setNewPage(boolean isNewPage);
-  
-  public boolean isOutDate() throws Exception;
-  
-  public DiffResult getChanges() throws Exception;
+public class DraftPage extends Page {
+  private String targetPageId;
+
+  private String targetPageRevision;
+
+  private boolean newPage;
+
+  private DiffResult changes;
+
+  public String getTargetPageId() {
+    return targetPageId;
+  }
+
+  public void setTargetPageId(String targetPageId) {
+    this.targetPageId = targetPageId;
+  }
+
+  public String getTargetPageRevision() {
+    return targetPageRevision;
+  }
+
+  public void setTargetPageRevision(String targetPageRevision) {
+    this.targetPageRevision = targetPageRevision;
+  }
+
+  public boolean isNewPage() {
+    return newPage;
+  }
+
+  public void setNewPage(boolean newPage) {
+    this.newPage = newPage;
+  }
+
+  public DiffResult getChanges() {
+    return changes;
+  }
+
+  public void setChanges(DiffResult changes) {
+    this.changes = changes;
+  }
 }

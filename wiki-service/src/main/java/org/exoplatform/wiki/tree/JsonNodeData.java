@@ -57,9 +57,12 @@ public class JsonNodeData {
                       String currentPath, String excerpt,
                       HashMap<String, Object> context) throws Exception {
     this.name = treeNode.getName();
-    this.path = URLEncoder.encode(treeNode.getPath(), "utf-8");
-    if (currentPath != null)
+    if(treeNode.getPath() != null) {
+      this.path = URLEncoder.encode(treeNode.getPath(), "utf-8");
+    }
+    if (currentPath != null) {
       this.currentPath = URLEncoder.encode(currentPath, "utf-8");
+    }
     this.hasChild = treeNode.isHasChild();
     this.nodeType = treeNode.getNodeType();
     this.isLastNode = isLastNode;
@@ -68,8 +71,9 @@ public class JsonNodeData {
     this.children = TreeUtils.tranformToJson(treeNode, context);
     this.isSelected = treeNode.isSelected();
     this.isRetricted = treeNode.isRetricted;
-    if (this.children.size() > 0)
+    if (this.children.size() > 0) {
       this.isExpanded = true;
+    }
   }
 
   public String getName() {

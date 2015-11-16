@@ -16,40 +16,63 @@
  */
 package org.exoplatform.wiki.service.impl;
 
+import org.chromattic.api.ChromatticSession;
 import org.exoplatform.commons.chromattic.ChromatticLifeCycle;
 import org.exoplatform.commons.chromattic.SessionContext;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.service.WikiService;
 
 public class WikiChromatticLifeCycle extends ChromatticLifeCycle {
 
-  private MOWService mowService;
-  
-  private WikiService wService;
-  
-  private RenderingService renderingService;
+  public static final String WIKI_LIFECYCLE_NAME = "wiki";
 
-  public void setMOWService(MOWService mowService) {
-    this.mowService = mowService;
-  }
-  
-  public void setWikiService(WikiService wService) {
-    this.wService = wService;
-  }
-  
-  public void setRenderingService(RenderingService renderingService) {
-    this.renderingService = renderingService;
-  }
+  private static final ThreadLocal<ChromatticSession> session = new ThreadLocal<>();
 
   public WikiChromatticLifeCycle(InitParams params) {
     super(params);
   }
 
+  public ChromatticSession getSession() {
+    if (invalidSession()) {
+      reCreateSession();
+    }
+
+    return session.get();
+  }
+
+  private boolean invalidSession() {
+    boolean invalid = (session.get() == null);
+    if(invalid) return invalid;
+    return session.get().getJCRSession().isLive() == false || session.get().isClosed();
+  }
+
+  private void reCreateSession() {
+    try {
+      onOpenSession(openContext());
+    } catch (IllegalStateException e) {
+      this.closeContext(false);
+      if(this.getManager().getSynchronization() != null) {
+        this.getManager().endRequest(false);
+      }
+      this.getManager().startRequest(ExoContainerContext.getCurrentContainer());
+      session.set(this.getChromattic().openSession());
+    }
+  }
+
   @Override
   protected void onOpenSession(SessionContext context) {
-    context.getSession().addEventListener(new Injector(mowService, wService, renderingService));
+    session.set(context.getSession());
+    context.getSession().addEventListener(new Injector());
+    super.onOpenSession(context);
+  }
+
+  @Override
+  protected void onCloseSession(final SessionContext context) {
+    super.onCloseSession(context);
+    if (session.get() != null) {
+      session.get().close();
+    }
+    session.remove();
   }
 
 }

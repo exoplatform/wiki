@@ -27,9 +27,9 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
-import org.exoplatform.wiki.mow.core.api.wiki.PreferencesSyntax;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.WikiPreferences;
+import org.exoplatform.wiki.mow.api.WikiPreferencesSyntax;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
 import org.exoplatform.wiki.webui.UIWikiSyntaxPreferences;
@@ -54,10 +54,10 @@ public class UIWikiEditPreferencesForm extends UIForm implements UIPopupComponen
       UIFormSelectBox defaultSyntaxSelect= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_SYNTAX);
       UIFormCheckBoxInput<Boolean> allowCheckBox= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_ALLOW);
       
-      WikiImpl currentWiki =(WikiImpl) Utils.getCurrentWiki();
-      Preferences preferences= currentWiki.getPreferences();
-      PreferencesSyntax preferencesSyntax = preferences.getPreferencesSyntax();
-      preferencesSyntax.setAllowMutipleSyntaxes(allowCheckBox.isChecked());
+      Wiki currentWiki = Utils.getCurrentWiki();
+      WikiPreferences preferences = currentWiki.getPreferences();
+      WikiPreferencesSyntax preferencesSyntax = preferences.getWikiPreferencesSyntax();
+      preferencesSyntax.setAllowMultipleSyntaxes(allowCheckBox.isChecked());
       preferencesSyntax.setDefaultSyntax(defaultSyntaxSelect.getValue());
       UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);     
       popupContainer.deActivate();

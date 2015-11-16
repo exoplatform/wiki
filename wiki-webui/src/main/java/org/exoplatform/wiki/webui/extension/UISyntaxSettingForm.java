@@ -28,8 +28,8 @@ import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormCheckBoxInput;
 import org.exoplatform.webui.form.UIFormSelectBox;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
-import org.exoplatform.wiki.mow.core.api.wiki.PreferencesSyntax;
+import org.exoplatform.wiki.mow.api.WikiPreferences;
+import org.exoplatform.wiki.mow.api.WikiPreferencesSyntax;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiSyntaxPreferences;
 
@@ -65,9 +65,9 @@ public class UISyntaxSettingForm extends UIForm {
       UIWikiSyntaxPreferences uiSyntaxPreferences = wikiPortlet.findComponentById(PREFERENCES_SYNTAX);
       UIFormSelectBox defaultSyntaxSelect= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_SYNTAX);
       UIFormCheckBoxInput<Boolean> allowCheckBox= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_ALLOW);      
-      Preferences preferences= Utils.getCurrentPreferences();
-      PreferencesSyntax preferencesSyntax = preferences.getPreferencesSyntax();
-      preferencesSyntax.setAllowMutipleSyntaxes(allowCheckBox.isChecked());
+      WikiPreferences preferences= Utils.getCurrentPreferences();
+      WikiPreferencesSyntax preferencesSyntax = preferences.getWikiPreferencesSyntax();
+      preferencesSyntax.setAllowMultipleSyntaxes(allowCheckBox.isChecked());
       preferencesSyntax.setDefaultSyntax(defaultSyntaxSelect.getValue());
       event.getRequestContext()
            .getUIApplication()

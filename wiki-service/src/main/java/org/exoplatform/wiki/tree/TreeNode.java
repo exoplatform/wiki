@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Stack;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -218,7 +219,7 @@ public class TreeNode {
         } else if (this instanceof WikiTreeNode) {
           pushChild(context);
         } else if (this instanceof WikiHomeTreeNode || this instanceof PageTreeNode) {
-          PageImpl page = (PageImpl) Utils.getObjectFromParams(params);
+          Page page = (Page) Utils.getObjectFromParams(params);
           PageTreeNode pageNode = new PageTreeNode(page);
           pushChild(pageNode, context);
         }

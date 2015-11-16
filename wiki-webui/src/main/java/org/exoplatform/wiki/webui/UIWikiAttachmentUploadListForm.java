@@ -16,11 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -28,11 +24,16 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.ext.UIExtensionManager;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.control.action.RemoveAttachmentActionComponent;
 import org.exoplatform.wiki.webui.control.filter.RemoveAttachmentPermissionFilter;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
@@ -44,17 +45,21 @@ public class UIWikiAttachmentUploadListForm extends UIForm {
   public static final String DOWNLOAD_ACTION = "DownloadAttachment";
   
   public static final String EXTENSION_TYPE = "org.exoplatform.wiki.webui.UIWikiAttachmentUploadListForm";
-  
+
+  private static WikiService wikiService;
+
   public UIWikiAttachmentUploadListForm() throws Exception {
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
     addChild(RemoveAttachmentActionComponent.class, null, null);
   }
   
-  protected Collection<AttachmentImpl> getAttachmentsList() {
-    Collection<AttachmentImpl> attachments = new ArrayList<AttachmentImpl>();
+  protected Collection<Attachment> getAttachments() {
+    Collection<Attachment> attachments = new ArrayList<>();
     try {
       Page page = getCurrentWikiPage();
       if (page != null) {
-        attachments = ((PageImpl) page).getAttachmentsExcludeContent();
+        attachments = wikiService.getAttachmentsOfPage(page);
       }
     } catch (Exception e) {
       log.warn("An error happened when get attachments list", e);
@@ -71,18 +76,15 @@ public class UIWikiAttachmentUploadListForm extends UIForm {
     }
   }
   
-  protected void renderActions(String attName) throws Exception {
-    if (attName == null) {
+  protected void renderActions(Attachment attachment) throws Exception {
+    if (attachment == null || attachment.getName() == null) {
       return;
     }
     
     RemoveAttachmentActionComponent component = getChild(RemoveAttachmentActionComponent.class);
-    component.setAttachmentName(attName);
+    component.setAttachmentName(attachment.getName());
     UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
-    
-    PageImpl page = (PageImpl) getCurrentWikiPage();
-    AttachmentImpl attachment = page.getAttachment(attName);
-    
+
     // Create context
     Map<String, Object> context = new HashMap<String, Object>();
     context.put(RemoveAttachmentPermissionFilter.ATTACHMENT_KEY, attachment);

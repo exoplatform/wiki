@@ -21,7 +21,7 @@
       </thead>
       <tbody>
     <%
-      def attachments = uicomponent.getAttachmentsList();
+      def attachments = uicomponent.getAttachments();
       int index = 0;
       DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
       String creator;
@@ -43,7 +43,7 @@
           </td>
           <td><%= creator %></td>
           <td><%= df.format(attachment.getUpdatedDate().getTime())%></td>
-          <td class="center"><% uicomponent.renderActions(attachment.getName()); %> </td>
+          <td class="center"><% uicomponent.renderActions(attachment); %> </td>
         </tr>
     <%}%>
     

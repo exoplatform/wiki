@@ -16,35 +16,15 @@
  */
 package org.exoplatform.wiki.commons;
 
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.ResourceBundle;
-
-import javax.jcr.RepositoryException;
-import javax.portlet.PortletPreferences;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.portal.UIPortal;
 import org.exoplatform.portal.webui.util.Util;
-import org.exoplatform.services.jcr.RepositoryService;
-import org.exoplatform.services.jcr.access.AccessControlEntry;
-import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserStatus;
@@ -53,33 +33,16 @@ import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
-import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.web.url.navigation.NavigationResource;
-import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.mow.api.DraftPage;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWiki;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.resolver.PageResolver;
-import org.exoplatform.wiki.service.Permission;
-import org.exoplatform.wiki.service.PermissionEntry;
-import org.exoplatform.wiki.service.PermissionType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -92,6 +55,14 @@ import org.exoplatform.wiki.webui.WikiMode;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
+
+import javax.portlet.PortletPreferences;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.Map.Entry;
 
 public class Utils {  
  
@@ -117,8 +88,8 @@ public class Utils {
   }
   
   public static String getSpaceName(Wiki space) throws Exception {
-    if (space instanceof PortalWiki) {
-      String displayName = space.getName();
+    if (WikiType.PORTAL.equals(space.getType())) {
+      String displayName = space.getId();
       int slashIndex = displayName.lastIndexOf('/');
       if (slashIndex > -1) {
         displayName = displayName.substring(slashIndex + 1);
@@ -126,7 +97,7 @@ public class Utils {
       return Utils.upperFirstCharacter(displayName);
     }
 
-    if (space instanceof UserWiki) {
+    if (WikiType.USER.equals(space.getType())) {
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
       if (space.getOwner().equals(currentUser)) {
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
@@ -179,56 +150,25 @@ public class Utils {
   public static boolean canModifyPagePermission() throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-    PageImpl currentPage = (PageImpl) Utils.getCurrentWikiPage();
+    Page currentPage = Utils.getCurrentWikiPage();
     if (currentPage == null) {
       return false;
     }
-    
-    boolean isPageOwner = currentPage.getOwner().equals(currentUser);
-    String[] permissionOfCurrentUser = currentPage.getPermission().get(currentUser);
-    boolean hasEditPagePermissionOnPage = false;
-    if (permissionOfCurrentUser != null) {
-      for (int i = 0; i < permissionOfCurrentUser.length; i++) {
-        if (org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY.equals(permissionOfCurrentUser[i])) {
-          hasEditPagePermissionOnPage = true;
-          break;
-        }
-      }
-    }
-    
-    Wiki wiki = currentPage.getWiki();
-    return ((isPageOwner && hasEditPagePermissionOnPage) || wikiService.hasAdminSpacePermission(wiki.getType(), wiki.getOwner()))
-        || wikiService.hasAdminPagePermission(wiki.getType(), wiki.getOwner());
+    return wikiService.canModifyPagePermission(currentPage, currentUser);
   }
-  
-  public static boolean canPublicAndRetrictPage() throws Exception {
+
+  public static boolean isPagePublic(Page page) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    PageImpl currentPage = (PageImpl) Utils.getCurrentWikiPage();
-    if (currentPage == null) {
-      return false;
-    }
-    Wiki wiki = currentPage.getWiki();
-    
-    boolean hasEditPagePermissionOnPage = false;
-    String[] permissionOfCurrentUser = currentPage.getPermission().get(org.exoplatform.wiki.utils.Utils.getCurrentUser());
-    if (permissionOfCurrentUser != null) {
-      for (int i = 0; i < permissionOfCurrentUser.length; i++) {
-        if (org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY.equals(permissionOfCurrentUser[i])) {
-          hasEditPagePermissionOnPage = true;
-          break;
-        }
-      }
-    }
-    return wikiService.hasAdminSpacePermission(wiki.getType(), wiki.getOwner()) || hasEditPagePermissionOnPage;
+    return (page != null) && wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
   }
-  
+
   public static boolean isCurrentPagePublic() throws Exception {
     Page currentPage = Utils.getCurrentWikiPage();
-    return (currentPage != null) && currentPage.hasPermission(PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
+    return isPagePublic(currentPage);
   }
   
   public static String getSpaceHomeURL(String spaceGroupId) {
-    SpaceService spaceService  = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    SpaceService spaceService  = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     Space space = spaceService.getSpaceByGroupId(spaceGroupId);
     String spaceLink = org.exoplatform.social.webui.Utils.getSpaceHomeURL(space);
     return spaceLink;
@@ -246,8 +186,8 @@ public class Utils {
       }
       //spaceUrl.append("wiki/");
       spaceUrl.append(getWikiAppNameInSpace(params.getOwner())).append("/");
-      if (!StringUtils.isEmpty(params.getPageId())) {
-        spaceUrl.append(params.getPageId());
+      if (!StringUtils.isEmpty(params.getPageName())) {
+        spaceUrl.append(params.getPageName());
       }
       return spaceUrl.toString();
     }
@@ -284,8 +224,9 @@ public class Utils {
   }
   
   public static Wiki getCurrentWiki() throws Exception {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    return org.exoplatform.wiki.utils.Utils.getWiki(params);
+    return wikiService.getWikiByTypeAndOwner(params.getType(), params.getOwner());
   }
 
   public static WikiContext setUpWikiContext(UIWikiPortlet wikiPortlet) throws Exception {
@@ -317,14 +258,11 @@ public class Utils {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
     sessionManager.addSessionContext(session.getId(), Utils.createWikiContext(wikiPortlet));
-    sessionManager.addSessionContext(ConversationState.getCurrent().getIdentity().getUserId()
-                                     + ((RepositoryService)container.getComponentInstanceOfType(RepositoryService.class))
-                                       .getCurrentRepository().getConfiguration().getName(), 
+    
+    sessionManager.addSessionContext(ConversationState.getCurrent().getIdentity().getUserId(),
                                      Utils.createWikiContext(wikiPortlet));
     if (sessionManager.getSessionContainer(session.getId()) != null) {
-      sessionManager.addSessionContainer(ConversationState.getCurrent().getIdentity().getUserId()
-                                         + ((RepositoryService)container.getComponentInstanceOfType(RepositoryService.class))
-                                         .getCurrentRepository().getConfiguration().getName(), 
+      sessionManager.addSessionContainer(ConversationState.getCurrent().getIdentity().getUserId(),
                                        sessionManager.getSessionContainer(session.getId()));
     }
 
@@ -335,16 +273,23 @@ public class Utils {
   }
   
   public static String getDefaultSyntax() throws Exception {
-    String currentDefaultSyntaxt = Utils.getCurrentPreferences().getPreferencesSyntax().getDefaultSyntax();
-    if (currentDefaultSyntaxt == null) {
-      WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-      currentDefaultSyntaxt = wservice.getDefaultWikiSyntaxId();
+    WikiPreferences currentPreferences = Utils.getCurrentPreferences();
+    String currentDefaultSyntax;
+    if(currentPreferences != null) {
+      currentDefaultSyntax = currentPreferences.getWikiPreferencesSyntax().getDefaultSyntax();
+      if (currentDefaultSyntax == null) {
+        WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+        currentDefaultSyntax = wservice.getDefaultWikiSyntaxId();
+      }
+    } else {
+      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+      currentDefaultSyntax = wikiService.getDefaultWikiSyntaxId();
     }
-    return currentDefaultSyntaxt;
+    return currentDefaultSyntax;
   }
   
-  public static Preferences getCurrentPreferences() throws Exception {
-    WikiImpl currentWiki = (WikiImpl) getCurrentWiki();
+  public static WikiPreferences getCurrentPreferences() throws Exception {
+    Wiki currentWiki = getCurrentWiki();
     return currentWiki.getPreferences();
   }
  
@@ -374,15 +319,15 @@ public class Utils {
       wikiContext.setSyntax(getDefaultSyntax());
     } else {
       WikiService service = (WikiService) PortalContainer.getComponent(WikiService.class);
-      Page currentPage = service.getPageById(params.getType(), params.getOwner(), params.getPageId());
+      Page currentPage = service.getPageOfWikiByName(params.getType(), params.getOwner(), params.getPageName());
       if (currentPage != null) {
         wikiContext.setSyntax(currentPage.getSyntax());
       }
     }
     if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-      wikiContext.setPageId(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
+      wikiContext.setPageName(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
     } else {
-      wikiContext.setPageId(params.getPageId());
+      wikiContext.setPageName(params.getPageName());
     }
     wikiContext.setBaseUrl(getBaseUrl());
     return wikiContext;
@@ -390,7 +335,7 @@ public class Utils {
   
   public static String getBaseUrl() throws Exception {
     WikiPageParams params = getCurrentWikiPageParams();
-    params.setPageId(null);
+    params.setPageName(null);
     return getURLFromParams(params);
   }
   
@@ -411,7 +356,7 @@ public class Utils {
   */
   public static String getPageLink() throws Exception {    
     WikiPageParams params = getCurrentWikiPageParams();
-    params.setPageId(null);
+    params.setPageName(null);
     if (PortalConfig.PORTAL_TYPE.equals(params.getType())) {
       String navigationURI = Util.getUIPortal().getNavPath().getURI();
       String requestURI = Util.getPortalRequestContext().getRequestURI();
@@ -428,7 +373,7 @@ public class Utils {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     if (PortalConfig.GROUP_TYPE.equals(Utils.getCurrentWiki().getType())) {
-      pageParams.setPageId(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+      pageParams.setPageName(URLEncoder.encode(pageParams.getPageName(), "UTF-8"));
     }
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }
@@ -457,8 +402,8 @@ public class Utils {
     StringBuffer sb = new StringBuffer();
     sb.append(getURLFromParams(pageParams));
 //    sb.append(getPageLink());
-//    if(!StringUtils.isEmpty(pageParams.getPageId())){
-//      sb.append(URLEncoder.encode(pageParams.getPageId(), "UTF-8"));
+//    if(!StringUtils.isEmpty(pageParams.getPageName())){
+//      sb.append(URLEncoder.encode(pageParams.getPageName(), "UTF-8"));
 //    }
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));
@@ -529,32 +474,6 @@ public class Utils {
     return sb.toString();
   }
   
-  public static boolean hasPermission(String[] permissions) throws Exception {
-    UserACL userACL = Util.getUIPortalApplication().getApplicationComponent(UserACL.class);
-    WikiService wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-    List<PermissionEntry> permissionEntries = wikiService.getWikiPermission(pageParams.getType(), pageParams.getOwner());
-    ConversationState conversationState = ConversationState.getCurrent();
-    Identity user = null;
-    if (conversationState != null) {
-      user = conversationState.getIdentity();
-    } else {
-      user = new Identity(IdentityConstants.ANONIM);
-    }
-    List<AccessControlEntry> aces = new ArrayList<AccessControlEntry>();
-    for (PermissionEntry permissionEntry : permissionEntries) {
-      Permission[] perms = permissionEntry.getPermissions();
-      for (Permission perm : perms) {
-        if (perm.isAllowed()) {
-          AccessControlEntry ace = new AccessControlEntry(permissionEntry.getId(), perm.getPermissionType().toString());
-          aces.add(ace);
-        }
-      }
-    }
-    AccessControlList acl = new AccessControlList(userACL.getSuperUser(), aces);
-    return org.exoplatform.wiki.utils.Utils.hasPermission(acl, permissions, user);
-  }
-  
   public static WikiMode getModeFromAction(String actionParam) {
     String[] params = actionParam.split(WikiConstants.WITH);
     String name = params[0];
@@ -599,10 +518,6 @@ public class Utils {
     }
   }
   
-  public static List<NTVersion> getCurrentPageRevisions() throws Exception {
-    return org.exoplatform.wiki.utils.Utils.getCurrentPageRevisions((PageImpl) getCurrentWikiPage());
-  }
-  
   public static int getLimitUploadSize() {
     PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
     PortletPreferences portletPref = pcontext.getRequest().getPreferences();
@@ -627,10 +542,8 @@ public class Utils {
     }
   }
   
-  public static String getDraftIdSessionKey() throws RepositoryException {
+  public static String getDraftIdSessionKey() {
     return ConversationState.getCurrent().getIdentity().getUserId()
-          + org.exoplatform.wiki.rendering.util.Utils.getService(RepositoryService.class)
-           .getCurrentRepository().getConfiguration().getName()
           + DRAFT_ID;
   }
 }

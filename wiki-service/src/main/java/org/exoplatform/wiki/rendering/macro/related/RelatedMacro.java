@@ -1,17 +1,11 @@
 package org.exoplatform.wiki.rendering.macro.related;
 
-import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.rendering.cache.PageRenderingCacheService;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.related.RelatedUtil;
 import org.exoplatform.wiki.tree.TreeNode;
 import org.xwiki.component.annotation.Component;
@@ -24,6 +18,11 @@ import org.xwiki.rendering.macro.MacroExecutionException;
 import org.xwiki.rendering.syntax.Syntax;
 import org.xwiki.rendering.syntax.SyntaxType;
 import org.xwiki.rendering.transformation.MacroTransformationContext;
+
+import javax.inject.Inject;
+import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.List;
 
 @Component("related")
 public class RelatedMacro extends AbstractMacro<RelatedPagesMacroParameters>{
@@ -57,11 +56,11 @@ public class RelatedMacro extends AbstractMacro<RelatedPagesMacroParameters>{
     Block block = null;
     try {
       block = new RawBlock(createRelationList(params), XHTML_SYNTAX);
-      PageRenderingCacheService renderingCacheService = (PageRenderingCacheService) ExoContainerContext.getCurrentContainer()
-                                                                                                       .getComponentInstanceOfType(PageRenderingCacheService.class);
+      WikiService wikiService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(WikiService.class);
       WikiContext wikiContext = getWikiContext();
-      renderingCacheService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageId()),
-                                        new WikiPageParams(params.getType(), params.getOwner(), params.getPageId()));
+      wikiService.addPageLink(new WikiPageParams(wikiContext.getType(), wikiContext.getOwner(), wikiContext.getPageName()),
+              new WikiPageParams(params.getType(), params.getOwner(), params.getPageName()));
     } catch (Exception e) {
       if (log_.isWarnEnabled()) log_.warn("generate related macro failed", e);
       return Collections.emptyList();

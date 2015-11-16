@@ -17,66 +17,147 @@
 package org.exoplatform.wiki.mow.api;
 
 import java.util.Calendar;
-import java.util.HashMap;
+import java.util.List;
 
-import org.exoplatform.wiki.service.PermissionType;
+public class Attachment {
 
-/**
- * @version $Revision$
- */
-public interface Attachment {
+  private String name;
 
   /**
    * Get the weight of the attachment in bytes
-   * 
-   * @return
    */
-  long getWeightInBytes();
+  private long weightInBytes;
 
   /**
    * Creator of the last version of the attachment
-   * 
-   * @return
    */
-  String getCreator();
+  private String creator;
 
   /**
    * Date of the creation
-   * 
-   * @return
    */
-  Calendar getCreatedDate();
+  private Calendar createdDate;
 
   /**
    * Date of last update of this attachment
-   * 
-   * @return
    */
-  Calendar getUpdatedDate();
+  private Calendar updatedDate;
 
   /**
    * URL to download the attachment
-   * 
-   * @return
    */
-  String getDownloadURL();
+  private String downloadURL;
 
-  String getTitle();
-
-  void setTitle(String title);
-  
   /**
-   * Get the text representation of the content item
-   * 
-   * @return
+   * Title of the attachment
    */
-  String getText();
+  private String title;
 
-  void setText(String text);
-  
-  void setPermission(HashMap<String, String[]> permissions) throws Exception;
-  
-  HashMap<String, String[]> getPermission() throws Exception;
-  
-  boolean hasPermission(PermissionType permissionType) throws Exception;
+  /**
+   * Full title of the attachment
+   */
+  private String fullTitle;
+
+  /**
+   * Content of the attachment
+   */
+  private byte[] content;
+
+  /**
+   * Mime type of the attachment
+   */
+  private String mimeType;
+
+  /**
+   * Permissions on the attachment
+   */
+  private List<PermissionEntry> permissions;
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public long getWeightInBytes() {
+    return weightInBytes;
+  }
+
+  public void setWeightInBytes(long weightInBytes) {
+    this.weightInBytes = weightInBytes;
+  }
+
+  public String getCreator() {
+    return creator;
+  }
+
+  public void setCreator(String creator) {
+    this.creator = creator;
+  }
+
+  public Calendar getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(Calendar createdDate) {
+    this.createdDate = createdDate;
+  }
+
+  public Calendar getUpdatedDate() {
+    return updatedDate;
+  }
+
+  public void setUpdatedDate(Calendar updatedDate) {
+    this.updatedDate = updatedDate;
+  }
+
+  public String getDownloadURL() {
+    return downloadURL;
+  }
+
+  public void setDownloadURL(String downloadURL) {
+    this.downloadURL = downloadURL;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public String getFullTitle() {
+    return fullTitle;
+  }
+
+  public void setFullTitle(String fullTitle) {
+    this.fullTitle = fullTitle;
+  }
+
+  public byte[] getContent() {
+    return content;
+  }
+
+  public void setContent(byte[] content) {
+    this.content = content;
+  }
+
+  public String getMimeType() {
+    return mimeType;
+  }
+
+  public void setMimeType(String mimeType) {
+    this.mimeType = mimeType;
+  }
+
+  public List<PermissionEntry> getPermissions() {
+    return permissions;
+  }
+
+  public void setPermissions(List<PermissionEntry> permissions) {
+    this.permissions = permissions;
+  }
 }

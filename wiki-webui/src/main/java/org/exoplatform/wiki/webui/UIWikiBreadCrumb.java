@@ -35,8 +35,8 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -158,7 +158,7 @@ public class UIWikiBreadCrumb extends UIContainer {
       String wikiType = params.getType();
       String wikiOwner = params.getOwner();
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-      return org.exoplatform.wiki.commons.Utils.getSpaceName(wikiService.getWiki(wikiType, wikiOwner));
+      return org.exoplatform.wiki.commons.Utils.getSpaceName(wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner));
     }
     return null;
   }
@@ -219,7 +219,7 @@ public class UIWikiBreadCrumb extends UIContainer {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       Wiki wiki = wikiService.getWikiById(wikiId);
       if (wiki != null) {
-        PageImpl wikiHome = (PageImpl) wiki.getWikiHome();
+        Page wikiHome = wiki.getWikiHome();
         String link = org.exoplatform.wiki.commons.Utils.getURLFromParams(new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName()));
         org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, link);
       } else {

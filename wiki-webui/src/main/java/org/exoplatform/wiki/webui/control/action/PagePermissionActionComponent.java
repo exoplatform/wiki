@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.webui.control.action;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -27,8 +26,8 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.service.PermissionEntry;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
 import org.exoplatform.wiki.webui.UIWikiPermissionForm;
 import org.exoplatform.wiki.webui.UIWikiPermissionForm.Scope;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
@@ -74,9 +73,8 @@ public class PagePermissionActionComponent extends AbstractEventActionComponent 
       UIWikiPermissionForm uiWikiPermissionForm = uiPopupContainer.createUIComponent(UIWikiPermissionForm.class, null, "UIWikiPagePermissionForm");
       uiPopupContainer.activate(uiWikiPermissionForm, 800, 0);
       uiWikiPermissionForm.setScope(Scope.PAGE);
-      PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
-      HashMap<String, String[]> permissionMap = page.getPermission();
-      List<PermissionEntry> permissionEntries = uiWikiPermissionForm.convertToPermissionEntryList(permissionMap);
+      Page page = Utils.getCurrentWikiPage();
+      List<PermissionEntry> permissionEntries = page.getPermissions();
       uiWikiPermissionForm.setPermission(permissionEntries);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
       super.processEvent(event);

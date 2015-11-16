@@ -16,10 +16,6 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequireJS;
@@ -31,9 +27,9 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.webui.UIWikiBreadCrumb;
 import org.exoplatform.wiki.webui.UIWikiLocationContainer;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
@@ -44,6 +40,10 @@ import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 import org.exoplatform.wiki.webui.popup.UIWikiMovePageForm;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
@@ -80,7 +80,7 @@ public class MovePageActionComponent extends AbstractEventActionComponent {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       UIWikiPortlet uiWikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       WikiPageParams params = Utils.getCurrentWikiPageParams();     
-      if (Utils.getCurrentWikiPage().getName().equals(WikiNodeType.Definition.WIKI_HOME_NAME)) {
+      if (Utils.getCurrentWikiPage().getName().equals(WikiConstants.WIKI_HOME_NAME)) {
         event.getRequestContext()
              .getUIApplication()
              .addMessage(new ApplicationMessage("UIWikiMovePageForm.msg.can-not-move-wikihome", null, ApplicationMessage.WARNING));                
@@ -91,7 +91,7 @@ public class MovePageActionComponent extends AbstractEventActionComponent {
       movePageForm.setDupplicatedPages(null);
       UIWikiLocationContainer locationContainer = movePageForm.findFirstComponentOfType(UIWikiLocationContainer.class);
       UIWikiBreadCrumb currentLocation = locationContainer.getChildById(UIWikiLocationContainer.CURRENT_LOCATION);
-      currentLocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
+      currentLocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageName()));
       UIFormInputInfo pageNameInfo = movePageForm.getUIFormInputInfo(UIWikiMovePageForm.PAGENAME_INFO);
       pageNameInfo.setValue(res.getString("UIWikiMovePageForm.msg.you-are-about-move-page")
           +" "+ Utils.getCurrentWikiPage().getTitle());

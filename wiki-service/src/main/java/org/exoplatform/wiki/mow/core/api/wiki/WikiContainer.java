@@ -16,28 +16,32 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import java.util.Collection;
-import java.util.List;
-
 import org.chromattic.api.RelationshipType;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToMany;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.mow.core.api.MOWService;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @version $Revision$
  */
-public abstract class WikiContainer<T extends Wiki> {
+public abstract class WikiContainer<T extends WikiImpl> {
   
   private static final Log      log               = ExoLogger.getLogger(WikiContainer.class);
 
-  private WikiService wService;
-  
+  protected MOWService mowService;
+
+  public void setMOWService(MOWService mowService) {
+    this.mowService = mowService;
+  }
+
   @OneToMany(type = RelationshipType.REFERENCE)
   @MappedBy(WikiNodeType.Definition.WIKI_CONTAINER_REFERENCE)
   public abstract Collection<T> getWikis();
@@ -46,7 +50,9 @@ public abstract class WikiContainer<T extends Wiki> {
    * @OneToOne public abstract WikiStoreImpl getMultiWiki();
    */
 
-  public abstract T addWiki(String wikiOwner);
+  public abstract T addWiki(Wiki wiki) throws WikiException;
+
+  public abstract T createWiki(Wiki wiki) throws WikiException;
 
   @Create
   public abstract T createWiki();  
@@ -55,25 +61,8 @@ public abstract class WikiContainer<T extends Wiki> {
     return wikiOwner;
   }
 
-  public WikiService getwService() {
-    return wService;
-  }
-
-  public void setwService(WikiService wService) {
-    this.wService = wService;
-  }
-
-  public T getWiki(String wikiOwner, boolean hasAdminPermission) {
-    T wiki = contains(wikiOwner);
-    if (wiki != null)
-      return wiki;
-    else {
-      if(hasAdminPermission){
-        wiki = addWiki(wikiOwner);
-        if(wiki != null) ((WikiImpl)wiki).initTemplate();
-      }
-      return wiki;
-    }
+  public T getWiki(String wikiOwner) {
+    return contains(wikiOwner);
   }
 
   public Collection<T> getAllWikis() {
@@ -90,27 +79,14 @@ public abstract class WikiContainer<T extends Wiki> {
     if (wikiOwner == null) {
       return null;
     }
-    return getWikiObject(wikiOwner, false);
+    return getWikiObject(wikiOwner);
   }
   
   /**
    * Gets the wiki in current WikiContainer by specified wiki owner
    * @param wikiOwner the wiki owner
-   * @param createIfNonExist if true, create the wiki when it does not exist
    * @return the wiki object
    */
-  abstract protected T getWikiObject(String wikiOwner, boolean createIfNonExist);
-  
-  public void initDefaultPermisisonForWiki(Wiki wiki) {
-    WikiService wikiService = getwService(); 
-    List<String> permissions;
-    try {
-      permissions = wikiService.getWikiDefaultPermissions(wiki.getType(), wiki.getOwner());
-      wiki.setWikiPermissions(permissions);
-      wiki.setDefaultPermissionsInited(true);
-    } catch (Exception e) {
-      log.warn(String.format("Can not initialize the permission for wiki [type: %s, owner: %s]", wiki.getType(), wiki.getOwner()), e);
-    }
-  }
+  abstract protected T getWikiObject(String wikiOwner);
 
 }

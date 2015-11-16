@@ -20,7 +20,6 @@ import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 @PrimaryType(name=WikiNodeType.WIKI_PREFERENCES_SYNTAX)
 public abstract class PreferencesSyntax {
@@ -37,5 +36,5 @@ public abstract class PreferencesSyntax {
   
   @OneToOne  
   @MappedBy(WikiNodeType.Definition.PREFERENCES_SYNTAX)
-  public abstract Preferences getPreferences();  
+  public abstract PreferencesImpl getPreferences();
 }
