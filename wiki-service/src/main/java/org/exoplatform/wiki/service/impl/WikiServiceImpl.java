@@ -38,6 +38,7 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
+import org.exoplatform.wiki.service.listener.AttachmentWikiListener;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.utils.Utils;
@@ -204,6 +205,17 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
     }
     return pageListeners;
+  }
+
+  @Override
+  public List<AttachmentWikiListener> getAttachmentListeners() {
+    List<AttachmentWikiListener> attachmentListeners = new ArrayList<>();
+    for (ComponentPlugin c : plugins_) {
+      if (c instanceof AttachmentWikiListener) {
+        attachmentListeners.add((AttachmentWikiListener) c);
+      }
+    }
+    return attachmentListeners;
   }
 
   @Override
@@ -545,8 +557,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   public boolean movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws WikiException {
     try {
       Page movePage = getPageOfWikiByName(currentLocationParams.getType(),
-              currentLocationParams.getOwner(),
-              currentLocationParams.getPageName());
+          currentLocationParams.getOwner(),
+          currentLocationParams.getPageName());
 
       dataStorage.movePage(currentLocationParams, newLocationParams);
 
@@ -1145,10 +1157,17 @@ public class WikiServiceImpl implements WikiService, Startable {
     dataStorage.addAttachmentToPage(attachment, page);
 
     invalidateAttachmentCache(page);
+
+    //Call listener
+    addAttachment(attachment, page);
   }
 
   @Override
   public void deleteAttachmentOfPage(String attachmentId, Page page) throws WikiException {
+
+    //Call listener
+    deleteAttachment(attachmentId, page);
+
     dataStorage.deleteAttachmentOfPage(attachmentId, page);
 
     invalidateAttachmentCache(page);
@@ -1352,6 +1371,32 @@ public class WikiServiceImpl implements WikiService, Startable {
       } catch (WikiException e) {
         if (log.isWarnEnabled()) {
           log.warn(String.format("Executing listener [%s] on [%s] failed", l.toString(), page.getName()), e);
+        }
+      }
+    }
+  }
+
+  public void addAttachment(Attachment attachment, Page page) throws WikiException {
+    List<AttachmentWikiListener> listeners = getAttachmentListeners();
+    for (AttachmentWikiListener l : listeners) {
+      try {
+        l.addAttachment(attachment, page);
+      } catch (WikiException e) {
+        if (log.isWarnEnabled()) {
+          log.warn(String.format("Executing listener [%s] on attachment with name = [%s] failed", l.toString(), attachment.getName()), e);
+        }
+      }
+    }
+  }
+
+  public void deleteAttachment(String attachmentId, Page page) throws WikiException {
+    List<AttachmentWikiListener> listeners = getAttachmentListeners();
+    for (AttachmentWikiListener l : listeners) {
+      try {
+        l.deleteAttachment(attachmentId, page);
+      } catch (WikiException e) {
+        if (log.isWarnEnabled()) {
+          log.warn(String.format("Executing listener [%s] on attachment with name = [%s] failed", l.toString(), attachmentId), e);
         }
       }
     }

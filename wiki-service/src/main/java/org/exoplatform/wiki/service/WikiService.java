@@ -25,6 +25,7 @@ import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.impl.SpaceBean;
+import org.exoplatform.wiki.service.listener.AttachmentWikiListener;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
@@ -404,6 +405,12 @@ public interface WikiService {
   public List<PageWikiListener> getPageListeners();
 
   /**
+   * Gets attachment listeners that are registered into the Wiki service.
+   * @return The list of attachment listeners.
+   */
+  public List<AttachmentWikiListener> getAttachmentListeners();
+
+  /**
    * Adds a related page to the current wiki page.
    *
    * @param orginaryPageParams The params object of the current wiki page.
@@ -566,7 +573,7 @@ public interface WikiService {
    * @throws WikiException
    */
   public Wiki createWiki(String wikiType, String owner) throws WikiException;
-  
+
   /**
    * Gets a Wiki webapp URI.
    * 
