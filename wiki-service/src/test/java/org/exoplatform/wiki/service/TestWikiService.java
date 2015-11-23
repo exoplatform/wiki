@@ -48,12 +48,10 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testCreateWiki() throws WikiException {
-    Wiki wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
-    assertNull(wiki);
 
     wService.createWiki(PortalConfig.PORTAL_TYPE, "wiki1");
 
-    wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
+    Wiki  wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
     assertNotNull(wiki);
 
   }

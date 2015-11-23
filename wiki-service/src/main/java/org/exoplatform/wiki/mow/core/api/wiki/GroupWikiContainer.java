@@ -80,14 +80,15 @@ public abstract class GroupWikiContainer extends WikiContainer<GroupWiki> {
       try {
         wikiNode = groupDataNode.getNode(WikiNodeType.Definition.WIKI_APPLICATION);
       } catch (PathNotFoundException e) {
-        return null;
+        wikiNode = groupDataNode.addNode(WikiNodeType.Definition.WIKI_APPLICATION, WikiNodeType.GROUP_WIKI);
+        groupDataNode.save();
       }
     } catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
     }
     GroupWiki gwiki = session.findByNode(GroupWiki.class, wikiNode);
     gwiki.setGroupWikis(this);
-
+    if (gwiki.getOwner() == null) gwiki.setOwner(wikiOwner);
     return gwiki;
   }
 
