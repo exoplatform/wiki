@@ -16,29 +16,35 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
-import java.util.ArrayList;
-
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.webui.UIWikiPageVersionsCompare;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.WikiMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class CompareRevisionActionListener extends EventListener<UIComponent> {
-  
+
+  private static final Log log = ExoLogger.getLogger(CompareRevisionActionListener.class);
+
   private int                  from             = 1;
 
   private int                  to               = 0;
   
-  private ArrayList<NTVersion> versionToCompare = new ArrayList<NTVersion>();  
+  private List<PageVersion> versionToCompare = new ArrayList<>();
   
-  public ArrayList<NTVersion> getVersionToCompare() {
+  public List<PageVersion> getVersionToCompare() {
     return versionToCompare;
   }
 
-  public void setVersionToCompare(ArrayList<NTVersion> versionToCompare) {
+  public void setVersionToCompare(List<PageVersion> versionToCompare) {
     this.versionToCompare = versionToCompare;
   }
 
@@ -63,8 +69,14 @@ public class CompareRevisionActionListener extends EventListener<UIComponent> {
     UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
     UIWikiPageVersionsCompare versionCompareArea = wikiPortlet.findFirstComponentOfType(UIWikiPageVersionsCompare.class);
     if (versionToCompare.size() > 1) {
-      versionCompareArea.renderVersionsDifference(versionToCompare, from, to);
-      wikiPortlet.changeMode(WikiMode.COMPAREREVISION);
+      try {
+        versionCompareArea.renderVersionsDifference(versionToCompare, from, to);
+        wikiPortlet.changeMode(WikiMode.COMPAREREVISION);
+      } catch(Exception e) {
+        log.error("Cannot compare versions - Cause : " + e.getMessage(), e);
+        event.getRequestContext().getUIApplication().addMessage(new ApplicationMessage("UIWikiPageVersionsCompare.label.ComparaisonError", null, ApplicationMessage.ERROR));
+        wikiPortlet.changeMode(WikiMode.VIEW);
+      }
     }
   }
 }

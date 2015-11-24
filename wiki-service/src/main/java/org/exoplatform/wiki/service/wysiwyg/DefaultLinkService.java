@@ -22,8 +22,8 @@ import javax.inject.Named;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.utils.Utils;
@@ -145,7 +145,7 @@ public class DefaultLinkService implements LinkService {
     WikiContext context = new WikiContext();
     context.setPortalURL(wikiContext.getPortalURL());
     context.setPortletURI(wikiContext.getPortletURI());
-    PageImpl page;
+    Page page;
     switch (entityReference.getType()) {
     case DOCUMENT:
       String pageId = TitleResolver.getId(entityReference.getName(), false);
@@ -153,7 +153,7 @@ public class DefaultLinkService implements LinkService {
       String wikiType = entityReference.getParent().getParent().getName();
       context.setType(wikiType);
       context.setOwner(wikiOwner);
-      context.setPageId(pageId);
+      context.setPageName(pageId);
       try {
         boolean isPageExisted = wservice.isExisting(wikiType, wikiOwner, pageId);
         if (isPageExisted) {
@@ -169,10 +169,10 @@ public class DefaultLinkService implements LinkService {
       wikiOwner = entityReference.getParent().getParent().getName();
       wikiType = entityReference.getParent().getParent().getParent().getName();
       try {
-        page = (PageImpl) wservice.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
-        AttachmentImpl att = page.getAttachmentByRootPermisison(TitleResolver.getId(attachmentId, false));
-        if (att != null) {
-          return att.getDownloadURL();
+        page = wservice.getExsitedOrNewDraftPageById(wikiType, wikiOwner, pageId);
+        Attachment attachment = wservice.getAttachmentOfPageByName(attachmentId, page);
+        if (attachment != null) {
+          return attachment.getDownloadURL();
         }
       } catch (Exception e) {
         log.error("Exception happen when finding attachment " + attachmentId, e);

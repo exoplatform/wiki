@@ -21,7 +21,6 @@ import java.util.Map;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.OneToMany;
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 @PrimaryType(name = WikiNodeType.LINK_REGISTRY)
 public abstract class LinkRegistry {

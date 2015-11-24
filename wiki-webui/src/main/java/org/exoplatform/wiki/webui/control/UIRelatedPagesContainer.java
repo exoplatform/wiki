@@ -91,7 +91,7 @@ public class UIRelatedPagesContainer extends UIWikiExtensionContainer {
     WikiService service = getApplicationComponent(WikiService.class);
     WikiPageParams params = org.exoplatform.wiki.utils.Utils.getWikiPageParams(page);
     try {
-      return service.getBreadcumb(params.getType(), params.getOwner(), params.getPageId());
+      return service.getBreadcumb(params.getType(), params.getOwner(), params.getPageName());
     } catch (Exception e) {
       if (log.isWarnEnabled()) {
         log.warn(String.format("can not load BreadcrumbData for page [%s]", page.getName()), e);

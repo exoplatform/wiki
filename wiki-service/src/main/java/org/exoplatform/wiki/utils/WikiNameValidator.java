@@ -18,16 +18,14 @@ package org.exoplatform.wiki.utils;
 
 import java.util.StringTokenizer;
 
-import org.exoplatform.services.jcr.datamodel.IllegalNameException;
-
 public class WikiNameValidator {
   
   public static final String INVALID_CHARACTERS  = "% = : @ / \\ | ^ # ; [ ] { } < > * ' \" + ? &"; // and .
   
-  public static void validate(String s) throws IllegalNameException {
+  public static void validate(String s) throws IllegalArgumentException {
     StringTokenizer tokens;
     if (s == null || s.trim().length() == 0) {
-      throw new IllegalNameException();
+      throw new IllegalArgumentException();
     }
     for (int i = 0; i < s.length(); i++) {
       tokens = new StringTokenizer(INVALID_CHARACTERS);
@@ -42,14 +40,14 @@ public class WikiNameValidator {
       if (Character.isLetter(c) || Character.isDigit(c) || (!isInvalid)) {
         continue;
       } else {
-        throw new IllegalNameException(INVALID_CHARACTERS);
+        throw new IllegalArgumentException(INVALID_CHARACTERS);
       }
     }     
   }  
   
   public static void validateFileName(String s) throws Exception {
     if (s == null || s.trim().length() == 0) {
-      throw new IllegalNameException();
+      throw new IllegalArgumentException();
     }
     for (int i = 0; i < s.length(); i++) {
       char c = s.charAt(i);
@@ -57,7 +55,7 @@ public class WikiNameValidator {
         || c == '.' || c == ',') {
         continue;
       } else {
-        throw new IllegalNameException();
+        throw new IllegalArgumentException();
       }
     }
   }

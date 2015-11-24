@@ -7,7 +7,6 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.user.UserNode;
-import org.exoplatform.portal.pom.config.Utils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.service.WikiPageParams;
 
@@ -37,11 +36,11 @@ public class URLResolver extends Resolver{
           for(int i=2; i< array.length; i++){
             pageId.append(array[i]);
           }
-          params.setPageId(pageId.toString());
+          params.setPageName(pageId.toString());
           
         }else if(array.length == 2) {
           params.setOwner(array[1]);
-          params.setPageId(WikiPageParams.WIKI_HOME);
+          params.setPageName(WikiPageParams.WIKI_HOME);
         }        
       }else if(array[0].equals(PortalConfig.GROUP_TYPE)) {
         params.setType(PortalConfig.GROUP_TYPE)  ;
@@ -49,26 +48,26 @@ public class URLResolver extends Resolver{
         
         if(orgSerivce.getGroupHandler().findGroupById(groupId) != null) {
           params.setOwner(groupId) ;
-          params.setPageId(WikiPageParams.WIKI_HOME) ;
+          params.setPageName(WikiPageParams.WIKI_HOME) ;
         }else {
           if(groupId.substring(1).indexOf("/") > 0) {
             String pageId = groupId.substring(groupId.lastIndexOf("/")+ 1) ;
             String owner = groupId.substring(0, groupId.lastIndexOf("/")) ;
             params.setOwner(owner) ;
-            if(pageId != null && pageId.length() > 0) params.setPageId(pageId) ;
-            else params.setPageId(WikiPageParams.WIKI_HOME) ;
+            if(pageId != null && pageId.length() > 0) params.setPageName(pageId) ;
+            else params.setPageName(WikiPageParams.WIKI_HOME) ;
           }else {
             params.setOwner(groupId) ;
-            params.setPageId(WikiPageParams.WIKI_HOME) ;
+            params.setPageName(WikiPageParams.WIKI_HOME) ;
           }
         }
       } else if (array[0].equals(PortalConfig.PORTAL_TYPE)) {
         params.setType(PortalConfig.PORTAL_TYPE);
         params.setOwner(array[1]);
         if (array.length >= 3) {
-          params.setPageId(array[2]);
+          params.setPageName(array[2]);
         } else {
-          params.setPageId(WikiPageParams.WIKI_HOME);
+          params.setPageName(WikiPageParams.WIKI_HOME);
         }
       }
     }else{
@@ -83,11 +82,11 @@ public class URLResolver extends Resolver{
         params.setOwner(pageContext.getKey().getSite().getName());
       }
       if (uri.length() > 0)
-        params.setPageId(uri);
+        params.setPageName(uri);
       else
-        params.setPageId(WikiPageParams.WIKI_HOME);
+        params.setPageName(WikiPageParams.WIKI_HOME);
     }
-    params.setPageId(TitleResolver.getId(params.getPageId(), true));
+    params.setPageName(TitleResolver.getId(params.getPageName(), true));
     return params;
   }
 

@@ -16,25 +16,32 @@
  */
 package org.exoplatform.wiki.tree;
 
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.tree.utils.TreeUtils;
+import org.exoplatform.wiki.utils.Utils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.tree.utils.TreeUtils;
-import org.exoplatform.wiki.utils.Utils;
-
 public class SpaceTreeNode extends TreeNode {
-  
+
+  private WikiService wikiService;
+
   public SpaceTreeNode(String name) throws Exception {
     super(name, TreeNodeType.SPACE);
+
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
     this.path = buildPath();
 
     try {
       WikiType wikiType = WikiType.valueOf(name.toUpperCase());
-      this.hasChild = Utils.getWikisByType(wikiType).size() > 0;
+      this.hasChild = wikiService.getWikisByType(wikiType.toString()).size() > 0;
     } catch (IllegalArgumentException ex) {
       this.hasChild = false;
     }
@@ -44,7 +51,7 @@ public class SpaceTreeNode extends TreeNode {
   protected void addChildren(HashMap<String, Object> context) throws Exception {
     try {
       WikiType wikiType = WikiType.valueOf(name.toUpperCase());
-      Collection<Wiki> wikis = Utils.getWikisByType(wikiType);
+      Collection<Wiki> wikis = wikiService.getWikisByType(wikiType.toString());
       Iterator<Wiki> childWikiIterator = wikis.iterator();
       int count = 0;
       int size = getNumberOfChildren(context, wikis.size());

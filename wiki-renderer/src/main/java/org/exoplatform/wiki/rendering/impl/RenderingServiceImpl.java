@@ -16,18 +16,6 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import java.io.StringReader;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.ResourceBundle;
-
-import javax.jws.WebResult;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -41,13 +29,7 @@ import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.component.manager.ComponentRepositoryException;
 import org.xwiki.context.Execution;
-import org.xwiki.rendering.block.Block;
-import org.xwiki.rendering.block.FormatBlock;
-import org.xwiki.rendering.block.GroupBlock;
-import org.xwiki.rendering.block.HeaderBlock;
-import org.xwiki.rendering.block.LinkBlock;
-import org.xwiki.rendering.block.SectionBlock;
-import org.xwiki.rendering.block.XDOM;
+import org.xwiki.rendering.block.*;
 import org.xwiki.rendering.block.Block.Axes;
 import org.xwiki.rendering.block.match.ClassBlockMatcher;
 import org.xwiki.rendering.converter.ConversionException;
@@ -65,6 +47,10 @@ import org.xwiki.rendering.transformation.TransformationManager;
 import org.xwiki.xml.html.HTMLCleaner;
 import org.xwiki.xml.html.HTMLCleanerConfiguration;
 import org.xwiki.xml.html.HTMLUtils;
+
+import java.io.StringReader;
+import java.lang.reflect.Type;
+import java.util.*;
 
 public class RenderingServiceImpl implements RenderingService, Startable {
   
@@ -91,7 +77,8 @@ public class RenderingServiceImpl implements RenderingService, Startable {
    * (non-Javadoc)
    * @see org.exoplatform.wiki.rendering.RenderingService#render(java.lang.String, java.lang.String, java.lang.String)
    */
-  public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) throws Exception {
+  public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit)
+          throws ConversionException, ComponentLookupException {
 
     XDOM xdom = parse(markup, sourceSyntax);
     Syntax sSyntax = (sourceSyntax == null) ? Syntax.XWIKI_2_0 : getSyntax(sourceSyntax);
@@ -213,7 +200,8 @@ public class RenderingServiceImpl implements RenderingService, Startable {
    * parent.getChildren(); for (Block block : children) { outputTree(block,
    * level+1); } }
    */
-  private WikiPrinter convert(XDOM xdom, Syntax sourceSyntax, Syntax targetSyntax, boolean supportSectionEdit) throws Exception {
+  private WikiPrinter convert(XDOM xdom, Syntax sourceSyntax, Syntax targetSyntax, boolean supportSectionEdit)
+          throws ComponentLookupException, ConversionException {
 
     // Step 2: Run transformations
     try {
@@ -289,7 +277,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     return printer;
   }
 
-  public XDOM parse(String markup, String sourceSyntax) throws Exception {
+  public XDOM parse(String markup, String sourceSyntax) throws ConversionException {
     XDOM xdom;
     Syntax sSyntax = (sourceSyntax == null) ? Syntax.XWIKI_2_0 : getSyntax(sourceSyntax);
     if (sSyntax == Syntax.XHTML_1_0 || sSyntax == Syntax.ANNOTATED_XHTML_1_0) {
@@ -309,7 +297,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     return xdom;
   }
 
-  private String renderXDOM(Block content, Syntax targetSyntax) throws Exception {
+  private String renderXDOM(Block content, Syntax targetSyntax) throws ConversionException {
     try {
       BlockRenderer renderer = componentManager.getInstance(BlockRenderer.class, targetSyntax.toIdString());
       WikiPrinter printer = new DefaultWikiPrinter();

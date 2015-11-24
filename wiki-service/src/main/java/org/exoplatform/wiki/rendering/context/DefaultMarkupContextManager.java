@@ -103,8 +103,8 @@ public class DefaultMarkupContextManager implements MarkupContextManager {
         wikiMarkupContext.setType(entityReference.extractReference(EntityType.WIKI).getName());
         wikiMarkupContext.setOwner(entityReference.extractReference(EntityType.SPACE).getName());
         wikiMarkupContext.setPageTitle(entityReference.extractReference(EntityType.DOCUMENT).getName());
-        wikiMarkupContext.setPageId(wikiMarkupContext.getPageTitle());
-        wikiMarkupContext.setPageId(TitleResolver.getId(wikiMarkupContext.getPageId(), false));
+        wikiMarkupContext.setPageName(wikiMarkupContext.getPageTitle());
+        wikiMarkupContext.setPageName(TitleResolver.getId(wikiMarkupContext.getPageName(), false));
         EntityReference attachmentReference = (isConfluenceSyntax) ? entityReference.extractReference(EntityType.OBJECT)
                                                                   : entityReference.extractReference(EntityType.ATTACHMENT);
         if (attachmentReference != null) {
@@ -121,7 +121,7 @@ public class DefaultMarkupContextManager implements MarkupContextManager {
           wikiContext = new WikiContext();
           wikiContext.setType(PORTAL);
           wikiContext.setOwner(CLASSIC);
-          wikiContext.setPageId(WIKIHOME);
+          wikiContext.setPageName(WIKIHOME);
         }
         if (DEFAULT_WIKI.equals(wikiMarkupContext.getType())) {
           wikiMarkupContext.setType(wikiContext.getType());
@@ -129,8 +129,8 @@ public class DefaultMarkupContextManager implements MarkupContextManager {
         if (DEFAULT_SPACE.equals(wikiMarkupContext.getOwner())) {
           wikiMarkupContext.setOwner(wikiContext.getOwner());
         }
-        if (DEFAULT_PAGE.equals(wikiMarkupContext.getPageId())) {
-          wikiMarkupContext.setPageId(wikiContext.getPageId());
+        if (DEFAULT_PAGE.equals(wikiMarkupContext.getPageName())) {
+          wikiMarkupContext.setPageName(wikiContext.getPageName());
         }
       }
     } catch (Exception e) {

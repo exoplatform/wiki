@@ -24,7 +24,6 @@ import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.MixinType;
 import org.chromattic.api.annotations.OneToOne;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 /**
  * @version $Revision$

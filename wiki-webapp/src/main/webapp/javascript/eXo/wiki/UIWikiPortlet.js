@@ -43,6 +43,8 @@ $(document).ready(function(){
     });
 });
 
+var isMovePage=false;
+
 UIWikiPortlet.prototype.init = function(portletId, linkId) {
   var me = eXo.wiki.UIWikiPortlet;
   me.wikiportlet = document.getElementById(portletId);

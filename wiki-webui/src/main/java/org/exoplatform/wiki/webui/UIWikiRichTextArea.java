@@ -65,10 +65,10 @@ public class UIWikiRichTextArea extends UIContainer {
       return "target:blank";
     }
   }
-  
-  
+
+
   protected String getSyntax() throws Exception {
-    return Utils.getCurrentPreferences().getPreferencesSyntax().getDefaultSyntax();
+    return Utils.getDefaultSyntax();
   }
   
   protected WikiPageParams getCurrentWikiPageParams() {
@@ -80,7 +80,7 @@ public class UIWikiRichTextArea extends UIContainer {
     }
     UIWikiPortlet wikiPortlet = this.getAncestorOfType(UIWikiPortlet.class);
     if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
-      wikiPageParams.setPageId(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
+      wikiPageParams.setPageName(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
     }
     return wikiPageParams;
   }

@@ -12,7 +12,7 @@ public class WikiPageParams {
 
   private String              owner;
 
-  private String              pageId;
+  private String              pageName;
 
   private String              attachmentName;
 
@@ -21,23 +21,23 @@ public class WikiPageParams {
   public WikiPageParams() {    
   }
 
-  public WikiPageParams(String type, String owner, String pageId) {
+  public WikiPageParams(String type, String owner, String pageName) {
     this.type = type;
     this.owner = (owner==null)?owner:Text.unescapeIllegalJcrChars(owner);
-    this.pageId = pageId;
+    this.pageName = pageName;
   }
 
   /**
    * @param type
    * @param owner
-   * @param pageId
+   * @param pageName
    * @param attachmentName
    */
-  public WikiPageParams(String type, String owner, String pageId, String attachmentName) {
+  public WikiPageParams(String type, String owner, String pageName, String attachmentName) {
     super();
     this.type = type;
     this.owner = (owner==null)?owner:Text.unescapeIllegalJcrChars(owner);
-    this.pageId = pageId;
+    this.pageName = pageName;
     this.attachmentName = attachmentName;
   }
 
@@ -57,12 +57,12 @@ public class WikiPageParams {
     return owner;
   }
 
-  public void setPageId(String pageId) {
-    this.pageId = pageId;
+  public void setPageName(String pageName) {
+    this.pageName = pageName;
   }
 
-  public String getPageId() {
-    return pageId;
+  public String getPageName() {
+    return pageName;
   }
 
   public String getAttachmentName() {
@@ -99,7 +99,7 @@ public class WikiPageParams {
     int result = 1;
     result = prime * result + ((attachmentName == null) ? 0 : attachmentName.hashCode());
     result = prime * result + ((owner == null) ? 0 : owner.hashCode());
-    result = prime * result + ((pageId == null) ? 0 : pageId.hashCode());
+    result = prime * result + ((pageName == null) ? 0 : pageName.hashCode());
     result = prime * result + ((parameters == null) ? 0 : parameters.hashCode());
     result = prime * result + ((type == null) ? 0 : type.hashCode());
     return result;
@@ -127,10 +127,10 @@ public class WikiPageParams {
         return false;
     } else if (!owner.equals(other.owner))
       return false;
-    if (pageId == null) {
-      if (other.pageId != null)
+    if (pageName == null) {
+      if (other.pageName != null)
         return false;
-    } else if (!pageId.equals(other.pageId))
+    } else if (!pageName.equals(other.pageName))
       return false;
     if (parameters == null) {
       if (other.parameters != null)

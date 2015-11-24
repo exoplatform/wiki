@@ -16,85 +16,49 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-
-import javax.jcr.LoginException;
-import javax.jcr.NoSuchWorkspaceException;
-import javax.jcr.Node;
-import javax.jcr.NodeIterator;
-import javax.jcr.RepositoryException;
-import javax.jcr.Session;
-import javax.jcr.Value;
-import javax.jcr.query.Query;
-import javax.jcr.version.Version;
-import javax.jcr.version.VersionIterator;
-
 import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.DuplicateNameException;
 import org.chromattic.api.RelationshipType;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.DefaultValue;
-import org.chromattic.api.annotations.Destroy;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.OneToMany;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.PrimaryType;
+import org.chromattic.api.annotations.*;
 import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.WorkspaceName;
 import org.chromattic.ext.ntdef.NTFolder;
 import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.ext.common.SessionProvider;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.UncachedMixin;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
-import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.core.api.MOWService;
 import org.exoplatform.wiki.rendering.converter.ConfluenceToXWiki2Transformer;
 import org.exoplatform.wiki.rendering.util.Utils;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.xwiki.component.manager.ComponentManager;
 import org.xwiki.rendering.syntax.Syntax;
 
+import javax.jcr.*;
+import javax.jcr.query.Query;
+import javax.jcr.version.Version;
+import javax.jcr.version.VersionIterator;
+import java.util.*;
+import java.util.Map.Entry;
+
 @PrimaryType(name = WikiNodeType.WIKI_PAGE)
-public abstract class PageImpl extends NTFolder implements Page {
+public abstract class PageImpl extends NTFolder {
   
   private static final Log      LOG               = ExoLogger.getLogger(PageImpl.class.getName());
   
   private MOWService mowService;
   
-  private WikiService wService;
-  
-  private Permission permission = new PermissionImpl();
+  private PermissionImpl permission = new PermissionImpl();
   
   private ComponentManager componentManager;
   
@@ -105,6 +69,9 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   private boolean isMinorEdit = false;
   
+  public String getID() throws RepositoryException {
+    return this.getJCRPageNode().getUUID();
+  }
   public void setMOWService(MOWService mowService) {
     this.mowService = mowService;
     permission.setMOWService(mowService);
@@ -112,10 +79,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   public MOWService getMOWService() {
     return mowService;
-  }
-  
-  public void setWikiService(WikiService wService) {
-    this.wService = wService;
   }
 
   public ChromatticSession getChromatticSession() {
@@ -126,15 +89,11 @@ public abstract class PageImpl extends NTFolder implements Page {
     return getChromatticSession().getJCRSession();
   }
   
-  public WikiService getWikiService(){
-    return wService;
-  }
-  
   public void setComponentManager(ComponentManager componentManager) {
     this.componentManager = componentManager;
   }
 
-  public Node getJCRPageNode() throws Exception {
+  public Node getJCRPageNode() throws RepositoryException {
     return (Node) getChromatticSession().getJCRSession().getItem(getPath());
   }
   
@@ -159,7 +118,6 @@ public abstract class PageImpl extends NTFolder implements Page {
   @Create
   protected abstract AttachmentImpl createContent();
 
-  @Override
   public AttachmentImpl getContent() {
     AttachmentImpl content = getContentByChromattic();
     if (content == null) {
@@ -181,13 +139,11 @@ public abstract class PageImpl extends NTFolder implements Page {
   public abstract String getTitleByChromattic();
   public abstract void setTitleByChromattic(String title);
   
-  @Override
   public String getTitle() {
     String title = getTitleByChromattic();
     return (title != null) ? title : getName();
   }
   
-  @Override
   public void setTitle(String title) {
     setTitleByChromattic(title);
   }
@@ -207,6 +163,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   @Property(name = WikiNodeType.Definition.AUTHOR)
   public abstract String getAuthor();
+  public abstract void setAuthor(String author);
 
   @Property(name = WikiNodeType.Definition.CREATED_DATE)
   public abstract Date getCreatedDate();
@@ -214,10 +171,16 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   @Property(name = WikiNodeType.Definition.UPDATED_DATE)
   public abstract Date getUpdatedDate();
+  public abstract void setUpdatedDate(Date date);
   
   @Property(name = WikiNodeType.Definition.URL)
   public abstract String getURL();
   public abstract void setURL(String url);
+
+  @OneToOne(type = RelationshipType.EMBEDDED)
+  @Owner
+  public abstract ActivityInfoMixin getActivityInfoMixin();
+  public abstract void setActivityInfoMixin(ActivityInfoMixin activity);
   
   @OneToOne(type = RelationshipType.EMBEDDED)
   @Owner
@@ -280,7 +243,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   
   
   //TODO: replace by @Checkin when Chromattic support
-  public NTVersion checkin() throws Exception {
+  public NTVersion checkin() throws RepositoryException {
     PageDescriptionMixin description = getContent().getPageDescriptionMixin();
     description.setAuthor(ConversationState.getCurrent().getIdentity().getUserId());
     description.setUpdatedDate(GregorianCalendar.getInstance().getTime());
@@ -291,19 +254,19 @@ public abstract class PageImpl extends NTFolder implements Page {
   }
 
   //TODO: replace by @Checkout when Chromattic support
-  public void checkout() throws Exception {
+  public void checkout() throws RepositoryException {
     getContent().checkout();
   }
 
   //TODO: replace by @Restore when Chromattic support
-  public void restore(String versionName, boolean removeExisting) throws Exception {
+  public void restore(String versionName, boolean removeExisting) throws WikiException {
     getContent().restore(versionName, removeExisting);
   }
   
   @Create
   public abstract AttachmentImpl createAttachment();
   
-  public AttachmentImpl createAttachment(String fileName, Resource contentResource) throws Exception {
+  public AttachmentImpl createAttachment(String fileName, Resource contentResource) throws WikiException {
     if (fileName == null) {
       throw new NullPointerException();
     }
@@ -333,7 +296,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     return file;
   }
   
-  private void setFullPermissionForOwner(AttachmentImpl file) throws Exception {
+  private void setFullPermissionForOwner(AttachmentImpl file) throws WikiException {
     ConversationState conversationState = ConversationState.getCurrent();
 
     if (conversationState != null) {
@@ -346,12 +309,11 @@ public abstract class PageImpl extends NTFolder implements Page {
   @OneToMany
   public abstract Collection<AttachmentImpl> getAttachmentsByChromattic();
 
-  @Override
   public Collection<AttachmentImpl> getAttachments() {
     return getAttachmentsByChromattic();
   }
   
-  public Collection<AttachmentImpl> getAttachmentsExcludeContent() throws Exception {
+  public Collection<AttachmentImpl> getAttachmentsExcludeContent() throws RepositoryException {
     List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>();
     String path = this.getPath();
     StringBuilder statement = new StringBuilder("SELECT * FROM ");
@@ -374,7 +336,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     return atts;
   }
   
-  public Collection<AttachmentImpl> getAttachmentsExcludeContentByRootPermisison() throws Exception {
+  public Collection<AttachmentImpl> getAttachmentsExcludeContentByRootPermisison() {
     Collection<AttachmentImpl> attachments = getAttachmentsByChromattic();
     List<AttachmentImpl> atts = new ArrayList<AttachmentImpl>(attachments.size());
     for (AttachmentImpl attachment : attachments) {
@@ -386,7 +348,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     return atts;
   }
   
-  public AttachmentImpl getAttachment(String attachmentId) throws Exception {
+  public AttachmentImpl getAttachment(String attachmentId) {
     for (AttachmentImpl attachment : getAttachments()) {
       if (attachment.getName().equals(attachmentId)
           && (attachment.hasPermission(PermissionType.VIEW_ATTACHMENT)
@@ -410,7 +372,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     getAttachments().add(attachment);
   }  
   
-  public void removeAttachment(String attachmentId) throws Exception {
+  public void removeAttachment(String attachmentId) {
     AttachmentImpl attachment = getAttachment(attachmentId);
     if(attachment != null){
       attachment.remove();
@@ -428,8 +390,8 @@ public abstract class PageImpl extends NTFolder implements Page {
   @OneToMany
   protected abstract Map<String, PageImpl> getChildrenContainer();
   
-  public Map<String, PageImpl> getChildPages() throws Exception {
-    TreeMap<String, PageImpl> result = new TreeMap<String, PageImpl>(new Comparator<String>() {
+  public Map<String, PageImpl> getChildPages() {
+    TreeMap<String, PageImpl> result = new TreeMap<>(new Comparator<String>() {
       @Override
       public int compare(String o1, String o2) {
         return o1.compareTo(o2);
@@ -446,7 +408,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     return result;
   }
   
-  public Map<String, PageImpl> getChildrenByRootPermission() throws Exception {
+  public Map<String, PageImpl> getChildrenByRootPermission() {
     TreeMap<String, PageImpl> result = new TreeMap<String, PageImpl>(new Comparator<String>() {
       @Override
       public int compare(String o1, String o2) {
@@ -468,58 +430,67 @@ public abstract class PageImpl extends NTFolder implements Page {
   public abstract boolean getOverridePermission();
   public abstract void setOverridePermission(boolean isOverridePermission);
   
-  @Override
-  public boolean hasPermission(PermissionType permissionType) throws Exception {
+  public boolean hasPermission(PermissionType permissionType) {
     return permission.hasPermission(permissionType, getPath());
   }
   
-  @Override
-  public boolean hasPermission(PermissionType permissionType, Identity user) throws Exception {
+  public boolean hasPermission(PermissionType permissionType, Identity user) {
     return permission.hasPermission(permissionType, getPath(), user);
   }
   
-  @Override
-  public HashMap<String, String[]> getPermission() throws Exception {
+  public HashMap<String, String[]> getPermission() throws WikiException {
     return permission.getPermission(getPath());
   }
   
-  @Override
-  public void setPermission(HashMap<String, String[]> permissions) throws Exception {
+  public void setPermission(HashMap<String, String[]> permissions) throws WikiException {
     permission.setPermission(permissions, getPath());
   }
   
-  public void setNonePermission() throws Exception {
+  public void setNonePermission() throws WikiException {
     setPermission(null);
   }
-  
-  protected void addPage(String pageName, Page page) {
-    if (pageName == null) {
-      throw new NullPointerException();
+
+  public String getActivityId() {
+    String activityId = null;
+    ActivityInfoMixin activityInfoMixin = this.getActivityInfoMixin();
+    if(activityInfoMixin != null) {
+      activityId = activityInfoMixin.getActivityId();
     }
-    if (page == null) {
-      throw new NullPointerException();
+    return activityId;
+  }
+
+  public void setActivityId(String activityId) {
+    ActivityInfoMixin activityInfoMixin = this.getActivityInfoMixin();
+    if(activityInfoMixin == null) {
+      ChromatticSession session = mowService.getSession();
+      this.setActivityInfoMixin(session.create(ActivityInfoMixin.class));
+      ActivityInfoMixin mixin = this.getActivityInfoMixin();
+      mixin.setActivityId(activityId);
+    } else if(!activityId.equals(activityInfoMixin.getActivityId())) {
+      ActivityInfoMixin mixin = this.getActivityInfoMixin();
+      mixin.setActivityId(activityId);
     }
-    Map<String, PageImpl> children = getChildrenContainer();
-    if (children.containsKey(pageName)) {
-      throw new IllegalStateException();
-    }
-    children.put(pageName, (PageImpl) page);
   }
   
-  public void addWikiPage(Page page) {
-    if (page == null) {
-      throw new NullPointerException();
+  protected void addPage(String pageName, PageImpl page) {
+    Map<String, PageImpl> children = getChildrenContainer();
+    if (children.containsKey(pageName)) {
+      throw new IllegalStateException("Page with name " + pageName + " already exists");
     }
+    children.put(pageName, page);
+  }
+  
+  public void addWikiPage(PageImpl page) {
     addPage(page.getName(), page);
   }
   
-  public void addPublicPage(Page page) throws Exception {
+  public void addPublicPage(PageImpl page) throws WikiException {
     addWikiPage(page);
     page.setNonePermission();
   }
   
   public PageImpl getWikiPage(String pageId) throws Exception{
-    if(WikiNodeType.Definition.WIKI_HOME_NAME.equalsIgnoreCase(pageId)){
+    if(WikiConstants.WIKI_HOME_NAME.equalsIgnoreCase(pageId)){
       return this;
     }
     Iterator<PageImpl> iter = getChildPages().values().iterator();
@@ -530,7 +501,7 @@ public abstract class PageImpl extends NTFolder implements Page {
     return null ;
   }
   
-  public Wiki getWiki() {
+  public WikiImpl getWiki() {
     WikiHome wikiHome = getWikiHome();
     if (wikiHome != null) {
       PortalWiki portalWiki = wikiHome.getPortalWiki();
@@ -577,7 +548,7 @@ public abstract class PageImpl extends NTFolder implements Page {
    * @throws NullPointerException if the param is null
    * @throws Exception when any error occurs.
    */
-  public synchronized String addRelatedPage(PageImpl page) throws Exception {
+  public synchronized String addRelatedPage(PageImpl page) throws RepositoryException {
     Map<String, Value> referredUUIDs = getReferredUUIDs();
     Session jcrSession = getJCRSession();
     Node myJcrNode = (Node) jcrSession.getItem(getPath());
@@ -597,9 +568,9 @@ public abstract class PageImpl extends NTFolder implements Page {
     return referedUUID;
   }
   
-  public List<PageImpl> getRelatedPages() throws Exception {
+  public List<PageImpl> getRelatedPages() throws RepositoryException {
     if (relatedPages == null) {
-      relatedPages = new ArrayList<PageImpl>();
+      relatedPages = new ArrayList<>();
       Iterator<Entry<String, Value>> refferedIter = getReferredUUIDs().entrySet().iterator();
       ChromatticSession chSession = getChromatticSession();
       while (refferedIter.hasNext()) {
@@ -610,7 +581,7 @@ public abstract class PageImpl extends NTFolder implements Page {
         }
       }
     }
-    return new ArrayList<PageImpl>(relatedPages);
+    return new ArrayList<>(relatedPages);
   }
   
   /**
@@ -620,7 +591,7 @@ public abstract class PageImpl extends NTFolder implements Page {
    *         null if removing failed.
    * @throws Exception when an error is thrown.
    */
-  public synchronized String removeRelatedPage(PageImpl page) throws Exception {
+  public synchronized String removeRelatedPage(PageImpl page) throws RepositoryException {
     Map<String, Value> referedUUIDs = getReferredUUIDs();
     Session jcrSession = getJCRSession();
     Node referredJcrNode = (Node) jcrSession.getItem(page.getPath());
@@ -644,7 +615,7 @@ public abstract class PageImpl extends NTFolder implements Page {
    * @return Map<String, Value> map of referred uuids of current page 
    * @throws Exception when an error is thrown.
    */
-  public Map<String, Value> getReferredUUIDs() throws Exception {   
+  public Map<String, Value> getReferredUUIDs() throws RepositoryException {
     Session jcrSession = getJCRSession();
     Node myJcrNode = (Node) jcrSession.getItem(getPath());
     Map<String, Value> referedUUIDs = new HashMap<String, Value>();
@@ -673,7 +644,7 @@ public abstract class PageImpl extends NTFolder implements Page {
    * based on the history of page node, 2.remove the mix:versionable from page node. 
    * @throws Exception
    */
-  public void migrateLegacyData() throws Exception {
+  public void migrateLegacyData() throws RepositoryException {
     //migrate only when the current Page Node is mix:versionable
     if (this.getJCRPageNode().isNodeType(WikiNodeType.MIX_VERSIONABLE) && 
         (this.getContent().getVersionableMixinByChromattic() == null)) {
@@ -743,7 +714,7 @@ public abstract class PageImpl extends NTFolder implements Page {
   public abstract UpdateAttachmentMixin createUpdateAttachmentMixin();
 
   /* Grant read permission for any for all attachments */
-  public void migrateAttachmentPermission() throws Exception {
+  public void migrateAttachmentPermission() throws WikiException {
 
     boolean isGroupWiki = PortalConfig.GROUP_TYPE.equals(this.getWiki().getType());
     UpdateAttachmentMixin updateAttachment = this.getUpdateAttachmentMixin();

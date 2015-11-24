@@ -19,22 +19,17 @@ package org.exoplatform.wiki.mow.core.api;
 import java.util.Collection;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import org.chromattic.api.ChromatticSession;
 import org.chromattic.api.annotations.Create;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.OneToOne;
 import org.chromattic.api.annotations.Owner;
 import org.chromattic.api.annotations.PrimaryType;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.api.WikiStore;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiNodeType;
+import org.exoplatform.wiki.mow.core.api.wiki.WikiStore;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.HelpPage;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PortalWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
+import org.exoplatform.wiki.mow.core.api.wiki.*;
 
 /**
  * A Wiki store for portal, group and user wikis
@@ -44,26 +39,22 @@ import org.exoplatform.wiki.mow.core.api.wiki.WikiContainer;
 @PrimaryType(name = WikiNodeType.WIKI_STORE)
 public abstract class WikiStoreImpl implements WikiStore {
 
-  private ChromatticSession session;
+  private MOWService mowService;
 
-  public void setSession(ChromatticSession chromatticSession) {
-    session = chromatticSession;
+  public void setMOWService(MOWService mowService) {
+    this.mowService = mowService;
   }
 
-  public ChromatticSession getSession() {
-    return session;
+  public WikiImpl addWiki(WikiType wikiType, String name) throws WikiException {
+    return getWikiContainer(wikiType).addWiki(new Wiki(wikiType.toString(), name));
   }
 
-  public void addWiki(WikiType wikiType, String name) {
-    getWikiContainer(wikiType).addWiki(name);
+  public WikiImpl getWiki(WikiType wikiType, String name) {
+    return getWikiContainer(wikiType).getWiki(name);
   }
 
-  public Wiki getWiki(WikiType wikiType, String name) {
-    return getWikiContainer(wikiType).getWiki(name, true);
-  }
-
-  public Collection<Wiki> getWikis() {
-    Collection<Wiki> col = new CopyOnWriteArraySet<Wiki>();
+  public Collection<WikiImpl> getWikis() {
+    Collection<WikiImpl> col = new CopyOnWriteArraySet<>();
     col.addAll(getPortalWikiContainer().getAllWikis());
     col.addAll(getGroupWikiContainer().getAllWikis());
     col.addAll(getUserWikiContainer().getAllWikis());
@@ -71,16 +62,23 @@ public abstract class WikiStoreImpl implements WikiStore {
   }
 
   @SuppressWarnings("unchecked")
-  public  <W extends Wiki>WikiContainer<W> getWikiContainer(WikiType wikiType) {
+  public  <W extends WikiImpl>WikiContainer<W> getWikiContainer(WikiType wikiType) {
+    boolean created = mowService.startSynchronization();
+
+    WikiContainer wikiContainer;
     if (wikiType == WikiType.PORTAL) {
-      return (WikiContainer<W>) getPortalWikiContainer();
+      wikiContainer = getPortalWikiContainer();
     } else if (wikiType == WikiType.GROUP) {
-      return (WikiContainer<W>) getGroupWikiContainer();
+      wikiContainer = getGroupWikiContainer();
     } else if (wikiType == WikiType.USER) {
-      return (WikiContainer<W>) getUserWikiContainer();
+      wikiContainer = getUserWikiContainer();
     } else {
       throw new UnsupportedOperationException();
     }
+
+    mowService.stopSynchronization(created);
+
+    return wikiContainer;
   }
 
   @Create
@@ -90,28 +88,57 @@ public abstract class WikiStoreImpl implements WikiStore {
   public abstract HelpPage createHelpPage();
   
   public HelpPage getHelpPagesContainer() {
+    boolean created = mowService.startSynchronization();
+
     HelpPage page = getHelpPageByChromattic();
     if (page == null) {
       page = createHelpPage();
       setHelpPageByChromattic(page);
     }
+
+    mowService.stopSynchronization(created);
+
     return page;
   }
   
   public PageImpl getDraftNewPagesContainer() {
+    boolean created = mowService.startSynchronization();
+
     PageImpl page = getDraftNewPagesContainerByChromattic();
     if (page == null) {
       page = createPage();
       setDraftNewPagesContainerByChromattic(page);
     }
+
+    mowService.stopSynchronization(created);
+
     return page;
   }
-  
+
+  public PageImpl getEmotionIconsContainer() {
+    boolean created = mowService.startSynchronization();
+
+    PageImpl page = getEmotionIconsPageByChromattic();
+    if (page == null) {
+      page = createEmotionIconsPage();
+      setEmotionIconsPageByChromattic(page);
+    }
+
+    mowService.stopSynchronization(created);
+
+    return page;
+  }
+
   @OneToOne
   @Owner
   @MappedBy(WikiNodeType.Definition.EMOTION_ICONS_PAGE)
-  public abstract PageImpl getEmotionIconsPage();
-  
+  protected abstract PageImpl getEmotionIconsPageByChromattic();
+
+  protected abstract void setEmotionIconsPageByChromattic(PageImpl page);
+
+  @Create
+  protected abstract PageImpl createEmotionIconsPage();
+
   @OneToOne
   @Owner
   @MappedBy(WikiNodeType.Definition.PORTAL_WIKI_CONTAINER_NAME)
@@ -157,12 +184,17 @@ public abstract class WikiStoreImpl implements WikiStore {
   protected abstract void setDraftNewPagesContainerByChromattic(PageImpl page);
 
   private PortalWikiContainer getPortalWikiContainer() {
+    boolean created = mowService.startSynchronization();
+
     PortalWikiContainer portalWikiContainer = getPortalWikiContainerByChromattic();
     if (portalWikiContainer == null) {
       portalWikiContainer = createPortalWikiContainer();
       setPortalWikiContainerByChromattic(portalWikiContainer);
-      getSession().save();
+      mowService.persist();
     }
+
+    mowService.stopSynchronization(created);
+
     return portalWikiContainer;
   }
 
@@ -171,7 +203,7 @@ public abstract class WikiStoreImpl implements WikiStore {
     if (groupWikiContainer == null) {
       groupWikiContainer = createGroupWikiContainer();
       setGroupWikiContainerByChromattic(groupWikiContainer);
-      getSession().save();      
+      mowService.persist();
     }
     return groupWikiContainer;
   }
@@ -181,7 +213,7 @@ public abstract class WikiStoreImpl implements WikiStore {
     if (userWikiContainer == null) {
       userWikiContainer = createUserWikiContainer();
       setUserWikiContainerByChromattic(userWikiContainer);
-      getSession().save();      
+      mowService.persist();
     }
     return userWikiContainer;
   }

@@ -18,75 +18,96 @@ package org.exoplatform.wiki.mow.api;
 
 import java.util.List;
 
-import org.exoplatform.wiki.mow.core.api.wiki.Preferences;
-
-/**
- * @version $Revision$
- */
-public interface Wiki {
+public class Wiki {
 
   /**
-   * Wiki name
-   * 
-   * @return
+   * Wiki unique id
    */
-  String getName();
+  private String id;
 
   /**
    * Name of the owner of this wiki. May be a portal name, a group name or a
-   * user name depending on the type of the wiki.
-   * 
-   * @return
+   * user name depending on the type of the wiki
    */
-  String getOwner();
-  
-  /**
-   * Type of this wiki. May be a portal type, a group type or a
-   * user type.
-   * 
-   * @return type of wiki
-   */
-  String getType();
+  private String owner;
 
   /**
-   * Get the home page of the wiki
-   * 
-   * @return
+   * Type of this wiki. May be a portal type, a group type or a user type
    */
-  Page getWikiHome();
+  private String type;
 
   /**
-   * Get a page by its URO
-   * 
-   * @param uri
-   * @return
+   * Home page of the wiki
    */
-  Page getPageByURI(String uri);
+  private Page wikiHome;
 
-  /**
-   * Get a Page by id
-   * 
-   * @param id
-   * @return
-   */
-  Page getPageByID(String id);
+  private List<PermissionEntry> permissions;
   
-  /**
-   * 
-   * @return
-   */
-  List<String> getWikiPermissions();
+  private WikiPreferences preferences;
   
-  /**
-   * 
-   * @param permissions
-   */
-  void setWikiPermissions(List<String> permissions);
-  
-  
-  public Preferences getPreferences();
-  
-  public abstract boolean getDefaultPermissionsInited();
-  
-  public abstract void setDefaultPermissionsInited(boolean isInited);
+  private boolean defaultPermissionsInited;
+
+  public Wiki() {
+  }
+
+  public Wiki(String type, String owner) {
+    this.type = type;
+    this.owner = owner;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public void setId(String id) {
+    this.id = id;
+  }
+
+  public String getOwner() {
+    return owner;
+  }
+
+  public void setOwner(String owner) {
+    this.owner = owner;
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  public Page getWikiHome() {
+    return wikiHome;
+  }
+
+  public void setWikiHome(Page wikiHome) {
+    this.wikiHome = wikiHome;
+  }
+
+  public List<PermissionEntry> getPermissions() {
+    return permissions;
+  }
+
+  public void setPermissions(List<PermissionEntry> permissions) {
+    this.permissions = permissions;
+  }
+
+  public WikiPreferences getPreferences() {
+    return preferences;
+  }
+
+  public void setPreferences(WikiPreferences preferences) {
+    this.preferences = preferences;
+  }
+
+  public boolean isDefaultPermissionsInited() {
+    return defaultPermissionsInited;
+  }
+
+  public void setDefaultPermissionsInited(boolean defaultPermissionsInited) {
+    this.defaultPermissionsInited = defaultPermissionsInited;
+  }
 }

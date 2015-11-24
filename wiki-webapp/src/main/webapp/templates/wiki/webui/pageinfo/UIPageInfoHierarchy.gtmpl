@@ -1,7 +1,6 @@
 <%
-  import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-  def pageImpl = (PageImpl) currentWikiPage;
-  def parentPage = pageImpl.getParentPage();
+  def page = currentWikiPage;
+  def parentPage = uicomponent.getCurrentParentPage();
   def parentLink = (parentPage != null) ? uicomponent.getPageLink(parentPage) : "";
   def parentTitle = (parentPage != null) ? parentPage.getTitle() : "";
 %>

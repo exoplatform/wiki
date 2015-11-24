@@ -1,6 +1,6 @@
 <%
-  import org.exoplatform.wiki.service.PermissionEntry;
-  import org.exoplatform.wiki.service.Permission;
+  import org.exoplatform.wiki.mow.api.PermissionEntry;
+  import org.exoplatform.wiki.mow.api.Permission;
   
   PermissionEntry permissionEntry = uicomponent.getPermissionEntry();
   String id = permissionEntry.getId();

@@ -21,7 +21,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.exoplatform.services.jcr.datamodel.IllegalNameException;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -180,7 +179,7 @@ public class UIFieldEditableForm extends UIWikiForm {
 
       try {
         WikiNameValidator.validate(titleInput.getValue());
-      } catch (IllegalNameException ex) {
+      } catch (IllegalArgumentException ex) {
         isError = true;
         Object[] arg = { ex.getMessage() };
         appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",

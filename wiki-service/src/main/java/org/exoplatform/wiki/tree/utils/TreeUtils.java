@@ -16,28 +16,25 @@
  */
 package org.exoplatform.wiki.tree.utils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import org.apache.commons.lang.BooleanUtils;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.WikiHome;
 import org.exoplatform.wiki.rendering.macro.ExcerptUtils;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.tree.JsonNodeData;
-import org.exoplatform.wiki.tree.PageTreeNode;
-import org.exoplatform.wiki.tree.SpaceTreeNode;
-import org.exoplatform.wiki.tree.TreeNode;
-import org.exoplatform.wiki.tree.TreeNodeType;
-import org.exoplatform.wiki.tree.WikiHomeTreeNode;
-import org.exoplatform.wiki.tree.WikiTreeNode;
+import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.tree.*;
 import org.exoplatform.wiki.utils.Utils;
+import org.exoplatform.wiki.utils.WikiConstants;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 public class TreeUtils {
   
@@ -50,14 +47,15 @@ public class TreeUtils {
    */
   public static TreeNode getTreeNode(WikiPageParams params) throws Exception {
     Object wikiObject = Utils.getObjectFromParams(params);
-    if (wikiObject instanceof WikiHome) {
-      WikiHome wikiHome = (WikiHome) wikiObject;
-      WikiHomeTreeNode wikiHomeNode = new WikiHomeTreeNode(wikiHome);
-      return wikiHomeNode;
-    } else if (wikiObject instanceof Page) {
-      PageImpl page = (PageImpl) wikiObject;
-      PageTreeNode pageNode = new PageTreeNode(page);
-      return pageNode;
+    if (wikiObject instanceof Page) {
+      Page page = (Page) wikiObject;
+      if(params.getPageName().equals(WikiConstants.WIKI_HOME_NAME)) {
+        WikiHomeTreeNode wikiHomeNode = new WikiHomeTreeNode(page);
+        return wikiHomeNode;
+      } else {
+        PageTreeNode pageNode = new PageTreeNode(page);
+        return pageNode;
+      }
     } else if (wikiObject instanceof Wiki) {
       Wiki wiki = (Wiki) wikiObject;
       WikiTreeNode wikiNode = new WikiTreeNode(wiki);
@@ -84,15 +82,18 @@ public class TreeUtils {
   }
   
   public static List<JsonNodeData> tranformToJson(TreeNode treeNode, HashMap<String, Object> context) throws Exception {
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
     int counter = 1;
     Boolean showExcerpt = false;
-    PageImpl currentPage = null;
+    Page currentPage = null;
     String currentPath = null;
-    
+    Boolean canEdit      = false;
     if (context != null) {
       currentPath = (String) context.get(TreeNode.CURRENT_PATH);
-      currentPage = (PageImpl) context.get(TreeNode.CURRENT_PAGE);
+      currentPage = (Page) context.get(TreeNode.CURRENT_PAGE);
       showExcerpt = (Boolean) context.get(TreeNode.SHOW_EXCERPT);
+      canEdit     = (Boolean)context.get(TreeNode.CAN_EDIT);
     }
     
     List<JsonNodeData> children = new ArrayList<JsonNodeData>();
@@ -106,22 +107,31 @@ public class TreeUtils {
       if (child.getNodeType().equals(TreeNodeType.WIKI)) {
         isSelectable = false;
       } else if (child.getNodeType().equals(TreeNodeType.PAGE)) {
-        PageImpl page = ((PageTreeNode) child).getPage();
+        Page page = ((PageTreeNode) child).getPage();
         if (((currentPage != null) && (currentPage.equals(page) || Utils.isDescendantPage(page, currentPage)))) {
           isSelectable = false;
         }
         
-        if (!page.hasPermission(PermissionType.VIEWPAGE)) {
+        if (!wikiService.hasPermissionOnPage(page, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())) {
           isSelectable = false;
           child.setRetricted(true);
         }
-        
+        if(BooleanUtils.isTrue(canEdit) && !wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity())){
+          isSelectable = false;
+          child.setRetricted(true);
+        }
       } else if (child.getNodeType().equals(TreeNodeType.WIKIHOME)) {
-        PageImpl page = ((WikiHomeTreeNode) child).getWikiHome();
-        if (!page.hasPermission(PermissionType.VIEWPAGE)) {
+        Page page = ((WikiHomeTreeNode) child).getWikiHome();
+        if (!wikiService.hasPermissionOnPage(page, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())) {
           isSelectable = false;
           child.setRetricted(true);
         }
+
+        if(BooleanUtils.isTrue(canEdit) && !wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity())){
+          isSelectable = false;
+          child.setRetricted(true);
+        }
+
       }
       
       String excerpt = null;
@@ -157,7 +167,7 @@ public class TreeUtils {
           if (oService.getGroupHandler().findGroupById(groupId) != null) {
             result.setOwner(groupId);
           } else {
-            result.setPageId(path.substring(path.lastIndexOf("/") + 1));
+            result.setPageName(path.substring(path.lastIndexOf("/") + 1));
             String owner = path.substring(path.indexOf("/"), path.lastIndexOf("/"));
             while (oService.getGroupHandler().findGroupById(owner) == null) {
               owner = owner.substring(0,owner.lastIndexOf("/"));
@@ -167,7 +177,7 @@ public class TreeUtils {
         } else {
           // if (array[0].equals(PortalConfig.PORTAL_TYPE) || array[0].equals(PortalConfig.USER_TYPE))
           result.setOwner(array[1]);
-          result.setPageId(array[array.length-1]);
+          result.setPageName(array[array.length - 1]);
         }
       }
     }
@@ -182,8 +192,8 @@ public class TreeUtils {
     if (param.getOwner() != null) {
       sb.append("/").append(Utils.validateWikiOwner(param.getType(), param.getOwner()));
     }
-    if (param.getPageId() != null) {
-      sb.append("/").append(param.getPageId());
+    if (param.getPageName() != null) {
+      sb.append("/").append(param.getPageName());
     }
     return sb.toString();
   }

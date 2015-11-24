@@ -16,12 +16,7 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
-import java.net.URLDecoder;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
@@ -30,14 +25,17 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.UIExtensionEventListener;
 import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.webui.UIWikiAttachmentUploadListForm;
-import org.exoplatform.wiki.webui.UIWikiBottomArea;
-import org.exoplatform.wiki.webui.UIWikiPageContentArea;
-import org.exoplatform.wiki.webui.UIWikiPortlet;
-import org.exoplatform.wiki.webui.WikiMode;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.webui.*;
 import org.exoplatform.wiki.webui.control.filter.RemoveAttachmentPermissionFilter;
+
+import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @ComponentConfig(
     lifecycle = Lifecycle.class,
@@ -51,7 +49,13 @@ public class RemoveAttachmentActionComponent extends UIContainer {
   public static final String DELETE_ACTION   = "RemoveAttachment";
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new RemoveAttachmentPermissionFilter() });
-  
+
+  private static WikiService wikiService;
+
+  public RemoveAttachmentActionComponent() {
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+  }
+
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
@@ -75,9 +79,9 @@ public class RemoveAttachmentActionComponent extends UIContainer {
       UIWikiAttachmentUploadListForm attachmentUploadListForm = wikiPortlet.findFirstComponentOfType(UIWikiAttachmentUploadListForm.class);
       UIWikiBottomArea bottomArea= wikiPortlet.findFirstComponentOfType(UIWikiBottomArea.class);
       
-      PageImpl page = (PageImpl) attachmentUploadListForm.getCurrentWikiPage();
+      Page page = attachmentUploadListForm.getCurrentWikiPage();
       String attachmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
-      page.removeAttachment(attachmentName);      
+      wikiService.deleteAttachmentOfPage(attachmentName, page);
       event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea);
       if (WikiMode.VIEW.equals(wikiPortlet.getWikiMode())) {
         event.getRequestContext().addUIComponentToUpdateByAjax(contentArea);
@@ -88,10 +92,10 @@ public class RemoveAttachmentActionComponent extends UIContainer {
     protected Map<String, Object> createContext(Event<RemoveAttachmentActionComponent> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       UIWikiAttachmentUploadListForm attachmentUploadListForm = wikiPortlet.findFirstComponentOfType(UIWikiAttachmentUploadListForm.class);
-      PageImpl page = (PageImpl) attachmentUploadListForm.getCurrentWikiPage();
-      String attacmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
-      AttachmentImpl attachment = page.getAttachment(attacmentName);
-      Map<String, Object> context = new HashMap<String, Object>();
+      Page page = attachmentUploadListForm.getCurrentWikiPage();
+      String attachmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
+      Attachment attachment = wikiService.getAttachmentOfPageByName(attachmentName, page);
+      Map<String, Object> context = new HashMap<>();
       context.put(RemoveAttachmentPermissionFilter.ATTACHMENT_KEY, attachment);
       return context;
     }

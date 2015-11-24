@@ -16,22 +16,11 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import org.apache.commons.lang.StringUtils;
 import org.chromattic.api.annotations.PrimaryType;
 import org.chromattic.api.annotations.Property;
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.mow.api.DraftPage;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.service.diff.DiffResult;
-import org.exoplatform.wiki.service.diff.DiffService;
-import org.exoplatform.wiki.utils.Utils;
-
 
 @PrimaryType(name = WikiNodeType.WIKI_DRAFT_PAGE)
-public abstract class DraftPageImpl extends PageImpl implements DraftPage {
+public abstract class DraftPageImpl extends PageImpl {
   @Property(name = WikiNodeType.Definition.DRAFT_TARGET_PAGE)
   public abstract String getTargetPage();
   public abstract void setTargetPage(String targetPage);
@@ -43,53 +32,4 @@ public abstract class DraftPageImpl extends PageImpl implements DraftPage {
   @Property(name = WikiNodeType.Definition.DRAFT_IS_NEW_PAGE)
   public abstract boolean isNewPage();
   public abstract void setNewPage(boolean isNewPage);
-  
-  public boolean isOutDate() throws Exception {
-    String targetRevision = getTargetRevision();
-    if (targetRevision == null) {
-      return false;
-    }
-    
-    if (targetRevision.equals("rootVersion")) {
-      targetRevision = "1";
-    }
-    
-    PageImpl targetPage = (PageImpl) getTargetWikiPage();
-    if (targetPage == null) {
-      return true;
-    }
-    
-    String lastestRevision = Utils.getLastRevisionOfPage(targetPage).getName();
-    if (lastestRevision == null) {
-      return true;
-    }
-    
-    if (lastestRevision.equals("rootVersion")) {
-      lastestRevision = "1";
-    }
-    
-    return lastestRevision.compareTo(targetRevision) > 0;
-  }
-  
-  private Page getTargetWikiPage() throws Exception {
-    WikiService wservice = (WikiService)ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    return wservice.getWikiPageByUUID(getTargetPage());
-  }
-  
-  public DiffResult getChanges() throws Exception {
-    String targetContent = StringUtils.EMPTY;
-    
-    if (!isNewPage()) {
-      PageImpl targetPage = (PageImpl) getTargetWikiPage();
-      if (targetPage != null) {
-        NTVersion lastestRevision = Utils.getLastRevisionOfPage(targetPage);
-        targetContent = lastestRevision.getNTFrozenNode().getContentString();
-        if (targetContent == null) {
-          targetContent = StringUtils.EMPTY;
-        }
-      }
-    }
-    DiffService diffService = (DiffService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(DiffService.class);
-    return diffService.getDifferencesAsHTML(targetContent, getContent().getText(), true);
-  }
 }

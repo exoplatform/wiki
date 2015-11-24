@@ -16,11 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -30,11 +26,17 @@ import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.ext.UIExtensionManager;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.mow.api.PageVersion;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.control.action.RestoreRevisionActionComponent;
 import org.exoplatform.wiki.webui.control.action.ViewRevisionActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -46,7 +48,7 @@ import org.exoplatform.wiki.webui.core.UIWikiForm;
 )
 public class UIWikiPageVersionsList extends UIWikiForm {
   
-  private List<NTVersion>    versionsList;
+  private List<PageVersion>    versionsList;
 
   public static final String RESTORE_ACTION = "RestoreRevision";
 
@@ -58,23 +60,26 @@ public class UIWikiPageVersionsList extends UIWikiForm {
   
   public static final String VERSION_NAME_PREFIX = "version";
 
+  private static WikiService wikiService;
+
   public UIWikiPageVersionsList() throws Exception {
     super();
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.SHOWHISTORY, WikiMode.VIEW });  
   }
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    this.versionsList = Utils.getCurrentPageRevisions();
+    this.versionsList = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
     getChildren().clear();
-    for (NTVersion version : this.versionsList) {
+    for (PageVersion version : this.versionsList) {
       addUIFormInput(new UICheckBoxInput(VERSION_NAME_PREFIX + "_" + version.getName(), "", false));
     }
     addChild(RestoreRevisionActionComponent.class, null, null);
     super.processRender(context);
   }
 
-  public List<NTVersion> getVersionsList() throws Exception {
+  public List<PageVersion> getVersionsList() throws Exception {
     return versionsList;
   }
   
@@ -102,9 +107,9 @@ public class UIWikiPageVersionsList extends UIWikiForm {
     @Override
     public void execute(Event<UIComponent> event) throws Exception {
       UIWikiPageVersionsList uiForm = (UIWikiPageVersionsList) event.getSource();
-      List<NTVersion> checkedVersions = new ArrayList<NTVersion>();
-      List<NTVersion> versions = Utils.getCurrentPageRevisions();
-      for (NTVersion version : versions) {
+      List<PageVersion> checkedVersions = new ArrayList<>();
+      List<PageVersion> versions = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
+      for (PageVersion version : versions) {
         UICheckBoxInput uiCheckBox = uiForm.getUICheckBoxInput(VERSION_NAME_PREFIX + "_" + version.getName());
         if (uiCheckBox.isChecked()) {
           checkedVersions.add(version);
@@ -115,11 +120,11 @@ public class UIWikiPageVersionsList extends UIWikiForm {
           .addMessage(new ApplicationMessage("UIWikiPageVersionsList.msg.checkGroup-required", null, ApplicationMessage.WARNING));   
         return;
       } else {
-        this.setVersionToCompare(new ArrayList<NTVersion>(versions));
+        this.setVersionToCompare(versions);
         String fromVersionName = checkedVersions.get(0).getName();
         String toVersionName = checkedVersions.get(1).getName();
         for (int i = 0; i < versions.size(); i++) {
-          NTVersion version = versions.get(i);
+          PageVersion version = versions.get(i);
           if (version.getName().equals(fromVersionName)) {
             this.setFrom(i);
           }

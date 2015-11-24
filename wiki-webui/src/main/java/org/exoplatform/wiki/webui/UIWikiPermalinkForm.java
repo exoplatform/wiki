@@ -16,19 +16,9 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.net.URLEncoder;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.portal.mop.SiteType;
-import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.IdentityConstants;
-import org.exoplatform.web.application.RequestContext;
-import org.exoplatform.web.url.navigation.NavigationResource;
-import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIPopupComponent;
@@ -39,15 +29,16 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.service.PermissionEntry;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPermissionForm.Scope;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
+
+import java.util.List;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -65,9 +56,13 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
   public static final String MAKE_PUBLIC_ACTION = "MakePublic";
   
   public static final String MANAGE_PERMISSION_ACTION = "ManagePermisisons";
+
+  private static WikiService wikiService;
   
   public UIWikiPermalinkForm() throws Exception {
     setActions(new String[] { RESTRICT_ACTION, MAKE_PUBLIC_ACTION, MANAGE_PERMISSION_ACTION });
+
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
   
   @Override
@@ -87,7 +82,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
   }
   
   protected boolean canPublicAndRetrictPage() throws Exception {
-    return Utils.canPublicAndRetrictPage();
+    return wikiService.canModifyPagePermission(Utils.getCurrentWikiPage(), org.exoplatform.wiki.utils.Utils.getCurrentUser());
   }
   
   /**
@@ -117,20 +112,20 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
       UIWikiPermalinkForm uiWikiPermalinkForm = event.getSource();
       if (uiWikiPermalinkForm.canPublicAndRetrictPage()) {
         Page currentPage = Utils.getCurrentWikiPage();
-        HashMap<String, String[]> permissions = currentPage.getPermission();
-        permissions.remove(IdentityConstants.ANY);
-        currentPage.setPermission(permissions);
-        
-        // Remove any permission of all attachments when making a page restricted
-        Collection<AttachmentImpl> attachments = ((PageImpl) currentPage).getAttachmentsExcludeContentByRootPermisison();
-        for (AttachmentImpl attachment : attachments) {
-          HashMap<String, String[]> attachmentPermissions = attachment.getPermission();
-          attachmentPermissions.remove(IdentityConstants.ANY);
-          attachment.setPermission(attachmentPermissions);
+        List<PermissionEntry> permissions = currentPage.getPermissions();
+        for(int i = 0; i < permissions.size(); i++) {
+          PermissionEntry permissionEntry = permissions.get(i);
+          if(permissionEntry.getId().equals(IdentityConstants.ANY.toString())) {
+            permissions.remove(i);
+            break;
+          }
         }
+        currentPage.setPermissions(permissions);
+
+        wikiService.updatePage(currentPage, null);
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
-        if (currentPage.hasPermission(PermissionType.VIEWPAGE)) {
+        if (wikiService.hasPermissionOnPage(currentPage, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())) {
           UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
           UIWikiPageControlArea uiWikiPageControlArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageControlArea.class);
           event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermalinkForm);
@@ -151,23 +146,15 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
       UIWikiPermalinkForm uiWikiPermalinkForm = event.getSource();
       if (uiWikiPermalinkForm.canPublicAndRetrictPage()) {
         Page currentPage = Utils.getCurrentWikiPage();
-        HashMap<String, String[]> permissions = currentPage.getPermission();
-        permissions.put(IdentityConstants.ANY, new String[] {
-            org.exoplatform.services.jcr.access.PermissionType.READ, 
-            org.exoplatform.services.jcr.access.PermissionType.ADD_NODE,
-            org.exoplatform.services.jcr.access.PermissionType.REMOVE,
-            org.exoplatform.services.jcr.access.PermissionType.SET_PROPERTY});
-        currentPage.setPermission(permissions);
-        
-        // Add any permission of all attachments when making a page public
-        Collection<AttachmentImpl> attachments = ((PageImpl) currentPage).getAttachmentsExcludeContentByRootPermisison();
-        for (AttachmentImpl attachment : attachments) {
-          HashMap<String, String[]> attachmentPermissions = attachment.getPermission();
-          if (!attachmentPermissions.containsKey(IdentityConstants.ANY)) {
-            attachmentPermissions.put(IdentityConstants.ANY, new String[] { org.exoplatform.services.jcr.access.PermissionType.READ });
-            attachment.setPermission(attachmentPermissions);
-          }
-        }
+        List<PermissionEntry> permissions = currentPage.getPermissions();
+        permissions.add(new PermissionEntry(IdentityConstants.ANY, "", IDType.MEMBERSHIP, new Permission[]{
+                new Permission(PermissionType.VIEWPAGE, true),
+                new Permission(PermissionType.EDITPAGE, true),
+                new Permission(PermissionType.ADMINPAGE, true)
+        }));
+        currentPage.setPermissions(permissions);
+
+        wikiService.updatePage(currentPage, null);
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
         UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);
@@ -191,10 +178,8 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         uiPopupContainer.activate(uiWikiPermissionForm, 800, 0);
         uiWikiPermissionForm.setPopupLevel(PopupLevel.L1);
         uiWikiPermissionForm.setScope(Scope.PAGE);
-        PageImpl page = (PageImpl) Utils.getCurrentWikiPage();
-        HashMap<String, String[]> permissionMap = page.getPermission();
-        List<PermissionEntry> permissionEntries = uiWikiPermissionForm.convertToPermissionEntryList(permissionMap);
-        uiWikiPermissionForm.setPermission(permissionEntries);
+        Page page = Utils.getCurrentWikiPage();
+        uiWikiPermissionForm.setPermission(page.getPermissions());
         event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
       }
     }

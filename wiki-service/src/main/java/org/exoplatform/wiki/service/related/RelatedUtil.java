@@ -3,7 +3,7 @@ package org.exoplatform.wiki.service.related;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.utils.Utils;
@@ -11,9 +11,9 @@ import org.exoplatform.wiki.utils.Utils;
 public final class RelatedUtil {
   private RelatedUtil() {}
   
-  public static List<JsonRelatedData> pageImplToJson(List<PageImpl> pages) {
-    List<JsonRelatedData> jsonObjs = new ArrayList<JsonRelatedData>();
-    for (PageImpl page : pages) {
+  public static List<JsonRelatedData> pageToJson(List<Page> pages) {
+    List<JsonRelatedData> jsonObjs = new ArrayList<>();
+    for (Page page : pages) {
       String name = page.getName();
       String title = page.getTitle();
       String path = TreeUtils.getPathFromPageParams(Utils.getWikiPageParams(page));
@@ -37,8 +37,8 @@ public final class RelatedUtil {
     if (params.getOwner() != null) {
       sb.append("/").append(Utils.validateWikiOwner(params.getType(), params.getOwner()));
     }
-    if (params.getPageId() != null) {
-      sb.append("/").append(params.getPageId());
+    if (params.getPageName() != null) {
+      sb.append("/").append(params.getPageName());
     }
     return sb.toString();
   }

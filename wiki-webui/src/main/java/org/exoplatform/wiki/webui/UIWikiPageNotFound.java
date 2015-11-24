@@ -25,9 +25,9 @@ import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.webui.core.UIWikiComponent;
 
 @ComponentConfig(lifecycle = Lifecycle.class, template = "app:/templates/wiki/webui/UIWikiPageNotFound.gtmpl")
@@ -44,7 +44,7 @@ public class UIWikiPageNotFound extends UIWikiComponent {
   protected Page getRelatedPage() {
     try {
       WikiPageParams params = Utils.getCurrentWikiPageParams();
-      return wservice.getRelatedPage(params.getType(), params.getOwner(), params.getPageId());
+      return wservice.getRelatedPage(params.getType(), params.getOwner(), params.getPageName());
     } catch (Exception e) {
      log.debug("Failed to get related page", e);
     }
@@ -52,7 +52,7 @@ public class UIWikiPageNotFound extends UIWikiComponent {
   }
 
   protected String getHomeURL(WikiPageParams param) throws Exception {
-    param.setPageId(WikiNodeType.Definition.WIKI_HOME_NAME);
+    param.setPageName(WikiConstants.WIKI_HOME_NAME);
     return Utils.getURLFromParams(param);
   }
 }

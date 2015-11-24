@@ -67,6 +67,10 @@
   </component>
   
   <component>
+  	<type>org.exoplatform.wiki.rendering.render.xwiki.image.BaseImageWriterImpl</type>
+  </component>
+  
+  <component>
     <key>org.exoplatform.wiki.service.DataStorage</key>
     <type>org.exoplatform.wiki.service.impl.JCRDataStorage</type>
   </component>
@@ -98,35 +102,6 @@
   
   <component>
     <type>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</type>
-  </component>
-  
-  
-  
-  <component>
-    <key>org.exoplatform.wiki.service.webdav.WebDavService</key>
-    <type>org.exoplatform.wiki.service.webdav.WebDavServiceImpl</type>
-    <init-params>
-      <value-param>
-        <name>auto-mix-lockable</name>
-        <value>false</value>
-      </value-param>
-      <value-param>
-        <name>def-folder-node-type</name>
-        <value>wiki:page</value>
-      </value-param>
-      <value-param>
-        <name>def-file-node-type</name>
-        <value>wiki:attachment</value>
-      </value-param>
-      <value-param>
-        <name>def-file-mimetype</name>
-        <value>text/plain</value>
-      </value-param>
-      <value-param>
-        <name>update-policy</name>
-        <value>create-version</value>
-      </value-param>
-    </init-params>
   </component>
   
   <!-- Only used for debugging and tracing -->
@@ -242,6 +217,8 @@
           <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer</value>
           <value>org.exoplatform.wiki.mow.core.api.wiki.UserWiki</value>
           <value>org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer</value>
+          <value>org.exoplatform.wiki.mow.core.api.wiki.TemplateImpl</value>
           <value>org.exoplatform.wiki.mow.core.api.content.ParagraphImpl</value>
           <value>org.exoplatform.wiki.mow.core.api.content.MarkupImpl</value>
           <value>org.exoplatform.wiki.mow.core.api.content.WikiLink</value>
@@ -263,60 +240,6 @@
         </properties-param>
       --></init-params>
     </component-plugin>
-  </external-component-plugins>
-  
-  <external-component-plugins>
-    <target-component>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</target-component>
-    <component-plugin>
-      <name>Last Update Action</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
-      <description>add actions plugin</description>
-      <init-params>
-        <object-param>
-          <name>actions</name>
-          <object type="org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin$ActionsConfig">
-            <field  name="actions">
-              <collection type="java.util.ArrayList">
-                <value>
-                  <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
-                    <field  name="eventTypes"><string>addNode,changeProperty</string></field>
-                    <field  name="nodeTypes"><string>wiki:page,wiki:attachment</string></field>
-                    <field  name="actionClassName"><string>org.exoplatform.wiki.service.jcrext.UpdateWikiPageAction</string></field>
-                  </object>
-                </value>
-              </collection>
-            </field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-    
-   <component-plugin>
-      <name>Update rendering cache when attachment is removed</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin</type>
-      <description>Update rendering cache when attachment is removed</description>
-      <init-params>
-        <object-param>
-          <name>actions</name>
-          <object type="org.exoplatform.services.jcr.impl.ext.action.AddActionsPlugin$ActionsConfig">
-            <field  name="actions">
-              <collection type="java.util.ArrayList">
-                <value>
-                  <object type="org.exoplatform.services.jcr.impl.ext.action.ActionConfiguration">
-                    <field  name="eventTypes"><string>removeNode</string></field>
-                    <field  name="nodeTypes"><string>wiki:attachment</string></field>
-                    <field  name="actionClassName"><string>org.exoplatform.wiki.service.jcrext.UpdateWikiPageAction</string></field>
-                  </object>
-                </value>
-              </collection>
-            </field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-  
   </external-component-plugins>
   
   <external-component-plugins>

@@ -16,15 +16,11 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
+import org.exoplatform.web.application.RequireJS;
 import org.exoplatform.webui.commons.EventUIComponent;
 import org.exoplatform.webui.commons.EventUIComponent.EVENTTYPE;
 import org.exoplatform.webui.commons.UISpacesSwitcher;
@@ -42,22 +38,19 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.tree.TreeNode;
 import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
-import org.exoplatform.wiki.webui.UIWikiBreadCrumb;
-import org.exoplatform.wiki.webui.UIWikiLocationContainer;
-import org.exoplatform.wiki.webui.UIWikiPageEditForm;
-import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
-import org.exoplatform.wiki.webui.UIWikiPortlet;
+import org.exoplatform.wiki.webui.*;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
-import org.exoplatform.wiki.webui.UIWikiRichTextArea;
-import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
+
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class, 
@@ -207,7 +200,10 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     public void execute(Event<UIWikiMovePageForm> event) throws Exception {  
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
-      popupContainer.cancelPopupAction();    
+      popupContainer.cancelPopupAction();
+      RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
+      requireJS.require("SHARED/UITreeExplorer", "UITreeExplorer")
+              .addScripts("UITreeExplorer.setMovePage(false); ");
     }
   } 
   
@@ -232,18 +228,18 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       }
       
       //If exist page same with move page name in new location
-      PageImpl movepage = (PageImpl) wservice.getPageById(currentLocationParams.getType(),
-                                                          currentLocationParams.getOwner(),
-                                                          currentLocationParams.getPageId());
+      Page movepage = wservice.getPageOfWikiByName(currentLocationParams.getType(),
+              currentLocationParams.getOwner(),
+              currentLocationParams.getPageName());
       
       // If user move page across spaces
       if (!currentLocationParams.getType().equals(newLocationParams.getType()) ||
           !currentLocationParams.getOwner().equals(newLocationParams.getOwner())) {
         
         // Get the list of dupplicated page
-        List<PageImpl> duplicatedPageList = wservice.getDuplicatePages(movepage, wservice.getWiki(newLocationParams.getType(), newLocationParams.getOwner()), null);
-        movePageForm.duplicatedPages = new ArrayList<UIWikiMovePageForm.PageInfo>();
-        for (PageImpl page : duplicatedPageList) {
+        List<Page> duplicatedPageList = wservice.getDuplicatePages(movepage, wservice.getWikiByTypeAndOwner(newLocationParams.getType(), newLocationParams.getOwner()), null);
+        movePageForm.duplicatedPages = new ArrayList<>();
+        for (Page page : duplicatedPageList) {
           movePageForm.duplicatedPages.add(movePageForm.new PageInfo(page));
         }
         
@@ -265,14 +261,17 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       
       
       // Update Page URL
-      movepage.setURL(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
+      movepage.setUrl(org.exoplatform.wiki.commons.Utils.getURLFromParams(newLocationParams));
       
       // Redirect to new location
       UIPopupContainer popupContainer = uiWikiPortlet.getPopupContainer(PopupLevel.L1);    
       popupContainer.cancelPopupAction();
-      newLocationParams.setPageId(currentLocationParams.getPageId());
+      newLocationParams.setPageName(currentLocationParams.getPageName());
       String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams, false);
       org.exoplatform.wiki.commons.Utils.redirect(permalink);
+      RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
+      requireJS.require("SHARED/UITreeExplorer", "UITreeExplorer")
+              .addScripts("UITreeExplorer.setMovePage(false); ");
     }
   }
 
@@ -323,7 +322,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       // Change the breadcrum
       UIWikiLocationContainer uiWikiLocationContainer = uiWikiMovePageForm.getChild(UIWikiLocationContainer.class);
       UIWikiBreadCrumb newlocation = uiWikiLocationContainer.getChildById(UIWikiLocationContainer.NEW_LOCATION);
-      newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageId()));
+      newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageName()));
       event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiMovePageForm.getParent());
     }
   }
@@ -335,7 +334,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       UIWikiPortlet wikiPortlet = uiWikiMovePageForm.getAncestorOfType(UIWikiPortlet.class);
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       Wiki currentWiki = Utils.getCurrentWiki();
-      PageImpl pageToRename = (PageImpl) wikiService.getPageById(currentWiki.getType(), currentWiki.getOwner(), pageId);
+      Page pageToRename = wikiService.getPageOfWikiByName(currentWiki.getType(), currentWiki.getOwner(), pageId);
       
       // if page to rename does not exist then show the warning
       if (pageToRename == null) {
@@ -350,7 +349,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       UIFormStringInput titleInput = pageEditForm.getChild(UIWikiPageTitleControlArea.class).getUIStringInput();
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       String title = pageToRename.getTitle();
-      String content = pageToRename.getContent().getText();
+      String content = pageToRename.getContent();
       titleInput.setEditable(true);
       titleInput.setValue(title);
       pageEditForm.setTitle(title);

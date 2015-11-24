@@ -16,35 +16,41 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.text.DateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-import java.util.StringTokenizer;
-
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.RenamedMixin;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
+
+import java.text.DateFormat;
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
+import java.util.StringTokenizer;
 
 @ComponentConfig(lifecycle = Lifecycle.class,
                  template = "app:/templates/wiki/webui/UIWikiAdvanceSearchResult.gtmpl",
                  events = {@EventConfig(listeners = UIWikiAdvanceSearchResult.ChangeMaxSizePageActionListener.class)})
 public class UIWikiAdvanceSearchResult extends UIContainer {
 
+  private static final Log LOG = ExoLogger.getLogger(UIWikiAdvanceSearchResult.class);
+
+  private WikiService wikiService;
+
   private PageList<SearchResult> results;
 
   public UIWikiAdvanceSearchResult() throws Exception {
+    this.wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     addChild(UIAdvancePageIterator.class, null, "SearchResultPageIterator");
   }
 
@@ -74,41 +80,33 @@ public class UIWikiAdvanceSearchResult extends UIContainer {
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
     return df.format(cal.getTime());
   }
-  
-  protected PageImpl getPage(SearchResult result) {
-    PageImpl page = null;
+
+  protected Page getPage(SearchResult result) {
     try {
-      if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
-        AttachmentImpl searchContent = (AttachmentImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
-        page = searchContent.getParentPage();
-      } else if (WikiNodeType.WIKI_PAGE.equals(result.getType()) || WikiNodeType.WIKI_HOME.equals(result.getType())) {
-        page = (PageImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
-      }
-      return page;
+      return wikiService.getPageOfWikiByName(result.getWikiType(), result.getWikiOwner(), result.getPageName());
     } catch (Exception e) {
+      LOG.error("Cannot page for search result " + result.getWikiType() + ":" + result.getWikiOwner() + ":" + result.getPageName());
       return null;
     }
   }
 
-  protected Wiki getWiki(PageImpl page) {
-    return (page != null ? page.getWiki() : null);
-  }
-
-  protected String getOldPageTitleInSearchResult(PageImpl page, String pageTitle) throws Exception {
+  protected String getOldPageTitleInSearchResult(Page page, String pageTitle) throws Exception {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     UIWikiAdvanceSearchForm advanceSearchForm = wikiPortlet.findFirstComponentOfType(UIWikiAdvanceSearchForm.class);
     String keyword = advanceSearchForm.getKeyword();
     if (pageTitle.indexOf(keyword) >= 0) {
       return "";
     }
-    if (page.getRenamedMixin() != null) {
-      RenamedMixin mix = page.getRenamedMixin();
-      for (String id : mix.getOldPageIds()) {
-        if (id.indexOf(keyword) >= 0) {
-          return replaceUnderscorebySpace(id);
+
+    List<String> previousNames = wikiService.getPreviousNamesOfPage(page);
+    if(previousNames != null) {
+      for (String name : previousNames) {
+        if (name.indexOf(keyword) >= 0) {
+          return replaceUnderscorebySpace(name);
         }
       }
     }
+
     return "";
   }
   

@@ -16,45 +16,33 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
+import org.chromattic.api.ChromatticSession;
+import org.chromattic.api.RelationshipType;
+import org.chromattic.api.annotations.*;
+import org.chromattic.ext.ntdef.NTFile;
+import org.chromattic.ext.ntdef.Resource;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.mow.core.api.MOWService;
+import org.exoplatform.wiki.utils.JCRUtils;
+import org.exoplatform.wiki.utils.Utils;
+
+import javax.jcr.Node;
+import javax.jcr.RepositoryException;
+import javax.jcr.version.Version;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 
-import javax.jcr.Node;
-import javax.jcr.version.Version;
-
-import org.chromattic.api.ChromatticSession;
-import org.chromattic.api.RelationshipType;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.Destroy;
-import org.chromattic.api.annotations.ManyToOne;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.PrimaryType;
-import org.chromattic.api.annotations.Property;
-import org.chromattic.api.annotations.WorkspaceName;
-import org.chromattic.ext.ntdef.NTFile;
-import org.chromattic.ext.ntdef.Resource;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
-import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
-import org.exoplatform.wiki.mow.api.Attachment;
-import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.MOWService;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.utils.Utils;
-
 
 @PrimaryType(name = WikiNodeType.WIKI_ATTACHMENT)
-public abstract class AttachmentImpl extends NTFile implements Attachment, Comparable<AttachmentImpl> {
+public abstract class AttachmentImpl extends NTFile implements Comparable<AttachmentImpl> {
 
-  private Permission permission = new PermissionImpl();
+  private PermissionImpl permission = new PermissionImpl();
   
   @Name
   public abstract String getName();
@@ -102,7 +90,7 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
     StringBuilder sb = new StringBuilder();
     String mimeType = getContentResource().getMimeType();
     PageImpl page = this.getParentPage();
-    Wiki wiki = page.getWiki();
+    WikiImpl wiki = page.getWiki();
     if (mimeType != null && mimeType.startsWith("image/") && wiki != null) {
       // Build REST url to view image
       sb.append(Utils.getDefaultRestBaseURI())
@@ -122,7 +110,7 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
         sb.append("/").append(this.getName());
       }
     } else {
-      sb.append(Utils.getCurrentRepositoryWebDavUri());
+      sb.append(JCRUtils.getCurrentRepositoryWebDavUri());
       sb.append(getWorkspace());
       String path = getPath();
       try {
@@ -136,7 +124,11 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
   }
   
   public String getFullTitle() {
-    String fullTitle = (getFileType() == null) ? getTitle() : getTitle().concat(getFileType());
+    String title = getTitle();
+    if(title == null) {
+      return null;
+    }
+    String fullTitle = (getFileType() == null) ? title : title.concat(getFileType());
     return (fullTitle != null) ? fullTitle : getName();
   }
 
@@ -166,21 +158,22 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
     setContentResource(textContent);
   }
   
-  public boolean hasPermission(PermissionType permissionType) throws Exception {
-    if (permission.getMOWService() == null) {
+  public boolean hasPermission(PermissionType permissionType) {
+    if (permission
+               .getMOWService() == null) {
       permission.setMOWService(getParentPage().getMOWService());
     }
     return permission.hasPermission(permissionType, getPath());
   }
   
-  public HashMap<String, String[]> getPermission() throws Exception {
+  public HashMap<String, String[]> getPermission() throws WikiException {
     if (permission.getMOWService() == null) {
       permission.setMOWService(getParentPage().getMOWService());
     }
     return permission.getPermission(getPath());
   }
 
-  public void setPermission(HashMap<String, String[]> permissions) throws Exception {
+  public void setPermission(HashMap<String, String[]> permissions) throws WikiException {
     if (permission.getMOWService() == null) {
       permission.setMOWService(getParentPage().getMOWService());
     }
@@ -213,7 +206,7 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
   }
   
   //TODO: replace by @Checkin when Chromattic support
-  public NTVersion checkin() throws Exception {
+  public NTVersion checkin() throws RepositoryException {
     getChromatticSession().save();
     Node pageNode = getJCRNode();
     Version newVersion = pageNode.checkin();
@@ -222,22 +215,27 @@ public abstract class AttachmentImpl extends NTFile implements Attachment, Compa
   }
   
   //TODO: replace by @Checkout when Chromattic support
-  public void checkout() throws Exception {
+  public void checkout() throws RepositoryException {
     Node pageNode = getJCRNode();
     pageNode.checkout();
   }
   
   //TODO: replace by @Restore when Chromattic support
-  public void restore(String versionName, boolean removeExisting) throws Exception {
-    Node attNode = getJCRNode();
-    attNode.restore(versionName, removeExisting);
+  public void restore(String versionName, boolean removeExisting) throws WikiException {
+    try {
+      Node attNode = getJCRNode();
+      attNode.restore(versionName, removeExisting);
+      attNode.checkout();
+    } catch (RepositoryException e) {
+      throw new WikiException("Cannot restore version " + versionName + " of page " + this.getName(), e);
+    }
   }
   
   public ChromatticSession getChromatticSession() {
     return org.exoplatform.wiki.rendering.util.Utils.getService(MOWService.class).getSession();
   }
   
-  public Node getJCRNode() throws Exception {
+  public Node getJCRNode() throws RepositoryException {
     return (Node) getChromatticSession().getJCRSession().getItem(getPath());
   }
   

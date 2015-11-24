@@ -9,7 +9,7 @@
     String restoreLink = uicomponent.event(uicomponent.RESTORE_ACTION, uicomponent.versionName);
     String viewHistoryLink = uicomponent.event(uicomponent.SHOW_HISTORY);
     String previousVersionsLink = uicomponent.isHasPreviousVersion() ? uicomponent.event(uicomponent.PREVIOUS_VERSION) : null;
-    String nextVersionsLink = uicomponent.isHasNextVersion() ? uicomponent.event(uicomponent.NEXT_VERSION) : null;
+    String nextVersionsLink = uicomponent.hasNextVersion() ? uicomponent.event(uicomponent.NEXT_VERSION) : null;
     String currentVersion = _ctx.appRes("UIWikiVersionSelect.label.Vesion").replace("{0}", uicomponent.versionName);
     String prevVersionNumber = "";
     if ( uicomponent.isHasPreviousVersion()) {
@@ -24,7 +24,7 @@
   %>
   <div class="decorationVersion well">
     
-        <% if(uicomponent.isHasNextVersion()) { %>
+        <% if(uicomponent.hasNextVersion()) { %>
           <div><span><%= _ctx.appRes("UIWikiVersionSelect.label.viewing-old-version-info"); %></span>
 		  <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#');"><strong><%= _ctx.appRes("UIWikiVersionSelect.label.CurrentVersion"); %></strong></a></div>
         <% } else { %>
@@ -32,7 +32,7 @@
         <% } %>
   
 		<div class="actionLink">
-		  <% if(uicomponent.isHasNextVersion()) { %>
+		  <% if(uicomponent.hasNextVersion()) { %>
 		    <a href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.COMPARE_ACTION');" ><%= _ctx.appRes("UIWikiVersionSelect.label.CompareWithCurrent"); %></a>&nbsp;|&nbsp;
 			<% if (uicomponent.renderRestoreRevisionActions()) { %>
 			  &nbsp;|&nbsp;
@@ -51,7 +51,7 @@
       
 	  <span class="Label"><%= "&nbsp;&nbsp;" +  currentVersion + "&nbsp;&nbsp;" %></span> 
 	  
-	  <% if(uicomponent.isHasNextVersion()) { %>
+	  <% if(uicomponent.hasNextVersion()) { %>
 	    <a class="btn" href="javascript:eXo.wiki.UIWikiAjaxRequest.makeNewHash('#$uicomponent.VIEW_REVISION/$nextVersionNumber');" ><%= _ctx.appRes("UIWikiVersionSelect.label.Next"); %></a>
 	    <a id="$nextVersionNumberLinkId" onclick="$nextVersionsLink"></a>
 	  <% } %>

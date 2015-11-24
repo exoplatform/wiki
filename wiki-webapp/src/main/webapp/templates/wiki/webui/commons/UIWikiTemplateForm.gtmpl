@@ -12,12 +12,12 @@
 <div class="uiWikiTemplateForm">
   <%uiform.begin();%>
   	<div class="resizable">
-	    <div class="templateControl">
-	      <div class="uiSearchInput" >	
-	        <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
-	        <button type="button" class="btn TemplateSearchButton" style="display:none" onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"><%=_ctx.appRes("UITemplateSettingForm.label.Search")%></button>
-	      </div>
-	    </div>
+        <div class="templateControl clearfix">
+            <div class="uiSearchInput pull-left" >
+                <% uiform.renderChild(uiform.TEMPLATE_SEARCHBOX);	%>
+                <a onclick="<%=uiform.event(uiform.ACTION_SEARCH);%>"  data-placement="bottom" rel="tooltip" class="advancedSearch" data-original-title="<%=_ctx.appRes("UITemplateSettingForm.label.Search")%>"><i class="uiIconSearch "></i></a>
+            </div>
+        </div>
 		
 	    <% uiform.renderChild(uiform.TEMPLATE_GRID);	%>
 	  </div>

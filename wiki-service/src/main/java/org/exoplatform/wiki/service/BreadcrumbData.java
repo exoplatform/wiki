@@ -12,9 +12,8 @@ public class BreadcrumbData {
   
   private String wikiOwner;
 
-  public BreadcrumbData(String id, String path, String title, String wikiType, String wikiOwner) {
+  public BreadcrumbData(String id, String title, String wikiType, String wikiOwner) {
     this.id = id;
-    this.path = path;
     this.title = title;
     this.wikiType = wikiType;
     this.wikiOwner = wikiOwner;
@@ -26,14 +25,6 @@ public class BreadcrumbData {
 
   public void setId(String id) {
     this.id = id;
-  }
-
-  public String getPath() {
-    return path;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
   }
 
   public String getTitle() {

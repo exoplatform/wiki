@@ -23,16 +23,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.UIComponent;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
+import org.exoplatform.wiki.mow.api.PageVersion;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.diff.DiffResult;
 import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
@@ -56,11 +56,11 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
   
   private String currentVersionIndex;
   
-  private List<NTVersion> versions;
+  private List<PageVersion> versions;
   
-  private NTVersion fromVersion;
+  private PageVersion fromVersion;
   
-  private NTVersion toVersion;
+  private PageVersion toVersion;
   
   private int changes;
   
@@ -82,16 +82,21 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
   private String toVersionAuthor;
   private String toVersionUpdateDate;
 
+  private static WikiService wikiService;
+
   public UIWikiPageVersionsCompare() {
     super();
+
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.COMPAREREVISION });
   }
 
-  public List<NTVersion> getVersions() {
+  public List<PageVersion> getVersions() {
     return versions;
   }
 
-  public void setVersions(List<NTVersion> versions) {
+  public void setVersions(List<PageVersion> versions) {
     this.versions = versions;
   }
 
@@ -111,16 +116,16 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
     this.currentVersionIndex = currentVersionIndex;
   }
 
-  public NTVersion getFromVersion() {
+  public PageVersion getFromVersion() {
     return fromVersion;
   }
   
-  public void setFromVersion(NTVersion fromVersion) throws Exception {
+  public void setFromVersion(PageVersion fromVersion) throws Exception {
     fromVersionName = fromVersion.getName();
-    fromVersionAuthor = Utils.getFullName(fromVersion.getNTFrozenNode().getAuthor());
+    fromVersionAuthor = Utils.getFullName(fromVersion.getAuthor());
     Locale currentLocale = Util.getPortalRequestContext().getLocale();
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
-    fromVersionUpdateDate = df.format(fromVersion.getNTFrozenNode().getUpdatedDate());
+    fromVersionUpdateDate = df.format(fromVersion.getUpdatedDate());
     this.fromVersion = fromVersion;
   }
   
@@ -136,16 +141,16 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
     return fromVersionUpdateDate;
   }
   
-  public NTVersion getToVersion() {
+  public PageVersion getToVersion() {
     return toVersion;
   }
 
-  public void setToVersion(NTVersion toVersion) throws Exception {
+  public void setToVersion(PageVersion toVersion) throws Exception {
     toVersionName = toVersion.getName();
-    toVersionAuthor = Utils.getFullName(toVersion.getNTFrozenNode().getAuthor());
+    toVersionAuthor = Utils.getFullName(toVersion.getAuthor());
     Locale currentLocale = Util.getPortalRequestContext().getLocale();
     DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
-    toVersionUpdateDate = df.format(toVersion.getNTFrozenNode().getUpdatedDate());
+    toVersionUpdateDate = df.format(toVersion.getUpdatedDate());
     this.toVersion = toVersion;
   }
   
@@ -169,18 +174,25 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
     this.changes = changes;
   }
 
-  public void renderVersionsDifference(List<NTVersion> versions, int from, int to) throws Exception {
+  public void renderVersionsDifference(List<PageVersion> versions, int from, int to) throws Exception {
+    if(versions == null) {
+      throw new IllegalArgumentException("Versions cannot be null");
+    }
+
     Collections.sort(versions, new VersionNameComparatorDesc());
     if (from < to) {
       int temp = to;
       to = from;
       from = temp;
     }
+    if(from >= versions.size()) {
+      throw new Exception("Cannot compare versions " + to + " and " + from + ", the page only has " + versions.size() + " versions");
+    }
     this.versions = versions;
-    NTVersion toVersion = versions.get(to);
-    String toVersionContent = toVersion.getNTFrozenNode().getContentString();
-    NTVersion fromVersion = versions.get(from);
-    String fromVersionContent = fromVersion.getNTFrozenNode().getContentString();
+    PageVersion toVersion = versions.get(to);
+    String toVersionContent = toVersion.getContent();
+    PageVersion fromVersion = versions.get(from);
+    String fromVersionContent = fromVersion.getContent();
     DiffService diffService = this.getApplicationComponent(DiffService.class);
     this.setRendered(true);
     this.setFromVersion(fromVersion);
@@ -199,10 +211,10 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
       UIWikiPageVersionsCompare component = (UIWikiPageVersionsCompare) event.getSource();
       String fromVersionName = event.getRequestContext().getRequestParameter(FROM_PARAM);
       String toVersionName = event.getRequestContext().getRequestParameter(TO_PARAM);
-      List<NTVersion> versions = Utils.getCurrentPageRevisions();
-      this.setVersionToCompare(new ArrayList<NTVersion>(versions));
+      List<PageVersion> versions = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
+      this.setVersionToCompare(new ArrayList<>(versions));
       for (int i = 0; i < versions.size(); i++) {
-        NTVersion version = versions.get(i);
+        PageVersion version = versions.get(i);
         if (version.getName().equals(fromVersionName)) {
           this.setFrom(i);
         }

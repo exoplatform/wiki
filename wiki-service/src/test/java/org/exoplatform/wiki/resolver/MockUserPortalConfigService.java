@@ -30,10 +30,14 @@ import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.wiki.mock.MockDataStorage;
 
 public class MockUserPortalConfigService extends UserPortalConfigService {
+
+  private static final Log log = ExoLogger.getLogger(MockUserPortalConfigService.class);
 
   /**
    * @param userACL
@@ -57,16 +61,13 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
   /* (non-Javadoc)
    * @see org.exoplatform.portal.config.UserPortalConfigService#getPage(java.lang.String, java.lang.String)
    */
-
   public PageContext getPage(PageKey pageRef) {
-    //return super.getPage(pageRef);
   	MockDataStorage mockData = new MockDataStorage();
   	Page page = null;
 		try {
 			page = mockData.getPage(pageRef.format());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			log.error("Cannot get page " + pageRef.getName() + " - Cause : " + e.getMessage(), e);
 		}
   	List<String> accessPermissions = null;
   	if(page.getAccessPermissions() !=null)

@@ -16,46 +16,57 @@
  */
 package org.exoplatform.wiki.tree;
 
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
+import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.tree.utils.TreeUtils;
+import org.exoplatform.wiki.utils.Utils;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.tree.utils.TreeUtils;
-import org.exoplatform.wiki.utils.Utils;
-
 public class PageTreeNode extends TreeNode {
-  private PageImpl page;
+  private static final Log log = ExoLogger.getLogger(PageTreeNode.class);
 
-  public PageTreeNode(PageImpl page) throws Exception {
+  private Page page;
+
+  private WikiService wikiService;
+
+  public PageTreeNode(Page page) throws Exception {
     super(page.getTitle(), TreeNodeType.PAGE);
+
+    this.wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
     this.page = page;
     this.path = buildPath();
-    this.hasChild = this.page.getChildPages().size() > 0;
   }
 
-  public PageImpl getPage() {
+  public Page getPage() {
     return page;
   }
 
-  public void setPage(PageImpl page) {
+  public void setPage(Page page) {
     this.page = page;
   }
 
   @Override
   protected void addChildren(HashMap<String, Object> context) throws Exception {
-    Collection<PageImpl> pages = page.getChildrenByRootPermission().values();
-    Iterator<PageImpl> childPageIterator = pages.iterator();
+    Collection<Page> pages = wikiService.getChildrenPageOf(page);
+    Iterator<Page> childPageIterator = pages.iterator();
     int count = 0;
     int size = getNumberOfChildren(context, pages.size());
     
-    PageImpl currentPage = (PageImpl) context.get(TreeNode.SELECTED_PAGE);
+    Page currentPage = (Page) context.get(TreeNode.SELECTED_PAGE);
     while (childPageIterator.hasNext() && count < size) {
-      PageImpl childPage = childPageIterator.next();
-      if (childPage.hasPermission(PermissionType.VIEWPAGE) ||  (currentPage != null && Utils.isDescendantPage(currentPage, childPage))) {
+      Page childPage = childPageIterator.next();
+      if (wikiService.hasPermissionOnPage(childPage, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())
+              ||  (currentPage != null && Utils.isDescendantPage(currentPage, childPage))) {
         PageTreeNode child = new PageTreeNode(childPage);
         this.children.add(child);
       }
@@ -74,9 +85,14 @@ public class PageTreeNode extends TreeNode {
   
   @Override
   public String buildPath() {
-    Wiki wiki = (Wiki) this.page.getWiki();
-    WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(),this.page.getName() );
-    return TreeUtils.getPathFromPageParams(params);    
+    try {
+      WikiPageParams params = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
+      return TreeUtils.getPathFromPageParams(params);
+    } catch (Exception e) {
+      log.error("Cannot build path of wiki page " + page.getWikiType() + ":" + page.getWikiOwner() + ":"
+              + page.getName() + " - Cause : " + e.getMessage(), e);
+      return null;
+    }
   }
 
 }

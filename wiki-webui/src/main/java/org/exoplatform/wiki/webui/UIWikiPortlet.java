@@ -23,8 +23,8 @@ import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.webui.util.Util;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -41,12 +41,12 @@ import org.exoplatform.wiki.WikiPortletPreference;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
-import org.exoplatform.wiki.resolver.PageResolver;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.PermissionType;
+import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.webui.UIWikiPermissionForm.Scope;
 import org.exoplatform.wiki.webui.control.UIAttachmentContainer;
@@ -87,6 +87,8 @@ public class UIWikiPortlet extends UIPortletApplication {
   
   private ResourceBundle resourceBundle;
 
+  private WikiService wikiService;
+
   private PortletMode portletMode;
   
   public static enum PopupLevel {
@@ -98,6 +100,7 @@ public class UIWikiPortlet extends UIPortletApplication {
   public UIWikiPortlet() throws Exception {
     super();
     try {
+      wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       addChild(UIWikiEmptyAjaxBlock.class, null, null);
       addChild(UIWikiPortletPreferences.class, null, null);
       addChild(UIWikiUpperArea.class, null, null);
@@ -142,6 +145,12 @@ public class UIWikiPortlet extends UIPortletApplication {
                                      .getChild(UIWikiBreadCrumb.class)
                                      .setRendered(portletPreferences.isShowBreadcrumb());     
       String requestURL = Utils.getCurrentRequestURL();
+
+      WikiPageParams wikiPageParams = Utils.getCurrentWikiPageParams();
+      Wiki wiki = Utils.getCurrentWiki();
+      if(wiki == null) {
+        wiki = wikiService.createWiki(wikiPageParams.getType(), wikiPageParams.getOwner());
+      }
       Page page = Utils.getCurrentWikiPage();
       
       if (page == null) {
@@ -149,28 +158,22 @@ public class UIWikiPortlet extends UIPortletApplication {
         super.processRender(app, context);
         return;
       } else {
-        if (WikiMode.VIEW.equals(this.getWikiMode())) {
-          ((PageImpl)page).migrateLegacyData();
-          ((PageImpl)page).migrateAttachmentPermission();
-        }
         if (mode.equals(WikiMode.PAGE_NOT_FOUND)) {
           changeMode(WikiMode.VIEW);
         }
 
         if((WikiMode.EDITPAGE.equals(this.getWikiMode()) || WikiMode.ADDPAGE.equals(this.getWikiMode()))
-                && !page.hasPermission(PermissionType.EDITPAGE) ){
+                && !wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity())) {
           changeMode(WikiMode.VIEW);
         }
       }
       
       // Check if page url is null then create url for it
-      if (StringUtils.isEmpty(page.getURL())) {
-        page.setURL(Utils.getURLFromParams(new WikiPageParams(page.getWiki().getType(), page.getWiki().getOwner(), page.getName())));
+      if (StringUtils.isEmpty(page.getUrl())) {
+        page.setUrl(Utils.getURLFromParams(new WikiPageParams(wiki.getType(), wiki.getOwner(), page.getName())));
       }
       
-      
-      WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
-      if (WikiContext.ADDPAGE.equalsIgnoreCase(pageParams.getParameter(WikiContext.ACTION))) {
+      if (WikiContext.ADDPAGE.equalsIgnoreCase(wikiPageParams.getParameter(WikiContext.ACTION))) {
         AddPageActionComponent addPageComponent = this.findFirstComponentOfType(AddPageActionComponent.class);
         if (addPageComponent != null) {
           Event<UIComponent> xEvent = addPageComponent.createEvent(AddPageActionComponent.ACTION, Event.Phase.PROCESS, context);
@@ -178,7 +181,7 @@ public class UIWikiPortlet extends UIPortletApplication {
             xEvent.broadcast();
           }
         }
-      }else if (org.exoplatform.wiki.utils.Utils.COMPARE_REVISION.equalsIgnoreCase(pageParams.getParameter(WikiContext.ACTION))) {
+      }else if (org.exoplatform.wiki.utils.Utils.COMPARE_REVISION.equalsIgnoreCase(wikiPageParams.getParameter(WikiContext.ACTION))) {
         //UIWikiPageInfoArea.COMPARE_REVISION
         UIWikiPageInfoArea pageInfoArea = this.findFirstComponentOfType(UIWikiPageInfoArea.class);
         if (pageInfoArea != null) {
@@ -314,7 +317,7 @@ public class UIWikiPortlet extends UIPortletApplication {
     HashMap<String, Object> context = new HashMap<String, Object>();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
     context.put(WikiConstants.WIKI_MODE, this.mode);
-    context.put(WikiConstants.CURRENT_PAGE, params.getPageId());
+    context.put(WikiConstants.CURRENT_PAGE, params.getPageName());
     context.put(WikiConstants.CURRENT_WIKI_OWNER, params.getOwner());
     context.put(WikiConstants.CURRENT_WIKI_TYPE, params.getType());
     UIWikiPageArea wikiPageArea = this.findFirstComponentOfType(UIWikiPageArea.class);

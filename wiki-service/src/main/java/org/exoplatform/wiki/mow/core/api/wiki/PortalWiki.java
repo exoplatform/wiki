@@ -21,7 +21,6 @@ import org.chromattic.api.annotations.ManyToOne;
 import org.chromattic.api.annotations.MappedBy;
 import org.chromattic.api.annotations.PrimaryType;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
 
 /**

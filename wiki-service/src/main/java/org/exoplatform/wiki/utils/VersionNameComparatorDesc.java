@@ -19,11 +19,11 @@ package org.exoplatform.wiki.utils;
 import java.io.Serializable;
 import java.util.Comparator;
 
-import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
+import org.exoplatform.wiki.mow.api.PageVersion;
 
-public class VersionNameComparatorDesc implements Comparator<NTVersion>,Serializable {
+public class VersionNameComparatorDesc implements Comparator<PageVersion>,Serializable {
 
-  public int compare(NTVersion version1, NTVersion version2) {
+  public int compare(PageVersion version1, PageVersion version2) {
     if (version1.getName().length() == version2.getName().length()) {
       return version2.getName().compareTo(version1.getName());
     } else {

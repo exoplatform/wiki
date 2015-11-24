@@ -1,13 +1,5 @@
 package org.exoplatform.wiki.service.impl;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchContext;
@@ -18,14 +10,15 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.mow.core.api.wiki.AttachmentImpl;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
+
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 
 /**
@@ -57,7 +50,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
    */
   public WikiSearchServiceConnector(InitParams initParams) {
     super(initParams);
-    wikiService = (WikiService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
     /**
@@ -177,15 +170,8 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
    * @return The wiki page.
    * @throws Exception
    */
-  private PageImpl getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
-    PageImpl page = null;
-    if (WikiNodeType.WIKI_PAGE_CONTENT.equals(result.getType()) || WikiNodeType.WIKI_ATTACHMENT.equals(result.getType())) {
-      AttachmentImpl searchContent = (AttachmentImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_ATTACHMENT);
-      page = searchContent.getParentPage();
-    } else if (WikiNodeType.WIKI_PAGE.equals(result.getType()) || WikiNodeType.WIKI_HOME.equals(result.getType())) {
-      page = (PageImpl) org.exoplatform.wiki.utils.Utils.getObject(result.getPath(), WikiNodeType.WIKI_PAGE);
-    }
-    return page;
+  private Page getPage(org.exoplatform.wiki.service.search.SearchResult result) throws Exception {
+    return wikiService.getPageOfWikiByName(result.getWikiType(), result.getWikiOwner(), result.getPageName());
   }
 
   /**
@@ -201,9 +187,9 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     try {
       
       // Get space name
-      PageImpl page = getPage(wikiSearchResult);
-      String spaceName = "";
-      Wiki wiki = page.getWiki();
+      Page page = getPage(wikiSearchResult);
+      String spaceName;
+      Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
       if (wiki.getType().equals(PortalConfig.GROUP_TYPE)) {
         String wikiOwner = wiki.getOwner();
         if (wikiOwner.indexOf('/') == -1) {
@@ -239,12 +225,13 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
   private String getPagePermalink(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer permalink = new StringBuffer();
     try {
-      PageImpl page = getPage(wikiSearchResult);
-      if (page.getWiki().getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
+      Page page = getPage(wikiSearchResult);
+      Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+      if (wiki.getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
         String portalContainerName = Utils.getPortalName();
         String portalOwner = context.getSiteName();
         String wikiWebappUri = wikiService.getWikiWebappUri();
-        String spaceGroupId = page.getWiki().getOwner();
+        String spaceGroupId = wiki.getOwner();
         
         permalink.append("/");
         permalink.append(portalContainerName);
@@ -259,7 +246,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
         permalink.append(page.getName());
       } else {
         String portalContainerName = Utils.getPortalName();
-        String url = page.getURL();
+        String url = page.getUrl();
         if (url != null) {
           url = url.substring(url.indexOf("/" + portalContainerName + "/"));
           permalink.append(url);
@@ -284,7 +271,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       String url = getPagePermalink(context, wikiSearchResult);
       String excerpt = wikiSearchResult.getExcerpt();
       String detail = getPageDetail(wikiSearchResult);
-      long relevancy = wikiSearchResult.getJcrScore();
+      long relevancy = wikiSearchResult.getScore();
       long date = wikiSearchResult.getUpdatedDate().getTime().getTime();
       String imageUrl = getResultIcon(wikiSearchResult);
       return new SearchResult(url, title, excerpt, detail, imageUrl, date, relevancy);

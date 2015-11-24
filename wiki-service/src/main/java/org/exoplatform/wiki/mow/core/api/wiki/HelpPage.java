@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.mow.core.api.wiki;
 
 import org.chromattic.api.annotations.PrimaryType;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
 
 @PrimaryType(name = WikiNodeType.WIKI_HELP_PAGE)
 public abstract class HelpPage extends PageImpl {

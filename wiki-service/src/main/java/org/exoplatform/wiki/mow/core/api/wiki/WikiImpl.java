@@ -16,55 +16,32 @@
  */
 package org.exoplatform.wiki.mow.core.api.wiki;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.chromattic.api.UndeclaredRepositoryException;
-import org.chromattic.api.annotations.Create;
-import org.chromattic.api.annotations.MappedBy;
-import org.chromattic.api.annotations.Name;
-import org.chromattic.api.annotations.OneToOne;
-import org.chromattic.api.annotations.Owner;
-import org.chromattic.api.annotations.Path;
-import org.chromattic.api.annotations.Property;
+import org.chromattic.api.annotations.*;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiNodeType;
+import org.exoplatform.services.security.Identity;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.service.PermissionType;
-import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.utils.WikiConstants;
 import org.xwiki.rendering.syntax.Syntax;
+
+import java.util.*;
 
 /**
  * @version $Revision$
  */
-public abstract class WikiImpl implements Wiki {
+public abstract class WikiImpl {
 
   private static final Log LOG           = ExoLogger.getLogger(WikiImpl.class);
-  
+
+  private PermissionImpl permission = new PermissionImpl();
+
   @Create
   public abstract PageImpl createWikiPage();
 
   public abstract WikiType getWikiType();
-  
-  
-  private WikiService wService;
-
-  public WikiService getWikiService() {
-    return this.wService;
-  }
-
-  public void setWikiService(WikiService wService) {
-    this.wService = wService;
-  }
-
-  public void initTemplate() {
-    String path = getPreferences().getPath();
-    wService.initDefaultTemplatePage(path);
-  }
   
   public WikiHome getWikiHome() {
     WikiHome home = getHome();
@@ -74,14 +51,18 @@ public abstract class WikiImpl implements Wiki {
       home.makeVersionable();
       home.setOwner(getOwner());
       AttachmentImpl content = home.getContent();
-      home.setTitle(WikiNodeType.Definition.WIKI_HOME_TITLE);
+      home.setTitle(WikiConstants.WIKI_HOME_TITLE);
+      Date now = GregorianCalendar.getInstance().getTime();
+      home.setCreatedDate(now);
+      home.setUpdatedDate(now);
       home.setSyntax(Syntax.XWIKI_2_0.toIdString());
       StringBuilder sb = new StringBuilder("= Welcome to ");
       String spaceName = getOwner();
       
       if (getType().equals(PortalConfig.GROUP_TYPE)) {
         try{
-          spaceName = wService.getSpaceNameByGroupId(getOwner());
+          // TODO launch the wiki home creation at service level
+          //spaceName = wService.getSpaceNameByGroupId(getOwner());
         } catch (Exception e) {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Can't get Space name by group ID : " + getOwner(), e);
@@ -149,13 +130,12 @@ public abstract class WikiImpl implements Wiki {
     return trash;
   }
   
-  public Preferences getPreferences()
+  public PreferencesImpl getPreferences()
   {
-    Preferences preferences = getPreferencesByChromattic();
+    PreferencesImpl preferences = getPreferencesByChromattic();
     if (preferences == null) {
       preferences = createPreferences();
       setPreferencesByChromattic(preferences);
-      preferences.getPreferencesSyntax().setDefaultSyntax(wService.getDefaultWikiSyntaxId());
     }
     return preferences;
   }
@@ -191,7 +171,7 @@ public abstract class WikiImpl implements Wiki {
   
   @OneToOne
   @Owner
-  @MappedBy(WikiNodeType.Definition.WIKI_HOME_NAME)
+  @MappedBy(WikiConstants.WIKI_HOME_NAME)
   protected abstract WikiHome getHome();
   protected abstract void setHome(WikiHome homePage);
   
@@ -219,10 +199,10 @@ public abstract class WikiImpl implements Wiki {
   @OneToOne
   @Owner
   @MappedBy(WikiNodeType.Definition.PREFERENCES)
-  protected abstract Preferences getPreferencesByChromattic();
-  protected abstract void setPreferencesByChromattic(Preferences preferences);
+  protected abstract PreferencesImpl getPreferencesByChromattic();
+  protected abstract void setPreferencesByChromattic(PreferencesImpl preferences);
   
   @Create
-  protected abstract Preferences createPreferences();
+  protected abstract PreferencesImpl createPreferences();
   
 }

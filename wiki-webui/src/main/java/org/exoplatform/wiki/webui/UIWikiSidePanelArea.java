@@ -21,7 +21,7 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
-import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
+import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiService;
@@ -68,10 +68,10 @@ public class UIWikiSidePanelArea extends UIContainer {
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     WikiContext wikiContext = org.exoplatform.wiki.commons.Utils.setUpWikiContext(wikiPortlet); 
     
-    PageImpl syntaxHelpPage = wikiService.getHelpSyntaxPage(syntaxId);
+    Page syntaxHelpPage = wikiService.getHelpSyntaxPage(syntaxId, false);
     this.syntaxName = syntaxId.replace("/", " ").toUpperCase();
     if (syntaxHelpPage != null) {
-      String markup = syntaxHelpPage.getContent().getText();
+      String markup = syntaxHelpPage.getContent();
       this.htmlOutput = renderingService.render(markup, syntaxId, Syntax.XHTML_1_0.toIdString(), false);
       this.syntaxFullPageUrl = "/" + PortalContainer.getInstance().getRestContextName() + "/wiki/help/"
           + syntaxId.replace("/", Utils.SLASH).replace(".", Utils.DOT)

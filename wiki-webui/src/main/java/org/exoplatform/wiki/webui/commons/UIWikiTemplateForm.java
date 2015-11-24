@@ -16,11 +16,8 @@
  */
 package org.exoplatform.wiki.webui.commons;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.ResourceBundle;
 
 import org.exoplatform.commons.utils.LazyPageList;
 import org.exoplatform.container.PortalContainer;
@@ -34,7 +31,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.core.api.wiki.Template;
+import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
@@ -89,15 +86,16 @@ public class UIWikiTemplateForm extends UIForm{
   
 
   public void initGrid() throws Exception {
+    List<TemplateBean> listBean = new ArrayList<>();
+
     WikiPageParams params = Utils.getCurrentWikiPageParams();
-    Iterator<Entry<String, Template>> iter = wService.getTemplates(params).entrySet().iterator();
-    List<TemplateBean> listBean = new ArrayList<TemplateBean>();
-    while (iter.hasNext()) {
-      Entry<String, Template> entry = iter.next();
-      Template template = entry.getValue();
-      listBean.add(new TemplateBean(template.getName(),
-                                    template.getTitle(),
-                                    template.getDescription()));
+    Map<String, Template> templatesMap = wService.getTemplates(params);
+    if(templatesMap != null) {
+      for(Template template : templatesMap.values()) {
+        listBean.add(new TemplateBean(template.getName(),
+                template.getTitle(),
+                template.getDescription()));
+      }
     }
     LazyPageList<TemplateBean> lazylist = new LazyPageList<TemplateBean>(new WikiTemplateListAccess(listBean),
                                                                          ITEMS_PER_PAGE);
