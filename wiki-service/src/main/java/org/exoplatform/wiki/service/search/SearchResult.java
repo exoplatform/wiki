@@ -11,7 +11,6 @@ public class SearchResult {
   protected String attachmentName;
   protected String excerpt;
   protected String title;
-  protected String path;
   protected SearchResultType type;
   protected String url;
   protected long score;
@@ -21,18 +20,16 @@ public class SearchResult {
   public SearchResult() {}
   
   public SearchResult(String wikiType, String wikiOwner, String pageName, String attachmentName, String excerpt,
-                      String title, String path, SearchResultType type, Calendar updatedDate, Calendar createdDate) {
+                      String title, SearchResultType type, Calendar updatedDate, Calendar createdDate) {
     this.wikiType = wikiType;
     this.wikiOwner = wikiOwner;
     this.pageName = pageName;
     this.attachmentName = attachmentName;
     this.excerpt = excerpt;
     this.title = title;
-    this.path = path;
     this.type = type;
     this.updatedDate = updatedDate;
     this.createdDate = createdDate;
-    evaluatePageName(path);
   }
 
   public String getWikiType() {
@@ -74,13 +71,6 @@ public class SearchResult {
     return title;
   }
   
-  public void setPath(String path) {
-    this.path = path;
-  }
-  public String getPath() {
-    return path;
-  }
-  
   public void setExcerpt(String text) {
     this.excerpt = text;
   }
@@ -95,15 +85,6 @@ public class SearchResult {
 
   public SearchResultType getType() {
     return type;
-  }
-  
-  private void evaluatePageName(String path) {
-    if (SearchResultType.PAGE.equals(type)) {
-      this.setPageName(path.substring(path.lastIndexOf("/")));
-    } else if (SearchResultType.ATTACHMENT.equals(type) || SearchResultType.PAGE_CONTENT.equals(type)) {
-      String temp = path.substring(0, path.lastIndexOf("/"));
-      this.setPageName(temp.substring(temp.lastIndexOf("/")));
-    }
   }
   
   public void setUrl(String url) {

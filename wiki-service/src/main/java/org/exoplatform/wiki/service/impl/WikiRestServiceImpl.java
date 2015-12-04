@@ -16,11 +16,31 @@
  */
 package org.exoplatform.wiki.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.Class;
+import java.lang.Object;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.*;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.xwiki.context.Execution;
+import org.xwiki.context.ExecutionContext;
+import org.xwiki.rendering.syntax.Syntax;
+
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
@@ -54,24 +74,6 @@ import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.utils.WikiNameValidator;
-import org.xwiki.context.Execution;
-import org.xwiki.context.ExecutionContext;
-import org.xwiki.rendering.syntax.Syntax;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.Class;
-import java.lang.Object;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.*;
 
 /**
  * {@inheritDoc}
@@ -554,9 +556,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         if(page != null) {
           if (SearchResultType.ATTACHMENT.equals(searchResult.getType())) {
             org.exoplatform.wiki.mow.api.Attachment attachment = wikiService.getAttachmentOfPageByName(searchResult.getAttachmentName(), page);
-            titleSearchResults.add(new TitleSearchResult(attachment.getName(), searchResult.getPath(), searchResult.getType(), attachment.getDownloadURL()));
+            titleSearchResults.add(new TitleSearchResult(attachment.getName(), searchResult.getType(), attachment.getDownloadURL()));
           } else {
-            titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), page.getUrl()));
+            titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getType(), page.getUrl()));
           }
         } else {
           log.warn("Cannot get page of search result " + searchResult.getWikiType() + ":" + searchResult.getWikiOwner() + ":" + searchResult.getPageName());
