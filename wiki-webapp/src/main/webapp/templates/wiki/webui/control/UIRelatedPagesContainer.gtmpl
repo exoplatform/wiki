@@ -1,12 +1,15 @@
-<% 
+<%
+  import org.exoplatform.container.ExoContainerContext;
+  import org.exoplatform.wiki.service.WikiService;
   import org.exoplatform.services.jcr.util.IdGenerator;
   import org.exoplatform.wiki.webui.control.action.AddRelatedPageActionComponent;
   import org.exoplatform.wiki.webui.control.action.RemoveRelatedPageActionComponent;
 %>
 <div class="uiPageInfoItem uiPageInfoRelatedPage">
   <%
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     def currentWikiPage = uicomponent.getCurrentPage();
-    def relatedPages = currentWikiPage.getRelatedPages(); 
+    def relatedPages = wikiService.getRelatedPagesOfPage(currentWikiPage);
   %>
   <table class="uiGrid table table-hover table-striped" >
     <caption><h6 class="pageInfoTitle"><%= _ctx.appRes("UIWikiPageInfo.label.related-pages") %></h6></caption>
