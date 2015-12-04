@@ -1082,6 +1082,7 @@ public class JCRDataStorage implements DataStorage {
   @Override
   public PageList<SearchResult> search(WikiSearchData data) throws WikiException {
     List<SearchResult> resultList = new ArrayList<>();
+    List<JCRSearchResult> jcrResultList = new ArrayList<>();
     long numberOfSearchForTitleResult = 0;
 
     boolean created = mowService.startSynchronization();
@@ -1104,41 +1105,45 @@ public class JCRDataStorage implements DataStorage {
         numberOfSearchForTitleResult = iter.getSize();
         if (numberOfSearchForTitleResult > 0) {
           while (iter.hasNext()) {
-            SearchResult tempResult = getResult(iter.nextRow(), data);
+            JCRSearchResult tempResult = getResult(iter.nextRow(), data);
             // If contains, merges with the exist
-            if (tempResult != null && !isContains(resultList, tempResult)) {
-              resultList.add(tempResult);
+            if (tempResult != null && !isContains(jcrResultList, tempResult)) {
+              jcrResultList.add(tempResult);
             }
           }
         }
       }
 
-      // if we have enough result then return
-      if ((resultList.size() >= data.getLimit()) || StringUtils.isEmpty(data.getContent())) {
-        return new ObjectPageList<>(resultList, resultList.size());
-      }
-      // Search for wiki content
-      long searchForContentOffset = data.getOffset();
-      long searchForContentLimit = data.getLimit() - numberOfSearchForTitleResult;
-      if (data.getLimit() == Integer.MAX_VALUE) {
-        searchForContentLimit = Integer.MAX_VALUE;
-      }
+      // if we don't have enough result, search in wiki pages content
+      if (!((jcrResultList.size() >= data.getLimit()) || StringUtils.isEmpty(data.getContent()))) {
+        // Search for wiki content
+        long searchForContentOffset = data.getOffset();
+        long searchForContentLimit = data.getLimit() - numberOfSearchForTitleResult;
+        if (data.getLimit() == Integer.MAX_VALUE) {
+          searchForContentLimit = Integer.MAX_VALUE;
+        }
 
-      if (searchForContentOffset >= 0 && searchForContentLimit > 0) {
-        JCRWikiSearchQueryBuilder queryBuilder = new JCRWikiSearchQueryBuilder(data);
-        String statement = queryBuilder.getStatementForSearchingContent();
-        QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
-        q.setOffset(searchForContentOffset);
-        q.setLimit(searchForContentLimit);
-        QueryResult result = q.execute();
-        RowIterator iter = result.getRows();
-        while (iter.hasNext()) {
-          SearchResult tempResult = getResult(iter.nextRow(), data);
-          // If contains, merges with the exist
-          if (tempResult != null && !isContains(resultList, tempResult) && !isDuplicateTitle(resultList, tempResult)) {
-            resultList.add(tempResult);
+        if (searchForContentOffset >= 0 && searchForContentLimit > 0) {
+          JCRWikiSearchQueryBuilder queryBuilder = new JCRWikiSearchQueryBuilder(data);
+          String statement = queryBuilder.getStatementForSearchingContent();
+          QueryImpl q = (QueryImpl) ((ChromatticSessionImpl) session).getDomainSession().getSessionWrapper().createQuery(statement);
+          q.setOffset(searchForContentOffset);
+          q.setLimit(searchForContentLimit);
+          QueryResult result = q.execute();
+          RowIterator iter = result.getRows();
+          while (iter.hasNext()) {
+            JCRSearchResult tempResult = getResult(iter.nextRow(), data);
+            // If contains, merges with the exist
+            if (tempResult != null && !isContains(jcrResultList, tempResult) && !isDuplicateTitle(jcrResultList, tempResult)) {
+              jcrResultList.add(tempResult);
+            }
           }
         }
+      }
+
+      // convert list of JCRSearchResult to list of SearchResult
+      for(SearchResult searchResult : jcrResultList) {
+        resultList.add(searchResult);
       }
 
       // Return all the result
@@ -1693,8 +1698,8 @@ public class JCRDataStorage implements DataStorage {
 
   }
 
-  private boolean isDuplicateTitle(List<SearchResult> list, SearchResult result) {
-    for (SearchResult searchResult : list) {
+  private boolean isDuplicateTitle(List<JCRSearchResult> list, JCRSearchResult result) {
+    for (JCRSearchResult searchResult : list) {
       if (result.getTitle().equals(searchResult.getTitle())) {
         return true;
       }
@@ -1777,14 +1782,14 @@ public class JCRDataStorage implements DataStorage {
     }
   }
   
-  private SearchResult getResult(Row row, WikiSearchData data) throws WikiException {
+  private JCRSearchResult getResult(Row row, WikiSearchData data) throws WikiException {
     boolean created = mowService.startSynchronization();
 
     try {
       String type = row.getValue(WikiNodeType.Definition.PRIMARY_TYPE).getString();
       String path = row.getValue(WikiNodeType.Definition.PATH).getString();
 
-      SearchResult result = new SearchResult();
+      JCRSearchResult result = new JCRSearchResult();
 
       long score = row.getValue("jcr:score").getLong();
       Calendar createdDate = GregorianCalendar.getInstance();
@@ -1931,7 +1936,7 @@ public class JCRDataStorage implements DataStorage {
     }
   }
   
-  private boolean isContains(List<SearchResult> list, SearchResult result) throws WikiException {
+  private boolean isContains(List<JCRSearchResult> list, JCRSearchResult result) throws WikiException {
     boolean created = mowService.startSynchronization();
 
     try {
@@ -1950,9 +1955,9 @@ public class JCRDataStorage implements DataStorage {
         page = att.getParentPage();
       }
       if (att != null || page != null) {
-        Iterator<SearchResult> iter = list.iterator();
+        Iterator<JCRSearchResult> iter = list.iterator();
         while (iter.hasNext()) {
-          SearchResult child = iter.next();
+          JCRSearchResult child = iter.next();
           if (WikiNodeType.WIKI_ATTACHMENT.equals(child.getType()) || WikiNodeType.WIKI_PAGE_CONTENT.equals(child.getType())) {
             AttachmentImpl tempAtt = (AttachmentImpl) findByPath(child.getPath(), WikiNodeType.WIKI_ATTACHMENT);
             if (att != null && att.equals(tempAtt)) {
@@ -2018,7 +2023,6 @@ public class JCRDataStorage implements DataStorage {
               data.getWikiOwner(),
               templateImpl.getName(),
               title,
-              path,
               SearchResultType.TEMPLATE,
               null,
               null,

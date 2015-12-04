@@ -715,8 +715,8 @@ public class WikiServiceImpl implements WikiService, Startable {
           Calendar wikiHomeUpdateDate = Calendar.getInstance();
           wikiHomeUpdateDate.setTime(homePage.getUpdatedDate());
 
-          SearchResult wikiHomeResult = new SearchResult(data.getWikiType(), data.getWikiOwner(), data.getPageId(),
-                  null, null, homePage.getTitle(), null, SearchResultType.PAGE, wikiHomeUpdateDate, wikiHomeCreateDate);
+          SearchResult wikiHomeResult = new SearchResult(data.getWikiType(), data.getWikiOwner(), homePage.getName(),
+                  null, null, homePage.getTitle(), SearchResultType.PAGE, wikiHomeUpdateDate, wikiHomeCreateDate);
           List<SearchResult> tempSearchResult = result.getAll();
           tempSearchResult.add(wikiHomeResult);
           result = new ObjectPageList<>(tempSearchResult, result.getPageSize());
