@@ -68,8 +68,7 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
       try {
         wikiNode = wikisNode.getNode(wikiOwner);
       } catch (PathNotFoundException e) {
-        wikiNode = wikisNode.addNode(wikiOwner, WikiNodeType.PORTAL_WIKI);
-        wikisNode.save();
+        return null;
       }
     } catch (RepositoryException e) {
       throw new UndeclaredRepositoryException(e);
@@ -77,7 +76,6 @@ public abstract class PortalWikiContainer extends WikiContainer<PortalWiki> {
 
     PortalWiki pwiki = session.findByNode(PortalWiki.class, wikiNode);
     pwiki.setPortalWikis(this);
-    if (pwiki.getOwner() == null) pwiki.setOwner(wikiOwner);
 
     return pwiki;
   }
