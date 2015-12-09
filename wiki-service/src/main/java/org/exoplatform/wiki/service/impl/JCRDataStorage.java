@@ -8,6 +8,7 @@ import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -41,7 +42,9 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URLConnection;
 import java.util.*;
 
@@ -1344,6 +1347,25 @@ public class JCRDataStorage implements DataStorage {
       mowService.stopSynchronization(created);
     }
   }
+  
+  @Override
+  public String getSpaceNameByGroupId(String groupId) {
+    try {
+      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
+      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
+
+      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
+      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
+      if(space != null) {
+        return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
+      } else {
+        return groupId.substring(groupId.lastIndexOf('/') + 1);
+      }
+    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+      log.error("Can not find space of group " + groupId + " - Cause : " + e.getMessage(), e);
+      return groupId.substring(groupId.lastIndexOf('/') + 1);
+    }
+  }
 
   private synchronized void createHelpPages(List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException {
     boolean created = mowService.startSynchronization();
@@ -2276,4 +2298,5 @@ public class JCRDataStorage implements DataStorage {
     }
     return template;
   }
+  
 }

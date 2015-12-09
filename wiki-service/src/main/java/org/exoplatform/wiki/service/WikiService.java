@@ -538,7 +538,7 @@ public interface WikiService {
    * @return The space name.
    * @throws WikiException
    */
-  public String getSpaceNameByGroupId(String groupId);
+  public String getSpaceNameByGroupId(String groupId) throws WikiException;
   
   /**
    * Searches for spaces by a given keyword.
@@ -750,4 +750,5 @@ public interface WikiService {
    * @throws WikiException
    */
   public void deleteWatcherOfPage(String username, Page page) throws WikiException;
+  
 }
