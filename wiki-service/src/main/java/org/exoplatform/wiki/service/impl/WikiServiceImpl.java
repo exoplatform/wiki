@@ -86,7 +86,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   private RenderingService renderingService;
 
   private DataStorage dataStorage;
-
+  
   private List<ValuesParam> syntaxHelpParams;
 
   private PropertiesParam preferencesParams;
@@ -1314,23 +1314,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
 
   @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public String getSpaceNameByGroupId(String groupId) {
-    try {
-      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-
-      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
-      if(space != null) {
-        return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
-      } else {
-        return groupId.substring(groupId.lastIndexOf('/') + 1);
-      }
-    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      log.error("Can not find space of group " + groupId + " - Cause : " + e.getMessage(), e);
-      return groupId.substring(groupId.lastIndexOf('/') + 1);
-    }
+  public String getSpaceNameByGroupId(String groupId) throws WikiException {
+      return dataStorage.getSpaceNameByGroupId(groupId);
   }
 
 
@@ -1519,5 +1504,4 @@ public class WikiServiceImpl implements WikiService, Startable {
       log.error("Cannot init emotion icons - Cause : " + e.getMessage(), e);
     }
   }
-
 }

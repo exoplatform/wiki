@@ -126,4 +126,6 @@ public interface DataStorage {
   public void addWatcherToPage(String username, Page page) throws WikiException;
 
   public void deleteWatcherOfPage(String username, Page page) throws WikiException;
+  
+  public String getSpaceNameByGroupId(String groupId) throws WikiException;
 }

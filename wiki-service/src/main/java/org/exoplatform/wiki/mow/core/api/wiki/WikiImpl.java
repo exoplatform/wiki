@@ -17,13 +17,16 @@
 package org.exoplatform.wiki.mow.core.api.wiki;
 
 import org.chromattic.api.annotations.*;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.xwiki.rendering.syntax.Syntax;
 
@@ -35,8 +38,8 @@ import java.util.*;
 public abstract class WikiImpl {
 
   private static final Log LOG           = ExoLogger.getLogger(WikiImpl.class);
-
-  private PermissionImpl permission = new PermissionImpl();
+  
+  private WikiService wikiService;
 
   @Create
   public abstract PageImpl createWikiPage();
@@ -61,8 +64,9 @@ public abstract class WikiImpl {
       
       if (getType().equals(PortalConfig.GROUP_TYPE)) {
         try{
+          wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
           // TODO launch the wiki home creation at service level
-          //spaceName = wService.getSpaceNameByGroupId(getOwner());
+          spaceName = wikiService.getSpaceNameByGroupId(getOwner());
         } catch (Exception e) {
           if (LOG.isDebugEnabled()) {
             LOG.debug("Can't get Space name by group ID : " + getOwner(), e);
