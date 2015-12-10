@@ -154,6 +154,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void start() {
+    initTemplates();
     initEmotionIcons();
   }
 
@@ -377,21 +378,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     wikiPreferences.setWikiPreferencesSyntax(wikiPreferencesSyntax);
     wiki.setPreferences(wikiPreferences);
     Wiki createdWiki = dataStorage.createWiki(wiki);
-
-    // init templates
-    for(WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
-      if (templatePlugin != null && templatePlugin.getTemplates() != null) {
-        for (Template template : templatePlugin.getTemplates()) {
-          try {
-            InputStream templateInputStream = configManager.getInputStream(template.getSourceFilePath());
-            template.setContent(IOUtils.toString(templateInputStream));
-            dataStorage.createTemplatePage(createdWiki, template);
-          } catch(Exception e) {
-            log.error("Cannot init template " + template.getName() + " - Cause : " + e.getMessage(), e);
-          }
-        }
-      }
-    }
 
     return createdWiki;
   }
@@ -1517,6 +1503,30 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
     } catch(WikiException e) {
       log.error("Cannot init emotion icons - Cause : " + e.getMessage(), e);
+    }
+  }
+
+  private void initTemplates() {
+    // init templates
+    for (WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
+      if (templatePlugin != null && templatePlugin.getTemplates() != null) {
+        String wikiType = "";
+        String wikiOwner = "";
+        for (Template template : templatePlugin.getTemplates()) {
+          try {
+            wikiType = template.getWikiType();
+            wikiOwner = template.getWikiOwner();
+            Wiki wiki = new Wiki(wikiType, wikiOwner);
+            Wiki createdWiki = dataStorage.createWiki(wiki);
+            InputStream templateInputStream = configManager.getInputStream(template.getSourceFilePath());
+            template.setContent(IOUtils.toString(templateInputStream));
+            dataStorage.createTemplatePage(createdWiki, template);
+          } catch (Exception e) {
+            log.error("Cannot init template " + template.getName() + " - Cause : " + e.getMessage(),
+                      e);
+          }
+        }
+      }
     }
   }
 
