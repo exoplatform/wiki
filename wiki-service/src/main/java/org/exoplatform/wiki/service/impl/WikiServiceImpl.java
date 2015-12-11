@@ -377,7 +377,14 @@ public class WikiServiceImpl implements WikiService, Startable {
     wikiPreferences.setWikiPreferencesSyntax(wikiPreferencesSyntax);
     wiki.setPreferences(wikiPreferences);
     Wiki createdWiki = dataStorage.createWiki(wiki);
-
+    StringBuilder sb = new StringBuilder("= Welcome to ");
+    String wikiLabel = owner;
+    if(wikiType.equals(PortalConfig.GROUP_TYPE)) {
+      wikiLabel = getSpaceNameByGroupId(owner);
+    }
+    sb.append(wikiLabel).append(" =");
+    createdWiki.getWikiHome().setContent(sb.toString());
+    updatePage(createdWiki.getWikiHome(), null);
     // init templates
     for(WikiTemplatePagePlugin templatePlugin : templatePagePlugins_) {
       if (templatePlugin != null && templatePlugin.getTemplates() != null) {
