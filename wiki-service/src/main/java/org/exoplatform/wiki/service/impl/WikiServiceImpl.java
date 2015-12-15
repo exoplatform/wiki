@@ -40,7 +40,7 @@ import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.services.deployment.plugins.XMLDeploymentPlugin;
+import org.exoplatform.services.wcm.extensions.deployment.WCMPublicationDeploymentPlugin;
 import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
@@ -1308,7 +1308,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       WikiStoreImpl wStore = (WikiStoreImpl) model.getWikiStore();
       if (wStore.getEmotionIconsPage() == null) {
         model.save();
-        XMLDeploymentPlugin emotionIconsPlugin = getEmotionIconsPlugin();
+        WCMPublicationDeploymentPlugin emotionIconsPlugin = getEmotionIconsPlugin();
         if (emotionIconsPlugin != null) {
           emotionIconsPlugin.deploy(sessionProvider);
         }
@@ -1320,10 +1320,10 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
 
-  private XMLDeploymentPlugin getEmotionIconsPlugin() {
+  private WCMPublicationDeploymentPlugin getEmotionIconsPlugin() {
     for (ComponentPlugin c : plugins_) {
-      if (c instanceof XMLDeploymentPlugin) {
-        return (XMLDeploymentPlugin) c;
+      if (c instanceof WCMPublicationDeploymentPlugin) {
+        return (WCMPublicationDeploymentPlugin) c;
       }
     }
     return null;

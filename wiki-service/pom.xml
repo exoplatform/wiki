@@ -176,6 +176,11 @@
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
     <dependency>
+      <groupId>org.exoplatform.ecms</groupId>
+      <artifactId>ecms-ext-authoring-services</artifactId>
+      <version>${org.exoplatform.ecms.version}</version>
+    </dependency>
+    <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-renderer</artifactId>
     </dependency>
