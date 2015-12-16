@@ -415,14 +415,23 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
-
     List<PermissionEntry> permissions = page.getPermissions();
     // if permissions are not set, init with default permissions
     if(permissions == null) {
       permissions = this.getWikiDefaultPermissions(wiki.getType(), wiki.getOwner());
       page.setPermissions(permissions);
     }
-
+    //init permission for page's creator
+    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
+    if(!isExistedPermissionEntry(currentUser, permissions, page)) {
+      PermissionEntry permissionEntry = new PermissionEntry(currentUser, "", IDType.USER, new Permission[] {
+                                                                  new Permission(PermissionType.VIEWPAGE, true),
+                                                                  new Permission(PermissionType.EDITPAGE, true),
+                                                                  new Permission(PermissionType.ADMINPAGE, true) 
+                                                                  });
+      permissions.add(permissionEntry);
+      page.setPermissions(permissions);
+    }
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
 
     invalidateCache(parentPage);
@@ -433,7 +442,23 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     return createdPage;
   }
-
+  private boolean isExistedPermissionEntry(String currentUser, List<PermissionEntry> permissions, Page page) {
+    for(PermissionEntry permissionEntry : permissions) {
+      if(permissionEntry.getId().equals(currentUser)) {
+        for(Permission permission : permissionEntry.getPermissions()) {
+          if (!(permission.getPermissionType().equals(PermissionType.ADMINPAGE) && permission.isAllowed())
+              || !(permission.getPermissionType().equals(PermissionType.ADMINSPACE) && permission.isAllowed())) {
+            permission.setPermissionType(PermissionType.ADMINPAGE);
+            permission.setAllowed(true);
+            permissions.add(permissionEntry);
+            page.setPermissions(permissions);
+            return true;
+          }
+        }
+      }
+    }
+    return false ;
+  }
   @Override
   public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws WikiException {
     Page page = null;
@@ -810,7 +835,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     return canModifyPage;
   }
-
+  
   @Override
   public List<PageVersion> getVersionsOfPage(Page page) throws WikiException {
     List<PageVersion> versions = dataStorage.getVersionsOfPage(page);
