@@ -546,4 +546,26 @@ public class Utils {
     return ConversationState.getCurrent().getIdentity().getUserId()
           + DRAFT_ID;
   }
+  
+  public static String getWikiTypeFromWikiId(String wikiId) {
+    String wikiType = "";
+    if (wikiId.startsWith("/spaces/")) {
+      wikiType = PortalConfig.GROUP_TYPE;
+    } else if (wikiId.startsWith("/user/")) {
+      wikiType = PortalConfig.USER_TYPE;
+    } else {
+      if (wikiId.startsWith("/")) {
+        wikiType = PortalConfig.PORTAL_TYPE;
+      }
+    }
+    return wikiType;
+  }
+
+  public static String getWikiOwnerFromWikiId(String wikiId) {
+    String wikiType = getWikiTypeFromWikiId(wikiId);
+    if(PortalConfig.USER_TYPE.equals(wikiType) || PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
+    }
+    return wikiId;
+  }
 }
