@@ -415,24 +415,14 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
+
     List<PermissionEntry> permissions = page.getPermissions();
     // if permissions are not set, init with default permissions
     if(permissions == null) {
       permissions = this.getWikiDefaultPermissions(wiki.getType(), wiki.getOwner());
       page.setPermissions(permissions);
     }
-    //init permission for page's creator
-    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-    if(!canModifyPagePermission(parentPage, currentUser)) {
-      PermissionEntry permissionEntry = new PermissionEntry(currentUser, "", IDType.USER, new Permission[] {
-                                                                  new Permission(PermissionType.VIEWPAGE, true),
-                                                                  new Permission(PermissionType.EDITPAGE, true),
-                                                                  new Permission(PermissionType.ADMINPAGE, true) 
-                                                                  });
-      permissions.add(permissionEntry);
-      page.setPermissions(permissions);
-    }
-    
+
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
 
     invalidateCache(parentPage);
