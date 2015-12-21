@@ -61,12 +61,20 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "wikiAttachement2");
     Page wikiHome = wiki.getWikiHome();
 
+    // Create permission entries
     List<PermissionEntry> expectedPermissions = new ArrayList<>();
+    PermissionEntry permissionEntry = new PermissionEntry("demo", "", IDType.USER, new Permission[]{
+            new Permission(PermissionType.VIEW_ATTACHMENT, true),
+            new Permission(PermissionType.EDIT_ATTACHMENT, true)
+    });
+    expectedPermissions.add(permissionEntry);
+
     // Create new wiki page
     Page page = new Page("testAttachmentPermissionPage", "testAttachmentPermissionPage");
     page.setOwner("demo");
+    page.setPermissions(expectedPermissions);
     page = wikiService.createPage(wiki, wikiHome.getName(), page);
-    expectedPermissions.addAll(page.getPermissions());
+
     // Create attachment
     Attachment attachment1 = new Attachment();
     attachment1.setName("AttachmentPermission.jpg");
@@ -76,10 +84,24 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     wikiService.addAttachmentToPage(attachment1, page);
 
     attachment1 = wikiService.getAttachmentOfPageByName("AttachmentPermission.jpg", page);
-    
+
+    // Check if permission is correct
+    PermissionEntry allPermissionEntry = new PermissionEntry("demo", "", IDType.USER, new Permission[]{
+            new Permission(PermissionType.VIEW_ATTACHMENT, true),
+            new Permission(PermissionType.EDIT_ATTACHMENT, true)
+    });
+    expectedPermissions.add(allPermissionEntry);
+
     List<PermissionEntry> actualPermissions = attachment1.getPermissions();
     assertNotNull(actualPermissions);
     assertEquals(expectedPermissions.size(), actualPermissions.size());
+    /*
+    for (String key : actualPermissions.keySet()) {
+      String[] expectPermission = expectedPermissions.get(key);
+      String[] actualPermission = actualPermissions.get(key);
+      assertTrue(Arrays.equals(expectPermission, actualPermission));
+    }
+    */
   }
 
   public void testGetPageAttachment() throws Exception{
