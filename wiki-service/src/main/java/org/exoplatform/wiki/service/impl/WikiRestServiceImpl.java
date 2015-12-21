@@ -548,7 +548,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                              @QueryParam("wikiType") String wikiType,
                              @QueryParam("wikiOwner") String wikiOwner) throws Exception {
     try {
-      WikiSearchData data = new WikiSearchData(keyword.toLowerCase(), null, wikiType, wikiOwner);
+      keyword = keyword.toLowerCase();
+      WikiSearchData data = new WikiSearchData(keyword, keyword, wikiType, wikiOwner);
       data.setLimit(10);
       List<SearchResult> results = wikiService.search(data).getAll();
       List<TitleSearchResult> titleSearchResults = new ArrayList<>();
