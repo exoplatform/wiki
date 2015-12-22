@@ -421,16 +421,39 @@ public class WikiServiceImpl implements WikiService, Startable {
       permissions = this.getWikiDefaultPermissions(wiki.getType(), wiki.getOwner());
       page.setPermissions(permissions);
     }
-    //init permission for page's creator
+    // init permission for page's creator
     String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-    if(!isExistedPermissionEntry(currentUser, permissions, page)) {
-      PermissionEntry permissionEntry = new PermissionEntry(currentUser, "", IDType.USER, new Permission[] {
-                                                                  new Permission(PermissionType.VIEWPAGE, true),
-                                                                  new Permission(PermissionType.EDITPAGE, true),
-                                                                  new Permission(PermissionType.ADMINPAGE, true) 
-                                                                  });
-      permissions.add(permissionEntry);
-      page.setPermissions(permissions);
+    PermissionEntry currentUserPermEnty = null;
+    for (PermissionEntry permEntry : page.getPermissions()) {
+      // get user permission entry  
+      if (permEntry.getId().equals(currentUser)) {
+        currentUserPermEnty = permEntry;
+        Boolean hasAdminPerm = false;
+        for (Permission permission : permEntry.getPermissions()) {
+          if (permission.getPermissionType().equals(PermissionType.ADMINPAGE)) {
+            if (!permission.isAllowed()) {
+              permission.setAllowed(true);
+            } 
+            hasAdminPerm = true;
+            break;
+          }
+        }
+        if (!hasAdminPerm) {
+          // if user has no ADMINPAGE permission, add and update user PermissionEntry
+          List<Permission> userPermissions = Arrays.asList(permEntry.getPermissions());
+          userPermissions.add(new Permission(PermissionType.ADMINPAGE, true));
+          permEntry.setPermissions((Permission[]) userPermissions.toArray());
+        }
+        break;
+      }
+    }
+    // if page has no permission entry for current user, init and add user permission entry
+    if (currentUserPermEnty == null) {
+      currentUserPermEnty = new PermissionEntry(currentUser, "", IDType.USER, new Permission[] {
+          new Permission(PermissionType.VIEWPAGE, true),
+          new Permission(PermissionType.EDITPAGE, true),
+          new Permission(PermissionType.ADMINPAGE, true) });
+      page.getPermissions().add(currentUserPermEnty);
     }
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
 
@@ -441,23 +464,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     postAddPage(wiki.getType(), wiki.getOwner(), page.getName(), createdPage);
 
     return createdPage;
-  }
-  private boolean isExistedPermissionEntry(String currentUser, List<PermissionEntry> permissions, Page page) {
-    for(PermissionEntry permissionEntry : permissions) {
-      if(permissionEntry.getId().equals(currentUser)) {
-        for(Permission permission : permissionEntry.getPermissions()) {
-          if (!(permission.getPermissionType().equals(PermissionType.ADMINPAGE) && permission.isAllowed())
-              || !(permission.getPermissionType().equals(PermissionType.ADMINSPACE) && permission.isAllowed())) {
-            permission.setPermissionType(PermissionType.ADMINPAGE);
-            permission.setAllowed(true);
-            permissions.add(permissionEntry);
-            page.setPermissions(permissions);
-            return true;
-          }
-        }
-      }
-    }
-    return false ;
   }
   @Override
   public Page getPageOfWikiByName(String wikiType, String wikiOwner, String pageName) throws WikiException {
