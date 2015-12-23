@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui.extension;
 
+import org.apache.commons.lang.StringEscapeUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -93,7 +94,7 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
       Template template = wservice.getTemplatePage(pageParams, templateId);
      
       titleInput.setValue(template.getTitle());
-      descriptionInput.setValue(template.getDescription());
+      descriptionInput.setValue(StringEscapeUtils.unescapeHtml(template.getDescription()));
       pageEditForm.setTitle(template.getTitle());
       markupInput.setValue(template.getContent());
       
