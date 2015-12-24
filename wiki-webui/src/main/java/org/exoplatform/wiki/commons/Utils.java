@@ -87,9 +87,10 @@ public class Utils {
     return getSpaceName(currentSpace);
   }
   
-  public static String getSpaceName(Wiki space) throws Exception {
-    if (WikiType.PORTAL.equals(space.getType())) {
-      String displayName = space.getId();
+  public static String getSpaceName(Wiki wiki) throws Exception {
+    WikiType wikiType = WikiType.valueOf(wiki.getType().toUpperCase());
+    if (WikiType.PORTAL.equals(wikiType)) {
+      String displayName = wiki.getId();
       int slashIndex = displayName.lastIndexOf('/');
       if (slashIndex > -1) {
         displayName = displayName.substring(slashIndex + 1);
@@ -97,19 +98,19 @@ public class Utils {
       return Utils.upperFirstCharacter(displayName);
     }
 
-    if (WikiType.USER.equals(space.getType())) {
+    if (WikiType.USER.equals(wikiType)) {
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-      if (space.getOwner().equals(currentUser)) {
+      if (wiki.getOwner().equals(currentUser)) {
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         ResourceBundle res = context.getApplicationResourceBundle();
         String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
         return mySpaceLabel;
       }
-      return space.getOwner();
+      return wiki.getOwner();
     }
 
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    return wikiService.getSpaceNameByGroupId(space.getOwner());
+    return wikiService.getSpaceNameByGroupId(wiki.getOwner());
   }
   
   public static String getCurrentRequestURL() throws Exception {
