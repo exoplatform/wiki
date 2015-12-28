@@ -440,9 +440,9 @@ public class WikiServiceImpl implements WikiService, Startable {
         }
         if (!hasAdminPerm) {
           // if user has no ADMINPAGE permission, add and update user PermissionEntry
-          List<Permission> userPermissions = Arrays.asList(permEntry.getPermissions());
+          List<Permission> userPermissions = new ArrayList<Permission>(Arrays.asList(permEntry.getPermissions()));
           userPermissions.add(new Permission(PermissionType.ADMINPAGE, true));
-          permEntry.setPermissions((Permission[]) userPermissions.toArray());
+          permEntry.setPermissions(userPermissions.toArray(new Permission[userPermissions.size()]));
         }
         break;
       }
