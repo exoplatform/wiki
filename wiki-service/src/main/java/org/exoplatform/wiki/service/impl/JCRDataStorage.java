@@ -8,6 +8,8 @@ import org.chromattic.core.api.ChromatticSessionImpl;
 import org.chromattic.ext.ntdef.Resource;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -18,6 +20,8 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion;
 import org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin;
@@ -27,7 +31,9 @@ import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.DataStorage;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.service.search.jcr.JCRTemplateSearchQueryBuilder;
 import org.exoplatform.wiki.service.search.jcr.JCRWikiSearchQueryBuilder;
@@ -41,6 +47,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+
 import java.io.*;
 import java.net.URLConnection;
 import java.util.*;
@@ -53,7 +60,9 @@ public class JCRDataStorage implements DataStorage {
   private static final int CIRCULAR_RENAME_FLAG = 1000;
 
   private MOWService mowService;
-
+  
+  private SpaceService spaceService;
+  
   public JCRDataStorage(MOWService mowService) {
     this.mowService = mowService;
   }
@@ -583,8 +592,8 @@ public class JCRDataStorage implements DataStorage {
       }
       ChromatticSession session = mowService.getSession();
       Page movePage = new Page(currentLocationParams.getPageName());
-      destPage.setWikiType(currentLocationParams.getType());
-      destPage.setWikiOwner(currentLocationParams.getOwner());
+      movePage.setWikiType(currentLocationParams.getType());
+      movePage.setWikiOwner(currentLocationParams.getOwner());
       PageImpl movePageImpl = fetchPageImpl(movePage);
       WikiImpl sourceWiki = (WikiImpl) movePageImpl.getWiki();
       MovedMixin mix = movePageImpl.getMovedMixin();
@@ -600,37 +609,35 @@ public class JCRDataStorage implements DataStorage {
 
       // Update permission if moving page to other space or other wiki
       Collection<AttachmentImpl> attachments = movePageImpl.getAttachmentsExcludeContentByRootPermisison();
-      HashMap<String, String[]> pagePermission = movePageImpl.getPermission();
-      if (PortalConfig.GROUP_TYPE.equals(currentLocationParams.getType())
-              && (!currentLocationParams.getOwner().equals(newLocationParams.getOwner())
-              || !PortalConfig.GROUP_TYPE.equals(newLocationParams.getType()))) {
-        // Remove old space permission first
-        Iterator<Map.Entry<String, String[]>> pagePermissionIterator = pagePermission.entrySet().iterator();
-        while (pagePermissionIterator.hasNext()) {
-          Map.Entry<String, String[]> permissionEntry = pagePermissionIterator.next();
-          if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
-            pagePermissionIterator.remove();
+      Map<String, String[]> pagePermissions = movePageImpl.getPermission();
+      Map<String, String[]> updatedPagePermissions = new HashMap<String, String[]>();
+      for (String key : pagePermissions.keySet()) {
+        // remove source permission entry
+        if (key.equals(movePageImpl.getAuthor())) {
+          updatedPagePermissions.put(key, pagePermissions.get(key));
+        }
+      }
+      movePageImpl.setPermission((HashMap<String, String[]>) updatedPagePermissions);
+
+      for (AttachmentImpl attachment : attachments) {
+        HashMap<String, String[]> attachmentPermission = attachment.getPermission();
+        Iterator<Map.Entry<String, String[]>> attachmentPermissionIterator = attachmentPermission.entrySet().iterator();
+        while (attachmentPermissionIterator.hasNext()) {
+          Map.Entry<String, String[]> permissionEntry = attachmentPermissionIterator.next();
+          if (!permissionEntry.getKey().equals(attachment.getCreator())) {
+            attachmentPermissionIterator.remove();
           }
         }
-        for (AttachmentImpl attachment : attachments) {
-          HashMap<String, String[]> attachmentPermission = attachment.getPermission();
-          Iterator<Map.Entry<String, String[]>> attachmentPermissionIterator = attachmentPermission.entrySet().iterator();
-          while (attachmentPermissionIterator.hasNext()) {
-            Map.Entry<String, String[]> permissionEntry = attachmentPermissionIterator.next();
-            if (StringUtils.substringAfter(permissionEntry.getKey(), ":").equals(currentLocationParams.getOwner())) {
-              attachmentPermissionIterator.remove();
-            }
-          }
-          attachment.setPermission(attachmentPermission);
-        }
+        attachment.setPermission(attachmentPermission);
       }
 
       // Update permission by inherit from parent
       HashMap<String, String[]> parentPermissions = destPageImpl.getPermission();
-      pagePermission.putAll(parentPermissions);
+      updatedPagePermissions = movePageImpl.getPermission();
+      updatedPagePermissions.putAll(parentPermissions);
 
-      // Set permission to page
-      movePageImpl.setPermission(pagePermission);
+      // Set permission to moved pages
+      updatePagePermission(movePageImpl, updatedPagePermissions);
 
       for (AttachmentImpl attachment : attachments) {
         HashMap<String, String[]> attachmentPermission = attachment.getPermission();
@@ -638,6 +645,8 @@ public class JCRDataStorage implements DataStorage {
         attachment.setPermission(attachmentPermission);
       }
 
+      // Update URL for moved pages
+      updateURL(movePageImpl, newLocationParams);
 
       //update LinkRegistry
       if (!newLocationParams.getType().equals(currentLocationParams.getType())
@@ -672,12 +681,83 @@ public class JCRDataStorage implements DataStorage {
           processCircularRename(entry, newEntry);
         }
       }
+      //Post on Activity
+      postOnActivity(movePageImpl, newLocationParams);
+      
       session.save();
     } finally {
       mowService.stopSynchronization(created);
     }
   }
+  
+  private void updatePagePermission(PageImpl page, Map<String, String[]> pagePermission) throws WikiException {
+    page.setPermission((HashMap<String, String[]>) pagePermission);
+    if (page.getChildPages().size() > 0) {
+      for (PageImpl childPage : page.getChildPages().values()) {
+        updatePagePermission(childPage, pagePermission);
+      }
+    }
+  }
+  
+  private void updateURL(PageImpl movePageImpl, WikiPageParams newLocationParams) {
+    try {
+      spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+      Space space = spaceService.getSpaceByGroupId(newLocationParams.getOwner());
+      StringBuilder spaceUrl = new StringBuilder();
+      if (newLocationParams.getType().equals(PortalConfig.GROUP_TYPE)) {
+        spaceUrl = new StringBuilder(org.exoplatform.social.webui.Utils.getSpaceHomeURL(space));
+        if (!spaceUrl.toString().endsWith("/")) {
+          spaceUrl.append("/");
+        }
+        String apps = space.getApp();
+        if (apps != null) {
+          for (String app : apps.split(",")) {
+            String[] appInfos = app.split(":");
+            if (appInfos.length > 1 && "WikiPortlet".equals(appInfos[0])) {
+              spaceUrl.append(appInfos[1]).append("/");
+            }
+          }
+        } else {
+          spaceUrl.append("wiki").append("/");
+        }
+        if (!StringUtils.isEmpty(newLocationParams.getPageName())) {
+          spaceUrl.append(newLocationParams.getPageName());
+        } else {
+          spaceUrl.toString();
+        }
+      } else {
+        spaceUrl.append(org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams, false));
+      }
+      movePageImpl.setURL(spaceUrl.toString());
+      String destLocation = movePageImpl.getURL();
+      String destURL = destLocation.substring(0, destLocation.lastIndexOf("/") + 1);
+      changeURL(movePageImpl, destURL);
 
+    } catch (Exception e) {
+      log.error("Cannot get the URL from new location" + ":" + newLocationParams.getOwner() + ":"
+          + newLocationParams.getPageName() + " - Cause : " + e.getMessage(), e);
+    }
+  }
+  private void changeURL(PageImpl page, String destURL) throws WikiException {
+    page.setURL(destURL + page.getName());
+    if (page.getChildPages().size() > 0) {
+      for (PageImpl childPage : page.getChildPages().values()) {
+        changeURL(childPage, destURL);
+      }
+    }
+  }
+  private void postOnActivity(PageImpl movePageImpl, WikiPageParams newLocationParams) throws WikiException {
+    WikiServiceImpl wservice = (WikiServiceImpl) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    Page movePage = getPageOfWikiByName(newLocationParams.getType(), newLocationParams.getOwner(), movePageImpl.getName());
+    //Post on Activity Stream
+    wservice.postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
+    if (movePageImpl.getChildPages().size() > 0) {
+      for (PageImpl childPageImpl : movePageImpl.getChildPages().values()) {
+        postOnActivity(childPageImpl, newLocationParams);
+      }
+    }
+  }
+  
   @Override
   public List<PermissionEntry> getWikiPermission(String wikiType, String wikiOwner) throws WikiException {
     List<PermissionEntry> permissionEntries = new ArrayList<>();

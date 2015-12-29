@@ -25,6 +25,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
@@ -84,6 +86,8 @@ public class WikiServiceImpl implements WikiService, Startable {
   private UserACL userACL;
 
   private RenderingService renderingService;
+  
+  private SpaceService spaceService_;
 
   private DataStorage dataStorage;
 
@@ -594,10 +598,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public boolean movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws WikiException {
     try {
-      Page movePage = getPageOfWikiByName(currentLocationParams.getType(),
-          currentLocationParams.getOwner(),
-          currentLocationParams.getPageName());
-
       dataStorage.movePage(currentLocationParams, newLocationParams);
 
       Page page = new Page(currentLocationParams.getPageName());
@@ -607,7 +607,6 @@ public class WikiServiceImpl implements WikiService, Startable {
       invalidateUUIDCache(page);
       invalidateAttachmentCache(page);
 
-      postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
     } catch (WikiException e) {
       log.error("Can't move page '" + currentLocationParams.getPageName() + "' ", e);
       return false;
@@ -1373,26 +1372,19 @@ public class WikiServiceImpl implements WikiService, Startable {
 
 
   @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({ "rawtypes", "unchecked" })
   public String getSpaceNameByGroupId(String groupId) {
-    try {
-      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-
-      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
-      if(space != null) {
-        return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
+    spaceService_ = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    if (spaceService_ != null) {
+      Space space = spaceService_.getSpaceByGroupId(groupId);
+      if (space != null) {
+        return space.getDisplayName();
       } else {
         return groupId.substring(groupId.lastIndexOf('/') + 1);
       }
-    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      log.error("Can not find space of group " + groupId + " - Cause : " + e.getMessage(), e);
-      return groupId.substring(groupId.lastIndexOf('/') + 1);
     }
+    return groupId.substring(groupId.lastIndexOf('/') + 1);
   }
-
-
 
   /******* Listeners *******/
 
