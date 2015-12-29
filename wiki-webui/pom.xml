@@ -217,7 +217,6 @@
     <dependency>
       <groupId>org.exoplatform.commons</groupId>
       <artifactId>commons-component-common</artifactId>
-      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>

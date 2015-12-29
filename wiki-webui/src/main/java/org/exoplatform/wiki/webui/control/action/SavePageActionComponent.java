@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.webui.control.action;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -130,16 +131,18 @@ public class SavePageActionComponent extends UIComponent {
           Utils.redirect(Utils.getCurrentWikiPageParams(), WikiMode.EDITPAGE);
           return;
         }
+        
+        String htmlContent;
+        String markup;
         if (wikiRichTextArea.isRendered()) {
-          String htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
-          String markupContent = renderingService.render(htmlContent,
-                                                         Syntax.XHTML_1_0.toIdString(),
-                                                         syntaxId,
-                                                         false);
-          markupInput.setValue(markupContent);
+          htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
+        } else{
+          markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
+          markup = markup.trim();
+          htmlContent = renderingService.render(markup, syntaxId, Syntax.XHTML_1_0.toIdString(), false);
         }
-        String markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
-        markup = markup.trim();
+        htmlContent = StringCommonUtils.encodeScriptMarkup(htmlContent);
+        markup = renderingService.render(htmlContent,Syntax.XHTML_1_0.toIdString(),syntaxId,false);        
   
         String newPageName = TitleResolver.getId(title, false);
         if (org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {

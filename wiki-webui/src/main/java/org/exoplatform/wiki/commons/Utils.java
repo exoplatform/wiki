@@ -18,6 +18,7 @@ package org.exoplatform.wiki.commons;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.MimeTypeResolver;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -59,6 +60,7 @@ import org.xwiki.rendering.syntax.Syntax;
 import javax.portlet.PortletPreferences;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.*;
@@ -253,6 +255,7 @@ public class Utils {
       markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
     }
     String xhtmlContent = renderingService.render(markup, markupSyntax, Syntax.ANNOTATED_XHTML_1_0.toIdString(), false);
+    xhtmlContent = StringCommonUtils.encodeScriptMarkup(xhtmlContent);
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
