@@ -828,6 +828,9 @@ public class WikiServiceImpl implements WikiService, Startable {
             }
           }
         }
+        if(hasEditPagePermissionOnPage) {
+          break;
+        }
       }
     }
 
@@ -840,6 +843,24 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
     return canModifyPage;
+  }
+  
+  @Override
+  public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws WikiException {
+    if (currentPage.getPermissions() != null) {
+      for (PermissionEntry permissionEntry : currentPage.getPermissions()) {
+        if(permissionEntry.getId().equals(currentUser)) {
+          for(Permission permission : permissionEntry.getPermissions()) {
+            if(permission.getPermissionType().equals(PermissionType.EDITPAGE) && permission.isAllowed()) {
+              return true;
+            }
+          }
+        }
+      }
+    }
+    Wiki wiki = getWikiByTypeAndOwner(currentPage.getWikiType(), currentPage.getWikiOwner());
+    return hasAdminPagePermission(wiki.getType(), wiki.getOwner())
+        || hasAdminSpacePermission(wiki.getType(), wiki.getOwner());
   }
   
   @Override
