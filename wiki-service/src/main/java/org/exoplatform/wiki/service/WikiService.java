@@ -654,6 +654,15 @@ public interface WikiService {
    * @throws WikiException
    */
   public boolean canModifyPagePermission(Page currentPage, String currentUser) throws WikiException;
+  
+  /**
+   * Check if the given user can public or restrict the page
+   * @param currentPage
+   * @param currentUser
+   * @return true if the current user has EditPage permission or admin page or admin space
+   * @throws WikiException
+   */
+  public boolean canPublicAndRetrictPage(Page currentPage, String currentUser) throws WikiException;
 
   /**
    * Gets all the versions of the given page

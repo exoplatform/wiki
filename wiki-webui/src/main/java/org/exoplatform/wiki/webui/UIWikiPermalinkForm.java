@@ -82,7 +82,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
   }
   
   protected boolean canPublicAndRetrictPage() throws Exception {
-    return wikiService.canModifyPagePermission(Utils.getCurrentWikiPage(), org.exoplatform.wiki.utils.Utils.getCurrentUser());
+    return wikiService.canPublicAndRetrictPage(Utils.getCurrentWikiPage(), org.exoplatform.wiki.utils.Utils.getCurrentUser());
   }
   
   /**

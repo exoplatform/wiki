@@ -157,7 +157,7 @@ public class Utils {
     }
     return wikiService.canModifyPagePermission(currentPage, currentUser);
   }
-
+  
   public static boolean isPagePublic(Page page) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     return (page != null) && wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
