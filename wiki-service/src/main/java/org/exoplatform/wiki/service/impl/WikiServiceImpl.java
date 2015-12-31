@@ -25,6 +25,8 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
@@ -87,6 +89,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private DataStorage dataStorage;
 
+  private SpaceService spaceService;
+  
   private List<ValuesParam> syntaxHelpParams;
 
   private PropertiesParam preferencesParams;
@@ -860,8 +864,51 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
     Wiki wiki = getWikiByTypeAndOwner(currentPage.getWikiType(), currentPage.getWikiOwner());
     return hasAdminPagePermission(wiki.getType(), wiki.getOwner())
-        || hasAdminSpacePermission(wiki.getType(), wiki.getOwner());
+        || hasAdminSpacePermission(wiki.getType(), wiki.getOwner())
+        || hasEditPermissionInGroup(wiki, currentPage, currentUser);
   }
+  
+  private boolean hasEditPermissionInGroup(Wiki wiki, Page currentPage, String currentUser) throws WikiException {
+    boolean hasEditPermissionInSpace = false;
+    String groupId = wiki.getOwner();
+    String managerInWikiPage = "manager:" + groupId;
+    String memberInWikiPage = "*:" + groupId;
+    if (PortalConfig.GROUP_TYPE.equals(wiki.getType())) {
+      spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+      if (spaceService != null) {
+        Space space = spaceService.getSpaceByGroupId(wiki.getOwner());
+        if (space != null) {
+          try {
+            // check if current user is member or manager in space
+            if (spaceService.isManager(space, currentUser)
+                || spaceService.isMember(space, currentUser)) {
+              // check if member or manager of space has EDITPAGE permission or
+              // not
+              for (PermissionEntry permissionEntry : currentPage.getPermissions()) {
+                if (permissionEntry.getId().equals(managerInWikiPage)
+                    || permissionEntry.getId().equals(managerInWikiPage)) {
+                  for (Permission permission : permissionEntry.getPermissions()) {
+                    if (permission.getPermissionType().equals(PermissionType.EDITPAGE)
+                        && permission.isAllowed()) {
+                      hasEditPermissionInSpace = true;
+                      break;
+                    }
+                  }
+                }
+                if (hasEditPermissionInSpace) {
+                  break;
+                }
+              }
+            }
+
+          } catch (Exception e) {
+            log.error("Fail to check permission of currentUser" + currentUser + "in space: "+ wiki.getOwner(), e);
+          }
+        }
+      }
+    }
+    return hasEditPermissionInSpace;
+  }  
   
   @Override
   public List<PageVersion> getVersionsOfPage(Page page) throws WikiException {
@@ -1375,24 +1422,17 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   @SuppressWarnings({"rawtypes", "unchecked"})
   public String getSpaceNameByGroupId(String groupId) {
-    try {
-      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-
-      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
-      if(space != null) {
-        return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
+    spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    if (spaceService != null) {
+      Space space = spaceService.getSpaceByGroupId(groupId);
+      if (space != null) {
+        return space.getDisplayName();
       } else {
         return groupId.substring(groupId.lastIndexOf('/') + 1);
       }
-    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      log.error("Can not find space of group " + groupId + " - Cause : " + e.getMessage(), e);
-      return groupId.substring(groupId.lastIndexOf('/') + 1);
     }
+    return groupId.substring(groupId.lastIndexOf('/') + 1);
   }
-
-
 
   /******* Listeners *******/
 
