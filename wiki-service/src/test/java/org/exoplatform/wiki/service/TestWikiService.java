@@ -48,10 +48,12 @@ public class TestWikiService extends AbstractMOWTestcase {
   }
 
   public void testCreateWiki() throws WikiException {
+    Wiki wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
+    assertNull(wiki);
 
     wService.createWiki(PortalConfig.PORTAL_TYPE, "wiki1");
 
-    Wiki  wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
+    wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
     assertNotNull(wiki);
 
   }
@@ -587,8 +589,8 @@ public class TestWikiService extends AbstractMOWTestcase {
     startSessionAs("mary");
     
     // Get wiki home
-    Page wikiHome = wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "WikiHome");
-    
+    Page wikiHome = wService.createWiki(PortalConfig.PORTAL_TYPE, "testDraftPage").getWikiHome();
+
     // Test create draft for new page
     DraftPage draftPage = wService.createDraftForNewPage(new DraftPage(), wikiHome, new Date().getTime());
     assertNotNull(draftPage);
@@ -607,7 +609,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     // Create a wiki page for test
     Page page = new Page("new page", "new page");
     page.setContent("Page content");
-    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", page);
+    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "testDraftPage"), "WikiHome", page);
 
     // update it and create a version
     page.setContent("Page content updated");
@@ -615,7 +617,7 @@ public class TestWikiService extends AbstractMOWTestcase {
     wService.createVersionOfPage(page);
 
     // Test create draft for exist wiki page
-    WikiPageParams param = new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", page.getName());
+    WikiPageParams param = new WikiPageParams(PortalConfig.PORTAL_TYPE, "testDraftPage", page.getName());
     DraftPage draftPage2 = wService.createDraftForExistPage(new DraftPage(), page, null, new Date().getTime());
     assertNotNull(draftPage2);
     assertFalse(draftPage2.isNewPage());

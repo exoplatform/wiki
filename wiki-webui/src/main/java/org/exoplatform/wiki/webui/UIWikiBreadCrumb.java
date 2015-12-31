@@ -218,13 +218,12 @@ public class UIWikiBreadCrumb extends UIContainer {
       String wikiId = event.getRequestContext().getRequestParameter(UISpacesSwitcher.SPACE_ID_PARAMETER);
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       Wiki wiki = wikiService.getWikiById(wikiId);
-      if (wiki != null) {
-        Page wikiHome = wiki.getWikiHome();
-        String link = org.exoplatform.wiki.commons.Utils.getURLFromParams(new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName()));
-        org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, link);
-      } else {
-        log.warn(String.format("Wrong wiki id: [%s], can not change space", wikiId));
+      if (wiki == null) {
+        wiki = wikiService.createWiki(org.exoplatform.wiki.commons.Utils.getWikiTypeFromWikiId(wikiId), org.exoplatform.wiki.commons.Utils.getWikiOwnerFromWikiId(wikiId));
       }
+      Page wikiHome = wiki.getWikiHome();
+      String link = org.exoplatform.wiki.commons.Utils.getURLFromParams(new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName()));
+      org.exoplatform.wiki.commons.Utils.ajaxRedirect(event, link);
     }
   }
 }

@@ -50,27 +50,11 @@ public abstract class WikiImpl {
       setHome(home);
       home.makeVersionable();
       home.setOwner(getOwner());
-      AttachmentImpl content = home.getContent();
       home.setTitle(WikiConstants.WIKI_HOME_TITLE);
       Date now = GregorianCalendar.getInstance().getTime();
       home.setCreatedDate(now);
       home.setUpdatedDate(now);
       home.setSyntax(Syntax.XWIKI_2_0.toIdString());
-      StringBuilder sb = new StringBuilder("= Welcome to ");
-      String spaceName = getOwner();
-      
-      if (getType().equals(PortalConfig.GROUP_TYPE)) {
-        try{
-          // TODO launch the wiki home creation at service level
-          //spaceName = wService.getSpaceNameByGroupId(getOwner());
-        } catch (Exception e) {
-          if (LOG.isDebugEnabled()) {
-            LOG.debug("Can't get Space name by group ID : " + getOwner(), e);
-          }
-        }
-      }
-      sb.append(spaceName).append(" =");
-      content.setText(sb.toString());
       try {
         initPermisionForWikiHome(home);
         home.checkin();

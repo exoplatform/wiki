@@ -21,14 +21,11 @@ public class TitleSearchResult {
 
   private SearchResultType type;
 
-  private String path;
-
   private String url;
   
-  public TitleSearchResult(String title, String path, SearchResultType type, String url) {
+  public TitleSearchResult(String title, SearchResultType type, String url) {
     this.title = title;
     this.type = type;
-    this.path = path;
     this.url = url;
   }
 
@@ -38,14 +35,6 @@ public class TitleSearchResult {
 
   public void setType(SearchResultType type) {
     this.type = type;
-  }
-
-  public String getPath() {
-    return path;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
   }
   
   public void setTitle(String title) {

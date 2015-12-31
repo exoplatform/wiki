@@ -18,6 +18,7 @@ package org.exoplatform.wiki.webui.popup;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.application.RequireJS;
@@ -302,6 +303,9 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       
       Wiki wiki = wikiService.getWikiById(wikiId);
+      if (wiki == null) {
+        wiki = wikiService.createWiki(org.exoplatform.wiki.commons.Utils.getWikiTypeFromWikiId(wikiId), org.exoplatform.wiki.commons.Utils.getWikiOwnerFromWikiId(wikiId));
+      }
       Page wikiHome = wiki.getWikiHome();
       WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName());
       uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(wikiService.getWikiNameById(wikiId)));

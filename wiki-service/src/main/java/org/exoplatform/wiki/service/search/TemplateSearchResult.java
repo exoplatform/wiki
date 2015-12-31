@@ -32,12 +32,11 @@ public class TemplateSearchResult extends SearchResult {
                               String wikiOwner,
                               String name,
                               String title,
-                              String path,
                               SearchResultType type,
                               Calendar updatedDate,
                               Calendar createdDate,
                               String description) {
-    super(wikiType, wikiOwner, null, null, null, title, path, type, updatedDate, createdDate);
+    super(wikiType, wikiOwner, null, null, null, title, type, updatedDate, createdDate);
     this.description = description;
     this.name = name;
   }

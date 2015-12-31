@@ -87,9 +87,10 @@ public class Utils {
     return getSpaceName(currentSpace);
   }
   
-  public static String getSpaceName(Wiki space) throws Exception {
-    if (WikiType.PORTAL.equals(space.getType())) {
-      String displayName = space.getId();
+  public static String getSpaceName(Wiki wiki) throws Exception {
+    WikiType wikiType = WikiType.valueOf(wiki.getType().toUpperCase());
+    if (WikiType.PORTAL.equals(wikiType)) {
+      String displayName = wiki.getId();
       int slashIndex = displayName.lastIndexOf('/');
       if (slashIndex > -1) {
         displayName = displayName.substring(slashIndex + 1);
@@ -97,19 +98,19 @@ public class Utils {
       return Utils.upperFirstCharacter(displayName);
     }
 
-    if (WikiType.USER.equals(space.getType())) {
+    if (WikiType.USER.equals(wikiType)) {
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-      if (space.getOwner().equals(currentUser)) {
+      if (wiki.getOwner().equals(currentUser)) {
         WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
         ResourceBundle res = context.getApplicationResourceBundle();
         String mySpaceLabel = res.getString("UISpaceSwitcher.title.my-space");
         return mySpaceLabel;
       }
-      return space.getOwner();
+      return wiki.getOwner();
     }
 
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    return wikiService.getSpaceNameByGroupId(space.getOwner());
+    return wikiService.getSpaceNameByGroupId(wiki.getOwner());
   }
   
   public static String getCurrentRequestURL() throws Exception {
@@ -156,7 +157,7 @@ public class Utils {
     }
     return wikiService.canModifyPagePermission(currentPage, currentUser);
   }
-
+  
   public static boolean isPagePublic(Page page) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     return (page != null) && wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
@@ -545,5 +546,27 @@ public class Utils {
   public static String getDraftIdSessionKey() {
     return ConversationState.getCurrent().getIdentity().getUserId()
           + DRAFT_ID;
+  }
+  
+  public static String getWikiTypeFromWikiId(String wikiId) {
+    String wikiType = "";
+    if (wikiId.startsWith("/spaces/")) {
+      wikiType = PortalConfig.GROUP_TYPE;
+    } else if (wikiId.startsWith("/user/")) {
+      wikiType = PortalConfig.USER_TYPE;
+    } else {
+      if (wikiId.startsWith("/")) {
+        wikiType = PortalConfig.PORTAL_TYPE;
+      }
+    }
+    return wikiType;
+  }
+
+  public static String getWikiOwnerFromWikiId(String wikiId) {
+    String wikiType = getWikiTypeFromWikiId(wikiId);
+    if(PortalConfig.USER_TYPE.equals(wikiType) || PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
+    }
+    return wikiId;
   }
 }

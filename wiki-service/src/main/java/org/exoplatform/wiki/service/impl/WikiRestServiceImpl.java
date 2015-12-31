@@ -16,11 +16,31 @@
  */
 package org.exoplatform.wiki.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.lang.Class;
+import java.lang.Object;
+import java.net.URI;
+import java.net.URLDecoder;
+import java.util.*;
+
+import javax.annotation.security.RolesAllowed;
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
+import javax.ws.rs.core.Response.Status;
+
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.xwiki.context.Execution;
+import org.xwiki.context.ExecutionContext;
+import org.xwiki.rendering.syntax.Syntax;
+
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
@@ -54,24 +74,6 @@ import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.utils.WikiNameValidator;
-import org.xwiki.context.Execution;
-import org.xwiki.context.ExecutionContext;
-import org.xwiki.rendering.syntax.Syntax;
-
-import javax.annotation.security.RolesAllowed;
-import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
-import javax.ws.rs.core.Response.Status;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
-import java.lang.Class;
-import java.lang.Object;
-import java.net.URI;
-import java.net.URLDecoder;
-import java.util.*;
 
 /**
  * {@inheritDoc}
@@ -330,12 +332,13 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     Spaces spaces = objectFactory.createSpaces();
     List<String> spaceNames = new ArrayList<>();
     try {
-      Collection<Wiki> wikis = wikiService.getWikisByType(wikiType.toUpperCase());
+      List<Wiki> wikis = wikiService.getWikisByType(wikiType.toUpperCase());
       for (Wiki wiki : wikis) {
-        for (String spaceName : spaceNames) {
-          org.exoplatform.wiki.mow.api.Page page = wiki.getWikiHome();
-          spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wikiType, spaceName, page));
-        }
+        spaceNames.add(wiki.getOwner());
+      }
+      for (String spaceName : spaceNames) {
+        org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(wikiType, spaceName, WikiConstants.WIKI_HOME_NAME);
+        spaces.getSpaces().add(createSpace(objectFactory, uriInfo.getBaseUri(), wikiType, spaceName, page));
       }
     } catch(WikiException e) {
       log.error("Cannot get spaces of wiki type " + wikiType + " - Cause : " + e.getMessage(), e);
@@ -545,7 +548,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                              @QueryParam("wikiType") String wikiType,
                              @QueryParam("wikiOwner") String wikiOwner) throws Exception {
     try {
-      WikiSearchData data = new WikiSearchData(keyword.toLowerCase(), null, wikiType, wikiOwner);
+      keyword = keyword.toLowerCase();
+      WikiSearchData data = new WikiSearchData(keyword, keyword, wikiType, wikiOwner);
       data.setLimit(10);
       List<SearchResult> results = wikiService.search(data).getAll();
       List<TitleSearchResult> titleSearchResults = new ArrayList<>();
@@ -554,9 +558,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         if(page != null) {
           if (SearchResultType.ATTACHMENT.equals(searchResult.getType())) {
             org.exoplatform.wiki.mow.api.Attachment attachment = wikiService.getAttachmentOfPageByName(searchResult.getAttachmentName(), page);
-            titleSearchResults.add(new TitleSearchResult(attachment.getName(), searchResult.getPath(), searchResult.getType(), attachment.getDownloadURL()));
+            titleSearchResults.add(new TitleSearchResult(attachment.getName(), searchResult.getType(), attachment.getDownloadURL()));
           } else {
-            titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getPath(), searchResult.getType(), page.getUrl()));
+            titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getType(), page.getUrl()));
           }
         } else {
           log.warn("Cannot get page of search result " + searchResult.getWikiType() + ":" + searchResult.getWikiOwner() + ":" + searchResult.getPageName());

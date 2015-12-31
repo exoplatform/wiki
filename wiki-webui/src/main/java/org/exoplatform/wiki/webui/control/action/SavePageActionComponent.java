@@ -240,6 +240,7 @@ public class SavePageActionComponent extends UIComponent {
 
             // Create page
             Wiki wiki = new Wiki(pageParams.getType(), pageParams.getOwner());
+            pageParams.setPageName(newPageName);
             Page newPage = new Page();
             newPage.setName(title);
             newPage.setTitle(title);
@@ -249,7 +250,6 @@ public class SavePageActionComponent extends UIComponent {
             newPage.setSyntax(syntaxId);
             newPage.setUrl(Utils.getURLFromParams(pageParams));
             Page createdPage = wikiService.createPage(wiki, page.getName(), newPage);
-            pageParams.setPageName(newPageName);
 
             // Add all the attachments to the newly created page
             for(Attachment attachment : attachments) {
