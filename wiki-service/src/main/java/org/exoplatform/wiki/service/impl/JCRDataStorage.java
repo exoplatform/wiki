@@ -41,6 +41,7 @@ import javax.jcr.query.Query;
 import javax.jcr.query.QueryResult;
 import javax.jcr.query.Row;
 import javax.jcr.query.RowIterator;
+
 import java.io.*;
 import java.net.URLConnection;
 import java.util.*;
@@ -691,6 +692,12 @@ public class JCRDataStorage implements DataStorage {
       }
 
       List<String> permissions = wikiImpl.getWikiPermissions();
+      for (ListIterator<String> iterator = permissions.listIterator(); iterator.hasNext();) {
+        String permissionEntry = iterator.next();
+        if (Collections.frequency(permissions, permissionEntry) > 1) {
+          iterator.remove();
+        }
+      }
       permissionEntries = JCRUtils.convertWikiPermissionsToPermissionEntryList(permissions);
 
       return permissionEntries;
