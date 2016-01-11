@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki-extension</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.3.0</version>
+    <version>4.3.x-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-extension-webapp</artifactId>
   <packaging>war</packaging>
