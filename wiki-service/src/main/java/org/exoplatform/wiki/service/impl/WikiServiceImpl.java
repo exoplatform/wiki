@@ -382,6 +382,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if(wikiType.equals(PortalConfig.GROUP_TYPE)) {
       wikiLabel = getSpaceNameByGroupId(owner);
     }
+    if (!wikiLabel.equals("intranet")) wikiLabel = "myWiki";
     sb.append(wikiLabel).append(" =");
     createdWiki.getWikiHome().setContent(sb.toString());
     updatePage(createdWiki.getWikiHome(), null);
