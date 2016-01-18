@@ -25,6 +25,7 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
@@ -381,6 +382,10 @@ public class WikiServiceImpl implements WikiService, Startable {
     String wikiLabel = owner;
     if(wikiType.equals(PortalConfig.GROUP_TYPE)) {
       wikiLabel = getSpaceNameByGroupId(owner);
+    }
+    if (!wikiLabel.equals("intranet")) {
+      ResourceBundle bundle = RequestContext.getCurrentInstance().getApplicationResourceBundle();
+      wikiLabel = bundle.getString("UIRelatedPagesContainer.title.my-space");
     }
     sb.append(wikiLabel).append(" =");
     createdWiki.getWikiHome().setContent(sb.toString());
