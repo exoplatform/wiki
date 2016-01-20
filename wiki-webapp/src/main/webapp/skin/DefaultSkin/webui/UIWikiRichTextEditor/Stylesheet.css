@@ -6,6 +6,9 @@
   width: 100%;
   border: 1px solid #DDDDDD;
   border-top: none;
+  padding: 10px!important;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .UIWikiRichTextEditor {

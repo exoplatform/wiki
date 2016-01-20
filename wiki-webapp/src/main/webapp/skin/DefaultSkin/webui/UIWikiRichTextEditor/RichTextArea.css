@@ -33,6 +33,7 @@ body.UIWikiPortletWysiwygCss { /*
   padding: 0;
   position: static;
   width: auto;
+  min-height: 370px;
 }
 
 * html body.UIWikiPortletWysiwygCss {
