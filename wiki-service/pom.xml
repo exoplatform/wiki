@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.3.x-SNAPSHOT</version>
+    <version>4.4.x-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-service</artifactId>
   <packaging>jar</packaging>
@@ -184,6 +184,14 @@
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-renderer</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-core</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.social</groupId>
+      <artifactId>social-component-webui</artifactId> 
     </dependency>
     <dependency>
       <groupId>org.exoplatform.ws</groupId>
