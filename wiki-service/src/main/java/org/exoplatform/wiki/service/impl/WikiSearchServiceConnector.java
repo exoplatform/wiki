@@ -91,7 +91,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
       if (wikiSearchPageList != null) {
         List<org.exoplatform.wiki.service.search.SearchResult> wikiSearchResults = wikiSearchPageList.getAll();
         for (org.exoplatform.wiki.service.search.SearchResult wikiSearchResult : wikiSearchResults) {
-          SearchResult searchResult = buildResult(context, wikiSearchResult);
+          SearchResult searchResult = buildResult(wikiSearchResult);
           if (searchResult != null) {
             searchResults.add(searchResult);
           }
@@ -236,13 +236,13 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
    * @param wikiSearchResult The search result of Wiki.
    * @return The wiki page permalink.
    */
-  private String getPagePermalink(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+  private String getPagePermalink(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer permalink = new StringBuffer();
     try {
       PageImpl page = getPage(wikiSearchResult);
       if (page.getWiki().getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
         String portalContainerName = Utils.getPortalName();
-        String portalOwner = context.getSiteName();
+        String portalOwner = wikiService.getPortalOwner();
         String wikiWebappUri = wikiService.getWikiWebappUri();
         String spaceGroupId = page.getWiki().getOwner();
         
@@ -278,10 +278,10 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
    * @param wikiSearchResult The search result of Wiki.
    * @return The formated search result.
    */
-  private SearchResult buildResult(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+  private SearchResult buildResult(org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     try {
       String title = wikiSearchResult.getTitle();
-      String url = getPagePermalink(context, wikiSearchResult);
+      String url = getPagePermalink(wikiSearchResult);
       String excerpt = wikiSearchResult.getExcerpt();
       String detail = getPageDetail(wikiSearchResult);
       long relevancy = wikiSearchResult.getJcrScore();
