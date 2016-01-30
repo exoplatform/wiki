@@ -31,4 +31,6 @@ public interface WikiConstants {
   public static final String WITH               = "With";
 
   public static final int MAX_LENGTH_TITLE      = 512;
+
+  public static final String SPACES_SWITCHER_WIKI_APP_ID = "Wiki";
 }

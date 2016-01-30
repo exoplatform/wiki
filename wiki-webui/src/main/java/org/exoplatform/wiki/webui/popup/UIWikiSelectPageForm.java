@@ -20,6 +20,7 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
@@ -70,6 +71,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(Utils.getCurrentSpaceName()));
     uiWikiSpaceSwitcher.setAutoResize(true);
+    uiWikiSpaceSwitcher.setAppId(WikiConstants.SPACES_SWITCHER_WIKI_APP_ID);
     EventUIComponent eventComponent1 = new EventUIComponent(FORM_ID, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }

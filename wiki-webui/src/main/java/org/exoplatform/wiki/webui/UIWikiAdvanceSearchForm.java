@@ -34,6 +34,7 @@ import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
 
 import org.exoplatform.webui.form.UIFormStringInput;
+import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -72,6 +73,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
     selectSpaces.setCurrentSpaceName(org.exoplatform.wiki.commons.Utils.upperFirstCharacter(
            org.exoplatform.wiki.commons.Utils.getCurrentSpaceName()));
     selectSpaces.setAutoResize(true);
+    selectSpaces.setAppId(WikiConstants.SPACES_SWITCHER_WIKI_APP_ID);
     EventUIComponent eventComponent1 = new EventUIComponent(UI_WIKI_ADVANCE_SEARCH_FORM, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     selectSpaces.init(eventComponent1);
     addChild(selectSpaces);

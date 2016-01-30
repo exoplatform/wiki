@@ -35,6 +35,7 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
+import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.service.BreadcrumbData;
@@ -79,6 +80,7 @@ public class UIWikiBreadCrumb extends UIContainer {
   
   public UIWikiBreadCrumb() throws Exception {
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
+    uiWikiSpaceSwitcher.setAppId(WikiConstants.SPACES_SWITCHER_WIKI_APP_ID);
     EventUIComponent eventComponent = new EventUIComponent(BREAD_CRUMB_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent);   
   }

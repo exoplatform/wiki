@@ -37,6 +37,7 @@ import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
+import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -101,6 +102,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
     UISpacesSwitcher uiWikiSpaceSwitcher = addChild(UISpacesSwitcher.class, null, SPACE_SWITCHER);
     uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(Utils.getCurrentSpaceName()));
     uiWikiSpaceSwitcher.setAutoResize(true);
+    uiWikiSpaceSwitcher.setAppId(WikiConstants.SPACES_SWITCHER_WIKI_APP_ID);
     EventUIComponent eventComponent1 = new EventUIComponent(MOVE_PAGE_CONTAINER, SWITCH_SPACE_ACTION, EVENTTYPE.EVENT);
     uiWikiSpaceSwitcher.init(eventComponent1);
   }
