@@ -176,6 +176,7 @@
           <extraJvmArgs>-Xmx1024m -Xss1024k -Djava.awt.headless=true</extraJvmArgs>
           <!-- Can't disable these unneeded artifacts, so compile them outside of the target WAR -->
           <deploy>${project.build.directory}/gwt-deploy</deploy>
+          <sourceLevel>1.7</sourceLevel>
         </configuration>
       </plugin>
       <plugin>

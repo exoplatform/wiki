@@ -13,6 +13,7 @@ import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
+import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -54,7 +55,14 @@ public class JCRDataStorage implements DataStorage {
 
   private MOWService mowService;
 
-  public JCRDataStorage(MOWService mowService) {
+  /**
+   * Constructor
+   * Inject NodeHierarchyCreator to be sure JCRDataStorage is loaded after NodeHierarchyCreator,
+   * so JCR wiki root folders are created before wiki data initialization
+   * @param mowService
+   * @param nodeHierarchyCreator
+   */
+  public JCRDataStorage(MOWService mowService, NodeHierarchyCreator nodeHierarchyCreator) {
     this.mowService = mowService;
   }
 
