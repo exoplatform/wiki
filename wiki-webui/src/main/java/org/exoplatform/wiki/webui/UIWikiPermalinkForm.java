@@ -87,15 +87,19 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
   
   /**
    * Get the permalink of current wiki page <br>
-   * 
-   * <ul>With the current page param:</ul>
+   *
+   * With the current page param:
+   * <ul>
    *   <li>type = "group"</li>
    *   <li>owner = "spaces/test_space"</li>
    *   <li>pageId = "test_page"</li>
+   * </ul>
    * <br>
-   *  
-   * <ul>The permalink will be: </ul>
-   * <li>http://int.exoplatform.org/portal/intranet/wiki/group/spaces/test_space/test_page</li>
+   *
+   * The permalink will be:
+   * <ul>
+   *   <li>http://int.exoplatform.org/portal/intranet/wiki/group/spaces/test_space/test_page</li>
+   * </ul>
    * <br>
    * 
    * @return The permalink of current wiki page

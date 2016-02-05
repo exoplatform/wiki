@@ -147,16 +147,17 @@ public class JCRWikiSearchQueryBuilder {
   /**
    * get SQL constraint for searching available page (be a child of <code>WikiHome</code> page and not removed).
    * @return
-   *        <li>
-   *         returned string is in format:
-   *        <code>((jcr:path like [path to page node likely] or jcr:path = [path to page node])
-   *        AND (jcr:mixinTypes IS NULL OR NOT (jcr:mixinTypes = 'wiki:removed'))</code>
-   *        </li>
-   *        <li>
-   *        if <code>wikiType</code> or <code>wikiOwner</code> is null,
-   *        paths of the constraint are <code>/%/pageId</code> and <code>/pageId</code>.
-   *        It means that pages of which id is <code>pageId</code> are searched from <code>root</code>.
-   *        </li>
+   *        <ul>
+   *          <li>returned string is in format:
+   *              <code>((jcr:path like [path to page node likely] or jcr:path = [path to page node])
+   *              AND (jcr:mixinTypes IS NULL OR NOT (jcr:mixinTypes = 'wiki:removed'))</code>
+   *          </li>
+   *          <li>
+   *              if <code>wikiType</code> or <code>wikiOwner</code> is null,
+   *              paths of the constraint are <code>/%/pageId</code> and <code>/pageId</code>.
+   *              It means that pages of which id is <code>pageId</code> are searched from <code>root</code>.
+   *          </li>
+   *        </ul>
    */
   public String getPageConstraint() {
     StringBuilder constraint = new StringBuilder();

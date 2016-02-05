@@ -55,7 +55,6 @@ public interface RenderingService {
    * @param targetSyntax The target syntax to apply.
    * @param supportSectionEdit If "true", the "Edit section" function is supported. Otherwise, this function is not supported.
    * @return The readable content of the rendered wiki page.
-   * @throws Exception
    */
   public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) throws ConversionException, ComponentLookupException;
 

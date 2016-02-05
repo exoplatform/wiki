@@ -139,7 +139,7 @@ public class ConfluenceSyntaxChainingRenderer extends AbstractChainingPrintRende
   /**
    * {@inheritDoc}
    * 
-   * @see org.xwiki.rendering.listener.chaining.AbstractChainingListener#endDocument(java.util.Map)
+   * @see org.xwiki.rendering.listener.chaining.AbstractChainingListener#endDocument(MetaData)
    */
   @Override
   public void endDocument(MetaData metaData) {
@@ -162,8 +162,7 @@ public class ConfluenceSyntaxChainingRenderer extends AbstractChainingPrintRende
   /**
    * {@inheritDoc}
    * 
-   * @see org.xwiki.rendering.renderer.AbstractChainingPrintRenderer#beginLink(org.xwiki.rendering.listener.Link,
-   *      boolean, java.util.Map)
+   * @see org.xwiki.rendering.renderer.AbstractChainingPrintRenderer#beginLink(ResourceReference, boolean, Map)
    */
   @Override
   public void beginLink(ResourceReference link, boolean isFreeStandingURI, Map<String, String> parameters) {
@@ -205,8 +204,7 @@ public class ConfluenceSyntaxChainingRenderer extends AbstractChainingPrintRende
   /**
    * {@inheritDoc}
    * 
-   * @see org.xwiki.rendering.renderer.AbstractChainingPrintRenderer#endLink(org.xwiki.rendering.listener.Link,
-   *      boolean, java.util.Map)
+   * @see org.xwiki.rendering.renderer.AbstractChainingPrintRenderer#endLink(ResourceReference, boolean, Map)
    */
   @Override
   public void endLink(ResourceReference link, boolean isFreeStandingURI, Map<String, String> parameters) {
@@ -813,8 +811,7 @@ public class ConfluenceSyntaxChainingRenderer extends AbstractChainingPrintRende
   /**
    * {@inheritDoc}
    * 
-   * @see org.xwiki.rendering.listener.Listener#onImage(org.xwiki.rendering.listener.Image,
-   *      boolean, Map)
+   * @see org.xwiki.rendering.listener.Listener#onImage(ResourceReference, boolean, Map)
    */
   @Override
   public void onImage(ResourceReference image, boolean isFreeStandingURI, Map<String, String> parameters) {    

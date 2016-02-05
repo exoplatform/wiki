@@ -48,8 +48,6 @@ public class ConfluenceSyntaxLinkRenderer {
 
   /**
    * {@inheritDoc}
-   * 
-   * @see DefaultLinkReferenceSerializer#serialize(org.xwiki.rendering.listener.Link)
    */
   public String serialize(ResourceReference link) {
     return this.linkReferenceSerializer.serialize(link);

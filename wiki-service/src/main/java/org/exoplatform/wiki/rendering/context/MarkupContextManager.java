@@ -24,7 +24,7 @@ import org.xwiki.rendering.listener.reference.ResourceType;
 public interface MarkupContextManager {
   /**
    * Build the markup context for object
-   * @param onjectname the name of an object
+   * @param objectName the name of an object
    * @param type the type of resource
    * @return the wikicontext
    */

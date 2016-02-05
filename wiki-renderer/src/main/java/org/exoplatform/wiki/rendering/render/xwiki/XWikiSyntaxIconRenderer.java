@@ -25,7 +25,7 @@ import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.transformation.icon.IconTransformationConfiguration;
 
 /**
- * Generate a Xwiki syntax string representation of an {@icon ResourceReference}
+ * Generate a Xwiki syntax string representation of an ResourceReference
  */
 public class XWikiSyntaxIconRenderer {
   

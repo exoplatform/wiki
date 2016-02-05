@@ -546,7 +546,7 @@ public abstract class PageImpl extends NTFolder {
    * @return uuid of node of related page if add successfully. <br>
    *         null if add failed.
    * @throws NullPointerException if the param is null
-   * @throws Exception when any error occurs.
+   * @throws RepositoryException when any error occurs.
    */
   public synchronized String addRelatedPage(PageImpl page) throws RepositoryException {
     Map<String, Value> referredUUIDs = getReferredUUIDs();
@@ -589,7 +589,7 @@ public abstract class PageImpl extends NTFolder {
    * @param page
    * @return uuid of node if related page is removed successfully <br>
    *         null if removing failed.
-   * @throws Exception when an error is thrown.
+   * @throws RepositoryException when an error is thrown.
    */
   public synchronized String removeRelatedPage(PageImpl page) throws RepositoryException {
     Map<String, Value> referedUUIDs = getReferredUUIDs();
@@ -612,8 +612,8 @@ public abstract class PageImpl extends NTFolder {
   
   /**
    * get reference uuids of current page
-   * @return Map<String, Value> map of referred uuids of current page 
-   * @throws Exception when an error is thrown.
+   * @return {@code Map<String, Value>} map of referred uuids of current page
+   * @throws RepositoryException when an error is thrown.
    */
   public Map<String, Value> getReferredUUIDs() throws RepositoryException {
     Session jcrSession = getJCRSession();
@@ -640,9 +640,9 @@ public abstract class PageImpl extends NTFolder {
   }
   
   /**
-   * Migrates old page history data on the fly: 1.create version history of content child node <br/>
+   * Migrates old page history data on the fly: 1.create version history of content child node <br>
    * based on the history of page node, 2.remove the mix:versionable from page node. 
-   * @throws Exception
+   * @throws RepositoryException
    */
   public void migrateLegacyData() throws RepositoryException {
     //migrate only when the current Page Node is mix:versionable

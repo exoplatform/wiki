@@ -38,7 +38,6 @@ public class MarkupKey implements Serializable {
    * Instance new markup key
    *
    * @param pageParams the identity params of page
-   * @param source the source markup
    * @param sourceSyntax the source syntax
    * @param targetSyntax the target syntax
    * @param supportSectionEdit the content supports section editing or not

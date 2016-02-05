@@ -58,7 +58,6 @@ public interface WikiService {
    *
    * @param wiki Wiki of the template
    * @param template The params object which is used for creating the new Wiki template.
-   * @return The new Wiki template.
    * @throws WikiException
    */
   public void createTemplatePage(Wiki wiki, Template template) throws WikiException;
@@ -431,7 +430,6 @@ public interface WikiService {
    * Removes a related page of the current wiki page.
    * @param orginaryPageParams The params object of the current wiki page.
    * @param relatedPageParams The params object of the related page.
-   * @return "True" if removing the related page is successful, or "false" if not.
    * @throws WikiException
    */
   public void removeRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws WikiException;
@@ -536,7 +534,6 @@ public interface WikiService {
    * 
    * @param groupId The group Id.
    * @return The space name.
-   * @throws WikiException
    */
   public String getSpaceNameByGroupId(String groupId);
   
@@ -595,7 +592,6 @@ public interface WikiService {
    * 
    * @param groupId Id of the group.
    * @return The returned value is "true" if the space is hidden, or "false" if not.
-   * @throws WikiException
    */
   public boolean isHiddenSpace(String groupId);
 

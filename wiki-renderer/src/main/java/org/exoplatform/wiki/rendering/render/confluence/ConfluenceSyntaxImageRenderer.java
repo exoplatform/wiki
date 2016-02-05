@@ -23,7 +23,7 @@ import org.xwiki.rendering.internal.renderer.ParametersPrinter;
 import org.xwiki.rendering.listener.reference.ResourceReference;
 
 /**
- * Generate a Confluence syntax string representation of an {@image ResourceReference}, using the format:
+ * Generate a Confluence syntax string representation of an ResourceReference, using the format:
  * <code>(optional document name)^(attachment name)</code>.
  */
 public class ConfluenceSyntaxImageRenderer {
