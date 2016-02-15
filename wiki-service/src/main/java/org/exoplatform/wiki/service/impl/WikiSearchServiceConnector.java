@@ -227,31 +227,36 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
     try {
       Page page = getPage(wikiSearchResult);
       Wiki wiki = wikiService.getWikiByTypeAndOwner(page.getWikiType(), page.getWikiOwner());
+
+      //Build the eXo Platform base URL common to all Wiki
+      String portalContainerName = Utils.getPortalName();
+      String portalOwner = context.getSiteName();
+      String wikiWebappUri = wikiService.getWikiWebappUri();
+      permalink.append("/");
+      permalink.append(portalContainerName);
+      permalink.append("/");
+      permalink.append(portalOwner);
+      permalink.append("/");
+      permalink.append(wikiWebappUri);
+
+      //Add User or Group ID to the url according to the wiki Type
       if (wiki.getType().equalsIgnoreCase(WikiType.GROUP.toString())) {
-        String portalContainerName = Utils.getPortalName();
-        String portalOwner = context.getSiteName();
-        String wikiWebappUri = wikiService.getWikiWebappUri();
         String spaceGroupId = wiki.getOwner();
-        
-        permalink.append("/");
-        permalink.append(portalContainerName);
-        permalink.append("/");
-        permalink.append(portalOwner);
-        permalink.append("/");
-        permalink.append(wikiWebappUri);
         permalink.append("/");
         permalink.append(PortalConfig.GROUP_TYPE);
         permalink.append(spaceGroupId);
+      } else if (wiki.getType().equalsIgnoreCase(WikiType.USER.toString())) {
+        String userId = wiki.getOwner();
         permalink.append("/");
-        permalink.append(page.getName());
-      } else {
-        String portalContainerName = Utils.getPortalName();
-        String url = page.getUrl();
-        if (url != null) {
-          url = url.substring(url.indexOf("/" + portalContainerName + "/"));
-          permalink.append(url);
-        }
+        permalink.append(PortalConfig.USER_TYPE);
+        permalink.append("/");
+        permalink.append(userId);
       }
+
+      //Add the wiki page name to the URL
+      permalink.append("/");
+      permalink.append(page.getName());
+
     } catch (Exception ex) {
       LOG.info("Can not build the permalink for wiki page ", ex);
     }
