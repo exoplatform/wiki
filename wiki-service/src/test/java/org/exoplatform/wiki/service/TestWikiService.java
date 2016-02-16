@@ -649,4 +649,19 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(drafts);
     assertEquals(0, drafts.size());
   }
+
+  public void testPageWatchers() throws WikiException {
+    Wiki wiki1 = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiWatchers");
+    Page page1 = wService.createPage(wiki1, "WikiHome", new Page("page1", "page1"));
+
+    List<String> watchersOfPage1 = wService.getWatchersOfPage(page1);
+    assertNotNull(watchersOfPage1);
+    assertEquals(0, watchersOfPage1.size());
+
+    wService.addWatcherToPage("mary", page1);
+    wService.addWatcherToPage("john", page1);
+    watchersOfPage1 = wService.getWatchersOfPage(page1);
+    assertNotNull(watchersOfPage1);
+    assertEquals(2, watchersOfPage1.size());
+  }
 }

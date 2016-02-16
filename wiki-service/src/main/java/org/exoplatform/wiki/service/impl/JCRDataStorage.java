@@ -1589,13 +1589,19 @@ public class JCRDataStorage implements DataStorage {
 
   @Override
   public List<String> getWatchersOfPage(Page page) throws WikiException {
+    List<String> watchers;
+
     boolean created = mowService.startSynchronization();
 
     try {
       PageImpl pageImpl = fetchPageImpl(page);
       if(pageImpl != null) {
-        pageImpl.makeWatched();
-        List<String> watchers = pageImpl.getWatchedMixin().getWatchers();
+        WatchedMixin watchedMixin = pageImpl.getWatchedMixin();
+        if(watchedMixin != null) {
+          watchers = watchedMixin.getWatchers();
+        } else {
+          watchers = Collections.EMPTY_LIST;
+        }
 
         return watchers;
       } else {
