@@ -5,7 +5,6 @@ import org.exoplatform.commons.api.search.SearchServiceConnector;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
@@ -47,10 +46,11 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
    * Initializes the Wiki search service.
    *
    * @param initParams The params object which is used for initializing the Wiki search service.
+   * @param wikiService The Wiki service to inject.
    */
-  public WikiSearchServiceConnector(InitParams initParams) {
+  public WikiSearchServiceConnector(InitParams initParams, WikiService wikiService) {
     super(initParams);
-    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    this.wikiService = wikiService;
   }
 
     /**
@@ -222,7 +222,7 @@ public class WikiSearchServiceConnector extends SearchServiceConnector {
    * @param wikiSearchResult The search result of Wiki.
    * @return The wiki page permalink.
    */
-  private String getPagePermalink(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
+  protected String getPagePermalink(SearchContext context, org.exoplatform.wiki.service.search.SearchResult wikiSearchResult) {
     StringBuffer permalink = new StringBuffer();
     try {
       Page page = getPage(wikiSearchResult);

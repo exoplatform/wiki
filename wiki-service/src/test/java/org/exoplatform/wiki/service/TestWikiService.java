@@ -19,7 +19,6 @@ package org.exoplatform.wiki.service;
 
 import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
@@ -40,7 +39,7 @@ public class TestWikiService extends AbstractMOWTestcase {
   private WikiService wService;
   public void setUp() throws Exception {
     super.setUp() ;
-    wService = container.getComponentInstanceOfType(WikiService.class) ;
+    wService = (WikiService) container.getComponentInstanceOfType(WikiService.class);
   }
   
   public void testWikiService() {
