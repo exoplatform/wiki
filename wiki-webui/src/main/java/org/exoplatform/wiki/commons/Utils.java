@@ -90,7 +90,7 @@ public class Utils {
   public static String getSpaceName(Wiki wiki) throws Exception {
     WikiType wikiType = WikiType.valueOf(wiki.getType().toUpperCase());
     if (WikiType.PORTAL.equals(wikiType)) {
-      String displayName = wiki.getId();
+      String displayName = wiki.getOwner();
       int slashIndex = displayName.lastIndexOf('/');
       if (slashIndex > -1) {
         displayName = displayName.substring(slashIndex + 1);
