@@ -62,6 +62,7 @@ import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
 import org.exoplatform.wiki.service.related.RelatedUtil;
 import org.exoplatform.wiki.service.rest.model.*;
+import org.exoplatform.wiki.service.rest.model.Link;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.SearchResultType;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
@@ -92,7 +93,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
   private final CacheControl     cc;
   
-  private ObjectFactory  objectFactory = new ObjectFactory();
+  private ObjectFactory objectFactory = new ObjectFactory();
   
   public WikiRestServiceImpl(WikiService wikiService, RenderingService renderingService) {
     this.wikiService = wikiService;
