@@ -90,7 +90,7 @@ public class UIWikiPortlet extends UIPortletApplication {
   private WikiService wikiService;
 
   private PortletMode portletMode;
-  
+
   public static enum PopupLevel {
     L1,
     L2
@@ -151,6 +151,14 @@ public class UIWikiPortlet extends UIPortletApplication {
       if(wiki == null) {
         wiki = wikiService.createWiki(wikiPageParams.getType(), wikiPageParams.getOwner());
       }
+
+      if (!context.useAjax()) {
+        UIWikiPermissionForm wikiPermissionForm = this.findComponentById("UIWikiPagePermissionForm");
+        if (wikiPermissionForm != null) {
+          this.getPopupContainer(wikiPermissionForm.getPopupLevel()).deActivate();
+        }
+      }
+
       Page page = Utils.getCurrentWikiPage();
       
       if (page == null) {
