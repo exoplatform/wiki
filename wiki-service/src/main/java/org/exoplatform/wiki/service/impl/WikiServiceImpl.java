@@ -75,9 +75,9 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   public static final String CACHE_NAME = "wiki.PageRenderingCache";
 
-  public static final String ATT_CACHE_NAME = "wiki.PageRenderingCache.attachment";
+  public static final String ATT_CACHE_NAME = "wiki.PageAttachmentCache";
 
-  public static final String UUID_CACHE_NAME = "wiki.PageRenderingCache.pageUuid";
+  public static final String UUID_CACHE_NAME = "wiki.PageUuidCache";
 
   private ConfigurationManager configManager;
 
