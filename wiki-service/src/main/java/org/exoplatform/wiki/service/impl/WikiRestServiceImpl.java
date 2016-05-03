@@ -37,6 +37,7 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
@@ -1112,6 +1113,33 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       wikiService.removeDraft(draftName);
       return Response.ok().cacheControl(cc).build();
     } catch (Exception e) {
+      return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
+    }
+  }
+
+  /**
+   * Return an emotion icon
+   * @param uriInfo Uri of the wiki
+   * @param name Name of the emotion icon
+   * @return The response with the emotion icon
+   */
+  @GET
+  @Path("/emoticons/{name}")
+  public Response getEmotionIcon(@Context UriInfo uriInfo,
+                                @PathParam("name") String name) {
+    try {
+      EmotionIcon emotionIcon = wikiService.getEmotionIconByName(name);
+      if (emotionIcon == null) {
+        return Response.status(HTTPStatus.NOT_FOUND).build();
+      }
+
+      ByteArrayInputStream emotionIconImage = new ByteArrayInputStream(emotionIcon.getImage());
+
+      return Response.ok(emotionIconImage).cacheControl(cc).build();
+    } catch (Exception e) {
+      if (log.isDebugEnabled()) {
+        log.debug(String.format("Can't get emotion icon: %s", name), e);
+      }
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }

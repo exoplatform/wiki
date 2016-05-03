@@ -1344,6 +1344,7 @@ public class JCRDataStorage implements DataStorage {
                   .append("/")
                   .append(emotionIconAttachment.getName());
           emotionIcon.setUrl(sbUrl.toString());
+          emotionIcon.setImage(emotionIconAttachment.getContentResource().getData());
         }
       }
 

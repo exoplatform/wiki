@@ -137,7 +137,7 @@ public class DefaultWikiModel implements WikiModel {
       } else {
         EmotionIcon emotionIcon = wikiService.getEmotionIconByName(attachmentName);
         if(emotionIcon != null) {
-          sb.append(emotionIcon.getUrl());
+          sb.append("/rest/wiki/emoticons/" + emotionIcon.getName());
         }
       }
     } catch (Exception e) {
