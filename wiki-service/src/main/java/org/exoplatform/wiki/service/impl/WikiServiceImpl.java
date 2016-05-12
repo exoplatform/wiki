@@ -903,6 +903,11 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void updatePage(Page page, PageUpdateType updateType) throws WikiException {
+    // update updated date if the page content has been updated
+    if(PageUpdateType.EDIT_PAGE_CONTENT.equals(updateType) || PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE.equals(updateType)) {
+      page.setUpdatedDate(Calendar.getInstance().getTime());
+    }
+
     dataStorage.updatePage(page);
 
     invalidateCache(page);
