@@ -193,7 +193,7 @@
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
-      <artifactId>servlet-api</artifactId>
+      <artifactId>javax.servlet-api</artifactId>
       <scope>provided</scope>
     </dependency>
     <!-- To replace the transitive dep of org.xhtmlrenderer:flying-saucer-pdf which is in conflict with exo.core.component.document dependencies -->
