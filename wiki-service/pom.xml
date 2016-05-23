@@ -466,17 +466,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.wikimodel</groupId>
-      <artifactId>org.wikimodel.wem</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>javacc</artifactId>
-          <groupId>net.java.dev.javacc</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.xwiki.commons</groupId>
       <artifactId>xwiki-commons-text</artifactId>
       <scope>test</scope>
