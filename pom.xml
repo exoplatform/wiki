@@ -20,7 +20,6 @@
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-webui</module>
-    <module>wiki-extension</module>
     <module>wiki-upgrade-plugins</module>
   </modules>
   <scm>
@@ -79,18 +78,6 @@
         <version>${project.version}</version>
         <classifier>source-release</classifier>
         <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-extension-webapp</artifactId>
-        <version>${project.version}</version>
-        <type>war</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-extension-webapp</artifactId>
-        <version>${project.version}</version>
-        <type>pom</type>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
