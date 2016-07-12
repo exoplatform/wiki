@@ -16,9 +16,22 @@
  */
 package org.exoplatform.wiki.commons;
 
+import java.net.URL;
+import java.net.URLEncoder;
+import java.util.*;
+import java.util.Map.Entry;
+
+import javax.portlet.PortletPreferences;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
+import org.xwiki.context.Execution;
+import org.xwiki.context.ExecutionContext;
+import org.xwiki.rendering.syntax.Syntax;
+
+import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.MimeTypeResolver;
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -53,34 +66,22 @@ import org.exoplatform.wiki.webui.UIWikiPageEditForm;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiRichTextArea;
 import org.exoplatform.wiki.webui.WikiMode;
-import org.xwiki.context.Execution;
-import org.xwiki.context.ExecutionContext;
-import org.xwiki.rendering.syntax.Syntax;
 
-import javax.portlet.PortletPreferences;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+public class Utils {
 
-import java.net.URL;
-import java.net.URLEncoder;
-import java.util.*;
-import java.util.Map.Entry;
+  public static final int    DEFAULT_VALUE_UPLOAD_PORTAL = -1;
 
-public class Utils {  
- 
-  public static final int DEFAULT_VALUE_UPLOAD_PORTAL = -1;
-  
-  public static final String SLASH = "/";
-  
-  public static final String DRAFT_ID = "draftId";
-  
+  public static final String SLASH                       = "/";
+
+  public static final String DRAFT_ID                    = "draftId";
+
   public static String upperFirstCharacter(String str) {
     if (StringUtils.isEmpty(str)) {
       return str;
     }
     return str.substring(0, 1).toUpperCase() + str.substring(1);
   }
-  
+
   public static String getCurrentSpaceName() throws Exception {
     Wiki currentSpace = Utils.getCurrentWiki();
     if (currentSpace == null) {
@@ -88,7 +89,7 @@ public class Utils {
     }
     return getSpaceName(currentSpace);
   }
-  
+
   public static String getSpaceName(Wiki wiki) throws Exception {
     WikiType wikiType = WikiType.valueOf(wiki.getType().toUpperCase());
     if (WikiType.PORTAL.equals(wikiType)) {
@@ -114,7 +115,7 @@ public class Utils {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     return wikiService.getSpaceNameByGroupId(wiki.getOwner());
   }
-  
+
   public static String getCurrentRequestURL() throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     HttpServletRequest request = portalRequestContext.getRequest();
@@ -122,9 +123,10 @@ public class Utils {
     UIPortal uiPortal = Util.getUIPortal();
     String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
     if (!requestURL.contains(pageNodeSelected)) {
-      // Happens at the first time processRender() called when add wiki portlet manually
+      // Happens at the first time processRender() called when add wiki portlet
+      // manually
       requestURL = portalRequestContext.getPortalURI() + pageNodeSelected;
-    }      
+    }
     return requestURL;
   }
 
@@ -137,9 +139,10 @@ public class Utils {
     params.setParameters(paramsMap);
     return params;
   }
-  
+
   /**
    * Gets current wiki page directly from data base
+   * 
    * @return current wiki page
    * @throws Exception
    */
@@ -149,7 +152,7 @@ public class Utils {
     Page page = pageResolver.resolve(requestURL, Util.getUIPortal().getSelectedUserNode());
     return page;
   }
-  
+
   public static boolean canModifyPagePermission() throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
@@ -159,35 +162,36 @@ public class Utils {
     }
     return wikiService.canModifyPagePermission(currentPage, currentUser);
   }
-  
+
   public static boolean isPagePublic(Page page) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    return (page != null) && wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
+    return (page != null)
+        && wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
   }
 
   public static boolean isCurrentPagePublic() throws Exception {
     Page currentPage = Utils.getCurrentWikiPage();
     return isPagePublic(currentPage);
   }
-  
+
   public static String getSpaceHomeURL(String spaceGroupId) {
-    SpaceService spaceService  = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    SpaceService spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
     Space space = spaceService.getSpaceByGroupId(spaceGroupId);
     String spaceLink = org.exoplatform.social.webui.Utils.getSpaceHomeURL(space);
     return spaceLink;
   }
-  
+
   public static String getURLFromParams(WikiPageParams params) throws Exception {
     if (StringUtils.isEmpty(params.getType()) || StringUtils.isEmpty(params.getOwner())) {
       return StringUtils.EMPTY;
     }
-    
+
     if (params.getType().equals(PortalConfig.GROUP_TYPE)) {
       StringBuilder spaceUrl = new StringBuilder(getSpaceHomeURL(params.getOwner()));
       if (!spaceUrl.toString().endsWith("/")) {
         spaceUrl.append("/");
       }
-      //spaceUrl.append("wiki/");
+      // spaceUrl.append("wiki/");
       spaceUrl.append(getWikiAppNameInSpace(params.getOwner())).append("/");
       if (!StringUtils.isEmpty(params.getPageName())) {
         spaceUrl.append(params.getPageName());
@@ -196,7 +200,7 @@ public class Utils {
     }
     return org.exoplatform.wiki.utils.Utils.getPermanlink(params, false);
   }
-  
+
   private static String getWikiAppNameInSpace(String spaceId) {
     SpaceService spaceService = org.exoplatform.wiki.rendering.util.Utils.getService(SpaceService.class);
     Space space = spaceService.getSpaceByGroupId(spaceId);
@@ -211,21 +215,21 @@ public class Utils {
     }
     return "wiki";
   }
-  
+
   public static Page getCurrentNewDraftWikiPage() throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     return wikiService.getExsitedOrNewDraftPageById(null, null, org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
   }
-  
-  public static String getExtension(String filename)throws Exception {
-    MimeTypeResolver mimeResolver = new MimeTypeResolver() ;
-    try{
-      return mimeResolver.getExtension(mimeResolver.getMimeType(filename)) ;
-    }catch(Exception e) {
-      return mimeResolver.getDefaultMimeType() ;
+
+  public static String getExtension(String filename) throws Exception {
+    MimeTypeResolver mimeResolver = new MimeTypeResolver();
+    try {
+      return mimeResolver.getExtension(mimeResolver.getMimeType(filename));
+    } catch (Exception e) {
+      return mimeResolver.getDefaultMimeType();
     }
   }
-  
+
   public static Wiki getCurrentWiki() throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     WikiPageParams params = Utils.getCurrentWikiPageParams();
@@ -233,7 +237,8 @@ public class Utils {
   }
 
   public static WikiContext setUpWikiContext(UIWikiPortlet wikiPortlet) throws Exception {
-    RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RenderingService.class);
+    RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
+                                                                              .getComponentInstanceOfType(RenderingService.class);
     Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
     if (ec.getContext() == null) {
       ec.setContext(new ExecutionContext());
@@ -242,7 +247,7 @@ public class Utils {
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     return wikiContext;
   }
-  
+
   public static void feedDataForWYSIWYGEditor(UIWikiPageEditForm pageEditForm, String markup) throws Exception {
     UIWikiPortlet wikiPortlet = pageEditForm.getAncestorOfType(UIWikiPortlet.class);
     UIWikiRichTextArea richTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
@@ -250,24 +255,24 @@ public class Utils {
     HttpSession session = Util.getPortalRequestContext().getRequest().getSession(false);
     UIFormTextAreaInput markupInput = pageEditForm.getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT);
     String markupSyntax = getDefaultSyntax();
-    WikiContext wikiContext= Utils.setUpWikiContext(wikiPortlet);
+    WikiContext wikiContext = Utils.setUpWikiContext(wikiPortlet);
     if (markup == null) {
       markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
     }
     String xhtmlContent = renderingService.render(markup, markupSyntax, Syntax.ANNOTATED_XHTML_1_0.toIdString(), false);
-    xhtmlContent = StringCommonUtils.encodeScriptMarkup(xhtmlContent);
+    xhtmlContent = HTMLSanitizer.sanitize(xhtmlContent);
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
     sessionManager.addSessionContext(session.getId(), Utils.createWikiContext(wikiPortlet));
-    
+
     sessionManager.addSessionContext(ConversationState.getCurrent().getIdentity().getUserId(),
                                      Utils.createWikiContext(wikiPortlet));
     if (sessionManager.getSessionContainer(session.getId()) != null) {
       sessionManager.addSessionContainer(ConversationState.getCurrent().getIdentity().getUserId(),
-                                       sessionManager.getSessionContainer(session.getId()));
+                                         sessionManager.getSessionContainer(session.getId()));
     }
 
   }
@@ -275,11 +280,11 @@ public class Utils {
   public static String getCurrentWikiPagePath() throws Exception {
     return TreeUtils.getPathFromPageParams(getCurrentWikiPageParams());
   }
-  
+
   public static String getDefaultSyntax() throws Exception {
     WikiPreferences currentPreferences = Utils.getCurrentPreferences();
     String currentDefaultSyntax;
-    if(currentPreferences != null) {
+    if (currentPreferences != null) {
       currentDefaultSyntax = currentPreferences.getWikiPreferencesSyntax().getDefaultSyntax();
       if (currentDefaultSyntax == null) {
         WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
@@ -291,12 +296,12 @@ public class Utils {
     }
     return currentDefaultSyntax;
   }
-  
+
   public static WikiPreferences getCurrentPreferences() throws Exception {
     Wiki currentWiki = getCurrentWiki();
     return currentWiki.getPreferences();
   }
- 
+
   public static WikiContext createWikiContext(UIWikiPortlet wikiPortlet) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     WikiMode currentMode = wikiPortlet.getWikiMode();
@@ -309,14 +314,14 @@ public class Utils {
     String portalURL = domainURL + portalURI;
     String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
     String treeRestURL = getCurrentRestURL().concat("/wiki/tree/children/");
-    
+
     WikiContext wikiContext = new WikiContext();
     wikiContext.setPortalURL(portalURL);
     wikiContext.setTreeRestURI(treeRestURL);
     wikiContext.setRestURI(getCurrentRestURL());
     wikiContext.setRedirectURI(wikiPortlet.getRedirectURL());
     wikiContext.setPortletURI(pageNodeSelected);
-    WikiPageParams params = Utils.getCurrentWikiPageParams();    
+    WikiPageParams params = Utils.getCurrentWikiPageParams();
     wikiContext.setType(params.getType());
     wikiContext.setOwner(params.getOwner());
     if (editModes.contains(currentMode)) {
@@ -336,29 +341,30 @@ public class Utils {
     wikiContext.setBaseUrl(getBaseUrl());
     return wikiContext;
   }
-  
+
   public static String getBaseUrl() throws Exception {
     WikiPageParams params = getCurrentWikiPageParams();
     params.setPageName(null);
     return getURLFromParams(params);
   }
-  
-  public static String getCurrentWikiNodeUri() throws Exception {    
+
+  public static String getCurrentWikiNodeUri() throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     StringBuilder sb = new StringBuilder(portalRequestContext.getPortalURI());
     UIPortal uiPortal = Util.getUIPortal();
     String pageNodeSelected = uiPortal.getSelectedUserNode().getURI();
-    sb.append(pageNodeSelected);   
+    sb.append(pageNodeSelected);
     return sb.toString();
   }
 
   public static void redirect(WikiPageParams pageParams, WikiMode mode) throws Exception {
     redirect(pageParams, mode, null);
-  }  
+  }
+
   /**
-   * Get the full path for current wiki page   
-  */
-  public static String getPageLink() throws Exception {    
+   * Get the full path for current wiki page
+   */
+  public static String getPageLink() throws Exception {
     WikiPageParams params = getCurrentWikiPageParams();
     params.setPageName(null);
     if (PortalConfig.PORTAL_TYPE.equals(params.getType())) {
@@ -367,8 +373,7 @@ public class Utils {
       if (requestURI.indexOf(navigationURI) < 0) {
         navigationURI = "wiki";
       }
-      return requestURI.substring(0, requestURI.indexOf(navigationURI) + navigationURI.length())
-          + "/";
+      return requestURI.substring(0, requestURI.indexOf(navigationURI) + navigationURI.length()) + "/";
     }
     return getURLFromParams(params);
   }
@@ -381,13 +386,13 @@ public class Utils {
     }
     portalRequestContext.sendRedirect(createURLWithMode(pageParams, mode, params));
   }
-  
+
   public static void redirect(String url) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
     portalRequestContext.setResponseComplete(true);
     portalRequestContext.sendRedirect(url);
   }
-  
+
   public static void ajaxRedirect(Event<? extends UIComponent> event,
                                   WikiPageParams pageParams,
                                   WikiMode mode,
@@ -395,20 +400,20 @@ public class Utils {
     String redirectLink = Utils.createURLWithMode(pageParams, mode, params);
     ajaxRedirect(event, redirectLink);
   }
-  
+
   public static void ajaxRedirect(Event<? extends UIComponent> event, String redirectLink) throws Exception {
-    event.getRequestContext().getJavascriptManager().addCustomizedOnLoadScript("eXo.wiki.UIWikiPortlet.ajaxRedirect('" + redirectLink + "');");
+    event.getRequestContext()
+         .getJavascriptManager()
+         .addCustomizedOnLoadScript("eXo.wiki.UIWikiPortlet.ajaxRedirect('" + redirectLink + "');");
   }
-  
-  public static String createURLWithMode(WikiPageParams pageParams,
-                                         WikiMode mode,
-                                         Map<String, String[]> params) throws Exception {
+
+  public static String createURLWithMode(WikiPageParams pageParams, WikiMode mode, Map<String, String[]> params) throws Exception {
     StringBuffer sb = new StringBuffer();
     sb.append(getURLFromParams(pageParams));
-//    sb.append(getPageLink());
-//    if(!StringUtils.isEmpty(pageParams.getPageName())){
-//      sb.append(URLEncoder.encode(pageParams.getPageName(), "UTF-8"));
-//    }
+    // sb.append(getPageLink());
+    // if(!StringUtils.isEmpty(pageParams.getPageName())){
+    // sb.append(URLEncoder.encode(pageParams.getPageName(), "UTF-8"));
+    // }
     if (!mode.equals(WikiMode.VIEW)) {
       sb.append("#").append(Utils.getActionFromWikiMode(mode));
     }
@@ -423,10 +428,7 @@ public class Utils {
     return sb.toString();
   }
 
-  
-  public static String createFormActionLink(UIComponent uiComponent,
-                                          String action,
-                                          String beanId) throws Exception {
+  public static String createFormActionLink(UIComponent uiComponent, String action, String beanId) throws Exception {
     WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
     boolean isForm = UIForm.class.isInstance(uiComponent);
     UIForm form = isForm ? (UIForm) uiComponent : uiComponent.getAncestorOfType(UIForm.class);
@@ -477,7 +479,7 @@ public class Utils {
     sb.append(PortalContainer.getCurrentRestContextName());
     return sb.toString();
   }
-  
+
   public static WikiMode getModeFromAction(String actionParam) {
     String[] params = actionParam.split(WikiConstants.WITH);
     String name = params[0];
@@ -492,9 +494,10 @@ public class Utils {
     }
     return null;
   }
-  
+
   /**
    * render macro to XHtml string.
+   * 
    * @param uiComponent - component that contain the macro.
    * @param macroName - name of macro
    * @param wikiSyntax - wiki syntax referred from {@link Syntax}
@@ -504,10 +507,7 @@ public class Utils {
     try {
       RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
       setUpWikiContext(uiComponent.getAncestorOfType(UIWikiPortlet.class));
-      String content= renderingService.render(macroName,
-                                     wikiSyntax,
-                                     Syntax.XHTML_1_0.toIdString(),
-                                     false);      
+      String content = renderingService.render(macroName, wikiSyntax, Syntax.XHTML_1_0.toIdString(), false);
       return content;
     } catch (Exception e) {
       return "";
@@ -521,7 +521,7 @@ public class Utils {
       ec.removeContext();
     }
   }
-  
+
   public static int getLimitUploadSize() {
     PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
     PortletPreferences portletPref = pcontext.getRequest().getPreferences();
@@ -533,7 +533,7 @@ public class Utils {
     }
     return limitMB;
   }
-  
+
   public static String getFullName(String userId) {
     try {
       OrganizationService organizationService = (OrganizationService) PortalContainer.getComponent(OrganizationService.class);
@@ -545,12 +545,11 @@ public class Utils {
       return res.getString("UIWikiPortlet.label.Anonymous");
     }
   }
-  
+
   public static String getDraftIdSessionKey() {
-    return ConversationState.getCurrent().getIdentity().getUserId()
-          + DRAFT_ID;
+    return ConversationState.getCurrent().getIdentity().getUserId() + DRAFT_ID;
   }
-  
+
   public static String getWikiTypeFromWikiId(String wikiId) {
     String wikiType = "";
     if (wikiId.startsWith("/spaces/")) {
@@ -567,7 +566,7 @@ public class Utils {
 
   public static String getWikiOwnerFromWikiId(String wikiId) {
     String wikiType = getWikiTypeFromWikiId(wikiId);
-    if(PortalConfig.USER_TYPE.equals(wikiType) || PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+    if (PortalConfig.USER_TYPE.equals(wikiType) || PortalConfig.PORTAL_TYPE.equals(wikiType)) {
       wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
     }
     return wikiId;
