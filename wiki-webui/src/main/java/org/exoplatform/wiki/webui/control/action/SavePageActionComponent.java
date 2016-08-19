@@ -22,9 +22,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
 import org.xwiki.rendering.syntax.Syntax;
 
-import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -139,7 +139,7 @@ public class SavePageActionComponent extends UIComponent {
           markup = markup.trim();
           htmlContent = renderingService.render(markup, syntaxId, Syntax.XHTML_1_0.toIdString(), false);
         }
-        htmlContent = HTMLSanitizer.sanitize(htmlContent);
+        htmlContent = WikiHTMLSanitizer.markupSanitize(htmlContent);
         markup = renderingService.render(htmlContent, Syntax.XHTML_1_0.toIdString(), syntaxId, false);
 
         String newPageName = TitleResolver.getId(title, false);
