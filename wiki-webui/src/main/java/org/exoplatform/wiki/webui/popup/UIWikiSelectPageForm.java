@@ -169,6 +169,9 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       
       Wiki wiki = wikiService.getWikiById(wikiId);
+      if (wiki == null) {
+        wiki = wikiService.createWiki(org.exoplatform.wiki.commons.Utils.getWikiTypeFromWikiId(wikiId), org.exoplatform.wiki.commons.Utils.getWikiOwnerFromWikiId(wikiId));
+      }
       Page wikiHome = wiki.getWikiHome();
       WikiPageParams params = new WikiPageParams(wiki.getType(), wiki.getOwner(), wikiHome.getName());
       uiWikiSpaceSwitcher.setCurrentSpaceName(Utils.upperFirstCharacter(wikiService.getWikiNameById(wikiId)));
