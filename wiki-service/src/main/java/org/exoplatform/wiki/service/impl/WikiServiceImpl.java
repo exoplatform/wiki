@@ -61,6 +61,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private static final Log LOG = ExoLogger.getLogger(WikiServiceImpl.class);
 
+  public static final String WIKI_TYPE_DRAFT = "draft";
+
   private static final String UNTITLED_PREFIX = "Untitled_";
 
   final static private String PREFERENCES = "preferences";
@@ -473,7 +475,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     MarkupKey key = new MarkupKey(new WikiPageParams(wikiType, wikiOwner, pageName), "", Syntax.XHTML_1_0.toIdString(), true);
     String uuid  = uuidCache.get(new Integer(key.hashCode()));
     if (uuid != null) {
-      page = getPageById(uuid);
+      if (WIKI_TYPE_DRAFT.equals(wikiType)) {
+        page = getDraftPageById(uuid);
+      } else {
+        page = getPageById(uuid);
+      }
     }
 
     // if uuid not found in the cache
@@ -505,6 +511,15 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
     return dataStorage.getPageById(id);
+  }
+
+  @Override
+  public DraftPage getDraftPageById(String id) throws WikiException {
+    if (id == null) {
+      return null;
+    }
+
+    return dataStorage.getDraftPageById(id);
   }
 
   @Override
