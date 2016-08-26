@@ -15,6 +15,7 @@ import org.exoplatform.services.jcr.access.AccessControlEntry;
 import org.exoplatform.services.jcr.access.AccessControlList;
 import org.exoplatform.services.jcr.ext.hierarchy.NodeHierarchyCreator;
 import org.exoplatform.services.jcr.impl.core.query.QueryImpl;
+import org.exoplatform.services.jcr.util.Text;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.Identity;
@@ -2097,7 +2098,7 @@ public class JCRDataStorage implements DataStorage {
           WikiImpl wikiImpl = fetchWikiImpl(page.getWikiType(), page.getWikiOwner());
           wikiPage = wikiImpl.getWikiHome();
         } else {
-          WikiSearchData searchData = new WikiSearchData(page.getWikiType(), page.getWikiOwner(), page.getName());
+          WikiSearchData searchData = new WikiSearchData(page.getWikiType(), page.getWikiOwner(), Text.escapeIllegalJcrChars(page.getName()));
           JCRWikiSearchQueryBuilder queryBuilder = new JCRWikiSearchQueryBuilder(searchData);
           String statement = queryBuilder.getPageConstraint();
 

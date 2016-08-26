@@ -27,9 +27,6 @@ UIWikiSavePage.prototype.confirm = function(uicomponentId, isNewMode, pageTitleI
   if (isNewMode == true && (pageTitleInput.value == untitled || pageTitleInput.value == "")) {
     eXo.wiki.UIConfirmBox.render(uicomponentId, titleMessage, addMessage, submitClass, submitLabel, cancelLabel);
     return false;
-  } else if (!eXo.wiki.UIConfirmBox.validate(pageTitleInputId)) {
-    eXo.wiki.UIConfirmBox.renderWarningBox(uicomponentId, titleWarning, warningMsg, okLabel);
-    return false;
   }
   return true;
 };

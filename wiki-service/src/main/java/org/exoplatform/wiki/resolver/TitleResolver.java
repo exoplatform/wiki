@@ -22,10 +22,12 @@ import java.util.StringTokenizer;
 
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.wiki.utils.WikiNameValidator;
 
 public class TitleResolver {
   
   private static final Log      log               = ExoLogger.getLogger(TitleResolver.class);
+  private static final String[] INVALID_CHARACTERS = WikiNameValidator.INVALID_CHARACTERS.split(" ");
   
   public static String getId(String title, boolean isEncoded) {
     if (title == null) {
@@ -40,11 +42,14 @@ public class TitleResolver {
           log.warn(String.format("Getting Page Id from %s failed because of UnspportedEncodingException. Using page title(%s) instead (Not recommended. Fix it if possible!!!)", title), e1);
       }
     }
-    return replaceSpacebyUnderscore(id);
+    for (String specialChar : INVALID_CHARACTERS) {
+      id = replaceSpecialCharacter(specialChar, id);
+    }
+    return replaceSpecialCharacter(" ", id);
   }
 
-  private static String replaceSpacebyUnderscore(String s) {
-    StringTokenizer st = new StringTokenizer(s, " ", false);
+  private static String replaceSpecialCharacter(String specialChar, String id) {
+    StringTokenizer st = new StringTokenizer(id, specialChar, false);
     StringBuilder sb = new StringBuilder();
     if (st.hasMoreElements()) {
       sb.append(st.nextElement());
