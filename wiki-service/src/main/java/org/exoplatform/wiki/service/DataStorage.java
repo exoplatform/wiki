@@ -39,6 +39,8 @@ public interface DataStorage {
    */
   public Page getPageById(String id) throws WikiException;
 
+  public DraftPage getDraftPageById(String id) throws WikiException;
+
   public Page getParentPageOf(Page page) throws WikiException;
 
   public List<Page> getChildrenPageOf(Page page) throws WikiException;

@@ -256,6 +256,20 @@ public class JCRDataStorage implements DataStorage {
   }
 
   @Override
+  public DraftPage getDraftPageById(String id) throws WikiException {
+    boolean created = mowService.startSynchronization();
+
+    ChromatticSession session = mowService.getSession();
+
+    try {
+      DraftPage draftPage = convertDraftPageImplToDraftPage(session.findById(DraftPageImpl.class, id));
+      return draftPage;
+    } finally {
+      mowService.stopSynchronization(created);
+    }
+  }
+
+  @Override
   public Page getParentPageOf(Page page) throws WikiException {
     boolean created = mowService.startSynchronization();
 

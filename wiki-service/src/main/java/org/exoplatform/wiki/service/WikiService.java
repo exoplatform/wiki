@@ -180,6 +180,15 @@ public interface WikiService {
   public Page getPageById(String id) throws WikiException;
 
   /**
+   * Gets a wiki draft page based on its unique id.
+   *
+   * @param id Unique id of the wiki page.
+   * @return The wiki draft page.
+   * @throws WikiException
+   */
+  public Page getDraftPageById(String id) throws WikiException;
+
+  /**
    * Get renderd content of a page
    * @param page The wiki page
    * @param targetSyntax The syntax
