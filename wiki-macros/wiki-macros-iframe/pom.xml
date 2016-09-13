@@ -7,7 +7,7 @@
     <version>4.4.x-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-macros-iframe</artifactId>
-  <name>eXo Wiki Macros Iframe</name>
+  <name>eXo PLF:: Wiki Macros Iframe</name>
   <dependencies>
     <!--This dependency is used for main classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
     <dependency>

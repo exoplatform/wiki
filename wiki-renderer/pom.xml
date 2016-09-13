@@ -8,7 +8,7 @@
   </parent>
   <artifactId>wiki-renderer</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Wiki Renderer</name>
+  <name>eXo PLF:: Wiki Renderer</name>
   <dependencies>
     <!-- Code macro depends on -->
     <dependency>

@@ -11,7 +11,7 @@
   <artifactId>wiki</artifactId>
   <version>4.4.x-SNAPSHOT</version>
   <packaging>pom</packaging>
-  <name>eXo Wiki</name>
+  <name>eXo PLF:: Wiki</name>
   <description>eXo wiki</description>
   <modules>
     <module>wiki-injector</module>

@@ -8,7 +8,7 @@
   </parent>
   <artifactId>wiki-webapp</artifactId>
   <packaging>war</packaging>
-  <name>eXo Wiki Webapp</name>
+  <name>eXo PLF:: Wiki Webapp</name>
   <properties>
     <gwt.output.directory>${project.build.directory}/${project.build.finalName}/resources/js/xwiki/wysiwyg</gwt.output.directory>
     <xwe.directory>${gwt.output.directory}/xwe</xwe.directory>

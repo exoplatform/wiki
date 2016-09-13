@@ -8,7 +8,7 @@
   </parent>
   <artifactId>wiki-webui</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Wiki Webui</name>
+  <name>eXo PLF:: Wiki Webui</name>
   <dependencies>
     <!--This dependencies is used for main classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
     <dependency>

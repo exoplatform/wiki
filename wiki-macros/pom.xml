@@ -8,7 +8,7 @@
   </parent>
   <artifactId>wiki-macros</artifactId>
   <packaging>pom</packaging>
-  <name>eXo Wiki Macros</name>
+  <name>eXo PLF:: Wiki Macros</name>
   <modules>
     <module>wiki-macros-iframe</module>
   </modules>

@@ -8,7 +8,7 @@
   </parent>
   <artifactId>wiki-upgrade-plugins</artifactId>
   <packaging>jar</packaging>
-  <name>eXo Wiki Upgrade Plugins</name>
+  <name>eXo PLF:: Wiki Upgrade Plugins</name>
   <description>eXo Wiki Upgrade Plugins</description>
   <dependencies>
     <dependency>
