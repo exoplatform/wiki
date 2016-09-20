@@ -69,7 +69,7 @@
   <component>
   	<type>org.exoplatform.wiki.rendering.render.xwiki.image.BaseImageWriterImpl</type>
   </component>
-  
+
   <component>
     <key>org.exoplatform.wiki.service.DataStorage</key>
     <type>org.exoplatform.wiki.service.impl.JCRDataStorage</type>

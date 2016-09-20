@@ -33,6 +33,11 @@
     <key>org.exoplatform.wiki.service.impl.WikiSpaceAccessLifecycle</key>
     <type>org.exoplatform.wiki.service.impl.WikiSpaceAccessLifecycle</type>
   </component>
+
+  <component>
+    <key>org.exoplatform.wiki.service.DataStorage</key>
+    <type>org.exoplatform.wiki.jpa.JPADataStorage</type>
+  </component>
   
   <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
