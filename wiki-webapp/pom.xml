@@ -104,10 +104,6 @@
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-macro-footnotes</artifactId>
     </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-html</artifactId>
-    </dependency>    
     <!--dependency>
       <groupId>org.xwiki.platform</groupId>
      <artifactId>xwiki-platform-office-macro</artifactId>
