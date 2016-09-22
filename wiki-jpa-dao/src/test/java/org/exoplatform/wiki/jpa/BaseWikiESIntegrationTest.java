@@ -147,9 +147,6 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
   }
 
   public void tearDown() {
-
-    super.tearDown();
-
     LOGGER.info("Clean Indexing database");
     cleanDB();
 
@@ -157,6 +154,8 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     LOGGER.info("Embedded ES instance - Stopping");
     node.close();
     LOGGER.info("Embedded ES instance - Stopped");
+
+    super.tearDown();
   }
 
   /**

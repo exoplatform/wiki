@@ -64,12 +64,10 @@ public class IndexingTest extends BaseWikiESIntegrationTest {
         fileResource.getPath(),
         "www.exo.com",
         "BCH");
-    pageAttachmentDAO.create(attachment1);
     PageAttachmentEntity attachment2 = indexAttachment("Scrum @eXo - Collector",
         fileResource.getPath(),
         "www.exo.com",
         "BCH");
-    pageAttachmentDAO.create(attachment2);
     assertEquals(2, pageAttachmentDAO.findAll().size());
     // When
     indexingService.reindexAll(AttachmentIndexingServiceConnector.TYPE);
