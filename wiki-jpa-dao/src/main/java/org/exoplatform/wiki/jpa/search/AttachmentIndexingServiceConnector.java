@@ -87,14 +87,8 @@ public class AttachmentIndexingServiceConnector  extends ElasticIndexingServiceC
     Map<String,String> fields = new HashMap<>();
     Document doc = new Document(TYPE, id, getUrl(attachment), fileItem.getFileInfo().getUpdatedDate(),
         computePermissions(fileItem.getFileInfo().getUpdater(),attachment), fields);
-    int index = fileItem.getFileInfo().getName().lastIndexOf(".");
-    if(index != -1) {
-      doc.addField("title", fileItem.getFileInfo().getName().substring(0, index - 1));
-    }
-    else{
-      doc.addField("title", fileItem.getFileInfo().getName());
-    }
 
+    doc.addField("title", attachment.getFullTitle());
     doc.addField("file", fileItem.getAsByte());
     doc.addField("name", fileItem.getFileInfo().getName());
     doc.addField("createdDate", String.valueOf(attachment.getCreatedDate().getTime()));
