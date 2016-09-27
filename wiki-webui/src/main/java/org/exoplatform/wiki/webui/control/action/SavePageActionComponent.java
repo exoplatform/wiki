@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
 import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.container.PortalContainer;
@@ -134,14 +133,12 @@ public class SavePageActionComponent extends UIComponent {
         String markup;
         if (wikiRichTextArea.isRendered()) {
           htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
+          markup = renderingService.render(htmlContent, Syntax.XHTML_1_0.toIdString(), syntaxId, false);
+          markupInput.setValue(markup);
         } else {
           markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
           markup = markup.trim();
-          htmlContent = renderingService.render(markup, syntaxId, Syntax.XHTML_1_0.toIdString(), false);
         }
-        htmlContent = WikiHTMLSanitizer.markupSanitize(htmlContent);
-        markup = renderingService.render(htmlContent, Syntax.XHTML_1_0.toIdString(), syntaxId, false);
-
         String newPageName = TitleResolver.getId(title, false);
         if (org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName())
             && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {

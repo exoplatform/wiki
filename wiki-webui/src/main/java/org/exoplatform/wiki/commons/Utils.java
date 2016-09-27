@@ -26,7 +26,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
@@ -260,7 +259,6 @@ public class Utils {
       markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
     }
     String xhtmlContent = renderingService.render(markup, markupSyntax, Syntax.ANNOTATED_XHTML_1_0.toIdString(), false);
-    xhtmlContent = WikiHTMLSanitizer.markupSanitize(xhtmlContent);
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
