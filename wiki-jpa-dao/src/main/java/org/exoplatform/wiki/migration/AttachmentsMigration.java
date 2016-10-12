@@ -229,7 +229,7 @@ public class AttachmentsMigration implements CustomTaskChange {
 
   @Override
   public String getConfirmationMessage() {
-    return null;
+    return "Wiki attachments migrated";
   }
 
   @Override

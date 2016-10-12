@@ -36,7 +36,7 @@ public class TimestampChange implements CustomSqlChange {
 
   @Override
   public String getConfirmationMessage() {
-    return null;
+    return "Default timestamp value updated for " + tableName + "." + columnName;
   }
 
   @Override
