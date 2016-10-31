@@ -31,10 +31,6 @@
       <artifactId>commons-lang</artifactId>
     </dependency>
     <dependency>
-      <groupId>ecs</groupId>
-      <artifactId>ecs</artifactId>
-    </dependency>
-    <dependency>
       <groupId>javax.inject</groupId>
       <artifactId>javax.inject</artifactId>
     </dependency>
@@ -242,11 +238,6 @@
           <groupId>org.slf4j</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <!-- Diff engine - http://www.suigeneris.org/kb/display/jrcs/JRCS+Home -->
-    <dependency>
-      <groupId>org.suigeneris</groupId>
-      <artifactId>jrcs.diff</artifactId>
     </dependency>
     <dependency>
       <groupId>org.xwiki.commons</groupId>

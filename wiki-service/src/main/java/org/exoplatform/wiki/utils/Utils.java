@@ -1,6 +1,26 @@
 package org.exoplatform.wiki.utils;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Stack;
+
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang.StringUtils;
+import org.suigeneris.jrcs.diff.DifferentiationFailedException;
+import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.rendering.converter.ConversionException;
+import org.xwiki.rendering.syntax.Syntax;
+
+import org.exoplatform.commons.diff.DiffResult;
+import org.exoplatform.commons.diff.DiffService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
@@ -23,26 +43,19 @@ import org.exoplatform.web.url.navigation.NavigationResource;
 import org.exoplatform.web.url.navigation.NodeURL;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.*;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PageVersion;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.service.diff.DiffResult;
-import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
-import org.suigeneris.jrcs.diff.DifferentiationFailedException;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.rendering.converter.ConversionException;
-import org.xwiki.rendering.syntax.Syntax;
-
-import javax.mail.internet.AddressException;
-import javax.mail.internet.InternetAddress;
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
 
 public class Utils {
   public static final String SLASH = "SLASH";

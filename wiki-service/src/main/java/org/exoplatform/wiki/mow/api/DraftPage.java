@@ -1,6 +1,6 @@
 package org.exoplatform.wiki.mow.api;
 
-import org.exoplatform.wiki.service.diff.DiffResult;
+import org.exoplatform.commons.diff.DiffResult;
 
 public class DraftPage extends Page {
   private String targetPageId;
