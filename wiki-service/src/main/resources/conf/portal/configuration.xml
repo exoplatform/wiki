@@ -86,11 +86,6 @@
   </component>
   
   <component>
-    <key>org.exoplatform.wiki.service.diff.DiffService</key>
-    <type>org.exoplatform.wiki.service.diff.DiffService</type>
-  </component>
-  
-  <component>
     <key>org.exoplatform.wiki.service.image.ResizeImageService</key>
     <type>org.exoplatform.wiki.service.image.impl.ResizeImageServiceImpl</type>
   </component>

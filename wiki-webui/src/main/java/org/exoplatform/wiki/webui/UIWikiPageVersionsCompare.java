@@ -23,6 +23,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import org.exoplatform.commons.diff.DiffResult;
+import org.exoplatform.commons.diff.DiffService;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -33,8 +35,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.service.diff.DiffResult;
-import org.exoplatform.wiki.service.diff.DiffService;
 import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
 import org.exoplatform.wiki.webui.control.action.CompareRevisionActionListener;
 import org.exoplatform.wiki.webui.control.action.ShowHistoryActionListener;
