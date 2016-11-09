@@ -634,7 +634,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       } else {
         result = bis;
       }
-      return Response.ok(result).cacheControl(cc).build();
+      return Response.ok(result).header("Content-Disposition", "attachment; filename=" + attachment.getTitle()).cacheControl(cc).build();
     } catch (Exception e) {
       if (log.isDebugEnabled()) {
         log.debug(String.format("Can't get attachment name: %s of page %s", attachmentId, pageId), e);
@@ -642,7 +642,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }
-
+  
   public Space createSpace(ObjectFactory objectFactory,
                            URI baseUri,
                            String wikiName,
