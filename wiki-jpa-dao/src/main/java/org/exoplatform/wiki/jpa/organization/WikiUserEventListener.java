@@ -16,7 +16,7 @@
 */
 package org.exoplatform.wiki.jpa.organization;
 
-import org.exoplatform.addons.es.index.IndexingService;
+import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.User;

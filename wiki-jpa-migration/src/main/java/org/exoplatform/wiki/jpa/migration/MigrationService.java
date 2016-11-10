@@ -16,8 +16,8 @@
  */
 package org.exoplatform.wiki.jpa.migration;
 
-import org.exoplatform.addons.es.index.IndexingService;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
+import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;

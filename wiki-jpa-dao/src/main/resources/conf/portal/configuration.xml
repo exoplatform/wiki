@@ -109,7 +109,7 @@
 
   <!-- INDEXING -->
   <external-component-plugins>
-    <target-component>org.exoplatform.addons.es.index.IndexingOperationProcessor</target-component>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
     <component-plugin>
       <name>WikiPageIndexingConnector</name>
       <set-method>addConnector</set-method>
@@ -125,7 +125,7 @@
     </component-plugin>
   </external-component-plugins>
   <external-component-plugins>
-    <target-component>org.exoplatform.addons.es.index.IndexingOperationProcessor</target-component>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
     <component-plugin>
       <name>AttachmentIndexingConnector</name>
       <set-method>addConnector</set-method>

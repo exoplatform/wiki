@@ -21,9 +21,6 @@ package org.exoplatform.wiki.jpa;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.addons.es.dao.IndexingOperationDAO;
-import org.exoplatform.addons.es.index.IndexingOperationProcessor;
-import org.exoplatform.addons.es.index.IndexingService;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;

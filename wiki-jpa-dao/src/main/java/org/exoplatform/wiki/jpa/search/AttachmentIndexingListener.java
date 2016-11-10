@@ -16,9 +16,9 @@
 */
 package org.exoplatform.wiki.jpa.search;
 
-import org.exoplatform.addons.es.index.IndexingService;
 import org.exoplatform.commons.file.model.FileInfo;
 import org.exoplatform.commons.file.services.FileService;
+import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;

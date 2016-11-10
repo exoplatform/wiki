@@ -1,6 +1,6 @@
 package org.exoplatform.wiki.jpa.search;
 
-import org.exoplatform.addons.es.index.IndexingService;
+import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.jpa.dao.PageAttachmentDAO;
 import org.exoplatform.wiki.mow.api.Page;

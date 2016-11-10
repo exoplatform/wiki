@@ -157,28 +157,28 @@
   </component>
 
   <component>
-    <key>org.exoplatform.addons.es.index.IndexingService</key>
-    <type>org.exoplatform.addons.es.index.impl.QueueIndexingService</type>
+    <key>org.exoplatform.commons.search.index.IndexingService</key>
+    <type>org.exoplatform.commons.search.index.impl.QueueIndexingService</type>
   </component>
   <component>
-    <key>org.exoplatform.addons.es.index.IndexingOperationProcessor</key>
-    <type>org.exoplatform.addons.es.index.impl.ElasticIndexingOperationProcessor</type>
+    <key>org.exoplatform.commons.search.index.IndexingOperationProcessor</key>
+    <type>org.exoplatform.commons.search.index.impl.ElasticIndexingOperationProcessor</type>
   </component>
   <component>
-    <key>org.exoplatform.addons.es.dao.IndexingOperationDAO</key>
-    <type>org.exoplatform.addons.es.dao.impl.IndexingOperationDAOImpl</type>
+    <key>org.exoplatform.commons.search.dao.IndexingOperationDAO</key>
+    <type>org.exoplatform.commons.search.dao.impl.IndexingOperationDAOImpl</type>
   </component>
   <component>
-    <type>org.exoplatform.addons.es.client.ElasticIndexingClient</type>
+    <type>org.exoplatform.commons.search.es.client.ElasticIndexingClient</type>
   </component>
   <component>
-    <type>org.exoplatform.addons.es.client.ElasticSearchingClient</type>
+    <type>org.exoplatform.commons.search.es.client.ElasticSearchingClient</type>
   </component>
   <component>
-    <type>org.exoplatform.addons.es.client.ElasticIndexingAuditTrail</type>
+    <type>org.exoplatform.commons.search.es.client.ElasticIndexingAuditTrail</type>
   </component>
   <component>
-    <type>org.exoplatform.addons.es.client.ElasticContentRequestBuilder</type>
+    <type>org.exoplatform.commons.search.es.client.ElasticContentRequestBuilder</type>
   </component>
 
   <!-- Bind datasource -->

@@ -17,7 +17,7 @@
     <class>org.exoplatform.wiki.jpa.entity.WikiEntity</class>
     <class>org.exoplatform.wiki.jpa.entity.PageMoveEntity</class>
     <class>org.exoplatform.wiki.jpa.entity.EmotionIconEntity</class>
-    <class>org.exoplatform.addons.es.domain.IndexingOperation</class>
+    <class>org.exoplatform.commons.search.domain.IndexingOperation</class>
     <class>org.exoplatform.commons.file.storage.entity.FileInfoEntity</class>
     <class>org.exoplatform.commons.file.storage.entity.NameSpaceEntity</class>
     <class>org.exoplatform.commons.file.storage.entity.OrphanFileEntity</class>

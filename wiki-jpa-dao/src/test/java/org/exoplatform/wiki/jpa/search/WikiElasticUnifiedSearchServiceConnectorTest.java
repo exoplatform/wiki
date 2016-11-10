@@ -16,8 +16,8 @@
 */
 package org.exoplatform.wiki.jpa.search;
 
-import org.exoplatform.addons.es.client.ElasticSearchingClient;
 import org.exoplatform.commons.api.search.data.SearchContext;
+import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
 import org.exoplatform.wiki.service.WikiService;
