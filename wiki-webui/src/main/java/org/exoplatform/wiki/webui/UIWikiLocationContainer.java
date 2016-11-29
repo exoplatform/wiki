@@ -53,7 +53,6 @@ public class UIWikiLocationContainer extends UIContainer {
       UIWikiLocationContainer container = event.getSource();
       UIWikiBreadCrumb newlocation = container.getChildById(NEW_LOCATION);
       String value = event.getRequestContext().getRequestParameter(OBJECTID);
-      value = TitleResolver.getId(value, false);
       WikiPageParams params = TreeUtils.getPageParamsFromPath(value);
       newlocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageName()));
       event.getRequestContext().addUIComponentToUpdateByAjax(newlocation);
