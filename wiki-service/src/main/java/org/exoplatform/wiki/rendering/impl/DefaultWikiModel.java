@@ -126,7 +126,7 @@ public class DefaultWikiModel implements WikiModel {
                                                            wikiMarkupContext.getPageName(),
                                                            wikiMarkupContext.getAttachmentName()));
       Page page;
-      String attachmentName = TitleResolver.getId(wikiMarkupContext.getAttachmentName(), false);
+      String attachmentName = wikiMarkupContext.getAttachmentName();
       if (ResourceType.ATTACHMENT.equals(resourceType)) {
         page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageName());
 
