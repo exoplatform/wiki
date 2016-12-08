@@ -147,10 +147,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     assertEquals(expectedImageHtmlSpaceName, renderingService.render("[[image:portal:classic.CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
      
     String expectedFreeStandingImageHtml = "<p><img src=\"http://loclahost:8080/portal/rest/wiki/images/portal/space/classic/page/CreateWikiPage-003/eXoWikiHome.png\" class=\"wikimodel-freestanding\" alt=\"eXoWikiHome.png\"/></p>";
-     assertEquals(expectedFreeStandingImageHtml, renderingService.render("image:eXoWikiHome.png", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-     
-    String expectedImageSpaceInName = "<p><img src=\"http://loclahost:8080/portal/rest/wiki/images/portal/space/classic/page/CreateWikiPage-003/space_in_name.png\" alt=\"space in name.png\"/></p>";
-     assertEquals(expectedImageSpaceInName, renderingService.render("[[image:space in name.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    assertEquals(expectedFreeStandingImageHtml, renderingService.render("image:eXoWikiHome.png", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
 
   public void testGetContentOfSection() throws Exception {
