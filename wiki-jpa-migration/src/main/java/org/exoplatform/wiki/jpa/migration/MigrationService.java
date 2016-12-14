@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.jpa.migration;
 
 import org.exoplatform.commons.api.persistence.ExoTransactional;
+import org.exoplatform.commons.cluster.StartableClusterAware;
 import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.container.ExoContainer;
@@ -43,7 +44,6 @@ import org.exoplatform.wiki.mow.core.api.wiki.WikiImpl;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.impl.JCRDataStorage;
 import org.jgroups.util.DefaultThreadFactory;
-import org.picocontainer.Startable;
 
 import javax.jcr.*;
 import java.util.*;
@@ -59,7 +59,7 @@ import java.util.concurrent.Executors;
  *     - the getEmotionIcons and getEmotionIconByName do not return the image, so can not retrieve it (bug)
  *     - the Emotion Icons are created at startup if they do not exist
  */
-public class MigrationService implements Startable {
+public class MigrationService implements StartableClusterAware {
 
   private static final Log LOG = ExoLogger.getLogger(MigrationService.class);
 
@@ -268,6 +268,12 @@ public class MigrationService implements Startable {
       RequestLifeCycle.end();
     }
 
+  }
+
+  @Override
+  public boolean isDone() {
+    settingService.initMigrationSetting();
+    return !hasDataToMigrate() && WikiMigrationContext.isMigrationDone() && WikiMigrationContext.isDeletionDone();
   }
 
   /**
@@ -1019,10 +1025,6 @@ public class MigrationService implements Startable {
     }
   }
 
-  @Override
-  public void stop() {
-
-  }
 
   /**
    * Get the wiki with migration error from the settingService and put them in the wikiErrorsList
@@ -1100,5 +1102,4 @@ public class MigrationService implements Startable {
 
     return userWikiContainer1;
   }
-
 }
