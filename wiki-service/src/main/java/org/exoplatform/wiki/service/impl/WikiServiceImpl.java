@@ -970,9 +970,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
 
-    if(updateType != null) {
-      postUpdatePage(page.getWikiType(), page.getWikiOwner(), page.getName(), page, updateType);
-    }
+    postUpdatePage(page.getWikiType(), page.getWikiOwner(), page.getName(), page, updateType);
   }
 
   @Override

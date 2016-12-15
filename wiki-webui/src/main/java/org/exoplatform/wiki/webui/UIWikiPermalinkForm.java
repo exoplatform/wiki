@@ -33,6 +33,7 @@ import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.mow.api.PermissionEntry;
 import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPermissionForm.Scope;
@@ -126,7 +127,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         }
         currentPage.setPermissions(permissions);
 
-        wikiService.updatePage(currentPage, null);
+        wikiService.updatePage(currentPage, PageUpdateType.EDIT_PAGE_PERMISSIONS);
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
         if (wikiService.hasPermissionOnPage(currentPage, PermissionType.VIEWPAGE, ConversationState.getCurrent().getIdentity())) {
@@ -158,7 +159,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         }));
         currentPage.setPermissions(permissions);
 
-        wikiService.updatePage(currentPage, null);
+        wikiService.updatePage(currentPage, PageUpdateType.EDIT_PAGE_PERMISSIONS);
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
         UIWikiPageInfoArea uiWikiPageInfoArea = uiWikiPortlet.findFirstComponentOfType(UIWikiPageInfoArea.class);

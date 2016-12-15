@@ -44,6 +44,7 @@ import org.exoplatform.wiki.mow.api.Permission;
 import org.exoplatform.wiki.mow.api.PermissionEntry;
 import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
@@ -534,7 +535,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       } else if (Scope.PAGE.equals(scope)) {
         Page page = Utils.getCurrentWikiPage();
         page.setPermissions(uiWikiPermissionForm.permissionEntries);
-        wikiService.updatePage(page, null);
+        wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_PERMISSIONS);
 
         // Update page info area
         UIWikiPortlet uiWikiPortlet = uiWikiPermissionForm.getAncestorOfType(UIWikiPortlet.class);
