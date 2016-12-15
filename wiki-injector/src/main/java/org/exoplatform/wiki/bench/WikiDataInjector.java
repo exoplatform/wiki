@@ -25,6 +25,7 @@ import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.IDType;
+import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiService;
 
 import java.util.ArrayList;
@@ -249,7 +250,7 @@ public class WikiDataInjector extends DataInjector {
       if (isRecursive || depth == (quantities.size() - 1)) {
         log.info(String.format("Grant permissions %1$s for page: %2$s", permissionsToString(permissions), childPage.getTitle()));
         childPage.setPermissions(permissions);
-        wikiService.updatePage(childPage, null);
+        wikiService.updatePage(childPage, PageUpdateType.EDIT_PAGE_PERMISSIONS);
         if (depth < quantities.size() - 1) {
           grantPermission(quantities, prefixes, depth + 1, childPage, wikiOwner, wikiType, permissions, isRecursive);
         }
