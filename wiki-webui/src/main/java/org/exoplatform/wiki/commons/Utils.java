@@ -255,7 +255,7 @@ public class Utils {
       markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
     }
     String xhtmlContent = renderingService.render(markup, markupSyntax, Syntax.ANNOTATED_XHTML_1_0.toIdString(), false);
-    xhtmlContent = StringCommonUtils.encodeScriptMarkup(xhtmlContent);
+    xhtmlContent = StringCommonUtils.encodeWikiScriptMarkup(xhtmlContent);
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
