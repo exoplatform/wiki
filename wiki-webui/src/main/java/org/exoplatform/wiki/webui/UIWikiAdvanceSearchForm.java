@@ -16,9 +16,8 @@
  */
 package org.exoplatform.wiki.webui;
 
-import java.util.Collection;
-
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.webui.commons.EventUIComponent;
@@ -32,16 +31,16 @@ import org.exoplatform.webui.core.model.SelectOptionGroup;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIForm;
-
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.webui.core.UIAdvancePageIterator;
+
+import java.util.Collections;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -56,7 +55,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
   final static String TEXT  = "text".intern();
 
   final static String WIKIS = "wikis".intern();
-  
+
   public static final String UI_WIKI_ADVANCE_SEARCH_FORM = "UIWikiAdvanceSearchForm";
   
   public static final String SWITCH_SPACE_ACTION = "SwitchSpace";
@@ -99,7 +98,11 @@ public class UIWikiAdvanceSearchForm extends UIForm {
   
   public void processSearchAction() throws Exception {
     WikiSearchData data = createSearchData();
-    numberOfSearchResult = Utils.countSearchResult(data);
+    if(data.getWikiType() == null || data.getWikiOwner() == null) {
+      numberOfSearchResult = 0;
+    } else {
+      numberOfSearchResult = Utils.countSearchResult(data);
+    }
     gotoSearchPage(1);
   }
 
@@ -121,16 +124,18 @@ public class UIWikiAdvanceSearchForm extends UIForm {
   }
 
   public void gotoSearchPage(int pageIndex) throws Exception {
+    UIWikiAdvanceSearchResult uiSearchResults = getParent().findFirstComponentOfType(UIWikiAdvanceSearchResult.class);
     if(numberOfSearchResult > 0) {
       pageIndex = Math.min(pageIndex, getPageAvailable());
-    }
-    WikiSearchData data = createSearchData();
-    data.setOffset((pageIndex - 1) * itemPerPage);
-    data.setLimit(itemPerPage);
+      WikiSearchData data = createSearchData();
+      data.setOffset((pageIndex - 1) * itemPerPage);
+      data.setLimit(itemPerPage);
 
-    WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-    UIWikiAdvanceSearchResult uiSearchResults = getParent().findFirstComponentOfType(UIWikiAdvanceSearchResult.class);
-    uiSearchResults.setResults(wikiservice.search(data));
+      WikiService wikiservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+      uiSearchResults.setResults(wikiservice.search(data));
+    } else {
+      uiSearchResults.setResults(new ObjectPageList<>(Collections.EMPTY_LIST, 0));
+    }
 
     UIAdvancePageIterator uiAdvancePageIterator = getParent().findFirstComponentOfType(UIAdvancePageIterator.class);
     uiAdvancePageIterator.setCurrentPage(pageIndex);
@@ -152,7 +157,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
   private WikiSearchData createSearchData() {
     String text = getKeyword();
     String path = this.currentWiki_;
-    if (path.startsWith(org.exoplatform.wiki.commons.Utils.SLASH)) {
+    if (path != null && path.startsWith(org.exoplatform.wiki.commons.Utils.SLASH)) {
       path = path.substring(1);
     }
     String wikiType = null;
@@ -191,18 +196,22 @@ public class UIWikiAdvanceSearchForm extends UIForm {
    */
   static public class SwitchSpaceActionListener extends EventListener<UIWikiAdvanceSearchForm> {
     public void execute(Event<UIWikiAdvanceSearchForm> event) throws Exception {
-      String wikiId = event.getRequestContext().getRequestParameter(UISpacesSwitcher.SPACE_ID_PARAMETER);      
-      UIWikiAdvanceSearchForm uiSearch = event.getSource() ;
+      String wikiId = event.getRequestContext().getRequestParameter(UISpacesSwitcher.SPACE_ID_PARAMETER);
+      UIWikiAdvanceSearchForm uiSearch = event.getSource();
       UISpacesSwitcher spaceSwitcher = uiSearch.getChild(UISpacesSwitcher.class);
-      
+
       WikiService wikiService = org.exoplatform.wiki.rendering.util.Utils.getService(WikiService.class);
-      spaceSwitcher.setCurrentSpaceName(
-                    org.exoplatform.wiki.commons.Utils.upperFirstCharacter(wikiService.getWikiNameById(wikiId)));
       Wiki wiki = wikiService.getWikiById(wikiId);
-      String wikiType = wiki.getType();
-      String wikiOwner = wiki.getOwner();
-      uiSearch.currentWiki_ = new StringBuffer(wikiType).append("/").
-                                    append(Utils.validateWikiOwner(wikiType, wikiOwner)).toString();
+      if (wiki != null) {
+        String wikiType = wiki.getType();
+        String wikiOwner = wiki.getOwner();
+        uiSearch.currentWiki_ = new StringBuffer(wikiType).append("/").
+                append(Utils.validateWikiOwner(wikiType, wikiOwner)).toString();
+        spaceSwitcher.setCurrentSpaceName(StringUtils.capitalize(wikiService.getWikiNameById(wikiId)));
+      } else {
+        uiSearch.currentWiki_ = null;
+        spaceSwitcher.setCurrentSpaceName(wikiService.getSpaceNameByGroupId(wikiId));
+      }
       uiSearch.processSearchAction();
       event.getRequestContext().addUIComponentToUpdateByAjax(uiSearch.getAncestorOfType(UIWikiSearchSpaceArea.class));
     }
