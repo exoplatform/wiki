@@ -27,11 +27,11 @@
     <type>org.exoplatform.wiki.service.impl.JCRDataStorage</type>
   </component>
 
-  <component>
+  <component profiles="all">
     <type>org.exoplatform.wiki.jpa.migration.WikiMigrationSettingService</type>
   </component>
 
-  <component>
+  <component profiles="all">
     <type>org.exoplatform.wiki.jpa.migration.MigrationService</type>
   </component>
 
