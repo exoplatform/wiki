@@ -1,0 +1,75 @@
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_2.xsd http://www.exoplaform.org/xml/ns/kernel_1_2.xsd"
+               xmlns="http://www.exoplaform.org/xml/ns/kernel_1_2.xsd">
+
+  <component>
+    <key>org.exoplatform.wiki.service.WikiService</key>
+    <type>org.exoplatform.wiki.service.impl.WikiServiceImpl</type>
+    <init-params>
+      <value-param>
+        <name>wiki.editPage.livingTime</name>
+        <value>${wiki.editPage.livingTime:1800000}</value>
+        <!-- 30m * 60s * 1000ms -->
+      </value-param>
+      <values-param>
+        <name>xwiki/2.0</name>
+        <value>jar:/wikisyntax/help/xWiki2.0_Short.txt</value>
+        <value>jar:/wikisyntax/help/xWiki2.0_Full.txt</value>
+      </values-param>
+      <properties-param>
+        <name>preferences</name>
+        <property name="defaultSyntax" value="xwiki/2.0"/>
+      </properties-param>
+    </init-params>
+  </component>
+  <component>
+    <key>org.exoplatform.wiki.rendering.RenderingService</key>
+    <type>org.exoplatform.wiki.rendering.impl.RenderingServiceImpl</type>
+  </component>
+  <component>
+    <key>org.exoplatform.portal.config.UserACL</key>
+    <type>org.exoplatform.portal.config.UserACL</type>
+    <init-params>
+      <value-param>
+        <name>super.user</name>
+        <value>root</value>
+      </value-param>
+      <value-param>
+        <name>guests.group</name>
+        <value>/platform/guests</value>
+      </value-param>
+      <value-param>
+        <name>navigation.creator.membership.type</name>
+        <value>manager</value>
+      </value-param>
+    </init-params>
+  </component>
+  <component>
+    <key>org.exoplatform.services.cache.CacheService</key>
+    <jmx-name>cache:type=CacheService</jmx-name>
+    <type>org.exoplatform.services.cache.impl.CacheServiceImpl</type>
+    <init-params>
+      <object-param>
+        <name>cache.config.default</name>
+        <description>The default cache configuration</description>
+        <object type="org.exoplatform.services.cache.ExoCacheConfig">
+          <field name="name">
+            <string>default</string>
+          </field>
+          <field name="maxSize">
+            <int>300</int>
+          </field>
+          <field name="liveTime">
+            <long>60</long>
+          </field>
+          <field name="distributed">
+            <boolean>false</boolean>
+          </field>
+          <field name="implementation">
+            <string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string>
+          </field>
+        </object>
+      </object-param>
+    </init-params>
+  </component>
+</configuration>
