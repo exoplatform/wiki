@@ -3,6 +3,7 @@ package org.exoplatform.wiki.jpa.search;
 import org.exoplatform.commons.search.index.IndexingService;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.jpa.dao.PageAttachmentDAO;
+import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
@@ -29,7 +30,9 @@ public class PageIndexingListener extends PageWikiListener {
 
   @Override
   public void postUpdatePage(String wikiType, String wikiOwner, String pageId, Page page, PageUpdateType wikiUpdateType) throws WikiException {
-    indexingService.reindex(WikiPageIndexingServiceConnector.TYPE, page.getId());
+    if (!(page instanceof DraftPage)) {
+      indexingService.reindex(WikiPageIndexingServiceConnector.TYPE, page.getId());
+    }
   }
 
   @Override
