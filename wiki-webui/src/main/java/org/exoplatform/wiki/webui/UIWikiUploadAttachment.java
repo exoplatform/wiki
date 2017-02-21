@@ -129,8 +129,14 @@ public class UIWikiUploadAttachment extends UIWikiForm {
         
         try {
           is = input.getUploadDataAsStream(id);
-          if ((is == null) || (is.available() == 0)) {
+          if (is == null) {
             throw new FileNotFoundException();
+          } else if (is.available() == 0) {
+            event.getRequestContext()
+                    .getUIApplication()
+                    .addMessage(new ApplicationMessage("UIWikiUploadAttachment.msg.file-empty", null, ApplicationMessage.WARNING));
+            resetUploadInput(event);
+            return;
           }
         } catch (FileNotFoundException ex) {
           event.getRequestContext()
