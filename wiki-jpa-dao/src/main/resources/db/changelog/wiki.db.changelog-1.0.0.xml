@@ -37,6 +37,7 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-2">
+    <validCheckSum>7:2edcbb4fcffed57961d5c6b13f409c7f</validCheckSum>
     <createTable tableName="WIKI_PAGES">
       <column name="PAGE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WIKI_PAGES_ID"/>
@@ -50,10 +51,10 @@
         <constraints nullable="false"/>
       </column>
       <column name="OWNER" type="NVARCHAR(200)"/>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
-      <column name="UPDATED_DATE" type="TIMESTAMP">
+      <column name="UPDATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
       <column name="CONTENT" type="CLOB"/>
@@ -71,6 +72,7 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-3">
+    <validCheckSum>7:2b1d896f653805f50bcecc559f356a10</validCheckSum>
     <createTable tableName="WIKI_PAGE_ATTACHMENTS">
       <column name="ATTACHMENT_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WIKI_ATTACHEMENTS_ID"/>
@@ -82,10 +84,10 @@
         <constraints nullable="false"/>
       </column>
       <column name="CREATOR" type="NVARCHAR(200)"/>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
-      <column name="UPDATED_DATE" type="TIMESTAMP">
+      <column name="UPDATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
       <column name="TITLE" type="NVARCHAR(550)"/>
@@ -99,6 +101,7 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-5">
+    <validCheckSum>7:dac686a1d60ac80b8592d0f8a72cbca4</validCheckSum>
     <createTable tableName="WIKI_PAGE_VERSIONS">
       <column name="PAGE_VERSION_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WIKI_PAGE_VERSIONS_ID"/>
@@ -111,10 +114,10 @@
         <constraints nullable="false"/>
       </column>
       <column name="TITLE" type="NVARCHAR(550)"/>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
-      <column name="UPDATED_DATE" type="TIMESTAMP">
+      <column name="UPDATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
       <column name="CONTENT" type="CLOB"/>
@@ -131,6 +134,7 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-6">
+    <validCheckSum>7:c12477fcbaa6d1e3e7f131d0cc1ed49f</validCheckSum>
     <createTable tableName="WIKI_PAGE_MOVES">
       <column name="PAGE_MOVE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WIKI_PAGE_MOVES_ID"/>
@@ -144,7 +148,7 @@
       <column name="PAGE_NAME" type="NVARCHAR(550)">
         <constraints nullable="false"/>
       </column>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
       <column name="PAGE_ID" type="BIGINT">
@@ -186,6 +190,7 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-9">
+    <validCheckSum>7:3ac6d2c1b09140b13a74263f0857479b</validCheckSum>
     <createTable tableName="WIKI_TEMPLATES">
       <column name="TEMPLATE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WIKI_TEMPLATES_ID"/>
@@ -201,10 +206,10 @@
       <column name="CONTENT" type="CLOB"/>
       <column name="SYNTAX" type="NVARCHAR(30)"/>
       <column name="TITLE" type="NVARCHAR(550)"/>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
-      <column name="UPDATED_DATE" type="TIMESTAMP">
+      <column name="UPDATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
     </createTable>
@@ -214,6 +219,7 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-10">
+    <validCheckSum>7:5182cf317ff6d0afaede77e83852dda5</validCheckSum>
     <createTable tableName="WIKI_DRAFT_PAGES">
       <column name="DRAFT_PAGE_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WIKI_DRAFT_PAGES_ID"/>
@@ -228,10 +234,10 @@
       <column name="TITLE" type="NVARCHAR(550)"/>
       <column name="CONTENT" type="CLOB"/>
       <column name="SYNTAX" type="NVARCHAR(30)"/>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
-      <column name="UPDATED_DATE" type="TIMESTAMP">
+      <column name="UPDATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
     </createTable>
@@ -241,6 +247,7 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-11">
+    <validCheckSum>7:b696d10c210627ab39e883c2f28d1dda</validCheckSum>
     <createTable tableName="WIKI_DRAFT_ATTACHMENTS">
       <column name="ATTACHMENT_ID" type="BIGINT" autoIncrement="${autoIncrement}" startWith="1">
         <constraints nullable="false" primaryKey="true" primaryKeyName="PK_WIKI_DRAFT_ATTACHMENTS_ID"/>
@@ -250,10 +257,10 @@
       </column>
       <column name="NAME" type="NVARCHAR(550)"/>
       <column name="CREATOR" type="NVARCHAR(200)"/>
-      <column name="CREATED_DATE" type="TIMESTAMP">
+      <column name="CREATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
-      <column name="UPDATED_DATE" type="TIMESTAMP">
+      <column name="UPDATED_DATE" type="TIMESTAMP" defaultValueDate="${now}">
         <constraints nullable="false"/>
       </column>
       <column name="TITLE" type="NVARCHAR(550)"/>
