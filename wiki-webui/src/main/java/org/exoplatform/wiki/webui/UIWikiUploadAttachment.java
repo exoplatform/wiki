@@ -129,7 +129,7 @@ public class UIWikiUploadAttachment extends UIWikiForm {
         
         try {
           is = input.getUploadDataAsStream(id);
-          if ((is == null) || (is.available() == 0)) {
+          if (is == null) {
             throw new FileNotFoundException();
           }
         } catch (FileNotFoundException ex) {
