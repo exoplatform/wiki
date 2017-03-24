@@ -255,7 +255,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       }
       
       // Move page
-      boolean isMoved = wservice.movePage(currentLocationParams, newLocationParams);      
+      boolean isMoved = movePages(movepage, currentLocationParams, newLocationParams);     
       if (!isMoved) {
         event.getRequestContext()
              .getUIApplication()
@@ -274,6 +274,19 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       String permalink = org.exoplatform.wiki.utils.Utils.getPermanlink(newLocationParams, false);
       org.exoplatform.wiki.commons.Utils.redirect(permalink);
     }
+  }
+  
+  private static boolean movePages (PageImpl page, WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws Exception {
+    WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
+    boolean isMoved = wservice.movePage(currentLocationParams, newLocationParams);
+    if(page.getChildPages().size() > 0) {
+      for(PageImpl childPage : page.getChildPages().values()) {
+        currentLocationParams = org.exoplatform.wiki.utils.Utils.getWikiPageParams(childPage);
+        newLocationParams = org.exoplatform.wiki.utils.Utils.getWikiPageParams(childPage.getParentPage());
+        movePages(childPage, currentLocationParams, newLocationParams);
+      }
+    }
+    return isMoved;
   }
 
   public void activate() {
