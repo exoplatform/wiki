@@ -1,11 +1,12 @@
 <%
   import org.exoplatform.wiki.mow.api.PermissionEntry;
   import org.exoplatform.wiki.mow.api.Permission;
+  import org.apache.commons.lang.StringEscapeUtils;
   
   PermissionEntry permissionEntry = uicomponent.getPermissionEntry();
   String id = permissionEntry.getId();
   boolean isImmutable = uicomponent.isImmutable();
-  String fullName = uicomponent.getEntryFullName();
+  String fullName = StringEscapeUtils.escapeHtml(uicomponent.getEntryFullName());
   Permission[] permissions = permissionEntry.getPermissions();
   def uiPermissionForm = uicomponent.getParent().getParent();
   def deleteLink = uiPermissionForm.event(uiPermissionForm.DELETE_ENTRY, uicomponent.id);
