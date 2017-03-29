@@ -4,6 +4,7 @@
   import org.exoplatform.portal.webui.util.Util;
   import java.net.URLEncoder;
   import org.exoplatform.wiki.commons.Utils;
+  import org.apache.commons.lang.StringEscapeUtils;
   
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
 %>
@@ -29,7 +30,7 @@
       
       for(attachment in attachments){
         index++;        
-        creator = Utils.getFullName(attachment.getCreator());
+        creator = StringEscapeUtils.escapeHtml(Utils.getFullName(attachment.getCreator()));
         downloadLink = attachment.getDownloadURL();
         String extension = Utils.getExtension(attachment.getName()) ;
         if (extension != null && !extension.equals("")) {

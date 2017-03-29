@@ -63,7 +63,7 @@
             if(isCurrentVersion){
               versionLabel = _ctx.appRes("UIWikiPageVersionsList.label.Current") + " ( " + _ctx.appRes("UIWikiPageInfoArea.label.version-short").toLowerCase()+"." + versionNumber + ")";
             }
-            String author = Utils.getFullName(version.getAuthor());
+            String author = StringEscapeUtils.escapeHtml(Utils.getFullName(version.getAuthor()));
             String comment = StringEscapeUtils.escapeHtml(version.getComment());
             String viewLink = uicomponent.event(uicomponent.VIEW_REVISION, versionNumber);
             String viewLinkId=  UIWikiPortlet.WIKI_PORTLET_ACTION_PREFIX + uicomponent.VIEW_REVISION + "_" + versionNumber;

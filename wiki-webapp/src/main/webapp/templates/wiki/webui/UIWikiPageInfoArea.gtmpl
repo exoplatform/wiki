@@ -5,14 +5,15 @@
   import org.exoplatform.wiki.webui.UIWikiPortlet;
   import org.exoplatform.wiki.commons.Utils;
   import org.exoplatform.container.ExoContainerContext;
+  import org.apache.commons.lang.StringEscapeUtils;
 
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
   
   currentWikiPage = uicomponent.getCurrentWikiPage();
 
-  String creator = Utils.getFullName(currentWikiPage.getOwner());
-  String author = Utils.getFullName(currentWikiPage.getAuthor());
+  String creator = StringEscapeUtils.escapeHtml(Utils.getFullName(currentWikiPage.getOwner()));
+  String author = StringEscapeUtils.escapeHtml(Utils.getFullName(currentWikiPage.getAuthor()));
   def createdDate = df.format(currentWikiPage.getCreatedDate());
   def updatedDate = df.format(currentWikiPage.getUpdatedDate());
 
