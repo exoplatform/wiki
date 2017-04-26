@@ -485,6 +485,12 @@
   </changeSet>
 
   <changeSet id="1.0.0-42" author="wiki">
+    <validCheckSum>7:7d4a990e4664c19155e9beb35e6e8ebc</validCheckSum>
+    <sql dbms="mssql">
+      IF EXISTS(SELECT * FROM sys.objects WHERE type='D' AND NAME='DF_WIKI_PAGE_ATTACHMENTS_UPDATED_DATE')
+        ALTER TABLE WIKI_PAGE_ATTACHMENTS
+          DROP CONSTRAINT DF_WIKI_PAGE_ATTACHMENTS_UPDATED_DATE
+    </sql>
     <dropColumn tableName="WIKI_PAGE_ATTACHMENTS">
       <column name="NAME"/>
       <column name="UPDATED_DATE"/>
@@ -496,6 +502,12 @@
   </changeSet>
 
   <changeSet id="1.0.0-43" author="wiki">
+    <validCheckSum>7:44cfbff48ff23a305643392177e0c79a</validCheckSum>
+    <sql dbms="mssql">
+      IF EXISTS(SELECT * FROM sys.objects WHERE type='D' AND NAME='DF_WIKI_DRAFT_ATTACHMENTS_UPDATED_DATE')
+        ALTER TABLE WIKI_DRAFT_ATTACHMENTS
+          DROP CONSTRAINT DF_WIKI_DRAFT_ATTACHMENTS_UPDATED_DATE
+    </sql>
     <dropColumn tableName="WIKI_DRAFT_ATTACHMENTS">
       <column name="NAME"/>
       <column name="UPDATED_DATE"/>
