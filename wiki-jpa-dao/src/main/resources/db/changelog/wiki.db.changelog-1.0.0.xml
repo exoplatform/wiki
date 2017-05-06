@@ -485,7 +485,7 @@
   </changeSet>
 
   <changeSet id="1.0.0-42" author="wiki">
-    <validCheckSum>7:7d4a990e4664c19155e9beb35e6e8ebc</validCheckSum>
+    <validCheckSum>7:21d239448c33f39a9300ea433349d470</validCheckSum>
     <sql dbms="mssql">
       IF EXISTS(SELECT * FROM sys.objects WHERE type='D' AND NAME='DF_WIKI_PAGE_ATTACHMENTS_UPDATED_DATE')
         ALTER TABLE WIKI_PAGE_ATTACHMENTS
@@ -502,7 +502,7 @@
   </changeSet>
 
   <changeSet id="1.0.0-43" author="wiki">
-    <validCheckSum>7:44cfbff48ff23a305643392177e0c79a</validCheckSum>
+    <validCheckSum>7:ab5aad25946a4f22c88996951806ccfe</validCheckSum>
     <sql dbms="mssql">
       IF EXISTS(SELECT * FROM sys.objects WHERE type='D' AND NAME='DF_WIKI_DRAFT_ATTACHMENTS_UPDATED_DATE')
         ALTER TABLE WIKI_DRAFT_ATTACHMENTS
