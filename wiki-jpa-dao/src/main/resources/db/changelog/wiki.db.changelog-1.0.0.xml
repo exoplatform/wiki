@@ -37,6 +37,9 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-2">
+    <validCheckSum>7:7209dfb03ea324f8cea261daa5b24b78</validCheckSum>
+    <validCheckSum>7:131376aa9a40e20b14bf227f37c8d309</validCheckSum>
+    <validCheckSum>7:c046fcb3d84bc510622a067bc1a949d8</validCheckSum>
     <validCheckSum>7:7b342dc7f44b14421cabf99ac96dafa4</validCheckSum>
     <validCheckSum>7:2edcbb4fcffed57961d5c6b13f409c7f</validCheckSum>
     <createTable tableName="WIKI_PAGES">
@@ -73,6 +76,9 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-3">
+    <validCheckSum>7:246c5b19f40881febd2095d6d0bd9a02</validCheckSum>
+    <validCheckSum>7:c14eb683d9733450288a15b119123083</validCheckSum>
+    <validCheckSum>7:d0b4e4374990d4c328f7098d89c9b7af</validCheckSum>
     <validCheckSum>7:00968469a8dd1e767d7ab2b6eedc5f22</validCheckSum>
     <validCheckSum>7:2b1d896f653805f50bcecc559f356a10</validCheckSum>
     <createTable tableName="WIKI_PAGE_ATTACHMENTS">
@@ -103,6 +109,9 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-5">
+    <validCheckSum>7:64b2244a464b0514873ea42da07ae17a</validCheckSum>
+    <validCheckSum>7:48ad43ffbc0c2ca43499288d8ac0717d</validCheckSum>
+    <validCheckSum>7:dcd6e840320601a01b445b610cc1a27d</validCheckSum>
     <validCheckSum>7:b20242a3aac74a364b63fe0864a25e18</validCheckSum>
     <validCheckSum>7:dac686a1d60ac80b8592d0f8a72cbca4</validCheckSum>
     <createTable tableName="WIKI_PAGE_VERSIONS">
@@ -137,6 +146,9 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-6">
+    <validCheckSum>7:a2f14473499db7ca32e89eca6d0ebb3a</validCheckSum>
+    <validCheckSum>7:a2b2a90ca56e639d07fa5e328fa71b4a</validCheckSum>
+    <validCheckSum>7:789366d990943d30ffe0e0d38e5fb850</validCheckSum>
     <validCheckSum>7:9fb957b31def3e497f65c08b28c5c60f</validCheckSum>
     <validCheckSum>7:c12477fcbaa6d1e3e7f131d0cc1ed49f</validCheckSum>
     <createTable tableName="WIKI_PAGE_MOVES">
@@ -194,6 +206,9 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-9">
+    <validCheckSum>7:0e08362becdf94dc6b4e96b09ea43861</validCheckSum>
+    <validCheckSum>7:8447ca57a3ac2a3c4ddef09defe7227c</validCheckSum>
+    <validCheckSum>7:9f24e4c3d6ceb0bb0164926573a6b23d</validCheckSum>
     <validCheckSum>7:d8381f9e158990511677e35f200f9570</validCheckSum>
     <validCheckSum>7:3ac6d2c1b09140b13a74263f0857479b</validCheckSum>
     <createTable tableName="WIKI_TEMPLATES">
@@ -224,6 +239,9 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-10">
+    <validCheckSum>7:69e279e02a585e87fc6a6e594d8c3ee1</validCheckSum>
+    <validCheckSum>7:5ecf111529c8b874b334b53802f62b7d</validCheckSum>
+    <validCheckSum>7:61b7cc1738363bb5bb9a761848ffa983</validCheckSum>
     <validCheckSum>7:ef2c3568effd3a68b523d169a5968664</validCheckSum>
     <validCheckSum>7:5182cf317ff6d0afaede77e83852dda5</validCheckSum>
     <createTable tableName="WIKI_DRAFT_PAGES">
@@ -253,6 +271,9 @@
   </changeSet>
 
   <changeSet author="wiki" id="1.0.0-11">
+    <validCheckSum>7:dd752a9508a50e11a6f8e5c7872f3b12</validCheckSum>
+    <validCheckSum>7:80f2240b387f534e9deffcd8544ba673</validCheckSum>
+    <validCheckSum>7:fb55a6e5095fcc1cf576ececf8797a47</validCheckSum>
     <validCheckSum>7:d1499302a7b3465e49250479aabee176</validCheckSum>
     <validCheckSum>7:b696d10c210627ab39e883c2f28d1dda</validCheckSum>
     <createTable tableName="WIKI_DRAFT_ATTACHMENTS">
