@@ -1036,7 +1036,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     Identity user = ConversationState.getCurrent().getIdentity();
     Page existedPage = getPageByRootPermission(wikiType, wikiOwner, pageId);
     if (existedPage != null) {
-      if (user == null || hasPermissionOnPage(existedPage, PermissionType.EDITPAGE, user) || hasPermissionOnPage(existedPage, PermissionType.VIEW_ATTACHMENT, user)) {
+      if (user == null || hasPermissionOnPage(existedPage, PermissionType.VIEWPAGE, user) || hasPermissionOnPage(existedPage, PermissionType.VIEW_ATTACHMENT, user)) {
         return existedPage;
       }
     }

@@ -19,7 +19,6 @@ package org.exoplatform.wiki.service;
 
 import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
@@ -663,5 +662,34 @@ public class TestWikiService extends AbstractMOWTestcase {
     watchersOfPage1 = wService.getWatchersOfPage(page1);
     assertNotNull(watchersOfPage1);
     assertEquals(2, watchersOfPage1.size());
+  }
+  
+  public void testGetExsitedOrNewDraftPageById() throws WikiException, IOException {
+    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Page page = new Page("pageName", "pageTitle");
+    page = wService.createPage(wiki, "WikiHome", page);
+    assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "pageTitle")) ;
+    
+    Attachment attachment = new Attachment();
+    attachment.setName("John.png");
+    InputStream imageInputStream = this.getClass().getClassLoader().getResourceAsStream("images/John.png");
+    byte[] content = IOUtils.toByteArray(imageInputStream);
+    attachment.setContent(content);
+    attachment.setCreator("you");
+    attachment.setMimeType("image/png");
+    wService.addAttachmentToPage(attachment, page);
+  
+    page = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
+    assertNotNull(page);
+    List<Attachment> attachments = wService.getAttachmentsOfPage(page);
+    assertNotNull(attachments);
+    assertEquals(1, attachments.size());
+  
+    startSessionAs("mary");
+    
+    page = wService.getExsitedOrNewDraftPageById(PortalConfig.PORTAL_TYPE, page.getWikiOwner(), page.getName());
+    attachments = wService.getAttachmentsOfPage(page);
+    assertNotNull(attachments);
+    assertEquals(1, attachments.size());
   }
 }
