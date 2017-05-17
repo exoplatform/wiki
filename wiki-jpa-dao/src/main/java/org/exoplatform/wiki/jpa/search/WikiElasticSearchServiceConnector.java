@@ -24,10 +24,13 @@ import org.exoplatform.commons.search.es.ElasticSearchFilterType;
 import org.exoplatform.commons.search.es.ElasticSearchServiceConnector;
 import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.SearchResultType;
+import org.exoplatform.wiki.utils.Utils;
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -45,15 +48,8 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
 
   private static final Log LOG = ExoLogger.getLogger(WikiElasticSearchServiceConnector.class);
 
-  private static final String INDEX = "wiki";
-  private static final String TYPE = "wiki,wiki-page,wiki-attachment";
-  private static final String[] SEARCH_FIELDS = {"name", "title", "content", "comment", "file.content"};
-
   public WikiElasticSearchServiceConnector(InitParams initParams, ElasticSearchingClient client) {
     super(initParams, client);
-    setIndex(INDEX);
-    setType(TYPE);
-    setSearchFields(new ArrayList(Arrays.asList(SEARCH_FIELDS)));
   }
 
   @Override

@@ -33,8 +33,10 @@ import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by The eXo Platform SAS
@@ -43,6 +45,8 @@ import java.util.Map;
  * 9/9/15
  */
 public class WikiPageIndexingServiceConnector extends ElasticIndexingServiceConnector {
+    private static final long  serialVersionUID = 2876702569262116785L;
+
     private static final Log LOGGER = ExoLogger.getExoLogger(WikiPageIndexingServiceConnector.class);
     public static final String TYPE = "wiki-page";
     private final PageDAO dao;
@@ -53,33 +57,37 @@ public class WikiPageIndexingServiceConnector extends ElasticIndexingServiceConn
     }
 
   @Override
+  @SuppressWarnings("unchecked")
   public String getMapping() {
 
     JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "string");
-    notAnalyzedField.put("index", "not_analyzed");
+    notAnalyzedField.put("type", "text");
+    notAnalyzedField.put("index", false);
 
-    //Use Fast Vector Highlighter
-    JSONObject fastVectorHighlighterField = new JSONObject();
-    fastVectorHighlighterField.put("type", "string");
-    fastVectorHighlighterField.put("term_vector", "with_positions_offsets");
-    fastVectorHighlighterField.put("store", Boolean.valueOf(true));
-    //Use Posting Highlighter
-    JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "string");
-    postingHighlighterField.put("index_options", "offsets");
+    JSONObject keywordTyPeMapping = new JSONObject();
+    keywordTyPeMapping.put("type", "keyword");
 
     JSONObject properties = new JSONObject();
-    properties.put("permissions", notAnalyzedField);
+    properties.put("permissions", keywordTyPeMapping);
     properties.put("url", notAnalyzedField);
-    properties.put("sites", notAnalyzedField);
-    properties.put("wikiType", notAnalyzedField);
-    properties.put("wikiOwner", notAnalyzedField);
+    properties.put("sites", keywordTyPeMapping);
+    properties.put("wikiType", keywordTyPeMapping);
+    properties.put("wikiOwner", keywordTyPeMapping);
 
+    // Use Posting Highlighter
+    JSONObject postingHighlighterField = new JSONObject();
+    postingHighlighterField.put("type", "text");
+    postingHighlighterField.put("index_options", "offsets");
     properties.put("name", postingHighlighterField);
     properties.put("title", postingHighlighterField);
-    properties.put("content", fastVectorHighlighterField);
     properties.put("comment", postingHighlighterField);
+
+    // Use Fast Vector Highlighter
+    JSONObject fastVectorHighlighterField = new JSONObject();
+    fastVectorHighlighterField.put("type", "text");
+    fastVectorHighlighterField.put("term_vector", "with_positions_offsets");
+    fastVectorHighlighterField.put("store", true);
+    properties.put("content", fastVectorHighlighterField);
 
     JSONObject mappingProperties = new JSONObject();
     mappingProperties.put("properties", properties);
@@ -126,8 +134,8 @@ public class WikiPageIndexingServiceConnector extends ElasticIndexingServiceConn
         return create(id);
     }
 
-    private String[] computePermissions(PageEntity page) {
-        List<String> permissions = new ArrayList<>();
+    private Set<String> computePermissions(PageEntity page) {
+        Set<String> permissions = new HashSet<>();
         //Add the owner
         permissions.add(page.getOwner());
         //Add permissions
@@ -136,8 +144,7 @@ public class WikiPageIndexingServiceConnector extends ElasticIndexingServiceConn
                 permissions.add(permission.getIdentity());
             }
         }
-        String[] result = new String[permissions.size()];
-        return permissions.toArray(result);
+        return permissions;
     }
 
     @Override

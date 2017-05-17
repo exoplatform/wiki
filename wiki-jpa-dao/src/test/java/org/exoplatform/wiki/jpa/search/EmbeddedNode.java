@@ -16,7 +16,7 @@ public class EmbeddedNode extends Node {
   private Collection<Class<? extends Plugin>> plugins;
 
   public EmbeddedNode(Environment environment, Version version, Collection<Class<? extends Plugin>> classpathPlugins) {
-    super(environment, version, classpathPlugins);
+    super(environment, classpathPlugins);
     this.version = version;
     this.plugins = classpathPlugins;
   }

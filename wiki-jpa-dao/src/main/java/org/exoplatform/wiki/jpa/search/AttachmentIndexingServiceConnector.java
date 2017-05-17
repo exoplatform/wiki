@@ -19,7 +19,19 @@
 
 package org.exoplatform.wiki.jpa.search;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
+import org.json.JSONArray;
+import org.json.simple.JSONObject;
+
 import org.exoplatform.commons.file.model.FileInfo;
 import org.exoplatform.commons.file.model.FileItem;
 import org.exoplatform.commons.file.services.FileService;
@@ -34,13 +46,6 @@ import org.exoplatform.wiki.jpa.entity.PageAttachmentEntity;
 import org.exoplatform.wiki.jpa.entity.PageEntity;
 import org.exoplatform.wiki.jpa.entity.PermissionEntity;
 import org.exoplatform.wiki.mow.api.PermissionType;
-import org.exoplatform.wiki.utils.Utils;
-import org.json.simple.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by The eXo Platform SAS
@@ -49,6 +54,8 @@ import java.util.Map;
  * 10/2/15
  */
 public class AttachmentIndexingServiceConnector  extends ElasticIndexingServiceConnector {
+  private static final long serialVersionUID = -1229795181507933039L;
+
   private static final Log LOGGER = ExoLogger.getExoLogger(AttachmentIndexingServiceConnector.class);
   public static final String TYPE = "wiki-attachment";
   private final PageAttachmentDAO attachmentDAO;
@@ -85,18 +92,19 @@ public class AttachmentIndexingServiceConnector  extends ElasticIndexingServiceC
 
 
     Map<String,String> fields = new HashMap<>();
-    Document doc = new Document(TYPE, id, getUrl(attachment), fileItem.getFileInfo().getUpdatedDate(),
-        computePermissions(fileItem.getFileInfo().getUpdater(),attachment), fields);
+    FileInfo fileInfo = fileItem.getFileInfo();
+    Document doc = new Document(TYPE, id, getUrl(attachment), fileInfo.getUpdatedDate(),
+        computePermissions(fileInfo.getUpdater(),attachment), fields);
 
     doc.addField("title", attachment.getFullTitle());
     doc.addField("file", fileItem.getAsByte());
-    doc.addField("name", fileItem.getFileInfo().getName());
+    doc.addField("name", fileInfo.getName());
     doc.addField("createdDate", String.valueOf(attachment.getCreatedDate().getTime()));
-    doc.addField("updatedDate", String.valueOf(fileItem.getFileInfo().getUpdatedDate().getTime()));
+    doc.addField("updatedDate", String.valueOf(fileInfo.getUpdatedDate().getTime()));
     PageEntity page = attachment.getPage();
     doc.addField("pageName", page.getName());
     fields.put("wikiType", page.getWiki().getType());
-    fields.put("wikiOwner", Utils.validateWikiOwner(page.getWiki().getType(), page.getWiki().getOwner()));
+    fields.put("wikiOwner", page.getWiki().getOwner());
 
     return doc;
   }
@@ -106,8 +114,8 @@ public class AttachmentIndexingServiceConnector  extends ElasticIndexingServiceC
     return create(id);
   }
 
-  private String[] computePermissions(String creator, PageAttachmentEntity attachment) {
-    List<String> permissions = new ArrayList<>();
+  private Set<String> computePermissions(String creator, PageAttachmentEntity attachment) {
+    Set<String> permissions = new HashSet<>();
     permissions.add(creator);
     //Add permissions from the wiki page
     List<PermissionEntity> pagePermission = attachment.getPage().getPermissions();
@@ -119,47 +127,48 @@ public class AttachmentIndexingServiceConnector  extends ElasticIndexingServiceC
         }
       }
     }
-    String[] result = new String[permissions.size()];
-    return permissions.toArray(result);
+    return permissions;
   }
 
   private String getUrl(PageAttachmentEntity attachment) {
     return attachment.getPage().getUrl();
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public String getMapping() {
 
     JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "string");
-    notAnalyzedField.put("index", "not_analyzed");
+    notAnalyzedField.put("type", "text");
+    notAnalyzedField.put("index", false);
 
     //Use Fast Vector Highlighter
     JSONObject fastVectorHighlighterField = new JSONObject();
+    fastVectorHighlighterField.put("type", "text");
     fastVectorHighlighterField.put("term_vector", "with_positions_offsets");
-    fastVectorHighlighterField.put("store", Boolean.valueOf(true));
+    fastVectorHighlighterField.put("store", true);
     //Use Posting Highlighter
     JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "string");
+    postingHighlighterField.put("type", "text");
     postingHighlighterField.put("index_options", "offsets");
 
+    JSONObject properties = new JSONObject();
+
     //Construct attachment field
+    JSONObject attachmentField = new JSONObject();
     JSONObject attachmentFields = new JSONObject();
     attachmentFields.put("content", fastVectorHighlighterField);
-    attachmentFields.put("title", postingHighlighterField);
-    JSONObject attachmentField = new JSONObject();
-    attachmentField.put("type", "attachment");
-    attachmentField.put("fields", attachmentFields);
+    attachmentField.put("properties", attachmentFields);
+    properties.put("attachment", attachmentField);
+
+    JSONObject keywordTypeMapping = new JSONObject();
+    keywordTypeMapping.put("type", "keyword");
 
     //Add all field mapping
-    JSONObject properties = new JSONObject();
-    properties.put("file", attachmentField);
-    properties.put("permissions", notAnalyzedField);
-    properties.put("url", notAnalyzedField);
-    properties.put("sites", notAnalyzedField);
-    properties.put("wikiType", notAnalyzedField);
-    properties.put("wikiOwner", notAnalyzedField);
-
+    properties.put("file", notAnalyzedField);
+    properties.put("permissions", keywordTypeMapping);
+    properties.put("wikiType", keywordTypeMapping);
+    properties.put("wikiOwner", keywordTypeMapping);
     properties.put("name", postingHighlighterField);
     properties.put("title", postingHighlighterField);
 
@@ -189,4 +198,35 @@ public class AttachmentIndexingServiceConnector  extends ElasticIndexingServiceC
     return result;
   }
 
+  @Override
+  public boolean isNeedIngestPipeline() {
+    return true;
+  }
+
+  @Override
+  public String getPipelineName() {
+    return "wiki-attachment-file";
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public String getAttachmentProcessor() {
+    JSONObject fieldJSON = new JSONObject();
+    fieldJSON.put("field", "file");
+    fieldJSON.put("indexed_chars", -1);
+    fieldJSON.put("properties", new JSONArray(Collections.singleton("content")));
+
+    JSONObject attachmentJSON = new JSONObject();
+    attachmentJSON.put("attachment", fieldJSON);
+
+    JSONObject fileBinaryRemoveActionJSON = new JSONObject();
+    JSONObject fileBinaryRemoveJSON = new JSONObject();
+    fileBinaryRemoveJSON.put("field", "file");
+    fileBinaryRemoveActionJSON.put("remove", fileBinaryRemoveJSON);
+
+    JSONObject processorJSON = new JSONObject();
+    processorJSON.put("description", "Wiki Attachment processor");
+    processorJSON.put("processors", new JSONArray(Arrays.asList(attachmentJSON, fileBinaryRemoveActionJSON)));
+    return processorJSON.toJSONString();
+  }
 }

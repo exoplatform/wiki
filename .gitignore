@@ -47,3 +47,5 @@ bin/
 # Misc
 *.swp
 transaction.log
+rebel-remote.xml
+rebel.xml

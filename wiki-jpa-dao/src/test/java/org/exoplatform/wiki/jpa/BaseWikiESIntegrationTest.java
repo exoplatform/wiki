@@ -19,6 +19,21 @@
 
 package org.exoplatform.wiki.jpa;
 
+import static org.junit.Assert.assertNotEquals;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.DatagramSocket;
+import java.net.ServerSocket;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+
 import org.elasticsearch.Version;
 import org.elasticsearch.action.admin.cluster.node.info.NodeInfo;
 import org.elasticsearch.action.admin.cluster.node.info.NodesInfoRequest;
@@ -26,10 +41,14 @@ import org.elasticsearch.action.admin.cluster.node.info.NodesInfoResponse;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
 import org.elasticsearch.env.Environment;
-import org.elasticsearch.mapper.attachments.MapperAttachmentsPlugin;
+import org.elasticsearch.index.reindex.ReindexPlugin;
+import org.elasticsearch.ingest.attachment.IngestAttachmentPlugin;
+import org.elasticsearch.ingest.common.IngestCommonPlugin;
 import org.elasticsearch.node.Node;
-import org.elasticsearch.plugin.deletebyquery.DeleteByQueryPlugin;
+import org.elasticsearch.node.NodeValidationException;
 import org.elasticsearch.plugins.Plugin;
+import org.elasticsearch.transport.Netty4Plugin;
+
 import org.exoplatform.commons.file.model.FileItem;
 import org.exoplatform.commons.search.dao.IndexingOperationDAO;
 import org.exoplatform.commons.search.index.IndexingOperationProcessor;
@@ -45,17 +64,6 @@ import org.exoplatform.wiki.jpa.entity.WikiEntity;
 import org.exoplatform.wiki.jpa.search.AttachmentIndexingServiceConnector;
 import org.exoplatform.wiki.jpa.search.EmbeddedNode;
 import org.exoplatform.wiki.jpa.search.WikiPageIndexingServiceConnector;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.net.DatagramSocket;
-import java.net.ServerSocket;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.util.*;
-
-import static org.junit.Assert.assertNotEquals;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com
@@ -118,20 +126,32 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
 
     // Init ES
     LOGGER.info("Embedded ES instance - Starting on port " + esPort);
-    Settings.Builder elasticsearchSettings = Settings.settingsBuilder()
-            .put(Node.HTTP_ENABLED, true)
-            .put("network.host", "127.0.0.1")
-            .put("http.port", esPort)
-            .put("name", "esEmbeddedForTests" + esPort)
-            .put("path.home", "target/es")
-            .put("path.data", "target/es")
-            .put("plugins.load_classpath_plugins", true);
+    Settings.Builder elasticsearchSettings = Settings.builder()
+        .put("http.enabled", true)
+        .put("network.host", "_local_")
+        .put("http.port", esPort)
+        .put("node.name", "esEmbeddedForTests" + esPort)
+        .put("node.master", true)
+        .put("node.data", true)
+        .put("path.logs", "logs")
+        .put("transport.type", "local")
+        .put("http.type", "netty4")
+        .put("script.inline", false)
+        .put("script.stored", false)
+        .put("script.file", false)
+        .put("path.home", "target/es")
+        .put("path.data", "target/es");
 
     Environment environment = new Environment(elasticsearchSettings.build());
     Collection plugins = new ArrayList<>();
-    Collections.<Class<? extends Plugin>>addAll(plugins, MapperAttachmentsPlugin.class, DeleteByQueryPlugin.class);
+    Collections.<Class<? extends Plugin>>addAll(plugins, Netty4Plugin.class, IngestAttachmentPlugin.class, IngestCommonPlugin.class, ReindexPlugin.class);
     node = new EmbeddedNode(environment, Version.CURRENT, plugins);
-    node.start();
+    try {
+      node.start();
+    } catch (NodeValidationException e) {
+      LOGGER.error("Embedded ES instance couldn't start", e);
+    }
+    //node = nodeBuilder().local(true).settings(elasticsearchSettings.build()).node();
     node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
     assertNotNull(node);
     assertFalse(node.isClosed());
@@ -139,7 +159,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     // Set URL of server in property
     NodesInfoRequest nodesInfoRequest = new NodesInfoRequest().transport(true);
     NodesInfoResponse response = node.client().admin().cluster().nodesInfo(nodesInfoRequest).actionGet();
-    NodeInfo nodeInfo = response.iterator().next();
+    NodeInfo nodeInfo = response.getNodes().iterator().next();
     InetSocketTransportAddress address = (InetSocketTransportAddress) nodeInfo.getHttp().getAddress().publishAddress();
     String url = "http://" + address.address().getHostName() + ":" + address.address().getPort();
     PropertyManager.setProperty("exo.es.index.server.url", url);
@@ -152,7 +172,11 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
 
     // Close ES Node
     LOGGER.info("Embedded ES instance - Stopping");
-    node.close();
+    try {
+      node.close();
+    } catch (IOException e) {
+      LOGGER.info("Embedded ES instance couldn't stop", e);
+    }
     LOGGER.info("Embedded ES instance - Stopped");
 
     super.tearDown();

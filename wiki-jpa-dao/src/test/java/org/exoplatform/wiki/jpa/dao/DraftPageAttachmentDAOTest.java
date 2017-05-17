@@ -76,7 +76,7 @@ public class DraftPageAttachmentDAOTest extends BaseWikiJPAIntegrationTest {
               new ByteArrayInputStream(Files.readAllBytes(Paths.get(fileResource.toURI()))));
       fileItem = fileService.writeFile(fileItem);
     } catch (Exception e) {
-      fail();
+      fail(e);
     }
     att.setAttachmentFileID(fileItem.getFileInfo().getId());
     att.setCreatedDate(new Date());
@@ -91,7 +91,7 @@ public class DraftPageAttachmentDAOTest extends BaseWikiJPAIntegrationTest {
       assertNotNull(fileService.getFile(got.getAttachmentFileID()).getAsByte());
       assertEquals(new File(fileResource.toURI()).length(), fileService.getFile(got.getAttachmentFileID()).getFileInfo().getSize());
     } catch (FileStorageException e) {
-      fail();
+      fail(e);
     }
     //Delete
     draftPageAttachmentDAO.delete(att);
@@ -132,7 +132,7 @@ public class DraftPageAttachmentDAOTest extends BaseWikiJPAIntegrationTest {
               new ByteArrayInputStream(Files.readAllBytes(Paths.get(fileResource.toURI()))));
       fileItem = fileService.writeFile(fileItem);
     } catch (Exception e) {
-      fail();
+      fail(e);
     }
     att.setAttachmentFileID(fileItem.getFileInfo().getId());
     att.setDraftPage(dp);
@@ -152,7 +152,7 @@ public class DraftPageAttachmentDAOTest extends BaseWikiJPAIntegrationTest {
     try {
       fileService.updateFile(fileItem);
     } catch (FileStorageException e) {
-      fail();
+      fail(e);
     }
     //Then
     draftPageAttachmentDAO.update(att);

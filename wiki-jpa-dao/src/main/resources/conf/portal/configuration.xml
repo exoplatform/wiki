@@ -60,9 +60,9 @@
     <init-params>
       <properties-param>
         <name>constructor.params</name>
-        <property name="index" value="wiki"/>
-        <property name="type" value="wiki,wiki-page,wiki-attachment"/>
-        <property name="searchFields" value="name,title,content,comment,file"/>
+        <property name="index" value="wiki_alias"/>
+        <property name="type" value="wiki-page,wiki-attachment"/>
+        <property name="searchFields" value="name,title,content,comment,attachment.content"/>
       </properties-param>
     </init-params>
   </component>
@@ -97,11 +97,11 @@
           <name>constructor.params</name>
           <property name="searchType" value="wiki"/>
           <property name="displayName" value="Wiki"/>
-          <property name="index" value="wiki"/>
-          <property name="type" value="wiki,wiki-page,wiki-attachment"/>
+          <property name="index" value="wiki_alias"/>
+          <property name="type" value="wiki-page,wiki-attachment"/>
           <property name="enable" value="${exo.unified-search.connector.wiki.enable:true}"/>
           <property name="titleField" value="title"/>
-          <property name="searchFields" value="name,title,content,comment,file.content"/>
+          <property name="searchFields" value="name,title,content,comment,attachment.content"/>
         </properties-param>
       </init-params>
     </component-plugin>
@@ -118,7 +118,9 @@
       <init-params>
         <properties-param>
           <name>constructor.params</name>
-          <property name="index" value="wiki"/>
+          <property name="index_alias" value="wiki_alias"/>
+          <property name="index_previous" value="wiki"/>
+          <property name="index_current" value="wiki_v2"/>
           <property name="type" value="wiki-page"/>
         </properties-param>
       </init-params>
@@ -134,7 +136,10 @@
       <init-params>
         <properties-param>
           <name>constructor.params</name>
-          <property name="index" value="wiki"/>
+          <property name="index_alias" value="wiki_alias"/>
+          <property name="index_previous" value="wiki"/>
+          <property name="index_current" value="wiki_v2"/>
+          <property name="reindexOnUpgrade" value="true"/>
           <property name="type" value="wiki-attachment"/>
         </properties-param>
       </init-params>
