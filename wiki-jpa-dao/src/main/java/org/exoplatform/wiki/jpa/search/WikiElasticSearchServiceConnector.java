@@ -134,13 +134,15 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
 
       //Get the excerpt
       JSONObject hitHighlight = (JSONObject) ((JSONObject) jsonHit).get("highlight");
-      Iterator<?> keys = hitHighlight.keySet().iterator();
       StringBuilder excerpt = new StringBuilder();
-      while (keys.hasNext()) {
-        String key = (String) keys.next();
-        JSONArray highlights = (JSONArray) hitHighlight.get(key);
-        for (Object highlight : highlights) {
-          excerpt.append("... ").append(highlight);
+      if(hitHighlight != null) {
+        Iterator<?> keys = hitHighlight.keySet().iterator();
+        while (keys.hasNext()) {
+          String key = (String) keys.next();
+          JSONArray highlights = (JSONArray) hitHighlight.get(key);
+          for (Object highlight : highlights) {
+            excerpt.append("... ").append(highlight);
+          }
         }
       }
 
