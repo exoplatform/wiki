@@ -29,8 +29,8 @@
     </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
-      <groupId>com.smartgwt</groupId>
-      <artifactId>smartgwt</artifactId>
+      <groupId>com.isomorphic.smartgwt.lgpl</groupId>
+      <artifactId>smartgwt-lgpl</artifactId>
     </dependency>
     <!-- This dependency is used with compile scope for the gwt plugin but reported as useless by mvn dependency:analyze -->
     <dependency>
@@ -151,8 +151,8 @@
             <configuration>
               <artifactItems>
                 <artifactItem>
-                  <groupId>com.smartgwt</groupId>
-                  <artifactId>smartgwt</artifactId>
+                  <groupId>com.isomorphic.smartgwt.lgpl</groupId>
+                  <artifactId>smartgwt-lgpl</artifactId>
                   <type>jar</type>
                   <outputDirectory>${project.build.directory}/smartclient</outputDirectory>
                 </artifactItem>
