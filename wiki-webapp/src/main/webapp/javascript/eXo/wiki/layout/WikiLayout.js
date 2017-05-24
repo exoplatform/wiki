@@ -396,8 +396,9 @@ WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
 };
 
 /**
+ * Switch the visible of the leftcontainer
+ *
  * Function      showHideSideBar
- * @purpose      Switch the visible of the leftcontainer
  */
 WikiLayout.prototype.showHideSideBar = function (e, savedValue) {
   var me = eXo.wiki.WikiLayout;
