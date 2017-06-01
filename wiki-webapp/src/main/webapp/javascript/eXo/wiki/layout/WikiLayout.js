@@ -276,20 +276,7 @@ WikiLayout.prototype.setHeightRightContent = function(prtId, _userName) {
         $(me.rightArea).height(me.leftHeight + 1 + "px");
       //}
     }
-    
-    if (me.rightArea) {
-      me.checkToShowGradientScrollInRightArea();
-      $(me.rightArea).scroll(function() {
-        me.checkToShowGradientScrollInRightArea();
-      });
-    }
-    
-    if (me.leftArea) {
-      me.checkToShowGradientScrollInLeftArea();
-      $(me.leftArea).scroll(function() {
-        me.checkToShowGradientScrollInLeftArea();
-      });
-    }
+
   }
   
   var settingContainer = $(me.wikiLayout).find('div.UIWikiPageSettingContainer:first')[0];
@@ -301,96 +288,6 @@ WikiLayout.prototype.setHeightRightContent = function(prtId, _userName) {
     var contents = $(settingContainer).find("div.tab-content:first")[0];
     if (contents && tabs) {
       $(contents).height(hdef - tabs.offsetHeight + "px");
-    }
-  }
-};
-
-WikiLayout.prototype.checkToShowGradientScrollInLeftArea = function() {
-  var me = eXo.wiki.WikiLayout;
-  if (!me.leftArea) {
-    return;
-  }
-  
-  var scrollTop = $(me.leftArea).find('.uiScrollTop')[0];
-  var scrollBottom = $(me.leftArea).find('.uiScrollBottom')[0];
-  
-  if (!scrollTop || !scrollBottom) {
-    return;
-  }
-  
-  var uiTreeExplorer = $(me.leftArea).find("div.uiTreeExplorer:first")[0];
-  var relatedPage = $(me.leftArea).find("div.uiRelatePages:first")[0];
-  var relatedPageHeight = 0;
-  if (relatedPage) {
-    relatedPageHeight = relatedPage.offsetHeight;
-  }
-  
-  if (uiTreeExplorer) {
-    var isShowGradientScroll = uiTreeExplorer.offsetHeight + relatedPageHeight + 37 > me.leftArea.offsetHeight;
-    if (isShowGradientScroll) {
-      if (me.leftArea.scrollTop > 0) {
-        $(scrollTop).css("display", "block");
-        $(scrollTop).css("width", me.leftArea.offsetWidth + "px");
-      } else {
-        $(scrollTop).css("display", "none");
-      }
-    
-      if (me.leftArea.scrollTop < uiTreeExplorer.offsetHeight + relatedPageHeight + 37 - me.leftArea.offsetHeight) {
-        $(scrollBottom).css("display", "block");
-        $(scrollBottom).css("top", (me.leftArea.offsetTop + me.leftArea.offsetHeight - scrollBottom.offsetHeight) + "px");
-        $(scrollBottom).css("width", me.leftArea.offsetWidth + "px");
-      } else {
-        $(scrollBottom).css("display", "none");
-      }
-    } else {
-      $(scrollTop).css("display", "none");
-      $(scrollBottom).css("display", "none");
-    }
-  }
-}
-
-WikiLayout.prototype.checkToShowGradientScrollInRightArea = function() {
-  var isShowGradientScroll = false;
-  var me = eXo.wiki.WikiLayout;
-  if (!me.rightArea) {
-    return;
-  }
-  
-  var scrollTop = $(me.rightArea).find('.uiScrollTop')[0];
-  var scrollBottom = $(me.rightArea).find('.uiScrollBottom')[0];
-  
-  if (!scrollTop || !scrollBottom) {
-    return;
-  }
-  
-  var pageArea = $(me.rightArea).find('div.UIWikiPageArea:first')[0];
-  if (pageArea) {
-    var pageContent = $(pageArea).find("div.uiWikiPageContentArea:first")[0];
-    if (!pageContent) {
-      if ($(pageArea).find("div.uiWikiPageEditForm:first")[0])
-        isShowGradientScroll = true;
-      else 
-        return;
-    } else {
-      isShowGradientScroll = pageContent.offsetHeight > me.rightArea.offsetHeight;
-    }
-    
-    if (isShowGradientScroll) {
-      if (me.rightArea.scrollTop > 0) {
-        $(scrollTop).css("display", "block");
-      } else {
-        $(scrollTop).css("display", "none");
-      }
-    
-      if (me.rightArea.scrollTop < me.rightArea.offsetHeight - 10) {
-        $(scrollBottom).css("display", "block");
-        $(scrollBottom).css("top", (me.rightArea.offsetTop + me.rightArea.offsetHeight - scrollBottom.offsetHeight) + "px");
-      } else {
-        $(scrollBottom).css("display", "none");
-      }
-    } else {
-      $(scrollTop).css("display", "none");
-      $(scrollBottom).css("display", "none");
     }
   }
 };
