@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki-macros</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.4.x-SNAPSHOT</version>
+    <version>4.4.2</version>
   </parent>
   <artifactId>wiki-macros-iframe</artifactId>
   <name>eXo PLF:: Wiki Macros Iframe</name>
