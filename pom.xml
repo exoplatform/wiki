@@ -14,7 +14,6 @@
   <name>eXo PLF:: Wiki</name>
   <description>eXo wiki</description>
   <modules>
-    <module>wiki-injector</module>
     <module>wiki-renderer</module>
     <module>wiki-macros</module>
     <module>wiki-service</module>
