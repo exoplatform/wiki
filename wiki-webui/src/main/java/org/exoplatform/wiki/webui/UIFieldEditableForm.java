@@ -173,21 +173,12 @@ public class UIFieldEditableForm extends UIWikiForm {
                 null,
                 ApplicationMessage.WARNING);
       } else if (titleInput.getValue().trim().length() > WikiConstants.MAX_LENGTH_TITLE) {
-    	isError = true;
-    	appMsg = new ApplicationMessage("WikiPageNameValidator.msg.TooLongTitle", new Object[] {WikiConstants.MAX_LENGTH_TITLE} , ApplicationMessage.WARNING);
+    	  isError = true;
+    	  appMsg = new ApplicationMessage("WikiPageNameValidator.msg.TooLongTitle", new Object[] {WikiConstants.MAX_LENGTH_TITLE} , ApplicationMessage.WARNING);
       }
 
-      try {
-        WikiNameValidator.validate(titleInput.getValue());
-      } catch (IllegalArgumentException ex) {
-        isError = true;
-        Object[] arg = { ex.getMessage() };
-        appMsg = new ApplicationMessage("WikiPageNameValidator.msg.Invalid-char",
-                                          arg,
-                                          ApplicationMessage.WARNING);
-      }
       if (isError) {
-    	event.getRequestContext().getUIApplication().addMessage(appMsg);
+    	  event.getRequestContext().getUIApplication().addMessage(appMsg);
         Utils.redirect(Utils.getCurrentWikiPageParams(), WikiMode.VIEW);
         return;
       }

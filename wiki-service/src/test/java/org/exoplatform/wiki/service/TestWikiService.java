@@ -291,6 +291,20 @@ public class TestWikiService extends AbstractMOWTestcase {
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "renamedPage")) ;
   }
 
+  public void testRenamePageToExistingPage() throws WikiException {
+    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    wService.createPage(portalWiki, "WikiHome", new Page("currentPage", "currentPage")) ;
+    wService.createPage(portalWiki, "WikiHome", new Page("currentPage2", "currentPage2")) ;
+    try {
+      wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "currentPage", "currentPage2", "renamedPage2");
+      fail("Renaming page currentPage to the existing page currentPage2 should throw an exception");
+    } catch (WikiException e) {
+      assertEquals("Page portal:classic:currentPage2 already exists, cannot rename it.", e.getMessage());
+    }
+    assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "currentPage")) ;
+    assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "currentPage2")) ;
+  }
+
   public void testSearchContent() throws Exception {
     Wiki classicWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
     Page kspage = new Page("knowledge suite 1", "knowledge suite 1");

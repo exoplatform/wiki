@@ -628,6 +628,10 @@ public class WikiServiceImpl implements WikiService, Startable {
       return false;
     }
 
+    if (!pageName.equals(newName) && isExisting(wikiType, wikiOwner, newName)) {
+      throw new WikiException("Page " + wikiType + ":" + wikiOwner + ":" + newName + " already exists, cannot rename it.");
+    }
+
     dataStorage.renamePage(wikiType, wikiOwner, pageName, newName, newTitle);
 
     // Invaliding cache

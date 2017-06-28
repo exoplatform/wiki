@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.webui;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
@@ -122,6 +123,16 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
 
       wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_TITLE);
     } else {
+      if (!newName.equals(pageParams.getPageName())
+              && wikiService.isExisting(pageParams.getType(), pageParams.getOwner(), newName)) {
+        event.getRequestContext()
+                .getUIApplication()
+                .addMessage(new ApplicationMessage("SavePageAction.msg.warning-page-title-already-exist",
+                        null,
+                        ApplicationMessage.WARNING));
+        return;
+      }
+
       wikiService.renamePage(pageParams.getType(),
                              pageParams.getOwner(),
                              pageParams.getPageName(),
