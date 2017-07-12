@@ -80,11 +80,6 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-injector</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-macros-iframe</artifactId>
         <version>${project.version}</version>
       </dependency>

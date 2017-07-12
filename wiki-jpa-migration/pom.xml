@@ -52,11 +52,6 @@
       <scope>test</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-injector</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.hsqldb</groupId>
       <artifactId>hsqldb</artifactId>
       <scope>test</scope>
