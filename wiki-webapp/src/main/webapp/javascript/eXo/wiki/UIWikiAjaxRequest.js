@@ -32,10 +32,7 @@ UIWikiAjaxRequest.prototype.init = function(actionPrefix, defaultAction) {
   this.isEnableCheck = true;
   if (this.actionPrefix && this.defaultAction) {
     this.autoCheckAnchorId = window.setInterval(this.autoCheckAnchor, this.DEFAULT_TIMEOUT_CHECK);
-    $(window).unload(this.destroyAll);
-    if ($.browser.msie != undefined) {
-      this.createIEHistoryFrame();
-    }
+    $(window).on('unload', this.destroyAll);
   }
 };
 
@@ -91,29 +88,6 @@ UIWikiAjaxRequest.prototype.checkAnchor = function() {
       }
       if (action) {
         var ajaxGetLink = action.getAttributeNode('onclick').value.replace('&ajaxRequest=true', queryParams + '&ajaxRequest=true');
-        if ($.browser.msie != undefined) {
-        	var q = ajaxGetLink.indexOf('?');
-        	var s1 = "";
-        	var s2 = "";
-        	if (q > -1) {
-        		s1 = ajaxGetLink.substring(0, q);
-        		s2 = ajaxGetLink.substring(q);
-        	} else {
-        		q1 = ajaxGetLink.indexOf('#');
-        		if (q1 > -1) {
-            		s1 = ajaxGetLink.substring(0, q1);
-            		s2 = ajaxGetLink.substring(q1);
-        		} else {
-        			s1 = ajaxGetLink;
-        			s2 = "";
-        		}
-        	}
-    		var slash = s1.lastIndexOf('/');
-    		if (slash > -1) {
-    			var pageName = s1.substring(slash + 1);
-    			ajaxGetLink = s1.substring(0, slash) +'/' + pageName + s2;
-    		}
-        }
         action.onclick = function() {
           eval(ajaxGetLink);
         };
@@ -127,33 +101,13 @@ UIWikiAjaxRequest.prototype.checkAnchor = function() {
   }
 };
 
-UIWikiAjaxRequest.prototype.createIEHistoryFrame = function() {
-  var iframeID = 'rshHistoryFrame';
-  this.iframe = document.getElementById(iframeID);
-  if (!this.iframe) {
-    var tmpIframe = document.createElement('iframe');
-    tmpIframe.id = iframeID;
-    tmpIframe.style.display = 'none';
-    document.body.appendChild(tmpIframe);
-    this.iframe = tmpIframe;
-    eXo.wiki.UIWikiAjaxRequest.makeNewHash(location.hash);
-  }
-};
-
 UIWikiAjaxRequest.prototype.onFrameLoaded = function(hash) {
   location.hash = hash;
 };
 
 
 UIWikiAjaxRequest.prototype.makeNewHash = function(hash) {
-  if ($.browser.msie != undefined) {
-    var doc = document.getElementById("rshHistoryFrame").contentWindow.document;
-    doc.open("javascript:'<html></html>'");
-    doc.write("<html><head></head><body onload=\"parent.eXo.wiki.UIWikiAjaxRequest.onFrameLoaded('" + hash + "');\"></body></html>");
-    doc.close();
-  } else {
-    this.onFrameLoaded(hash);
-  }
+  this.onFrameLoaded(hash);
 };
 
 /**

@@ -56,11 +56,7 @@ UIWikiEditParagraph.prototype.init = function(pageContentAreaId, editActionId) {
 };
 
 UIWikiEditParagraph.prototype.highlightEditSection = function (container,event) {
-  if ($.browser.msie) {
-    event.cancelBubble = true;
-  } else {
-    event.stopPropagation();
-  }
+  event.stopPropagation();
   var section = $(container).find('span.EditSection')[0];
   $(section).toggle();
   $(container).toggleClass("EditSectionHover");
