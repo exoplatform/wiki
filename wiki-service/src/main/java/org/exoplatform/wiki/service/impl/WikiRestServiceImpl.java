@@ -334,7 +334,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     Spaces spaces = objectFactory.createSpaces();
     List<String> spaceNames = new ArrayList<>();
     try {
-      List<Wiki> wikis = wikiService.getWikisByType(wikiType.toUpperCase());
+      List<Wiki> wikis = wikiService.getWikisByType(wikiType);
       for (Wiki wiki : wikis) {
         spaceNames.add(wiki.getOwner());
       }
