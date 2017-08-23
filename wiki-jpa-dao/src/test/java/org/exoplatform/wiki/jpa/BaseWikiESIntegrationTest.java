@@ -23,11 +23,9 @@ import static org.junit.Assert.assertNotEquals;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.DatagramSocket;
 import java.net.ServerSocket;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -53,6 +51,7 @@ import org.exoplatform.commons.file.model.FileItem;
 import org.exoplatform.commons.search.dao.IndexingOperationDAO;
 import org.exoplatform.commons.search.index.IndexingOperationProcessor;
 import org.exoplatform.commons.search.index.IndexingService;
+import org.exoplatform.commons.utils.IOUtil;
 import org.exoplatform.commons.utils.PropertyManager;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -70,7 +69,7 @@ import org.exoplatform.wiki.jpa.search.WikiPageIndexingServiceConnector;
  * 10/1/15
  */
 public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTest {
-  protected final URL fileResource = this.getClass().getClassLoader().getResource("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");
+  protected InputStream fileResource;
   private static final Log LOGGER = ExoLogger.getExoLogger(BaseWikiESIntegrationTest.class);
   protected Node                       node;
   protected IndexingService            indexingService;
@@ -99,6 +98,8 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
 
   public void setUp() {
     super.setUp();
+
+    fileResource = this.getClass().getClassLoader().getResourceAsStream("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");
 
     // Init services
     indexingOperationDAO = PortalContainer.getInstance().getComponentInstanceOfType(IndexingOperationDAO.class);
@@ -179,6 +180,12 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     }
     LOGGER.info("Embedded ES instance - Stopped");
 
+    try {
+      fileResource.close();
+    } catch (IOException e) {
+      LOGGER.info("fileResource is already closed");
+    }
+
     super.tearDown();
   }
 
@@ -248,7 +255,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     return page;
   }
 
-  protected PageAttachmentEntity indexAttachment(String title, String filePath, String downloadedUrl, String owner) throws NoSuchFieldException,
+  protected PageAttachmentEntity indexAttachment(String title, InputStream inputStream, String owner) throws NoSuchFieldException,
                                                                                      IllegalAccessException,
                                                                                      IOException {
     WikiEntity wiki = new WikiEntity();
@@ -264,18 +271,21 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     pageDAO.create(page);
     PageAttachmentEntity attachment = new PageAttachmentEntity();
     FileItem fileItem = null;
+
+    byte[] bytes = IOUtil.getStreamContentAsBytes(inputStream);
     try {
       fileItem = new FileItem(null,
               title,
               null,
               JPADataStorage.WIKI_FILES_NAMESPACE_NAME,
-              Files.readAllBytes(Paths.get(fileResource.toURI())).length,
+              bytes.length,
               new Date(),
               owner,
               false,
-              new ByteArrayInputStream(Files.readAllBytes(Paths.get(filePath))));
+              new ByteArrayInputStream(bytes));
       fileItem = fileService.writeFile(fileItem);
     } catch (Exception e) {
+      e.printStackTrace();
       fail();
     }
     attachment.setAttachmentFileID(fileItem.getFileInfo().getId());

@@ -24,6 +24,7 @@ import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 
 /**
@@ -75,9 +76,9 @@ public class JPADataStorageSearchTest extends BaseWikiESIntegrationTest {
     @Test
     public void testSearchAttachmentByTitle() throws NoSuchFieldException, IllegalAccessException, IOException {
         // Given
-        URL fileResource = this.getClass().getClassLoader().getResource("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");
+        InputStream fileResource = this.getClass().getClassLoader().getResourceAsStream("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");
         // When
-        indexAttachment("Scrum @eXo - Collector", fileResource.getPath(), "www.exo.com", "BCH");
+        indexAttachment("Scrum @eXo - Collector", fileResource, "BCH");
         // Then
         assertEquals(1, storage.search(new WikiSearchData("Collector", null, "test", "BCH")).getPageSize());
         assertEquals(1, storage.search(new WikiSearchData(null, "Collector", "test", "BCH")).getPageSize());
@@ -86,9 +87,9 @@ public class JPADataStorageSearchTest extends BaseWikiESIntegrationTest {
     @Test
     public void testSearchAttachmentByContent() throws NoSuchFieldException, IllegalAccessException, IOException {
         // Given
-        URL fileResource = this.getClass().getClassLoader().getResource("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");
+        InputStream fileResource = this.getClass().getClassLoader().getResourceAsStream("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");
         // When
-        indexAttachment("Scrum @eXo - Collector", fileResource.getPath(), "www.exo.com", "BCH");
+        indexAttachment("Scrum @eXo - Collector", fileResource, "BCH");
         // Then
         assertEquals(1, storage.search(new WikiSearchData("Agile", null, "test", "BCH")).getPageSize());
         assertEquals(1, storage.search(new WikiSearchData(null, "Agile", "test", "BCH")).getPageSize());

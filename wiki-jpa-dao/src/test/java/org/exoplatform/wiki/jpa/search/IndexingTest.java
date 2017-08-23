@@ -61,12 +61,11 @@ public class IndexingTest extends BaseWikiESIntegrationTest {
   public void testReindexingAttachmentAndSearch() throws NoSuchFieldException, IllegalAccessException, IOException {
     // Given
     PageAttachmentEntity attachment1 = indexAttachment("Scrum @eXo - Collector",
-        fileResource.getPath(),
-        "www.exo.com",
+        fileResource,
         "BCH");
+    fileResource = this.getClass().getClassLoader().getResourceAsStream("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");
     PageAttachmentEntity attachment2 = indexAttachment("Scrum @eXo - Collector",
-        fileResource.getPath(),
-        "www.exo.com",
+        fileResource,
         "BCH");
     assertEquals(2, pageAttachmentDAO.findAll().size());
     // When

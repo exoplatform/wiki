@@ -35,7 +35,7 @@ public class AttachmentPermissionsTest extends BaseWikiESIntegrationTest {
     // Given
     SecurityUtils.setCurrentUser("BCH", "*:/admin");
     // When
-    indexAttachment("Scrum @eXo - Collector", fileResource.getPath(), "www.exo.com", "BCH");
+    indexAttachment("Scrum @eXo - Collector", fileResource, "BCH");
     // Then
     assertEquals(1, storage.search(new WikiSearchData("Agile", null, "test", "BCH")).getPageSize());
   }
@@ -44,7 +44,7 @@ public class AttachmentPermissionsTest extends BaseWikiESIntegrationTest {
     // Given
     SecurityUtils.setCurrentUser("BCH", "*:/admin");
     // When
-    indexAttachment("Scrum @eXo - Collector", fileResource.getPath(), "www.exo.com", "JOHN");
+    indexAttachment("Scrum @eXo - Collector", fileResource, "JOHN");
     // Then
     assertEquals(0, storage.search(new WikiSearchData("Agile", null, "test", "BCH")).getPageSize());
   }
