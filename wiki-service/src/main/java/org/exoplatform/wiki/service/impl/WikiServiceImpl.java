@@ -1259,7 +1259,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     Attachment attachment = null;
     List<Attachment> attachments = dataStorage.getAttachmentsOfPage(page);
     for(Attachment att : attachments) {
-      if(TitleResolver.getId(att.getName(), false).equals(TitleResolver.getId(attachmentName, false))) {
+      if(att.getName().equals(attachmentName)) {
         attachment = att;
         break;
       }
