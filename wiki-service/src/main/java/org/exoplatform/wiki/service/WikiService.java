@@ -594,23 +594,6 @@ public interface WikiService {
    * @return The Wiki webapp URI.
    */
   public String getWikiWebappUri();
-  
-  /**
-   * Checks if a given user is member of space or not.
-   *
-   * @param spaceId Id of the space.
-   * @param userId The username.
-   * @return "True" if the user is member, or "false" if not.
-   */
-  public boolean isSpaceMember(String spaceId, String userId);
-
-  /**
-   * Checks if a space is hidden or not.
-   * 
-   * @param groupId Id of the group.
-   * @return The returned value is "true" if the space is hidden, or "false" if not.
-   */
-  public boolean isHiddenSpace(String groupId);
 
   /**
    * Checks if the given user has the permission on a page
@@ -772,4 +755,5 @@ public interface WikiService {
    * @throws WikiException
    */
   public void deleteWatcherOfPage(String username, Page page) throws WikiException;
+
 }

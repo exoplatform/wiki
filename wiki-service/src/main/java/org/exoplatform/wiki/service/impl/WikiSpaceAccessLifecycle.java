@@ -18,7 +18,7 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-import org.exoplatform.container.PortalContainer;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -26,12 +26,13 @@ import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.web.application.Application;
 import org.exoplatform.web.application.ApplicationLifecycle;
 import org.exoplatform.web.application.RequestFailure;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 
 public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
@@ -61,10 +62,18 @@ public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiReque
           }
           
           // Get page
-          WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+          SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+          Space space = spaceService.getSpaceById(spaceId);
+          if (space == null) {
+            space = spaceService.getSpaceByPrettyName(spaceId);
+            if (space == null) {
+              space = spaceService.getSpaceByGroupId(spaceId);
+            }
+          }
 
           // If user is not member of space but has view permission
-          if (!wikiService.isHiddenSpace(owner) && !wikiService.isSpaceMember(spaceId, currentUser)) {
+          if (space != null && !Space.HIDDEN.equals(space.getVisibility()) && !spaceService.isSuperManager(currentUser)
+              && !spaceService.isMember(space, currentUser)) {
             WikiPageParams wikiPageParams = new WikiPageParams(PortalConfig.GROUP_TYPE, owner, pageId);
             String permalink = Utils.getPermanlink(wikiPageParams, false);
             redirect(permalink);
