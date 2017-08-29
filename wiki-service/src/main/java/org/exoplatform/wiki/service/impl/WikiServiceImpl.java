@@ -1,7 +1,6 @@
 package org.exoplatform.wiki.service.impl;
 
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
@@ -34,7 +33,6 @@ import org.exoplatform.commons.diff.DiffService;
 import org.exoplatform.commons.utils.ListAccess;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
-import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.ComponentPlugin;
@@ -53,6 +51,10 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.social.core.service.LinkProvider;
+import org.exoplatform.social.core.space.SpaceFilter;
+import org.exoplatform.social.core.space.model.Space;
+import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Attachment;
@@ -1304,36 +1306,30 @@ public class WikiServiceImpl implements WikiService, Startable {
   /******* Spaces *******/
 
   @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
   public List<SpaceBean> searchSpaces(String keyword) throws WikiException {
     List<SpaceBean> spaceBeans = new ArrayList<>();
 
     // Get group wiki
     String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
     try {
-      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-
-      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
       if (StringUtils.isEmpty(keyword)) {
-        //spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesWithListAccess", String.class).invoke(spaceService, currentUser);
         keyword = "*";
       }
       keyword = keyword.trim();
       //search by keyword
-      Class spaceFilterClass = Class.forName("org.exoplatform.social.core.space.SpaceFilter");
-      Object spaceFilter = spaceFilterClass.getConstructor(String.class).newInstance(keyword);
-      //search by userId
-      spaceFilterClass.getDeclaredMethod("setRemoteId", String.class).invoke(spaceFilter, currentUser);
-      //search by appId(wiki)
-      spaceFilterClass.getDeclaredMethod("setAppId", String.class).invoke(spaceFilter, "Wiki");
-      ListAccess spaces = (ListAccess) spaceServiceClass.getDeclaredMethod("getAccessibleSpacesByFilter", String.class, spaceFilterClass).invoke(spaceService, currentUser, spaceFilter);
+      SpaceFilter spaceFilter = new SpaceFilter(keyword);
+      spaceFilter.setRemoteId(currentUser);
+      spaceFilter.setAppId("Wiki");
 
-      for (Object space : spaces.load(0, spaces.getSize())) {
-        String groupId = String.valueOf(spaceClass.getMethod("getGroupId").invoke(space));
-        String spaceName = String.valueOf(spaceClass.getMethod("getDisplayName").invoke(space));
-        String avatarUrl = String.valueOf(spaceClass.getMethod("getAvatarUrl").invoke(space));
-        if (StringUtils.isEmpty(avatarUrl) || "null".equalsIgnoreCase(avatarUrl)) {
+      SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+      //search by appId(wiki)
+      ListAccess<Space> spaces = spaceService.getAccessibleSpacesByFilter(currentUser, spaceFilter);
+
+      for (Space space : spaces.load(0, spaces.getSize())) {
+        String groupId = space.getGroupId();
+        String spaceName = space.getDisplayName();
+        String avatarUrl = space.getAvatarUrl();
+        if (StringUtils.isBlank(avatarUrl)) {
           avatarUrl = getDefaultSpaceAvatarUrl();
         }
         spaceBeans.add(new SpaceBean(groupId, spaceName, PortalConfig.GROUP_TYPE, avatarUrl));
@@ -1357,26 +1353,17 @@ public class WikiServiceImpl implements WikiService, Startable {
     return spaceBeans;
   }
 
-  @SuppressWarnings("rawtypes")
   private String getDefaultSpaceAvatarUrl() {
-    try {
-      Class linkProviderClass = Class.forName("org.exoplatform.social.core.service.LinkProvider");
-      return linkProviderClass.getDeclaredField("SPACE_DEFAULT_AVATAR_URL").get(null).toString();
-    } catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException e) {
-      return "";
-    }
+    return LinkProvider.SPACE_DEFAULT_AVATAR_URL;
   }
 
   @Override
   public boolean hasAdminSpacePermission(String wikiType, String owner) throws WikiException {
     ConversationState conversationState = ConversationState.getCurrent();
     Identity user;
-    UserACL acl;
     if (conversationState != null) {
       user = conversationState.getIdentity();
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      acl = container.getComponentInstanceOfType(UserACL.class);
-      if (acl != null && acl.getSuperUser().equals(user.getUserId())) {
+      if (userACL != null && userACL.getSuperUser().equals(user.getUserId())) {
         return true;
       }
     } else {
@@ -1387,64 +1374,16 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public boolean isSpaceMember(String spaceId, String userId) {
-    try {
-      // Get space service
-      Class<?> spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-
-      // Get space by Id
-      Class<?> spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByPrettyName", String.class).invoke(spaceService, spaceId);
-
-      // Check if user is the member of space or not
-      return Boolean.valueOf(String.valueOf(spaceServiceClass.getDeclaredMethod("isMember", spaceClass, String.class).invoke(spaceService, space, userId)));
-    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      log.error("Can not check if user " + userId + " is a member of the space " + spaceId + " - Cause : "
-              + e.getMessage(), e);
-      return false;
-    }
-  }
-
-  @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
-  public boolean isHiddenSpace(String groupId) {
-    try {
-      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
-      String visibility = String.valueOf(spaceClass.getDeclaredMethod("getVisibility").invoke(space));
-      String hiddenValue = String.valueOf(spaceClass.getDeclaredField("HIDDEN").get(space));
-      return hiddenValue.equals(visibility);
-    } catch (ClassNotFoundException | NoSuchMethodException | NoSuchFieldException | IllegalAccessException | InvocationTargetException e) {
-      log.error("Can not check if space " + groupId + " is a hidden space - Cause : " + e.getMessage(), e);
-      return true;
-    }
-  }
-
-
-  @Override
-  @SuppressWarnings({"rawtypes", "unchecked"})
   public String getSpaceNameByGroupId(String groupId) {
-    try {
-      Class spaceServiceClass = Class.forName("org.exoplatform.social.core.space.spi.SpaceService");
-      Object spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(spaceServiceClass);
-
-      Class spaceClass = Class.forName("org.exoplatform.social.core.space.model.Space");
-      Object space = spaceServiceClass.getDeclaredMethod("getSpaceByGroupId", String.class).invoke(spaceService, groupId);
-      if(space != null) {
-        return String.valueOf(spaceClass.getDeclaredMethod("getDisplayName").invoke(space));
-      } else {
-        return groupId.substring(groupId.lastIndexOf('/') + 1);
-      }
-    } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-      log.error("Can not find space of group " + groupId + " - Cause : " + e.getMessage(), e);
+    SpaceService spaceService = (SpaceService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    Space space = spaceService.getSpaceByGroupId(groupId);
+    if (space == null) {
+      LOG.warn("Can't find space with group id " + groupId);
       return groupId.substring(groupId.lastIndexOf('/') + 1);
+    } else {
+      return space.getDisplayName();
     }
   }
-
-
 
   /******* Listeners *******/
 
@@ -1537,9 +1476,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     Identity user;
     if (conversationState != null) {
       user = conversationState.getIdentity();
-      ExoContainer container = ExoContainerContext.getCurrentContainer();
-      UserACL acl = container.getComponentInstanceOfType(UserACL.class);
-      if (acl != null && acl.getSuperUser().equals(user.getUserId())) {
+      if (userACL != null && userACL.getSuperUser().equals(user.getUserId())) {
         return true;
       }
     } else {
