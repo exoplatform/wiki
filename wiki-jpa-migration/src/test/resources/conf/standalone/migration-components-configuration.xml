@@ -41,7 +41,7 @@
 
   <component>
     <key>org.exoplatform.commons.api.settings.SettingService</key>
-    <type>org.exoplatform.settings.cache.CacheSettingServiceImpl</type>
+    <type>org.exoplatform.settings.impl.SettingServiceImpl</type>
   </component>
   
   <component>
