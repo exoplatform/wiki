@@ -7,6 +7,6 @@
   requireJs.require("SHARED/UIWikiEditParagraph", "UIWikiEditParagraph");
   requireJs.addScripts("UIWikiEditParagraph.init('" + uicomponent.id +"', '" + editActionId + "');");
 %>
-<div class="uiWikiPageContentArea wikiBox" id="$uicomponent.id" style="height:500px">
+<div class="uiWikiPageContentArea wikiBox" id="$uicomponent.id">
 	<% uicomponent.renderChildren(); %>
 </div>

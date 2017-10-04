@@ -44,7 +44,6 @@ UIWikiPageVersionsList.prototype.init = function(formId) {
   }
   $(me.compareButton).attr('class', 'btn  disableButton refreshModeTarget');
   $(me.compareButton).attr('disabled', true);
-  eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);
 };
 
 UIWikiPageVersionsList.prototype.onCheck = function(evt) {

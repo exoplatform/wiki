@@ -44,11 +44,6 @@ UIRelated.prototype.initMacros = function() {
           var href = redirectTempl + "&objectId=" + encodeURIComponent(relatedItem.identity);
           $(relatedBlock).append("<a href='" + href + "' class='relateItem'><i class='uiIconFileMini'></i>" + relatedItem.title + "</a>");
         }
-        
-        // Recalculate width height
-        if (eXo.wiki.WikiLayout) {
-	      eXo.wiki.WikiLayout.processWithHeight();
-	    }
       }
     });
   }

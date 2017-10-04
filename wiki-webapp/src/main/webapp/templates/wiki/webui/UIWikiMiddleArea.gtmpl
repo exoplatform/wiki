@@ -3,13 +3,21 @@
   import org.exoplatform.wiki.webui.UIWikiPageContainer;
   import org.exoplatform.wiki.webui.UIWikiPageSettingContainer
   import org.exoplatform.wiki.webui.UIWikiRelatedPages;
+
+  def width = uicomponent.getLeftPanelWidth();
+  def leftContentState = "";
+  def arrowPosition = "Left";
+  if (uicomponent.isShowLeftPanel() == false) {
+    leftContentState = "collapsed";
+    arrowPosition = "Right";
+  }
 %>
   <div class="uiWikiMiddleArea wikiLayout clearfix" id="$uicomponent.id">
     <% if(uicomponent.isPageSettingContainerRender()) { %>
       <% uicomponent.renderChild(UIWikiPageSettingContainer.class); %>       
     <% } else { %>
       <% if(uicomponent.isNavigationRender()) { %>
-        <div class="uiLeftContainerArea" style="height:550px">
+        <div class="uiLeftContainerArea $leftContentState" style="$width">
           <i class="uiScrollTop" style="display:none"></i>
 		  <div class="wikiBox">
 		    <% uicomponent.renderChild(UIWikiNavigationContainer.class); %>       
@@ -21,11 +29,11 @@
       
       <div class="resizeBar">
 		<div class="resizeBarContent">
-		  <div class="resizeButton"><i class="uiIconMiniArrowLeft"></i></div>
+		  <div class="resizeButton"><i class="uiIconMiniArrow$arrowPosition"></i></div>
 		</div>
       </div>
       
-      <div class="uiRightContainerArea" style="height:550px; width:650px">
+      <div class="uiRightContainerArea">
       	<i class="uiScrollTop" style="display:none"></i>
         <% uicomponent.renderChild(UIWikiPageContainer.class); %>
         <i class="uiScrollBottom" style="display:none"></i>

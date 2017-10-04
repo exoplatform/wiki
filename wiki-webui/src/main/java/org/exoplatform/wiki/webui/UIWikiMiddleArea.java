@@ -25,6 +25,9 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.WikiPortletPreference;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
+import org.exoplatform.portal.webui.util.Util;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.Cookie;
 
 @ComponentConfig(
                  lifecycle = Lifecycle.class,
@@ -36,6 +39,7 @@ import org.exoplatform.wiki.webui.core.UIWikiContainer;
 public class UIWikiMiddleArea extends UIWikiContainer {
 
   public static String SHOW_HIDE_ACTION = "ShowHide";
+  public static boolean SHOW_LEFT_PANEL_DEFAULT = true;
 
   public UIWikiMiddleArea() throws Exception {
     super();
@@ -69,5 +73,37 @@ public class UIWikiMiddleArea extends UIWikiContainer {
       navigation.setRendered(!navigation.isRendered());
       event.getRequestContext().addUIComponentToUpdateByAjax(middleArea);
     }
+  }
+  
+  public String getLeftPanelWidth() {
+    HttpServletRequest req = Util.getPortalRequestContext().getRequest();
+    Cookie[] cookies = req.getCookies();
+    String width = "";
+    
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if(cookie.getName().equals(req.getRemoteUser() + "_leftWidth")) {
+          width = "width: " + cookie.getValue() + "px";
+          break;
+        }
+      }
+    }
+    return width;
+  }
+  
+  public boolean isShowLeftPanel() {
+    HttpServletRequest req = Util.getPortalRequestContext().getRequest();
+    Cookie[] cookies = req.getCookies();
+    boolean showLeftPanel = SHOW_LEFT_PANEL_DEFAULT;
+    
+    if (cookies != null) {
+      for (Cookie cookie : cookies) {
+        if(cookie.getName().equals(req.getRemoteUser() + "_ShowLeftContainer")) {
+          showLeftPanel = Boolean.parseBoolean(cookie.getValue());
+          break;
+        }
+      }
+    }
+    return showLeftPanel;
   }
 }

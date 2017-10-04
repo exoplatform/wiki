@@ -72,7 +72,6 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
 	var node = element.parentNode;
 	var subGroup = $(node).find('ul.nodeGroup')[0];
 	if ($(element).hasClass('EmptyIcon')) {
-          eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);
 	  return true;
     }
       
@@ -85,12 +84,9 @@ UITreeExplorer.prototype.collapseExpand = function(element) {
     }
       
     if (!subGroup) {
-      eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);
       return false;
     }
-	eXo.wiki.WikiLayout.setHeightRightContent('',eXo.wiki.WikiLayout.userName);  
 	$(subGroup).toggle();
-	eXo.wiki.WikiLayout.setHeightLayOut();
 	
 	return true;
   }
@@ -167,7 +163,6 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
 	    data : '',
 	    success : function(data) {
 	      me.renderTreeNodes(childBlock, data);
-              eXo.wiki.WikiLayout.setHeightLayOut();
 	    }
 	  });
 	}
@@ -203,9 +198,6 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
 	  }
 	  if (remain) {
 	    $(container).append(remain);
-	  }
-	  if (eXo.wiki.WikiLayout) {
-	    eXo.wiki.WikiLayout.processWithHeight();
 	  }
 	}
   }

@@ -37,7 +37,7 @@
    requireJs.addScripts("UITreeExplorer.init('" + uicomponent.id  + "','" + initParam + "',true," + isRenderLink + ",'" + baseLink + "','" + retrictedLabel + "',\"" + restrictedTitle + "\",\""+restrictedModifyTitle+"\"  );");
  } 
 %>
-	<div class="uiTreeExplorer" id="$uicomponent.id" style="height:250px">
+	<div class="uiTreeExplorer" id="$uicomponent.id">
 		 <a href="$action" class="SelectNode" style="display:none" ></a>
 		 <input class="InitURL" type="hidden" value="$initURL" />
 		 <input class="ChildrenURL" type="hidden" value="$childrenURL" />		   
