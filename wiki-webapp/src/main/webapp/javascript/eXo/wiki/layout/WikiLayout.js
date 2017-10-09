@@ -71,9 +71,7 @@ WikiLayout.prototype.initWikiLayout = function(prtId, _userName) {
 
   try{
     if(prtId.length > 0) me.portletId = prtId;
-    var isIE = ($.browser.msie != undefined)
-    var idPortal = (isIE) ? 'UIWorkingWorkspace' : 'UIPortalApplication';
-    me.portal = document.getElementById(idPortal);
+    me.portal = document.getElementById('UIPortalApplication');
     var portlet = document.getElementById(me.portletId);
     me.wikiLayout = $(portlet).find('div.uiWikiMiddleArea')[0];
     me.resizeBar = $(me.wikiLayout).find('div.resizeBar')[0];

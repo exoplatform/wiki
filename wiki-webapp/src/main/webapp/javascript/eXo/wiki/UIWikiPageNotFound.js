@@ -25,7 +25,7 @@ function UIWikiPageNotFound() {
 };
 
 UIWikiPageNotFound.prototype.init = function() {
-  $(window).load(function() {
+  $(window).on('load', function() {
     setTimeout(eXo.wiki.UIWikiPageNotFound.hidePopup(), 1000);
   });
 };
