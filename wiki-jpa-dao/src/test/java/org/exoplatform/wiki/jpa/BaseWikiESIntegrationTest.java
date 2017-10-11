@@ -137,9 +137,6 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
         .put("path.logs", "logs")
         .put("transport.type", "local")
         .put("http.type", "netty4")
-        .put("script.inline", false)
-        .put("script.stored", false)
-        .put("script.file", false)
         .put("path.home", "target/es")
         .put("path.data", "target/es");
 
