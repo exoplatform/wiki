@@ -31,6 +31,8 @@ import org.xwiki.rendering.converter.ConversionException;
  */
 public interface RenderingService {
 
+  public static final String EXPORT_TO_PDF      = "exportToPDF";
+
   /**
    * Gets the current execution instance.
    *
@@ -57,6 +59,22 @@ public interface RenderingService {
    * @return The readable content of the rendered wiki page.
    */
   public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) throws ConversionException, ComponentLookupException;
+
+    /**
+     * Renders a wiki page from its markup to HTML by using the right syntax.
+     *
+     * @param markup The wiki page markup.
+     * @param sourceSyntax The syntax used by the wiki page.
+     * @param targetSyntax The target syntax to apply.
+     * @param supportSectionEdit If "true", the "Edit section" function is supported. Otherwise, this function is not supported.
+     * @param exportToPdf If "true", the content is rendered for the pdf export. Otherwise it's not related to the pdf export.
+     * @return The readable content of the rendered wiki page.
+     */
+  default public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit, boolean exportToPdf) throws ConversionException, ComponentLookupException {
+
+    return render(markup,sourceSyntax,targetSyntax,supportSectionEdit);
+  }
+
 
   /**
    * Gets content of a section.

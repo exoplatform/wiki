@@ -26,7 +26,6 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.context.MarkupContextManager;
-import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -40,6 +39,11 @@ import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.wiki.WikiModel;
 
 import javax.inject.Inject;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Map;
 
 @Component
@@ -131,8 +135,21 @@ public class DefaultWikiModel implements WikiModel {
         page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageName());
 
         Attachment att = wikiService.getAttachmentOfPageByName(attachmentName, page);
+        Boolean exportToPdf = (parameters == null)? false : Boolean.valueOf(parameters.get(RenderingService.EXPORT_TO_PDF));
         if (att != null) {
-          sb.append(att.getDownloadURL());
+          if ((exportToPdf) && att.getMimeType().startsWith("image/")) {
+            // PDF rendering is done on server side from the HTML content, when it comes getting restricted by permissions images, the server will call a rest service
+            // anonymously and we cannot check the permissions. So for the PDF export images will be alternatively created and fetched from a temporary file
+            File image = Files.createTempFile(attachmentName + Long.toString(System.currentTimeMillis()), null).toFile();
+            try (OutputStream outStream = new FileOutputStream(image)) {
+              outStream.write(att.getContent());
+            }
+            sb.setLength(0);
+            sb.append(image.toURI().toURL().toString());
+            image.deleteOnExit();
+          } else {
+            sb.append(att.getDownloadURL());
+          }
         }
       } else {
         EmotionIcon emotionIcon = wikiService.getEmotionIconByName(attachmentName);

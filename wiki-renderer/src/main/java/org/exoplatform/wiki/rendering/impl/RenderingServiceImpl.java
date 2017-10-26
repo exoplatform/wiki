@@ -53,17 +53,17 @@ import java.lang.reflect.Type;
 import java.util.*;
 
 public class RenderingServiceImpl implements RenderingService, Startable {
-  
-  private String cssURL; 
+
+  private String cssURL;
 
   private Log LOG = ExoLogger.getExoLogger(RenderingServiceImpl.class);
-  
+
   private EmbeddableComponentManager componentManager = null;
 
   public Execution getExecution() throws ComponentLookupException, ComponentRepositoryException{
     return componentManager.getInstance(Execution.class);
   }
-  
+
   public ComponentManager getComponentManager() {
     return componentManager;
   }
@@ -72,19 +72,20 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     T component = this.<T>getComponent(clazz, "default");
     return component;
   }
-  
+
   /*
    * (non-Javadoc)
    * @see org.exoplatform.wiki.rendering.RenderingService#render(java.lang.String, java.lang.String, java.lang.String)
    */
-  public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit)
+  @Override
+  public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit, boolean exportToPdf)
           throws ConversionException, ComponentLookupException {
 
     XDOM xdom = parse(markup, sourceSyntax);
     Syntax sSyntax = (sourceSyntax == null) ? Syntax.XWIKI_2_0 : getSyntax(sourceSyntax);
     Syntax tSyntax = (targetSyntax == null) ? Syntax.XHTML_1_0 : getSyntax(targetSyntax);
-    
-    
+
+
     try {
       BlockConverter refiner = componentManager.getInstance(BlockConverter.class, sSyntax.toIdString());
       refiner.convert(xdom);
@@ -96,10 +97,32 @@ public class RenderingServiceImpl implements RenderingService, Startable {
       throw new ConversionException("Failed to refine input source", e);
     }
 
+    // transfert export PDF parameter in all xdom ImageBlock children Blocks
+    if (exportToPdf) {
+      transfertParameterToImages(xdom, EXPORT_TO_PDF, String.valueOf(exportToPdf));
+    }
+
     WikiPrinter printer = convert(xdom, sSyntax, tSyntax, supportSectionEdit);
     return printer.toString();
   }
-  
+
+  /*
+   * This method transfert a parameter into all ImageBlock children tree
+   */
+  private void transfertParameterToImages(Block parent, String name, String value) {
+
+    for (Block child : parent.getChildren()) {
+      if (child.getClass().equals(ImageBlock.class)) {
+        child.setParameter(name, value);
+      }
+      transfertParameterToImages(child, name, value);
+    }
+  }
+
+  public String render(String markup, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) throws ConversionException, ComponentLookupException {
+    return  render( markup,sourceSyntax,targetSyntax,supportSectionEdit, false);
+  }
+
   public String getContentOfSection(String markup, String sourceSyntax, String sectionIndex) throws Exception {
 
     XDOM xdom = parse(markup, sourceSyntax);
@@ -150,7 +173,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     Document document = cleaner.clean(new StringReader(dirtyHTML), config);
     return HTMLUtils.toString(document);
   }
-  
+
   @Override
   public void start() {
     componentManager = new EmbeddableComponentManager();
@@ -160,7 +183,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
   @Override
   public void stop() {
   }
-  
+
   private <T> T getComponent(Type clazz, String hint) {
     T component = null;
     if (componentManager != null) {
@@ -224,18 +247,18 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     if (supportSectionEdit) {
       List<HeaderBlock> filteredHeaders = getFilteredHeaders(xdom);
       int sectionIndex = 1;
-      
+
       String editSectionLabel = "Edit section: ";
       WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
       if (context != null) {
         ResourceBundle bundle = context.getApplicationResourceBundle();
         editSectionLabel = bundle.getString("UIWikiPageEditForm.label.edit-section");
       }
-      
+
       for (HeaderBlock block : filteredHeaders) {
         SectionBlock section = block.getSection();
         Block parentBlock = section.getParent();
-        ResourceReference link = new ResourceReference( "section=" + sectionIndex, ResourceType.URL);       
+        ResourceReference link = new ResourceReference( "section=" + sectionIndex, ResourceType.URL);
         sectionIndex++;
         List<Block> emtyList = Collections.emptyList();
         Map<String, String> linkParameters = new LinkedHashMap<String, String>();
@@ -247,19 +270,19 @@ public class RenderingServiceImpl implements RenderingService, Startable {
         Map<String, String> spanParameters = new LinkedHashMap<String, String>();
         spanParameters.put("class", "EditSection pull-right");
         FormatBlock spanBlock = new FormatBlock(Collections.singletonList((Block) linkBlock), Format.NONE, spanParameters);
-        
+
         Map<String, String> params = new HashMap<String, String>();
         params.put("class", "header-container clearfix");
         Block headerContainer = new GroupBlock(params);
         headerContainer.addChild(block);
         headerContainer.addChild(spanBlock);
         section.replaceChild(headerContainer, block);
-        
+
         params.put("class", "section-container");
         Block sectionContainer = new GroupBlock(params);
         sectionContainer.addChild(section);
         parentBlock.replaceChild(sectionContainer, section);
-        
+
         // Add class to header block
         String classOfHeaderBlock = block.getParameter("class");
         if (classOfHeaderBlock != null) {
@@ -272,7 +295,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
         block.setParameter("class", classOfHeaderBlock);
       }
     }
-    
+
     renderer.render(xdom, printer);
     return printer;
   }
@@ -311,7 +334,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
   private List<HeaderBlock> getFilteredHeaders(XDOM xdom) {
     List<HeaderBlock> filteredHeaders = new ArrayList<HeaderBlock>();
     // get the headers
-    List<HeaderBlock> headers = xdom.getBlocks(new ClassBlockMatcher(HeaderBlock.class), Axes.DESCENDANT); 
+    List<HeaderBlock> headers = xdom.getBlocks(new ClassBlockMatcher(HeaderBlock.class), Axes.DESCENDANT);
     // get the maximum header level
     int sectionDepth = 3;
     // filter the headers
@@ -322,7 +345,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     }
     return filteredHeaders;
   }
-  
+
   private Syntax getSyntax(String syntaxId) {
     Syntax syntax = Syntax.XWIKI_2_0;
     if (Syntax.XWIKI_2_0.toIdString().equals(syntaxId)) {
