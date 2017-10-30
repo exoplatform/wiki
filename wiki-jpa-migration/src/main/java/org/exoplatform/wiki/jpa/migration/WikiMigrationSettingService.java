@@ -21,9 +21,10 @@ import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.commons.api.settings.SettingValue;
 import org.exoplatform.commons.api.settings.data.Context;
 import org.exoplatform.commons.api.settings.data.Scope;
-import org.exoplatform.commons.chromattic.ChromatticManager;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.PropertyManager;
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -212,18 +213,12 @@ public class WikiMigrationSettingService {
    * @param status
    */
   public void updateOperationStatus(String key, Boolean status) {
-    SettingServiceImpl settingServiceImpl = CommonsUtils.getService(SettingServiceImpl.class);
-    boolean created = settingServiceImpl.startSynchronization();
     try {
+      RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       settingService.set(Context.GLOBAL, Scope.APPLICATION.id(WikiMigrationContext.WIKI_MIGRATION_SETTING_GLOBAL_KEY), key, SettingValue.create(status));
-      try {
-        CommonsUtils.getService(ChromatticManager.class).getLifeCycle("setting").getContext().getSession().save();
-      } catch (Exception e) {
-        LOG.warn(e);
-      }
     } finally {
       Scope.APPLICATION.id(null);
-      settingServiceImpl.stopSynchronization(created);
+      RequestLifeCycle.end();
     }
   }
 
@@ -231,18 +226,12 @@ public class WikiMigrationSettingService {
    * Remove from the SettingService the setting with the given key
    */
   public void removeSettingValue(String settingKey) {
-    SettingServiceImpl settingServiceImpl = CommonsUtils.getService(SettingServiceImpl.class);
-    boolean created = settingServiceImpl.startSynchronization();
     try {
+      RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       settingService.remove(Context.GLOBAL, Scope.APPLICATION.id(WikiMigrationContext.WIKI_MIGRATION_SETTING_GLOBAL_KEY), settingKey);
-      try {
-        CommonsUtils.getService(ChromatticManager.class).getLifeCycle("setting").getContext().getSession().save();
-      } catch (Exception e) {
-        LOG.warn(e);
-      }
     } finally {
       Scope.APPLICATION.id(null);
-      settingServiceImpl.stopSynchronization(created);
+      RequestLifeCycle.end();
     }
   }
 
@@ -250,18 +239,12 @@ public class WikiMigrationSettingService {
    * Remove from the SettingService all settings related to the wiki migration
    */
   public void removeAllSettingValues() {
-    SettingServiceImpl settingServiceImpl = CommonsUtils.getService(SettingServiceImpl.class);
-    boolean created = settingServiceImpl.startSynchronization();
     try {
+      RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       settingService.remove(Context.GLOBAL, Scope.APPLICATION.id(WikiMigrationContext.WIKI_MIGRATION_SETTING_GLOBAL_KEY));
-      try {
-        CommonsUtils.getService(ChromatticManager.class).getLifeCycle("setting").getContext().getSession().save();
-      } catch (Exception e) {
-        LOG.warn(e);
-      }
     } finally {
       Scope.APPLICATION.id(null);
-      settingServiceImpl.stopSynchronization(created);
+      RequestLifeCycle.end();
     }
   }
 
@@ -303,7 +286,6 @@ public class WikiMigrationSettingService {
 
   private void addErrorToSetting(String settingErrorKey, String settingErrorValue) {
     SettingServiceImpl settingServiceImpl = CommonsUtils.getService(SettingServiceImpl.class);
-    boolean created = settingServiceImpl.startSynchronization();
     try {
       String migrationErrors = getErrorsSetting(settingErrorKey);
       //Add the error to the migrationErrors String list
@@ -313,15 +295,11 @@ public class WikiMigrationSettingService {
         migrationErrors += OUTER_OBJECT_SPLIT+settingErrorValue;
       }
       SettingValue<String> errorsSetting = new SettingValue<>(migrationErrors);
+      RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       settingService.set(Context.GLOBAL, Scope.APPLICATION.id(WikiMigrationContext.WIKI_MIGRATION_SETTING_GLOBAL_KEY), settingErrorKey, errorsSetting);
-      try {
-        CommonsUtils.getService(ChromatticManager.class).getLifeCycle("setting").getContext().getSession().save();
-      } catch (Exception e) {
-        LOG.warn(e);
-      }
     } finally {
       Scope.APPLICATION.id(null);
-      settingServiceImpl.stopSynchronization(created);
+      RequestLifeCycle.end();
     }
   }
 
@@ -386,8 +364,6 @@ public class WikiMigrationSettingService {
    * @param relatedPage
    */
   public void addRelatedPagesToSetting(Page relatedPage) {
-    SettingServiceImpl settingServiceImpl = CommonsUtils.getService(SettingServiceImpl.class);
-    boolean created = settingServiceImpl.startSynchronization();
     try {
       String relatedPages = getRelatedPagesSetting();
       //Add the page to the relatedPages String list
@@ -397,15 +373,11 @@ public class WikiMigrationSettingService {
         relatedPages += OUTER_OBJECT_SPLIT+pageToString(relatedPage);
       }
       SettingValue<String> relatedPageSetting = new SettingValue<>(relatedPages);
+      RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       settingService.set(Context.GLOBAL, Scope.APPLICATION.id(WikiMigrationContext.WIKI_MIGRATION_SETTING_GLOBAL_KEY), WikiMigrationContext.WIKI_RDBMS_MIGRATION_RELATED_PAGE_LIST_SETTING, relatedPageSetting);
-      try {
-        CommonsUtils.getService(ChromatticManager.class).getLifeCycle("setting").getContext().getSession().save();
-      } catch (Exception e) {
-        LOG.warn(e);
-      }
     } finally {
       Scope.APPLICATION.id(null);
-      settingServiceImpl.stopSynchronization(created);
+      RequestLifeCycle.end();
     }
   }
 
@@ -531,19 +503,13 @@ public class WikiMigrationSettingService {
    * @param pagesWithRelatedPagesString the list of "page with related pages"
    */
   public void setRelatedPagesToSetting(String pagesWithRelatedPagesString) {
-    SettingServiceImpl settingServiceImpl = CommonsUtils.getService(SettingServiceImpl.class);
-    boolean created = settingServiceImpl.startSynchronization();
     try {
       SettingValue<String> relatedPageSetting = new SettingValue<>(pagesWithRelatedPagesString);
+      RequestLifeCycle.begin(ExoContainerContext.getCurrentContainer());
       settingService.set(Context.GLOBAL, Scope.APPLICATION.id(WikiMigrationContext.WIKI_MIGRATION_SETTING_GLOBAL_KEY), WikiMigrationContext.WIKI_RDBMS_MIGRATION_RELATED_PAGE_LIST_SETTING, relatedPageSetting);
-      try {
-        CommonsUtils.getService(ChromatticManager.class).getLifeCycle("setting").getContext().getSession().save();
-      } catch (Exception e) {
-        LOG.warn(e);
-      }
     } finally {
       Scope.APPLICATION.id(null);
-      settingServiceImpl.stopSynchronization(created);
+      RequestLifeCycle.end();
     }
   }
 }
