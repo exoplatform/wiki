@@ -57,45 +57,43 @@ public class WikiPageIndexingServiceConnector extends ElasticIndexingServiceConn
     }
 
   @Override
-  @SuppressWarnings("unchecked")
   public String getMapping() {
+    StringBuilder mapping = new StringBuilder()
+            .append("{")
+            .append("  \"properties\" : {\n")
+            .append("    \"name\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"title\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"owner\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"wikiType\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"wikiOwner\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"permissions\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"url\" : {\"type\" : \"text\", \"index\": false},\n")
+            .append("    \"sites\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"comment\" : {\"type\" : \"text\", \"index_options\": \"offsets\"},\n")
+            .append("    \"content\" : {\"type\" : \"text\", \"store\": true, \"term_vector\": \"with_positions_offsets\"},\n")
+            .append("    \"createdDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"},\n")
+            .append("    \"updatedDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"},\n")
+            .append("    \"lastUpdatedDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"}\n")
+            .append("  }\n")
+            .append("}");
 
-    JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "text");
-    notAnalyzedField.put("index", false);
-
-    JSONObject keywordTyPeMapping = new JSONObject();
-    keywordTyPeMapping.put("type", "keyword");
-
-    JSONObject properties = new JSONObject();
-    properties.put("permissions", keywordTyPeMapping);
-    properties.put("url", notAnalyzedField);
-    properties.put("sites", keywordTyPeMapping);
-    properties.put("wikiType", keywordTyPeMapping);
-    properties.put("wikiOwner", keywordTyPeMapping);
-
-    // Use Posting Highlighter
-    JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "text");
-    postingHighlighterField.put("index_options", "offsets");
-    properties.put("name", postingHighlighterField);
-    properties.put("title", postingHighlighterField);
-    properties.put("comment", postingHighlighterField);
-
-    // Use Fast Vector Highlighter
-    JSONObject fastVectorHighlighterField = new JSONObject();
-    fastVectorHighlighterField.put("type", "text");
-    fastVectorHighlighterField.put("term_vector", "with_positions_offsets");
-    fastVectorHighlighterField.put("store", true);
-    properties.put("content", fastVectorHighlighterField);
-
-    JSONObject mappingProperties = new JSONObject();
-    mappingProperties.put("properties", properties);
-
-    JSONObject mappingJSON = new JSONObject();
-    mappingJSON.put(this.getType(), mappingProperties);
-
-    return mappingJSON.toJSONString();
+    return mapping.toString();
   }
 
     @Override

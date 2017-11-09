@@ -134,51 +134,42 @@ public class AttachmentIndexingServiceConnector  extends ElasticIndexingServiceC
     return attachment.getPage().getUrl();
   }
 
-  @SuppressWarnings("unchecked")
   @Override
   public String getMapping() {
+    StringBuilder mapping = new StringBuilder()
+            .append("{")
+            .append("  \"properties\" : {\n")
+            .append("    \"name\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"title\" : {")
+            .append("      \"type\" : \"text\",")
+            .append("      \"index_options\": \"offsets\",")
+            .append("      \"fields\": {")
+            .append("        \"raw\": {")
+            .append("          \"type\": \"keyword\"")
+            .append("        }")
+            .append("      }")
+            .append("    },\n")
+            .append("    \"wikiType\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"wikiOwner\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"pageName\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"permissions\" : {\"type\" : \"keyword\"},\n")
+            .append("    \"url\" : {\"type\" : \"text\", \"index\": false},\n")
+            .append("    \"attachment\" : { \"properties\" : { \"content\" : {\"type\" : \"text\", \"store\": true, \"term_vector\": \"with_positions_offsets\"}}},\n")
+            .append("    \"createdDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"},\n")
+            .append("    \"updatedDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"},\n")
+            .append("    \"lastUpdatedDate\" : {\"type\" : \"date\", \"format\": \"epoch_millis\"}\n")
+            .append("  }\n")
+            .append("}");
 
-    JSONObject notAnalyzedField = new JSONObject();
-    notAnalyzedField.put("type", "text");
-    notAnalyzedField.put("index", false);
-
-    //Use Fast Vector Highlighter
-    JSONObject fastVectorHighlighterField = new JSONObject();
-    fastVectorHighlighterField.put("type", "text");
-    fastVectorHighlighterField.put("term_vector", "with_positions_offsets");
-    fastVectorHighlighterField.put("store", true);
-    //Use Posting Highlighter
-    JSONObject postingHighlighterField = new JSONObject();
-    postingHighlighterField.put("type", "text");
-    postingHighlighterField.put("index_options", "offsets");
-
-    JSONObject properties = new JSONObject();
-
-    //Construct attachment field
-    JSONObject attachmentField = new JSONObject();
-    JSONObject attachmentFields = new JSONObject();
-    attachmentFields.put("content", fastVectorHighlighterField);
-    attachmentField.put("properties", attachmentFields);
-    properties.put("attachment", attachmentField);
-
-    JSONObject keywordTypeMapping = new JSONObject();
-    keywordTypeMapping.put("type", "keyword");
-
-    //Add all field mapping
-    properties.put("file", notAnalyzedField);
-    properties.put("permissions", keywordTypeMapping);
-    properties.put("wikiType", keywordTypeMapping);
-    properties.put("wikiOwner", keywordTypeMapping);
-    properties.put("name", postingHighlighterField);
-    properties.put("title", postingHighlighterField);
-
-    JSONObject mappingProperties = new JSONObject();
-    mappingProperties.put("properties", properties);
-
-    JSONObject mappingJSON = new JSONObject();
-    mappingJSON.put(this.getType(), mappingProperties);
-
-    return mappingJSON.toJSONString();
+    return mapping.toString();
   }
 
   @Override
