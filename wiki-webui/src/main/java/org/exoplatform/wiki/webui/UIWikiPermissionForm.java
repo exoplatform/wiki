@@ -428,7 +428,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       uiUserSelector = uiWikiPermissionForm.createUIComponent(UIUserSelector.class, null, null);
       uiUserSelector.setShowSearch(true);
       uiUserSelector.setShowSearchUser(true);
-      uiUserSelector.setShowSearchGroup(false);
       openPopupAction(uiPopup, uiUserSelector, 650);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
     }
