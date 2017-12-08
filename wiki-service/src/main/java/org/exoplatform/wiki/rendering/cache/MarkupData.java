@@ -16,6 +16,8 @@
  */
 package org.exoplatform.wiki.rendering.cache;
 
+import org.apache.commons.lang.StringUtils;
+
 public class MarkupData implements CacheData<String> {
 
   /**
@@ -33,4 +35,19 @@ public class MarkupData implements CacheData<String> {
     return this.markup;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof MarkupData)) return false;
+
+    MarkupData that = (MarkupData) o;
+
+    return StringUtils.equals(markup, that.markup);
+
+  }
+
+  @Override
+  public int hashCode() {
+    return markup != null ? markup.hashCode() : 0;
+  }
 }

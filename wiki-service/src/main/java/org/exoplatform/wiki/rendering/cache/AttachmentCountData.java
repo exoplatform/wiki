@@ -41,4 +41,19 @@ public class AttachmentCountData implements CacheData<Integer>{
     return count_;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof AttachmentCountData)) return false;
+
+    AttachmentCountData that = (AttachmentCountData) o;
+
+    return count_ == that.count_;
+
+  }
+
+  @Override
+  public int hashCode() {
+    return count_;
+  }
 }

@@ -76,7 +76,7 @@
             <field name="strategy"><string>LIRS</string></field>
             <field name="maxEntries"><int>${cache.exo.wiki.PageRenderingCache.Capacity:1000}</int></field>
             <field name="lifespan"><long>${cache.exo.wiki.PageRenderingCache.TimeToLive:-1}</long></field>
-            <field name="replicated"><boolean>true</boolean></field>
+            <field name="cacheMode"><string>${exo.cache.wiki.PageRenderingCache.cacheMode:replication}</string></field>
           </object>
         </object-param>
         <object-param>
@@ -87,7 +87,7 @@
             <field name="strategy"><string>LIRS</string></field>
             <field name="maxEntries"><int>${cache.exo.wiki.PageUuidCache.Capacity:1000}</int></field>
             <field name="lifespan"><long>${cache.exo.wiki.PageUuidCache.TimeToLive:-1}</long></field>
-            <field name="replicated"><boolean>true</boolean></field>
+            <field name="cacheMode"><string>${exo.cache.wiki.PageUuidCache.cacheMode:replication}</string></field>
           </object>
         </object-param>
         <object-param>
@@ -98,7 +98,7 @@
             <field name="strategy"><string>LIRS</string></field>
             <field name="maxEntries"><int>${cache.exo.wiki.PageAttachmentCache.Capacity:1000}</int></field>
             <field name="lifespan"><long>${cache.exo.wiki.PageAttachmentCache.TimeToLive:-1}</long></field>
-            <field name="replicated"><boolean>true</boolean></field>
+            <field name="cacheMode"><string>${exo.cache.wiki.PageAttachmentCache.cacheMode:replication}</string></field>
           </object>
         </object-param>
       </init-params>
