@@ -127,6 +127,11 @@ public class MockSpaceService implements SpaceService {
   }
 
   @Override
+  public Space updateSpaceBanner(Space existingSpace) {
+    return null;
+  }
+
+  @Override
   public void deleteSpace(Space space) {
     
   }
