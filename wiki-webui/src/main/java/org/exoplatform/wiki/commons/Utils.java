@@ -30,6 +30,7 @@ import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -521,15 +522,8 @@ public class Utils {
   }
 
   public static int getLimitUploadSize() {
-    PortletRequestContext pcontext = (PortletRequestContext) WebuiRequestContext.getCurrentInstance();
-    PortletPreferences portletPref = pcontext.getRequest().getPreferences();
-    int limitMB = DEFAULT_VALUE_UPLOAD_PORTAL;
-    try {
-      limitMB = Integer.parseInt(portletPref.getValue("uploadFileSizeLimitMB", "").trim());
-    } catch (Exception e) {
-      limitMB = 10;
-    }
-    return limitMB;
+    WikiService wikiService = CommonsUtils.getService(WikiService.class);
+    return wikiService.getUploadLimit();
   }
 
   public static String getFullName(String userId) {
