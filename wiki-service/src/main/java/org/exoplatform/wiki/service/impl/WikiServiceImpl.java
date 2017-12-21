@@ -117,6 +117,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   public static final String UUID_CACHE_NAME = "wiki.PageUuidCache";
 
+  public static String UPLOAD_LIMIT_PARAMETER_NAME = "attachment.upload.limit";
+
   private ConfigurationManager configManager;
 
   private UserACL userACL;
@@ -151,6 +153,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private Set<String> uncachedMacroes = new HashSet<>();
 
+  private int uploadLimit = 200;
+
   public WikiServiceImpl(ConfigurationManager configManager,
                          UserACL userACL,
                          DataStorage dataStorage,
@@ -180,6 +184,12 @@ public class WikiServiceImpl implements WikiService, Startable {
       else
         syntaxHelpParams = new ArrayList<>();
       preferencesParams = initParams.getPropertiesParam(PREFERENCES);
+      if (initParams.containsKey(UPLOAD_LIMIT_PARAMETER_NAME)) {
+        String uploadLimitParamValue = initParams.getValueParam(UPLOAD_LIMIT_PARAMETER_NAME).getValue();
+        if (StringUtils.isNotBlank(uploadLimitParamValue)) {
+          uploadLimit = Integer.parseInt(uploadLimitParamValue);
+        }
+      }
     }
 
     wikiWebappUri = System.getProperty("wiki.permalink.appuri");
@@ -1494,6 +1504,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public void createEmotionIcon(EmotionIcon emotionIcon) throws WikiException {
     dataStorage.createEmotionIcon(emotionIcon);
+  }
+
+  @Override
+  public int getUploadLimit() {
+    return uploadLimit;
   }
 
   /******* Private methods *******/

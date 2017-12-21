@@ -49,6 +49,10 @@
         <value>${wiki.editPage.livingTime:1800000}</value>
         <!-- 30m * 60s * 1000ms -->
       </value-param>
+      <value-param>
+        <name>attachment.upload.limit</name>
+        <value>${wiki.attachment.uploadLimit:200}</value>
+      </value-param>
       <values-param>
         <name>xwiki/2.0</name>
         <value>jar:/wikisyntax/help/xWiki2.0_Short.txt</value>

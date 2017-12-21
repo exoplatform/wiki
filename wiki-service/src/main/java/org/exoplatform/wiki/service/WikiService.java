@@ -756,4 +756,9 @@ public interface WikiService {
    */
   public void deleteWatcherOfPage(String username, Page page) throws WikiException;
 
+  /**
+   * @return Upload limit for Wiki Attachment
+   */
+  public int getUploadLimit();
+
 }
