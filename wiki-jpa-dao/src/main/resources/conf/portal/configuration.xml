@@ -101,6 +101,7 @@
           <property name="type" value="wiki-page,wiki-attachment"/>
           <property name="enable" value="${exo.unified-search.connector.wiki.enable:true}"/>
           <property name="titleField" value="title"/>
+          <property name="updatedDateField" value="updatedDate"/>
           <property name="searchFields" value="name,title,content,comment,attachment.content"/>
         </properties-param>
       </init-params>
