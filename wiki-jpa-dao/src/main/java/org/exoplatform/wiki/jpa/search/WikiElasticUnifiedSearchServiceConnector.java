@@ -18,6 +18,7 @@ package org.exoplatform.wiki.jpa.search;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.search.data.SearchContext;
+import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.search.es.ElasticSearchServiceConnector;
 import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.exoplatform.container.xml.InitParams;
@@ -29,6 +30,9 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 import org.json.simple.JSONObject;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +48,10 @@ public class WikiElasticUnifiedSearchServiceConnector extends ElasticSearchServi
 
   private WikiService wikiService;
 
+  public static String  DATE_TIME_FORMAT = "EEEE, MMMM d, yyyy K:mm a";
+
+  public static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT).withZone(ZoneId.systemDefault());
+
   public WikiElasticUnifiedSearchServiceConnector(InitParams initParams, ElasticSearchingClient client, WikiService wikiService) {
     super(initParams, client);
     this.wikiService = wikiService;
@@ -54,10 +62,10 @@ public class WikiElasticUnifiedSearchServiceConnector extends ElasticSearchServi
 
     List<String> fields = new ArrayList<>();
     fields.add(getTitleElasticFieldName());
+    fields.add("title");
     fields.add("wikiType");
     fields.add("wikiOwner");
-    fields.add("name");
-    fields.add("pageName");
+    fields.add("updatedDate");
 
     List<String> sourceFields = new ArrayList<>();
     for (String sourceField: fields) {
@@ -116,5 +124,36 @@ public class WikiElasticUnifiedSearchServiceConnector extends ElasticSearchServi
     return permalink.toString();
   }
 
+  @Override
+  protected String buildDetail(JSONObject jsonHit, SearchContext searchContext) {
+    JSONObject hitSource = (JSONObject)jsonHit.get("_source");
+
+    Long updatedMilli = Long.parseLong((String) hitSource.get("updatedDate"));
+    Instant updatedDate = Instant.ofEpochMilli(updatedMilli);
+
+    String wikiType = (String) hitSource.get("wikiType");
+    String wikiOwner = (String) hitSource.get("wikiOwner");
+
+    StringBuilder pageDetail = new StringBuilder();
+    try {
+
+      String spaceName = wikiOwner;
+      if (wikiType.equals(PortalConfig.GROUP_TYPE)) {
+        if (wikiOwner.indexOf('/') == -1) {
+          spaceName = wikiService.getSpaceNameByGroupId("/spaces/" + wikiOwner);
+        } else {
+          spaceName = wikiService.getSpaceNameByGroupId(wikiOwner);
+        }
+      }
+
+      // Build page detail
+      pageDetail.append(spaceName);
+      pageDetail.append(" - ");
+      pageDetail.append(DATE_FORMATTER.format(updatedDate));
+    } catch (Exception e) {
+      LOG.error("Can not get page detail ", e);
+    }
+    return pageDetail.toString();
+  }
 }
 

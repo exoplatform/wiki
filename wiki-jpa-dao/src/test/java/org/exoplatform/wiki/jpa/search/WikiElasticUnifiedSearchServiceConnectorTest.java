@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.jpa.search;
 
 import org.exoplatform.commons.api.search.data.SearchContext;
+import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
@@ -24,15 +25,22 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
-import static junit.framework.TestCase.assertEquals;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.when;
 
 /**
@@ -70,7 +78,12 @@ public class WikiElasticUnifiedSearchServiceConnectorTest {
     properties.setProperty("titleField", "title");
     properties.setProperty("searchFields", "name,title,content,comment,file");
     params.put("constructor.params", properties);
-    this.searchServiceConnector = new WikiElasticUnifiedSearchServiceConnector(params, elasticSearchingClient, wService);
+    this.searchServiceConnector = new WikiElasticUnifiedSearchServiceConnector(params, elasticSearchingClient, wService) {
+      @Override
+      protected String getPermissionFilter() {
+        return "";
+      }
+    };
 
     //Mock the wiki Utils static class
     PowerMockito.mockStatic(Utils.class);
@@ -79,6 +92,59 @@ public class WikiElasticUnifiedSearchServiceConnectorTest {
     //Mock uri of the wikiWebapp
     when(wService.getWikiWebappUri()).thenReturn("wiki");
 
+    // Given
+    Mockito.when(elasticSearchingClient.sendRequest(Matchers.any(), Matchers.any(), Matchers.any()))
+            .thenReturn("{\n" +
+                    "  \"took\": 939,\n" +
+                    "  \"timed_out\": false,\n" +
+                    "  \"_shards\": {\n" +
+                    "    \"total\": 5,\n" +
+                    "    \"successful\": 5,\n" +
+                    "    \"failed\": 0\n" +
+                    "  },\n" +
+                    "  \"hits\": {\n" +
+                    "    \"total\": 4,\n" +
+                    "    \"max_score\": 1.0,\n" +
+                    "    \"hits\": [{\n" +
+                    "      \"_index\": \"wiki\",\n" +
+                    "      \"_type\": \"wiki-page\",\n" +
+                    "      \"_id\": \"2\",\n" +
+                    "      \"_score\": 1.0,\n" +
+                    "      \"_source\": {\n" +
+                    "        \"wikiOwner\": \"intranet\",\n" +
+                    "        \"wikiType\": \"portal\",\n" +
+                    "        \"updatedDate\": \"1494833363955\",\n" +
+                    "        \"title\": \"Page 1\",\n" +
+                    "        \"url\": \"/portal/intranet/wiki/Page_1\"\n" +
+                    "      }\n" +
+                    "    }, {\n" +
+                    "      \"_index\": \"wiki\",\n" +
+                    "      \"_type\": \"wiki-page\",\n" +
+                    "      \"_id\": \"3\",\n" +
+                    "      \"_score\": 1.0,\n" +
+                    "      \"_source\": {\n" +
+                    "        \"wikiOwner\": \"intranet\",\n" +
+                    "        \"wikiType\": \"portal\",\n" +
+                    "        \"updatedDate\": \"1494833380251\",\n" +
+                    "        \"title\": \"Page 2\",\n" +
+                    "        \"url\": \"/portal/intranet/wiki/Page_2\"\n" +
+                    "      }\n" +
+                    "    }]\n" +
+                    "  }\n" +
+                    "}");
+  }
+
+
+  @Test
+  public void shouldReturnResultsWithDetail() {
+    // when
+    Collection<SearchResult> searchResults = searchServiceConnector.search(null, "", new ArrayList<String>(), 0, 1, "", "");
+
+    // Then
+    assertNotNull(searchResults);
+    assertEquals(2, searchResults.size());
+    SearchResult result = searchResults.iterator().next();
+    assertNotNull(result.getDetail());
   }
 
   @Test
@@ -119,6 +185,5 @@ public class WikiElasticUnifiedSearchServiceConnectorTest {
     //Then
     assertEquals("/portal/siteName/wiki/group/spaces/spaceId/pageName", url);
   }
-
 }
 
