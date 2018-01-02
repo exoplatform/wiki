@@ -276,6 +276,11 @@ public class MigrationService implements StartableClusterAware {
     return !hasDataToMigrate() && WikiMigrationContext.isMigrationDone() && WikiMigrationContext.isDeletionDone();
   }
 
+  @Override
+  public void stop() {
+    this.executorService.shutdown();
+  }
+
   /**
    * Build an error report of the migration
    * It include a detail list of wiki and page in error
