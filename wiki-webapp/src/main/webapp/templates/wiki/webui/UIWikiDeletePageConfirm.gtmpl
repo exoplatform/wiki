@@ -1,8 +1,13 @@
 <%
   import org.exoplatform.wiki.mow.api.Page ;
   import org.exoplatform.wiki.commons.Utils ;
+  import org.exoplatform.commons.utils.HTMLSanitizer;
 
   Page page = uicomponent.getCurrentPage() ;
+  String title = HTMLSanitizer.sanitize(page.getTitle());
+  if (title.isEmpty()) {
+    title = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
+  }
 %>
 
 <div class="uiWikiDeletePageConfirm">
@@ -12,7 +17,7 @@
   <% } else { %>
 	   <div class="WikiDeleteContent">
 		 <p><i class="uiIconQuestion uiIconBlue"></i><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo1"); %></p>
-		 <h6><%=  page.getTitle(); %></h6>
+		 <h6><%=  title %></h6>
 		 <p class="node"><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo2"); %> </p>				
 		 <ul>
 		   <li><%= _ctx.appRes("UIWikiDeletePageConfirm.label.DeleteInfo3"); %></li>

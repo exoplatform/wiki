@@ -21,6 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -166,8 +169,10 @@ public class UIFieldEditableForm extends UIWikiForm {
 
       UIFormStringInput titleInput = editableForm.getChild(UIFormStringInput.class)
                                                  .setRendered(false);
-      
-      if (titleInput.getValue() == null || titleInput.getValue().trim().length() == 0) {
+
+      String editableTitle = titleInput.getValue();
+      if (StringUtils.isBlank(editableTitle) || StringUtils.isBlank(HTMLSanitizer.sanitize(editableTitle))) {
+        titleInput.setValue("");
         isError = true;
         appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
                 null,

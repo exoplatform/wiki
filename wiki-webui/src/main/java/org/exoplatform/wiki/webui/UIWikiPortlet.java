@@ -23,6 +23,8 @@ import javax.portlet.PortletMode;
 import javax.portlet.PortletPreferences;
 
 import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.webui.application.WebuiApplication;
@@ -203,7 +205,7 @@ public class UIWikiPortlet extends UIPortletApplication {
         // TODO: ignore request URL of resources
         context.setAttribute("wikiPage", page);
         ((UIWikiPageTitleControlArea) findComponentById(UIWikiPageControlArea.TITLE_CONTROL)).getUIFormInputInfo()
-                                                                                             .setValue(page.getTitle());      
+                                                                                             .setValue(HTMLSanitizer.sanitize(page.getTitle()));      
       } catch (Exception e) {
         context.setAttribute("wikiPage", null);
         UIWikiPageContentArea wikiPageContentArea = findFirstComponentOfType(UIWikiPageContentArea.class);

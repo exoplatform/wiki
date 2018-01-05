@@ -3,11 +3,16 @@
   import java.text.DateFormat;
   import org.exoplatform.wiki.commons.Utils;
   import org.apache.commons.lang.StringEscapeUtils;
+  import org.exoplatform.commons.utils.HTMLSanitizer;
   
   def context = _ctx.getRequestContext();
   Locale currentLocale = context.getLocale();
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
-  def title = currentWikiPage.getTitle();
+  def title = HTMLSanitizer.sanitize(currentWikiPage.getTitle());
+  if (title.isEmpty()) {
+    title = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
+  }
+
   def author = StringEscapeUtils.escapeHtml(Utils.getFullName(currentWikiPage.getOwner()));
   def editor = StringEscapeUtils.escapeHtml(Utils.getFullName(currentWikiPage.getAuthor()));
   def updateDate = df.format(currentWikiPage.getUpdatedDate());

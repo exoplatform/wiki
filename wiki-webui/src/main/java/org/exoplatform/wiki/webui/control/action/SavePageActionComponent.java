@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.StringUtils;
 import org.xwiki.rendering.syntax.Syntax;
 
+import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -113,7 +114,9 @@ public class SavePageActionComponent extends UIComponent {
         }
 
         String title = titleInput.getValue().trim();
-        if (StringUtils.isEmpty(title)) {
+        title = title == null ? null : HTMLSanitizer.sanitize(title);
+        titleInput.setValue(title);
+        if (StringUtils.isBlank(title)) {
           event.getRequestContext()
                .getUIApplication()
                .addMessage(new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle", null, ApplicationMessage.WARNING));
@@ -200,7 +203,7 @@ public class SavePageActionComponent extends UIComponent {
               page.setComment(commentInput.getValue());
               page.setAuthor(currentUser);
               page.setSyntax(syntaxId);
-              pageTitleControlForm.getUIFormInputInfo().setValue(title);
+              pageTitleControlForm.getUIFormInputInfo().setValue(HTMLSanitizer.sanitize(title));
               pageParams.setPageName(page.getName());
               page.setUrl(Utils.getURLFromParams(pageParams));
 

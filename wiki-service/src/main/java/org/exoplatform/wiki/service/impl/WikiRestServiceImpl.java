@@ -19,51 +19,82 @@ package org.exoplatform.wiki.service.impl;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
-import java.lang.Class;
-import java.lang.Object;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import java.util.Stack;
+import java.util.StringTokenizer;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.*;
-import javax.ws.rs.core.*;
+import javax.ws.rs.FormParam;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.CacheControl;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import javax.ws.rs.core.UriBuilder;
+import javax.ws.rs.core.UriBuilderException;
+import javax.ws.rs.core.UriInfo;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.common.http.HTTPStatus;
+import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.services.resources.ResourceBundleService;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.DraftPage;
+import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
-import org.exoplatform.wiki.service.*;
+import org.exoplatform.wiki.service.Relations;
+import org.exoplatform.wiki.service.WikiContext;
+import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.service.WikiRestService;
+import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
 import org.exoplatform.wiki.service.related.RelatedUtil;
-import org.exoplatform.wiki.service.rest.model.*;
+import org.exoplatform.wiki.service.rest.model.Attachment;
+import org.exoplatform.wiki.service.rest.model.Attachments;
 import org.exoplatform.wiki.service.rest.model.Link;
+import org.exoplatform.wiki.service.rest.model.ObjectFactory;
+import org.exoplatform.wiki.service.rest.model.PageSummary;
+import org.exoplatform.wiki.service.rest.model.Pages;
+import org.exoplatform.wiki.service.rest.model.Space;
+import org.exoplatform.wiki.service.rest.model.Spaces;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.SearchResultType;
 import org.exoplatform.wiki.service.search.TitleSearchResult;
@@ -88,6 +119,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
 
   private final RenderingService renderingService;
 
+  private final ResourceBundleService resourceBundleService;
+
   private static Log             log = ExoLogger.getLogger("wiki:WikiRestService");
 
   private static final String DASH = "-";
@@ -96,9 +129,10 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   
   private ObjectFactory objectFactory = new ObjectFactory();
   
-  public WikiRestServiceImpl(WikiService wikiService, RenderingService renderingService) {
+  public WikiRestServiceImpl(WikiService wikiService, RenderingService renderingService, ResourceBundleService resourceBundleService) {
     this.wikiService = wikiService;
     this.renderingService = renderingService;
+    this.resourceBundleService = resourceBundleService;
     cc = new CacheControl();
     cc.setNoCache(true);
     cc.setNoStore(true);
@@ -278,6 +312,10 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         context.put(TreeNode.DEPTH, depth);
         responseData = getJsonDescendants(pageParam, context);
       }
+      EnvironmentContext env = EnvironmentContext.getCurrent();
+      HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
+
+      sanitizeWikiTree(responseData, request.getLocale());
       return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
       if (log.isErrorEnabled()) {
@@ -787,7 +825,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     pageSummary.setId(wiki.getType() + ":" + wiki.getOwner() + "." + page.getName());
     pageSummary.setSpace(wiki.getOwner());
     pageSummary.setName(page.getName());
-    pageSummary.setTitle(page.getTitle());
+    pageSummary.setTitle(HTMLSanitizer.sanitize(page.getTitle()));
     pageSummary.setTranslations(objectFactory.createTranslations());
     pageSummary.setSyntax(page.getSyntax());
 
@@ -1141,6 +1179,27 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         log.debug(String.format("Can't get emotion icon: %s", name), e);
       }
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
+    }
+  }
+
+  private void sanitizeWikiTree(List<JsonNodeData> responseData, Locale locale) throws Exception {
+    ResourceBundle resourceBundle = resourceBundleService.getResourceBundle(Utils.WIKI_RESOUCE_BUNDLE_NAME, locale);
+    String untitledLabel = "";
+    if (resourceBundle == null) {
+      // May happen in Tests
+      log.warn("Cannot find resource bundle '{}'", Utils.WIKI_RESOUCE_BUNDLE_NAME);
+    } else {
+      untitledLabel = resourceBundle.getString("Page.Untitled");
+    }
+
+    for (JsonNodeData data : responseData) {
+      data.setName(HTMLSanitizer.sanitize(data.getName()));
+      if (StringUtils.isBlank(data.getName())) {
+        data.setName(untitledLabel);
+      }
+      if (CollectionUtils.isNotEmpty(data.children)) {
+        sanitizeWikiTree(data.children, locale);
+      }
     }
   }
 }
