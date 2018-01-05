@@ -1,5 +1,6 @@
 <%
   import java.util.List;
+  import org.exoplatform.commons.utils.HTMLSanitizer;
   
   def rcontext = _ctx.getRequestContext() ;
   List breadCumbs = uicomponent.getBreadCumbs();  
@@ -40,7 +41,11 @@
 	   <li class="$liClass">
 	   <%
           breadcumbData = breadCumbs.get(i);
-          String title = breadcumbData.getTitle();
+          String title = HTMLSanitizer.sanitize(breadcumbData.getTitle());
+          if (title.isEmpty()) {
+              title = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
+          }
+
           String actionLink = uicomponent.createActionLink(breadcumbData);
           if(uicomponent.isLink && i == breadCumbs.size()-1) note = "Selected";
      %>

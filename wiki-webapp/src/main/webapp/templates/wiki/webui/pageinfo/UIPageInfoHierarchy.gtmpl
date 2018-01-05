@@ -1,8 +1,13 @@
 <%
+  import org.exoplatform.commons.utils.HTMLSanitizer;
+
   def page = currentWikiPage;
   def parentPage = uicomponent.getCurrentParentPage();
   def parentLink = (parentPage != null) ? uicomponent.getPageLink(parentPage) : "";
-  def parentTitle = (parentPage != null) ? parentPage.getTitle() : "";
+  def parentTitle = (parentPage != null) ? HTMLSanitizer.sanitize(parentPage.getTitle()) : "";
+  if (parentTitle.isEmpty()) {
+    parentTitle = _ctx.appRes("UIWikiPageTitleControlArea.label.Untitled");
+  }
 %>
 
 <div class="uiPageInfoItem uiPageInfoHierarchy">

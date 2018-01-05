@@ -1,25 +1,35 @@
 package org.exoplatform.wiki.service;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URI;
+
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
 import org.apache.commons.compress.utils.IOUtils;
-import org.exoplatform.portal.config.model.PortalConfig;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import com.ibm.icu.util.Calendar;
+
 import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mock.MockResourceBundleService;
 import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.impl.WikiRestServiceImpl;
-import org.junit.Test;
-
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.*;
 
 /**
  *
@@ -31,7 +41,7 @@ public class TestWikiRestService {
     // Given
     WikiService wikiService = mock(WikiService.class);
     RenderingService renderingService = mock(RenderingService.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService);
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
 
     EmotionIcon emotionIcon = new EmotionIcon();
     emotionIcon.setName("test.gif");
@@ -55,7 +65,7 @@ public class TestWikiRestService {
     // Given
     WikiService wikiService = mock(WikiService.class);
     RenderingService renderingService = mock(RenderingService.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService);
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
 
     when(wikiService.getEmotionIconByName("test.gif")).thenReturn(null);
 
@@ -72,7 +82,7 @@ public class TestWikiRestService {
     //Given
     WikiService wikiService = mock(WikiService.class);
     RenderingService renderingService = mock(RenderingService.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService);
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
     
     Wiki wiki = new Wiki("user", "root");
     when(wikiService.createWiki("portal", "wikiAttachement1")).thenReturn(wiki);
@@ -141,4 +151,35 @@ public class TestWikiRestService {
   }
   
 
+  @Test
+  public void testSanitizePageTitle() throws Exception {
+    //Given
+    WikiService wikiService = mock(WikiService.class);
+    RenderingService renderingService = mock(RenderingService.class);
+    UriInfo uriInfo = mock(UriInfo.class);
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
+    
+    Wiki wiki = new Wiki("user", "root");
+    when(wikiService.createWiki("portal", "wikiAttachement1")).thenReturn(wiki);
+    String wikiType = wiki.getType();
+    String wikiOwner = wiki.getOwner();
+    
+    Page wikiHomePage = new Page("wikiHomePage", "wikiHomePage<script>alert();</script>");
+    wikiHomePage.setId("wikiHomePageId");
+    wikiHomePage.setWikiType(wikiType);
+    wikiHomePage.setWikiOwner(wikiOwner);
+    wikiHomePage.setUpdatedDate(Calendar.getInstance().getTime());
+    String pageId = wikiHomePage.getId();
+
+    when(wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner)).thenReturn(wiki);
+    when(wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId)).thenReturn(wikiHomePage);
+    when(uriInfo.getAbsolutePath()).thenReturn(new URI("/"));
+    when(uriInfo.getBaseUri()).thenReturn(new URI("/"));
+
+    // When
+    org.exoplatform.wiki.service.rest.model.Page page = wikiRestService.getPage(uriInfo, wikiType, wikiOwner, pageId);
+    // Then
+    verify(wikiService, times(1)).getPageOfWikiByName(wikiType, wikiOwner, pageId);
+    assertEquals("wikiHomePage", page.getTitle());
+  }
 }

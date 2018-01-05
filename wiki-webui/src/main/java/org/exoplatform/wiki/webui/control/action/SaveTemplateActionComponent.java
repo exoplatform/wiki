@@ -17,6 +17,9 @@
 package org.exoplatform.wiki.webui.control.action;
 
 import org.apache.commons.lang.StringEscapeUtils;
+import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -90,17 +93,20 @@ public class SaveTemplateActionComponent extends UIComponent {
                                                  .getUIStringInput();
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
-      if (titleInput.getValue() == null || titleInput.getValue().trim().length() == 0) {
+      String templateTitle = titleInput.getValue();
+      templateTitle = templateTitle == null ? null : HTMLSanitizer.sanitize(templateTitle);
+      titleInput.setValue(templateTitle);
+      if (StringUtils.isBlank(templateTitle)) {
         isError = true;
         appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
                   null,
                   ApplicationMessage.WARNING);
-      } else if (titleInput.getValue().trim().length() > WikiConstants.MAX_LENGTH_TITLE) {
+      } else if (templateTitle.trim().length() > WikiConstants.MAX_LENGTH_TITLE) {
       	isError = true;
       	appMsg = new ApplicationMessage("WikiPageNameValidator.msg.TooLongTitle", new Object[] {WikiConstants.MAX_LENGTH_TITLE} , ApplicationMessage.WARNING);
       }
       try {
-        WikiNameValidator.validate(titleInput.getValue());
+        WikiNameValidator.validate(templateTitle);
       } catch (IllegalArgumentException ex) {
         isError = true;
         Object[] arg = { ex.getMessage() };
@@ -116,7 +122,7 @@ public class SaveTemplateActionComponent extends UIComponent {
         Utils.redirect(pageParams, wikiPortlet.getWikiMode());
         return;
       }
-      String title = titleInput.getValue().trim();
+      String title = templateTitle.trim();
       String markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
       markup = markup.trim();
       String description = descriptionInput.getValue();

@@ -1260,6 +1260,8 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     fetchedTemplate1.setContent("Template 1 Content Updated");
     storage.updateTemplatePage(fetchedTemplate1);
     Template fetchedTemplate1AfterUpdate = storage.getTemplatePage(new WikiPageParams("portal", "wiki1", null), "template1");
+    end();
+    begin();
 
     // Then
     assertNotNull(fetchedTemplate1AfterUpdate);
