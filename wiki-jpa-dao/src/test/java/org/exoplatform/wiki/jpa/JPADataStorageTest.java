@@ -106,6 +106,10 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     storage.createWiki(wiki);
 
     // Then
+    assertTrue(storage.hasPermissionOnWiki(wiki, PermissionType.VIEWPAGE, userIdentity));
+    assertTrue(storage.hasPermissionOnWiki(wiki, PermissionType.VIEWPAGE, adminIdentity));
+    assertFalse(storage.hasPermissionOnWiki(wiki, PermissionType.EDITPAGE, userIdentity));
+    assertTrue(storage.hasPermissionOnWiki(wiki, PermissionType.EDITPAGE, adminIdentity));
     assertFalse(storage.hasAdminPagePermission(wiki.getType(), wiki.getOwner(), userIdentity));
     assertTrue(storage.hasAdminPagePermission(wiki.getType(), wiki.getOwner(), adminIdentity));
     assertFalse(storage.hasAdminSpacePermission(wiki.getType(), wiki.getOwner(), userIdentity));

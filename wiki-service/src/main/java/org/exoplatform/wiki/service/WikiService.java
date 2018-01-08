@@ -596,6 +596,16 @@ public interface WikiService {
   public String getWikiWebappUri();
 
   /**
+   * Check if the identity has the given permission type on a wiki
+   * @param wiki Wiki
+   * @param permissionType Permission type to check
+   * @param user Identity of the user
+   * @return true if the user has the given permission type on the wiki
+   * @throws WikiException
+   */
+  boolean hasPermissionOnWiki(Wiki wiki, PermissionType permissionType, Identity user) throws WikiException;
+
+  /**
    * Checks if the given user has the permission on a page
    * @param user
    * @param page

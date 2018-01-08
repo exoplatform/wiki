@@ -1450,6 +1450,11 @@ public class JCRDataStorage implements DataStorage {
     return hasPermission;
   }
 
+  @Override
+  public boolean hasPermissionOnWiki(Wiki wiki, PermissionType permissionType, Identity identity) throws WikiException {
+    throw new UnsupportedOperationException("The JCR implementation must not be used anymore");
+  }
+
   private List<AccessControlEntry> getAccessControls(String wikiType, String wikiOwner) throws WikiException {
     boolean created = mowService.startSynchronization();
 
