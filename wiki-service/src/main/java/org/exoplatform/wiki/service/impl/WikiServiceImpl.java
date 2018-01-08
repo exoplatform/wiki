@@ -872,6 +872,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
+  public boolean hasPermissionOnWiki(Wiki wiki, PermissionType permissionType, Identity user) throws WikiException {
+    return dataStorage.hasPermissionOnWiki(wiki, permissionType, user);
+  }
+
+  @Override
   public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws WikiException {
     return dataStorage.hasPermissionOnPage(page, permissionType, user);
   }

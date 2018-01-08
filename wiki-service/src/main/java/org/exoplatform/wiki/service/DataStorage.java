@@ -107,7 +107,25 @@ public interface DataStorage {
 
   public EmotionIcon getEmotionIconByName(String name) throws WikiException;
 
+  /**
+   * Check if the identity has the given permission type on a page
+   * @param page Page
+   * @param permissionType Permission type to check
+   * @param user Identity of the user
+   * @return true if the user has the given permission type on the page
+   * @throws WikiException
+   */
   public boolean hasPermissionOnPage(Page page, PermissionType permissionType, Identity user) throws WikiException;
+
+  /**
+   * Check if the identity has the given permission type on a wiki
+   * @param wiki Wiki
+   * @param permissionType Permission type to check
+   * @param identity Identity of the user
+   * @return true if the user has the given permission type on the wiki
+   * @throws WikiException
+   */
+  public boolean hasPermissionOnWiki(Wiki wiki, PermissionType permissionType, Identity identity) throws WikiException;
 
   public boolean hasAdminSpacePermission(String wikiType, String owner, Identity user) throws WikiException;
 

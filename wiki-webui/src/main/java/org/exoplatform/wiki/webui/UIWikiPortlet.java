@@ -27,6 +27,7 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.security.ConversationState;
+import org.exoplatform.services.security.Identity;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -161,8 +162,16 @@ public class UIWikiPortlet extends UIPortletApplication {
         }
       }
 
+      Identity currentIdentity = ConversationState.getCurrent().getIdentity();
+
+      if(!wikiService.hasPermissionOnWiki(wiki, PermissionType.VIEWPAGE, currentIdentity)) {
+        changeMode(WikiMode.PAGE_NOT_FOUND);
+        super.processRender(app, context);
+        return;
+      }
+
       Page page = Utils.getCurrentWikiPage();
-      
+
       if (page == null) {
         changeMode(WikiMode.PAGE_NOT_FOUND);
         super.processRender(app, context);
@@ -173,7 +182,7 @@ public class UIWikiPortlet extends UIPortletApplication {
         }
 
         if((WikiMode.EDITPAGE.equals(this.getWikiMode()) || WikiMode.ADDPAGE.equals(this.getWikiMode()))
-                && !wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity())) {
+                && !wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, currentIdentity)) {
           changeMode(WikiMode.VIEW);
         }
       }

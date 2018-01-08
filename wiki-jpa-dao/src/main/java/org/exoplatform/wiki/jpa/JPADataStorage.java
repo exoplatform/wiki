@@ -1040,48 +1040,39 @@ public class JPADataStorage implements DataStorage {
   }
 
   @Override
-  public boolean hasAdminSpacePermission(String wikiType, String owner, Identity identity) throws WikiException {
-    return hasPermissionOnWiki(wikiType, owner, identity, PermissionType.ADMINSPACE);
-  }
+  public boolean hasPermissionOnWiki(Wiki wiki, PermissionType permissionType, Identity identity) throws WikiException {
+    if(wiki == null) {
+      throw new WikiException("Wiki cannot be null");
+    }
 
-  @Override
-  public boolean hasAdminPagePermission(String wikiType, String owner, Identity identity) throws WikiException {
-    return hasPermissionOnWiki(wikiType, owner, identity, PermissionType.ADMINPAGE);
-  }
-
-  /**
-   * Check if the identity has the given permission type on a wiki
-   * @param wikiType Type of the wiki
-   * @param owner Owner of the wiki
-   * @param identity Identity of the user
-   * @param permissionType Permission type to check
-   * @return true if the user has the given permission type on the wiki
-   * @throws WikiException
-   */
-  private boolean hasPermissionOnWiki(String wikiType, String owner, Identity identity, PermissionType permissionType) throws WikiException {
     String userId = identity.getUserId();
     if (userId.equals(IdentityConstants.SYSTEM)) {
       // SYSTEM has permission everywhere
       return true;
-    } else if (userId.equals(owner)) {
+    } else if (wiki.getType().equals(PortalConfig.USER_TYPE) && userId.equals(wiki.getOwner())) {
       // Current user is owner of the wiki so has all privileges
       return true;
     }
 
-    Wiki wiki = getWikiByTypeAndOwner(wikiType, owner);
-
-    if(wiki != null) {
-      List<PermissionEntry> wikiPermissions = wiki.getPermissions();
-      if (wikiPermissions == null || wikiPermissions.isEmpty()) {
-        // no permissions on the page
-        return true;
-      } else {
-        return hasPermission(wikiPermissions, identity, permissionType);
-      }
+    List<PermissionEntry> wikiPermissions = wiki.getPermissions();
+    if (wikiPermissions == null || wikiPermissions.isEmpty()) {
+      // no permissions on the wiki
+      return true;
     } else {
-      throw new WikiException("Cannot check admin space permission on wiki " + wikiType + ":" + owner + " for user "
-          + identity.getUserId() + " because the wiki cannot be fetched");
+      return hasPermission(wikiPermissions, identity, permissionType);
     }
+  }
+
+  @Override
+  public boolean hasAdminSpacePermission(String wikiType, String owner, Identity identity) throws WikiException {
+      Wiki wiki = getWikiByTypeAndOwner(wikiType, owner);
+      return hasPermissionOnWiki(wiki, PermissionType.ADMINSPACE, identity);
+  }
+
+  @Override
+  public boolean hasAdminPagePermission(String wikiType, String owner, Identity identity) throws WikiException {
+    Wiki wiki = getWikiByTypeAndOwner(wikiType, owner);
+    return hasPermissionOnWiki(wiki, PermissionType.ADMINPAGE, identity);
   }
 
   /**
