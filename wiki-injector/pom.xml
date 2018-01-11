@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>4.4.x-SNAPSHOT</version>
+    <version>4.4.4</version>
   </parent>
   <artifactId>wiki-injector</artifactId>
   <name>eXo PLF:: Wiki Data Injector</name>
