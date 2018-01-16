@@ -62,6 +62,8 @@ public class WikiElasticUnifiedSearchServiceConnector extends ElasticSearchServi
 
     List<String> fields = new ArrayList<>();
     fields.add(getTitleElasticFieldName());
+    fields.add("name");
+    fields.add("pageName");
     fields.add("title");
     fields.add("wikiType");
     fields.add("wikiOwner");
