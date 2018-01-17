@@ -1033,8 +1033,15 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void addRelatedPage(WikiPageParams orginaryPageParams, WikiPageParams relatedPageParams) throws WikiException {
+    if (relatedPageParams == null) {
+      throw new IllegalArgumentException("relatedPageParams shouldn't be null");
+    }
     Page orginary = getPageOfWikiByName(orginaryPageParams.getType(), orginaryPageParams.getOwner(), orginaryPageParams.getPageName());
     Page related = getPageOfWikiByName(relatedPageParams.getType(), relatedPageParams.getOwner(), relatedPageParams.getPageName());
+    if (related == null) {
+      throw new IllegalStateException("Cannot find related page with parameters type = " + relatedPageParams.getType()
+          + " owner = " + relatedPageParams.getOwner() + " pageName = " + relatedPageParams.getPageName());
+    }
     dataStorage.addRelatedPage(orginary, related);
   }
 

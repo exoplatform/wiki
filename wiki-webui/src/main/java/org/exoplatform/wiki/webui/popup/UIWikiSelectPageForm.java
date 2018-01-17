@@ -130,8 +130,7 @@ public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
       UIWikiPortlet wikiPortlet = uiform.getAncestorOfType(UIWikiPortlet.class);
       try {
         if (uiform.currentNodeValue.length() > 0) {
-          String currentNodeValue = TitleResolver.getId(uiform.currentNodeValue, false);
-          WikiPageParams params = TreeUtils.getPageParamsFromPath(currentNodeValue);
+          WikiPageParams params = TreeUtils.getPageParamsFromPath(uiform.currentNodeValue);
 
           WikiService service = uiform.getApplicationComponent(WikiService.class);
           service.addRelatedPage(Utils.getCurrentWikiPageParams(), params);
