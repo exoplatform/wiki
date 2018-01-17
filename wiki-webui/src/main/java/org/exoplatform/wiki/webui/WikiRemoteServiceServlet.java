@@ -16,6 +16,17 @@
  */
 package org.exoplatform.wiki.webui;
 
+import org.apache.commons.lang3.StringUtils;
+import org.xwiki.context.Execution;
+import org.xwiki.context.ExecutionContext;
+
+import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
+import com.google.gwt.user.client.rpc.RemoteService;
+import com.google.gwt.user.client.rpc.SerializationException;
+import com.google.gwt.user.server.rpc.RPC;
+import com.google.gwt.user.server.rpc.RPCRequest;
+import com.google.gwt.user.server.rpc.RemoteServiceServlet;
+
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -27,15 +38,6 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.impl.SessionManager;
-import org.xwiki.context.Execution;
-import org.xwiki.context.ExecutionContext;
-
-import com.google.gwt.user.client.rpc.IncompatibleRemoteServiceException;
-import com.google.gwt.user.client.rpc.RemoteService;
-import com.google.gwt.user.client.rpc.SerializationException;
-import com.google.gwt.user.server.rpc.RPC;
-import com.google.gwt.user.server.rpc.RPCRequest;
-import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 
 public class WikiRemoteServiceServlet extends RemoteServiceServlet {
 
@@ -51,18 +53,19 @@ public class WikiRemoteServiceServlet extends RemoteServiceServlet {
    */
   public String processCall(String payload) throws SerializationException {
 
+    PortalContainer portalContainer = PortalContainer.getInstance();
     String result;
-    PortalContainer portalContainer;
     SessionManager sessionManager;
     String sessionId = getThreadLocalRequest().getSession(false) == null ? null : getThreadLocalRequest().getSession(false).getId();
     String userId = getThreadLocalRequest().getRemoteUser();
+    if (StringUtils.isBlank(userId)) {
+      throw new SerializationException("Cannot proceed request with an empty username");
+    }
     try {
-      sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
-      portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(sessionId));
+      sessionManager = portalContainer.getComponentInstanceOfType(SessionManager.class);
     } catch (Exception e) {
       try {
-        sessionManager = (SessionManager) PortalContainer.getInstance().getComponent(SessionManager.class);
-        portalContainer = RootContainer.getInstance().getPortalContainer(sessionManager.getSessionContainer(userId));
+        sessionManager = portalContainer.getComponentInstanceOfType(SessionManager.class);
       } catch (Exception ex) {
         return RPC.encodeResponseForFailure(null, ex);
       }
