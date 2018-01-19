@@ -35,6 +35,7 @@ import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
+import org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin;
 import org.exoplatform.wiki.service.impl.SpaceBean;
 import org.exoplatform.wiki.service.listener.AttachmentWikiListener;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
@@ -770,5 +771,12 @@ public interface WikiService {
    * @return Upload limit for Wiki Attachment
    */
   public int getUploadLimit();
+
+  /**
+   * Uncache page rendering for pages containing a chosen macro
+   * 
+   * @param plugin
+   */
+  void addUnCachedMacro(UnCachedMacroPlugin plugin);
 
 }
