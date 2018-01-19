@@ -76,6 +76,7 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
 import org.exoplatform.wiki.rendering.cache.MarkupKey;
+import org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.DataStorage;
@@ -551,6 +552,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
+  public void addUnCachedMacro(UnCachedMacroPlugin plugin) {
+    uncachedMacroes.addAll(plugin.getUncachedMacroes());
+  }
+
+  @Override
   public Page getPageById(String id) throws WikiException {
     if (id == null) {
       return null;
@@ -685,17 +691,22 @@ public class WikiServiceImpl implements WikiService, Startable {
     String renderedContent = StringUtils.EMPTY;
     try {
       boolean supportSectionEdit = hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
-      MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, supportSectionEdit);
-      //get content from cache only when page is not uncached mixin
-      //if (page.getUncachedMixin() == null) {
-      MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
-      if (cachedData != null) {
-        return cachedData.build();
-      }
-      //}
       String markup = page.getContent();
+
+      boolean isUseCache = isCachePage(markup);
+      MarkupKey key = null;
+      if (isUseCache) {
+        key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, supportSectionEdit);
+        //get content from cache only when page is not uncached mixin
+        MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
+        if (cachedData != null) {
+          return cachedData.build();
+        }
+      }
       renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
-      renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
+      if (isUseCache) {
+        renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
+      }
     } catch (Exception e) {
       LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", page.getWikiType(), page.getWikiOwner(), page.getName(), targetSyntax), e);
     }
@@ -710,6 +721,10 @@ public class WikiServiceImpl implements WikiService, Startable {
       this.pageLinksMap.put(entity, linkParams);
     }
     linkParams.add(param);
+  }
+
+  public Set<String> getUncachedMacroes() {
+    return uncachedMacroes;
   }
 
   protected void invalidateCache(Page page) {
@@ -1597,6 +1612,23 @@ public class WikiServiceImpl implements WikiService, Startable {
     } catch(WikiException e) {
       log.error("Cannot init emotion icons - Cause : " + e.getMessage(), e);
     }
+  }
+
+  private boolean isCachePage(String renderedContent) {
+    if (uncachedMacroes == null || uncachedMacroes.isEmpty()) {
+      return true;
+    }
+    boolean useCachePage = true;
+    for (String macro : uncachedMacroes) {
+      String m1 = new StringBuilder().append("{{").append(macro).append("}}").toString();
+      String m2 = new StringBuilder().append("{{").append(macro).append("/}}").toString();
+      String m3 = new StringBuilder().append("{{").append(macro).append(" ").toString();
+      if (renderedContent.contains(m1) || renderedContent.contains(m2) || renderedContent.contains(m3)) {
+        useCachePage = false;
+        break;
+      }
+    }
+    return useCachePage;
   }
 
 }

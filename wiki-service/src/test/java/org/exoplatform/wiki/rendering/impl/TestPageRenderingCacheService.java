@@ -72,7 +72,22 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     wikiService.getPageRenderedContent(cladicHome, Syntax.XHTML_1_0.toIdString());
     assertEquals(2, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheHit());
   }
-  
+
+  public void testRenderingWithUncachedMacro() throws Exception {
+    WikiServiceImpl wikiServiceImpl = (WikiServiceImpl) wikiService;
+    wikiServiceImpl.getUncachedMacroes().add("warning");
+    try {
+      Wiki wiki = wikiServiceImpl.createWiki(PortalConfig.PORTAL_TYPE, "testcache");
+      Page testcacheHome = wiki.getWikiHome();
+      testcacheHome.setContent("{{warning}}Sample content{{/warning}}");
+      wikiService.updatePage(testcacheHome, null);
+      wikiService.getPageRenderedContent(testcacheHome, Syntax.XHTML_1_0.toIdString());
+      assertEquals(0, wikiServiceImpl.getRenderingCache().getCacheSize());
+    } finally {
+      wikiServiceImpl.getUncachedMacroes().remove("warning");
+    }
+  }
+
   @Override
   protected void tearDown() throws Exception {
     ((WikiServiceImpl)wikiService).getRenderingCache().clearCache();

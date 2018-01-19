@@ -105,9 +105,8 @@
     </component-plugin>
   </external-component-plugins>
 
-  <!--
   <external-component-plugins>
-    <target-component>org.exoplatform.wiki.rendering.cache.PageRenderingCacheService</target-component>
+    <target-component>org.exoplatform.wiki.service.WikiService</target-component>
     <component-plugin>
       <name>addUnCachedMacro</name>
       <set-method>addUnCachedMacro</set-method>
@@ -122,5 +121,4 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-    -->
 </configuration>
