@@ -40,24 +40,22 @@ public abstract class UIWikiExtensionContainer extends UIExtensionContainer {
     try {
       UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
       HashMap<String, Object> extContext = wikiPortlet.getUIExtContext();
-      if (checkModificationContext(extContext)) {
-        UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
-        List<UIExtension> extensions = manager.getUIExtensions(getExtensionType());
-        extensionSize = 0;
+      UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
+      List<UIExtension> extensions = manager.getUIExtensions(getExtensionType());
+      extensionSize = 0;
+      
+      // Add new children
+      if (extensions != null && extensions.size() > 0) {
+        // Remove old extension
+        for (UIExtension extension : extensions) {
+           removeChild(extension.getComponent());
+        }
         
-        // Add new children
-        if (extensions != null && extensions.size() > 0) {
-          // Remove old extension
-          for (UIExtension extension : extensions) {
-             removeChild(extension.getComponent());
-          }
-          
-          // Add new extension
-          for (UIExtension extension : extensions) {
-            UIComponent uicomponent = manager.addUIExtension(extension, extContext, this);
-            if (uicomponent != null) {
-              extensionSize++;
-            }
+        // Add new extension
+        for (UIExtension extension : extensions) {
+          UIComponent uicomponent = manager.addUIExtension(extension, extContext, this);
+          if (uicomponent != null) {
+            extensionSize++;
           }
         }
       }
