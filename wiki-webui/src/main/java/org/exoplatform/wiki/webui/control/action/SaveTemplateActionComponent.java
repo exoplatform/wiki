@@ -16,10 +16,14 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.utils.HTMLSanitizer;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -40,13 +44,14 @@ import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.WikiNameValidator;
-import org.exoplatform.wiki.webui.*;
+import org.exoplatform.wiki.webui.UIWikiPageEditForm;
+import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
+import org.exoplatform.wiki.webui.UIWikiTemplateDescriptionContainer;
+import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddTemplateModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UISubmitToolBarActionListener;
 import org.exoplatform.wiki.webui.extension.UITemplateSettingForm;
-
-import java.util.Arrays;
-import java.util.List;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/SaveTemplateActionComponent.gtmpl",                   
@@ -94,8 +99,9 @@ public class SaveTemplateActionComponent extends UIComponent {
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       String templateTitle = titleInput.getValue();
+      templateTitle = StringCommonUtils.encodeSpecialCharForSimpleInput(templateTitle);
       templateTitle = templateTitle == null ? null : HTMLSanitizer.sanitize(templateTitle);
-      titleInput.setValue(templateTitle);
+      titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(templateTitle));
       if (StringUtils.isBlank(templateTitle)) {
         isError = true;
         appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",

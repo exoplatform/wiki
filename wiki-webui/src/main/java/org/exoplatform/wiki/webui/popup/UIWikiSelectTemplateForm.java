@@ -16,7 +16,11 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
+import java.util.ResourceBundle;
+
 import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -30,13 +34,17 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Template;
-import org.exoplatform.wiki.webui.*;
+import org.exoplatform.wiki.webui.EditorMode;
+import org.exoplatform.wiki.webui.UIWikiMaskWorkspace;
+import org.exoplatform.wiki.webui.UIWikiPageEditForm;
+import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
+import org.exoplatform.wiki.webui.UIWikiTemplateDescriptionContainer;
+import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.commons.UIWikiGrid;
 import org.exoplatform.wiki.webui.commons.UIWikiTemplateForm;
 import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
-
-import java.util.ResourceBundle;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
@@ -88,7 +96,7 @@ public class UIWikiSelectTemplateForm extends UIWikiTemplateForm implements UIPo
         commentInput.setRendered(false);
         Template template = form.wService.getTemplatePage(Utils.getCurrentWikiPageParams(),
                 templateId);
-        titleInput.setValue(template.getTitle());
+        titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(template.getTitle()));
         descriptionInput.setValue(template.getDescription());
         pageEditForm.setTitle(template.getTitle());
         markupInput.setValue(template.getContent());

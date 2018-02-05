@@ -16,9 +16,15 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
+
 import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.web.application.RequireJS;
@@ -45,14 +51,15 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.tree.TreeNode;
 import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
-import org.exoplatform.wiki.webui.*;
+import org.exoplatform.wiki.webui.UIWikiBreadCrumb;
+import org.exoplatform.wiki.webui.UIWikiLocationContainer;
+import org.exoplatform.wiki.webui.UIWikiPageEditForm;
+import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
+import org.exoplatform.wiki.webui.UIWikiRichTextArea;
+import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.tree.UITreeExplorer;
-
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class, 
@@ -357,7 +364,7 @@ public class UIWikiMovePageForm extends UIForm implements UIPopupComponent {
       String title = pageToRename.getTitle();
       String content = pageToRename.getContent();
       titleInput.setEditable(true);
-      titleInput.setValue(title);
+      titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(title));
       pageEditForm.setTitle(title);
       markupInput.setValue(content);
       UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);

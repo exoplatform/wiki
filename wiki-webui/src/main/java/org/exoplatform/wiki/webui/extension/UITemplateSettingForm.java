@@ -16,7 +16,11 @@
  */
 package org.exoplatform.wiki.webui.extension;
 
+import java.util.ResourceBundle;
+
 import org.apache.commons.lang.StringEscapeUtils;
+
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -30,12 +34,18 @@ import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.webui.*;
+import org.exoplatform.wiki.webui.UIWikiBottomArea;
+import org.exoplatform.wiki.webui.UIWikiPageContainer;
+import org.exoplatform.wiki.webui.UIWikiPageEditForm;
+import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.UIWikiPortlet.PopupLevel;
+import org.exoplatform.wiki.webui.UIWikiRichTextArea;
+import org.exoplatform.wiki.webui.UIWikiSidePanelArea;
+import org.exoplatform.wiki.webui.UIWikiTemplateDescriptionContainer;
+import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.commons.UIWikiGrid;
 import org.exoplatform.wiki.webui.commons.UIWikiTemplateForm;
-
-import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -93,7 +103,7 @@ public class UITemplateSettingForm extends UIWikiTemplateForm {
       commentInput.setRendered(false);
       Template template = wservice.getTemplatePage(pageParams, templateId);
      
-      titleInput.setValue(template.getTitle());
+      titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(template.getTitle()));
       descriptionInput.setValue(StringEscapeUtils.unescapeHtml(template.getDescription()));
       pageEditForm.setTitle(template.getTitle());
       markupInput.setValue(template.getContent());

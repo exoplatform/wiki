@@ -16,6 +16,11 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.web.application.RequireJS;
@@ -40,10 +45,6 @@ import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 import org.exoplatform.wiki.webui.popup.UIWikiMovePageForm;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/AbstractActionComponent.gtmpl",
@@ -94,7 +95,7 @@ public class MovePageActionComponent extends AbstractEventActionComponent {
       currentLocation.setBreadCumbs(wikiService.getBreadcumb(params.getType(), params.getOwner(), params.getPageName()));
       UIFormInputInfo pageNameInfo = movePageForm.getUIFormInputInfo(UIWikiMovePageForm.PAGENAME_INFO);
       pageNameInfo.setValue(res.getString("UIWikiMovePageForm.msg.you-are-about-move-page")
-          +" "+ Utils.getCurrentWikiPage().getTitle());
+          +" "+ StringCommonUtils.decodeSpecialCharToHTMLnumber(Utils.getCurrentWikiPage().getTitle()));
       event.getRequestContext().addUIComponentToUpdateByAjax(uiPopupContainer);
       RequireJS requireJS = event.getRequestContext().getJavascriptManager().getRequireJS();
       requireJS.require("SHARED/UITreeExplorer", "UITreeExplorer")

@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.utils.HTMLSanitizer;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -53,7 +54,13 @@ import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
-import org.exoplatform.wiki.webui.*;
+import org.exoplatform.wiki.webui.EditMode;
+import org.exoplatform.wiki.webui.UIWikiPageControlArea;
+import org.exoplatform.wiki.webui.UIWikiPageEditForm;
+import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
+import org.exoplatform.wiki.webui.UIWikiRichTextArea;
+import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddModeFilter;
 import org.exoplatform.wiki.webui.control.filter.IsEditAddPageModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UISubmitToolBarActionListener;
@@ -114,8 +121,9 @@ public class SavePageActionComponent extends UIComponent {
         }
 
         String title = titleInput.getValue().trim();
+        title = StringCommonUtils.encodeSpecialCharForSimpleInput(title);
         title = title == null ? null : HTMLSanitizer.sanitize(title);
-        titleInput.setValue(title);
+        titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(title));
         if (StringUtils.isBlank(title)) {
           event.getRequestContext()
                .getUIApplication()
@@ -203,7 +211,7 @@ public class SavePageActionComponent extends UIComponent {
               page.setComment(commentInput.getValue());
               page.setAuthor(currentUser);
               page.setSyntax(syntaxId);
-              pageTitleControlForm.getUIFormInputInfo().setValue(HTMLSanitizer.sanitize(title));
+              pageTitleControlForm.getUIFormInputInfo().setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(HTMLSanitizer.sanitize(title)));
               pageParams.setPageName(page.getName());
               page.setUrl(Utils.getURLFromParams(pageParams));
 

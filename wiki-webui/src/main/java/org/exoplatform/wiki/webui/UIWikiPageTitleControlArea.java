@@ -16,6 +16,11 @@
  */
 package org.exoplatform.wiki.webui;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -32,10 +37,6 @@ import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.webui.control.UIWikiExtensionContainer;
-
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -133,19 +134,21 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
         return;
       }
 
-      wikiService.renamePage(pageParams.getType(),
+      boolean renamed = wikiService.renamePage(pageParams.getType(),
                              pageParams.getOwner(),
                              pageParams.getPageName(),
                              newName,
                              newTitle);
-      page.setName(newName);
-      page.setTitle(newTitle);
+      if (renamed) {
+        page.setName(newName);
+        page.setTitle(StringCommonUtils.encodeSpecialCharForSimpleInput(newTitle));
+        pageParams.setPageName(newName);
+        page.setUrl(Utils.getURLFromParams(pageParams));
+        Utils.redirect(pageParams, WikiMode.VIEW);
 
-      pageParams.setPageName(newName);
-      page.setUrl(Utils.getURLFromParams(pageParams));
-      wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_TITLE);
+        wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_TITLE);
+      }
     }
-    Utils.redirect(pageParams, WikiMode.VIEW);
   }
   
   protected boolean isAddMode() {
