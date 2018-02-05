@@ -24,7 +24,7 @@ import javax.portlet.PortletPreferences;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.exoplatform.commons.utils.HTMLSanitizer;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
@@ -44,9 +44,9 @@ import org.exoplatform.wiki.WikiPortletPreference;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -214,7 +214,7 @@ public class UIWikiPortlet extends UIPortletApplication {
         // TODO: ignore request URL of resources
         context.setAttribute("wikiPage", page);
         ((UIWikiPageTitleControlArea) findComponentById(UIWikiPageControlArea.TITLE_CONTROL)).getUIFormInputInfo()
-                                                                                             .setValue(HTMLSanitizer.sanitize(page.getTitle()));      
+                                                                                             .setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(page.getTitle()));      
       } catch (Exception e) {
         context.setAttribute("wikiPage", null);
         UIWikiPageContentArea wikiPageContentArea = findFirstComponentOfType(UIWikiPageContentArea.class);

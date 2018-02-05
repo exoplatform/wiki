@@ -16,7 +16,20 @@
  */
 package org.exoplatform.wiki.webui;
 
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
@@ -43,10 +56,6 @@ import org.exoplatform.wiki.webui.control.UIEditorTabs;
 import org.exoplatform.wiki.webui.control.UISubmitToolBar;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 import org.exoplatform.wiki.webui.popup.UIWikiPagePreview;
-
-import javax.servlet.http.HttpSession;
-import java.net.URLEncoder;
-import java.util.*;
 
 @ComponentConfig(
   lifecycle = UIFormLifecycle.class,
@@ -397,7 +406,7 @@ public class UIWikiPageEditForm extends UIWikiForm {
           String title = draftPage.getTitle();
           String content = draftPage.getContent();
           titleInput.setEditable(true);
-          titleInput.setValue(title);
+          titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(title));
           pageEditForm.setTitle(title);
           markupInput.setValue(content);
           UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);

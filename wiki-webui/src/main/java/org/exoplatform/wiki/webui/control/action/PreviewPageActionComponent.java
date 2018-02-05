@@ -20,7 +20,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.apache.commons.lang3.StringUtils;
+import org.xwiki.rendering.syntax.Syntax;
+
 import org.exoplatform.commons.utils.HTMLSanitizer;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -41,9 +45,6 @@ import org.exoplatform.wiki.webui.control.action.core.AbstractFormActionComponen
 import org.exoplatform.wiki.webui.control.filter.IsEditAddModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UIEditorTabsActionListener;
 import org.exoplatform.wiki.webui.popup.UIWikiPagePreview;
-
-import org.apache.commons.lang3.StringUtils;
-import org.xwiki.rendering.syntax.Syntax;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/PreviewActionComponent.gtmpl",          
@@ -104,7 +105,8 @@ public class PreviewPageActionComponent extends AbstractFormActionComponent {
         markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
       }
       wikiPagePreview.renderWikiMarkup(markup, markupSyntax);
-      String pageTitle = HTMLSanitizer.sanitize(wikiPageTitleArea.getTitle());
+      String pageTitle = StringCommonUtils.encodeSpecialCharForSimpleInput(wikiPageTitleArea.getTitle());
+      pageTitle = HTMLSanitizer.sanitize(pageTitle);
       if (StringUtils.isNoneBlank(pageTitle)) {
         wikiPagePreview.setPageTitle(pageTitle);
       } else {

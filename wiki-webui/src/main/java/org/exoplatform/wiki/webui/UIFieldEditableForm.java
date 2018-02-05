@@ -23,7 +23,7 @@ import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.exoplatform.commons.utils.HTMLSanitizer;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -39,7 +39,6 @@ import org.exoplatform.webui.form.UIFormInputInfo;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
-import org.exoplatform.wiki.utils.WikiNameValidator;
 import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
 import org.exoplatform.wiki.webui.core.UIWikiForm;
 
@@ -148,7 +147,7 @@ public class UIFieldEditableForm extends UIWikiForm {
       if (isShow) {
         editableField.setRendered(false);
         titleInput.setRendered(true);
-        titleInput.setValue(editableField.getValue());
+        titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(editableField.getValue()));
       } else {
         editableField.setRendered(true);
         titleInput.setRendered(false);
@@ -171,8 +170,7 @@ public class UIFieldEditableForm extends UIWikiForm {
                                                  .setRendered(false);
 
       String editableTitle = titleInput.getValue();
-      if (StringUtils.isBlank(editableTitle) || StringUtils.isBlank(HTMLSanitizer.sanitize(editableTitle))) {
-        titleInput.setValue("");
+      if (StringUtils.isBlank(editableTitle)) {
         isError = true;
         appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
                 null,
@@ -189,7 +187,7 @@ public class UIFieldEditableForm extends UIWikiForm {
       }
       Method m = editableForm.getParent().getClass()
         .getMethod(editableForm.getParentFunctionName(), editableForm.getFunctionArgType());
-      m.invoke(editableForm.getParent(), titleInput.getValue().trim(), event);
+      m.invoke(editableForm.getParent(), editableTitle, event);
     }
 
     @Override

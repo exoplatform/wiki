@@ -16,7 +16,12 @@
  */
 package org.exoplatform.wiki.webui.control.action;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -28,14 +33,16 @@ import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.webui.*;
+import org.exoplatform.wiki.webui.EditMode;
+import org.exoplatform.wiki.webui.UIWikiPageEditForm;
+import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
+import org.exoplatform.wiki.webui.UIWikiPortlet;
+import org.exoplatform.wiki.webui.UIWikiRichTextArea;
+import org.exoplatform.wiki.webui.WikiMode;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
 import org.exoplatform.wiki.webui.control.filter.EditPagesPermissionFilter;
 import org.exoplatform.wiki.webui.control.filter.IsViewModeFilter;
 import org.exoplatform.wiki.webui.control.listener.UIPageToolBarActionListener;
-
-import java.util.Arrays;
-import java.util.List;
 
 @ComponentConfig(
   template = "app:/templates/wiki/webui/control/action/EditPageActionComponent.gtmpl",
@@ -92,7 +99,7 @@ public class EditPageActionComponent extends AbstractEventActionComponent {
         content = renderingService.getContentOfSection(content, page.getSyntax(), sectionIndex);
         titleInput.setEditable(false);
       }
-      titleInput.setValue(title);
+      titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(title));
       pageEditForm.setTitle(title) ;
       markupInput.setValue(content);
       commentInput.setValue("");

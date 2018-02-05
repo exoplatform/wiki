@@ -1,6 +1,15 @@
 package org.exoplatform.wiki.webui;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.servlet.http.HttpSession;
+
 import org.exoplatform.commons.utils.LazyPageList;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
@@ -26,9 +35,6 @@ import org.exoplatform.wiki.webui.bean.DraftBean;
 import org.exoplatform.wiki.webui.bean.WikiDraftListAccess;
 import org.exoplatform.wiki.webui.commons.UIWikiDraftGrid;
 import org.exoplatform.wiki.webui.popup.UIWikiPagePreview;
-
-import javax.servlet.http.HttpSession;
-import java.util.*;
 
 @ComponentConfig(
     lifecycle = UIFormLifecycle.class,
@@ -207,7 +213,7 @@ public class UIWikiMyDraftsForm extends UIForm {
             String title = draftPage.getTitle();
             String content = draftPage.getContent();
             titleInput.setReadOnly(false);
-            titleInput.setValue(title);
+            titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(title));
             pageEditForm.setTitle(title);
             markupInput.setValue(content);
             UIWikiRichTextArea wikiRichTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
