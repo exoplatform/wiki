@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.webui;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 import javax.portlet.PortletMode;
@@ -44,6 +45,7 @@ import org.exoplatform.wiki.WikiPortletPreference;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
 import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.resolver.TitleResolver;
@@ -335,6 +337,8 @@ public class UIWikiPortlet extends UIPortletApplication {
   public HashMap<String, Object> getUIExtContext() throws Exception {
     HashMap<String, Object> context = new HashMap<String, Object>();
     WikiPageParams params = Utils.getCurrentWikiPageParams();
+    List<PermissionEntry> permissions = Utils.getCurrentWikiPage().getPermissions();
+    context.put(WikiConstants.PERMISSIONS, permissions);
     context.put(WikiConstants.WIKI_MODE, this.mode);
     context.put(WikiConstants.CURRENT_PAGE, params.getPageName());
     context.put(WikiConstants.CURRENT_WIKI_OWNER, params.getOwner());
