@@ -1,3 +1,7 @@
+* {
+	font-family: Arial Unicode MS !important;
+}
+
 h1, h2, h3, h4, h5, h6 {
 	font-weight:bold;
 	line-height:normal;
@@ -126,10 +130,6 @@ a:hover {
 	overflow: auto;
 }
 
-.code pre {
-	font-family: Arial Unicode MS;
-}
-
 .xwikirenderingerror {
   background: #EFEFEF url("/wiki/skin/DefaultSkin/webui/background/error.gif") no-repeat 8px 50%;
   border: 1px dotted #D6E1E7;
@@ -223,6 +223,5 @@ ol, ul, li {
 }
 
 div, table, tr, td, img, form, input, p {
-	font-family: Arial Unicode MS;
 	font-size: 12px;
 }
