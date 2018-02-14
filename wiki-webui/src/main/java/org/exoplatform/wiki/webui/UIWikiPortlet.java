@@ -166,12 +166,6 @@ public class UIWikiPortlet extends UIPortletApplication {
 
       Identity currentIdentity = ConversationState.getCurrent().getIdentity();
 
-      if(!wikiService.hasPermissionOnWiki(wiki, PermissionType.VIEWPAGE, currentIdentity)) {
-        changeMode(WikiMode.PAGE_NOT_FOUND);
-        super.processRender(app, context);
-        return;
-      }
-
       Page page = Utils.getCurrentWikiPage();
 
       if (page == null) {
@@ -179,6 +173,12 @@ public class UIWikiPortlet extends UIPortletApplication {
         super.processRender(app, context);
         return;
       } else {
+        if (!wikiService.hasPermissionOnPage(page, PermissionType.VIEWPAGE, currentIdentity)) {
+          changeMode(WikiMode.PAGE_NOT_FOUND);
+          super.processRender(app, context);
+          return;
+        }
+
         if (mode.equals(WikiMode.PAGE_NOT_FOUND)) {
           changeMode(WikiMode.VIEW);
         }
