@@ -62,7 +62,7 @@ public class SectionMacro extends AbstractMacro<SectionMacroParameters> {
   private static final String MACRO_NAME                 = "Section";
   
   private static final Pattern COLUMN_PATTERN 
-                                  = Pattern.compile("[(\\{\\{column/\\}\\})(\\{\\{column\\}\\}.*\\{\\{/column\\}\\})]");
+                                  = Pattern.compile("(\\{\\{column\\/\\}\\}|\\{\\{column\\}\\}.*\\{\\{\\/column\\}\\})");
 
   @Inject
   private ComponentManager    componentManager;

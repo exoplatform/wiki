@@ -74,9 +74,10 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
   }*/
   
   public void testRenderSectionAndColumnMacro() throws Exception {
-    String expectedHtml = "<div><div style=\"float:left;width:49.2%;padding-right:1.5%;\"><p>Column one text goes here</p></div><div style=\"float:left;width:49.2%;\"><p>Column two text goes here</p></div><div style=\"clear:both\"></div></div>";
+    String expectedHtml = "<div><div style=\"float:left;width:99.9%;\"><p>Text without column&nbsp;</p></div><div style=\"clear:both\"></div></div>";
+    assertEquals(expectedHtml, renderingService.render("{{section}}Text without column{{/section}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
+    expectedHtml = "<div><div style=\"float:left;width:49.2%;padding-right:1.5%;\"><p>Column one text goes here</p></div><div style=\"float:left;width:49.2%;\"><p>Column two text goes here</p></div><div style=\"clear:both\"></div></div>";
     assertEquals(expectedHtml, renderingService.render("{{section}}\n\n{{column}}Column one text goes here{{/column}}\n\n{{column}}Column two text goes here{{/column}}\n\n{{/section}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("{section}\n{column}Column one text goes here{column}\n{column}Column two text goes here{column}\n{section}", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
   public void testRenderNoFormatMacro() throws Exception {
