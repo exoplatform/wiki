@@ -1105,11 +1105,10 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         }
         draftPage.setContent(content);
         wikiService.updatePage(draftPage, null);
-
-        // Log the editting time for current user
-        Utils.logEditPageTime(param, Utils.getCurrentUser(), System.currentTimeMillis(), draftPage.getName(), isNewPage);
-
       }
+
+      // Log the editting time for current user
+      Utils.logEditPageTime(param, Utils.getCurrentUser(), System.currentTimeMillis(), draftPage.getName(), isNewPage);
       
       // Notify to client that saved draft success
       return Response.ok(new DraftData(draftPage.getName()), MediaType.APPLICATION_JSON).cacheControl(cc).build();
