@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.web.application.ApplicationMessage;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -141,7 +140,7 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
                              newTitle);
       if (renamed) {
         page.setName(newName);
-        page.setTitle(StringCommonUtils.encodeSpecialCharForSimpleInput(newTitle));
+        page.setTitle(newTitle);
         pageParams.setPageName(newName);
         page.setUrl(Utils.getURLFromParams(pageParams));
         Utils.redirect(pageParams, WikiMode.VIEW);

@@ -21,7 +21,6 @@ import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -99,7 +98,7 @@ public class EditPageActionComponent extends AbstractEventActionComponent {
         content = renderingService.getContentOfSection(content, page.getSyntax(), sectionIndex);
         titleInput.setEditable(false);
       }
-      titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(title));
+      titleInput.setValue(title);
       pageEditForm.setTitle(title) ;
       markupInput.setValue(content);
       commentInput.setValue("");

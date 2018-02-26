@@ -24,8 +24,6 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.StringUtils;
 import org.xwiki.rendering.syntax.Syntax;
 
-import org.exoplatform.commons.utils.HTMLSanitizer;
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -121,9 +119,6 @@ public class SavePageActionComponent extends UIComponent {
         }
 
         String title = titleInput.getValue().trim();
-        title = StringCommonUtils.encodeSpecialCharForSimpleInput(title);
-        title = title == null ? null : HTMLSanitizer.sanitize(title);
-        titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(title));
         if (StringUtils.isBlank(title)) {
           event.getRequestContext()
                .getUIApplication()
@@ -211,7 +206,7 @@ public class SavePageActionComponent extends UIComponent {
               page.setComment(commentInput.getValue());
               page.setAuthor(currentUser);
               page.setSyntax(syntaxId);
-              pageTitleControlForm.getUIFormInputInfo().setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(HTMLSanitizer.sanitize(title)));
+              pageTitleControlForm.getUIFormInputInfo().setValue(title);
               pageParams.setPageName(page.getName());
               page.setUrl(Utils.getURLFromParams(pageParams));
 
