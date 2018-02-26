@@ -55,12 +55,12 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.utils.StringCommonUtils;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.common.http.HTTPStatus;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
@@ -315,7 +315,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       EnvironmentContext env = EnvironmentContext.getCurrent();
       HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
 
-      sanitizeWikiTree(responseData, request.getLocale());
+      encodeWikiTree(responseData, request.getLocale());
       return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
       if (log.isErrorEnabled()) {
@@ -1181,7 +1181,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
   }
 
-  private void sanitizeWikiTree(List<JsonNodeData> responseData, Locale locale) throws Exception {
+  private void encodeWikiTree(List<JsonNodeData> responseData, Locale locale) throws Exception {
     ResourceBundle resourceBundle = resourceBundleService.getResourceBundle(Utils.WIKI_RESOUCE_BUNDLE_NAME, locale);
     String untitledLabel = "";
     if (resourceBundle == null) {
@@ -1192,12 +1192,12 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
 
     for (JsonNodeData data : responseData) {
-      data.setName(HTMLSanitizer.sanitize(data.getName()));
+      data.setName(StringCommonUtils.encodeSpecialCharForSimpleInput(data.getName()));
       if (StringUtils.isBlank(data.getName())) {
         data.setName(untitledLabel);
       }
       if (CollectionUtils.isNotEmpty(data.children)) {
-        sanitizeWikiTree(data.children, locale);
+        encodeWikiTree(data.children, locale);
       }
     }
   }

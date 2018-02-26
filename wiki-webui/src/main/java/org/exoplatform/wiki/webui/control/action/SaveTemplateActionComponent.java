@@ -22,8 +22,6 @@ import java.util.List;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
 
-import org.exoplatform.commons.utils.HTMLSanitizer;
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -99,9 +97,6 @@ public class SaveTemplateActionComponent extends UIComponent {
       UIFormStringInput descriptionInput = pageEditForm.findComponentById(UIWikiTemplateDescriptionContainer.FIELD_DESCRIPTION);
       UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
       String templateTitle = titleInput.getValue();
-      templateTitle = StringCommonUtils.encodeSpecialCharForSimpleInput(templateTitle);
-      templateTitle = templateTitle == null ? null : HTMLSanitizer.sanitize(templateTitle);
-      titleInput.setValue(StringCommonUtils.decodeSpecialCharToHTMLnumber(templateTitle));
       if (StringUtils.isBlank(templateTitle)) {
         isError = true;
         appMsg = new ApplicationMessage("WikiPageNameValidator.msg.EmptyTitle",
