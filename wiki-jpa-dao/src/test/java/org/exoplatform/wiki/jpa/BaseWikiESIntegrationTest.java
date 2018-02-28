@@ -201,10 +201,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
 
   protected PageEntity indexPage(String name, String title, String content, String comment, String owner,
                                  List<PermissionEntity> permissions) throws NoSuchFieldException, IllegalAccessException {
-    WikiEntity wiki = new WikiEntity();
-    wiki.setOwner("BCH");
-    wiki.setType("test");
-    wikiDAO.create(wiki);
+    WikiEntity wiki = getOrCreateWikiTestBCHEntity();
     PageEntity page = new PageEntity();
     page.setName(name);
     page.setTitle(title);
@@ -227,10 +224,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
   protected PageAttachmentEntity indexAttachment(String title, String filePath, String downloadedUrl, String owner) throws NoSuchFieldException,
                                                                                      IllegalAccessException,
                                                                                      IOException {
-    WikiEntity wiki = new WikiEntity();
-    wiki.setOwner("BCH");
-    wiki.setType("test");
-    wikiDAO.create(wiki);
+    WikiEntity wiki = getOrCreateWikiTestBCHEntity();
     PageEntity page = new PageEntity();
     page.setName("wikiPage");
     page.setCreatedDate(new Date());
@@ -264,4 +258,16 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     node.client().admin().indices().prepareRefresh().execute().actionGet();
     return attachment;
   }
+
+  private WikiEntity getOrCreateWikiTestBCHEntity() {
+    WikiEntity wiki = wikiDAO.getWikiByTypeAndOwner("test", "BCH");
+    if (wiki == null) {
+      wiki = new WikiEntity();
+      wiki.setType("test");
+      wiki.setOwner("BCH");
+      wikiDAO.create(wiki);
+    }
+    return wiki;
+  }
+
 }
