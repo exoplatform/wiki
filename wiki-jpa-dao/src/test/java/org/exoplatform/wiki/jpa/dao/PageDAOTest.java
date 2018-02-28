@@ -109,4 +109,25 @@ public class PageDAOTest extends BaseWikiJPAIntegrationTest {
     assertEquals("name", got.getName());
   }
 
+  @Test
+  public void testDuplicatedWikiOwnerTypeInsert() {
+    // Given
+    WikiEntity wiki = new WikiEntity();
+    wiki.setType("portal");
+    wiki.setOwner("wiki1");
+    wiki = wikiDAO.create(wiki);
+
+    // When
+    try {
+      WikiEntity wiki1 = new WikiEntity();
+      wiki1.setType("portal");
+      wiki1.setOwner("wiki1");
+      wiki1 = wikiDAO.create(wiki1);
+
+      // Then
+      fail();
+    } catch (Exception e) {
+    }
+  }
+
 }
