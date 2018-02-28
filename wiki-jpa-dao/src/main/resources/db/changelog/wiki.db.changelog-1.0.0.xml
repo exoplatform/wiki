@@ -629,4 +629,9 @@
       <param name="columnName" value="UPDATED_DATE"></param>
     </customChange>
   </changeSet>
+
+  <changeSet id="1.0.0-54" author="wiki" failOnError="false">
+    <addUniqueConstraint columnNames="OWNER, TYPE" tableName="WIKI_WIKIS"
+                         constraintName="UK_WIKI_WIKIS_OWNER_TYPE_01"/>
+  </changeSet>
 </databaseChangeLog>
