@@ -146,4 +146,13 @@ public interface DataStorage {
   public void addWatcherToPage(String username, Page page) throws WikiException;
 
   public void deleteWatcherOfPage(String username, Page page) throws WikiException;
+
+  /**
+   * Retrieve the all pages contained in wiki
+   * 
+   * @param wikiType
+   * @param wikiOwner
+   * @return
+   */
+  public List<Page> getPagesOfWiki(String wikiType, String wikiOwner);
 }

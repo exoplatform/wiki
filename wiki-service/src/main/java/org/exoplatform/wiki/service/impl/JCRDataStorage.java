@@ -2311,4 +2311,9 @@ public class JCRDataStorage implements DataStorage {
     }
     return template;
   }
+
+  @Override
+  public List<Page> getPagesOfWiki(String wikiType, String wikiOwner) {
+    throw new UnsupportedOperationException();
+  }
 }

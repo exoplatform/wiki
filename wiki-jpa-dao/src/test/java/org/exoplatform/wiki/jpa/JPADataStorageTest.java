@@ -186,6 +186,38 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
   }
 
   @Test
+  public void testGetAllWikiPages() throws WikiException {
+    // Given
+    Wiki wiki = new Wiki();
+    wiki.setType("portal");
+    wiki.setOwner("wikiTest4");
+    wiki = storage.createWiki(wiki);
+
+    Page parentPage = new Page();
+    parentPage.setWikiId(wiki.getId());
+    parentPage.setWikiType(wiki.getType());
+    parentPage.setWikiOwner(wiki.getType());
+    parentPage.setName("page0");
+    parentPage.setTitle("Page 0");
+
+    Page page = new Page();
+    page.setWikiId(wiki.getId());
+    page.setWikiType(wiki.getType());
+    page.setWikiOwner(wiki.getOwner());
+    page.setName("page1");
+    page.setTitle("Page 1");
+
+    // When
+    storage.createPage(wiki, wiki.getWikiHome(), parentPage);
+    storage.createPage(wiki, parentPage, page);
+
+    List<Page> pagesOfWiki = storage.getPagesOfWiki(wiki.getType(), wiki.getOwner());
+
+    assertNotNull(pagesOfWiki);
+    assertEquals(3, pagesOfWiki.size());
+  }
+
+  @Test
   public void testChildrenPagesOfPage() throws WikiException {
     // Given
     Wiki wiki = new Wiki();

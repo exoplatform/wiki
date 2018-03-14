@@ -19,11 +19,43 @@
 
 package org.exoplatform.wiki.jpa;
 
+import static org.exoplatform.wiki.jpa.EntityConverter.convertAttachmentEntityToAttachment;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertAttachmentToDraftPageAttachmentEntity;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertAttachmentToPageAttachmentEntity;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertDraftPageEntityToDraftPage;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertDraftPageToDraftPageEntity;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertEmotionIconEntityToEmotionIcon;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertPageEntityToPage;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertPageToPageEntity;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertPageVersionEntityToPageVersion;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertPermissionEntitiesToPermissionEntries;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertPermissionEntriesToPermissionEntities;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertTemplateEntityToTemplate;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertTemplateToTemplateEntity;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertWikiEntityToWiki;
+import static org.exoplatform.wiki.jpa.EntityConverter.convertWikiToWikiEntity;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.api.persistence.DataInitializer;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.file.services.FileService;
-import org.exoplatform.commons.file.services.FileStorageException;
 import org.exoplatform.commons.utils.ObjectPageList;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.PortalContainer;
@@ -34,25 +66,47 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.jpa.dao.*;
-import org.exoplatform.wiki.jpa.entity.*;
+import org.exoplatform.wiki.jpa.dao.DraftPageAttachmentDAO;
+import org.exoplatform.wiki.jpa.dao.DraftPageDAO;
+import org.exoplatform.wiki.jpa.dao.EmotionIconDAO;
+import org.exoplatform.wiki.jpa.dao.PageAttachmentDAO;
+import org.exoplatform.wiki.jpa.dao.PageDAO;
+import org.exoplatform.wiki.jpa.dao.PageMoveDAO;
+import org.exoplatform.wiki.jpa.dao.PageVersionDAO;
+import org.exoplatform.wiki.jpa.dao.TemplateDAO;
+import org.exoplatform.wiki.jpa.dao.WikiDAO;
+import org.exoplatform.wiki.jpa.entity.AttachmentEntity;
+import org.exoplatform.wiki.jpa.entity.DraftPageAttachmentEntity;
+import org.exoplatform.wiki.jpa.entity.DraftPageEntity;
+import org.exoplatform.wiki.jpa.entity.EmotionIconEntity;
+import org.exoplatform.wiki.jpa.entity.PageAttachmentEntity;
+import org.exoplatform.wiki.jpa.entity.PageEntity;
+import org.exoplatform.wiki.jpa.entity.PageMoveEntity;
+import org.exoplatform.wiki.jpa.entity.PageVersionEntity;
+import org.exoplatform.wiki.jpa.entity.TemplateEntity;
+import org.exoplatform.wiki.jpa.entity.WikiEntity;
 import org.exoplatform.wiki.jpa.search.WikiElasticSearchServiceConnector;
-import org.exoplatform.wiki.mow.api.*;
+import org.exoplatform.wiki.mow.api.Attachment;
+import org.exoplatform.wiki.mow.api.DraftPage;
+import org.exoplatform.wiki.mow.api.EmotionIcon;
+import org.exoplatform.wiki.mow.api.Page;
+import org.exoplatform.wiki.mow.api.PageVersion;
+import org.exoplatform.wiki.mow.api.Permission;
+import org.exoplatform.wiki.mow.api.PermissionEntry;
+import org.exoplatform.wiki.mow.api.PermissionType;
+import org.exoplatform.wiki.mow.api.Template;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.DataStorage;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.search.*;
+import org.exoplatform.wiki.service.search.SearchResult;
+import org.exoplatform.wiki.service.search.SearchResultType;
+import org.exoplatform.wiki.service.search.TemplateSearchData;
+import org.exoplatform.wiki.service.search.TemplateSearchResult;
+import org.exoplatform.wiki.service.search.WikiSearchData;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
 import org.exoplatform.wiki.utils.WikiConstants;
-
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.*;
-
-import static org.exoplatform.wiki.jpa.EntityConverter.*;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com
@@ -590,6 +644,22 @@ public class JPADataStorage implements DataStorage {
     pageEntity.setRelatedPages(relatedPages);
 
     pageDAO.update(pageEntity);
+  }
+
+  @Override
+  public List<Page> getPagesOfWiki(String wikiType, String wikiOwner) {
+    if (StringUtils.isBlank(wikiOwner)) {
+      throw new IllegalArgumentException("wikiOwner is mandatory argument");
+    }
+    if (StringUtils.isBlank(wikiType)) {
+      throw new IllegalArgumentException("wikiType is mandatory argument");
+    }
+    List<PageEntity> pagesOfWiki = pageDAO.getPagesOfWiki(wikiType, wikiOwner);
+    List<Page> pages = new ArrayList<>();
+    for (PageEntity pageEntity : pagesOfWiki) {
+      pages.add(convertPageEntityToPage(pageEntity));
+    }
+    return pages;
   }
 
   @Override

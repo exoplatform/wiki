@@ -779,4 +779,13 @@ public interface WikiService {
    */
   void addUnCachedMacro(UnCachedMacroPlugin plugin);
 
+  /**
+   * Retrieve the all pages contained in wiki
+   * 
+   * @param wikiType
+   * @param wikiOwner
+   * @return
+   */
+  public List<Page> getPagesOfWiki(String wikiType, String wikiOwner);
+
 }
