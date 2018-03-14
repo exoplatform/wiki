@@ -1631,4 +1631,10 @@ public class WikiServiceImpl implements WikiService, Startable {
     return useCachePage;
   }
 
+
+  @Override
+  public List<Page> getPagesOfWiki(String wikiType, String wikiOwner) {
+    return dataStorage.getPagesOfWiki(wikiType, wikiOwner);
+  }
+
 }

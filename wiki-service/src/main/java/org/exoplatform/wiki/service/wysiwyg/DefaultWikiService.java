@@ -17,6 +17,8 @@
 package org.exoplatform.wiki.service.wysiwyg;
 
 import org.apache.commons.lang.StringUtils;
+
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
@@ -25,7 +27,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.search.SearchResult;
@@ -40,6 +41,7 @@ import org.xwiki.model.reference.DocumentReference;
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 @Component
@@ -58,6 +60,8 @@ public class DefaultWikiService implements WikiService {
    */
   @Inject
   private LinkService                    linkService;
+
+  private org.exoplatform.wiki.service.WikiService wikiService;
 
   /**
    * The object used to convert between client and server entity reference.
@@ -293,24 +297,29 @@ public class DefaultWikiService implements WikiService {
       String wikiName = documentReference.getWikiName();
       String spaceName = documentReference.getSpaceName();
       String pageName = documentReference.getPageName();
+
       if (log.isTraceEnabled()) {
         log.trace("Getting attachments of page : " + wikiName + "." + spaceName + "." + pageName);
       }
-      List<Attachment> attachments = new ArrayList<Attachment>();
-      org.exoplatform.wiki.service.WikiService wservice = (org.exoplatform.wiki.service.WikiService) PortalContainer.getComponent(org.exoplatform.wiki.service.WikiService.class);
-      Page page = wservice.getExsitedOrNewDraftPageById(wikiName, spaceName, TitleResolver.getId(pageName, false));
-      List<org.exoplatform.wiki.mow.api.Attachment> attachs = wservice.getAttachmentsOfPage(page);
-      for (org.exoplatform.wiki.mow.api.Attachment attach : attachs) {
-        AttachmentReference attachmentReference = new AttachmentReference(attach.getName(), documentReference);
-        EntityReference entityReference = attachmentReference.getEntityReference();
-        entityReference.setType(org.xwiki.gwt.wysiwyg.client.wiki.EntityReference.EntityType.ATTACHMENT);
-        Attachment currentAttach = new Attachment();
-        currentAttach.setUrl(attach.getDownloadURL());
-        currentAttach.setReference(entityReference);
-        currentAttach.setMimeType(attach.getMimeType());
-        attachments.add(currentAttach);
+      List<Attachment> attachments = null;
+      if (StringUtils.isNotBlank(pageName)) {
+        Page page = getWikiService().getExsitedOrNewDraftPageById(wikiName,
+                                                          spaceName,
+                                                          StringUtils.isBlank(pageName) ? pageName
+                                                                                        : TitleResolver.getId(pageName, false));
+        attachments = getPageAttachments(page);
+      } else {
+        attachments = new ArrayList<>();
+        List<Page> pages = getWikiService().getPagesOfWiki(wikiName, spaceName);
+        for (Page page : pages) {
+          attachments.addAll(getPageAttachments(page));
+        }
       }
-      return attachments;
+      if (attachments == null) {
+        return Collections.emptyList();
+      } else {
+        return attachments;
+      }
     } catch (Exception e) {
       throw new RuntimeException("Failed to retrieve the list of attachments.", e);
     }
@@ -341,6 +350,13 @@ public class DefaultWikiService implements WikiService {
     return linkService.parseLinkReference(linkReference, baseReference);
   }
 
+  public org.exoplatform.wiki.service.WikiService getWikiService() {
+    if (wikiService == null) {
+      wikiService = CommonsUtils.getService(org.exoplatform.wiki.service.WikiService.class);
+    }
+    return wikiService;
+  }
+
   /**
    * Helper function to prepare a list of {@link WikiPage} (with full name,
    * title, etc) from a list of search results.
@@ -361,5 +377,21 @@ public class DefaultWikiService implements WikiService {
       documentReferences.add(new DocumentReference(wikiContext.getType(), wikiContext.getOwner(), nodeName));
     }
     return documentReferences;
+  }
+
+  private List<Attachment> getPageAttachments(Page page) throws WikiException {
+    List<Attachment> attachments = new ArrayList<>();
+    List<org.exoplatform.wiki.mow.api.Attachment> attachs = getWikiService().getAttachmentsOfPage(page);
+    for (org.exoplatform.wiki.mow.api.Attachment attach : attachs) {
+      AttachmentReference attachmentReference = new AttachmentReference(attach.getName(), new WikiPageReference(page.getWikiType(), page.getWikiOwner(), page.getName()));
+      EntityReference entityReference = attachmentReference.getEntityReference();
+      entityReference.setType(org.xwiki.gwt.wysiwyg.client.wiki.EntityReference.EntityType.ATTACHMENT);
+      Attachment currentAttach = new Attachment();
+      currentAttach.setUrl(attach.getDownloadURL());
+      currentAttach.setReference(entityReference);
+      currentAttach.setMimeType(attach.getMimeType());
+      attachments.add(currentAttach);
+    }
+    return attachments;
   }
 }
