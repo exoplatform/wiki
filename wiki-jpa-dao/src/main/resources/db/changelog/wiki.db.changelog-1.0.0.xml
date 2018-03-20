@@ -634,4 +634,11 @@
     <addUniqueConstraint columnNames="OWNER, TYPE" tableName="WIKI_WIKIS"
                          constraintName="UK_WIKI_WIKIS_OWNER_TYPE_01"/>
   </changeSet>
+
+  <changeSet id="1.0.0-55" author="wiki">
+    <createIndex tableName="WIKI_PAGES" indexName="IDX_WIKI_PAGES_01">
+      <column name="NAME"/>
+    </createIndex>
+  </changeSet>
+
 </databaseChangeLog>
