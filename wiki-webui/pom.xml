@@ -53,6 +53,10 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
       <exclusions>
         <exclusion>
@@ -103,7 +107,7 @@
           <artifactId>xml-apis</artifactId>
         </exclusion>
         <exclusion>
-		  <groupId>xml-apis</groupId>
+      <groupId>xml-apis</groupId>
           <artifactId>xml-apis-ext</artifactId>          
         </exclusion>        
       </exclusions>
@@ -121,7 +125,7 @@
           <artifactId>xml-apis</artifactId>
         </exclusion>
         <exclusion>
-		  <groupId>xml-apis</groupId>
+      <groupId>xml-apis</groupId>
           <artifactId>xml-apis-ext</artifactId>          
         </exclusion>        
       </exclusions>
@@ -180,7 +184,7 @@
           <artifactId>xml-apis</artifactId>
         </exclusion>
         <exclusion>
-		  <groupId>xml-apis</groupId>
+      <groupId>xml-apis</groupId>
           <artifactId>xml-apis-ext</artifactId>          
         </exclusion>        
       </exclusions>

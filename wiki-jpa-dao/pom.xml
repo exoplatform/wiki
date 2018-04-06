@@ -110,7 +110,7 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-service</artifactId>
+      <artifactId>wiki-api</artifactId>
     </dependency>
 
     <!-- Tests -->

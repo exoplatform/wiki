@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TestPageAttachment extends AbstractMOWTestcase {
+public class TestPageAttachment extends AbstractWikiTestcase {
 
   private WikiService wikiService;
 

@@ -16,53 +16,30 @@
  */
 package org.exoplatform.wiki.service.impl;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
+import java.lang.Class;
+import java.lang.Object;
 import java.net.URI;
 import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.ResourceBundle;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import javax.annotation.security.RolesAllowed;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.FormParam;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.core.CacheControl;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import javax.ws.rs.*;
+import javax.ws.rs.core.*;
 import javax.ws.rs.core.Response.Status;
-import javax.ws.rs.core.UriBuilder;
-import javax.ws.rs.core.UriBuilderException;
-import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.fileupload.DiskFileUpload;
-import org.apache.commons.fileupload.FileItem;
-import org.apache.commons.fileupload.FileUploadBase;
+import org.apache.commons.fileupload.*;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.common.http.HTTPStatus;
-import org.exoplatform.commons.utils.HTMLSanitizer;
-import org.exoplatform.commons.utils.MimeTypeResolver;
+import org.exoplatform.commons.utils.*;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -73,40 +50,24 @@ import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.exoplatform.services.rest.resource.ResourceContainer;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.DraftPage;
-import org.exoplatform.wiki.mow.api.EmotionIcon;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
-import org.exoplatform.wiki.service.Relations;
-import org.exoplatform.wiki.service.WikiContext;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiRestService;
-import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.image.ResizeImageService;
+import org.exoplatform.wiki.service.model.*;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
 import org.exoplatform.wiki.service.related.RelatedUtil;
+import org.exoplatform.wiki.service.rest.model.*;
 import org.exoplatform.wiki.service.rest.model.Attachment;
-import org.exoplatform.wiki.service.rest.model.Attachments;
 import org.exoplatform.wiki.service.rest.model.Link;
-import org.exoplatform.wiki.service.rest.model.ObjectFactory;
-import org.exoplatform.wiki.service.rest.model.PageSummary;
-import org.exoplatform.wiki.service.rest.model.Pages;
-import org.exoplatform.wiki.service.rest.model.Space;
-import org.exoplatform.wiki.service.rest.model.Spaces;
+import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.service.search.SearchResultType;
-import org.exoplatform.wiki.service.search.TitleSearchResult;
-import org.exoplatform.wiki.service.search.WikiSearchData;
-import org.exoplatform.wiki.tree.JsonNodeData;
-import org.exoplatform.wiki.tree.TreeNode;
+import org.exoplatform.wiki.tree.*;
 import org.exoplatform.wiki.tree.TreeNode.TREETYPE;
-import org.exoplatform.wiki.tree.WikiTreeNode;
 import org.exoplatform.wiki.tree.utils.TreeUtils;
-import org.exoplatform.wiki.utils.Utils;
-import org.exoplatform.wiki.utils.WikiConstants;
-import org.exoplatform.wiki.utils.WikiNameValidator;
+import org.exoplatform.wiki.utils.*;
 
 /**
  * {@inheritDoc}
@@ -295,7 +256,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       if (page == null) {
         log.warn("User [{}] can not get wiki path [{}]. Wiki Home is used instead",
                  ConversationState.getCurrent().getIdentity().getUserId(), path);
-        page = wikiService.getPageOfWikiByName(pageParam.getType(), pageParam.getOwner(), pageParam.WIKI_HOME);
+        page = wikiService.getPageOfWikiByName(pageParam.getType(), pageParam.getOwner(), WikiPageParams.WIKI_HOME);
       }
       
       context.put(TreeNode.SELECTED_PAGE, page);
@@ -316,7 +277,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
 
       encodeWikiTree(responseData, request.getLocale());
-      return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+      return Response.ok(new BeanToJsons<>(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
       if (log.isErrorEnabled()) {
         log.error("Failed for get tree data by rest service - Ca use : " + e.getMessage(), e);
@@ -606,7 +567,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           log.warn("Cannot get page of search result " + searchResult.getWikiType() + ":" + searchResult.getWikiOwner() + ":" + searchResult.getPageName());
         }
       }
-      return Response.ok(new BeanToJsons(titleSearchResults), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+      return Response.ok(new BeanToJsons<>(titleSearchResults), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
@@ -1015,7 +976,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   public Response searchAccessibleSpaces(@QueryParam("keyword") String keyword) {
     try {
       List<SpaceBean> spaceBeans = wikiService.searchSpaces(keyword);
-      return Response.ok(new BeanToJsons(spaceBeans), MediaType.APPLICATION_JSON).cacheControl(cc).build();
+      return Response.ok(new BeanToJsons<>(spaceBeans), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception ex) {
       if (log.isWarnEnabled()) {
         log.warn("An exception happens when searchAccessibleSpaces", ex);

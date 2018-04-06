@@ -26,7 +26,7 @@ import org.exoplatform.wiki.service.WikiService;
 import java.util.Iterator;
 import java.util.List;
 
-public class TestVersioning extends AbstractMOWTestcase {
+public class TestVersioning extends AbstractWikiTestcase {
 
   private WikiService wikiService;
 

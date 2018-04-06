@@ -23,7 +23,7 @@ import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
+import org.exoplatform.wiki.mow.core.api.AbstractWikiTestcase;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
@@ -35,7 +35,7 @@ import java.io.InputStream;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class TestWikiService extends AbstractMOWTestcase {
+public class TestWikiService extends AbstractWikiTestcase {
   private WikiService wService;
   public void setUp() throws Exception {
     super.setUp() ;

@@ -16,9 +16,16 @@
 */
 package org.exoplatform.wiki.jpa.search;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.lang.StringUtils;
+import org.json.simple.JSONObject;
+
 import org.exoplatform.commons.api.search.data.SearchContext;
-import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.search.es.ElasticSearchServiceConnector;
 import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.exoplatform.container.xml.InitParams;
@@ -28,13 +35,6 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.Utils;
-import org.json.simple.JSONObject;
-
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by The eXo Platform SAS

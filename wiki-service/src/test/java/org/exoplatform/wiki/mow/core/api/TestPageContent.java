@@ -23,7 +23,7 @@ import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiService;
 
 
-public class TestPageContent extends AbstractMOWTestcase {
+public class TestPageContent extends AbstractWikiTestcase {
 
   private WikiService wikiService;
 

@@ -31,7 +31,17 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-jcr</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-jpa</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.exoplatform.wiki</groupId>
+      <artifactId>wiki-api</artifactId>
       <version>${project.version}</version>
     </dependency>
     <dependency>
