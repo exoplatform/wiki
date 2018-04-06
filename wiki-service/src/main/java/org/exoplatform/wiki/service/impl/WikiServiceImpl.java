@@ -4,19 +4,7 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Queue;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -30,70 +18,41 @@ import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.diff.DiffResult;
 import org.exoplatform.commons.diff.DiffService;
-import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.commons.utils.ObjectPageList;
-import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.commons.utils.*;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.component.ComponentPlugin;
 import org.exoplatform.container.configuration.ConfigurationManager;
-import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.container.xml.PropertiesParam;
-import org.exoplatform.container.xml.ValuesParam;
-import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.container.xml.*;
+import org.exoplatform.portal.config.*;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.cache.CacheService;
 import org.exoplatform.services.cache.ExoCache;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.security.ConversationState;
-import org.exoplatform.services.security.Identity;
-import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.services.security.*;
 import org.exoplatform.social.core.service.LinkProvider;
 import org.exoplatform.social.core.space.SpaceFilter;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.mow.api.Attachment;
-import org.exoplatform.wiki.mow.api.DraftPage;
-import org.exoplatform.wiki.mow.api.EmotionIcon;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.PermissionEntry;
-import org.exoplatform.wiki.mow.api.PermissionType;
-import org.exoplatform.wiki.mow.api.Template;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiPreferences;
-import org.exoplatform.wiki.mow.api.WikiPreferencesSyntax;
-import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
-import org.exoplatform.wiki.rendering.cache.MarkupData;
-import org.exoplatform.wiki.rendering.cache.MarkupKey;
-import org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin;
+import org.exoplatform.wiki.rendering.cache.*;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.BreadcrumbData;
+import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.service.DataStorage;
-import org.exoplatform.wiki.service.IDType;
-import org.exoplatform.wiki.service.PageUpdateType;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.listener.AttachmentWikiListener;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
-import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.service.search.SearchResultType;
-import org.exoplatform.wiki.service.search.TemplateSearchData;
-import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.WikiSearchData;
+import org.exoplatform.wiki.service.model.SpaceBean;
+import org.exoplatform.wiki.service.search.*;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
 
+@SuppressWarnings("deprecation")
 public class WikiServiceImpl implements WikiService, Startable {
 
   private static final Log LOG = ExoLogger.getLogger(WikiServiceImpl.class);
@@ -108,6 +67,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private static final String DEFAULT_WIKI_NAME = "wiki";
 
+  @SuppressWarnings("unused")
   private static final int CIRCULAR_RENAME_FLAG = 1000;
 
   private static final long DEFAULT_SAVE_DRAFT_SEQUENCE_TIME = 30000;
@@ -156,6 +116,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private int uploadLimit = 200;
 
+  @SuppressWarnings("unchecked")
   public WikiServiceImpl(ConfigurationManager configManager,
                          UserACL userACL,
                          DataStorage dataStorage,
@@ -1240,7 +1201,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     String targetContent = StringUtils.EMPTY;
 
     if (!draftPage.isNewPage()) {
-      Wiki wiki = getWikiByTypeAndOwner(draftPage.getWikiType(), draftPage.getWikiOwner());
       Page targetPage = getPageById(draftPage.getTargetPageId());
       if (targetPage != null) {
         List<PageVersion> versions = getVersionsOfPage(targetPage);

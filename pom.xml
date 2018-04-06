@@ -16,12 +16,14 @@
   <modules>
     <module>wiki-renderer</module>
     <module>wiki-macros</module>
-    <module>wiki-service</module>
-    <module>wiki-webapp</module>
-    <module>wiki-webui</module>
-    <module>wiki-upgrade-plugins</module>
+    <module>wiki-api</module>
     <module>wiki-jpa-dao</module>
+    <module>wiki-jcr-dao</module>
+    <module>wiki-service</module>
+    <module>wiki-upgrade-plugins</module>
     <module>wiki-jpa-migration</module>
+    <module>wiki-webui</module>
+    <module>wiki-webapp</module>
   </modules>
   <scm>
     <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
@@ -100,7 +102,17 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-api</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-jpa</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-jcr</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -153,6 +165,11 @@
       <dependency>
         <groupId>org.exoplatform.gatein.portal</groupId>
         <artifactId>exo.portal.component.common</artifactId>
+        <version>${org.exoplatform.gatein.portal.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.gatein.portal</groupId>
+        <artifactId>exo.portal.component.identity</artifactId>
         <version>${org.exoplatform.gatein.portal.version}</version>
       </dependency>
       <dependency>

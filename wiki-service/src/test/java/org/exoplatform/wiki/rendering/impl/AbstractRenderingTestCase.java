@@ -16,10 +16,10 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
+import org.exoplatform.wiki.mow.core.api.AbstractWikiTestcase;
 import org.exoplatform.wiki.rendering.RenderingService;
 
-public abstract class AbstractRenderingTestCase extends AbstractMOWTestcase {
+public abstract class AbstractRenderingTestCase extends AbstractWikiTestcase {
 
   protected RenderingService renderingService;
 

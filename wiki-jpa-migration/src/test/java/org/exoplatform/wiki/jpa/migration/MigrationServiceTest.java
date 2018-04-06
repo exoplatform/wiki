@@ -1,25 +1,21 @@
 package org.exoplatform.wiki.jpa.migration;
 
+import java.io.InputStream;
+import java.util.*;
+
+import javax.jcr.Node;
+import javax.jcr.Session;
+
 import org.apache.commons.io.IOUtils;
+
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.portal.config.model.PortalConfig;
-import org.exoplatform.services.organization.Group;
-import org.exoplatform.services.organization.GroupHandler;
-import org.exoplatform.services.organization.User;
-import org.exoplatform.services.organization.UserHandler;
+import org.exoplatform.services.organization.*;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.mow.core.api.WikiStoreImpl;
 import org.exoplatform.wiki.mow.core.api.wiki.PageImpl;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.utils.JCRUtils;
-
-import javax.jcr.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.*;
 
 /**
  *

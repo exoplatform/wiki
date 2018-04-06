@@ -250,6 +250,87 @@
     </component-plugin>    
   </external-component-plugins>
   
+  <external-component-plugins>
+    <target-component>org.exoplatform.wiki.service.WikiService</target-component>
+    <component-plugin>
+      <name>PageIndexingListener</name>
+      <set-method>addComponentPlugin</set-method>
+      <type>org.exoplatform.wiki.jpa.search.PageIndexingListener</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.wiki.service.WikiService</target-component>
+    <component-plugin profiles="all">
+      <name>AttachmentIndexingListener</name>
+      <set-method>addComponentPlugin</set-method>
+      <type>org.exoplatform.wiki.jpa.search.AttachmentIndexingListener</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- SEARCH - Override default wiki search connector (use same type 'wiki') -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.search.SearchService</target-component>
+    <component-plugin>
+      <name>ElasticSearchConnector</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.wiki.jpa.search.WikiElasticUnifiedSearchServiceConnector</type>
+      <description>Wiki ElasticSearch Connector</description>
+      <init-params>
+        <properties-param>
+          <name>constructor.params</name>
+          <property name="searchType" value="wiki"/>
+          <property name="displayName" value="Wiki"/>
+          <property name="index" value="wiki_alias"/>
+          <property name="type" value="wiki-page,wiki-attachment"/>
+          <property name="enable" value="${exo.unified-search.connector.wiki.enable:true}"/>
+          <property name="titleField" value="title"/>
+          <property name="updatedDateField" value="updatedDate"/>
+          <property name="searchFields" value="name,title,content,comment,attachment.content"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- INDEXING -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
+    <component-plugin>
+      <name>WikiPageIndexingConnector</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.wiki.jpa.search.WikiPageIndexingServiceConnector</type>
+      <description>Wiki Page ElasticSearch Indexing Connector</description>
+      <init-params>
+        <properties-param>
+          <name>constructor.params</name>
+          <property name="index_alias" value="wiki_alias"/>
+          <property name="index_previous" value="wiki"/>
+          <property name="index_current" value="wiki_v2"/>
+          <property name="type" value="wiki-page"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
+    <component-plugin>
+      <name>AttachmentIndexingConnector</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.wiki.jpa.search.AttachmentIndexingServiceConnector</type>
+      <description>Attachment ElasticSearch Indexing Connector</description>
+      <init-params>
+        <properties-param>
+          <name>constructor.params</name>
+          <property name="index_alias" value="wiki_alias"/>
+          <property name="index_previous" value="wiki"/>
+          <property name="index_current" value="wiki_v2"/>
+          <property name="reindexOnUpgrade" value="true"/>
+          <property name="type" value="wiki-attachment"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
   <import>jar:/conf/portal/cache-configuration.xml</import>
   
 </configuration>
