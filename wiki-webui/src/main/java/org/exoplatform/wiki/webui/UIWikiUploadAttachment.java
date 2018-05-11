@@ -155,6 +155,15 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       if (attachment != null) {
         try {          
           Page page = wikiAttachmentArea.getCurrentWikiPage();
+          if (wikiService.getAttachmentOfPageByName(fileName, page) != null) {
+            event.getRequestContext()
+                 .getUIApplication()
+                 .addMessage(new ApplicationMessage("UIWikiUploadAttachment.msg.file-already-exists",
+                                                    null,
+                                                    ApplicationMessage.WARNING));
+            resetUploadInput(event);
+            return;
+          }
           wikiService.addAttachmentToPage(attachment, page);
           input.removeUploadId(id);
         } catch (Exception e) {
