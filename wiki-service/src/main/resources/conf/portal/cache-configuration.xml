@@ -28,44 +28,6 @@
       <name>addExoCacheConfig</name>
       <set-method>addExoCacheConfig</set-method>
       <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
-      <description>Configures the wiki page uuid cache</description>
-      <init-params>
-        <object-param>
-          <name>wiki.PageRenderingCache</name>
-          <description>The wiki page markup cache configuration</description>
-          <object type="org.exoplatform.services.cache.ExoCacheConfig">
-            <field name="name"><string>wiki.PageRenderingCache</string></field>
-            <field name="maxSize"><int>${cache.exo.wiki.PageRenderingCache.Capacity:1000}</int></field>
-            <field name="liveTime"><long>${cache.exo.wiki.PageRenderingCache.TimeToLive:-1}</long></field>
-            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-          </object>
-        </object-param>
-        <object-param>
-          <name>wiki.PageUuidCache</name>
-          <description>The wiki page uuid cache configuration</description>
-          <object type="org.exoplatform.services.cache.ExoCacheConfig">
-            <field name="name"><string>wiki.PageUuidCache</string></field>
-            <field name="maxSize"><int>${cache.exo.wiki.PageUuidCache.Capacity:1000}</int></field>
-            <field name="liveTime"><long>${cache.exo.wiki.PageUuidCache.TimeToLive:-1}</long></field>
-            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-          </object>
-        </object-param>
-        <object-param>
-          <name>wiki.PageAttachmentCache</name>
-          <description>The wiki page attachment count cache configuration</description>
-          <object type="org.exoplatform.services.cache.ExoCacheConfig">
-            <field name="name"><string>wiki.PageAttachmentCache</string></field>
-            <field name="maxSize"><int>${cache.exo.wiki.PageAttachmentCache.Capacity:1000}</int></field>
-            <field name="liveTime"><long>${cache.exo.wiki.PageAttachmentCache.TimeToLive:-1}</long></field>
-            <field name="implementation"><string>org.exoplatform.services.cache.concurrent.ConcurrentFIFOExoCache</string></field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin profiles="cluster">
-      <name>addExoCacheConfig</name>
-      <set-method>addExoCacheConfig</set-method>
-      <type>org.exoplatform.services.cache.ExoCacheConfigPlugin</type>
       <description>add Exo Cache Config</description>
       <init-params>
         <object-param>
@@ -73,32 +35,32 @@
           <description>The wiki markup cache configuration</description>
           <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
             <field name="name"><string>wiki.PageRenderingCache</string></field>
-            <field name="strategy"><string>LIRS</string></field>
-            <field name="maxEntries"><int>${cache.exo.wiki.PageRenderingCache.Capacity:1000}</int></field>
-            <field name="lifespan"><long>${cache.exo.wiki.PageRenderingCache.TimeToLive:-1}</long></field>
-            <field name="cacheMode"><string>${exo.cache.wiki.PageRenderingCache.cacheMode:replication}</string></field>
+            <field name="strategy" profiles="cluster"><string>${exo.cache.wiki.PageRenderingCache.strategy:LIRS}</string></field>
+            <field name="maxSize"><int>${exo.cache.wiki.PageRenderingCache.MaxNodes:1000}</int></field>
+            <field name="liveTime"><long>${exo.cache.wiki.PageRenderingCache.TimeToLive:86400}</long></field>
+            <field name="cacheMode" profiles="cluster"><string>${exo.cache.wiki.PageRenderingCache.cacheMode:replication}</string></field>
           </object>
         </object-param>
         <object-param>
           <name>wiki.PageUuidCache</name>
-          <description>The JBoss Cache configuration for wiki page uuid</description>
+          <description>The Cache configuration for wiki page uuid</description>
           <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
             <field name="name"><string>wiki.PageUuidCache</string></field>
-            <field name="strategy"><string>LIRS</string></field>
-            <field name="maxEntries"><int>${cache.exo.wiki.PageUuidCache.Capacity:1000}</int></field>
-            <field name="lifespan"><long>${cache.exo.wiki.PageUuidCache.TimeToLive:-1}</long></field>
-            <field name="cacheMode"><string>${exo.cache.wiki.PageUuidCache.cacheMode:replication}</string></field>
+            <field name="strategy" profiles="cluster"><string>${exo.cache.wiki.PageUuidCache.strategy:LIRS}</string></field>
+            <field name="maxSize"><int>${exo.cache.wiki.PageUuidCache.MaxNodes:1000}</int></field>
+            <field name="liveTime"><long>${exo.cache.wiki.PageUuidCache.TimeToLive:86400}</long></field>
+            <field name="cacheMode" profiles="cluster"><string>${exo.cache.wiki.PageUuidCache.cacheMode:replication}</string></field>
           </object>
         </object-param>
         <object-param>
           <name>wiki.PageAttachmentCache</name>
-          <description>The JBoss Cache configuration for wiki page attachment count</description>
+          <description>The Cache configuration for wiki page attachment count</description>
           <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
             <field name="name"><string>wiki.PageAttachmentCache</string></field>
-            <field name="strategy"><string>LIRS</string></field>
-            <field name="maxEntries"><int>${cache.exo.wiki.PageAttachmentCache.Capacity:1000}</int></field>
-            <field name="lifespan"><long>${cache.exo.wiki.PageAttachmentCache.TimeToLive:-1}</long></field>
-            <field name="cacheMode"><string>${exo.cache.wiki.PageAttachmentCache.cacheMode:replication}</string></field>
+            <field name="strategy" profiles="cluster"><string>${exo.cache.wiki.PageAttachmentCache.strategy:LIRS}</string></field>
+            <field name="maxSize"><int>${exo.cache.wiki.PageAttachmentCache.MaxNodes:1000}</int></field>
+            <field name="liveTime"><long>${exo.cache.wiki.PageAttachmentCache.TimeToLive:86400}</long></field>
+            <field name="cacheMode" profiles="cluster"><string>${exo.cache.wiki.PageAttachmentCache.cacheMode:replication}</string></field>
           </object>
         </object-param>
       </init-params>
