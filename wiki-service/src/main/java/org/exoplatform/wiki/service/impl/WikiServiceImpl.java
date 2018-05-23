@@ -22,6 +22,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.services.organization.OrganizationService;
+import org.exoplatform.services.organization.User;
+import org.exoplatform.services.organization.UserStatus;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -122,6 +125,8 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private ConfigurationManager configManager;
 
+  private OrganizationService orgService;
+
   private UserACL userACL;
 
   private RenderingService renderingService;
@@ -161,6 +166,7 @@ public class WikiServiceImpl implements WikiService, Startable {
                          DataStorage dataStorage,
                          RenderingService renderingService,
                          CacheService cacheService,
+                         OrganizationService orgService,
                          InitParams initParams) {
     String autoSaveIntervalProperty = System.getProperty("wiki.autosave.interval");
     if ((autoSaveIntervalProperty == null) || autoSaveIntervalProperty.isEmpty()) {
@@ -173,6 +179,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     this.userACL = userACL;
     this.renderingService = renderingService;
     this.dataStorage = dataStorage;
+    this.orgService = orgService;
 
     this.renderingCache = cacheService.getCacheInstance(CACHE_NAME);
     this.attachmentCountCache = cacheService.getCacheInstance(ATT_CACHE_NAME);
@@ -425,13 +432,17 @@ public class WikiServiceImpl implements WikiService, Startable {
     wikiPreferencesSyntax.setDefaultSyntax(getDefaultWikiSyntaxId());
     wikiPreferences.setWikiPreferencesSyntax(wikiPreferencesSyntax);
     wiki.setPreferences(wikiPreferences);
+
     Wiki createdWiki = dataStorage.createWiki(wiki);
     StringBuilder sb = new StringBuilder("= Welcome to ");
     String wikiLabel = owner;
     if(wikiType.equals(PortalConfig.GROUP_TYPE)) {
+      sb.append("Space ");
       wikiLabel = getSpaceNameByGroupId(owner);
+    } else if (wikiType.equals(PortalConfig.USER_TYPE)) {
+      wikiLabel = this.getUserDisplayName(wiki.getOwner());
     }
-    sb.append(wikiLabel).append(" =");
+    sb.append(wikiLabel).append(" Wiki =");
     createdWiki.getWikiHome().setContent(sb.toString());
     updatePage(createdWiki.getWikiHome(), null);
     // init templates
@@ -450,6 +461,17 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
 
     return createdWiki;
+  }
+
+  private String getUserDisplayName(String username) {
+    try {
+      User user = orgService.getUserHandler().findUserByName(username, UserStatus.ANY);
+      StringBuilder nameBuilder = new StringBuilder(user.getFirstName());
+      nameBuilder.append(" ").append(user.getLastName());
+      return nameBuilder.toString();
+    } catch (Exception e) {
+      return username;
+    }
   }
 
   /******* Page *******/

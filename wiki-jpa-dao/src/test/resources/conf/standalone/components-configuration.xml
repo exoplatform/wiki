@@ -144,6 +144,10 @@
   </component>
 
   <component>
+    <key>org.exoplatform.services.organization.OrganizationService</key>
+    <type>org.exoplatform.services.organization.impl.mock.DummyOrganizationService</type>
+  </component>
+  <component>
     <key>org.exoplatform.wiki.service.WikiService</key>
     <type>org.exoplatform.wiki.service.impl.WikiServiceImpl</type>
     <init-params>
