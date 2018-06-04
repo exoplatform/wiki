@@ -408,6 +408,12 @@
   margin-top: 5px;
 }
 
+.xPageChooser .gwt-Button{
+  vertical-align: top;
+  line-height: 22px;
+  margin-left: 6px;
+}
+
 .xImagesSelector .xListBox {
   overflow: auto;
 }
@@ -922,3 +928,4 @@ html>body .xToolbar .gwt-PushButton-up-disabled,html>body .xToolbar .gwt-PushBut
   border: 1px solid #666;
   padding: 2px 2px 2px 19px;
 }
+
