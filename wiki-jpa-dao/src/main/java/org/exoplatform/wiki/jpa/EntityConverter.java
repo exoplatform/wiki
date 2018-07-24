@@ -338,7 +338,11 @@ public class EntityConverter {
       draftPage = new DraftPage();
       draftPage.setId(String.valueOf(draftPageEntity.getId()));
       draftPage.setName(draftPageEntity.getName());
-      draftPage.setTitle(draftPageEntity.getTitle());
+
+      // Oracle database treat empty string as NULL value. So we need to convert title to empty string
+      String title = draftPageEntity.getTitle();
+      draftPage.setTitle(title != null ? title : "");
+
       draftPage.setAuthor(draftPageEntity.getAuthor());
       draftPage.setContent(draftPageEntity.getContent());
       draftPage.setSyntax(draftPageEntity.getSyntax());
