@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>5.1.x-SNAPSHOT</version>
+    <version>5.1.0-RC05</version>
   </parent>
   <artifactId>wiki-renderer</artifactId>
   <packaging>jar</packaging>
