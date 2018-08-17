@@ -974,13 +974,31 @@ public class JPADataStorage implements DataStorage {
   @ExoTransactional
   public void deleteAttachmentOfPage(String attachmentName, Page page) throws WikiException {
     PageEntity pageEntity = fetchPageEntity(page);
-
-    if (pageEntity == null) {
+    DraftPageEntity draftPageEntity = null;
+    if(pageEntity == null) {
+      draftPageEntity = draftPageDAO.findLatestDraftPageByUserAndName(Utils.getCurrentUser(),page.getName());
+    }
+    
+    if (pageEntity == null && draftPageEntity == null) {
       throw new WikiException("Cannot delete an attachment of page " + page.getWikiType() + ":" + page.getWikiOwner() + ":"
           + page.getName() + " because page does not exist.");
     }
-
+    
     boolean attachmentFound = false;
+    if (pageEntity == null && draftPageEntity != null) {
+      attachmentFound = deleteDraftPageAttachementEntity(attachmentName, draftPageEntity, attachmentFound);
+    }
+    else {
+      attachmentFound = deletePageAttachementEntity(attachmentName, pageEntity, attachmentFound);
+    }
+
+    if (!attachmentFound) {
+      throw new WikiException("Cannot delete the attachment " + attachmentName + " of page " + page.getWikiType() + ":"
+          + page.getWikiOwner() + ":" + page.getName() + " because attachment does not exist.");
+    }
+  }
+
+  private boolean deletePageAttachementEntity(String attachmentName, PageEntity pageEntity, boolean attachmentFound) {
     List<PageAttachmentEntity> attachmentsEntities = pageEntity.getAttachments();
     if (attachmentsEntities != null) {
       for (int i = 0; i < attachmentsEntities.size(); i++) {
@@ -992,25 +1010,44 @@ public class JPADataStorage implements DataStorage {
         if (name != null && name.equals(attachmentName)) {
           attachmentFound = true;
           attachmentsEntities.remove(i);
-          if (page instanceof DraftPage) {
-            fileService.deleteFile(attachmentEntity.getAttachmentFileID());
-            draftPageAttachmentDAO.delete((DraftPageAttachmentEntity) attachmentEntity);
-          }
-          else {
-            fileService.deleteFile(attachmentEntity.getAttachmentFileID());
-            pageAttachmentDAO.delete((PageAttachmentEntity) attachmentEntity);
-          }
+          
+          fileService.deleteFile(attachmentEntity.getAttachmentFileID());
+          pageAttachmentDAO.delete((PageAttachmentEntity) attachmentEntity);
+ 
           pageEntity.setAttachments(attachmentsEntities);
           pageDAO.update(pageEntity);
           break;
         }
       }
     }
+    return attachmentFound;
+  }
 
-    if (!attachmentFound) {
-      throw new WikiException("Cannot delete the attachment " + attachmentName + " of page " + page.getWikiType() + ":"
-          + page.getWikiOwner() + ":" + page.getName() + " because attachment does not exist.");
+  private boolean deleteDraftPageAttachementEntity(String attachmentName,
+                                                   DraftPageEntity draftPageEntity,
+                                                   boolean attachmentFound) {
+    List<DraftPageAttachmentEntity> draftAttachmentsEntities = draftPageEntity.getAttachments();
+    if (draftAttachmentsEntities != null) {
+      for (int i = 0; i < draftAttachmentsEntities.size(); i++) {
+        AttachmentEntity attachmentEntity = draftAttachmentsEntities.get(i);
+        String name = null;
+        if(attachmentEntity.getAttachmentFileID() != null){
+           name = fileService.getFileInfo(attachmentEntity.getAttachmentFileID()).getName();
+        }
+        if (name != null && name.equals(attachmentName)) {
+          attachmentFound = true;
+          draftAttachmentsEntities.remove(i);
+
+          fileService.deleteFile(attachmentEntity.getAttachmentFileID());
+          draftPageAttachmentDAO.delete((DraftPageAttachmentEntity) attachmentEntity);
+
+          draftPageEntity.setAttachments(draftAttachmentsEntities);
+          draftPageDAO.update(draftPageEntity);
+          break;
+        }
+      }
     }
+    return attachmentFound;
   }
 
   @Override

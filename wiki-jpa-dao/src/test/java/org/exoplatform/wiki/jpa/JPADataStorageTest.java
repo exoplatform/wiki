@@ -25,6 +25,9 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.services.jcr.ext.app.SessionProviderService;
+import org.exoplatform.services.jcr.ext.common.SessionProvider;
+import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.MembershipEntry;
@@ -34,6 +37,7 @@ import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
+import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
 import org.junit.Test;
 
@@ -47,12 +51,15 @@ import java.util.*;
 public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
 
   protected JPADataStorage storage;
-
+  protected SessionProvider sessionProvider;
+  private static SessionProviderService sessionProviderService;
+  
   public void setUp() {
     super.setUp();
 
     // Init services
     storage = PortalContainer.getInstance().getComponentInstanceOfType(JPADataStorage.class);
+    sessionProviderService = PortalContainer.getInstance().getComponentInstanceOfType(SessionProviderService.class);
   }
 
   @Test
@@ -585,6 +592,54 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     assertEquals(2, attachmentsOfPage.size());
     assertNotNull(attachmentsOfPageAfterDeletion);
     assertEquals(1, attachmentsOfPageAfterDeletion.size());
+  }
+  
+  @Test
+  public void testDeleteAttachmentOfDraftPage() throws WikiException {
+    // Given
+    startSessionAs("Jhon");
+    Wiki wiki = new Wiki();
+    wiki.setType("portal");
+    wiki.setOwner("wiki1");
+    wiki = storage.createWiki(wiki); 
+    
+    DraftPage draftPage = new DraftPage();
+    draftPage.setAuthor("Jhon");
+    draftPage.setName("DraftPage1");
+    draftPage.setTitle("DraftPage 1");
+    draftPage.setWikiId(wiki.getId());
+    draftPage.setWikiType(wiki.getType());
+    draftPage.setWikiOwner(wiki.getOwner());
+    draftPage.setNewPage(true);
+    draftPage.setTargetPageRevision("1");
+    draftPage.setCreatedDate(new Date());
+    draftPage.setUpdatedDate(new Date());
+    
+    Attachment attachment1 = new Attachment();
+    attachment1.setName("attachment1");
+    attachment1.setContent("content attachment2".getBytes());
+    attachment1.setCreatedDate(GregorianCalendar.getInstance());
+    attachment1.setUpdatedDate(GregorianCalendar.getInstance());
+
+    Attachment attachment2 = new Attachment();
+    attachment2.setName("attachment2");
+    attachment2.setContent("content attachment2".getBytes());
+    attachment2.setCreatedDate(GregorianCalendar.getInstance());
+    attachment2.setUpdatedDate(GregorianCalendar.getInstance());
+    
+    //When
+    storage.createDraftPageForUser(draftPage, "Jhon");
+    storage.addAttachmentToPage(attachment1, draftPage);
+    storage.addAttachmentToPage(attachment2, draftPage);
+    List<Attachment> attachmentsOfdraftPage = storage.getAttachmentsOfPage(draftPage);
+    storage.deleteAttachmentOfPage("attachment1", draftPage);
+    List<Attachment> attachmentsOfdraftPageAfterDeletion = storage.getAttachmentsOfPage(draftPage);
+    
+    //then
+    assertNotNull(attachmentsOfdraftPage);
+    assertEquals(2, attachmentsOfdraftPage.size());
+    assertNotNull(attachmentsOfdraftPageAfterDeletion);
+    assertEquals(1, attachmentsOfdraftPageAfterDeletion.size());
   }
 
   @Test
@@ -1435,5 +1490,17 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     // Then
     assertNotNull(shortHelpPage);
     assertNotNull(fullHelpPage);
+  }
+  
+  protected void startSessionAs(String user) {
+    startSessionAs(user, new HashSet<MembershipEntry>());
+  }
+
+  protected void startSessionAs(String user, Collection<MembershipEntry> memberships) {
+    Identity identity = new Identity(user, memberships);
+    ConversationState state = new ConversationState(identity);
+    ConversationState.setCurrent(state);
+    sessionProviderService.setSessionProvider(null, new SessionProvider(state));
+    sessionProvider = sessionProviderService.getSessionProvider(null);
   }
 }
