@@ -65,8 +65,8 @@ public class WikiUserEventListener extends UserEventListener {
 
     LOG.info("Removing all wiki data of the user "+user.getUserName());
 
-    //First remove and unindex all Wiki Pages (include wikiHome)
-    List<PageEntity> pages = pageDAO.getPagesOfWiki(WikiType.USER.toString().toLowerCase(), user.getUserName());
+    //First remove and unindex all Wiki Pages (include wikiHome and deleted pages)
+    List<PageEntity> pages = pageDAO.getAllPagesOfWiki(WikiType.USER.toString().toLowerCase(), user.getUserName());
     if (pages != null) {
       for (PageEntity page : pages) {
         indexingService.unindex(WikiPageIndexingServiceConnector.TYPE, String.valueOf(page.getId()));

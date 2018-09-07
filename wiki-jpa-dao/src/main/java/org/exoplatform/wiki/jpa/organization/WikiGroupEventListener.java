@@ -60,8 +60,8 @@ public class WikiGroupEventListener extends GroupEventListener {
     LOG.info("Removing all wiki data of the group "+group.getId());
 
 
-    //First remove and unindex all Wiki Pages (include wikiHome)
-    List<PageEntity> pages = pageDAO.getPagesOfWiki(WikiType.GROUP.toString().toLowerCase(), group.getId());
+    //First remove and unindex all Wiki Pages (include wikiHome and deleted pages)
+    List<PageEntity> pages = pageDAO.getAllPagesOfWiki(WikiType.GROUP.toString().toLowerCase(), group.getId());
     if (pages != null) {
       for (PageEntity page : pages) {
         indexingService.unindex(WikiPageIndexingServiceConnector.TYPE, String.valueOf(page.getId()));

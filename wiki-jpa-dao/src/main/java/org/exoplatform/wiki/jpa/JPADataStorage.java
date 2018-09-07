@@ -654,7 +654,7 @@ public class JPADataStorage implements DataStorage {
     if (StringUtils.isBlank(wikiType)) {
       throw new IllegalArgumentException("wikiType is mandatory argument");
     }
-    List<PageEntity> pagesOfWiki = pageDAO.getPagesOfWiki(wikiType, wikiOwner);
+    List<PageEntity> pagesOfWiki = pageDAO.getPagesOfWiki(wikiType, wikiOwner, false);
     List<Page> pages = new ArrayList<>();
     for (PageEntity pageEntity : pagesOfWiki) {
       pages.add(convertPageEntityToPage(pageEntity));

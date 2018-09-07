@@ -32,6 +32,7 @@ import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.jpa.entity.PageEntity;
 import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -287,6 +288,17 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
 
     // Then
     assertEquals(1, pageDAO.findAllIds(0, 0).size());
+
+    List<PageEntity> pages = pageDAO.getAllPagesOfWiki(wiki.getType(), wiki.getOwner());
+    assertEquals(2, pages.size());
+
+    pages = pageDAO.getPagesOfWiki(wiki.getType(), wiki.getOwner(), false);
+    assertEquals(1, pages.size());
+    assertEquals(WikiConstants.WIKI_HOME_NAME, pages.get(0).getName());
+
+    pages = pageDAO.getPagesOfWiki(wiki.getType(), wiki.getOwner(), true);
+    assertEquals(1, pages.size());
+    assertEquals("page1", pages.get(0).getName());
   }
 
   @Test

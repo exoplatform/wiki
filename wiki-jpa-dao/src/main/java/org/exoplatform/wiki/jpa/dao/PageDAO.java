@@ -30,14 +30,27 @@ import org.exoplatform.wiki.mow.api.WikiType;
  */
 public class PageDAO extends WikiBaseDAO<PageEntity, Long> {
 
-  public List<PageEntity> getPagesOfWiki(String wikiType, String wikiOwner) {
+  public List<PageEntity> getAllPagesOfWiki(String wikiType, String wikiOwner) {
+
+    //We need to add the first "/" on the wiki owner if it's  wiki group
+    if (wikiType.toUpperCase().equals(WikiType.GROUP.name())) wikiOwner = validateGroupWikiOwner(wikiOwner);
+
+    TypedQuery<PageEntity> query = getEntityManager().createNamedQuery("wikiPage.getAllPagesOfWiki", PageEntity.class)
+        .setParameter("type", wikiType)
+        .setParameter("owner", wikiOwner);
+
+    return query.getResultList();
+  }
+
+  public List<PageEntity> getPagesOfWiki(String wikiType, String wikiOwner, boolean deleted) {
 
     //We need to add the first "/" on the wiki owner if it's  wiki group
     if (wikiType.toUpperCase().equals(WikiType.GROUP.name())) wikiOwner = validateGroupWikiOwner(wikiOwner);
 
     TypedQuery<PageEntity> query = getEntityManager().createNamedQuery("wikiPage.getPagesOfWiki", PageEntity.class)
         .setParameter("type", wikiType)
-        .setParameter("owner", wikiOwner);
+        .setParameter("owner", wikiOwner)
+        .setParameter("deleted", deleted);
 
     return query.getResultList();
   }
