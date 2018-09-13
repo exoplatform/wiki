@@ -286,7 +286,10 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         org.exoplatform.wiki.mow.api.Page currentPage = wikiService.getPageOfWikiByName(currentPageParam.getType(), currentPageParam.getOwner(), currentPageParam.getPageName());
         context.put(TreeNode.CURRENT_PAGE, currentPage);
       }
-      
+
+      EnvironmentContext env = EnvironmentContext.getCurrent();
+      HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
+
       // Put select page to context
       path = URLDecoder.decode(path, "utf-8");
       context.put(TreeNode.PATH, path);
@@ -296,6 +299,14 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         log.warn("User [{}] can not get wiki path [{}]. Wiki Home is used instead",
                  ConversationState.getCurrent().getIdentity().getUserId(), path);
         page = wikiService.getPageOfWikiByName(pageParam.getType(), pageParam.getOwner(), pageParam.WIKI_HOME);
+        if(page == null) {
+          ResourceBundle resourceBundle = resourceBundleService.getResourceBundle("locale.portlet.wiki.WikiPortlet", request.getLocale());
+          String errorMessage = "";
+          if(resourceBundle != null) {
+            errorMessage = resourceBundle.getString("UIWikiMovePageForm.msg.no-permission-at-wiki-destination");
+          }
+          return Response.serverError().entity("{ \"message\": \"" + errorMessage + "\"}").cacheControl(cc).build();
+        }
       }
       
       context.put(TreeNode.SELECTED_PAGE, page);
@@ -312,15 +323,11 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         context.put(TreeNode.DEPTH, depth);
         responseData = getJsonDescendants(pageParam, context);
       }
-      EnvironmentContext env = EnvironmentContext.getCurrent();
-      HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
 
       encodeWikiTree(responseData, request.getLocale());
       return Response.ok(new BeanToJsons(responseData), MediaType.APPLICATION_JSON).cacheControl(cc).build();
     } catch (Exception e) {
-      if (log.isErrorEnabled()) {
-        log.error("Failed for get tree data by rest service - Ca use : " + e.getMessage(), e);
-      }
+      log.error("Failed for get tree data by rest service - Cause : " + e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).cacheControl(cc).build();
     }
   }
