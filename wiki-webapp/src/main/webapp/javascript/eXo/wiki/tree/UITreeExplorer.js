@@ -142,29 +142,34 @@ UITreeExplorer.prototype.render = function(param, element, isFullRender) {
 	  }
 	  var restURL = url + param;
 	
-	  var childBlock = document.createElement("ul");
+	  var childBlock = $(document.createElement("ul"));
 	  if (me.innerDoc) {
-	    childBlock = me.innerDoc.createElement("ul");
+	    childBlock = $(me.innerDoc.createElement("ul"));
 	    me.innerDoc = null;
 	  }
-	  $(childBlock).addClass('nodeGroup');
+	  childBlock.addClass('nodeGroup');
 	  
 	  // Message loading first load or expand node
 	  if ('UITreeExplorer' == $(node).attr('id')) {
-	    $(childBlock).html('<li class="loadingTree"><span class="uiLoadingIconMini"></span>'+ me.loading + '</li>');
+	    childBlock.html('<li class="loadingTree"><span class="uiLoadingIconMini"></span>'+ me.loading + '</li>');
 	  } else {
-	    $(childBlock).html('<li class="loadingTree"><span class="uiLoadingIconMini"></span>'+ me.loading + '</li>');
+	    childBlock.html('<li class="loadingTree"><span class="uiLoadingIconMini"></span>'+ me.loading + '</li>');
 	  }
 	  $(node).append(childBlock);
 	  $.ajax({
 	    async : true,
 	    url : restURL,
 	    type : 'GET',
-	    data : '',
-	    success : function(data) {
-	      me.renderTreeNodes(childBlock, data);
-	    }
-	  });
+	    data : ''
+	  }).done(function(data) {
+        me.renderTreeNodes(childBlock, data);
+      }).fail(function(data) {
+        var message = '';
+        if(data.responseJSON && data.responseJSON.message) {
+          message = '<li><div class="alert alert-error" id=""><i class="uiIconError"></i>' + data.responseJSON.message + '</div></li>';
+        }
+        childBlock.html(message);
+      });
 	}
 };
 
@@ -176,9 +181,9 @@ UITreeExplorer.prototype.renderTreeNodes = function(node, dataList) {
   for ( var i = 0; i < resultLength; i++) {
     str += me.buildNode(dataList.jsonList[i]);
   }
-  $(node).html(str);
+  node.html(str);
   if (this.isRenderLink) {
-	var wikiHome = $(node).find("i.uiIconWiki");
+	var wikiHome = node.find("i.uiIconWiki");
 	if (wikiHome && wikiHome.length > 0) {
 	  var aElement = $(wikiHome)[0].parentNode;
 	  var divParent = aElement.parentNode;

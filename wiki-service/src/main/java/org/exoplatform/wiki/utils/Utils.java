@@ -391,8 +391,12 @@ public class Utils {
       } else {
         // Object is a wiki home page
         Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType.toUpperCase(), wikiOwner);
-        Page wikiHome = wiki.getWikiHome();
-        return wikiHome;
+        if(wiki != null) {
+          Page wikiHome = wiki.getWikiHome();
+          return wikiHome;
+        } else {
+          return null;
+        }
       }
     } else if (wikiOwner != null) {
       // Object is a wiki
