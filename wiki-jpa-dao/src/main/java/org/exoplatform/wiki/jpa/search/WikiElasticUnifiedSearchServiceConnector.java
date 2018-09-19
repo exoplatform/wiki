@@ -16,6 +16,7 @@
 */
 package org.exoplatform.wiki.jpa.search;
 
+import org.apache.commons.lang.LocaleUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
@@ -35,6 +36,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by The eXo Platform SAS
@@ -149,9 +151,11 @@ public class WikiElasticUnifiedSearchServiceConnector extends ElasticSearchServi
       }
 
       // Build page detail
+      String lang = searchContext.getParamValue(SearchContext.RouterParams.LANG.create());
       pageDetail.append(spaceName);
       pageDetail.append(" - ");
-      pageDetail.append(DATE_FORMATTER.format(updatedDate));
+      Locale locale = LocaleUtils.toLocale(lang);
+      pageDetail.append(DATE_FORMATTER.withLocale(locale).format(updatedDate));
     } catch (Exception e) {
       LOG.error("Can not get page detail ", e);
     }
