@@ -94,8 +94,8 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       try {
         if (uploadResource != null) {
           fileName = uploadResource.getFileName();
-          if (fileName != null) {  
-            fileName = org.exoplatform.wiki.utils.Utils.escapeIllegalCharacterInName(fileName);
+          if (fileName != null) {
+            fileName = org.exoplatform.wiki.utils.Utils.normalizeUploadedFilename(fileName);
             WikiNameValidator.validateFileName(fileName);
           }
         }

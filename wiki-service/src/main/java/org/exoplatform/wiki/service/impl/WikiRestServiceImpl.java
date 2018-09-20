@@ -224,7 +224,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
           } else {
             imageBytes = null;
           }
-          String fileName = Utils.escapeIllegalCharacterInName(fileItem.getName());
+          String fileName = Utils.normalizeUploadedFilename(fileItem.getName());
           if (fileName != null) {
             // It's necessary because IE posts full path of uploaded files
             fileName = FilenameUtils.getName(fileName);

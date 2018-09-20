@@ -80,10 +80,18 @@ public class Utils {
   
   private static final String ILLEGAL_SEARCH_CHARACTERS= "\\!^()+{}[]:-\"";
   
-  private static final String ILLEGAL_NAME_CHARACTERS = "*|\":[]/'";
+  private static final String ILLEGAL_NAME_CHARACTERS = "*|\":[]/',^<>";
 
   public static final String SPLIT_TEXT_OF_DRAFT_FOR_NEW_PAGE = "_A_A_";
-  
+
+  public static String normalizeUploadedFilename(String name) {
+    name = name.replace("%22", "\"");  // Fix the bug in Chrome which a double quotes is encoded to %22
+    name = name.replace("\\\"", "\"");  // Fix the bug in Firefox which a double quotes is escaped to \\"
+
+    name = Utils.escapeIllegalCharacterInName(name);
+    return name;
+  }
+
   public static String escapeIllegalCharacterInQuery(String query) {
     String ret = query;
     if (ret != null) {
@@ -107,7 +115,6 @@ public class Utils {
       } 
       for (char c : ILLEGAL_NAME_CHARACTERS.toCharArray())
         name = name.replace(c, '_');
-      name = name.replace("%20", "_");
       return name;
     }
   }
