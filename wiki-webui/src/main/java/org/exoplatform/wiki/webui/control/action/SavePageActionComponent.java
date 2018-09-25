@@ -202,38 +202,36 @@ public class SavePageActionComponent extends UIComponent {
               page.setName(newPageName);
             }
 
-            synchronized (page.getId()) {
-              page.setComment(commentInput.getValue());
-              page.setAuthor(currentUser);
-              page.setSyntax(syntaxId);
-              pageTitleControlForm.getUIFormInputInfo().setValue(title);
-              pageParams.setPageName(page.getName());
-              page.setUrl(Utils.getURLFromParams(pageParams));
+            page.setComment(commentInput.getValue());
+            page.setAuthor(currentUser);
+            page.setSyntax(syntaxId);
+            pageTitleControlForm.getUIFormInputInfo().setValue(title);
+            pageParams.setPageName(page.getName());
+            page.setUrl(Utils.getURLFromParams(pageParams));
 
-              if (!page.getContent().equals(markup)) {
-                page.setContent(markup);
-                isContentChange = true;
-              }
+            if (!page.getContent().equals(markup)) {
+              page.setContent(markup);
+              isContentChange = true;
+            }
 
-              if (!pageEditForm.getTitle().equals(title)) {
-                page.setTitle(title);
-              }
+            if (!pageEditForm.getTitle().equals(title)) {
+              page.setTitle(title);
+            }
 
-              // update the page and create a version
-              PageUpdateType updateType = null;
-              if (isRenamedPage && isContentChange) {
-                updateType = PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE;
-              } else if (isRenamedPage) {
-                updateType = PageUpdateType.EDIT_PAGE_TITLE;
-              } else if (isContentChange) {
-                updateType = PageUpdateType.EDIT_PAGE_CONTENT;
-              }
-              wikiService.updatePage(page, updateType);
-              wikiService.createVersionOfPage(page);
+            // update the page and create a version
+            PageUpdateType updateType = null;
+            if (isRenamedPage && isContentChange) {
+              updateType = PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE;
+            } else if (isRenamedPage) {
+              updateType = PageUpdateType.EDIT_PAGE_TITLE;
+            } else if (isContentChange) {
+              updateType = PageUpdateType.EDIT_PAGE_CONTENT;
+            }
+            wikiService.updatePage(page, updateType);
+            wikiService.createVersionOfPage(page);
 
-              if (!"__anonim".equals(currentUser)) {
-                wikiService.removeDraftOfPage(pageParams);
-              }
+            if (!"__anonim".equals(currentUser)) {
+              wikiService.removeDraftOfPage(pageParams);
             }
 
           } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {

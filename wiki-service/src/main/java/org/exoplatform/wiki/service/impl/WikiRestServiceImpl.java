@@ -1097,9 +1097,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         newDraftPage.setContent(content);
         // if create draft for exist page, we need synchronized when create draft 
         if (!isNewPage) {
-          synchronized (page.getId()) {
-            draftPage = wikiService.createDraftForExistPage(newDraftPage, page, pageRevision, clientTime);
-          }
+          draftPage = wikiService.createDraftForExistPage(newDraftPage, page, pageRevision, clientTime);
         } else {
           draftPage = wikiService.createDraftForNewPage(newDraftPage, page, clientTime);
         }
