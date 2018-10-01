@@ -13,6 +13,7 @@
   <name>eXo Wiki JPA DAO</name>
 
   <properties>
+    <exo.test.coverage.ratio>0.70</exo.test.coverage.ratio>
     <org.powermock.version>1.6.5</org.powermock.version>
     <org.elasticsearch.test.guava.version>18.0</org.elasticsearch.test.guava.version>
     <org.elasticsearch.test.jodatime.version>2.8.2</org.elasticsearch.test.jodatime.version>

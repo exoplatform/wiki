@@ -12,6 +12,10 @@
   <artifactId>wiki-jpa-migration</artifactId>
   <name>eXo Wiki JPA Migration Service</name>
 
+  <properties>
+    <exo.test.coverage.ratio>0.58</exo.test.coverage.ratio>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>

@@ -9,6 +9,9 @@
   <artifactId>wiki-service</artifactId>
   <packaging>jar</packaging>
   <name>eXo PLF:: Wiki Service</name>
+  <properties>
+    <exo.test.coverage.ratio>0.39</exo.test.coverage.ratio>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>com.google.gwt</groupId>
