@@ -53,7 +53,7 @@ public class DefaultXWikiSyntaxChainingRenderer extends org.xwiki.rendering.inte
     if (ResourceType.ICON.equals(reference.getType())) {
       getIconRenderer().renderIcon(getXWikiPrinter(), reference);
     } else{
-      getImageRenderer().beginRenderLink(getXWikiPrinter(), reference, isFreeStandingURI, parameters);
+      getImageRenderer().beginRenderLink(getXWikiPrinter(), isFreeStandingURI, parameters);
       getImageRenderer().endRenderLink(getXWikiPrinter(), reference, isFreeStandingURI, parameters);
     }
   }

@@ -17,10 +17,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-    </dependency>
-    <dependency>
       <groupId>commons-chain</groupId>
       <artifactId>commons-chain</artifactId>
     </dependency>
@@ -173,24 +169,6 @@
       <artifactId>xwiki-platform-model</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-wysiwyg-client</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>xwiki-platform-gwt-user</artifactId>
-          <groupId>org.xwiki.platform</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>xwiki-platform-wysiwyg-plugin-api</artifactId>
-          <groupId>org.xwiki.platform</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>smartgwt</artifactId>
-          <groupId>com.smartgwt</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-api</artifactId>
       <exclusions>
@@ -221,12 +199,6 @@
           <groupId>xstream</groupId>
         </exclusion>
       </exclusions>
-    </dependency>
-    <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
