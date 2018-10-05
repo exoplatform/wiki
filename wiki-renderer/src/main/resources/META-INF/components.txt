@@ -1,8 +1,4 @@
 500:org.exoplatform.wiki.rendering.impl.DefaultConfigurationSource
-org.exoplatform.wiki.rendering.render.confluence.ConfluenceResourceReferenceSerializer
-org.exoplatform.wiki.rendering.render.confluence.ConfluenceSyntaxRenderer
-org.exoplatform.wiki.rendering.render.confluence.ConfluenceSyntaxBlockRenderer
-org.exoplatform.wiki.rendering.render.confluence.ConfluenceSyntaxRendererFactory
 org.exoplatform.wiki.rendering.macro.message.NoteMessageMacro
 org.exoplatform.wiki.rendering.macro.message.TipMessageMacro
 org.exoplatform.wiki.rendering.macro.panel.PanelMacro
@@ -21,11 +17,7 @@ org.exoplatform.wiki.rendering.macro.section.SectionMacro
 org.exoplatform.wiki.rendering.macro.span.SpanMacro
 org.exoplatform.wiki.rendering.macro.div.DivMacro
 org.exoplatform.wiki.rendering.converter.BlockConverter
-org.exoplatform.wiki.rendering.converter.ConfluenceBlockConverter
 org.exoplatform.wiki.rendering.filter.MacroFilter
-org.exoplatform.wiki.rendering.filter.ConfluenceMacroFilter
-500:org.exoplatform.wiki.rendering.internal.parser.confluence.DefaultWikiModelConfluenceParser
-org.exoplatform.wiki.rendering.internal.parser.confluence.ConfluenceLinkReferenceParser
 500:org.exoplatform.wiki.rendering.render.xwiki.DefaultXWikiSyntaxRenderer
 500:org.exoplatform.wiki.rendering.render.xwiki.RssSkinAccessBridge
 500:org.exoplatform.wiki.rendering.render.xwiki.image.ImageWriterImpl

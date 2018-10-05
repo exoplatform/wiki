@@ -126,10 +126,6 @@
     </dependency>
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-confluence</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-syntax-annotatedxhtml</artifactId>
     </dependency>    
     <dependency>

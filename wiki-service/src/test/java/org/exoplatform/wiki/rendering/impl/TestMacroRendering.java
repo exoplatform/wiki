@@ -42,25 +42,21 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
   public void testRenderNoteMacro() throws Exception {
     String expectedHtml = "<div class=\"box notemessage\">This is a note.</div>";
     assertEquals(expectedHtml, renderingService.render("{{note}}This is a note.{{/note}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("{note}This is a note.{note}", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
   public void testRenderTipMacro() throws Exception {
     String expectedHtml = "<div class=\"box tipmessage\">This is a tip.</div>";
     assertEquals(expectedHtml, renderingService.render("{{tip}}This is a tip.{{/tip}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("{tip}This is a tip.{tip}", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
   public void testRenderInfoMacro() throws Exception {
     String expectedHtml = "<div class=\"box infomessage\">This is an info.</div>";
     assertEquals(expectedHtml, renderingService.render("{{info}}This is an info.{{/info}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("{info}This is an info.{info}", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
 
   public void testRenderWarningMacro() throws Exception {
     String expectedHtml = "<div class=\"box warningmessage\">This is an warning.</div>";
     assertEquals(expectedHtml, renderingService.render("{{warning}}This is an warning.{{/warning}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("{warning}This is an warning.{warning}", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
 
   public void testRenderErrorMacro() throws Exception {
@@ -83,22 +79,17 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
   
   public void testRenderNoFormatMacro() throws Exception {
     String expectedXWikiHtml = "<pre>pre-formatted piece of text so **no** further __formatting__ is done here</pre>";
-    String expectedConfluenceHtml = "<pre>pre-formatted piece of text so *no* further _formatting_ is done here</pre>";
     assertEquals(expectedXWikiHtml, renderingService.render("{{noformat}}pre-formatted piece of text so **no** further __formatting__ is done here{{/noformat}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedConfluenceHtml, renderingService.render("{noformat}pre-formatted piece of text so *no* further _formatting_ is done here{noformat}", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
   public void testRenderPanelMacro() throws Exception {
     String expectedHtml = "<div class=\"panel\"><div class=\"panelHeader\">My Title</div><div class=\"panelContent\"><p>Some text with a title</p></div></div>";
     assertEquals(expectedHtml, renderingService.render("{{panel title=\"My Title\"}}Some text with a title{{/panel}}", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(expectedHtml, renderingService.render("{panel:title=My Title}Some text with a title{panel}", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
   public void testTocMacro() throws Exception {
     String xwikiExpectedHtml = "<ol><li><span class=\"wikilink\"><a href=\"#HH1\">H1</a></span><ol><li><span class=\"wikilink\"><a href=\"#HH2\">H2</a></span><ol><li><span class=\"wikilink\"><a href=\"#HH3\">H3</a></span></li></ol></li></ol></li></ol><h1 id=\"HH1\"><span>H1</span></h1><p>&nbsp;</p><h2 id=\"HH2\"><span>H2</span></h2><p>&nbsp;</p><h3 id=\"HH3\"><span>H3</span></h3>";
-    String confluenceExpectedHtml = "<ol><li><span class=\"wikilink\"><a href=\"#HH1\">H1&nbsp;</a></span><ol><li><span class=\"wikilink\"><a href=\"#HH2\">H2&nbsp;</a></span><ol><li><span class=\"wikilink\"><a href=\"#HH3\">H3&nbsp;</a></span></li></ol></li></ol></li></ol><h1 id=\"HH1\"><span>H1&nbsp;</span></h1><h2 id=\"HH2\"><span>H2&nbsp;</span></h2><h3 id=\"HH3\"><span>H3&nbsp;</span></h3>";
     assertEquals(xwikiExpectedHtml, renderingService.render("{{toc numbered=\"true\"}} {{/toc}}\n= H1 = \n == H2 == \n === H3 ===", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    assertEquals(confluenceExpectedHtml, renderingService.render("{toc:numbered=\"true\"}\nh1. H1 \nh2. H2 \nh3. H3 ", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
 //FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
@@ -114,15 +105,6 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
 //                                                       Syntax.XWIKI_2_0.toIdString(),
 //                                                       Syntax.XHTML_1_0.toIdString(),
 //                                                       false));
-//    // Test recursive inclusion
-//    String content2 = "{includepage:page=\"Wiki Home\"}";
-//    home.setContent(content2);
-//    wikiService.updatePage(home, PageUpdateType.EDIT_PAGE_CONTENT);
-//    String renderedHTML =   renderingService.render("{includepage:page=\"Wiki Home\"}",
-//                                                    Syntax.CONFLUENCE_1_0.toIdString(),
-//                                                    Syntax.XHTML_1_0.toIdString(),
-//                                                    false);
-//    assertEquals(1, (StringUtils.countMatches(renderedHTML, "<div class=\"IncludePage \" >")));        
 //  }
 
   public void testChildrenMacro() throws Exception {
@@ -192,11 +174,6 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
   
   public void testRenderDivMacro() throws Exception {
     String expectedHtml = "<p style=\"text-align:left;color:red\">example div macro</p>";
-    String outputConfluence = renderingService.render("{div:style=\"text-align:left;color:red\"}example div macro{div}",
-                                                      Syntax.CONFLUENCE_1_0.toIdString(),
-                                                      Syntax.XHTML_1_0.toIdString(),
-                                                      false);
-    assertEquals(expectedHtml, outputConfluence);
     String outputXwiki = renderingService.render("{{div style=\"text-align:left;color:red\"}}example div macro{{/div}}",
                                                  Syntax.XWIKI_2_0.toIdString(),
                                                  Syntax.XHTML_1_0.toIdString(),
@@ -206,11 +183,6 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
 
   public void testRenderSpanMacro() throws Exception {
     String expectedHtml = "<span style=\"font:12pt;color:red\">example span macro</span>";
-    String outputConfluence = renderingService.render("{span:style=\"font:12pt;color:red\"}example span macro{span}",
-                                                      Syntax.CONFLUENCE_1_0.toIdString(),
-                                                      Syntax.XHTML_1_0.toIdString(),
-                                                      false);
-    assertEquals(expectedHtml, outputConfluence);
     String outputXwiki = renderingService.render("{{span style=\"font:12pt;color:red\"}}example span macro{{/span}}",
                                                  Syntax.XWIKI_2_0.toIdString(),
                                                  Syntax.XHTML_1_0.toIdString(),
