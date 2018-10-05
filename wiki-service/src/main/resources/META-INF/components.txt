@@ -12,7 +12,5 @@ org.exoplatform.wiki.rendering.macro.related.RelatedMacro
 org.exoplatform.wiki.rendering.context.MarkupContextManager
 org.exoplatform.wiki.rendering.context.DefaultMarkupContextManager
 org.exoplatform.wiki.rendering.builder.ReferenceBuilder
-org.exoplatform.wiki.rendering.builder.ConfluenceReferenceBuilder
 org.exoplatform.wiki.rendering.builder.XWiki20ReferenceBuilder
 org.exoplatform.wiki.rendering.reference.ObjectReferenceConverter
-org.exoplatform.wiki.rendering.reference.ConfluenceObjectReferenceConverter

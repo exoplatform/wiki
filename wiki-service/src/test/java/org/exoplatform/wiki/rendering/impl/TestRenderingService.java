@@ -42,13 +42,6 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     assertEquals("<p>This is <strong>bold</strong></p>", renderingService.render("This is **bold**", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
   
-  public void  testRenderExternalLink() throws Exception{
-    String expectedHttpHtml = "<p><span class=\"wikiexternallink\"><a href=\"http://exoplatform.com\">eXo</a></span></p>";
-    assertEquals(expectedHttpHtml, renderingService.render("[eXo|http://exoplatform.com]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    String expectedMailtoHtml = "<p><span class=\"wikiexternallink\"><a href=\"mailto:exoplatform.com\">Mail to eXo</a></span></p>";
-    assertEquals(expectedMailtoHtml, renderingService.render("[Mail to eXo|mailto:exoplatform.com]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-  }
-  
   public void testRenderAnExistedInternalLink() throws Exception {
     Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
 
@@ -124,12 +117,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
     assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:classic.CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
     assertEquals(expectedXwikiAttachmentHtml, renderingService.render("[[eXoWikiHome.png>>attach:portal:classic.CreateWikiPage-003@eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-     
-    String expectedConfluenceAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://portal.exo.com:8080/portal/rest/wiki/attachments/portal/space/classic/page/CreateWikiPage-003/eXoWikiHome.png\"><span class=\"wikigeneratedlinkcontent\">eXoWikiHome.png</span></a></span></p>";
-     assertEquals(expectedConfluenceAttachmentHtml, renderingService.render("[^eXoWikiHome.png]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-    String expectedConfluenceLabelAttachmentHtml = "<p><span class=\"wikiattachmentlink\"><a href=\"http://portal.exo.com:8080/portal/rest/wiki/attachments/portal/space/classic/page/CreateWikiPage-003/eXoWikiHome.png\">eXoWikiHome.png</a></span></p>";
-     assertEquals(expectedConfluenceLabelAttachmentHtml, renderingService.render("[eXoWikiHome.png|^eXoWikiHome.png]", Syntax.CONFLUENCE_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
-     
+
     String expectedImageHtml = "<p><img src=\"http://portal.exo.com:8080/portal/rest/wiki/attachments/portal/space/classic/page/CreateWikiPage-003/eXoWikiHome.png\" alt=\"eXoWikiHome.png\"/></p>";
      assertEquals(expectedImageHtml, renderingService.render("[[image:eXoWikiHome.png]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
      
@@ -170,14 +158,5 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     assertEquals("== Section 2.1 updated ==", renderingService.getContentOfSection(content, Syntax.XWIKI_2_0.toIdString(), "5"));
     content = renderingService.updateContentOfSection(content, Syntax.XWIKI_2_0.toIdString(), "6", "== Section 2.2 updated ==");
     assertEquals("== Section 2.2 updated ==", renderingService.getContentOfSection(content, Syntax.XWIKI_2_0.toIdString(), "6"));
-  }
-  
-  public void testEscapeString() throws Exception {
-    String expectedHtml = "<p><tt class=\"wikimodel-verbatim\">_</tt>hello</p>";
-    String outputConfluence = renderingService.render("\\_hello",
-                                                      Syntax.CONFLUENCE_1_0.toIdString(),
-                                                      Syntax.XHTML_1_0.toIdString(),
-                                                      false);
-    assertEquals(expectedHtml, outputConfluence);
   }
 }
