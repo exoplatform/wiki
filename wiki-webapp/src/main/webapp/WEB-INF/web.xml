@@ -24,6 +24,11 @@
     <url-pattern>/*</url-pattern>
   </filter-mapping>
 
+  <!-- ============To override UIMaskWorkspace template for Preview wiki page============== -->
+  <listener>
+    <listener-class>org.exoplatform.container.web.PortalContainerConfigOwner</listener-class>
+  </listener>
+
   <servlet>
     <servlet-name>GateInServlet</servlet-name>
     <servlet-class>org.gatein.wci.api.GateInServlet</servlet-class>
@@ -33,17 +38,6 @@
   <servlet-mapping>
     <servlet-name>GateInServlet</servlet-name>
     <url-pattern>/gateinservlet</url-pattern>
-  </servlet-mapping>  
-
-  <!-- This is the entry point for all component-based GWT services. -->
-  <servlet>
-    <servlet-name>gwtrpc</servlet-name>
-    <servlet-class>org.exoplatform.wiki.webui.WikiRemoteServiceServlet</servlet-class>
-  </servlet>
-
-  <servlet-mapping>
-    <servlet-name>gwtrpc</servlet-name>
-    <url-pattern>*.gwtrpc</url-pattern>
   </servlet-mapping>
    
 </web-app>

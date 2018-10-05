@@ -21,7 +21,8 @@
   requireJs.require("SHARED/UIWikiPortlet", "UIWikiPortlet");
   requireJs.require("SHARED/UITreeExplorer", "UITreeExplorer");
   requireJs.require("SHARED/UIRelated", "UIRelated");
-  
+  requireJs.require("SHARED/UIWikiWysiwygLoader", "UIWikiWysiwygLoader");
+
   if(uicomponent.isKeepSessionAlive()){
     requireJs.require("SHARED/UIWikiPageEditForm", "UIWikiPageEditForm");
     requireJs.require("SHARED/UIConfirmBox", "UIConfirmBox");
@@ -41,21 +42,6 @@
   }
   eXo.env.rest.context = '$restContextName';
 </script>
-
-<% if(!rcontext.useAjax()) { %>
-<!-- This script must to put here to ensure xwe.onScriptLoad is alway called. -->
-<script type="text/javascript" src="/wiki/javascript/eXo/wiki/UIWikiWysiwygLoader.js"></script>
-<!-- This script must to put here to avoid impact submit plugin -->
-<script type="text/javascript" src="/wiki/javascript/prototype/prototype.js"></script>
-<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/initsc.js"></script>
-<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Core.js"></script>
-<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Foundation.js"></script>
-<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Containers.js"></script>
-<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Grids.js"></script>
-<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_Forms.js"></script>
-<script type="text/javascript" src="/wiki/resources/js/xwiki/wysiwyg/xwe/sc/modules/ISC_DataBinding.js"></script>
-<script type="text/javascript" src="/wiki/javascript/xwiki/xwiki.js"></script>
-<% } %>
 
 <style type="text/css">
 .wiki-body {

@@ -188,12 +188,6 @@
         </exclusion>        
       </exclusions>
     </dependency>
-    <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
-    </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -237,8 +231,9 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-jira</artifactId>
+      <groupId>org.xwiki.contrib.jira</groupId>
+      <artifactId>jira-api</artifactId>
+      <version>8.5</version>
       <scope>runtime</scope>
     </dependency>
     <dependency>
@@ -255,11 +250,6 @@
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-syntax-xwiki21</artifactId>
       <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-dev</artifactId>
-      <scope>test</scope>
     </dependency>
     <!-- GWT libraries -->
     <dependency>

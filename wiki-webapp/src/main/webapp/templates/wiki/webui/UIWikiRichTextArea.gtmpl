@@ -12,7 +12,6 @@
   requireJs.require("SHARED/UIWikiRichTextArea", "UIWikiRichTextArea");
   requireJs.addScripts("UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" 
             + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
-  requireJs.addScripts("window.require([\"/wiki/javascript/xwiki/xwiki.js\"], function(xwiki) {window.require([\"/wiki/javascript/xwiki/xwikiexplorer/xwikiexplorer.js\"], function(xwikiexplorer) {});});");
 %>
 <div class="UIWikiRichTextEditor">
   <% uicomponent.renderChild(uicomponent.RICHTEXT_AREA_INPUT); %>
