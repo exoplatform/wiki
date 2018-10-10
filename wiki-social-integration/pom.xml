@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>6.0.x-SNAPSHOT</version>
+    <version>6.0.x-wiki-editor-SNAPSHOT</version>
   </parent>
   <artifactId>wiki-social-integration</artifactId>
   <packaging>jar</packaging>
