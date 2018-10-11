@@ -31,7 +31,6 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 import javax.annotation.security.RolesAllowed;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -82,7 +81,6 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.Relations;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiRestService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
@@ -109,11 +107,11 @@ import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 
 /**
- * {@inheritDoc}
+ * Wiki REST service
  */
 @SuppressWarnings("deprecation")
 @Path("/wiki")
-public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
+public class WikiRestServiceImpl implements ResourceContainer {
 
   private final WikiService      wikiService;
 
@@ -139,61 +137,40 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   }
 
   /**
-   * {@inheritDoc}
+   * Return the wiki page content as html or wiki syntax.
+   * @param fromHTML true if the given text must be converted from HTML to wiki syntax
+   * @param toHTML true if the given text must be converted from wiki syntax to HTML
+   * @param text contain the data as html
+   * @return the instance of javax.ws.rs.core.Response
+   *
+   * @LevelAPI Experimental
    */
   @POST
   @Path("/content/")
-  @Produces(MediaType.TEXT_HTML)
-  @RolesAllowed("users")
-  public Response getWikiPageContent(@Context ServletContext servletContext,
-                                     @QueryParam("sessionKey") String sessionKey,
-                                     @QueryParam("wikiContext") String wikiContextKey,
-                                     @QueryParam("markup") boolean isMarkup,
-                                     @FormParam("html") String data) {
+  public Response getWikiPageContent(@FormParam("fromHTML") boolean fromHTML,
+                                     @FormParam("toHTML") boolean toHTML,
+                                     @FormParam("text") String text) {
     EnvironmentContext env = EnvironmentContext.getCurrent();
-    WikiContext wikiContext = new WikiContext();
     String currentSyntax = wikiService.getDefaultWikiSyntaxId();
-    HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
     try {
-      if (data == null) {
-        if (sessionKey != null && sessionKey.length() > 0) {
-          data = (String) request.getSession().getAttribute(sessionKey);
-        }
+      String outputText;
+      if(fromHTML) {
+        outputText = renderingService.render(text,
+                Syntax.XHTML_1_0.toIdString(),
+                currentSyntax,
+                false);
+      } else {
+        outputText = renderingService.render(text,
+                currentSyntax,
+                Syntax.XHTML_1_0.toIdString(),
+                false);
       }
-      if (wikiContextKey != null && wikiContextKey.length() > 0) {
-        wikiContext = (WikiContext) request.getSession().getAttribute(wikiContextKey);
-        if (wikiContext != null && wikiContext.getSyntax() != null)
-          currentSyntax = wikiContext.getSyntax();
-      }
-      Execution ec = renderingService.getExecution();
-      if (ec.getContext() == null) {
-        ec.setContext(new ExecutionContext());
-      }
-      ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
 
-      InputStream is = servletContext.getResourceAsStream("/templates/wiki/webui/xwiki/wysiwyginput.html");
-      byte[] b = new byte[is.available()];
-      is.read(b);
-      is.close();
-     
-      data = renderingService.render(data,
-                                     Syntax.XHTML_1_0.toIdString(),
-                                     currentSyntax,
-                                     false);
-      data = renderingService.render(data,
-                                     currentSyntax,
-                                     Syntax.ANNOTATED_XHTML_1_0.toIdString(),
-                                     false);
-
-      data = WikiHTMLSanitizer.markupSanitize(data);
-
-      data = new String(b).replace("$content", data);
-
+      return Response.ok(outputText, MediaType.TEXT_HTML).cacheControl(cc).build();
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+      log.error("Error while converting wiki page content: " + e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).cacheControl(cc).build();
     }
-    return Response.ok(data, MediaType.TEXT_HTML).cacheControl(cc).build();
   }
 
   /**
