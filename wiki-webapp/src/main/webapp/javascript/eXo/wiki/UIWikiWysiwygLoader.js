@@ -45,12 +45,19 @@ if (!eXo.wiki.Wysiwyg) {
             // This includes dependencies of the plugins bundled with the CKEditor code.
             deps: ['jquery', 'resource', 'resourcePicker', 'macroWizard']
           }
+        },
+        config: {
+          l10n: {
+            url: eXo.env.portal.context + '/' + eXo.env.portal.rest + '/i18n/bundle/locale.portlet.wiki.WikiPortlet-' + eXo.env.portal.language + '.json'
+          }
         }
       });
 
       window.CKEDITOR_BASEPATH = "/wiki/webjars/application-ckeditor-webjar/1.25/";
 
       window.require(['ckeditor'], function(ckeditor) {
+        var language = ($('html').attr('xml:lang') || '').toLowerCase().replace('_', '-');
+
         var isMacroOutput = function(element) {
           return element.getAscendant && element.getAscendant(function(ancestor) {
             var previousSibling = ancestor.previous;
@@ -118,7 +125,7 @@ if (!eXo.wiki.Wysiwyg) {
             fileTools_defaultFileName: '__fileCreatedFromDataURI__',
             height: 380,
             // CKEditor uses '-' (dash) as locale separator (between the language code and the country code).
-            language: ($('html').attr('xml:lang') || '').toLowerCase().replace('_', '-'),
+            language: language,
             removeButtons: 'Find,Anchor,Paste,PasteFromWord,PasteText,Blockquote,Language',
             removePlugins: 'bidi,save',
             toolbarGroups: [
@@ -153,6 +160,29 @@ if (!eXo.wiki.Wysiwyg) {
           return config;
         };
 
+        var setTranslations = function(language) {
+          var url = eXo.env.portal.context + '/' + eXo.env.portal.rest + '/i18n/bundle/locale.portlet.wiki.WikiPortlet-' + language + '.json';
+          fetch(url, { credentials: 'include' })
+            .then(function (resp) {
+              return resp.json();
+            }).then(function(translations) {
+              var translationsArray = [];
+              for (var translation in translations) {
+                var translationPrefix = 'ckeditor.plugin.';
+                if (translation.startsWith(translationPrefix)) {
+                  var pluginTranslationName = translation.substring(translationPrefix.length);
+                  var pluginName = pluginTranslationName.substring(0, pluginTranslationName.indexOf('.'));
+                  var translationName = pluginTranslationName.substring(pluginName.length + 1);
+                  translationsArray[pluginName] = translationsArray[pluginName] || {};
+                  translationsArray[pluginName][translationName] = translations[translation];
+                }
+              }
+              for (var pluginName in translationsArray) {
+                ckeditor.plugins.setLang(pluginName, language, translationsArray[pluginName]);
+              }
+            });
+        }
+
         var oldReplace = ckeditor.replace;
         ckeditor.replace = function(element, config) {
           // Take into account the configuration options specified on the target element.
@@ -160,6 +190,7 @@ if (!eXo.wiki.Wysiwyg) {
           return oldReplace.call(this, element, extendedConfig);
         };
 
+        setTranslations(language);
         ckeditor.replace('UIWikiRichTextArea_TextArea');
       });
     },
@@ -191,7 +222,7 @@ if (!eXo.wiki.Wysiwyg) {
             // loaded
             case 2:
                 fCode();
-                break; 
+                break;
         }
     },
 
@@ -207,7 +238,7 @@ if (!eXo.wiki.Wysiwyg) {
             this.onModuleLoadQueue[i]();
         }
 
-        // There's no need to schedule functions anymore. They will be execute immediately. 
+        // There's no need to schedule functions anymore. They will be execute immediately.
         this.onModuleLoadQueue = undefined;
     },
 
@@ -241,7 +272,7 @@ if (!eXo.wiki.Wysiwyg) {
         if (!iframe) {
           return;
         }
-        
+
         var gwtOnLoad = iframe.contentWindow.gwtOnLoad;
         iframe.contentWindow.gwtOnLoad = function(errFn, modName, modBase) {
             gwtOnLoad(function() {
@@ -282,7 +313,7 @@ if (!eXo.wiki.Wysiwyg) {
 eXo.wiki.Wysiwyg.onModuleLoad(function() {
     // Declare the functions that will ensure the selection is preserved whenever we switch to fullscreen editing and back.
     WysiwygEditor.prototype._beforeToggleFullScreen = function(event) {
-        if (event && event.memo && event.memo.target && 
+        if (event && event.memo && event.memo.target &&
         	event.memo.target.down('.gwt-RichTextArea') == this.getRichTextArea()) {
             // Save the current selection range.
             this._selectionRange = this.getSelectionRange();
@@ -321,13 +352,13 @@ eXo.wiki.Wysiwyg.onModuleLoad(function() {
 	            document.observe('xwiki:fullscreen:entered', this._afterToggleFullScreen.bindAsEventListener(this));
 	            document.observe('xwiki:fullscreen:exit', this._beforeToggleFullScreen.bindAsEventListener(this));
 	            document.observe('xwiki:fullscreen:exited', this._afterToggleFullScreen.bindAsEventListener(this));
-            } catch (e) { 
+            } catch (e) {
               console.log("e1: " + e.stack);
             }
 	            // If the editor was successfully created then fire a custom event.
             try {
 	            document.fire('xwiki:wysiwyg:created', {'instance': this});
-            } catch (e) { 
+            } catch (e) {
               console.log("e2: " + e.stack);
             }
             // Update the list of WYSIWYG editor instances.
