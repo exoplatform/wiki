@@ -82,20 +82,32 @@
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-webui</artifactId>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-jpa</artifactId>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-jpa-migration</artifactId>
-      <scope>provided</scope>
+      <scope>runtime</scope>
     </dependency>
   </dependencies>
   <build>
     <finalName>wiki</finalName>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-war-plugin</artifactId>
+        <configuration>
+          <!--
+            Don't include libraries into Web Archives, except webjars
+          -->
+          <packagingExcludes>%regex[WEB-INF/lib/(?!application-ckeditor-|jquery-|requirejs-|bootstrap-).*.jar]</packagingExcludes>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>
