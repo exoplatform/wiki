@@ -22,9 +22,9 @@ import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
-import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.service.WikiPageParams;
+import org.exoplatform.wiki.webui.form.UIFormCKEditorInput;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -41,11 +41,11 @@ public class UIWikiRichTextArea extends UIContainer {
   public static final String WIKI_CONTEXT = "WIKI_CONTEXT";
   
   public UIWikiRichTextArea(){
-    UIFormTextAreaInput richTextAreaInput = new UIFormTextAreaInput(RICHTEXT_AREA_INPUT, RICHTEXT_AREA_INPUT, "");
+    UIFormCKEditorInput richTextAreaInput = new UIFormCKEditorInput(RICHTEXT_AREA_INPUT, RICHTEXT_AREA_INPUT, "");
     addChild(richTextAreaInput);
   }
   
-  public UIFormTextAreaInput getUIFormTextAreaInput() {
+  public UIFormCKEditorInput getUIFormTextAreaInput() {
     return findComponentById(RICHTEXT_AREA_INPUT);
   }
   

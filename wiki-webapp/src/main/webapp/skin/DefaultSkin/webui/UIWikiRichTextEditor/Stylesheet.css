@@ -28,9 +28,21 @@
   margin: 0;
 }
 
-.UIWikiRichTextEditor .textarea {
-  height: 450px;
-  visibility: hidden;
+.UIWikiRichTextEditor #UIWikiRichTextArea_TextArea {
+  display: none;
+}
+
+.UIWikiRichTextEditor #UIWikiRichTextArea_TextArea_div {
+  background-color: white;
+  height: 380px;
+}
+
+.UIWikiRichTextEditor ul {
+  margin: 0 0 10px 25px;
+}
+
+.UIWikiRichTextEditor ul li {
+  list-style: disc;
 }
 
 .UIWikiRichTextEditor .gwt-MenuBar-horizontal table {
