@@ -10,23 +10,7 @@
   <packaging>war</packaging>
   <name>eXo PLF:: Wiki Webapp</name>
   <dependencies>
-    <dependency>
-      <groupId>org.exoplatform.platform-ui</groupId>
-      <artifactId>platform-ui-skin</artifactId>
-      <type>war</type>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.contrib</groupId>
-      <artifactId>application-ckeditor-webjar</artifactId>
-      <version>1.25</version>
-    </dependency>
-    <dependency>
-      <groupId>org.webjars</groupId>
-      <artifactId>bootstrap</artifactId>
-      <version>3.3.7</version>
-    </dependency>
-    <dependency>
+    <dependency>    
       <groupId>org.xwiki.platform</groupId>
       <artifactId>xwiki-platform-chart-macro</artifactId>
       <exclusions>
@@ -45,40 +29,6 @@
       </exclusions>
       <scope>provided</scope>
     </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-rendering-macro-rss</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-formula-macro</artifactId>
-      <exclusions>
-        <exclusion>          
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-        <exclusion>
-		  <groupId>xml-apis</groupId>
-          <artifactId>xml-apis-ext</artifactId>          
-        </exclusion>        
-      </exclusions>
-      <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-rendering-transformation-macro</artifactId>
-      <scope>provided</scope>
-    </dependency>        
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-footnotes</artifactId>
-      <scope>provided</scope>
-    </dependency>
-    <!--dependency>
-      <groupId>org.xwiki.platform</groupId>
-     <artifactId>xwiki-platform-office-macro</artifactId>
-    </dependency-->
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-webui</artifactId>
@@ -105,7 +55,7 @@
           <!--
             Don't include libraries into Web Archives, except webjars
           -->
-          <packagingExcludes>%regex[WEB-INF/lib/(?!application-ckeditor-|jquery-|requirejs-|bootstrap-).*.jar]</packagingExcludes>
+          <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
         </configuration>
       </plugin>
     </plugins>
