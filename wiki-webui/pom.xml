@@ -230,14 +230,11 @@
       <artifactId>xwiki-platform-rendering-macro-code</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!--
     <dependency>
-      <groupId>org.xwiki.contrib.jira</groupId>
-      <artifactId>jira-api</artifactId>
-      <version>8.5</version>
+      <groupId>org.xwiki.rendering</groupId>
+      <artifactId>xwiki-rendering-macro-jira</artifactId>
       <scope>runtime</scope>
     </dependency>
-    -->
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-macro-toc</artifactId>
