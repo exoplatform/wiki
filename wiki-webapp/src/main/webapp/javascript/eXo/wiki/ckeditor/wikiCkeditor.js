@@ -30,6 +30,67 @@ WikiCkeditor.prototype.createEditor = function() {
         'blockQuote',
         'undo',
         'redo' ],
+      heading: {
+        options: [
+          { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
+          { model: 'heading1', view: 'h1', title: 'Heading 1', class: 'ck-heading_heading1' },
+          { model: 'heading2', view: 'h2', title: 'Heading 2', class: 'ck-heading_heading2' },
+          {
+            model: 'note',
+            view: {
+              name: 'span',
+              classes: 'box notemessage'
+            },
+            title: 'Note',
+            class: ''
+          },
+          {
+            model: 'info',
+            view: {
+              name: 'span',
+              classes: 'box infomessage'
+            },
+            title: 'Info',
+            class: ''
+          },
+          {
+            model: 'success',
+            view: {
+              name: 'span',
+              classes: 'box successmessage'
+            },
+            title: 'Success',
+            class: ''
+          },
+          {
+            model: 'tip',
+            view: {
+              name: 'span',
+              classes: 'box tipmessage'
+            },
+            title: 'Tip',
+            class: ''
+          },
+          {
+            model: 'warning',
+            view: {
+              name: 'span',
+              classes: 'box warningmessage'
+            },
+            title: 'Warning',
+            class: ''
+          },
+          {
+            model: 'error',
+            view: {
+              name: 'span',
+              classes: 'box errormessage'
+            },
+            title: 'Error',
+            class: ''
+          }
+        ]
+      },
       table: {
         contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
       }
