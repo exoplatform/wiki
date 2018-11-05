@@ -26,23 +26,13 @@ if (!eXo.wiki.Wysiwyg) {
     {
       window.require.config({
         paths: {
-          ckeditor: '/wiki/javascript/ckeditor_balloon'
+          ckeditor: '/wiki/javascript/ckeditor'
         }
       });
 
       window.require(['ckeditor'], function(ckeditor) {
-        console.log('>>>>> ' + ckeditor);
-        ckeditor.create( document.querySelector( '#UIWikiRichTextArea_TextArea_div' ) )
+        ckeditor.create( document.querySelector( '#UIWikiRichTextArea_TextArea' ) )
           .then( editor => { window.editor = editor } );
-
-        document.getElementById( 'UISubmitToolBarUpper_SavePage_' ).addEventListener("mousedown", function() {
-          var textarea = document.querySelector( '#UIWikiRichTextArea_TextArea' );
-          textarea.value = editor.getData();
-        }, false);
-        document.getElementById( 'UISubmitToolBarBottom_SavePage_' ).addEventListener("mousedown", function() {
-          var textarea = document.querySelector( '#UIWikiRichTextArea_TextArea' );
-          textarea.value = editor.getData();
-        }, false);
       });
     },
 
