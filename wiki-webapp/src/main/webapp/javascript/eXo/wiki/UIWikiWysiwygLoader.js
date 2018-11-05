@@ -26,13 +26,12 @@ if (!eXo.wiki.Wysiwyg) {
     {
       window.require.config({
         paths: {
-          ckeditor: '/wiki/javascript/ckeditor'
+          wikiCkeditor: '/wiki/javascript/eXo/wiki/ckeditor/wikiCkeditor.bundle'
         }
       });
 
-      window.require(['ckeditor'], function(ckeditor) {
-        ckeditor.create( document.querySelector( '#UIWikiRichTextArea_TextArea' ) )
-          .then( editor => { window.editor = editor } );
+      window.require(['wikiCkeditor'], function(wikiCkeditor) {
+        wikiCkeditor.default.createEditor();
       });
     },
 
