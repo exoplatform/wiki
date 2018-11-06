@@ -84,8 +84,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
         PageVersion version = wikiService.getVersionOfPageByName(currentVersionName, wikipage);
         if (version != null) {
           String pageContent = version.getContent();
-          String pageSyntax = wikipage.getSyntax();
-          contentDisplay.setHtmlOutput(renderingService.render(pageContent, pageSyntax, Syntax.XHTML_1_0.toIdString(), false));
+          contentDisplay.setHtmlOutput(pageContent);
         }
       }
     }catch(ConversionException e){

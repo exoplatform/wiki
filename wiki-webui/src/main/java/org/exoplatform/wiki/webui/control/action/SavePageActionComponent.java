@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang.StringUtils;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
@@ -46,13 +45,11 @@ import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.impl.WikiPageHistory;
-import org.exoplatform.wiki.webui.EditMode;
 import org.exoplatform.wiki.webui.UIWikiPageControlArea;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
 import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
@@ -105,7 +102,6 @@ public class SavePageActionComponent extends UIComponent {
         UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
         UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
         String syntaxId = Utils.getDefaultSyntax();
-        RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
         Utils.setUpWikiContext(wikiPortlet);
         String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
         boolean isRenamedPage = false;
@@ -136,14 +132,12 @@ public class SavePageActionComponent extends UIComponent {
         }
 
         String htmlContent;
-        String markup;
         if (wikiRichTextArea.isRendered()) {
           htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
-          markup = renderingService.render(htmlContent, Syntax.XHTML_1_0.toIdString(), syntaxId, false);
-          markupInput.setValue(markup);
+          markupInput.setValue(htmlContent);
         } else {
-          markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
-          markup = markup.trim();
+          htmlContent = (markupInput.getValue() == null) ? "" : markupInput.getValue();
+          htmlContent = htmlContent.trim();
         }
         String newPageName = TitleResolver.getId(title, false);
         if (org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName())
@@ -175,16 +169,6 @@ public class SavePageActionComponent extends UIComponent {
 
         try {
           if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
-            if (wikiPortlet.getEditMode() == EditMode.SECTION) {
-              newPageName = page.getName();
-              title = page.getTitle();
-              markup = renderingService.updateContentOfSection(page.getContent(),
-                                                               page.getSyntax(),
-                                                               wikiPortlet.getSectionIndex(),
-                                                               markup);
-              isContentChange = true;
-            }
-
             // Check if publish activity on activity stream
             UICheckBoxInput publishActivityCheckBox = wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
             page.setMinorEdit(!publishActivityCheckBox.isChecked());
@@ -209,8 +193,8 @@ public class SavePageActionComponent extends UIComponent {
             pageParams.setPageName(page.getName());
             page.setUrl(Utils.getURLFromParams(pageParams));
 
-            if (!page.getContent().equals(markup)) {
-              page.setContent(markup);
+            if (!page.getContent().equals(htmlContent)) {
+              page.setContent(htmlContent);
               isContentChange = true;
             }
 
@@ -248,7 +232,7 @@ public class SavePageActionComponent extends UIComponent {
             newPage.setTitle(title);
             newPage.setAuthor(currentUser);
             newPage.setOwner(currentUser);
-            newPage.setContent(markup);
+            newPage.setContent(htmlContent);
             newPage.setSyntax(syntaxId);
             newPage.setUrl(Utils.getURLFromParams(pageParams));
             Page createdPage = wikiService.createPage(wiki, page.getName(), newPage);

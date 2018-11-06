@@ -95,12 +95,10 @@ public class RichTextActionComponent extends UIComponent {
       boolean isSourceTextRendered = wikiRichTextArea.isRendered();
       wikiRichTextArea.setRendered(!isSourceTextRendered);
       wikiPageEditForm.getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT).setRendered(isSourceTextRendered);
-      RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
       if (isSourceTextRendered) {
         String htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();
         htmlContent = htmlContent == null ? StringUtils.EMPTY : htmlContent;
-        String markupSyntax = Utils.getDefaultSyntax();
-        String markupContent = renderingService.render(htmlContent, Syntax.XHTML_1_0.toIdString(), markupSyntax, false);
+        String markupContent = htmlContent;
         wikiPageEditForm.getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT).setValue(markupContent);        
         wikiSidePanelArea.setRendered(true);
         bottomArea.setRendered(true);

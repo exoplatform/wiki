@@ -482,10 +482,7 @@ public class Utils {
     DiffResult diffResult = diffService.getDifferencesAsHTML(previousVersionContent,
                                                              currentVersionContent,
                                                              false);
-    String fullContent = renderingService.render(currentVersionContent,
-                                                 page.getSyntax(),
-                                                 Syntax.XHTML_1_0.toIdString(),
-                                                 false);
+    String fullContent = currentVersionContent;
     
     if (diffResult.getChanges() == 0) {
       diffResult.setDiffHTML("No changes, new revision is created.");

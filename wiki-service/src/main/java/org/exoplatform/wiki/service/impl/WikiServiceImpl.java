@@ -702,7 +702,7 @@ public class WikiServiceImpl implements WikiService, Startable {
           return cachedData.build();
         }
       }
-      renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
+      renderedContent = markup;
       if (isUseCache) {
         renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
       }

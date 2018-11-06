@@ -77,7 +77,7 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       String css = "<head><style type=\"text/css\"> " + stringBuilder.toString() + " </style></head>";
       String title = currentPage.getTitle();
 
-      String content = "<h1>" + title +"</h1><hr />" + renderingService.render(currentPage.getContent(), currentPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false, true);
+      String content = "<h1>" + title +"</h1><hr />" + currentPage.getContent();
       String encoding = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>";
       content = encoding + "<!DOCTYPE xsl:stylesheet [<!ENTITY nbsp \"&#160;\">]><html>" + css + "<body>" + content + "</body></html>"; 	
       
