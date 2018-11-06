@@ -250,7 +250,6 @@
       <artifactId>xwiki-rendering-syntax-xwiki21</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <!-- GWT libraries -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
