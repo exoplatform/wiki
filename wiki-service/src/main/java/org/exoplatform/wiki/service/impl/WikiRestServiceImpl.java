@@ -1055,11 +1055,6 @@ public class WikiRestServiceImpl implements ResourceContainer {
 
       title = replaceSpecialCharacter(title);
 
-      // Convert conent to markup if need
-      if (StringUtils.isEmpty(isMarkup) || !isMarkup.toLowerCase().equals("true")) {
-        content = renderingService.render(content, Syntax.XHTML_1_0.toIdString(), wikiService.getDefaultWikiSyntaxId(), false);
-      }
-
       DraftPage draftPage = null;
       if (!isNewPage) {
         draftPage = wikiService.getDraftOfPage(page);

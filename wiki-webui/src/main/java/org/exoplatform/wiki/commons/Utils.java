@@ -251,15 +251,13 @@ public class Utils {
   public static void feedDataForWYSIWYGEditor(UIWikiPageEditForm pageEditForm, String markup) throws Exception {
     UIWikiPortlet wikiPortlet = pageEditForm.getAncestorOfType(UIWikiPortlet.class);
     UIWikiRichTextArea richTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
     HttpSession session = Util.getPortalRequestContext().getRequest().getSession(false);
     UIFormTextAreaInput markupInput = pageEditForm.getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT);
-    String markupSyntax = getDefaultSyntax();
     WikiContext wikiContext = Utils.setUpWikiContext(wikiPortlet);
     if (markup == null) {
       markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
     }
-    String xhtmlContent = renderingService.render(markup, markupSyntax, Syntax.ANNOTATED_XHTML_1_0.toIdString(), false);
+    String xhtmlContent = markup;
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
