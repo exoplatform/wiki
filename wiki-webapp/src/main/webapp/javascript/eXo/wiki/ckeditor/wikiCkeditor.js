@@ -42,7 +42,7 @@ WikiCkeditor.prototype.createEditor = function() {
               classes: 'box notemessage'
             },
             title: 'Note',
-            class: ''
+            class: 'notemessage'
           },
           {
             model: 'info',
@@ -51,7 +51,7 @@ WikiCkeditor.prototype.createEditor = function() {
               classes: 'box infomessage'
             },
             title: 'Info',
-            class: ''
+            class: 'infomessage'
           },
           {
             model: 'success',
@@ -60,7 +60,7 @@ WikiCkeditor.prototype.createEditor = function() {
               classes: 'box successmessage'
             },
             title: 'Success',
-            class: ''
+            class: 'successmessage'
           },
           {
             model: 'tip',
@@ -69,7 +69,7 @@ WikiCkeditor.prototype.createEditor = function() {
               classes: 'box tipmessage'
             },
             title: 'Tip',
-            class: ''
+            class: 'tipmessage'
           },
           {
             model: 'warning',
@@ -78,7 +78,7 @@ WikiCkeditor.prototype.createEditor = function() {
               classes: 'box warningmessage'
             },
             title: 'Warning',
-            class: ''
+            class: 'warningmessage'
           },
           {
             model: 'error',
@@ -87,7 +87,7 @@ WikiCkeditor.prototype.createEditor = function() {
               classes: 'box errormessage'
             },
             title: 'Error',
-            class: ''
+            class: 'errormessage'
           }
         ]
       },

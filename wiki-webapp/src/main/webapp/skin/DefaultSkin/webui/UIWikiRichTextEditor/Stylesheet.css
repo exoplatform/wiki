@@ -5,17 +5,83 @@
   clear: both;
 }
 
-.UIWikiRichTextEditor .xToolbar div.clearfloats {
-  background-color: transparent;
-  clear: left;
-  float: none;
-  height: 1px;
-  line-height: 1px;
-  font-size: 1px;
-  margin: 0;
-}
-
 .UIWikiRichTextEditor .textarea {
   height: 450px;
   visibility: hidden;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item {
+  padding: 2px 4px;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .notemessage,
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.notemessage:hover {
+  background: #ffca7a;
+  border: 1px solid #ffb441;
+  color: #333;
+  position: relative;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.notemessage::before {
+  content: none;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .infomessage,
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.infomessage:hover {
+  background: #89afd9;
+  border: 1px solid #476a9c;
+  color: #333;
+  position: relative;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.infomessage::before {
+  content: none;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .successmessage,
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.successmessage:hover {
+  background: #6ccbae;
+  border: 1px solid #2eb58c;;
+  color: #333;
+  position: relative;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.successmessage::before {
+  content: none;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .tipmessage,
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.tipmessage:hover {
+  background: #6ccbae;
+  border: 1px solid #2eb58c;
+  color: #333;
+  position: relative;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.tipmessage::before {
+  content: none;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .warningmessage,
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.warningmessage:hover {
+  background: #ffca7a;
+  border: 1px solid #ffb441;
+  color: #333;
+  position: relative;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.warningmessage::before {
+  content: none;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .errormessage,
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.errormessage:hover {
+  background: #d07b7b;
+  border: 1px solid #bc4343;
+  color: #333;
+  position: relative;
+}
+
+.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.errormessage::before {
+  content: none;
 }
