@@ -18,8 +18,6 @@ package org.exoplatform.wiki.webui;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.ResourceBundle;
 
 import javax.portlet.PortletMode;
@@ -29,11 +27,8 @@ import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.portal.application.PortalRequestContext;
-import org.exoplatform.services.resources.LocaleConfigService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
-import org.exoplatform.web.application.RequestContext;
 import org.exoplatform.webui.application.WebuiApplication;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
@@ -144,7 +139,6 @@ public class UIWikiPortlet extends UIPortletApplication {
 
   public void processRender(WebuiApplication app, WebuiRequestContext context) throws Exception {
     PortletRequestContext portletReqContext = (PortletRequestContext) context;
-    setGWTLocale(portletReqContext);
 
     redirectURL = this.url(this.REDIRECT_ACTION);
     loadPreferences();
@@ -255,32 +249,6 @@ public class UIWikiPortlet extends UIPortletApplication {
       super.processRender(app, context);
     } else {
       super.processRender(app, context);
-    }
-  }
-
-  private void setGWTLocale(PortletRequestContext portletReqContext) {
-    RequestContext requestContext = portletReqContext.getParentAppRequestContext();
-    if (requestContext instanceof PortalRequestContext) {
-      PortalRequestContext portalRequestContext = (PortalRequestContext) requestContext;
-      Map<String, String> requestMetaInformation = portalRequestContext.getMetaInformation();
-      if (requestMetaInformation == null) {
-        requestMetaInformation = new HashMap<>();
-        portalRequestContext.getRequest().setAttribute(PortalRequestContext.REQUEST_METADATA, requestMetaInformation);
-      }
-      Locale locale = null;
-      if (portalRequestContext.getLocale() != null) {
-        locale = portalRequestContext.getLocale();
-      } else {
-        LocaleConfigService localeConfigService = getApplicationComponent(LocaleConfigService.class);
-        if (localeConfigService != null && localeConfigService.getDefaultLocaleConfig() != null
-            && localeConfigService.getDefaultLocaleConfig().getLocale() != null) {
-          locale = localeConfigService.getDefaultLocaleConfig().getLocale();
-        }
-      }
-      if (locale == null) {
-        locale = Locale.ENGLISH;
-      }
-      requestMetaInformation.put("gwt:property", "locale=" + locale.toString());
     }
   }
   
