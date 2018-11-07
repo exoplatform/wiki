@@ -4,6 +4,7 @@ import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
+import Font from '@ckeditor/ckeditor5-font/src/font';
 import Alignment from '@ckeditor/ckeditor5-alignment/src/alignment';
 import Link from '@ckeditor/ckeditor5-link/src/link';
 import List from '@ckeditor/ckeditor5-list/src/list';
@@ -17,8 +18,10 @@ function WikiCkeditor() {
 WikiCkeditor.prototype.createEditor = function() {
   ClassicEditor
     .create( document.querySelector( '#UIWikiRichTextArea_TextArea' ), {
-      plugins: [ Essentials, Paragraph, Bold, Italic, BlockQuote, Heading, Alignment, List, Link, Table, TableToolbar],
+      plugins: [ Essentials, Paragraph, Bold, Italic, BlockQuote, Heading, Font, Alignment, List, Link, Table, TableToolbar],
       toolbar: [ 'heading',
+        'fontSize',
+        'fontFamily',
         '|',
         'alignment',
         'bold',
@@ -29,7 +32,19 @@ WikiCkeditor.prototype.createEditor = function() {
         'insertTable',
         'blockQuote',
         'undo',
-        'redo' ],
+        'redo'
+      ],
+      fontSize: {
+        options: [
+          9,
+          11,
+          13,
+          'default',
+          17,
+          19,
+          21
+        ]
+      },
       heading: {
         options: [
           { model: 'paragraph', title: 'Paragraph', class: 'ck-heading_paragraph' },
