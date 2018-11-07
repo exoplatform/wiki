@@ -32,6 +32,7 @@
     "webpack-merge": "^4.1.4"
   },
   "dependencies": {
-    "@ckeditor/ckeditor5-font": "^10.0.3"
+    "@ckeditor/ckeditor5-font": "^10.0.3",
+    "@ckeditor/ckeditor5-highlight": "^10.0.3"
   }
 }
