@@ -12,6 +12,11 @@ import List from '@ckeditor/ckeditor5-list/src/list';
 import Paragraph from '@ckeditor/ckeditor5-paragraph/src/paragraph';
 import Table from '@ckeditor/ckeditor5-table/src/table';
 import TableToolbar from '@ckeditor/ckeditor5-table/src/tabletoolbar';
+import Image from '@ckeditor/ckeditor5-image/src/image';
+import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
+import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
+import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
+import SelfUpload from 'ckeditor5-self-image/src/selfupload';
 
 function WikiCkeditor() {
 };
@@ -19,7 +24,8 @@ function WikiCkeditor() {
 WikiCkeditor.prototype.createEditor = function() {
   ClassicEditor
     .create( document.querySelector( '#UIWikiRichTextArea_TextArea' ), {
-      plugins: [ Essentials, Paragraph, Bold, Italic, BlockQuote, Heading, Font, Highlight, Alignment, List, Link, Table, TableToolbar],
+      plugins: [ Essentials, Paragraph, Bold, Italic, BlockQuote, Heading, Font, Highlight, Alignment, List, Link,
+        Table, TableToolbar, Image, ImageToolbar, ImageStyle, ImageUpload, SelfUpload],
       toolbar: [ 'heading',
         'fontSize',
         'fontFamily',
@@ -32,6 +38,7 @@ WikiCkeditor.prototype.createEditor = function() {
         'bulletedList',
         'numberedList',
         'insertTable',
+        'imageUpload',
         'blockQuote',
         'undo',
         'redo'
@@ -110,6 +117,14 @@ WikiCkeditor.prototype.createEditor = function() {
       },
       table: {
         contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
+      },
+      selfUpload: {
+        // TODO make it work in all cases (group and user navigation)
+        uploadUrl: '/portal/rest/wiki/upload/' + eXo.env.portal.containerName + '/' + eXo.env.portal.portalName + eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))
+      },
+      image: {
+        toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight', '|', 'imageTextAlternative' ],
+        styles: [ 'full', 'alignLeft', 'alignRight']
       }
     } )
     .then(editor => {
