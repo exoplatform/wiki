@@ -33,6 +33,8 @@
   },
   "dependencies": {
     "@ckeditor/ckeditor5-font": "^10.0.3",
-    "@ckeditor/ckeditor5-highlight": "^10.0.3"
+    "@ckeditor/ckeditor5-highlight": "^10.0.3",
+    "@ckeditor/ckeditor5-image": "^11.0.0",
+    "ckeditor5-self-image": "0.0.1"
   }
 }

@@ -193,6 +193,8 @@ public class WikiRestServiceImpl implements ResourceContainer {
       DiskFileUpload upload = new DiskFileUpload();
       // Parse the request
       try {
+        String attachmentName = null;
+
         List<FileItem> items = upload.parseRequest(req);
         for (FileItem fileItem : items) {
           InputStream inputStream = fileItem.getInputStream();
@@ -224,7 +226,27 @@ public class WikiRestServiceImpl implements ResourceContainer {
             attachment.setCreator(conversationState.getIdentity().getUserId());
           }
           wikiService.addAttachmentToPage(attachment, page);
+
+          attachmentName = attachment.getName();
         }
+
+        StringBuilder responseBody = new StringBuilder("{\"default\":\"")
+                .append(Utils.getDefaultRestBaseURI())
+                .append("/wiki/attachments/")
+                .append(wikiType)
+                .append("/")
+                .append(Utils.SPACE)
+                .append("/")
+                .append(wikiOwner)
+                .append("/")
+                .append(Utils.PAGE)
+                .append("/")
+                .append(pageId)
+                .append("/")
+                .append(attachmentName)
+                .append("\"}");
+
+        return Response.ok(responseBody.toString()).build();
       } catch (IllegalArgumentException e) {
         log.error("Special characters are not allowed in the name of an attachment.");
         return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
@@ -232,8 +254,9 @@ public class WikiRestServiceImpl implements ResourceContainer {
         log.error(e.getMessage());
         return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
       }
+    } else {
+      return Response.status(Status.BAD_REQUEST).entity("The request must be a multipart request").build();
     }
-    return Response.ok().build();
   }
 
   /**
