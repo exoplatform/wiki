@@ -2,6 +2,7 @@ import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor'
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
+import Underline from '@ckeditor/ckeditor5-basic-styles/src/underline';
 import BlockQuote from '@ckeditor/ckeditor5-block-quote/src/blockquote';
 import Heading from '@ckeditor/ckeditor5-heading/src/heading';
 import Font from '@ckeditor/ckeditor5-font/src/font';
@@ -24,7 +25,7 @@ function WikiCkeditor() {
 WikiCkeditor.prototype.createEditor = function() {
   ClassicEditor
     .create( document.querySelector( '#UIWikiRichTextArea_TextArea' ), {
-      plugins: [ Essentials, Paragraph, Bold, Italic, BlockQuote, Heading, Font, Highlight, Alignment, List, Link,
+      plugins: [ Essentials, Paragraph, Bold, Italic, Underline, BlockQuote, Heading, Font, Highlight, Alignment, List, Link,
         Table, TableToolbar, Image, ImageToolbar, ImageStyle, ImageUpload, SelfUpload],
       toolbar: [ 'heading',
         'fontSize',
@@ -34,6 +35,7 @@ WikiCkeditor.prototype.createEditor = function() {
         'alignment',
         'bold',
         'italic',
+        'underline',
         'link',
         'bulletedList',
         'numberedList',
