@@ -100,14 +100,19 @@ export default class Toc extends Plugin {
 
 /**
  * Update existing ToCs
+ *
+ * @param {Model} model CKEditor model
+ * @param {Object} conversionApi CKEditor conversionApi
+ * @return {void}
  */
 function updateTocs(model, conversionApi) {
-  let mainRoot = model.document.getRoot();
-  for (let element of mainRoot.getChildren()) {
+  const mainRoot = model.document.getRoot();
+  for (const element of mainRoot.getChildren()) {
     if(element.name === 'toc') {
       console.log('toc found');
-      const viewElement = conversionApi.mapper.toViewElement(element);
       // TODO replace view element with the new toc
+      const viewElement = conversionApi.mapper.toViewElement(element);
+      console.log(`viewElement=${viewElement}`);
       //let documentFragment = conversionApi.writer.remove(viewElement);
       //conversionApi.writer.insert(documentFragment, buildToc(model, conversionApi.writer));
     }
@@ -116,9 +121,13 @@ function updateTocs(model, conversionApi) {
 
 /**
  * Build ToC
+ *
+ * @param {Model} model CKEditor model
+ * @param {DowncastWriter} viewWriter CKEditor downcast writer
+ * @return {Array} Generated ToC
  */
 function buildToc(model, viewWriter) {
-  let toc = viewWriter.createContainerElement('div', { 'class': 'toc' });
+  const toc = viewWriter.createContainerElement('div', { 'class': 'toc' });
 
   const headings = extractHeadings(model);
 
@@ -156,12 +165,15 @@ function buildToc(model, viewWriter) {
 
 /**
  * Parse the model to extract headings
+ *
+ * @param {Model} model CKEditor model
+ * @return {Array} List of headings model elements
  */
 function extractHeadings(model) {
-  let headings = [];
+  const headings = [];
 
-  let mainRoot = model.document.getRoot();
-  for (let element of mainRoot.getChildren()) {
+  const mainRoot = model.document.getRoot();
+  for (const element of mainRoot.getChildren()) {
     if(element.name.startsWith('heading')) {
       headings.push(element);
     }
