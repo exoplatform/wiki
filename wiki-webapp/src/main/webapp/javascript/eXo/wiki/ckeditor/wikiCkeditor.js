@@ -18,11 +18,12 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import SelfUpload from 'ckeditor5-self-image/src/selfupload';
-import Toc from './plugins/toc'
+import Toc from './plugins/toc';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
 
 function WikiCkeditor() {
-};
+  // do nothing
+}
 
 WikiCkeditor.prototype.createEditor = function() {
   ClassicEditor
@@ -50,13 +51,13 @@ WikiCkeditor.prototype.createEditor = function() {
       ],
       fontSize: {
         options: [
-          9,
-          11,
-          13,
+          9,          // eslint-disable-line no-magic-numbers
+          11,         // eslint-disable-line no-magic-numbers
+          13,         // eslint-disable-line no-magic-numbers
           'default',
-          17,
-          19,
-          21
+          17,         // eslint-disable-line no-magic-numbers
+          19,         // eslint-disable-line no-magic-numbers
+          21          // eslint-disable-line no-magic-numbers
         ]
       },
       heading: {
@@ -125,7 +126,7 @@ WikiCkeditor.prototype.createEditor = function() {
       },
       selfUpload: {
         // TODO make it work in all cases (group and user navigation)
-        uploadUrl: '/portal/rest/wiki/upload/' + eXo.env.portal.containerName + '/' + eXo.env.portal.portalName + eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))
+        uploadUrl: `/portal/rest/wiki/upload/${eXo.env.portal.containerName}/${eXo.env.portal.portalName}${eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))}`
       },
       image: {
         toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight', '|', 'imageTextAlternative' ],
@@ -133,7 +134,6 @@ WikiCkeditor.prototype.createEditor = function() {
       }
     } )
     .then(editor => {
-      console.log( 'Editor was initialized', editor );
       window.editor = editor;
     })
     .catch(error => {
@@ -141,5 +141,5 @@ WikiCkeditor.prototype.createEditor = function() {
     });
 };
 
-let exportedWysiwyg = new WikiCkeditor();
+const exportedWysiwyg = new WikiCkeditor();
 export default exportedWysiwyg;
