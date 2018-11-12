@@ -120,6 +120,14 @@
     </script>
   </module>
 
+  <module>
+    <name>UIWikiWysiwygLoader</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <minify>false</minify>
+      <path>/javascript/eXo/wiki/UIWikiWysiwygLoader.js</path>
+    </script>
+  </module>
 
   <module>
     <name>UIWikiPageVersionsList</name>
