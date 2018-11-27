@@ -119,8 +119,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   public static final String ATT_CACHE_NAME = "wiki.PageAttachmentCache";
 
-  public static final String UUID_CACHE_NAME = "wiki.PageUuidCache";
-
   public static String UPLOAD_LIMIT_PARAMETER_NAME = "attachment.upload.limit";
 
   private ConfigurationManager configManager;
@@ -153,7 +151,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private ExoCache<Integer, MarkupData> renderingCache;
   private ExoCache<Integer, AttachmentCountData> attachmentCountCache;
-  private ExoCache<Integer, String> uuidCache;
 
   private Map<WikiPageParams, List<WikiPageParams>> pageLinksMap = new ConcurrentHashMap<>();
 
@@ -183,7 +180,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     this.renderingCache = cacheService.getCacheInstance(CACHE_NAME);
     this.attachmentCountCache = cacheService.getCacheInstance(ATT_CACHE_NAME);
-    this.uuidCache = cacheService.getCacheInstance(UUID_CACHE_NAME);
 
     if (initParams != null) {
       Iterator<ValuesParam> helps = initParams.getValuesParamIterator();
@@ -215,10 +211,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void stop() {
-  }
-
-  public ExoCache<Integer, String> getUuidCache() {
-    return uuidCache;
   }
 
   public ExoCache<Integer, MarkupData> getRenderingCache() {
@@ -541,24 +533,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     Page page = null;
 
     // check in the cache first
-    MarkupKey key = new MarkupKey(new WikiPageParams(wikiType, wikiOwner, pageName), "", Syntax.XHTML_1_0.toIdString(), true);
-    String uuid  = uuidCache.get(new Integer(key.hashCode()));
-    if (uuid != null) {
-      if (WIKI_TYPE_DRAFT.equals(wikiType)) {
-        page = getDraftPageById(uuid);
-      } else {
-        page = getPageById(uuid);
-      }
-    }
-
-    // if uuid not found in the cache
-    if (page == null) {
-      page = dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageName);
-      if (page != null) {
-        uuid = page.getId();
-        uuidCache.put(new Integer(key.hashCode()), uuid);
-      }
-    }
+    page = dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageName);
 
     if(page != null) {
       Identity user = ConversationState.getCurrent().getIdentity();
@@ -679,7 +654,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     page.setWikiType(wikiType);
     page.setWikiOwner(wikiOwner);
     invalidateCache(page);
-    invalidateUUIDCache(page);
 
     return true;
   }
@@ -697,7 +671,6 @@ public class WikiServiceImpl implements WikiService, Startable {
       page.setWikiType(currentLocationParams.getType());
       page.setWikiOwner(currentLocationParams.getOwner());
       invalidateCache(page);
-      invalidateUUIDCache(page);
       invalidateAttachmentCache(page);
 
       postUpdatePage(newLocationParams.getType(), newLocationParams.getOwner(), movePage.getName(), movePage, PageUpdateType.MOVE_PAGE);
@@ -776,12 +749,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     }
   }
 
-  protected void invalidateUUIDCache(Page page) {
-    MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()),
-            "", Syntax.XHTML_1_0.toIdString(), true);
-    uuidCache.remove(new Integer(key.hashCode()));
-  }
-
   protected void invalidateAttachmentCache(Page page) {
     WikiPageParams wikiPageParams = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
 
@@ -823,7 +790,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     while (!queue.isEmpty()) {
       Page currentPage = queue.poll();
       invalidateCache(currentPage);
-      invalidateUUIDCache(currentPage);
       List<Page> childrenPages = getChildrenPageOf(currentPage);
       for (Page child : childrenPages) {
         queue.add(child);

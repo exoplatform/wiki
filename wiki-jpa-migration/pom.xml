@@ -75,7 +75,7 @@
         <configuration>
           <systemProperties>
             <property>
-              <name>exo.data.dir</name>
+              <name>exo.files.storage.dir</name>
               <value>target/exo-files</value>
             </property>
           </systemProperties>

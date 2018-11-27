@@ -42,17 +42,6 @@
           </object>
         </object-param>
         <object-param>
-          <name>wiki.PageUuidCache</name>
-          <description>The Cache configuration for wiki page uuid</description>
-          <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">
-            <field name="name"><string>wiki.PageUuidCache</string></field>
-            <field name="strategy" profiles="cluster"><string>${exo.cache.wiki.PageUuidCache.strategy:LIRS}</string></field>
-            <field name="maxSize"><int>${exo.cache.wiki.PageUuidCache.MaxNodes:1000}</int></field>
-            <field name="liveTime"><long>${exo.cache.wiki.PageUuidCache.TimeToLive:86400}</long></field>
-            <field name="cacheMode" profiles="cluster"><string>${exo.cache.wiki.PageUuidCache.cacheMode:replication}</string></field>
-          </object>
-        </object-param>
-        <object-param>
           <name>wiki.PageAttachmentCache</name>
           <description>The Cache configuration for wiki page attachment count</description>
           <object type="org.exoplatform.services.cache.impl.infinispan.generic.GenericExoCacheConfig">

@@ -298,12 +298,12 @@ public class SavePageActionComponent extends UIComponent {
 
     private DraftPage findTheMatchDraft(String pageTitle, Page parentPage) throws WikiException {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-      String parentUUID = parentPage.getId();
+      String parentPageId = parentPage.getId();
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
       List<DraftPage> draftPages = wikiService.getDraftsOfUser(currentUser);
       for (DraftPage draftPage : draftPages) {
         if (draftPage.getTitle() != null && draftPage.getTitle().equals(pageTitle) && draftPage.getTargetPageId() != null
-            && draftPage.getTargetPageId().equals(parentUUID)) {
+            && draftPage.getTargetPageId().equals(parentPageId)) {
           return draftPage;
         }
       }
