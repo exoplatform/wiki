@@ -398,7 +398,7 @@ public class Utils {
         return expandPage;
       } else {
         // Object is a wiki home page
-        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType.toUpperCase(), wikiOwner);
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
         if(wiki != null) {
           Page wikiHome = wiki.getWikiHome();
           return wikiHome;

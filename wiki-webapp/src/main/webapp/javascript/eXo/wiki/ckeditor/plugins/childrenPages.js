@@ -1,0 +1,138 @@
+import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+
+import childrenIcon from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
+
+import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
+
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
+import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
+
+/**
+ * CKEditor plugin which displays the list of children pages of the current page
+ */
+export default class ChildrenPages extends Plugin {
+  init() {
+    const editor = this.editor;
+
+    // Allow children nodes.
+    editor.model.schema.register('childrenPages', {
+      allowIn: '$root',
+      isBlock: true,
+      isObject: true
+    });
+
+    // Build converter from model to view for data and editing pipelines.
+    editor.conversion.for('upcast').add(upcastElementToElement({
+      view: {
+        name: 'div',
+        classes: 'childrenPages'
+      },
+      model: 'childrenPages'
+    }));
+    editor.conversion.for('dataDowncast').add(downcastElementToElement({
+      model: 'childrenPages',
+      view: (modelElement, viewWriter) => {
+        return buildChildrenPages(modelElement, viewWriter);
+      }
+    }));
+    editor.conversion.for('editingDowncast').add(downcastElementToElement({
+      model: 'childrenPages',
+      view: (modelElement, viewWriter) => {
+        const div = buildChildrenPages(editor.model, viewWriter);
+
+        return toWidget( div, viewWriter, { label: 'Children Pages' } );
+      }
+    }));
+
+    editor.ui.componentFactory.add('insertChildren', locale => {
+      const childrenButtonView = new ButtonView(locale);
+
+      childrenButtonView.set({
+        label: 'Insert Children',
+        icon: childrenIcon,
+        tooltip: true
+      });
+
+      // Callback executed once the button is clicked.
+      childrenButtonView.on('execute', () => {
+        editor.model.change( writer => {
+          console.log('insert Children');
+          const children = writer.createElement('childrenPages');
+          editor.model.insertContent(children);
+        });
+      });
+
+      return childrenButtonView;
+    } );
+  }
+
+
+}
+
+/**
+ * Build Children Pages
+ *
+ * @param {Model} model CKEditor model
+ * @param {DowncastWriter} viewWriter CKEditor downcast writer
+ * @return {Array} Generated ToC
+ */
+function buildChildrenPages(model, viewWriter) {
+  const childrenContainer = viewWriter.createContainerElement('div', { 'class': 'childrenPages' });
+
+  const data = fetchChildrenPages();
+
+  const ulEntry = viewWriter.createContainerElement('ul');
+  viewWriter.insert(ViewPosition.createAt(childrenContainer, 'end'), ulEntry);
+
+  for (const childrenPage of data) {
+    const childrenEntry = viewWriter.createContainerElement('li');
+    viewWriter.insert(ViewPosition.createAt(ulEntry, 'end'), childrenEntry);
+
+    const pathSeparator = '%2F';
+    const pageName = childrenPage.path.substr(childrenPage.path.lastIndexOf(pathSeparator) + pathSeparator.length);
+    const pageLink = viewWriter.createContainerElement('a', { 'href': eXo.wiki.UITreeExplorer.baseLink + pageName });
+    viewWriter.insert(ViewPosition.createAt(childrenEntry, 'end'), pageLink);
+
+    const entryText = childrenPage.name;
+    const entry = viewWriter.createText(entryText);
+    viewWriter.insert(ViewPosition.createAt(pageLink, 'end'), entry);
+  }
+
+  return childrenContainer;
+}
+
+/**
+ * Fetch children pages
+ *
+ * @return {Array} List of children pages
+ */
+function fetchChildrenPages() {
+  const HTTP_OK = 200;
+
+  let result = [];
+  const xhr = new XMLHttpRequest();
+  xhr.onreadystatechange = function() {
+    if (xhr.status === HTTP_OK) {
+      result = JSON.parse(xhr.responseText);
+    }
+  };
+
+  // TODO Manage url for users wikis
+  let url = null;
+  const pageName = eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/') + 1);
+  if(eXo.env.portal.spaceName) {
+    url = `/rest/wiki/tree/CHILDREN?path=group/spaces/${eXo.env.portal.spaceGroup}/${pageName}&depth=1`;
+  } else {
+    url = `/rest/wiki/tree/CHILDREN?path=portal/${eXo.env.portal.portalName}/${pageName}&depth=1`;
+  }
+  xhr.open('GET', url, false);
+  xhr.send();
+
+  if(result && result.jsonList) {
+    result = result.jsonList;
+  }
+
+  return result;
+}
