@@ -10,6 +10,10 @@
   visibility: hidden;
 }
 
+.UIWikiRichTextEditor .ck-editor__editable {
+  min-height: 380px;
+}
+
 .ck-editor .ck-heading-dropdown .ck-list__item {
   padding: 2px 4px;
 }
