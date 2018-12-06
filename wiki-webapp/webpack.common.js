@@ -45,6 +45,13 @@ module.exports = {
           'babel-loader',
           'eslint-loader',
         ]
+      },
+      {
+        test: /\.vue$/,
+        use: [
+          'vue-loader',
+          'eslint-loader',
+        ]
       }
     ]
   },

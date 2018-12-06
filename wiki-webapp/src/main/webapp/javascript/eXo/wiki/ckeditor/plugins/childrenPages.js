@@ -1,11 +1,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+//import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 import childrenIcon from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+//import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
@@ -16,6 +16,8 @@ export default class ChildrenPages extends Plugin {
   init() {
     const editor = this.editor;
 
+    console.log('ChildrenPages initialized');
+
     // Allow children nodes.
     editor.model.schema.register('childrenPages', {
       allowIn: '$root',
@@ -25,25 +27,12 @@ export default class ChildrenPages extends Plugin {
 
     // Build converter from model to view for data and editing pipelines.
     editor.conversion.for('upcast').add(upcastElementToElement({
-      view: {
-        name: 'div',
-        classes: 'childrenPages'
-      },
+      view: 'exo-wiki-children-pages',
       model: 'childrenPages'
     }));
-    editor.conversion.for('dataDowncast').add(downcastElementToElement({
+    editor.conversion.for('downcast').add(downcastElementToElement({
       model: 'childrenPages',
-      view: (modelElement, viewWriter) => {
-        return buildChildrenPages(modelElement, viewWriter);
-      }
-    }));
-    editor.conversion.for('editingDowncast').add(downcastElementToElement({
-      model: 'childrenPages',
-      view: (modelElement, viewWriter) => {
-        const div = buildChildrenPages(editor.model, viewWriter);
-
-        return toWidget( div, viewWriter, { label: 'Children Pages' } );
-      }
+      view: 'exo-wiki-children-pages'
     }));
 
     editor.ui.componentFactory.add('insertChildren', locale => {
@@ -78,6 +67,7 @@ export default class ChildrenPages extends Plugin {
  * @param {DowncastWriter} viewWriter CKEditor downcast writer
  * @return {Array} Generated ToC
  */
+/*
 function buildChildrenPages(model, viewWriter) {
   const childrenContainer = viewWriter.createContainerElement('div', { 'class': 'childrenPages' });
 
@@ -102,12 +92,14 @@ function buildChildrenPages(model, viewWriter) {
 
   return childrenContainer;
 }
+*/
 
 /**
  * Fetch children pages
  *
  * @return {Array} List of children pages
  */
+/*
 function fetchChildrenPages() {
   const HTTP_OK = 200;
 
@@ -136,3 +128,4 @@ function fetchChildrenPages() {
 
   return result;
 }
+*/
