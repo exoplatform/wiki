@@ -15,7 +15,7 @@ if (!eXo.wiki.Wysiwyg) {
         }
       });
 
-      window.require(['wikiCkeditor'], function(wikiCkeditor) {
+      window.require(['wikiCkeditor', 'SHARED/wikiPageContent'], function(wikiCkeditor) {
         wikiCkeditor.default.createEditor();
       });
     },

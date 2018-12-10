@@ -9,8 +9,8 @@ let config = merge(webpackCommonConfig, {
   output: {
     path: path.resolve(__dirname, exoServerPath + 'webapps/wiki/javascript/eXo/wiki/ckeditor'),
     filename: '[name].bundle.js',
-    library: 'wikiCkeditor',
-    libraryTarget: 'umd'
+    library: '[name]',
+    libraryTarget: 'amd'
   },
 
   // Useful for debugging
