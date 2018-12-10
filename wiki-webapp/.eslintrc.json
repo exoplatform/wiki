@@ -6,10 +6,12 @@
     },
     "extends": [
         "eslint:recommended",
-        "plugin:jest/recommended"
+        "plugin:jest/recommended",
+        "plugin:vue/recommended"
     ],
     "globals": {
-        "eXo": true
+        "eXo": true,
+        "Vue": true
     },
     "parserOptions": {
         "sourceType": "module",

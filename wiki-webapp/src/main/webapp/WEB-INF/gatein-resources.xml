@@ -34,8 +34,22 @@
       <depends>
          <module>jquery</module>
       </depends>
+      <depends>
+         <module>wikiPageContent</module>
+      </depends>
     </module>
   </portlet>
+
+  <module>
+    <name>wikiPageContent</name>
+    <script>
+      <minify>false</minify>
+      <path>/javascript/eXo/wiki/ckeditor/pageContent.bundle.js</path>
+    </script>
+    <depends>
+      <module>vue</module>
+    </depends>
+  </module>
   
   <!-- Javascripts used in View Mode -->
   <module>
