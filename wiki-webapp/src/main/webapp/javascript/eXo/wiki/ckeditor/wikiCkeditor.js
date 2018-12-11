@@ -138,7 +138,7 @@ WikiCkeditor.prototype.createEditor = function() {
     } )
     .then(editor => {
       window.editor = editor;
-      new Vue({el: '.UIWikiRichTextEditor'});
+      new Vue({el: '.ck-content'});
     })
     .catch(error => {
       console.error( error.stack );
