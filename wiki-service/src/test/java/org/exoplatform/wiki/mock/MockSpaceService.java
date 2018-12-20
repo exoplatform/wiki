@@ -422,6 +422,16 @@ public class MockSpaceService implements SpaceService {
   }
 
   @Override
+  public boolean isIgnored(Space space, String userId) {
+    return false;
+  }
+
+  @Override
+  public void setIgnored(String spaceId, String userId) {
+
+  }
+
+  @Override
   public void installApplication(String spaceId, String appId) throws SpaceException {
     
   }
@@ -589,19 +599,6 @@ public class MockSpaceService implements SpaceService {
   @Override
   public boolean isSuperManager(String userId) {
     return false;
-  }
-
-  @Override
-  public List<MembershipEntry> getSuperManagersMemberships() {
-    return null;
-  }
-
-  @Override
-  public void addSuperManagersMembership(String permissionExpression) {
-  }
-
-  @Override
-  public void removeSuperManagersMembership(String permissionExpression) {
   }
 
 }
