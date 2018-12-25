@@ -1,5 +1,5 @@
 <template>
-  <ul class="wiki-children-pages">
+  <ul>
     <li v-for="page in childrenPages" :key="page.name">
       <a :href="getChildrenPagePath(page.name)">
         {{ page.name }}

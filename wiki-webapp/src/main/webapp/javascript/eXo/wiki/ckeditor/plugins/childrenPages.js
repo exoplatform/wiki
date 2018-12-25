@@ -1,11 +1,11 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-//import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
+import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 import childrenIcon from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
-//import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
+import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
 import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
@@ -30,9 +30,16 @@ export default class ChildrenPages extends Plugin {
       view: 'exo-wiki-children-pages',
       model: 'childrenPages'
     }));
+    
     editor.conversion.for('downcast').add(downcastElementToElement({
       model: 'childrenPages',
-      view: 'exo-wiki-children-pages'
+      view: (modelElement, viewWriter) => {
+        const childrenContainer = viewWriter.createContainerElement('p', { 'class': 'wiki-children-pages' });
+        const childrenComponent = viewWriter.createContainerElement('exo-wiki-children-pages');
+        viewWriter.insert(ViewPosition.createAt(childrenContainer, 'end'), childrenComponent);
+
+        return toWidget( childrenContainer, viewWriter );
+      }
     }));
 
     editor.ui.componentFactory.add('insertChildren', locale => {
