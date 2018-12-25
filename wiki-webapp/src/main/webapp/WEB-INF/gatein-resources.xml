@@ -49,6 +49,9 @@
     <depends>
       <module>vue</module>
     </depends>
+    <depends>
+      <module>vueCustomElement</module>
+    </depends>
   </module>
   
   <!-- Javascripts used in View Mode -->
