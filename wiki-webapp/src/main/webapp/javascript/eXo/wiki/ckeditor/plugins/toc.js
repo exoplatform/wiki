@@ -1,8 +1,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
-import tocIcon from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -78,7 +76,7 @@ export default class Toc extends Plugin {
 
       tocButtonView.set({
         label: 'Insert ToC',
-        icon: tocIcon,
+        class: 'uiIconPortlet',
         tooltip: true
       });
 

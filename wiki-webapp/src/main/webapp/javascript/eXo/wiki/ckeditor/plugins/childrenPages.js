@@ -1,8 +1,6 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
 import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
-import childrenIcon from '@ckeditor/ckeditor5-core/theme/icons/pilcrow.svg';
-
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
@@ -47,7 +45,7 @@ export default class ChildrenPages extends Plugin {
 
       childrenButtonView.set({
         label: 'Insert Children',
-        icon: childrenIcon,
+        class: 'uiIconEcmsRelationListMini',
         tooltip: true
       });
 
