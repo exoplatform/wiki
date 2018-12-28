@@ -22,6 +22,7 @@ import SelfUpload from 'ckeditor5-self-image/src/selfupload';
 import ChildrenPages from './plugins/childrenPages';
 import Toc from './plugins/toc';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
+import IncludePage from './plugins/includePage';
 
 function WikiCkeditor() {
   // do nothing
@@ -31,7 +32,7 @@ WikiCkeditor.prototype.createEditor = function() {
   ClassicEditor
     .create( document.querySelector( '#UIWikiRichTextArea_TextArea' ), {
       plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, BlockQuote, Heading, Font, Highlight, Alignment, List, Link,
-        Table, TableToolbar, Image, ImageToolbar, ImageStyle, ImageUpload, SelfUpload, ChildrenPages, Toc, Widget],
+        Table, TableToolbar, Image, ImageToolbar, ImageStyle, ImageUpload, SelfUpload, ChildrenPages, Toc, Widget, IncludePage],
       toolbar: [ 'heading',
         'fontFamily',
         'fontSize',
@@ -49,6 +50,7 @@ WikiCkeditor.prototype.createEditor = function() {
         'imageUpload',
         'insertToc',
         'insertChildren',
+        'includePage',
         'undo',
         'redo'
       ],
