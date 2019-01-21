@@ -841,6 +841,11 @@ public class JPADataStorage implements DataStorage {
 
   @Override
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException {
+    return getAttachmentsOfPage(page, false);
+  }
+
+  @Override
+  public List<Attachment> getAttachmentsOfPage(Page page, boolean loadContent) throws WikiException {
     List<AttachmentEntity> attachmentsEntities;
     String wikiType;
     String wikiOwner;
@@ -883,7 +888,7 @@ public class JPADataStorage implements DataStorage {
     List<Attachment> attachments = new ArrayList<>();
     if (attachmentsEntities != null) {
       for (AttachmentEntity attachmentEntity : attachmentsEntities) {
-        Attachment attachment = convertAttachmentEntityToAttachment(fileService, attachmentEntity);
+        Attachment attachment = convertAttachmentEntityToAttachment(fileService, attachmentEntity, loadContent);
         // set title and full title if not there
         if (attachment.getTitle() == null || StringUtils.isEmpty(attachment.getTitle())) {
           int index = attachment.getName().lastIndexOf(".");

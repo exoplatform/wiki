@@ -135,12 +135,13 @@ public class DefaultWikiModel implements WikiModel {
         page = wikiService.getExsitedOrNewDraftPageById(wikiMarkupContext.getType(), wikiMarkupContext.getOwner(), wikiMarkupContext.getPageName());
 
         Attachment att = wikiService.getAttachmentOfPageByName(attachmentName, page);
-        Boolean exportToPdf = (parameters == null)? false : Boolean.valueOf(parameters.get(RenderingService.EXPORT_TO_PDF));
         if (att != null) {
-          if ((exportToPdf) && att.getMimeType().startsWith("image/")) {
+          boolean exportToPdf = (parameters == null)? false : Boolean.valueOf(parameters.get(RenderingService.EXPORT_TO_PDF));
+          if (exportToPdf && att.getMimeType().startsWith("image/")) {
             // PDF rendering is done on server side from the HTML content, when it comes getting restricted by permissions images, the server will call a rest service
             // anonymously and we cannot check the permissions. So for the PDF export images will be alternatively created and fetched from a temporary file
-            File image = Files.createTempFile(attachmentName + Long.toString(System.currentTimeMillis()), null).toFile();
+            att = wikiService.getAttachmentOfPageByName(attachmentName, page, true);
+            File image = Files.createTempFile(attachmentName + System.currentTimeMillis(), null).toFile();
             try (OutputStream outStream = new FileOutputStream(image)) {
               outStream.write(att.getContent());
             }

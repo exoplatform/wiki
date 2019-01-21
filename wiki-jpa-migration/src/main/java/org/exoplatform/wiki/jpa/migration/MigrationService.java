@@ -992,7 +992,7 @@ public class MigrationService implements StartableClusterAware {
       }
 
       // attachments
-      List<Attachment> attachments = jcrDataStorage.getAttachmentsOfPage(jcrPage);
+      List<Attachment> attachments = jcrDataStorage.getAttachmentsOfPage(jcrPage,true);
       for (Attachment attachment : attachments) {
         jpaDataStorage.addAttachmentToPage(attachment, jcrPage);
       }

@@ -115,9 +115,9 @@ public class TestWikiRestService {
     attachment3.setCreator("root");
 
     when(wikiService.getPageOfWikiByName(wikiType, wikiOwner, "wikiHomePageId")).thenReturn(wikiHomePage);
-    when(wikiService.getAttachmentOfPageByName("attachment1.png",wikiHomePage)).thenReturn(attachment1);
-    when(wikiService.getAttachmentOfPageByName("attachment2.png",wikiHomePage)).thenReturn(attachment2);
-    when(wikiService.getAttachmentOfPageByName("attachment3.png",wikiHomePage)).thenReturn(attachment3);
+    when(wikiService.getAttachmentOfPageByName("attachment1.png", wikiHomePage, true)).thenReturn(attachment1);
+    when(wikiService.getAttachmentOfPageByName("attachment2.png", wikiHomePage, true)).thenReturn(attachment2);
+    when(wikiService.getAttachmentOfPageByName("attachment3.png", wikiHomePage, true)).thenReturn(attachment3);
   
     // When
     Response response = wikiRestService.getAttachment(null, wikiType , wikiOwner, pageId, "attachment1.png", null);
@@ -128,7 +128,6 @@ public class TestWikiRestService {
     assertNotNull(response.getMetadata().containsKey("cache-control"));
     assertNotNull(response.getMetadata().containsKey("Content-Disposition"));
     assertTrue(response.getMetadata().get("Content-Disposition").contains("attachment; filename="+attachment1.getTitle()));
-    
     //when
     Response response1 = wikiRestService.getAttachment(null, wikiType , wikiOwner, pageId, "attachment2.png", null);
     // Then

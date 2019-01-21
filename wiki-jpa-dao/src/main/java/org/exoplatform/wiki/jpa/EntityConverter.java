@@ -3,6 +3,7 @@ package org.exoplatform.wiki.jpa;
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.file.model.FileItem;
+import org.exoplatform.commons.file.model.FileInfo;
 import org.exoplatform.commons.file.services.FileService;
 import org.exoplatform.commons.file.services.FileStorageException;
 import org.exoplatform.services.log.ExoLogger;
@@ -194,7 +195,7 @@ public class EntityConverter {
     return permissionEntities;
   }
 
-  public static Attachment convertAttachmentEntityToAttachment(FileService fileService, AttachmentEntity attachmentEntity) throws WikiException {
+  public static Attachment convertAttachmentEntityToAttachment(FileService fileService, AttachmentEntity attachmentEntity, boolean loadContent) throws WikiException {
     Attachment attachment = null;
     FileItem fileItem = null;
     if (attachmentEntity != null) {
@@ -206,8 +207,13 @@ public class EntityConverter {
         attachment.setCreatedDate(createdDate);
       }
       try {
-        fileItem = fileService.getFile(attachmentEntity.getAttachmentFileID());
-      } catch (FileStorageException e) {
+        if (loadContent) {
+          fileItem = fileService.getFile(attachmentEntity.getAttachmentFileID());
+        } else {
+          FileInfo fileInfo = fileService.getFileInfo(attachmentEntity.getAttachmentFileID());
+          fileItem = new FileItem(fileInfo, null);
+        }
+      } catch (Exception e) {
         throw new WikiException("Cannot get attachment file ID "+ attachmentEntity.getAttachmentFileID() + " from storage", e.getCause());
       }
       if (fileItem != null) {

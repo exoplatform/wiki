@@ -240,7 +240,7 @@ public class SavePageActionComponent extends UIComponent {
             Page draftPage = Utils.getCurrentNewDraftWikiPage();
 
             // Get attachments of the draft page
-            List<Attachment> attachments = wikiService.getAttachmentsOfPage(draftPage);
+            List<Attachment> attachments = wikiService.getAttachmentsOfPage(draftPage, true);
 
             // Create page
             Wiki wiki = new Wiki(pageParams.getType(), pageParams.getOwner());

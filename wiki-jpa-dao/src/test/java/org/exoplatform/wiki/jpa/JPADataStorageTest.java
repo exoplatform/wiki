@@ -551,8 +551,8 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     storage.createPage(wiki, wiki.getWikiHome(), page2);
     storage.addAttachmentToPage(attachment1, page1);
     storage.addAttachmentToPage(attachment2, page1);
-    List<Attachment> attachmentsOfPage1 = storage.getAttachmentsOfPage(page1);
-    List<Attachment> attachmentsOfPage2 = storage.getAttachmentsOfPage(page2);
+    List<Attachment> attachmentsOfPage1 = storage.getAttachmentsOfPage(page1,true);
+    List<Attachment> attachmentsOfPage2 = storage.getAttachmentsOfPage(page2,true);
 
     // Then
     assertEquals(2, pageAttachmentDAO.findAll().size());
@@ -595,9 +595,9 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     storage.createPage(wiki, wiki.getWikiHome(), page1);
     storage.addAttachmentToPage(attachment1, page1);
     storage.addAttachmentToPage(attachment2, page1);
-    List<Attachment> attachmentsOfPage = storage.getAttachmentsOfPage(page1);
+    List<Attachment> attachmentsOfPage = storage.getAttachmentsOfPage(page1,true);
     storage.deleteAttachmentOfPage("attachment1", page1);
-    List<Attachment> attachmentsOfPageAfterDeletion = storage.getAttachmentsOfPage(page1);
+    List<Attachment> attachmentsOfPageAfterDeletion = storage.getAttachmentsOfPage(page1,true);
 
     // Then
     assertNotNull(attachmentsOfPage);
@@ -643,9 +643,9 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     storage.createDraftPageForUser(draftPage, "Jhon");
     storage.addAttachmentToPage(attachment1, draftPage);
     storage.addAttachmentToPage(attachment2, draftPage);
-    List<Attachment> attachmentsOfdraftPage = storage.getAttachmentsOfPage(draftPage);
+    List<Attachment> attachmentsOfdraftPage = storage.getAttachmentsOfPage(draftPage,true);
     storage.deleteAttachmentOfPage("attachment1", draftPage);
-    List<Attachment> attachmentsOfdraftPageAfterDeletion = storage.getAttachmentsOfPage(draftPage);
+    List<Attachment> attachmentsOfdraftPageAfterDeletion = storage.getAttachmentsOfPage(draftPage,true);
     
     //then
     assertNotNull(attachmentsOfdraftPage);
