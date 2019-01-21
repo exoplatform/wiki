@@ -93,6 +93,10 @@ public interface DataStorage {
 
   public List<TemplateSearchResult> searchTemplate(TemplateSearchData data) throws WikiException;
 
+  public default List<Attachment> getAttachmentsOfPage(Page page, boolean loadContent) throws WikiException {
+    return getAttachmentsOfPage(page);
+  }
+
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException;
 
   public void addAttachmentToPage(Attachment attachment, Page page) throws WikiException;

@@ -293,7 +293,7 @@ public class MigrationServiceTest extends MigrationITSetup {
     assertNotNull(fetchedPage2);
     assertEquals("Page 2 Content", fetchedPage2.getContent());
     assertEquals(1, jpaDataStorage.getVersionsOfPage(fetchedPage2).size());
-    List<Attachment> attachmentsOfPage2 = jpaDataStorage.getAttachmentsOfPage(fetchedPage2);
+    List<Attachment> attachmentsOfPage2 = jpaDataStorage.getAttachmentsOfPage(fetchedPage2,true);
     assertNotNull(attachmentsOfPage2);
     assertEquals(1, attachmentsOfPage2.size());
     assertTrue(Arrays.equals("attachment-content-2".getBytes(), attachmentsOfPage2.get(0).getContent()));
@@ -343,7 +343,7 @@ public class MigrationServiceTest extends MigrationITSetup {
     assertNotNull(fetchedGroupWikiHomeChildrenPages);
     assertEquals(1, fetchedGroupWikiHomeChildrenPages.size());
     Page fetchedGroupPage1 = fetchedGroupWikiHomeChildrenPages.get(0);
-    List<Attachment> attachmentsOfGroupPage1 = jpaDataStorage.getAttachmentsOfPage(fetchedGroupPage1);
+    List<Attachment> attachmentsOfGroupPage1 = jpaDataStorage.getAttachmentsOfPage(fetchedGroupPage1,true);
     assertNotNull(attachmentsOfGroupPage1);
     assertEquals(1, attachmentsOfGroupPage1.size());
     assertTrue(Arrays.equals("group-attachment-content-1".getBytes(), attachmentsOfGroupPage1.get(0).getContent()));

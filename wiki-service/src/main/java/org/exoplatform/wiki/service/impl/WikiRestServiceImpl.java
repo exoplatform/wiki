@@ -666,7 +666,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
-      org.exoplatform.wiki.mow.api.Attachment attachment = wikiService.getAttachmentOfPageByName(attachmentId, page);
+      org.exoplatform.wiki.mow.api.Attachment attachment = wikiService.getAttachmentOfPageByName(attachmentId, page, true);
 
       if (attachment == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();

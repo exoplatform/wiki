@@ -1180,6 +1180,11 @@ public class JCRDataStorage implements DataStorage {
 
   @Override
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException {
+    return getAttachmentsOfPage(page, false);
+  }
+
+  @Override
+  public List<Attachment> getAttachmentsOfPage(Page page,boolean loadContent) throws WikiException {
     List<Attachment> attachments = new ArrayList<>();
 
     boolean created = mowService.startSynchronization();

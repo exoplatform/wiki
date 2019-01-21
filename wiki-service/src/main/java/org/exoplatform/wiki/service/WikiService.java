@@ -307,12 +307,23 @@ public interface WikiService {
   public long getEditPageLivingTime();
 
   /**
-   * Gets attachments of the given page
+   * Gets attachments of the given page, without loading their content
    * @param page The wiki page
    * @return The attachments of the page
    * @throws WikiException
    */
   public List<Attachment> getAttachmentsOfPage(Page page) throws WikiException;
+
+  /**
+   * Gets attachments of the given page,
+   * and allow to load their attachment content by setting loadContent to true
+   * @param page The wiki page
+   * @return The attachments of the page
+   * @throws WikiException
+   */
+  public default List<Attachment> getAttachmentsOfPage(Page page, boolean loadContent) throws WikiException {
+    return getAttachmentsOfPage(page);
+  }
 
   /**
    * Get the number of attachment of the given page
@@ -323,13 +334,28 @@ public interface WikiService {
   public int getNbOfAttachmentsOfPage(Page page) throws WikiException;
 
   /**
-   * Get a attachment of a ther given page by name
+   * Get a attachment of a the given page by name, without loading its content
+   *
    * @param attachmentName The name of the attachment
    * @param page The wiki page
    * @return
    * @throws WikiException
    */
   public Attachment getAttachmentOfPageByName(String attachmentName, Page page) throws WikiException;
+
+  /**
+   * Get a attachment of a the given page by name,
+   * and allow to load the attachment content by setting loadContent to true
+   *
+   * @param attachmentName The name of the attachment
+   * @param page           The wiki page
+   * @param loadContent    true to load the attachment content
+   * @return
+   * @throws WikiException
+   */
+  public default Attachment getAttachmentOfPageByName(String attachmentName, Page page, boolean loadContent) throws WikiException {
+    return getAttachmentOfPageByName(attachmentName, page);
+  }
 
   /**
    * Add the given attachment to the given page

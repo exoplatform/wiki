@@ -1259,6 +1259,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
+  public List<Attachment> getAttachmentsOfPage(Page page, boolean loadContent) throws WikiException {
+    return dataStorage.getAttachmentsOfPage(page, loadContent);
+  }
+
+  @Override
   public int getNbOfAttachmentsOfPage(Page page) throws WikiException {
     int nbOfAttachments = 0;
 
@@ -1270,7 +1275,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       nbOfAttachments = cachedNbOfAttachments.build();
     } else {
       try {
-        List<Attachment> attachments = getAttachmentsOfPage(page);
+        List<Attachment> attachments = dataStorage.getAttachmentsOfPage(page,false);
         nbOfAttachments = attachments == null ? 0 : attachments.size();
         attachmentCountCache.put(cacheKey, new AttachmentCountData(nbOfAttachments));
       } catch (WikiException e) {
@@ -1283,8 +1288,13 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Attachment getAttachmentOfPageByName(String attachmentName, Page page) throws WikiException {
+    return getAttachmentOfPageByName(attachmentName, page, false);
+  }
+
+  @Override
+  public Attachment getAttachmentOfPageByName(String attachmentName, Page page, boolean loadContent) throws WikiException {
     Attachment attachment = null;
-    List<Attachment> attachments = dataStorage.getAttachmentsOfPage(page);
+    List<Attachment> attachments = dataStorage.getAttachmentsOfPage(page, loadContent);
     for(Attachment att : attachments) {
       if(att.getName().equals(attachmentName)) {
         attachment = att;

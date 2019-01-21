@@ -46,7 +46,7 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     attachment.setCreator("root");
     wikiService.addAttachmentToPage(attachment, wikiHome);
 
-    Attachment storedAttachment = wikiService.getAttachmentOfPageByName("attachment1.png", wikiHome);
+    Attachment storedAttachment = wikiService.getAttachmentOfPageByName("attachment1.png", wikiHome, true);
 
     assertNotNull(storedAttachment);
     assertNotNull(storedAttachment.getName());
@@ -75,7 +75,7 @@ public class TestPageAttachment extends AbstractMOWTestcase {
     attachment1.setCreator("demo");
     wikiService.addAttachmentToPage(attachment1, page);
 
-    attachment1 = wikiService.getAttachmentOfPageByName("AttachmentPermission.jpg", page);
+    attachment1 = wikiService.getAttachmentOfPageByName("AttachmentPermission.jpg", page, true);
     
     List<PermissionEntry> actualPermissions = attachment1.getPermissions();
     assertNotNull(actualPermissions);
