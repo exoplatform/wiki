@@ -37,7 +37,6 @@ import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.wiki.WikiModel;
-
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -56,7 +55,6 @@ public class DefaultWikiModel implements WikiModel {
    */
   @Inject
   private Execution execution;
-  
   /**
    * Used to get the build context for document
    */
@@ -117,7 +115,7 @@ public class DefaultWikiModel implements WikiModel {
       WikiContext wikiMarkupContext = markupContextManager.getMarkupContext(imageName, resourceType);
       String portalContainerName = PortalContainer.getCurrentPortalContainerName();
       String portalURL = wikiMarkupContext.getPortalURL();
-      String domainURL = portalURL.substring(0, portalURL.indexOf("/"+portalContainerName));
+      String domainURL = portalURL.substring(0, portalURL.lastIndexOf("/"+portalContainerName));
       sb.append(domainURL);
       WikiContext context = getWikiContext();
       wikiService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageName()),
