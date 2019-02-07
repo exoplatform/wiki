@@ -17,7 +17,6 @@
 package org.exoplatform.wiki.rendering.impl;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.mow.api.Attachment;
@@ -37,13 +36,12 @@ import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.listener.reference.ResourceReference;
 import org.xwiki.rendering.listener.reference.ResourceType;
 import org.xwiki.rendering.wiki.WikiModel;
-
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Map;
 
 @Component
@@ -56,7 +54,6 @@ public class DefaultWikiModel implements WikiModel {
    */
   @Inject
   private Execution execution;
-  
   /**
    * Used to get the build context for document
    */
@@ -115,9 +112,9 @@ public class DefaultWikiModel implements WikiModel {
 
       ResourceType resourceType = ResourceType.ICON.equals(imageReference.getType()) ? ResourceType.ICON : ResourceType.ATTACHMENT;
       WikiContext wikiMarkupContext = markupContextManager.getMarkupContext(imageName, resourceType);
-      String portalContainerName = PortalContainer.getCurrentPortalContainerName();
       String portalURL = wikiMarkupContext.getPortalURL();
-      String domainURL = portalURL.substring(0, portalURL.indexOf("/"+portalContainerName));
+      URL requestURL = new URL(portalURL);
+      String domainURL = requestURL.getProtocol() + "://" + requestURL.getAuthority();
       sb.append(domainURL);
       WikiContext context = getWikiContext();
       wikiService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageName()),
