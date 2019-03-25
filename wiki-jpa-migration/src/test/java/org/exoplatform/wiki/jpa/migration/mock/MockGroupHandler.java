@@ -69,6 +69,11 @@ public class MockGroupHandler implements GroupHandler {
   }
 
   @Override
+  public ListAccess<Group> findGroupsByKeyword(String s) throws Exception {
+    return null;
+  }
+
+  @Override
   public Collection<Group> getAllGroups() throws Exception {
     return groups.values();
   }
