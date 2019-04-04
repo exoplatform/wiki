@@ -50,10 +50,7 @@ public class RestoreRevisionActionComponent extends UIContainer {
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new EditPagesPermissionFilter() });
 
-  private static WikiService wikiService;
-
   public RestoreRevisionActionComponent() {
-    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   @UIExtensionFilters
@@ -91,6 +88,7 @@ public class RestoreRevisionActionComponent extends UIContainer {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       String versionName = event.getRequestContext().getRequestParameter(OBJECTID);
       Page wikipage = Utils.getCurrentWikiPage();
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       wikiService.restoreVersionOfPage(versionName, wikipage);
       wikiPortlet.changeMode(WikiMode.VIEW);
     }

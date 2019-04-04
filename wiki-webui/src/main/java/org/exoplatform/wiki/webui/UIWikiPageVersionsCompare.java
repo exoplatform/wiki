@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -82,12 +82,8 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
   private String toVersionAuthor;
   private String toVersionUpdateDate;
 
-  private static WikiService wikiService;
-
   public UIWikiPageVersionsCompare() {
     super();
-
-    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
 
     this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.COMPAREREVISION });
   }
@@ -211,6 +207,8 @@ public class UIWikiPageVersionsCompare extends UIWikiContainer {
       UIWikiPageVersionsCompare component = (UIWikiPageVersionsCompare) event.getSource();
       String fromVersionName = event.getRequestContext().getRequestParameter(FROM_PARAM);
       String toVersionName = event.getRequestContext().getRequestParameter(TO_PARAM);
+
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       List<PageVersion> versions = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
       this.setVersionToCompare(new ArrayList<>(versions));
       for (int i = 0; i < versions.size(); i++) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2012 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -58,7 +58,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
   
   public static final String MANAGE_PERMISSION_ACTION = "ManagePermisisons";
 
-  private static WikiService wikiService;
+  private WikiService wikiService;
   
   public UIWikiPermalinkForm() throws Exception {
     setActions(new String[] { RESTRICT_ACTION, MAKE_PUBLIC_ACTION, MANAGE_PERMISSION_ACTION });
@@ -127,6 +127,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         }
         currentPage.setPermissions(permissions);
 
+        WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
         wikiService.updatePage(currentPage, PageUpdateType.EDIT_PAGE_PERMISSIONS);
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);
@@ -159,6 +160,7 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         }));
         currentPage.setPermissions(permissions);
 
+        WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
         wikiService.updatePage(currentPage, PageUpdateType.EDIT_PAGE_PERMISSIONS);
         
         UIWikiPortlet uiWikiPortlet = uiWikiPermalinkForm.getAncestorOfType(UIWikiPortlet.class);

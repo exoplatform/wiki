@@ -66,7 +66,7 @@ public class UIWikiMyDraftsForm extends UIForm {
   
   public static final String[]  USER_ACTIONS    = {ACTION_VIEW, ACTION_DELETE};
 
-  private static WikiService wikiService;
+  private WikiService wikiService;
 
   public UIWikiMyDraftsForm() throws Exception {
     UIWikiDraftGrid grid = addChild(UIWikiDraftGrid.class, null, DRAFT_GRID);

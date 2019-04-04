@@ -30,7 +30,7 @@ public class ConfluenceToXWiki2DeepTransformation {
   
   private ComponentManager componentManager;
   
-  public static ConfluenceToXWiki2DeepTransformation getInstance() {
+  public static synchronized ConfluenceToXWiki2DeepTransformation getInstance() {
     if (instance == null) {
       instance = new ConfluenceToXWiki2DeepTransformation();
     }

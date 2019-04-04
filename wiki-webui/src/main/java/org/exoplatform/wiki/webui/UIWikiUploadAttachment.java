@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -59,11 +59,8 @@ public class UIWikiUploadAttachment extends UIWikiForm {
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new EditPagesPermissionFilter() });
 
-  private static WikiService wikiService;
-
   public UIWikiUploadAttachment() throws Exception {
-    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW,WikiMode.EDITPAGE,WikiMode.ADDPAGE});   
+    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW,WikiMode.EDITPAGE,WikiMode.ADDPAGE});
     SIZE_LIMIT = Utils.getLimitUploadSize();
     UIWikiFormUploadInput uiInput = new UIWikiFormUploadInput(FIELD_UPLOAD, FIELD_UPLOAD, SIZE_LIMIT);
     addUIFormInput(uiInput);
@@ -153,7 +150,8 @@ public class UIWikiUploadAttachment extends UIWikiForm {
       }
       
       if (attachment != null) {
-        try {          
+        try {
+          WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
           Page page = wikiAttachmentArea.getCurrentWikiPage();
           if (wikiService.getAttachmentOfPageByName(fileName, page) != null) {
             event.getRequestContext()

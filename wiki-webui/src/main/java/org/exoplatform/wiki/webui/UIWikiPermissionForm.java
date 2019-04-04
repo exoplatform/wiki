@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2011 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -120,8 +120,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
 
   private PopupLevel popupLevel = PopupLevel.L1;
 
-  private static WikiService wikiService;
-
   public static enum Scope {
     WIKI, PAGE
   }
@@ -169,8 +167,6 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     addPopupWindow();
 
     setActions(new String[] { SAVE, CLOSE });
-
-    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   public Scope getScope() {
@@ -519,8 +515,8 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
       UIWikiPermissionForm uiWikiPermissionForm = event.getSource();
       Scope scope = uiWikiPermissionForm.getScope();
       uiWikiPermissionForm.processPostAction();
+      WikiService wikiService = uiWikiPermissionForm.getApplicationComponent(WikiService.class);
       if (Scope.WIKI.equals(scope)) {
-        WikiService wikiService = uiWikiPermissionForm.getApplicationComponent(WikiService.class);
         WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
         wikiService.updateWikiPermission(pageParams.getType(), pageParams.getOwner(), uiWikiPermissionForm.permissionEntries);
 

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -61,7 +61,7 @@ public class UIWikiVersionSelect extends UIWikiContainer {
   
   public static final String EXTENSION_TYPE = "org.exoplatform.wiki.webui.UIWikiVersionSelect";
 
-  private static WikiService wikiService;
+  private WikiService wikiService;
   
   public UIWikiVersionSelect() throws Exception {
     wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
@@ -116,6 +116,8 @@ public class UIWikiVersionSelect extends UIWikiContainer {
                                                    org.exoplatform.wiki.webui.control.action.CompareRevisionActionListener {
     @Override
     public void execute(Event<UIComponent> event) throws Exception {
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+
       UIWikiVersionSelect versionSelect = (UIWikiVersionSelect) event.getSource();
       List<PageVersion> versionsList = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
       this.setVersionToCompare(versionsList);

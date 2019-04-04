@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -46,7 +46,7 @@ public class UIWikiAttachmentUploadListForm extends UIForm {
   
   public static final String EXTENSION_TYPE = "org.exoplatform.wiki.webui.UIWikiAttachmentUploadListForm";
 
-  private static WikiService wikiService;
+  private WikiService wikiService;
 
   public UIWikiAttachmentUploadListForm() throws Exception {
     wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);

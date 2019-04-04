@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -29,7 +29,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -63,7 +62,7 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
   
   public static final String PERMALINK_ACTION = "Permalink";
 
-  private static WikiService wikiService;
+  private WikiService wikiService;
   
   public UIWikiPageInfoArea() {
     wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
@@ -161,6 +160,7 @@ public class UIWikiPageInfoArea extends UIWikiContainer {
   public static class CompareRevisionActionListener extends
                                                    org.exoplatform.wiki.webui.control.action.CompareRevisionActionListener {
     public void execute(Event<UIComponent> event) throws Exception {
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       List<PageVersion> lstVersion = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
       this.setVersionToCompare(lstVersion);
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();

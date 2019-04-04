@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -60,7 +60,7 @@ public class UIWikiPageVersionsList extends UIWikiForm {
   
   public static final String VERSION_NAME_PREFIX = "version";
 
-  private static WikiService wikiService;
+  private WikiService wikiService;
 
   public UIWikiPageVersionsList() throws Exception {
     super();
@@ -108,6 +108,8 @@ public class UIWikiPageVersionsList extends UIWikiForm {
     public void execute(Event<UIComponent> event) throws Exception {
       UIWikiPageVersionsList uiForm = (UIWikiPageVersionsList) event.getSource();
       List<PageVersion> checkedVersions = new ArrayList<>();
+
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       List<PageVersion> versions = wikiService.getVersionsOfPage(Utils.getCurrentWikiPage());
       for (PageVersion version : versions) {
         UICheckBoxInput uiCheckBox = uiForm.getUICheckBoxInput(VERSION_NAME_PREFIX + "_" + version.getName());

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2011 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -50,12 +50,6 @@ public class RemoveAttachmentActionComponent extends UIContainer {
   
   private static final List<UIExtensionFilter> FILTERS = Arrays.asList(new UIExtensionFilter[] { new RemoveAttachmentPermissionFilter() });
 
-  private static WikiService wikiService;
-
-  public RemoveAttachmentActionComponent() {
-    wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-  }
-
   @UIExtensionFilters
   public List<UIExtensionFilter> getFilters() {
     return FILTERS;
@@ -81,6 +75,7 @@ public class RemoveAttachmentActionComponent extends UIContainer {
       
       Page page = attachmentUploadListForm.getCurrentWikiPage();
       String attachmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       wikiService.deleteAttachmentOfPage(attachmentName, page);
       event.getRequestContext().addUIComponentToUpdateByAjax(bottomArea);
       if (WikiMode.VIEW.equals(wikiPortlet.getWikiMode())) {
@@ -94,6 +89,7 @@ public class RemoveAttachmentActionComponent extends UIContainer {
       UIWikiAttachmentUploadListForm attachmentUploadListForm = wikiPortlet.findFirstComponentOfType(UIWikiAttachmentUploadListForm.class);
       Page page = attachmentUploadListForm.getCurrentWikiPage();
       String attachmentName = URLDecoder.decode(event.getRequestContext().getRequestParameter(OBJECTID), "UTF-8");
+      WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
       Attachment attachment = wikiService.getAttachmentOfPageByName(attachmentName, page);
       Map<String, Object> context = new HashMap<>();
       context.put(RemoveAttachmentPermissionFilter.ATTACHMENT_KEY, attachment);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -40,7 +40,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
 
   public static final String VIEW_DISPLAY = "UIViewContentDisplay";
 
-  private static WikiService wikiService;
+  private WikiService wikiService;
 
   public UIWikiPageContentArea() throws Exception{
     wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
