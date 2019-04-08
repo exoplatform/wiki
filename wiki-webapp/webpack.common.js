@@ -7,7 +7,10 @@ module.exports = {
     wikiCkeditor: './src/main/webapp/javascript/eXo/wiki/ckeditor/wikiCkeditor.js',
     pageContent: './src/main/webapp/javascript/eXo/wiki/pageContent.js'
   },
-
+  output: {
+    filename: '[name].bundle.js',
+    libraryTarget: 'amd'
+  },
   module: {
     rules: [
       {
