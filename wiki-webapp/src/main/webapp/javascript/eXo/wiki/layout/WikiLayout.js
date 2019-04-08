@@ -43,8 +43,6 @@ WikiLayout.prototype.init = function(prtId, _userName) {
   $(window).ready(function(){
     var me = eXo.wiki.WikiLayout;
     me.initWikiLayout(prtId, _userName);
-
-    require('SHARED/')
   });
 }
 
