@@ -240,10 +240,6 @@ public class UIWikiPortlet extends UIPortletApplication {
       }
       
       super.processRender(app, context);
-
-      if (getWikiMode() == WikiMode.HELP) {
-        changeMode(previousMode);
-      }
     } else if (portletMode == PortletMode.EDIT) {
       changeMode(WikiMode.PORTLETPREFERENCES);
       super.processRender(app, context);
@@ -293,8 +289,6 @@ public class UIWikiPortlet extends UIPortletApplication {
   }
 
   public void changeMode(WikiMode newMode) {
-    if (newMode== WikiMode.HELP)
-        this.previousMode = mode;
     if (newMode.equals(WikiMode.VIEW)) {
       findFirstComponentOfType(UIWikiPageTitleControlArea.class).toInfoMode();
       UIWikiBottomArea bottomArea = findFirstComponentOfType(UIWikiBottomArea.class).setRendered(true);

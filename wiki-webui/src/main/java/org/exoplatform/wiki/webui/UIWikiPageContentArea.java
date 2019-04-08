@@ -27,7 +27,6 @@ import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
-import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
 
 import java.util.Arrays;
@@ -45,7 +44,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
   public UIWikiPageContentArea() throws Exception{
     wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
 
-    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.HELP, WikiMode.VIEWREVISION });
+    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.VIEWREVISION });
     this.addChild(UIWikiPageControlArea.class, null, null);
     this.addChild(UIWikiVersionSelect.class, null, null);
     this.addChild(UIWikiContentDisplay.class, null, VIEW_DISPLAY);    
@@ -73,12 +72,6 @@ public class UIWikiPageContentArea extends UIWikiContainer {
       if (currentMode.equals(WikiMode.VIEW)) {
           contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
       }
-      if (currentMode.equals(WikiMode.HELP)) {
-          contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent(),
-                                                               wikipage.getSyntax(),
-                                                               Syntax.XHTML_1_0.toIdString(),
-                                                               false));
-      }
       // Render select version content
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
         PageVersion version = wikiService.getVersionOfPageByName(currentVersionName, wikipage);
@@ -87,7 +80,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
           contentDisplay.setHtmlOutput(pageContent);
         }
       }
-    }catch(ConversionException e){
+    } catch(Exception e) {
       contentDisplay.setHtmlOutput("Bad syntax in content! Cannot generate HTML content!");
     }
     Utils.removeWikiContext();

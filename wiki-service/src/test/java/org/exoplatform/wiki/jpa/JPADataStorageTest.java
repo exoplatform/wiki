@@ -1478,26 +1478,6 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     assertEquals(1, step3Watchers.size());
     assertTrue(step3Watchers.contains("user2"));
   }
-
-  @Test
-  public void testHelpPages() throws WikiException {
-    // Given
-    List<ValuesParam> syntaxHelpParams = new ArrayList<>();
-    ValuesParam valuesParam = new ValuesParam();
-    valuesParam.setName("xwiki/2.0");
-    valuesParam.setValues(Arrays.asList("jar:/wikisyntax/help/xWiki2.0_Short.txt", "jar:/wikisyntax/help/xWiki2.0_Full.txt"));
-    syntaxHelpParams.add(valuesParam);
-
-    ConfigurationManager configurationManager = PortalContainer.getInstance().getComponentInstanceOfType(ConfigurationManager.class);
-
-    // When
-    Page shortHelpPage = storage.getHelpSyntaxPage("xwiki/2.0", false, syntaxHelpParams, configurationManager);
-    Page fullHelpPage = storage.getHelpSyntaxPage("xwiki/2.0", true, syntaxHelpParams, configurationManager);
-
-    // Then
-    assertNotNull(shortHelpPage);
-    assertNotNull(fullHelpPage);
-  }
   
   protected void startSessionAs(String user) {
     startSessionAs(user, new HashSet<MembershipEntry>());

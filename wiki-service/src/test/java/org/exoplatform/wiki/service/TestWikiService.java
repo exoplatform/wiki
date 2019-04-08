@@ -28,7 +28,6 @@ import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
 import org.exoplatform.wiki.service.search.WikiSearchData;
-import org.xwiki.rendering.syntax.Syntax;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -543,13 +542,6 @@ public class TestWikiService extends BaseTest {
 //    assertEquals("thumb_up.gif", emotionIconThumbUp.getName());
 //    assertEquals("/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikimetadata/EmotionIconsPage/thumb_up.gif", emotionIconThumbUp.getUrl());
 //  }
-
-  public void testGetSyntaxPage() throws WikiException {
-    Page syntaxSmallPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString(), false);
-    assertNotNull(syntaxSmallPage);
-    Page syntaxFullPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString(), true);
-    assertNotNull(syntaxFullPage);
-  }
 
 //FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
 //  public void testBrokenLink() throws WikiException {

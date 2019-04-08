@@ -381,6 +381,7 @@ public interface WikiService {
    * @return The Help wiki page.
    * @throws WikiException
    */
+  @Deprecated
   public Page getHelpSyntaxPage(String syntaxId, boolean fullContent) throws WikiException;
 
   /**
