@@ -34,8 +34,6 @@ public enum WikiMode {
 
   PAGE_NOT_FOUND,
 
-  HELP,
-
   VIEWREVISION,
 
   PAGEINFO,

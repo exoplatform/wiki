@@ -16,69 +16,19 @@
  */
 package org.exoplatform.wiki.webui;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.service.WikiContext;
-import org.exoplatform.wiki.service.WikiService;
-import org.exoplatform.wiki.utils.Utils;
-import org.xwiki.rendering.syntax.Syntax;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiSidePanelArea.gtmpl"
 )
-public class UIWikiSidePanelArea extends UIContainer {  
-  
-  private String syntaxName;
-  
-  private String syntaxFullPageUrl;
-
-  private String htmlOutput;
-
-  public String getHtmlOutput() {
-    return htmlOutput;
-  }
-  
-  public void setHtmlOutput(String output) {
-    this.htmlOutput = output;
-  }
-  
-  public String getSyntaxName() {
-    return syntaxName;
-  }  
-  public void setSyntaxName(String syntaxName) {
-    this.syntaxName = syntaxName;
-  }
-  
-  public String getSyntaxFullPageUrl() {
-    return syntaxFullPageUrl;
-  }
+public class UIWikiSidePanelArea extends UIContainer {
   
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
-    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-    String syntaxId = org.exoplatform.wiki.commons.Utils.getDefaultSyntax();
-
-    UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
-    WikiContext wikiContext = org.exoplatform.wiki.commons.Utils.setUpWikiContext(wikiPortlet); 
-    
-    Page syntaxHelpPage = wikiService.getHelpSyntaxPage(syntaxId, false);
-    this.syntaxName = syntaxId.replace("/", " ").toUpperCase();
-    if (syntaxHelpPage != null) {
-      String markup = syntaxHelpPage.getContent();
-      this.htmlOutput = renderingService.render(markup, syntaxId, Syntax.XHTML_1_0.toIdString(), false);
-      this.syntaxFullPageUrl = "/" + PortalContainer.getInstance().getRestContextName() + "/wiki/help/"
-          + syntaxId.replace("/", Utils.SLASH).replace(".", Utils.DOT)
-          + "?portalUrl=" + wikiContext.getPortalURL();
-    } else {
-      this.htmlOutput = null;
-    }
     super.processRender(context);
   }
 }

@@ -69,7 +69,7 @@ public class UIWikiPageTitleControlArea extends UIWikiExtensionContainer {
   public void processRender(WebuiRequestContext context) throws Exception {
     if (!context.useAjax()) {
       UIFormInputInfo titleInfo = getChild(UIFormInputInfo.class);
-      List<WikiMode> acceptEdiableModes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.HELP, WikiMode.VIEWREVISION });
+      List<WikiMode> acceptEdiableModes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.VIEWREVISION });
       WikiMode currentMode = getAncestorOfType(UIWikiPortlet.class).getWikiMode();
       if (acceptEdiableModes.contains(currentMode)) {
         titleInfo.setRendered(true);
