@@ -230,7 +230,7 @@ public class JPADataStorage implements DataStorage {
     Date now = Calendar.getInstance().getTime();
     wikiHomePage.setCreatedDate(now);
     wikiHomePage.setUpdatedDate(now);
-    wikiHomePage.setContent("= Welcome to " + wiki.getOwner() + " =");
+    wikiHomePage.setContent("<h1> Welcome to " + wiki.getOwner() + " </h1>");
     // inherit syntax from wiki
     wikiHomePage.setSyntax(createdWiki.getPreferences().getWikiPreferencesSyntax().getDefaultSyntax());
     // inherit home page permissions from wiki permissions
