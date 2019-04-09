@@ -430,7 +430,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     wiki.setPreferences(wikiPreferences);
 
     Wiki createdWiki = dataStorage.createWiki(wiki);
-    StringBuilder sb = new StringBuilder("= Welcome to ");
+    StringBuilder sb = new StringBuilder("<h1> Welcome to ");
     String wikiLabel = owner;
     if(wikiType.equals(PortalConfig.GROUP_TYPE)) {
       sb.append("Space ");
@@ -438,7 +438,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     } else if (wikiType.equals(PortalConfig.USER_TYPE)) {
       wikiLabel = this.getUserDisplayName(wiki.getOwner());
     }
-    sb.append(wikiLabel).append(" Wiki =");
+    sb.append(wikiLabel).append(" Wiki </h1>");
     createdWiki.getWikiHome().setContent(sb.toString());
     updatePage(createdWiki.getWikiHome(), null);
     // init templates
