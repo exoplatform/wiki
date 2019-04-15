@@ -9,13 +9,7 @@ if (!eXo.wiki.Wysiwyg) {
      */
     load : function()
     {
-      window.require.config({
-        paths: {
-          wikiCkeditor: '/wiki/javascript/eXo/wiki/ckeditor/wikiCkeditor.bundle'
-        }
-      });
-
-      window.require(['wikiCkeditor', 'SHARED/wikiPageContent'], function(wikiCkeditor) {
+      window.require(['SHARED/wikiCkeditor', 'SHARED/wikiPageContent'], function(wikiCkeditor) {
         wikiCkeditor.default.createEditor();
       });
     },

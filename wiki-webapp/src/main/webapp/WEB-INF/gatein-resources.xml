@@ -41,6 +41,14 @@
   </portlet>
 
   <module>
+    <name>wikiCkeditor</name>
+    <script>
+      <minify>false</minify>
+      <path>/javascript/eXo/wiki/ckeditor/wikiCkeditor.bundle.js</path>
+    </script>
+  </module>
+
+  <module>
     <name>wikiPageContent</name>
     <script>
       <minify>false</minify>
