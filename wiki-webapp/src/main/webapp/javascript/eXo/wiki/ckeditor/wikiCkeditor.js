@@ -140,6 +140,10 @@ WikiCkeditor.prototype.createEditor = function() {
     } )
     .then(editor => {
       window.editor = editor;
+
+      editor.model.document.on('change:data', () => {
+        document.querySelector('#UIWikiRichTextArea_TextArea').innerText = window.editor.getData();
+      });
     })
     .catch(error => {
       console.error( error.stack );
