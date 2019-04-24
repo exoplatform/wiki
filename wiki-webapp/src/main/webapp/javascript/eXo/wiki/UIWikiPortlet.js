@@ -397,14 +397,4 @@ UIWikiPortlet.prototype.fixImageUrl = function(lastUpdated) {
 eXo.wiki.UIWikiPortlet = new UIWikiPortlet();
 return eXo.wiki.UIWikiPortlet;
 
-/** ******************* Other functions ***************** */
-
-String.prototype.trim = function() {
-  return this.replace(/^\s+|\s+$/g, '');
-};
-
-String.prototype.replaceAll = function(oldText, newText) {
-  return this.replace(new RegExp(oldText, "g"), newText);
-}
-
 })(base, uiForm, webuiExt, $);
