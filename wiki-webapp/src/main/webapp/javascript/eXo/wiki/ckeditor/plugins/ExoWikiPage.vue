@@ -1,5 +1,5 @@
 <template>
-  <div class="wiki-include-page" v-html="pageContent">fcdkfsdjkfdsj</div>
+  <div class="wiki-include-page" v-html="pageContent"></div>
 </template>
 
 <script>
@@ -19,14 +19,13 @@ export default {
     };
   },
   created() {
-    
     this.getPageContent();
   },
   methods: {
     getPageContent() {
       if (this.pageName) {
         // TODO api call to get page content using pageName
-        this.pageContent = '<h1>PAGE TEST</h1>';
+        this.pageContent = `<h1>Content of page ${this.pageName}</h1>`;
       }
     }
   }
