@@ -4,6 +4,8 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.anyBoolean;
+import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
@@ -13,10 +15,12 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.junit.Test;
 import org.mockito.Mockito;
 
@@ -30,6 +34,7 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.impl.WikiRestServiceImpl;
+import org.xwiki.context.internal.DefaultExecution;
 
 /**
  *
@@ -180,5 +185,45 @@ public class TestWikiRestService {
     // Then
     verify(wikiService, times(1)).getPageOfWikiByName(wikiType, wikiOwner, pageId);
     assertEquals("wikiHomePage", page.getTitle());
+  }
+
+  @Test
+  public void testSanitizePageContent() throws Exception {
+    //Given
+    WikiService wikiService = mock(WikiService.class);
+    RenderingService renderingService = mock(RenderingService.class);
+    when(renderingService.getExecution()).thenReturn(new DefaultExecution());
+    when(renderingService.render(anyString(), anyString(), anyString(), anyBoolean())).thenAnswer(i -> i.getArguments()[0]);
+    UriInfo uriInfo = mock(UriInfo.class);
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
+    EnvironmentContext.setCurrent(new EnvironmentContext());
+    ServletContext servletContext = mock(ServletContext.class);
+    when(servletContext.getResourceAsStream(anyString())).thenReturn(new ByteArrayInputStream("<div>$content</div>".getBytes()));
+
+    Wiki wiki = new Wiki("user", "root");
+    when(wikiService.createWiki("portal", "wikiSanitizePageContent1")).thenReturn(wiki);
+    String wikiType = wiki.getType();
+    String wikiOwner = wiki.getOwner();
+
+    Page wikiHomePage = new Page("wikiHomePage", "wikiHomePage");
+    wikiHomePage.setId("wikiHomePageId");
+    wikiHomePage.setWikiType(wikiType);
+    wikiHomePage.setWikiOwner(wikiOwner);
+    wikiHomePage.setUpdatedDate(Calendar.getInstance().getTime());
+    wikiHomePage.setContent("my<script>alert();</script> page");
+    String pageId = wikiHomePage.getId();
+
+    when(wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner)).thenReturn(wiki);
+    when(wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId)).thenReturn(wikiHomePage);
+    when(uriInfo.getAbsolutePath()).thenReturn(new URI("/"));
+    when(uriInfo.getBaseUri()).thenReturn(new URI("/"));
+
+    // When
+    Response response = wikiRestService.getWikiPageContent(servletContext, null, null, true, wikiHomePage.getContent());
+
+    // Then
+    assertNotNull(response);
+    assertEquals(200, response.getStatus());
+    assertEquals("<div>my page</div>", response.getEntity());
   }
 }
