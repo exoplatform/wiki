@@ -20,7 +20,7 @@ import java.util.StringTokenizer;
 
 public class WikiNameValidator {
   
-  public static final String INVALID_CHARACTERS  = "% = : @ / \\ | ^ # ; [ ] { } < > * ' \" + ? &"; // and .
+  public static final String INVALID_CHARACTERS  = "% = : @ / \\ | ^ # ; [ ] { } < > * ' `\" + ? &"; // and .
   
   public static void validate(String s) throws IllegalArgumentException {
     StringTokenizer tokens;
