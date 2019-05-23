@@ -3,8 +3,8 @@ package org.exoplatform.wiki.mock;
 import java.util.List;
 
 import org.exoplatform.commons.utils.ListAccess;
-import org.exoplatform.services.security.MembershipEntry;
 import org.exoplatform.social.core.application.PortletPreferenceRequiredPlugin;
+import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.space.SpaceApplicationConfigPlugin;
 import org.exoplatform.social.core.space.SpaceException;
 import org.exoplatform.social.core.space.SpaceFilter;
@@ -218,7 +218,7 @@ public class MockSpaceService implements SpaceService {
 
   @Override
   public void setSpaceApplicationConfigPlugin(SpaceApplicationConfigPlugin spaceApplicationConfigPlugin) {
-    
+
   }
 
   @Override
@@ -293,6 +293,11 @@ public class MockSpaceService implements SpaceService {
 
   @Override
   public Space createSpace(Space space, String creator, String invitedGroupId) throws SpaceException {
+    return null;
+  }
+
+  @Override
+  public Space createSpace(Space space, String creator, List<Identity> identities) throws SpaceException {
     return null;
   }
 
