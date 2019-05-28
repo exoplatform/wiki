@@ -10,7 +10,7 @@
   <packaging>jar</packaging>
   <name>eXo PLF:: Wiki Webui</name>
   <properties>
-    <exo.test.coverage.ratio>0.00</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.003</exo.test.coverage.ratio>
   </properties>
   <dependencies>
     <!--This dependencies is used for main classes compilation but is erroneously reported as useless by mvn dependency:analyze-->
