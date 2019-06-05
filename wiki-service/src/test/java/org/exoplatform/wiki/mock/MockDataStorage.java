@@ -30,7 +30,6 @@ import org.exoplatform.portal.config.model.Application;
 import org.exoplatform.portal.config.model.ApplicationState;
 import org.exoplatform.portal.config.model.ApplicationType;
 import org.exoplatform.portal.config.model.Container;
-import org.exoplatform.portal.config.model.Dashboard;
 import org.exoplatform.portal.config.model.ModelObject;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -214,22 +213,6 @@ public class MockDataStorage implements DataStorage,Startable {
   @Override
   public Container getSharedLayout() throws Exception {
     return null;
-  }
-
-  /* (non-Javadoc)
-   * @see org.exoplatform.portal.config.DataStorage#loadDashboard(java.lang.String)
-   */
-  @Override
-  public Dashboard loadDashboard(String dashboardId) throws Exception {
-    return null;
-  }
-
-  /* (non-Javadoc)
-   * @see org.exoplatform.portal.config.DataStorage#saveDashboard(org.exoplatform.portal.config.model.Dashboard)
-   */
-  @Override
-  public void saveDashboard(Dashboard dashboard) throws Exception {
-
   }
 
   /* (non-Javadoc)
