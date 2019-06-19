@@ -8,6 +8,14 @@ import org.exoplatform.services.security.MembershipEntry;
 
 import java.util.Collection;
 
+/**
+ * Implementation of GroupVisibilityPlugin for wiki page permissions which
+ * allows to see a group if any of these conditions is fulfilled:
+ * * the given user is the super user
+ * * the given user is a platform administrator
+ * * the given user is a manager of the group
+ * * the group is a space group and the given user has a role in the group
+ */
 public class PermissionsGroupVisibilityPlugin extends GroupVisibilityPlugin {
   private UserACL userACL;
 
@@ -22,7 +30,8 @@ public class PermissionsGroupVisibilityPlugin extends GroupVisibilityPlugin {
                           .anyMatch(userMembership -> userMembership.getGroup().equals(userACL.getAdminGroups())
                               || ((userMembership.getGroup().equals(group.getId())
                                   || userMembership.getGroup().startsWith(group.getId() + "/"))
-                                  && (group.getId().startsWith("/spaces/")
+                                  && (group.getId().equals("/spaces")
+                                      || group.getId().startsWith("/spaces/")
                                       || userMembership.getMembershipType().equals("*")
                                       || userMembership.getMembershipType().equals("manager"))));
   }
