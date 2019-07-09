@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2010 eXo Platform SAS.
+ * Copyright (C) 2003-2019 eXo Platform SAS.
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Affero General Public License
@@ -78,7 +78,6 @@ import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.service.Relations;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -145,7 +144,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   @Path("/content/")
   @Produces(MediaType.TEXT_HTML)
   @RolesAllowed("users")
-  public Response getWikiPageContent(@QueryParam("sessionKey") String sessionKey,
+  public Response getWikiPageContent(@Context ServletContext servletContext,
+                                     @QueryParam("sessionKey") String sessionKey,
                                      @QueryParam("wikiContext") String wikiContextKey,
                                      @QueryParam("markup") boolean isMarkup,
                                      @FormParam("html") String data) {
@@ -164,15 +164,13 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         if (wikiContext != null && wikiContext.getSyntax() != null)
           currentSyntax = wikiContext.getSyntax();
       }
-      Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
+      Execution ec = renderingService.getExecution();
       if (ec.getContext() == null) {
         ec.setContext(new ExecutionContext());
       }
       ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
-      ServletContext wikiServletContext = PortalContainer.getInstance()
-                                                         .getPortalContext()
-                                                         .getContext("/wiki");
-      InputStream is = wikiServletContext.getResourceAsStream("/templates/wiki/webui/xwiki/wysiwyginput.html");
+
+      InputStream is = servletContext.getResourceAsStream("/templates/wiki/webui/xwiki/wysiwyginput.html");
       byte[] b = new byte[is.available()];
       is.read(b);
       is.close();
@@ -185,6 +183,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                                      currentSyntax,
                                      Syntax.ANNOTATED_XHTML_1_0.toIdString(),
                                      false);
+
+      data = HTMLSanitizer.sanitize(data);
+
       data = new String(b).replace("$content", data);
 
     } catch (Exception e) {

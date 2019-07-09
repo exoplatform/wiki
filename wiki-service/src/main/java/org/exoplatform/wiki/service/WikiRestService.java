@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.service;
 
+import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response;
 
 /**
@@ -36,7 +37,8 @@ public interface WikiRestService {
      *
      * @LevelAPI Experimental
      */
-  Response getWikiPageContent(String sessionKey,
+  Response getWikiPageContent(ServletContext servletContext,
+                              String sessionKey,
                               String wikiContextKey,
                               boolean isMarkup,
                               String data);
