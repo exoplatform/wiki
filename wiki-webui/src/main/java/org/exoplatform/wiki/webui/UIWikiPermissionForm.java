@@ -16,7 +16,6 @@
  */
 package org.exoplatform.wiki.webui;
 
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.ConversationState;
@@ -35,8 +34,6 @@ import org.exoplatform.webui.event.Event.Phase;
 import org.exoplatform.webui.event.EventListener;
 import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.input.UICheckBoxInput;
-import org.exoplatform.webui.organization.UIGroupMembershipSelector;
-import org.exoplatform.webui.organization.account.UIGroupSelector;
 import org.exoplatform.webui.organization.account.UIUserSelector;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
@@ -147,7 +144,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     String [] actionNames = new String[]{OPEN_SELECT_USER_FORM, OPEN_SELECT_MEMBERSHIP_FORM,
                                          OPEN_SELECT_GROUP_FORM, ADD_ENTRY};
     String [] actionIcons = new String[]{USER_ICON, MEMBERSHIP_ICON, GROUP_ICON, ADD_ICON};
-    List<ActionData> actions = new ArrayList<ActionData>();
+    List<ActionData> actions = new ArrayList<>();
     ActionData action;
     for (int i = 0; i < actionNames.length; ++i) {
       action = new ActionData();
@@ -198,7 +195,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   }
 
   private void removeAllPopupWindow() {
-    List<UIComponent> children = new ArrayList<UIComponent>(getChildren());
+    List<UIComponent> children = new ArrayList<>(getChildren());
     for (UIComponent uichild : children) {
       if(uichild instanceof UIPopupWindow) {
         removeChild(uichild.getClass());
@@ -207,7 +204,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
   }
 
   private void closeAllPopupAction() {
-    List<UIComponent> children = new ArrayList<UIComponent>(getChildren());
+    List<UIComponent> children = new ArrayList<>(getChildren());
     for (UIComponent uichild : children) {
       if (uichild instanceof UIPopupWindow) {
         closePopupAction((UIPopupWindow) uichild);
@@ -265,7 +262,7 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     UIPermissionGrid permissionGrid = getChild(UIPermissionGrid.class);
     List<UIWikiPermissionEntry> uiPermissionEntries = new ArrayList<UIWikiPermissionEntry>();
     permissionGrid.findComponentOfType(uiPermissionEntries, UIWikiPermissionEntry.class);
-    List<PermissionEntry> permEntries = new ArrayList<PermissionEntry>();
+    List<PermissionEntry> permEntries = new ArrayList<>();
     for (UIWikiPermissionEntry uiPermissionEntry : uiPermissionEntries) {
       PermissionEntry permissionEntry = uiPermissionEntry.getPermissionEntry();
       if (!uiPermissionEntry.isImmutable()) {
@@ -454,16 +451,16 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     public void execute(Event<UIWikiPermissionForm> event) throws Exception {
       UIWikiPermissionForm uiWikiPermissionForm = event.getSource();
       uiWikiPermissionForm.closeAllPopupAction();
-      UIGroupSelector uiGroupSelector = uiWikiPermissionForm.createUIComponent(UIGroupSelector.class, null, null);
+      UIWikiGroupSelector uiGroupSelector = uiWikiPermissionForm.createUIComponent(UIWikiGroupSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
       openPopupAction(uiPopup, uiGroupSelector, 550);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
     }
   }
 
-  static public class SelectGroupActionListener extends EventListener<UIGroupSelector> {
+  static public class SelectGroupActionListener extends EventListener<UIWikiGroupSelector> {
     @Override
-    public void execute(Event<UIGroupSelector> event) throws Exception {
+    public void execute(Event<UIWikiGroupSelector> event) throws Exception {
       UIWikiPermissionForm uiWikiPermissionForm = event.getSource().getParent().getParent();
       String groupId = event.getRequestContext().getRequestParameter(OBJECTID);
       UIFormInputWithActions inputWithActions = uiWikiPermissionForm.getChild(UIFormInputWithActions.class);
@@ -478,16 +475,16 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
     public void execute(Event<UIWikiPermissionForm> event) throws Exception {
       UIWikiPermissionForm uiWikiPermissionForm = event.getSource();
       uiWikiPermissionForm.closeAllPopupAction();
-      UIGroupMembershipSelector uiGroupMembershipSelector = uiWikiPermissionForm.createUIComponent(UIGroupMembershipSelector.class, null, null);
+      UIWikiGroupMembershipSelector uiGroupMembershipSelector = uiWikiPermissionForm.createUIComponent(UIWikiGroupMembershipSelector.class, null, null);
       UIPopupWindow uiPopup = uiWikiPermissionForm.getPermissionPopupSelector();
       openPopupAction(uiPopup, uiGroupMembershipSelector, 550);
       event.getRequestContext().addUIComponentToUpdateByAjax(uiWikiPermissionForm);
     }
   }
 
-  static public class SelectMembershipActionListener extends EventListener<UIGroupMembershipSelector> {
-    public void execute(Event<UIGroupMembershipSelector> event) throws Exception {
-      UIGroupMembershipSelector uiGroupMembershipSelector = event.getSource();
+  static public class SelectMembershipActionListener extends EventListener<UIWikiGroupMembershipSelector> {
+    public void execute(Event<UIWikiGroupMembershipSelector> event) throws Exception {
+      UIWikiGroupMembershipSelector uiGroupMembershipSelector = event.getSource();
       UIWikiPermissionForm uiWikiPermissionForm = uiGroupMembershipSelector.getParent().getParent();
       String currentGroup = uiGroupMembershipSelector.getCurrentGroup().getId();
       String membershipId = event.getRequestContext().getRequestParameter(OBJECTID);

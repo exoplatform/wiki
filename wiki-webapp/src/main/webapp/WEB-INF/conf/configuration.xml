@@ -778,4 +778,13 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.portal.config.UserACL</target-component>
+    <component-plugin>
+      <name>wiki_permissions</name>
+      <set-method>addGroupVisibilityPlugin</set-method>
+      <type>org.exoplatform.wiki.webui.PermissionsGroupVisibilityPlugin</type>
+    </component-plugin>
+  </external-component-plugins>
 </configuration>
