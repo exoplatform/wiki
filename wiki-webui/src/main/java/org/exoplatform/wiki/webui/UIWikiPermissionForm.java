@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.webui;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.services.organization.Group;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.ConversationState;
