@@ -166,7 +166,7 @@ public class Utils {
   public static boolean isPagePublic(Page page) throws Exception {
     WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
     return (page != null)
-        && wikiService.hasPermissionOnPage(page, PermissionType.EDITPAGE, new Identity(IdentityConstants.ANONIM));
+        && wikiService.hasPermissionOnPage(page, PermissionType.VIEWPAGE, new Identity(IdentityConstants.ANONIM));
   }
 
   public static boolean isCurrentPagePublic() throws Exception {

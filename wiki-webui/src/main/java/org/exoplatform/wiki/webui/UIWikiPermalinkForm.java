@@ -154,8 +154,8 @@ public class UIWikiPermalinkForm extends UIForm implements UIPopupComponent {
         List<PermissionEntry> permissions = currentPage.getPermissions();
         permissions.add(new PermissionEntry(IdentityConstants.ANY, "", IDType.MEMBERSHIP, new Permission[]{
                 new Permission(PermissionType.VIEWPAGE, true),
-                new Permission(PermissionType.EDITPAGE, true),
-                new Permission(PermissionType.ADMINPAGE, true)
+                new Permission(PermissionType.EDITPAGE, false),
+                new Permission(PermissionType.ADMINPAGE, false)
         }));
         currentPage.setPermissions(permissions);
 
