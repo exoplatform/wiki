@@ -641,4 +641,19 @@
     </createIndex>
   </changeSet>
 
+  <changeSet id="1.0.0-56" author="wiki" dbms="mysql">
+    <sql>
+      ALTER TABLE WIKI_DRAFT_PAGES MODIFY COLUMN CONTENT longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      ALTER TABLE WIKI_PAGES MODIFY COLUMN CONTENT longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      ALTER TABLE WIKI_PAGES MODIFY COLUMN EDITION_COMMENT varchar(1000) CHARACTER SET utf8mb4 COLLATE
+      utf8mb4_unicode_ci;
+      ALTER TABLE WIKI_PAGE_VERSIONS MODIFY COLUMN CONTENT longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+      ALTER TABLE WIKI_PAGE_VERSIONS MODIFY COLUMN EDITION_COMMENT varchar(1000) CHARACTER SET utf8mb4 COLLATE
+      utf8mb4_unicode_ci;
+      ALTER TABLE WIKI_TEMPLATES MODIFY COLUMN DESCRIPTION varchar(1000) CHARACTER SET utf8mb4 COLLATE
+      utf8mb4_unicode_ci;
+      ALTER TABLE WIKI_TEMPLATES MODIFY COLUMN CONTENT longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+    </sql>
+  </changeSet>
+
 </databaseChangeLog>
