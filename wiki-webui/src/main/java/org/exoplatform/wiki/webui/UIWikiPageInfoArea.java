@@ -44,10 +44,10 @@ import java.util.List;
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiPageInfoArea.gtmpl",
   events = {
-    @EventConfig(listeners = UIWikiPageInfoArea.PermalinkActionListener.class),
-    @EventConfig(listeners = UIWikiPageInfoArea.CompareRevisionActionListener.class),
-    @EventConfig(listeners = UIWikiPageInfoArea.ShowRevisionActionListener.class),
-    @EventConfig(listeners = UIWikiPageInfoArea.ToggleAttachmentsActionListener.class)
+    @EventConfig(listeners = UIWikiPageInfoArea.PermalinkActionListener.class, csrfCheck = false),
+    @EventConfig(listeners = UIWikiPageInfoArea.CompareRevisionActionListener.class, csrfCheck = false),
+    @EventConfig(listeners = UIWikiPageInfoArea.ShowRevisionActionListener.class, csrfCheck = false),
+    @EventConfig(listeners = UIWikiPageInfoArea.ToggleAttachmentsActionListener.class, csrfCheck = false)
   }
 )
 public class UIWikiPageInfoArea extends UIWikiContainer {

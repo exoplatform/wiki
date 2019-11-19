@@ -66,9 +66,9 @@ import org.exoplatform.wiki.webui.control.action.AddPageActionComponent;
   lifecycle = UIApplicationLifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiPortlet.gtmpl",
   events = {
-    @EventConfig(listeners = UIWikiPortlet.ViewPageActionListener.class),
-    @EventConfig(listeners = UIWikiPortlet.ChangeModeActionListener.class),
-    @EventConfig(listeners = UIWikiPortlet.RedirectActionListener.class)
+    @EventConfig(listeners = UIWikiPortlet.ViewPageActionListener.class, csrfCheck = false),
+    @EventConfig(listeners = UIWikiPortlet.ChangeModeActionListener.class, csrfCheck = false),
+    @EventConfig(listeners = UIWikiPortlet.RedirectActionListener.class, csrfCheck = false)
   }
 )
 public class UIWikiPortlet extends UIPortletApplication {
@@ -215,6 +215,7 @@ public class UIWikiPortlet extends UIPortletApplication {
         if (pageInfoArea != null) {
           Event<UIComponent> xEvent = pageInfoArea.createEvent(org.exoplatform.wiki.utils.Utils.COMPARE_REVISION, Event.Phase.PROCESS, context);
           if (xEvent != null) {
+            xEvent.setCsrfCheck(false);
             xEvent.broadcast();
           }
         }
