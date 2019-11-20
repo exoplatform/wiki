@@ -32,8 +32,8 @@ import org.exoplatform.wiki.commons.Utils;
                  lifecycle = Lifecycle.class, 
                  template = "app:/templates/wiki/webui/tree/UITreeExplorer.gtmpl",
                  events = {
-                     @EventConfig(listeners = UITreeExplorer.SelectNodeActionListener.class)
-                     }
+                     @EventConfig(listeners = UITreeExplorer.SelectNodeActionListener.class, csrfCheck = false)
+                 }
 )
 public class UITreeExplorer extends UIContainer {
   
@@ -121,6 +121,7 @@ public class UITreeExplorer extends UIContainer {
       String eventName = eventComponent.getEventName();
       Event<UIComponent> xEvent = uiComponent.createEvent(eventName, Event.Phase.PROCESS, context);
       if (xEvent != null) {
+        xEvent.setCsrfCheck(false);
         xEvent.broadcast();
       }
     }
