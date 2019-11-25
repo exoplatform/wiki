@@ -5,7 +5,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>6.0.x-SNAPSHOT</version>
+    <version>6.0.x-lightweight-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
 
