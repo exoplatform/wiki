@@ -96,6 +96,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     super.beforeRunBare();
   }
 
+  @Override
   public void setUp() {
     super.setUp();
 
@@ -149,7 +150,6 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     } catch (NodeValidationException e) {
       LOGGER.error("Embedded ES instance couldn't start", e);
     }
-    //node = nodeBuilder().local(true).settings(elasticsearchSettings.build()).node();
     node.client().admin().cluster().prepareHealth().setWaitForYellowStatus().execute().actionGet();
     assertNotNull(node);
     assertFalse(node.isClosed());
@@ -164,6 +164,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     PropertyManager.setProperty("exo.es.search.server.url", url);
   }
 
+  @Override
   public void tearDown() {
     LOGGER.info("Clean Indexing database");
     cleanDB();
@@ -228,7 +229,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
   }
 
   protected PageEntity indexPage(String name, String title, String content, String comment, String owner,
-                                 List<PermissionEntity> permissions) throws NoSuchFieldException, IllegalAccessException {
+                                 List<PermissionEntity> permissions) {
     WikiEntity wiki = getOrCreateWikiTestBCHEntity();
     PageEntity page = new PageEntity();
     page.setName(name);
@@ -249,9 +250,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
     return page;
   }
 
-  protected PageAttachmentEntity indexAttachment(String title, InputStream inputStream, String owner) throws NoSuchFieldException,
-                                                                                     IllegalAccessException,
-                                                                                     IOException {
+  protected PageAttachmentEntity indexAttachment(String title, InputStream inputStream, String owner) throws IOException {
     WikiEntity wiki = getOrCreateWikiTestBCHEntity();
     PageEntity page = new PageEntity();
     page.setName("wikiPage");
@@ -276,8 +275,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
               new ByteArrayInputStream(bytes));
       fileItem = fileService.writeFile(fileItem);
     } catch (Exception e) {
-      e.printStackTrace();
-      fail();
+      fail(e);
     }
     attachment.setAttachmentFileID(fileItem.getFileInfo().getId());
     attachment.setCreatedDate(new Date());

@@ -25,6 +25,7 @@ import javax.jcr.query.QueryResult;
 
 import junit.framework.TestCase;
 
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.StandaloneContainer;
 import org.exoplatform.container.component.RequestLifeCycle;
 import org.exoplatform.services.jcr.RepositoryService;
@@ -92,6 +93,7 @@ public abstract class AbstractMOWTestcase extends TestCase {
       //System.setProperty("gatein.data.dir", Files.createTempDirectory("wiki-data", null).getFileName().toString());
       //
       container = StandaloneContainer.getInstance();
+      ExoContainerContext.setCurrentContainer(container);
 
       mowService = container.getComponentInstanceOfType(MOWService.class);
     } catch (Exception e) {
