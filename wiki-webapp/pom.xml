@@ -104,16 +104,10 @@
       <artifactId>wiki-jpa</artifactId>
       <scope>runtime</scope>
     </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-jpa-migration</artifactId>
-      <scope>runtime</scope>
-    </dependency>
   </dependencies>
   <build>
     <finalName>wiki</finalName>
     <plugins>
-
       <plugin>
         <artifactId>maven-resources-plugin</artifactId>
         <configuration>

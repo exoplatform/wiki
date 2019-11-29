@@ -19,9 +19,9 @@
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-webui</module>
-    <module>wiki-upgrade-plugins</module>
     <module>wiki-jpa-dao</module>
-    <module>wiki-jpa-migration</module>
+    <module>wiki-social-integration</module>
+    <module>wiki-packaging</module>
   </modules>
   <scm>
     <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
@@ -95,22 +95,17 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-upgrade-plugins</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-jpa-migration</artifactId>
+        <artifactId>wiki-webui</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-webui</artifactId>
+        <artifactId>wiki-social-integration</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -122,6 +117,12 @@
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-webapp</artifactId>
+        <version>${project.version}</version>
+        <type>pom</type>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-packaging</artifactId>
         <version>${project.version}</version>
         <type>pom</type>
       </dependency>
