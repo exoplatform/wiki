@@ -56,6 +56,7 @@ import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.StringCommonUtils;
+import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
 import org.xwiki.context.Execution;
 import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
@@ -184,7 +185,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
                                      Syntax.ANNOTATED_XHTML_1_0.toIdString(),
                                      false);
 
-      data = HTMLSanitizer.sanitize(data);
+      data = WikiHTMLSanitizer.markupSanitize(data);
 
       data = new String(b).replace("$content", data);
 
@@ -664,6 +665,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     InputStream result;
     try {
       org.exoplatform.wiki.mow.api.Page page = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId);
+      if (page == null) {
+        page = wikiService.getRelatedPage(wikiType, wikiOwner, pageId);
+      }
       if (page == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
