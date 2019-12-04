@@ -24,9 +24,27 @@
    xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
    xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 
-  <import>war:/conf/wiki/organization-configuration.xml</import>
-  <import>war:/conf/wiki/webui-configuration.xml</import>
-  <import>war:/conf/wiki/wiki-configuration.xml</import>
-  <import>war:/conf/wiki/resource-bundle-configuration.xml</import>
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.resources.ResourceBundleService</target-component>
+    <component-plugin>
+      <name>portal templates ResourceBundle Plugin</name>
+      <set-method>addResourceBundle</set-method>
+      <type>org.exoplatform.services.resources.impl.BaseResourceBundlePlugin</type>
+      <init-params>
+         <values-param>
+            <name>init.resources</name>
+            <value>locale.wiki.service.WikiService</value>
+         </values-param>
+         <values-param>
+            <name>portal.resource.names</name>
+            <value>locale.wiki.service.WikiService</value>
+         </values-param>
+        <values-param>
+          <name>application.resource.bundle</name>
+          <value>locale.wiki.service.WikiService</value>
+        </values-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
 
 </configuration>
