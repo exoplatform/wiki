@@ -31,11 +31,38 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-	
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.search.SearchService</target-component>
+    <component-plugin>
+      <name>WikiSearchConnector</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.wiki.service.impl.WikiSearchServiceConnector</type>
+      <description>eXo Wiki Pages</description>
+      <init-params>
+        <properties-param>
+           <name>constructor.params</name>
+           <property name="searchType" value="wiki"/>
+           <property name="displayName" value="Wiki"/>
+           <property name="enable" value="${exo.unified-search.connector.wiki.enable:true}"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.wiki.service.WikiService</target-component>
+    <component-plugin>
+      <name>unifiedsearch.listeners.wiki</name>
+      <set-method>addComponentPlugin</set-method>
+      <type>org.exoplatform.wiki.indexing.listener.UnifiedSearchPageWikiListener</type>
+      <description>Wiki listener for Unified Search</description>
+    </component-plugin>
+  </external-component-plugins>
+
 	<!-- configure activies plugin -->
 	<external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
-   
     <component-plugin>
       <name>add.wiki.activity.plugin</name>
       <set-method>registerUIExtensionPlugin</set-method>
