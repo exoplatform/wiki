@@ -30,6 +30,15 @@
   </component>
 
   <external-component-plugins>
+    <target-component>org.exoplatform.web.application.ApplicationLifecycleExtension</target-component>
+    <component-plugin>
+      <name>WikiSpaceAccessLifecycle</name>
+      <set-method>addPortalApplicationLifecycle</set-method>
+      <type>org.exoplatform.wiki.service.impl.WikiSpaceAccessLifecycle</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
       <name>add.action</name>

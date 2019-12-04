@@ -19,6 +19,7 @@
 package org.exoplatform.wiki.service.impl;
 
 import org.exoplatform.commons.utils.CommonsUtils;
+import org.exoplatform.container.component.BaseComponentPlugin;
 import org.exoplatform.portal.application.PortalRequestContext;
 import org.exoplatform.portal.application.RequestNavigationData;
 import org.exoplatform.portal.config.model.PortalConfig;
@@ -35,7 +36,7 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.utils.Utils;
 
-public class WikiSpaceAccessLifecycle implements ApplicationLifecycle<WebuiRequestContext> {
+public class WikiSpaceAccessLifecycle extends BaseComponentPlugin implements ApplicationLifecycle<WebuiRequestContext> {
   private static final String WIKI_PORTLET_NAME = "wiki";
   
   private static final Log      LOG               = ExoLogger.getLogger(WikiSpaceAccessLifecycle.class.toString());
