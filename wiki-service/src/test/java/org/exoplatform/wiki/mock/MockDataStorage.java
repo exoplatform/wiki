@@ -207,11 +207,8 @@ public class MockDataStorage implements DataStorage,Startable {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.exoplatform.portal.config.DataStorage#getSharedLayout()
-   */
   @Override
-  public Container getSharedLayout() throws Exception {
+  public Container getSharedLayout(String siteName) throws Exception {
     return null;
   }
 
