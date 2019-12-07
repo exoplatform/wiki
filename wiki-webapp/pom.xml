@@ -16,12 +16,6 @@
     <xwiki.platform.version>6.0</xwiki.platform.version>
   </properties>
   <dependencies>
-    <dependency>
-      <groupId>org.exoplatform.platform-ui</groupId>
-      <artifactId>platform-ui-skin</artifactId>
-      <type>war</type>
-      <scope>provided</scope>
-    </dependency>
     <!-- GWT core dependencies -->
     <dependency>
       <groupId>com.google.gwt</groupId>
