@@ -49,7 +49,7 @@ import java.util.List;
 @ComponentConfig(
   lifecycle = Lifecycle.class,
   template = "app:/templates/wiki/webui/UIWikiBreadCrumb.gtmpl",
-  events = {@EventConfig(listeners = UIWikiBreadCrumb.SwitchSpaceActionListener.class)}
+  events = {@EventConfig(listeners = UIWikiBreadCrumb.SwitchSpaceActionListener.class, csrfCheck = false)}
 )
 public class UIWikiBreadCrumb extends UIContainer {
 

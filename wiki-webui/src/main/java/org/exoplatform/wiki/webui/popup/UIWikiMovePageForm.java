@@ -67,7 +67,7 @@ import org.exoplatform.wiki.webui.tree.UITreeExplorer;
   events = {
     @EventConfig(listeners = UIWikiMovePageForm.CloseActionListener.class),
     @EventConfig(listeners = UIWikiMovePageForm.MoveActionListener.class),
-    @EventConfig(listeners = UIWikiMovePageForm.SwitchSpaceActionListener.class),
+    @EventConfig(listeners = UIWikiMovePageForm.SwitchSpaceActionListener.class, csrfCheck = false),
     @EventConfig(listeners = UIWikiMovePageForm.RenameActionListener.class)
   }
 )

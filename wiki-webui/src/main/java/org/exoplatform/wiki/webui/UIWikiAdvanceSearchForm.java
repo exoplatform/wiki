@@ -47,7 +47,7 @@ import java.util.Collections;
   template = "app:/templates/wiki/webui/UIWikiAdvanceSearchForm.gtmpl",
   events = {
       @EventConfig(listeners = UIWikiAdvanceSearchForm.SearchActionListener.class),
-      @EventConfig(listeners = UIWikiAdvanceSearchForm.SwitchSpaceActionListener.class)
+      @EventConfig(listeners = UIWikiAdvanceSearchForm.SwitchSpaceActionListener.class, csrfCheck = false)
     }
 )
 
