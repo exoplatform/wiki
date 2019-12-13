@@ -19,7 +19,6 @@
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-webui</module>
-    <module>wiki-jpa-dao</module>
     <module>wiki-social-integration</module>
     <module>wiki-packaging</module>
   </modules>
@@ -79,11 +78,6 @@
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-service</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-jpa</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>

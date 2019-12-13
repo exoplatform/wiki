@@ -416,7 +416,11 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Wiki createWiki(String wikiType, String owner) throws WikiException {
-    Wiki wiki = new Wiki(wikiType, owner);
+    Wiki wiki = getWikiByTypeAndOwner(wikiType, owner);
+    if (wiki != null) {
+      return wiki;
+    }
+    wiki = new Wiki(wikiType, owner);
     wiki.setPermissions(getWikiDefaultPermissions(wikiType, owner));
     // set wiki syntax
     WikiPreferences wikiPreferences = new WikiPreferences();

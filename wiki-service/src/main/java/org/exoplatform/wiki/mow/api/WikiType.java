@@ -16,6 +16,8 @@
  */
 package org.exoplatform.wiki.mow.api;
 
+import org.apache.commons.lang3.StringUtils;
+
 /**
  * Type of wiki
  */
@@ -34,5 +36,9 @@ public enum WikiType {
   /**
    * Personal wiki
    */
-  USER
+  USER;
+
+  public boolean isSame(String name) {
+    return StringUtils.equalsIgnoreCase(this.name(), name);
+  }
 }

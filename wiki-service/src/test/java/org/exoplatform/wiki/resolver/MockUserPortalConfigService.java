@@ -20,9 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.exoplatform.container.xml.InitParams;
-import org.exoplatform.portal.config.DataStorage;
-import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.*;
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.description.DescriptionService;
 import org.exoplatform.portal.mop.navigation.NavigationService;
@@ -30,6 +28,7 @@ import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.page.PageService;
 import org.exoplatform.portal.mop.page.PageState;
+import org.exoplatform.portal.mop.user.UserPortalContext;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.organization.OrganizationService;
@@ -53,9 +52,8 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
                                      OrganizationService orgService,
                                      NavigationService navService,
                                      DescriptionService descriptionService,
-                                     PageService pageService,
                                      InitParams params) throws Exception {
-    super(userACL, storage, orgService, navService, descriptionService, pageService, params);
+    super(userACL, storage, orgService, navService, descriptionService, null, params);
   }
 
   /* (non-Javadoc)
@@ -81,4 +79,15 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
       return pageContext;
   }
 
+  @Override
+  public UserPortalConfig getUserPortalConfig(String portalName, String accessUser) throws Exception {
+    return null;
+  }
+
+  @Override
+  public UserPortalConfig getUserPortalConfig(String portalName,
+                                              String accessUser,
+                                              UserPortalContext userPortalContext) throws Exception {
+    return null;
+  }
 }
