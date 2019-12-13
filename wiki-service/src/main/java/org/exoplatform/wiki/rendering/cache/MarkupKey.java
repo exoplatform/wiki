@@ -19,7 +19,6 @@ package org.exoplatform.wiki.rendering.cache;
 import java.io.Serializable;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.services.jcr.RepositoryService;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 public class MarkupKey implements Serializable {
@@ -32,8 +31,6 @@ public class MarkupKey implements Serializable {
 
   private boolean        supportSectionEdit;
   
-  private String         repoName;
-
   /**
    * Instance new markup key
    *
@@ -47,13 +44,6 @@ public class MarkupKey implements Serializable {
     this.sourceSyntax = sourceSyntax;
     this.targetSyntax = targetSyntax;
     this.supportSectionEdit = supportSectionEdit;
-    
-    RepositoryService repositoryService = (RepositoryService) ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RepositoryService.class);
-    try {
-      repoName = repositoryService.getCurrentRepository().getConfiguration().getName();
-    } catch (Exception e) {
-      repoName = "";
-    }
   }
 
   /* (non-Javadoc)
@@ -63,7 +53,6 @@ public class MarkupKey implements Serializable {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + repoName.hashCode();
     result = prime * result + ((pageParams == null) ? 0 : pageParams.hashCode());
     result = prime * result + ((sourceSyntax == null) ? 0 : sourceSyntax.hashCode());
     result = prime * result + (supportSectionEdit ? 1231 : 1237);
@@ -100,7 +89,6 @@ public class MarkupKey implements Serializable {
         return false;
     } else if (!targetSyntax.equals(other.targetSyntax))
       return false;
-    if (!repoName.equals(other.repoName)) return false;
     return true;
   }
 

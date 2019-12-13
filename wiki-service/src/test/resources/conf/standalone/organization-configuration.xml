@@ -21,9 +21,9 @@
 -->
 
 <configuration
-   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-   xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
-   xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
+        xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
 	<external-component-plugins>
     <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
     <component-plugin>
@@ -161,51 +161,6 @@
                 </value>
               </collection>
             </field>
-
-            <field  name="user">
-              <collection type="java.util.ArrayList">
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>operations</string></field>
-                    <field  name="parentId"><string>/organization</string></field>
-                    <field  name="description"><string>the /organization/operations and media group</string></field>
-                    <field  name="label"><string>Operations</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>sales</string></field>
-                    <field  name="parentId"><string>/organization/operations</string></field>
-                    <field  name="description"><string>the /organization/operations/sales group</string></field>
-                    <field  name="label"><string>Sales</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>finances</string></field>
-                    <field  name="parentId"><string>/organization/operations</string></field>
-                    <field  name="description"><string>the /organization/operations/finances group</string></field>
-                    <field  name="label"><string>Finances</string></field>
-                  </object>
-                </value>
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>customers</string></field>
-                    <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /customers group</string></field>
-                    <field  name="label"><string>Customers</string></field>
-                  </object>
-                </value>                
-                <value>
-                  <object type="org.exoplatform.services.organization.OrganizationConfig$Group">
-                    <field  name="name"><string>partners</string></field>
-                    <field  name="parentId"><string></string></field>
-                    <field  name="description"><string>the /partners group</string></field>
-                    <field  name="label"><string>Partners</string></field>
-                  </object>
-                </value>                
-              </collection>
-            </field> 
           </object>
         </object-param>
       </init-params>
