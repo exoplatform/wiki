@@ -8,7 +8,7 @@
       <name>Change PortalContainer Definitions</name>
       <set-method>registerChangePlugin</set-method>
       <type>org.exoplatform.container.definition.PortalContainerDefinitionChangePlugin</type>
-      <priority>50</priority>
+      <priority>25</priority>
       <init-params>
         <value-param>
           <name>apply.default</name>

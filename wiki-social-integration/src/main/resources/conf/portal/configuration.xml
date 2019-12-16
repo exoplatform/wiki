@@ -118,7 +118,7 @@
       <init-params>
         <value-param>
           <name>templatePath</name>
-          <value><![CDATA[classpath:/groovy/wiki/social-integration/plugin/notification/WikiActivity.gtmpl]]></value>
+          <value><![CDATA[war:/groovy/wiki/social-integration/plugin/notification/WikiActivity.gtmpl]]></value>
         </value-param>
         <object-param>
           <name>template.WikiActivityChildPlugin</name>
