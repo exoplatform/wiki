@@ -30,7 +30,7 @@ import org.exoplatform.wiki.utils.Utils;
 
 @ComponentConfig (
     lifecycle = UIFormLifecycle.class,
-    template = "classpath:groovy/wiki/social-integration/plugin/space/WikiUIActivity.gtmpl",
+    template = "war:/groovy/wiki/social-integration/plugin/space/WikiUIActivity.gtmpl",
     events = {
         @EventConfig(listeners = BaseUIActivity.LoadLikesActionListener.class),
         @EventConfig(listeners = BaseUIActivity.ToggleDisplayCommentFormActionListener.class),

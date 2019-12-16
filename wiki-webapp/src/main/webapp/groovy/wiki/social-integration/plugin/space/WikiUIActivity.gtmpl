@@ -27,7 +27,6 @@
   import org.exoplatform.social.core.service.LinkProvider;
   import org.exoplatform.social.core.space.model.Space;
   import org.exoplatform.social.webui.Utils;
-  import org.exoplatform.wcm.ext.component.activity.UILinkUtil;
   import org.apache.commons.lang.StringUtils;
   import org.apache.commons.lang.StringEscapeUtils;
   import org.exoplatform.wiki.service.PageUpdateType;
