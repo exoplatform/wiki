@@ -68,11 +68,10 @@ public class CancelActionComponent extends UIComponent {
   public static class CancelActionListener extends UISubmitToolBarActionListener<CancelActionComponent> {
     @Override
     protected void processEvent(Event<CancelActionComponent> event) throws Exception {
-      PortalRequestContext context = Util.getPortalRequestContext();
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
       String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
       org.exoplatform.wiki.utils.Utils.removeLogEditPage(pageParams, currentUser);
-      context.sendRedirect(Utils.getURLFromParams(Utils.getCurrentWikiPageParams()));
+      Utils.redirect(pageParams, WikiMode.VIEW);
     }
   }
   
