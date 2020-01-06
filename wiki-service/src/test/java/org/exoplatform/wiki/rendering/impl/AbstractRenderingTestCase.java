@@ -16,20 +16,16 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
+import org.exoplatform.wiki.jpa.BaseTest;
 import org.exoplatform.wiki.rendering.RenderingService;
 
-public abstract class AbstractRenderingTestCase extends AbstractMOWTestcase {
+public abstract class AbstractRenderingTestCase extends BaseTest {
 
   protected RenderingService renderingService;
 
+  @Override
   protected void setUp() throws Exception {
     super.setUp();
-    renderingService = (RenderingService) container.getComponentInstanceOfType(RenderingService.class);
+    renderingService = getContainer().getComponentInstanceOfType(RenderingService.class);
   }
-
-  protected void tearDown() throws Exception {
-    super.tearDown();
-  }
-  
 }

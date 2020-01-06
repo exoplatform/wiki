@@ -29,7 +29,7 @@ public class TestURLResolver extends AbstractResolverTestcase {
   
   public void setUp() throws Exception{
     super.setUp() ;
-    OrganizationService orgservice = (OrganizationService)container.getComponentInstanceOfType(OrganizationService.class) ;
+    OrganizationService orgservice = getContainer().getComponentInstanceOfType(OrganizationService.class) ;
     resolver = new URLResolver(orgservice);
   }
   

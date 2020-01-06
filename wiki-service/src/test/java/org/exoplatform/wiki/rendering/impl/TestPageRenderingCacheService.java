@@ -16,6 +16,8 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
+import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -30,7 +32,7 @@ import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.syntax.Syntax;
 
 public final class TestPageRenderingCacheService extends AbstractRenderingTestCase {
-  
+
   private WikiService               wikiService;
   
   /* (non-Javadoc)
@@ -39,7 +41,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    wikiService = container.getComponentInstanceOfType(WikiService.class);
+    wikiService = getContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   public void testRenderingCache() throws Exception {

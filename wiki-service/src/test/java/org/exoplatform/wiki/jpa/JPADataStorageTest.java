@@ -51,7 +51,7 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
 
   protected JPADataStorage storage;
   
-  public void setUp() {
+  public void setUp() throws Exception {
     super.setUp();
 
     // Init services

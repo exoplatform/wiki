@@ -39,7 +39,7 @@ import org.exoplatform.wiki.jpa.entity.WikiEntity;
 public class WikiDAOTest extends BaseWikiJPAIntegrationTest {
 
   @Before
-  public void setUp() {
+  public void setUp() throws Exception {
     super.setUp();
     wikiDAO.deleteAll();
   }
