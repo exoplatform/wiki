@@ -16,6 +16,7 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
+import org.exoplatform.wiki.jpa.BaseTest;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
@@ -23,13 +24,13 @@ import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiService;
 
 
-public class TestPageContent extends AbstractMOWTestcase {
+public class TestPageContent extends BaseTest {
 
   private WikiService wikiService;
 
   public void setUp() throws Exception {
     super.setUp();
-    wikiService = container.getComponentInstanceOfType(WikiService.class);
+    wikiService = getContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   public void testGetPageContent() throws Exception {

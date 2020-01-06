@@ -19,15 +19,13 @@
 
 package org.exoplatform.wiki.jpa.search;
 
+import java.util.Collection;
+
 import org.exoplatform.commons.api.search.data.SearchContext;
 import org.exoplatform.commons.api.search.data.SearchResult;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.web.controller.router.Router;
 import org.exoplatform.wiki.jpa.BaseWikiESIntegrationTest;
-
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.Collection;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com
@@ -38,7 +36,7 @@ public class ITWikiElasticsearchIntegrationTest extends BaseWikiESIntegrationTes
     WikiElasticUnifiedSearchServiceConnector searchServiceConnector;
 
     @Override
-    public void setUp() {
+    public void setUp() throws Exception {
         super.setUp();
         searchServiceConnector = CommonsUtils.getService(WikiElasticUnifiedSearchServiceConnector.class);
     }

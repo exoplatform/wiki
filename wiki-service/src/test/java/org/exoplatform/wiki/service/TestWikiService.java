@@ -22,8 +22,8 @@ import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.jpa.BaseTest;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.TemplateSearchData;
 import org.exoplatform.wiki.service.search.TemplateSearchResult;
@@ -35,11 +35,11 @@ import java.io.InputStream;
 import java.util.*;
 
 @SuppressWarnings("deprecation")
-public class TestWikiService extends AbstractMOWTestcase {
+public class TestWikiService extends BaseTest {
   private WikiService wService;
   public void setUp() throws Exception {
     super.setUp() ;
-    wService = container.getComponentInstanceOfType(WikiService.class) ;
+    wService = getContainer().getComponentInstanceOfType(WikiService.class) ;
 
     if (wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "classic") == null) {
       wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");

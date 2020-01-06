@@ -19,11 +19,11 @@
 
 package org.exoplatform.wiki.jpa.search;
 
+import java.io.IOException;
+
 import org.exoplatform.wiki.jpa.BaseWikiESIntegrationTest;
 import org.exoplatform.wiki.jpa.SecurityUtils;
 import org.exoplatform.wiki.service.search.WikiSearchData;
-
-import java.io.IOException;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com

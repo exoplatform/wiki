@@ -16,10 +16,8 @@
  */
 
 package org.exoplatform.wiki.jpa;
-import org.exoplatform.commons.testing.BaseExoTestCase;
-import org.exoplatform.component.test.ConfigurationUnit;
-import org.exoplatform.component.test.ConfiguredBy;
-import org.exoplatform.component.test.ContainerScope;
+import org.exoplatform.component.test.*;
+import org.exoplatform.services.security.*;
 
 
 /**
@@ -29,14 +27,28 @@ import org.exoplatform.component.test.ContainerScope;
  * Jun 25, 2015  
  */
 @ConfiguredBy({
-@ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/components-configuration.xml")
+  @ConfigurationUnit(scope = ContainerScope.ROOT, path = "conf/configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/configuration.xml"),
+  @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/portal/test-configuration.xml"),
 })
-public abstract class BaseTest extends BaseExoTestCase{
-  protected void setUp(){
+public abstract class BaseTest extends AbstractKernelTest {
+
+  protected void setUp() throws Exception {
+    super.setUp();
     begin();
+    Identity systemIdentity = new Identity(IdentityConstants.SYSTEM);
+    ConversationState.setCurrent(new ConversationState(systemIdentity));
+    System.setProperty("gatein.email.domain.url", "localhost");
   }
-  protected void tearDown() {
+
+  protected void tearDown() throws Exception {
+    super.tearDown();
     end();
+  }
+
+  protected void startSessionAs(String user) {
+    Identity userIdentity = new Identity(user);
+    ConversationState.setCurrent(new ConversationState(userIdentity));
   }
   public <T> T getService(Class<T> clazz) {
     return (T) getContainer().getComponentInstanceOfType(clazz);

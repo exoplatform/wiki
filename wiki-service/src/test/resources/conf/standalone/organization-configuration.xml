@@ -165,7 +165,5 @@
         </object-param>
       </init-params>
     </component-plugin>
-    
   </external-component-plugins>
-  <import>classpath:/conf/portal/hibernate-organization-configuration.xml</import>
 </configuration>

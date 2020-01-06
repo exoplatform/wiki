@@ -23,9 +23,15 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd http://www.exoplatform.org/xml/ns/kernel_1_2.xsd"
         xmlns="http://www.exoplatform.org/xml/ns/kernel_1_2.xsd">
-  <import>jar:/conf/standalone/jcr-configuration.xml</import>
-  <import>jar:/conf/standalone/org-configuration.xml</import>
   <import>jar:/conf/standalone/components-configuration.xml</import>
   <import>jar:/conf/standalone/organization-configuration.xml</import>
-  <import>jar:/conf/standalone/test-configuration.xml</import>
+
+  <import>jar:/conf/exo.portal.component.identity-configuration.xml</import>
+  <import>jar:/conf/exo.portal.component.portal-configuration.xml</import>
+  <import>jar:/conf/exo.portal.component.application-registry-configuration.xml</import>
+  <import>jar:/conf/exo.commons.component.core-configuration.xml</import>
+  <import>jar:/conf/exo.social.component.core-configuration.xml</import>
+
+  <remove-configuration>org.exoplatform.commons.search.service.UnifiedSearchService</remove-configuration>
+  <remove-configuration>org.exoplatform.commons.api.persistence.DataInitializer</remove-configuration>
 </configuration>

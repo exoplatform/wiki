@@ -96,7 +96,7 @@ public abstract class BaseWikiESIntegrationTest extends BaseWikiJPAIntegrationTe
   }
 
   @Override
-  public void setUp() {
+  public void setUp() throws Exception {
     super.setUp();
 
     fileResource = this.getClass().getClassLoader().getResourceAsStream("AGT2010.DimitriBaeli.EnterpriseScrum-V1.2.pdf");

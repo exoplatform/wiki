@@ -40,7 +40,7 @@ public abstract class BaseWikiJPAIntegrationTest extends BaseTest {
   protected EmotionIconDAO emotionIconDAO;
   protected FileService fileService;
 
-  public void setUp() {
+  public void setUp() throws Exception {
     super.setUp();
 
     // make sure data are well initialized for each test
@@ -63,7 +63,7 @@ public abstract class BaseWikiJPAIntegrationTest extends BaseTest {
     cleanDB();
   }
 
-  public void tearDown() {
+  public void tearDown() throws Exception {
     // Clean Data
     cleanDB();
     super.tearDown();

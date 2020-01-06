@@ -38,16 +38,12 @@ import org.exoplatform.wiki.service.impl.WikiServiceImpl;
 /**
  * @author <a href="mailto:tuyennt@exoplatform.com">Tuyen Nguyen The</a>.
  */
-@ConfiguredBy({
-        @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/components-configuration.xml"),
-        @ConfigurationUnit(scope = ContainerScope.PORTAL, path = "conf/standalone/page-indexing-configuration.xml"),
-})
 public class PageIndexingListenerTest extends BaseTest {
   private WikiServiceImpl wikiService;
   private MockIndexingService indexingService;
 
   @Override
-  public void setUp() {
+  public void setUp() throws Exception {
     super.setUp();
 
     wikiService = getService(WikiServiceImpl.class);
@@ -56,12 +52,7 @@ public class PageIndexingListenerTest extends BaseTest {
 
   }
 
-  public void testIndex() {
-
-  }
-
-  public void _testReindexingDraftPage() throws Exception {
-
+  public void testReindexingDraftPage() throws Exception {
     ConversationState state = new ConversationState(new Identity("root"));
     ConversationState.setCurrent(state);
 

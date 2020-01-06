@@ -16,23 +16,21 @@
  */
 package org.exoplatform.wiki.mow.core.api;
 
+import java.util.Arrays;
+
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.wiki.jpa.BaseTest;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-public class TestPageAttachment extends AbstractMOWTestcase {
+public class TestPageAttachment extends BaseTest {
 
   private WikiService wikiService;
 
   @Override
   protected void setUp() throws Exception {
     super.setUp();
-    wikiService = container.getComponentInstanceOfType(WikiService.class);
+    wikiService = getContainer().getComponentInstanceOfType(WikiService.class);
   }
 
   public void testAddPageAttachment() throws Exception {

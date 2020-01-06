@@ -127,23 +127,6 @@
     </init-params>
   </component>
 
-  <!-- Data Initialization -->
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.api.persistence.DataInitializer</target-component>
-    <component-plugin>
-      <name>WikiChangeLogsPlugin</name>
-      <set-method>addChangeLogsPlugin</set-method>
-      <type>org.exoplatform.commons.persistence.impl.ChangeLogsPlugin</type>
-      <init-params>
-        <values-param>
-          <name>changelogs</name>
-          <description>Change logs of wiki</description>
-          <value>db/changelog/wiki.db.changelog-1.0.0.xml</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-
   <!-- SEARCH - Override default wiki search connector (use same type 'wiki') -->
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.search.SearchService</target-component>

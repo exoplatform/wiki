@@ -33,8 +33,8 @@ public class TestPageResolver extends AbstractResolverTestcase {
   
   public void setUp() throws Exception{
     super.setUp() ;
-    wikiService = container.getComponentInstanceOfType(WikiService.class);
-    resolver = container.getComponentInstanceOfType(PageResolver.class);
+    wikiService = getContainer().getComponentInstanceOfType(WikiService.class);
+    resolver = getContainer().getComponentInstanceOfType(PageResolver.class);
   }
   
   public void testPageResolver() throws Exception{
