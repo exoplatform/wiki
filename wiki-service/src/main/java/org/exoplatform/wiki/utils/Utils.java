@@ -14,6 +14,7 @@ import javax.mail.internet.InternetAddress;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.component.manager.ComponentLookupException;
 import org.xwiki.rendering.converter.ConversionException;
@@ -581,9 +582,10 @@ public class Utils {
     if (mailAddr == null || mailAddr.length() == 0) mailAddr = props.getProperty("mail.from");
     if (mailAddr != null) {
       try {
+        String companyName = NotificationPluginUtils.getBrandingPortalName();
         InternetAddress serMailAddr = new InternetAddress(mailAddr);
         addr.setAddress(serMailAddr.getAddress());
-        return addr.toUnicodeString();
+        return companyName + "<" + addr.toUnicodeString() + ">";
       } catch (AddressException e) {
         if (log_.isDebugEnabled()) { log_.debug("value of 'gatein.email.smtp.from' or 'mail.from' in configuration file is not in format of mail address", e); }
         return null;
