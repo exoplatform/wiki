@@ -540,7 +540,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     page = dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageName);
 
     if(page != null) {
-      Identity user = ConversationState.getCurrent().getIdentity();
+      Identity user = getCurrentIdentity();
       if (!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
         page = null;
       }
@@ -665,9 +665,23 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public boolean movePage(WikiPageParams currentLocationParams, WikiPageParams newLocationParams) throws WikiException {
     try {
+      Identity identity = getCurrentIdentity();
+      if (identity == null) {
+        throw new WikiException("Anonymous user can't move pages");
+      }
       Page movePage = getPageOfWikiByName(currentLocationParams.getType(),
           currentLocationParams.getOwner(),
           currentLocationParams.getPageName());
+      if (movePage == null) {
+        throw new WikiException("Can't find page with type = '" + currentLocationParams.getType() + "', owner = '"
+            + currentLocationParams.getOwner() + "' and page name = '" + currentLocationParams.getPageName() + "'");
+      }
+
+      if (!hasPermissionOnPage(movePage, PermissionType.EDITPAGE, identity)) {
+        throw new WikiException("User '" + identity.getUserId() + "' can't move page with type = '"
+            + currentLocationParams.getType() + "', owner = '" + currentLocationParams.getOwner() + "' and page name = '"
+            + currentLocationParams.getPageName() + "'");
+      }
 
       dataStorage.movePage(currentLocationParams, newLocationParams);
 
@@ -689,7 +703,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   public String getPageRenderedContent(Page page, String targetSyntax) {
     String renderedContent = StringUtils.EMPTY;
     try {
-      boolean supportSectionEdit = hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
+      boolean supportSectionEdit = hasPermissionOnPage(page, PermissionType.EDITPAGE, getCurrentIdentity());
       String markup = page.getContent();
 
       boolean isUseCache = isCachePage(markup);
@@ -1068,7 +1082,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Page getExsitedOrNewDraftPageById(String wikiType, String wikiOwner, String pageId) throws WikiException {
-    Identity user = ConversationState.getCurrent().getIdentity();
+    Identity user = getCurrentIdentity();
     Page existedPage = getPageByRootPermission(wikiType, wikiOwner, pageId);
     if (existedPage != null) {
       if (user == null || hasPermissionOnPage(existedPage, PermissionType.VIEWPAGE, user) || hasPermissionOnPage(existedPage, PermissionType.VIEW_ATTACHMENT, user)) {
@@ -1637,6 +1651,11 @@ public class WikiServiceImpl implements WikiService, Startable {
   @Override
   public List<Page> getPagesOfWiki(String wikiType, String wikiOwner) {
     return dataStorage.getPagesOfWiki(wikiType, wikiOwner);
+  }
+
+  private Identity getCurrentIdentity() {
+    ConversationState state = ConversationState.getCurrent();
+    return state == null ? null : state.getIdentity();
   }
 
 }

@@ -184,7 +184,6 @@ public class TestWikiService extends BaseTest {
     assertEquals("Breadcumb2", breadCumbs.get(2).getId());
     assertEquals("Breadcumb3", breadCumbs.get(3).getId());
 
- // FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
     Wiki groupWiki = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "platform/users");
     restartTransaction();
 
@@ -274,8 +273,7 @@ public class TestWikiService extends BaseTest {
 
     startSessionAs("mary");
 
- // FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//    assertFalse(wService.movePage(currentLocationParams, newLocationParams));
+    assertFalse(wService.movePage(currentLocationParams, newLocationParams));
   }
 
   public void testDeletePage() throws WikiException {
