@@ -116,12 +116,13 @@ public class WikiPageIndexingServiceConnector extends ElasticIndexingServiceConn
         fields.put("createdDate", String.valueOf(page.getCreatedDate().getTime()));
         fields.put("updatedDate", String.valueOf(page.getUpdatedDate().getTime()));
         fields.put("comment", page.getComment());
-        fields.put("wikiType", page.getWiki().getType());
+        String wikiType = page.getWiki().getType();
         String wikiOwner = page.getWiki().getOwner();
         //We need to add the first "/" on the wiki owner if it's  wiki group
-        if (page.getWiki().getType().toUpperCase().equals(WikiType.GROUP.name())) {
+        if (StringUtils.equalsIgnoreCase(WikiType.GROUP.name(), wikiType)) {
           wikiOwner = dao.validateGroupWikiOwner(wikiOwner);
         }
+        fields.put("wikiType", wikiType);
         fields.put("wikiOwner", wikiOwner);
 
         return new Document(TYPE, id, page.getUrl(), page.getUpdatedDate(), computePermissions(page), fields);

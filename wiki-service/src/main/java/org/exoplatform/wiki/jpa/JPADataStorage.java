@@ -164,7 +164,7 @@ public class JPADataStorage implements DataStorage {
 
     //Trick to add the "/" at the beginning of the wiki owner
     String wikiOwner = wikiSearchData.getWikiOwner();
-    if (WikiType.GROUP.isSame(wikiSearchData.getWikiType())) {
+    if (StringUtils.equalsIgnoreCase(WikiType.GROUP.name(), wikiSearchData.getWikiType())) {
       wikiOwner = pageDAO.validateGroupWikiOwner(wikiOwner);
     }
 
@@ -804,7 +804,7 @@ public class JPADataStorage implements DataStorage {
   public List<TemplateSearchResult> searchTemplate(TemplateSearchData templateSearchData) throws WikiException {
 
     String wikiOwner = templateSearchData.getWikiOwner();
-    if(templateSearchData.getWikiType().toUpperCase().equals(WikiType.GROUP.toString())) {
+    if (StringUtils.equalsIgnoreCase(WikiType.GROUP.name(), templateSearchData.getWikiType())) {
       wikiOwner = templateDAO.validateGroupWikiOwner(wikiOwner);
     }
 

@@ -523,6 +523,7 @@ public class WikiServiceImpl implements WikiService, Startable {
       page.getPermissions().add(currentUserPermEnty);
     }
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
+    page.setId(createdPage.getId());
 
     invalidateCache(parentPage);
     invalidateCache(page);

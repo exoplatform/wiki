@@ -75,8 +75,12 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
 
   public List<SearchResult> searchWiki(String searchedText, String wikiType, String wikiOwner, int offset, int limit, String sort, String order) {
     List<ElasticSearchFilter> filters = new ArrayList<>();
-    filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiType", wikiType));
-    filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiOwner", wikiOwner));
+    if (StringUtils.isNotBlank(wikiType)) {
+      filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiType", wikiType));
+    }
+    if (StringUtils.isNotBlank(wikiOwner)) {
+      filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiOwner", wikiOwner));
+    }
     List<SearchResult> searchResults = filteredWikiSearch(null, searchedText, filters, null, offset, limit, sort, order);
     return searchResults;
   }
@@ -87,6 +91,11 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
     String jsonResponse = getClient().sendRequest(esQuery, getIndex(), getType());
     return buildWikiResult(jsonResponse);
 
+  }
+
+  @Override
+  protected String getSitesFilter(Collection<String> sitesCollection) {
+    return null;
   }
 
   protected List<SearchResult> buildWikiResult(String jsonResponse) {

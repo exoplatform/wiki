@@ -21,6 +21,8 @@ import java.util.List;
 import javax.persistence.NoResultException;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.wiki.jpa.entity.WikiEntity;
 import org.exoplatform.wiki.mow.api.WikiType;
 
@@ -37,7 +39,9 @@ public class WikiDAO extends WikiBaseDAO<WikiEntity, Long> {
   public WikiEntity getWikiByTypeAndOwner(String wikiType, String wikiOwner) {
 
     //We need to add the first "/" on the wiki owner if it's  wiki group
-    if (wikiType.toUpperCase().equals(WikiType.GROUP.name())) wikiOwner = validateGroupWikiOwner(wikiOwner);
+    if (StringUtils.equalsIgnoreCase(WikiType.GROUP.name(), wikiType)) {
+      wikiOwner = validateGroupWikiOwner(wikiOwner);
+    }
 
     TypedQuery<WikiEntity> query = getEntityManager().createNamedQuery("wiki.getWikiByTypeAndOwner", WikiEntity.class)
                                                .setParameter("type", wikiType)
