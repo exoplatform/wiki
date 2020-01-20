@@ -551,48 +551,55 @@ public class TestWikiService extends BaseTest {
     assertNotNull(syntaxFullPage);
   }
 
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testBrokenLink() throws WikiException {
-//    Wiki wiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
-//    wService.createPage(wiki, "WikiHome", new Page("OriginalParentPage1", "OriginalParentPage1"));
-//    wService.createPage(wiki, "OriginalParentPage1", new Page("OriginalPage", "OriginalPage"));
-//    Page relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
-//    assertEquals("OriginalPage", relatedPage.getName());
-//    wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage", "RenamedOriginalPage", "RenamedOriginalPage");
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
-//    assertEquals("RenamedOriginalPage", relatedPage.getName());
-//    wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "RenamedOriginalPage", "RenamedOriginalPage2", "RenamedOriginalPage2");
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
-//    assertEquals("RenamedOriginalPage2", relatedPage.getName());
-//    WikiPageParams currentPageParams= new WikiPageParams();
-//    currentPageParams.setPageName("RenamedOriginalPage2");
-//    currentPageParams.setOwner("classic");
-//    currentPageParams.setType(PortalConfig.PORTAL_TYPE);
-//    WikiPageParams newPageParams= new WikiPageParams();
-//    newPageParams.setPageName("WikiHome");
-//    newPageParams.setOwner("classic");
-//    newPageParams.setType(PortalConfig.PORTAL_TYPE);
-//    wService.movePage(currentPageParams,newPageParams);
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
-//    assertEquals("RenamedOriginalPage2", relatedPage.getName());
-//    wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "RenamedOriginalPage2", "RenamedOriginalPage3", "RenamedOriginalPage3");
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
-//    assertEquals("RenamedOriginalPage3", relatedPage.getName());
-//    wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "platform/users"), "WikiHome", new Page("OriginalParentPag2", "OriginalParentPage2"));
-//    // Move RenamedOriginalPage3 from portal type to group type
-//    currentPageParams.setPageName("RenamedOriginalPage3");
-//    currentPageParams.setOwner("classic");
-//    currentPageParams.setType(PortalConfig.PORTAL_TYPE);
-//    newPageParams.setPageName("OriginalParentPage2");
-//    newPageParams.setOwner("platform/users");
-//    newPageParams.setType(PortalConfig.GROUP_TYPE);
-//    //
-//    wService.movePage(currentPageParams,newPageParams);
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
-//    assertEquals("RenamedOriginalPage3", relatedPage.getName());
-//    wService.deletePage(PortalConfig.GROUP_TYPE, "platform/users", "RenamedOriginalPage3");
-//    assertNull(wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage"));
-//  }
+  public void testBrokenLink() throws WikiException {
+    Wiki wiki = new Wiki(PortalConfig.PORTAL_TYPE, "classic");
+    wService.createPage(wiki, "WikiHome", new Page("OriginalParentPage1", "OriginalParentPage1"));
+    wService.createPage(wiki, "OriginalParentPage1", new Page("OriginalPage", "OriginalPage"));
+    wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage", "RenamedOriginalPage", "RenamedOriginalPage");
+    Page relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
+    assertEquals("RenamedOriginalPage", relatedPage.getName());
+    wService.renamePage(PortalConfig.PORTAL_TYPE,
+                        "classic",
+                        "RenamedOriginalPage",
+                        "RenamedOriginalPage2",
+                        "RenamedOriginalPage2");
+    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
+    assertEquals("RenamedOriginalPage2", relatedPage.getName());
+    WikiPageParams currentPageParams = new WikiPageParams();
+    currentPageParams.setPageName("RenamedOriginalPage2");
+    currentPageParams.setOwner("classic");
+    currentPageParams.setType(PortalConfig.PORTAL_TYPE);
+    WikiPageParams newPageParams = new WikiPageParams();
+    newPageParams.setPageName("WikiHome");
+    newPageParams.setOwner("classic");
+    newPageParams.setType(PortalConfig.PORTAL_TYPE);
+    wService.movePage(currentPageParams, newPageParams);
+    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
+    assertEquals("RenamedOriginalPage2", relatedPage.getName());
+    wService.renamePage(PortalConfig.PORTAL_TYPE,
+                        "classic",
+                        "RenamedOriginalPage2",
+                        "RenamedOriginalPage3",
+                        "RenamedOriginalPage3");
+    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
+    assertEquals("RenamedOriginalPage3", relatedPage.getName());
+    wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "platform/users"),
+                        "WikiHome",
+                        new Page("OriginalParentPag2", "OriginalParentPage2"));
+    // Move RenamedOriginalPage3 from portal type to group type
+    currentPageParams.setPageName("RenamedOriginalPage3");
+    currentPageParams.setOwner("classic");
+    currentPageParams.setType(PortalConfig.PORTAL_TYPE);
+    newPageParams.setPageName("OriginalParentPage2");
+    newPageParams.setOwner("platform/users");
+    newPageParams.setType(PortalConfig.GROUP_TYPE);
+    //
+    wService.movePage(currentPageParams, newPageParams);
+    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage");
+    assertEquals("RenamedOriginalPage3", relatedPage.getName());
+    wService.deletePage(PortalConfig.GROUP_TYPE, "platform/users", "RenamedOriginalPage3");
+    assertNotNull(wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage"));
+  }
 
   public void testCircularRename() throws WikiException {
     String type = PortalConfig.PORTAL_TYPE;
