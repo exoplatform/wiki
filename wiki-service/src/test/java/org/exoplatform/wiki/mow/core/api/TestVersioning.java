@@ -40,14 +40,17 @@ public class TestVersioning extends BaseTest {
     Wiki wiki = getOrCreateWiki(wikiService, WikiType.PORTAL.toString(), "versioning1");
     Page page = new Page("testGetVersionHistory-001", "testGetVersionHistory-001");
     page = wikiService.createPage(wiki, "WikiHome", page);
+    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    assertNotNull(versions);
+    assertEquals(1, versions.size());
+
     wikiService.createVersionOfPage(page);
 
     page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "testGetVersionHistory-001");
     assertNotNull(page);
-    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    versions = wikiService.getVersionsOfPage(page);
     assertNotNull(versions);
-// FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//    assertEquals(2, versions.size());
+    assertEquals(2, versions.size());
   }
 
   public void testCreateVersionHistoryTree() throws Exception {
@@ -55,6 +58,9 @@ public class TestVersioning extends BaseTest {
     Page page = new Page("testCreateVersionHistoryTree-001", "testCreateVersionHistoryTree-001");
     page.setContent("testCreateVersionHistoryTree-ver0.0");
     page = wikiService.createPage(wiki, "WikiHome", page);
+    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    assertNotNull(versions);
+    assertEquals(1, versions.size());
 
     page.setTitle("testCreateVersionHistoryTree");
     page.setContent("testCreateVersionHistoryTree-ver1.0");
@@ -65,7 +71,7 @@ public class TestVersioning extends BaseTest {
     wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
     wikiService.createVersionOfPage(page);
 
-    List<PageVersion> versions = wikiService.getVersionsOfPage(page);
+    versions = wikiService.getVersionsOfPage(page);
     assertNotNull(versions);
     assertEquals(3, versions.size());
 
@@ -96,7 +102,6 @@ public class TestVersioning extends BaseTest {
     assertEquals("testCreateVersionHistoryTree-ver1.0", pageVersion.getContent());
 
     pageVersion = itVersions.next();
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//    assertEquals("testCreateVersionHistoryTree-ver0.0", pageVersion.getContent());
+    assertEquals("testCreateVersionHistoryTree-ver0.0", pageVersion.getContent());
   }
 }
