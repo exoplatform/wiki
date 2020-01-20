@@ -483,27 +483,27 @@ public class TestWikiService extends BaseTest {
 //    assertEquals(1, result.size());
 //  }
 
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testAddAttachment() throws WikiException {
-//    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
-//    Page page = new Page("AddAttachment", "AddAttachment");
-//    page = wService.createPage(wiki, "WikiHome", page);
-//    Attachment attachment = new Attachment();
-//    attachment.setName("attachment1.txt");
-//    attachment.setContent("foo".getBytes());
-//    attachment.setCreator("you");
-//    attachment.setMimeType("text/plain");
-//    wService.addAttachmentToPage(attachment, page);
-//
-//    page = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
-//    assertNotNull(page);
-//    List<Attachment> attachments = wService.getAttachmentsOfPage(page);
-//    assertNotNull(attachments);
-//    assertEquals(1, attachments.size());
-//    assertEquals("foo", new String(attachments.get(0).getContent()));
-//    assertNotNull(attachments.get(0).getDownloadURL());
-//    assertEquals("/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/AddAttachment/attachment1.txt", attachments.get(0).getDownloadURL());
-//  }
+  public void testAddAttachment() throws WikiException {
+    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
+    Page page = new Page("AddAttachment", "AddAttachment");
+    page = wService.createPage(wiki, "WikiHome", page);
+    Attachment attachment = new Attachment();
+    attachment.setName("attachment1.txt");
+    attachment.setContent("foo".getBytes());
+    attachment.setCreator("you");
+    attachment.setMimeType("text/plain");
+    wService.addAttachmentToPage(attachment, page);
+
+    page = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
+    assertNotNull(page);
+    List<Attachment> attachments = wService.getAttachmentsOfPage(page, true);
+    assertNotNull(attachments);
+    assertEquals(1, attachments.size());
+    assertEquals("foo", new String(attachments.get(0).getContent()));
+    assertNotNull(attachments.get(0).getDownloadURL());
+    assertEquals("/portal/rest/wiki/attachments/portal/space/classic/page/AddAttachment/attachment1.txt",
+                 attachments.get(0).getDownloadURL());
+  }
 
   public void testAddImageAttachment() throws WikiException, IOException {
     Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
