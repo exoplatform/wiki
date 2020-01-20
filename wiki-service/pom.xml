@@ -505,6 +505,9 @@
           <excludes>
             <exclude>**/IT*.java</exclude>
           </excludes>
+          <systemPropertyVariables>
+            <exo.files.storage.dir>${project.build.directory}/exo-files</exo.files.storage.dir>
+          </systemPropertyVariables>
         </configuration>
       </plugin>
       <plugin>
