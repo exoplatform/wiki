@@ -418,7 +418,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   public Wiki createWiki(String wikiType, String owner) throws WikiException {
     Wiki wiki = getWikiByTypeAndOwner(wikiType, owner);
     if (wiki != null) {
-      return wiki;
+      throw new WikiException("Wiki with type '" + wikiType + "' and owner = '" + owner + "' already exists");
     }
     wiki = new Wiki(wikiType, owner);
     wiki.setPermissions(getWikiDefaultPermissions(wikiType, owner));

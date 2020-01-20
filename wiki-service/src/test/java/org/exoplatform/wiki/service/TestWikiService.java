@@ -41,9 +41,7 @@ public class TestWikiService extends BaseTest {
     super.setUp() ;
     wService = getContainer().getComponentInstanceOfType(WikiService.class) ;
 
-    if (wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "classic") == null) {
-      wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
-    }
+    getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
   }
   
   public void testWikiService() {
@@ -54,7 +52,7 @@ public class TestWikiService extends BaseTest {
     Wiki wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
     assertNull(wiki);
 
-    wService.createWiki(PortalConfig.PORTAL_TYPE, "wiki1");
+    getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "wiki1");
 
     wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
     assertNotNull(wiki);
@@ -62,8 +60,8 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testGetPortalPageById() throws WikiException {
-    Wiki wikiClassic = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
-    Wiki wikiAcme = wService.createWiki(PortalConfig.PORTAL_TYPE, "acme");
+    Wiki wikiClassic = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wikiAcme = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "acme");
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "WikiHome")) ;
 
@@ -74,7 +72,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testGetGroupPageById() throws WikiException {
-    Wiki wiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/users");
+    Wiki wiki = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "/platform/users");
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.GROUP_TYPE, "platform/users", "WikiHome")) ;
 
@@ -85,7 +83,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testGetUserPageById() throws WikiException {
-    Wiki wiki = wService.createWiki(PortalConfig.USER_TYPE, "john");
+    Wiki wiki = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "john");
 
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.USER_TYPE, "john", "WikiHome")) ;
 
@@ -104,7 +102,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testCreateTemplatePage() throws WikiException {
-    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplate1");
+    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "wikiForTemplate1");
 
     Template template = new Template();
     template.setName("MyTemplate");
@@ -121,7 +119,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testDeleteTemplatePage() throws WikiException {
-    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplate2");
+    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "wikiForTemplate2");
 
     Template template = new Template();
     template.setName("MyTemplate");
@@ -137,7 +135,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testSearchTemplate() throws WikiException {
-    Wiki wiki1 = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiForTemplateSearch");
+    Wiki wiki1 = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "wikiForTemplateSearch");
     WikiPageParams params = new WikiPageParams(PortalConfig.PORTAL_TYPE,  "wikiForTemplateSearch", null);
     Template template1 = new Template();
     template1.setName("MyTemplate");
@@ -145,7 +143,7 @@ public class TestWikiService extends BaseTest {
     wService.createTemplatePage(wiki1, template1);
     assertNotNull(wService.getTemplatePage(params, "MyTemplate"));
 
-    Wiki wiki2 = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    Wiki wiki2 = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "/platform/guests");
     params = new WikiPageParams(PortalConfig.GROUP_TYPE,  "/platform/guests", null);
     Template template2 = new Template();
     template2.setName("Sample_Group_Search_Template");
@@ -153,7 +151,7 @@ public class TestWikiService extends BaseTest {
     wService.createTemplatePage(wiki2, template2);
     assertNotNull(wService.getTemplatePage(params, "Sample_Group_Search_Template"));
 
-    Wiki wiki3 = wService.createWiki(PortalConfig.USER_TYPE, "demo");
+    Wiki wiki3 = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "demo");
     params = new WikiPageParams(PortalConfig.USER_TYPE,  "demo", null);
     Template template3 = new Template();
     template3.setName("Sample_User_Search_Template");
@@ -175,7 +173,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testGetBreadcumb() throws WikiException {
-    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("Breadcumb1", "Breadcumb1")) ;
     wService.createPage(portalWiki, "Breadcumb1", new Page("Breadcumb2", "Breadcumb2")) ;
     wService.createPage(portalWiki, "Breadcumb2", new Page("Breadcumb3", "Breadcumb3")) ;
@@ -187,7 +185,7 @@ public class TestWikiService extends BaseTest {
     assertEquals("Breadcumb3", breadCumbs.get(3).getId());
 
  // FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//    Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "platform/users");
+//    Wiki groupWiki = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "platform/users");
 //    wService.createPage(groupWiki, "WikiHome", new Page("GroupBreadcumb1", "GroupBreadcumb1")) ;
 //    wService.createPage(groupWiki, "GroupBreadcumb1", new Page("GroupBreadcumb2", "GroupBreadcumb2")) ;
 //    wService.createPage(groupWiki, "GroupBreadcumb2", new Page("GroupBreadcumb3", "GroupBreadcumb3")) ;
@@ -198,7 +196,7 @@ public class TestWikiService extends BaseTest {
 //    assertEquals("GroupBreadcumb2", breadCumbs.get(2).getId());
 //    assertEquals("GroupBreadcumb3", breadCumbs.get(3).getId());
 //
-//    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "john");
+//    Wiki userWiki = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "john");
 //    wService.createPage(userWiki, "WikiHome", new Page("UserBreadcumb1", "UserBreadcumb1")) ;
 //    wService.createPage(userWiki, "UserBreadcumb1", new Page("UserBreadcumb2", "UserBreadcumb2")) ;
 //    wService.createPage(userWiki, "UserBreadcumb2", new Page("UserBreadcumb3", "UserBreadcumb3")) ;
@@ -212,7 +210,7 @@ public class TestWikiService extends BaseTest {
 
   public void testMovePage() throws WikiException {
     //moving page in same space
-    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("oldParent", "oldParent")) ;
     wService.createPage(portalWiki, "oldParent", new Page("child", "child")) ;
     wService.createPage(portalWiki, "WikiHome", new Page("newParent", "newParent")) ;
@@ -233,7 +231,7 @@ public class TestWikiService extends BaseTest {
     assertTrue(wService.movePage(currentLocationParams,newLocationParams)) ;
 
     //moving page from different spaces
-    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
+    Wiki userWiki = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "demo");
     wService.createPage(userWiki, "WikiHome", new Page("acmePage", "acmePage")) ;
     wService.createPage(portalWiki, "WikiHome", new Page("classicPage", "classicPage")) ;
 
@@ -249,7 +247,7 @@ public class TestWikiService extends BaseTest {
     assertTrue(wService.movePage(currentLocationParams,newLocationParams)) ;
 
     // moving a page to another read-only page
-    Wiki demoWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "demo");
+    Wiki demoWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "demo");
     wService.createPage(demoWiki, "WikiHome", new Page("toMovedPage", "toMovedPage"));
     Page page = wService.createPage(userWiki, "WikiHome", new Page("privatePage", "privatePage"));
     HashMap<String, String[]> permissionMap = new HashMap<>();
@@ -279,7 +277,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testDeletePage() throws WikiException {
-    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("deletePage", "deletePage")) ;
     assertTrue(wService.deletePage(PortalConfig.PORTAL_TYPE, "classic", "deletePage")) ;
     //wait(10) ;
@@ -291,14 +289,14 @@ public class TestWikiService extends BaseTest {
 
 
   public void testRenamePage() throws WikiException {
-    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("currentPage", "currentPage")) ;
     assertTrue(wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "currentPage", "renamedPage", "renamedPage")) ;
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "renamedPage")) ;
   }
 
   public void testRenamePageToExistingPage() throws WikiException {
-    Wiki portalWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki portalWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     wService.createPage(portalWiki, "WikiHome", new Page("currentPage", "currentPage")) ;
     wService.createPage(portalWiki, "WikiHome", new Page("currentPage2", "currentPage2")) ;
     try {
@@ -312,17 +310,17 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testSearchContent() throws Exception {
-    Wiki classicWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki classicWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     Page kspage = new Page("knowledge suite 1", "knowledge suite 1");
     kspage.setContent("forum faq wiki");
     wService.createPage(classicWiki, "WikiHome", kspage);
 
-    Wiki extWiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "ext");
+    Wiki extWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "ext");
     Page ksExtPage = new Page("knowledge suite 2", "knowledge suite 2");
     ksExtPage.setContent("forum faq wiki");
     wService.createPage(extWiki, "WikiHome", ksExtPage);
 
-    Wiki demoWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
+    Wiki demoWiki = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "demo");
     Page ksSocialPage = new Page("knowledge suite", "knowledge suite");
     ksSocialPage.setContent("forum faq wiki");
     wService.createPage(demoWiki, "WikiHome", ksSocialPage);
@@ -331,7 +329,7 @@ public class TestWikiService extends BaseTest {
     csPage.setContent("calendar mail contact chat");
     wService.createPage(classicWiki, "WikiHome", csPage);
 
-    Wiki guestWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+    Wiki guestWiki = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "/platform/guests");
     Page guestPage = new Page("Guest page", "Guest page");
     guestPage.setContent("Playground");
     wService.createPage(guestWiki, "WikiHome", guestPage);
@@ -387,12 +385,12 @@ public class TestWikiService extends BaseTest {
 
 //FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
 //  public void testSearch() throws Exception {
-//    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+//    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
 //    Page kspage = new Page("test search service", "test search service");
 //    kspage.setContent("forum faq wiki exoplatform");
 //    wService.createPage(wiki, "WikiHome", kspage) ;
 //
-//    Wiki wikiExt = wService.createWiki(PortalConfig.PORTAL_TYPE, "ext");
+//    Wiki wikiExt = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "ext");
 //    Page extPage = new Page("test search service ext", "test search service ext");
 //    extPage.setContent("forum faq wiki exoplatform");
 //    wService.createPage(wikiExt, "WikiHome", extPage) ;
@@ -404,12 +402,12 @@ public class TestWikiService extends BaseTest {
 //    attachment.setMimeType("text/plain"); ;
 //    wService.addAttachmentToPage(attachment, extPage);
 //
-//    Wiki groupWiki = wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/guests");
+//    Wiki groupWiki = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "/platform/guests");
 //    Page guestPage = new Page("guest platform", "guest platform");
 //    guestPage.setContent("exoplatform");
 //    wService.createPage(groupWiki, "WikiHome", guestPage);
 //
-//    Wiki userWiki = wService.createWiki(PortalConfig.USER_TYPE, "demo");
+//    Wiki userWiki = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "demo");
 //    Page userPage = new Page("demo", "demo");
 //    userPage.setContent("exoplatform");
 //    wService.createPage(userWiki, "WikiHome", userPage);
@@ -447,9 +445,9 @@ public class TestWikiService extends BaseTest {
 
 //FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
 //  public void testSearchTitle() throws Exception {
-//    wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
-//    wService.createWiki(PortalConfig.GROUP_TYPE, "/platform/users");
-//    wService.createWiki(PortalConfig.USER_TYPE, "demo");
+//    getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
+//    getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "/platform/users");
+//    getOrCreateWiki(wService, PortalConfig.USER_TYPE, "demo");
 //    wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", new Page("dumpPage", "dumpPage"));
 //    wService.createPage(new Wiki(PortalConfig.GROUP_TYPE, "/platform/users"), "WikiHome", new Page("Dump guest Page", "Dump guest Page"));
 //    wService.createPage(new Wiki(PortalConfig.USER_TYPE, "demo"), "WikiHome", new Page("Dump demo Page", "Dump demo Page"));
@@ -487,7 +485,7 @@ public class TestWikiService extends BaseTest {
 
 //FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
 //  public void testAddAttachment() throws WikiException {
-//    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+//    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
 //    Page page = new Page("AddAttachment", "AddAttachment");
 //    page = wService.createPage(wiki, "WikiHome", page);
 //    Attachment attachment = new Attachment();
@@ -509,7 +507,7 @@ public class TestWikiService extends BaseTest {
 
 //FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
 //  public void testAddImageAttachment() throws WikiException, IOException {
-//    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+//    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
 //    Page page = new Page("AddImageAttachment", "AddImageAttachment");
 //    page = wService.createPage(wiki, "WikiHome", page);
 //    Attachment attachment = new Attachment();
@@ -620,7 +618,7 @@ public class TestWikiService extends BaseTest {
     startSessionAs("mary");
     
     // Get wiki home
-    Page wikiHome = wService.createWiki(PortalConfig.PORTAL_TYPE, "testDraftPage").getWikiHome();
+    Page wikiHome = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "testDraftPage").getWikiHome();
 
     // Test create draft for new page
     DraftPage draftPage = wService.createDraftForNewPage(new DraftPage(), wikiHome, new Date().getTime());
@@ -682,7 +680,7 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testPageWatchers() throws WikiException {
-    Wiki wiki1 = wService.createWiki(PortalConfig.PORTAL_TYPE, "wikiWatchers");
+    Wiki wiki1 = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "wikiWatchers");
     Page page1 = wService.createPage(wiki1, "WikiHome", new Page("page1", "page1"));
 
     List<String> watchersOfPage1 = wService.getWatchersOfPage(page1);
@@ -697,7 +695,7 @@ public class TestWikiService extends BaseTest {
   }
   
   public void testGetExsitedOrNewDraftPageById() throws WikiException, IOException {
-    Wiki wiki = wService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     Page page = new Page("pageName", "pageTitle");
     page = wService.createPage(wiki, "WikiHome", page);
     assertNotNull(wService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "classic", "pageTitle")) ;

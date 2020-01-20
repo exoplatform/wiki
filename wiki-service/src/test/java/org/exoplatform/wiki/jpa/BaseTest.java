@@ -17,7 +17,11 @@
 
 package org.exoplatform.wiki.jpa;
 import org.exoplatform.component.test.*;
+import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.*;
+import org.exoplatform.wiki.WikiException;
+import org.exoplatform.wiki.mow.api.Wiki;
+import org.exoplatform.wiki.service.WikiService;
 
 
 /**
@@ -52,5 +56,13 @@ public abstract class BaseTest extends AbstractKernelTest {
   }
   public <T> T getService(Class<T> clazz) {
     return (T) getContainer().getComponentInstanceOfType(clazz);
+  }
+
+  protected Wiki getOrCreateWiki(WikiService wikiService, String type, String owner) throws WikiException {
+    Wiki wiki = wikiService.getWikiByTypeAndOwner(type, owner);
+    if (wiki == null) {
+      return wikiService.createWiki(type, owner);
+    }
+    return wiki;
   }
 }

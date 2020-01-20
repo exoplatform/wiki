@@ -34,7 +34,7 @@ public class TestPageAttachment extends BaseTest {
   }
 
   public void testAddPageAttachment() throws Exception {
-    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "wikiAttachement1");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "wikiAttachement1");
     Page wikiHome = wiki.getWikiHome();
 
     Attachment attachment = new Attachment();

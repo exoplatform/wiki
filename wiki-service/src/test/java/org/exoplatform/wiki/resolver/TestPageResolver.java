@@ -48,7 +48,7 @@ public class TestPageResolver extends AbstractResolverTestcase {
   }
   
   public void testGetPage() throws Exception{
-    wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
     UserNode usernode = createUserNode(MockDataStorage.PORTAL_CLASSIC__WIKI[0], "wiki");
     Page page = resolver.resolve("http://hostname/$CONTAINER/$ACCESS/classic/wiki", usernode);
     assertNotNull(page) ;
@@ -64,13 +64,13 @@ public class TestPageResolver extends AbstractResolverTestcase {
     assertNotNull(page);
 
     // Resolve wiki pages on another space
-    wikiService.createWiki(PortalConfig.GROUP_TYPE, "/platform/users");
+    getOrCreateWiki(wikiService, PortalConfig.GROUP_TYPE, "/platform/users");
     usernode = createUserNode(MockDataStorage.GROUP_USER_WIKI[0], "wiki");
     page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/platformuserspace", usernode);
     assertNotNull(page);
 
     // Resolve wiki pages on another user
-    wikiService.createWiki(PortalConfig.USER_TYPE, "mary");
+    getOrCreateWiki(wikiService, PortalConfig.USER_TYPE, "mary");
     usernode = createUserNode(MockDataStorage.USER_MARY_WIKI[0], "wiki");
     page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/maryspace", usernode);
     assertNotNull(page);    

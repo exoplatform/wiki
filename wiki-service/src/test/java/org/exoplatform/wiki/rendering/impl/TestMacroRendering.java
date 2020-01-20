@@ -104,7 +104,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
 //FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
 //  public void testIncludePageMacro() throws Exception {
 //    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-//    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+//    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
 //    Page home = wiki.getWikiHome();
 //    String content = "Test include contents of a page";
 //    home.setContent(content);
@@ -127,7 +127,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
 
   public void testChildrenMacro() throws Exception {
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
     wikiService.createPage(wiki, "WikiHome", new Page("samplePage", "samplePage"));
     wikiService.createPage(wiki, "samplePage", new Page("childPage1", "childPage1"));
     wikiService.createPage(wiki, "samplePage", new Page("childPage2", "childPage2"));
@@ -148,7 +148,7 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
   public void testRenderPageTreeMacro() throws Exception {
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
 
-    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
     wikiService.createPage(wiki, "WikiHome", new Page("rootPage", "rootPage"));
     wikiService.createPage(wiki, "rootPage", new Page("testPageTree1", "testPageTree1"));
     wikiService.createPage(wiki, "rootPage", new Page("testPageTree2", "testPageTree2"));
