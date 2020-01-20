@@ -505,29 +505,28 @@ public class TestWikiService extends BaseTest {
 //    assertEquals("/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikis/classic/WikiHome/AddAttachment/attachment1.txt", attachments.get(0).getDownloadURL());
 //  }
 
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testAddImageAttachment() throws WikiException, IOException {
-//    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
-//    Page page = new Page("AddImageAttachment", "AddImageAttachment");
-//    page = wService.createPage(wiki, "WikiHome", page);
-//    Attachment attachment = new Attachment();
-//    attachment.setName("John.png");
-//    InputStream imageInputStream = this.getClass().getClassLoader().getResourceAsStream("images/John.png");
-//    byte[] content = IOUtils.toByteArray(imageInputStream);
-//    attachment.setContent(content);
-//    attachment.setCreator("you");
-//    attachment.setMimeType("image/png");
-//    wService.addAttachmentToPage(attachment, page);
-//
-//    page = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
-//    assertNotNull(page);
-//    List<Attachment> attachments = wService.getAttachmentsOfPage(page);
-//    assertNotNull(attachments);
-//    assertEquals(1, attachments.size());
-//    byte[] content1 = attachments.get(0).getContent();
-//    assertTrue(Arrays.equals(content, content1));
-//    assertNotNull(attachments.get(0).getDownloadURL());
-//  }
+  public void testAddImageAttachment() throws WikiException, IOException {
+    Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
+    Page page = new Page("AddImageAttachment", "AddImageAttachment");
+    page = wService.createPage(wiki, "WikiHome", page);
+    Attachment attachment = new Attachment();
+    attachment.setName("John.png");
+    InputStream imageInputStream = this.getClass().getClassLoader().getResourceAsStream("images/John.png");
+    byte[] content = IOUtils.toByteArray(imageInputStream);
+    attachment.setContent(content);
+    attachment.setCreator("you");
+    attachment.setMimeType("image/png");
+    wService.addAttachmentToPage(attachment, page);
+
+    page = wService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), page.getName());
+    assertNotNull(page);
+    List<Attachment> attachments = wService.getAttachmentsOfPage(page, true);
+    assertNotNull(attachments);
+    assertEquals(1, attachments.size());
+    byte[] content1 = attachments.get(0).getContent();
+    assertTrue(Arrays.equals(content, content1));
+    assertNotNull(attachments.get(0).getDownloadURL());
+  }
 
   public void testAddEmotionIcons() throws WikiException, IOException {
     EmotionIcon emotionIcon = new EmotionIcon();
