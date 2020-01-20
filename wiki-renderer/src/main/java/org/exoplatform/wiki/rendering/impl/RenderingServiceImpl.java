@@ -42,8 +42,7 @@ import org.xwiki.rendering.renderer.BlockRenderer;
 import org.xwiki.rendering.renderer.printer.DefaultWikiPrinter;
 import org.xwiki.rendering.renderer.printer.WikiPrinter;
 import org.xwiki.rendering.syntax.Syntax;
-import org.xwiki.rendering.transformation.TransformationException;
-import org.xwiki.rendering.transformation.TransformationManager;
+import org.xwiki.rendering.transformation.*;
 import org.xwiki.xml.html.HTMLCleaner;
 import org.xwiki.xml.html.HTMLCleanerConfiguration;
 import org.xwiki.xml.html.HTMLUtils;
@@ -229,7 +228,7 @@ public class RenderingServiceImpl implements RenderingService, Startable {
     // Step 2: Run transformations
     try {
       TransformationManager transformationManager = componentManager.getInstance(TransformationManager.class);
-      transformationManager.performTransformations(xdom, sourceSyntax);
+      transformationManager.performTransformations(xdom, new TransformationContext(xdom, sourceSyntax));
     } catch (TransformationException e) {
       throw new ConversionException("Failed to execute some transformations", e);
     }
