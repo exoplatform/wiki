@@ -594,25 +594,30 @@ public class TestWikiService extends BaseTest {
 //    assertNull(wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "OriginalPage"));
 //  }
 
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testCircularRename() throws WikiException {
-//    Page relatedPage = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", new Page("CircularRename1", "CircularRename1"));
-//    assertEquals("CircularRename1", relatedPage.getName());
-//    assertEquals("CircularRename1", relatedPage.getTitle());
-//
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "CircularRename1");
-//    assertNotNull(relatedPage);
-//    assertEquals("CircularRename1", relatedPage.getName());
-//    wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "CircularRename1", "CircularRename2", "CircularRename2");
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "CircularRename1");
-//    assertEquals("CircularRename2", relatedPage.getName());
-//    // Do a circular rename
-//    wService.renamePage(PortalConfig.PORTAL_TYPE, "classic", "CircularRename2", "CircularRename1", "CircularRename1");
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "CircularRename1");
-//    assertEquals("CircularRename1", relatedPage.getName());
-//    relatedPage = wService.getRelatedPage(PortalConfig.PORTAL_TYPE, "classic", "CircularRename2");
-//    assertNull(relatedPage);
-//  }
+  public void testCircularRename() throws WikiException {
+    String type = PortalConfig.PORTAL_TYPE;
+    String owner = "classic";
+
+    Wiki wiki = getOrCreateWiki(wService, type, owner);
+    Page relatedPage = wService.createPage(wiki, "WikiHome", new Page("CircularRename1", "CircularRename1"));
+    assertEquals("CircularRename1", relatedPage.getName());
+    assertEquals("CircularRename1", relatedPage.getTitle());
+
+    relatedPage = wService.getRelatedPage(type, owner, "CircularRename1");
+    assertNull(relatedPage);
+
+    wService.renamePage(type, owner, "CircularRename1", "CircularRename2", "CircularRename2");
+    relatedPage = wService.getRelatedPage(type, owner, "CircularRename1");
+    assertEquals("CircularRename2", relatedPage.getName());
+    // Do a circular rename
+    wService.renamePage(type, owner, "CircularRename2", "CircularRename1", "CircularRename1");
+    relatedPage = wService.getRelatedPage(type, owner, "CircularRename1");
+    assertNotNull(relatedPage);
+    assertEquals("CircularRename1", relatedPage.getName());
+    relatedPage = wService.getRelatedPage(type, owner, "CircularRename2");
+    assertNotNull(relatedPage);
+    assertEquals("CircularRename1", relatedPage.getName());
+  }
 
   public void testDraftPage() throws WikiException {
     startSessionAs("mary");
