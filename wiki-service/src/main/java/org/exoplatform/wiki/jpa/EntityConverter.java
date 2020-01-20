@@ -53,9 +53,15 @@ public class EntityConverter {
   public static WikiEntity convertWikiToWikiEntity(Wiki wiki, WikiDAO wikiDAO) {
     WikiEntity wikiEntity = null;
     if (wiki != null) {
+      String wikiType = wiki.getType();
+      String owner = wiki.getOwner();
+      if (StringUtils.equalsIgnoreCase(WikiType.GROUP.name(), wikiType)) {
+        owner = wikiDAO.validateGroupWikiOwner(owner);
+      }
+
       wikiEntity = new WikiEntity();
-      wikiEntity.setType(wiki.getType());
-      wikiEntity.setOwner(wiki.getOwner());
+      wikiEntity.setType(wikiType);
+      wikiEntity.setOwner(owner);
       wikiEntity.setWikiHome(convertPageToPageEntity(wiki.getWikiHome(), wikiDAO));
       wikiEntity.setPermissions(convertPermissionEntriesToPermissionEntities(wiki.getPermissions()));
       WikiPreferences wikiPreferences = wiki.getPreferences();

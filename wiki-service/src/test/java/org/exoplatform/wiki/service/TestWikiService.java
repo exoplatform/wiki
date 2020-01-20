@@ -185,27 +185,29 @@ public class TestWikiService extends BaseTest {
     assertEquals("Breadcumb3", breadCumbs.get(3).getId());
 
  // FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//    Wiki groupWiki = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "platform/users");
-//    wService.createPage(groupWiki, "WikiHome", new Page("GroupBreadcumb1", "GroupBreadcumb1")) ;
-//    wService.createPage(groupWiki, "GroupBreadcumb1", new Page("GroupBreadcumb2", "GroupBreadcumb2")) ;
-//    wService.createPage(groupWiki, "GroupBreadcumb2", new Page("GroupBreadcumb3", "GroupBreadcumb3")) ;
-//    breadCumbs = wService.getBreadcumb(PortalConfig.GROUP_TYPE, "platform/users", "GroupBreadcumb3");
-//    assertEquals(4, breadCumbs.size());
-//    assertEquals("WikiHome", breadCumbs.get(0).getId());
-//    assertEquals("GroupBreadcumb1", breadCumbs.get(1).getId());
-//    assertEquals("GroupBreadcumb2", breadCumbs.get(2).getId());
-//    assertEquals("GroupBreadcumb3", breadCumbs.get(3).getId());
-//
-//    Wiki userWiki = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "john");
-//    wService.createPage(userWiki, "WikiHome", new Page("UserBreadcumb1", "UserBreadcumb1")) ;
-//    wService.createPage(userWiki, "UserBreadcumb1", new Page("UserBreadcumb2", "UserBreadcumb2")) ;
-//    wService.createPage(userWiki, "UserBreadcumb2", new Page("UserBreadcumb3", "UserBreadcumb3")) ;
-//    breadCumbs = wService.getBreadcumb(PortalConfig.USER_TYPE, "john", "UserBreadcumb3");
-//    assertEquals(4, breadCumbs.size());
-//    assertEquals("WikiHome", breadCumbs.get(0).getId());
-//    assertEquals("UserBreadcumb1", breadCumbs.get(1).getId());
-//    assertEquals("UserBreadcumb2", breadCumbs.get(2).getId());
-//    assertEquals("UserBreadcumb3", breadCumbs.get(3).getId());
+    Wiki groupWiki = getOrCreateWiki(wService, PortalConfig.GROUP_TYPE, "platform/users");
+    restartTransaction();
+
+    wService.createPage(groupWiki, "WikiHome", new Page("GroupBreadcumb1", "GroupBreadcumb1")) ;
+    wService.createPage(groupWiki, "GroupBreadcumb1", new Page("GroupBreadcumb2", "GroupBreadcumb2")) ;
+    wService.createPage(groupWiki, "GroupBreadcumb2", new Page("GroupBreadcumb3", "GroupBreadcumb3")) ;
+    breadCumbs = wService.getBreadcumb(PortalConfig.GROUP_TYPE, "platform/users", "GroupBreadcumb3");
+    assertEquals(4, breadCumbs.size());
+    assertEquals("WikiHome", breadCumbs.get(0).getId());
+    assertEquals("GroupBreadcumb1", breadCumbs.get(1).getId());
+    assertEquals("GroupBreadcumb2", breadCumbs.get(2).getId());
+    assertEquals("GroupBreadcumb3", breadCumbs.get(3).getId());
+
+    Wiki userWiki = getOrCreateWiki(wService, PortalConfig.USER_TYPE, "john");
+    wService.createPage(userWiki, "WikiHome", new Page("UserBreadcumb1", "UserBreadcumb1")) ;
+    wService.createPage(userWiki, "UserBreadcumb1", new Page("UserBreadcumb2", "UserBreadcumb2")) ;
+    wService.createPage(userWiki, "UserBreadcumb2", new Page("UserBreadcumb3", "UserBreadcumb3")) ;
+    breadCumbs = wService.getBreadcumb(PortalConfig.USER_TYPE, "john", "UserBreadcumb3");
+    assertEquals(4, breadCumbs.size());
+    assertEquals("WikiHome", breadCumbs.get(0).getId());
+    assertEquals("UserBreadcumb1", breadCumbs.get(1).getId());
+    assertEquals("UserBreadcumb2", breadCumbs.get(2).getId());
+    assertEquals("UserBreadcumb3", breadCumbs.get(3).getId());
   }
 
   public void testMovePage() throws WikiException {
