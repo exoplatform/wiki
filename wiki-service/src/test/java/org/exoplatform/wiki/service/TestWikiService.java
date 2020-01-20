@@ -529,20 +529,19 @@ public class TestWikiService extends BaseTest {
 //    assertNotNull(attachments.get(0).getDownloadURL());
 //  }
 
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testAddEmotionIcons() throws WikiException, IOException {
-//    EmotionIcon emotionIcon = new EmotionIcon();
-//    emotionIcon.setName("thumb_up.gif");
-//    InputStream emotionIconInputStream = this.getClass().getClassLoader().getResourceAsStream("images/thumb_up.gif");
-//    byte[] emotionIconImage = IOUtils.toByteArray(emotionIconInputStream);
-//    emotionIcon.setImage(emotionIconImage);
-//    wService.createEmotionIcon(emotionIcon);
-//
-//    EmotionIcon emotionIconThumbUp = wService.getEmotionIconByName("thumb_up.gif");
-//    assertNotNull(emotionIconThumbUp);
-//    assertEquals("thumb_up.gif", emotionIconThumbUp.getName());
-//    assertEquals("/portal/rest/jcr/repository/collaboration/exo:applications/eXoWiki/wikimetadata/EmotionIconsPage/thumb_up.gif", emotionIconThumbUp.getUrl());
-//  }
+  public void testAddEmotionIcons() throws WikiException, IOException {
+    EmotionIcon emotionIcon = new EmotionIcon();
+    emotionIcon.setName("thumb_up.gif");
+    InputStream emotionIconInputStream = this.getClass().getClassLoader().getResourceAsStream("images/thumb_up.gif");
+    byte[] emotionIconImage = IOUtils.toByteArray(emotionIconInputStream);
+    emotionIcon.setImage(emotionIconImage);
+    wService.createEmotionIcon(emotionIcon);
+
+    EmotionIcon emotionIconThumbUp = wService.getEmotionIconByName("thumb_up.gif");
+    assertNotNull(emotionIconThumbUp);
+    assertEquals("thumb_up.gif", emotionIconThumbUp.getName());
+    assertEquals(emotionIconImage.length, emotionIconThumbUp.getImage().length);
+  }
 
   public void testGetSyntaxPage() throws WikiException {
     Page syntaxSmallPage = wService.getHelpSyntaxPage(Syntax.XWIKI_2_0.toIdString(), false);
