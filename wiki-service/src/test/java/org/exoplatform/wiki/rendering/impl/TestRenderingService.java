@@ -18,6 +18,7 @@ package org.exoplatform.wiki.rendering.impl;
 
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -49,7 +50,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
   }
   
   public void testRenderAnExistedInternalLink() throws Exception {
-    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
 
     Page page = wikiService.createPage(wiki, "WikiHome", new Page("CreateWikiPage-002", "CreateWikiPage-002"));
 
@@ -75,9 +76,9 @@ public class TestRenderingService extends AbstractRenderingTestCase {
     assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-002>>classic.CreateWikiPage-002]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
     assertEquals(expectedHtml, renderingService.render("[[CreateWikiPage-002>>portal:classic.CreateWikiPage-002]]", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
-  
+
   public void testRenderCreatePageLink() throws Exception {
-    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
     
     Execution ec = renderingService.getExecution();
     ec.setContext(new ExecutionContext());
@@ -97,7 +98,7 @@ public class TestRenderingService extends AbstractRenderingTestCase {
   }
 
   public void testRenderAttachmentsAndImages() throws Exception {
-    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "classic");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
     Page page = wikiService.createPage(wiki, "WikiHome", new Page("CreateWikiPage-003", "CreateWikiPage-003"));
     Attachment attachment1 = new Attachment();
     attachment1.setName("space in name.png");

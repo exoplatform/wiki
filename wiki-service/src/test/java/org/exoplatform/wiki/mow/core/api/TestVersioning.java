@@ -37,7 +37,7 @@ public class TestVersioning extends BaseTest {
   }
 
   public void testGetVersionHistory() throws Exception {
-    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning1");
+    Wiki wiki = getOrCreateWiki(wikiService, WikiType.PORTAL.toString(), "versioning1");
     Page page = new Page("testGetVersionHistory-001", "testGetVersionHistory-001");
     page = wikiService.createPage(wiki, "WikiHome", page);
     wikiService.createVersionOfPage(page);
@@ -51,7 +51,7 @@ public class TestVersioning extends BaseTest {
   }
 
   public void testCreateVersionHistoryTree() throws Exception {
-    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "versioning2");
+    Wiki wiki = getOrCreateWiki(wikiService, WikiType.PORTAL.toString(), "versioning2");
     Page page = new Page("testCreateVersionHistoryTree-001", "testCreateVersionHistoryTree-001");
     page.setContent("testCreateVersionHistoryTree-ver0.0");
     page = wikiService.createPage(wiki, "WikiHome", page);

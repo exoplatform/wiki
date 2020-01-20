@@ -56,7 +56,7 @@ public class PageIndexingListenerTest extends BaseTest {
     ConversationState state = new ConversationState(new Identity("root"));
     ConversationState.setCurrent(state);
 
-    Wiki wiki = wikiService.createWiki(PortalConfig.USER_TYPE, "root");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.USER_TYPE, "root");
     assertNotNull(wiki);
     Page page = new Page();
     page.setTitle("test wiki page");

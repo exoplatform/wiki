@@ -45,7 +45,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
   }
 
   public void testRenderingCache() throws Exception {
-    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "cladic");
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "cladic");
     Page cladicHome = wiki.getWikiHome();
     cladicHome.setContent("Sample content");
     wikiService.updatePage(cladicHome, null);
@@ -53,7 +53,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     assertEquals(1, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheSize());
     assertEquals(0, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheHit());
 
-    Wiki wikiAme = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "ame");
+    Wiki wikiAme = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "ame");
     Page ameHome = wikiAme.getWikiHome();
     ameHome.setContent("Sample content");
     wikiService.updatePage(ameHome, null);
@@ -79,7 +79,7 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     WikiServiceImpl wikiServiceImpl = (WikiServiceImpl) wikiService;
     wikiServiceImpl.getUncachedMacroes().add("warning");
     try {
-      Wiki wiki = wikiServiceImpl.createWiki(PortalConfig.PORTAL_TYPE, "testcache");
+      Wiki wiki = getOrCreateWiki(wikiServiceImpl, PortalConfig.PORTAL_TYPE, "testcache");
       Page testcacheHome = wiki.getWikiHome();
       testcacheHome.setContent("{{warning}}Sample content{{/warning}}");
       wikiService.updatePage(testcacheHome, null);
