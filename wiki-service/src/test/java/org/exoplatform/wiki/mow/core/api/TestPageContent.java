@@ -23,7 +23,6 @@ import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiService;
 
-
 public class TestPageContent extends BaseTest {
 
   private WikiService wikiService;
@@ -46,22 +45,21 @@ public class TestPageContent extends BaseTest {
     assertEquals("This is a content of page", page.getContent());
   }
 
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testUpdatePageContent() throws Exception {
-//    Wiki wiki = wikiService.createWiki(WikiType.PORTAL.toString(), "classic");
-//    Page page = new Page("UpdatePageContent-001", "UpdatePageContent-001");
-//    page.setSyntax("xwiki_2.0");
-//    page.setContent("This is a content of page");
-//    wikiService.createPage(wiki, "WikiHome", page);
-//
-//    page.setContent("This is a content of page - edited");
-//    page.setSyntax("xwiki_2.1");
-//    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
-//
-//    page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "UpdatePageContent-001");
-//    assertNotNull(page);
-//    assertEquals(page.getSyntax(), "xwiki_2.1");
-//    assertEquals(page.getContent(), "This is a content of page - edited");
-//  }
+  public void testUpdatePageContent() throws Exception {
+    Wiki wiki = getOrCreateWiki(wikiService, WikiType.PORTAL.toString(), "classic");
+    Page page = new Page("UpdatePageContent-001", "UpdatePageContent-001");
+    page.setSyntax("xwiki_2.0");
+    page.setContent("This is a content of page");
+    page = wikiService.createPage(wiki, "WikiHome", page);
+
+    page.setContent("This is a content of page - edited");
+    page.setSyntax("xwiki_2.1");
+    wikiService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
+
+    page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "UpdatePageContent-001");
+    assertNotNull(page);
+    assertEquals(page.getSyntax(), "xwiki_2.1");
+    assertEquals(page.getContent(), "This is a content of page - edited");
+  }
 
 }
