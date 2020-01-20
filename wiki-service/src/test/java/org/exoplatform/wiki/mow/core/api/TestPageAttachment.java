@@ -17,6 +17,7 @@
 package org.exoplatform.wiki.mow.core.api;
 
 import java.util.Arrays;
+import java.util.List;
 
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.jpa.BaseTest;
@@ -52,37 +53,8 @@ public class TestPageAttachment extends BaseTest {
     assertNotNull(storedAttachment.getContent());
     assertTrue(Arrays.equals(attachment.getContent(), storedAttachment.getContent()));
   }
-
-// FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testAttachmentPermission() throws Exception {
-//    startSessionAs("demo");
 //
-//    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "wikiAttachement2");
-//    Page wikiHome = wiki.getWikiHome();
-//
-//    List<PermissionEntry> expectedPermissions = new ArrayList<>();
-//    // Create new wiki page
-//    Page page = new Page("testAttachmentPermissionPage", "testAttachmentPermissionPage");
-//    page.setOwner("demo");
-//    page = wikiService.createPage(wiki, wikiHome.getName(), page);
-//    expectedPermissions.addAll(page.getPermissions());
-//    // Create attachment
-//    Attachment attachment1 = new Attachment();
-//    attachment1.setName("AttachmentPermission.jpg");
-//    attachment1.setContent("logo".getBytes());
-//    attachment1.setMimeType("image/png");
-//    attachment1.setCreator("demo");
-//    wikiService.addAttachmentToPage(attachment1, page);
-//
-//    attachment1 = wikiService.getAttachmentOfPageByName("AttachmentPermission.jpg", page, true);
-//    
-//    List<PermissionEntry> actualPermissions = attachment1.getPermissions();
-//    assertNotNull(actualPermissions);
-//    assertEquals(expectedPermissions.size(), actualPermissions.size());
-//  }
-
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testGetPageAttachment() throws Exception{
+//  public void testGetPageAttachment() throws Exception {
 //    Wiki wiki = wikiService.createWiki(PortalConfig.PORTAL_TYPE, "wikiAttachement3");
 //    Page wikiHome = wiki.getWikiHome();
 //
@@ -108,7 +80,7 @@ public class TestPageAttachment extends BaseTest {
 //    attachment3.setMimeType("image/png");
 //    attachment3.setCreator("me");
 //    wikiService.addAttachmentToPage(attachment3, page1);
-//	  
+//
 //    Page page = wikiService.getPageOfWikiByName(PortalConfig.PORTAL_TYPE, "wikiAttachement3", "WikiHome");
 //    List<Attachment> attachments = wikiService.getAttachmentsOfPage(page);
 //    assertNotNull(attachments);
@@ -125,13 +97,14 @@ public class TestPageAttachment extends BaseTest {
 //    Attachment att1 = attachments.get(0);
 //    assertNotNull(att1.getContent());
 //    assertTrue(Arrays.equals(att1.getContent(), "foo - Updated".getBytes()));
-//    assertEquals(att1.getWeightInBytes(), "foo - Updated".getBytes().length) ;
-//    assertEquals(att1.getCreator(), "you") ;
-//    
+//    assertEquals(att1.getWeightInBytes(), "foo - Updated".getBytes().length);
+//    assertEquals(att1.getCreator(), "you");
+//
 //    Attachment att2 = attachments.get(1);
-//    assertNotNull(att2.getContent()) ;
+//    assertNotNull(att2.getContent());
 //    assertTrue(Arrays.equals(att2.getContent(), "bar - Updated".getBytes()));
-//    assertEquals(att2.getWeightInBytes(), "bar - Updated".getBytes().length) ;
-//    assertEquals(att2.getCreator(), "me") ;
+//    assertEquals(att2.getWeightInBytes(), "bar - Updated".getBytes().length);
+//    assertEquals(att2.getCreator(), "me");
 //  }
+
 }

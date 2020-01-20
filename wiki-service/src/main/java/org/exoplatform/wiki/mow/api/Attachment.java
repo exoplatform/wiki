@@ -152,12 +152,4 @@ public class Attachment {
   public void setMimeType(String mimeType) {
     this.mimeType = mimeType;
   }
-
-  public List<PermissionEntry> getPermissions() {
-    return permissions;
-  }
-
-  public void setPermissions(List<PermissionEntry> permissions) {
-    this.permissions = permissions;
-  }
 }
