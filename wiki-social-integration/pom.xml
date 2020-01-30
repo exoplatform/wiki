@@ -11,7 +11,7 @@
   <name>eXo PLF:: Wiki - Social Activities</name>
   <description>Wiki with Social activity</description>
   <properties>
-    <exo.test.coverage.ratio>0.19</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.18</exo.test.coverage.ratio>
   </properties>
   <dependencies>
     <dependency>
