@@ -23,7 +23,7 @@ import java.util.*;
 
 /**
  *  Provides a connector service for the unified search.
- *  It implements a direct search in the JCR based on several criteria.
+ *  It implements a direct search based on several criteria.
  *
  * @LevelAPI Experimental
  */

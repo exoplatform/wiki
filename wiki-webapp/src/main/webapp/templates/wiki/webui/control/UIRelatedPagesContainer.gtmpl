@@ -1,7 +1,6 @@
 <%
   import org.exoplatform.container.ExoContainerContext;
   import org.exoplatform.wiki.service.WikiService;
-  import org.exoplatform.services.jcr.util.IdGenerator;
   import org.exoplatform.wiki.webui.control.action.AddRelatedPageActionComponent;
   import org.exoplatform.wiki.webui.control.action.RemoveRelatedPageActionComponent;
 %>
@@ -30,7 +29,7 @@
 	      def breadcrumbDatas = uicomponent.getBreadcrumbDatas(rp);
 	       
 	      breadcrumbComponent.setBreadCumbs(breadcrumbDatas);
-	      breadcrumbComponent.setId(breadcrumbComponent.getId()+ IdGenerator.generate());
+	      breadcrumbComponent.setId(breadcrumbComponent.getId() + System.currentTimeMillis());
           def rmAction = null; 
 	      if (uicomponent.isHasExtension()) {
             def rmComponent = uicomponent.getChild(RemoveRelatedPageActionComponent.class);

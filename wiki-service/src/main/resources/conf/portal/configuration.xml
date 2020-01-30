@@ -28,17 +28,6 @@
     <key>org.exoplatform.wiki.service.impl.SessionManager</key>
     <type>org.exoplatform.wiki.service.impl.SessionManager</type>
   </component>
-  
-   
-  <component>
-    <key>org.exoplatform.wiki.mow.core.api.MOWService</key>
-    <type>org.exoplatform.wiki.mow.core.api.MOWService</type>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.commons.chromattic.ChromatticManager</key>
-    <type>org.exoplatform.commons.chromattic.ChromatticManager</type>
-  </component>
 
   <component>
     <key>org.exoplatform.wiki.service.WikiService</key>
@@ -75,11 +64,6 @@
   </component>
 
   <component>
-    <key>org.exoplatform.wiki.service.DataStorage</key>
-    <type>org.exoplatform.wiki.service.impl.JCRDataStorage</type>
-  </component>
-  
-  <component>
     <key>org.exoplatform.wiki.resolver.PageResolver</key>
     <type>org.exoplatform.wiki.resolver.PageResolver</type>
   </component>
@@ -98,57 +82,163 @@
     <key>org.exoplatform.commons.api.search.SearchServiceConnector</key>
     <type>org.exoplatform.wiki.service.impl.WikiSearchServiceConnector</type>
   </component>
-  
+
   <component>
-    <type>org.exoplatform.services.jcr.impl.ext.action.SessionActionCatalog</type>
+    <type>org.exoplatform.commons.persistence.impl.EntityManagerService</type>
   </component>
-  
-  <!-- Only used for debugging and tracing -->
-  <!--component>
-    <key>org.exoplatform.services.log.LogConfigurationInitializer</key>
-    <type>org.exoplatform.services.log.LogConfigurationInitializer</type>
+
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.WikiDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageAttachmentDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.DraftPageAttachmentDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.DraftPageDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageVersionDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageMoveDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.TemplateDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.EmotionIconDAO</type>
+  </component>
+
+  <component>
+    <type>org.exoplatform.wiki.jpa.search.WikiElasticSearchServiceConnector</type>
     <init-params>
-      <value-param>
-        <name>configurator</name>
-        <value>org.exoplatform.services.log.impl.Log4JConfigurator</value>
-      </value-param>
       <properties-param>
-        <name>properties</name>
-        <description>Log4J properties</description>
-        <property name="log4j.rootLogger" value="DEBUG, stdout, file"/>
-
-        <property name="log4j.appender.stdout" value="org.apache.log4j.ConsoleAppender"/>
-        <property name="log4j.appender.stdout.threshold" value="INFO"/>
-
-        <property name="log4j.appender.stdout.layout" value="org.apache.log4j.PatternLayout"/>
-        <property name="log4j.appender.stdout.layout.ConversionPattern"
-          value="%d{dd.MM.yyyy HH:mm:ss} *%-5p* [%t] %c{1}: %m (%F, line %L) %n"/>
-
-        <property name="log4j.appender.file" value="org.apache.log4j.FileAppender"/>
-        <property name="log4j.appender.file.File" value="gatein_developing.log"/>
-
-        <property name="log4j.appender.file.layout" value="org.apache.log4j.PatternLayout"/>
-        <property name="log4j.appender.file.layout.ConversionPattern"
-          value="%d{dd.MM.yyyy HH:mm:ss} *%-5p* [%t] %c{1}: %m (%F, line %L) %n"/>
-
-        <property name="log4j.category.org.exoplatform.wiki.resolver.PageResolver" value="TRACE"/>
-        
-        <property name="log4j.category.org.chromattic.core.api.ChromatticSessionImpl" value="TRACE"/>
-        <property name="log4j.category.jcr.JDBCStorageConnection" value="DEBUG"/>
-        <property name="log4j.category.jcr.NodeImpl" value="DEBUG"/>
-
-        <property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/>
-        <property name="log4j.category.database.DBSchemaCreator" value="DEBUG"/>
-        <property name="log4j.category.jcr.WorkspaceDataReplicator" value="DEBUG"/>
-
-        <property name="log4j.category.jcr.WorkspaceStorageCacheImpl" value="DEBUG"/>
-        <property name="log4j.category.jcr.WorkspacePersistentDataManager" value="DEBUG"/>
-        <property name="log4j.category.jcr.SessionDataManager" value="DEBUG"/>
-
+        <name>constructor.params</name>
+        <property name="index" value="wiki_alias"/>
+        <property name="type" value="wiki-page,wiki-attachment"/>
+        <property name="searchFields" value="name,title,content,comment,attachment.content"/>
       </properties-param>
     </init-params>
-  </component-->
-  
+  </component>
+
+  <!-- SEARCH - Override default wiki search connector (use same type 'wiki') -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.api.search.SearchService</target-component>
+    <component-plugin>
+      <name>ElasticSearchConnector</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.wiki.jpa.search.WikiElasticUnifiedSearchServiceConnector</type>
+      <description>Wiki ElasticSearch Connector</description>
+      <init-params>
+        <properties-param>
+          <name>constructor.params</name>
+          <property name="searchType" value="wiki"/>
+          <property name="displayName" value="Wiki"/>
+          <property name="index" value="wiki_alias"/>
+          <property name="type" value="wiki-page,wiki-attachment"/>
+          <property name="enable" value="${exo.unified-search.connector.wiki.enable:true}"/>
+          <property name="titleField" value="title"/>
+          <property name="updatedDateField" value="updatedDate"/>
+          <property name="searchFields" value="name,title,content,comment,attachment.content"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- INDEXING -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
+    <component-plugin>
+      <name>WikiPageIndexingConnector</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.wiki.jpa.search.WikiPageIndexingServiceConnector</type>
+      <description>Wiki Page ElasticSearch Indexing Connector</description>
+      <init-params>
+        <properties-param>
+          <name>constructor.params</name>
+          <property name="index_alias" value="wiki_alias"/>
+          <property name="index_previous" value="wiki"/>
+          <property name="index_current" value="wiki_v2"/>
+          <property name="type" value="wiki-page"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.search.index.IndexingOperationProcessor</target-component>
+    <component-plugin>
+      <name>AttachmentIndexingConnector</name>
+      <set-method>addConnector</set-method>
+      <type>org.exoplatform.wiki.jpa.search.AttachmentIndexingServiceConnector</type>
+      <description>Attachment ElasticSearch Indexing Connector</description>
+      <init-params>
+        <properties-param>
+          <name>constructor.params</name>
+          <property name="index_alias" value="wiki_alias"/>
+          <property name="index_previous" value="wiki"/>
+          <property name="index_current" value="wiki_v2"/>
+          <property name="reindexOnUpgrade" value="true"/>
+          <property name="type" value="wiki-attachment"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.wiki.service.WikiService</target-component>
+    <component-plugin>
+      <name>PageIndexingListener</name>
+      <set-method>addComponentPlugin</set-method>
+      <type>org.exoplatform.wiki.jpa.search.PageIndexingListener</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.wiki.service.WikiService</target-component>
+    <component-plugin profiles="all">
+      <name>AttachmentIndexingListener</name>
+      <set-method>addComponentPlugin</set-method>
+      <type>org.exoplatform.wiki.jpa.search.AttachmentIndexingListener</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <!-- Organization Listener -->
+  <external-component-plugins>
+    <target-component>org.exoplatform.services.organization.OrganizationService</target-component>
+    <component-plugin>
+      <name>WikiUserEventListener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.wiki.jpa.organization.WikiUserEventListener</type>
+    </component-plugin>
+    <component-plugin>
+      <name>WikiGroupEventListener</name>
+      <set-method>addListenerPlugin</set-method>
+      <type>org.exoplatform.wiki.jpa.organization.WikiGroupEventListener</type>
+    </component-plugin>
+  </external-component-plugins>
+
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.file.services.NameSpaceService</target-component>
+    <component-plugin>
+      <name>WikiNameSpacePlugin</name>
+      <set-method>addNameSpacePlugin</set-method>
+      <type>org.exoplatform.commons.file.services.NameSpacePlugin</type>
+      <init-params>
+        <properties-param>
+          <name>fileNameSpace.params</name>
+          <property name="name" value="wiki"/>
+          <property name="description" value="wiki application files"/>
+        </properties-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+
   <external-component-plugins>
     <target-component>org.exoplatform.services.listener.ListenerService</target-component>
     <component-plugin>
@@ -164,83 +254,7 @@
       <description>description</description>
     </component-plugin>
   </external-component-plugins>
-  
-  <external-component-plugins>
-    <target-component>org.exoplatform.services.jcr.RepositoryService</target-component>
-    <component-plugin>
-      <name>add.namespaces</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.jcr.impl.AddNamespacesPlugin</type>
-      <init-params>
-        <properties-param>
-          <name>namespaces</name>
-          <property name="wiki" value="http://exoplatform.org/wiki/1.0/"/>
-        </properties-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
-      <name>add.nodeType</name>
-      <set-method>addPlugin</set-method>
-      <type>org.exoplatform.services.jcr.impl.AddNodeTypePlugin</type>
-      <init-params>
-        <values-param>
-          <name>autoCreatedInNewRepository</name>
-          <description>Node types configuration file</description>
-          <value>jar:/conf/portal/wiki-nodetypes.xml</value>
-        </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
-  
-  <external-component-plugins>
-    <target-component>org.exoplatform.commons.chromattic.ChromatticManager</target-component>
-    <component-plugin>
-      <name>chromattic</name>
-      <set-method>addLifeCycle</set-method>
-      <type>org.exoplatform.wiki.service.impl.WikiChromatticLifeCycle</type>
-      <init-params>
-        <value-param>
-          <name>domain-name</name>
-          <value>wiki</value>
-        </value-param>
-        <value-param>
-          <name>workspace-name</name>
-          <value>collaboration</value>
-        </value-param>
-        <values-param>
-          <name>entities</name>
-          <value>org.exoplatform.wiki.mow.core.api.WikiStoreImpl</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.PortalWiki</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.PortalWikiContainer</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWiki</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.GroupWikiContainer</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.UserWiki</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.UserWikiContainer</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.TemplateContainer</value>
-          <value>org.exoplatform.wiki.mow.core.api.wiki.TemplateImpl</value>
-          <value>org.exoplatform.wiki.mow.core.api.content.ParagraphImpl</value>
-          <value>org.exoplatform.wiki.mow.core.api.content.MarkupImpl</value>
-          <value>org.exoplatform.wiki.mow.core.api.content.WikiLink</value>
-          <value>org.chromattic.ext.ntdef.NTFile</value>
-          <value>org.chromattic.ext.ntdef.NTResource</value>
-          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionHistory</value>
-          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersion</value>
-          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTVersionLabels</value>
-          <value>org.exoplatform.wiki.chromattic.ext.ntdef.NTFrozenNode</value>
-          <value>org.exoplatform.wiki.chromattic.ext.ntdef.VersionableMixin</value>
-          <value>org.exoplatform.wiki.mow.core.api.content.AnnotationImpl</value>
-          <value>org.exoplatform.portal.mop.ProtectedResource</value>
-          <value>org.exoplatform.portal.mop.ProtectedContainer</value>
-        </values-param>
-        <!--<properties-param>
-          <name>options</name>
-          <property name="org.chromattic.api.Option.root_node.path" value="/production"/>
-          <property name="org.chromattic.api.Option.root_node.create" value="true"/>
-        </properties-param>
-      --></init-params>
-    </component-plugin>
-  </external-component-plugins>
-  
+
   <external-component-plugins>
     <target-component>org.exoplatform.wiki.resolver.PageResolver</target-component>
     <component-plugin>

@@ -1,6 +1,5 @@
 package org.exoplatform.wiki.service;
 
-import org.exoplatform.services.jcr.util.Text;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ public class WikiPageParams {
 
   public WikiPageParams(String type, String owner, String pageName) {
     this.type = type;
-    this.owner = (owner==null)?owner:Text.unescapeIllegalJcrChars(owner);
+    this.owner = owner;
     this.pageName = pageName;
   }
 
@@ -36,7 +35,7 @@ public class WikiPageParams {
   public WikiPageParams(String type, String owner, String pageName, String attachmentName) {
     super();
     this.type = type;
-    this.owner = (owner==null)?owner:Text.unescapeIllegalJcrChars(owner);
+    this.owner = owner;
     this.pageName = pageName;
     this.attachmentName = attachmentName;
   }
@@ -50,7 +49,7 @@ public class WikiPageParams {
   }
 
   public void setOwner(String owner) {
-    this.owner = (owner==null)?owner:Text.unescapeIllegalJcrChars(owner);
+    this.owner = owner;
   }
 
   public String getOwner() {

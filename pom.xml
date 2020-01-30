@@ -19,9 +19,8 @@
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-webui</module>
-    <module>wiki-upgrade-plugins</module>
-    <module>wiki-jpa-dao</module>
-    <module>wiki-jpa-migration</module>
+    <module>wiki-social-integration</module>
+    <module>wiki-packaging</module>
   </modules>
   <scm>
     <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
@@ -41,19 +40,8 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-    <org.exoplatform.depmgt.version>17.x-SNAPSHOT</org.exoplatform.depmgt.version>
-    <!-- JCR Project Dependencies -->
-
-    <org.exoplatform.kernel.version>6.0.x-SNAPSHOT</org.exoplatform.kernel.version>
-    <org.exoplatform.core.version>6.0.x-SNAPSHOT</org.exoplatform.core.version>
-    <org.exoplatform.ws.version>6.0.x-SNAPSHOT</org.exoplatform.ws.version>
-    <org.exoplatform.jcr.version>6.0.x-SNAPSHOT</org.exoplatform.jcr.version>
-    <org.exoplatform.gatein.wci.version>6.0.x-SNAPSHOT</org.exoplatform.gatein.wci.version>
-    <org.exoplatform.gatein.portal.version>6.0.x-SNAPSHOT</org.exoplatform.gatein.portal.version>
-    <org.exoplatform.commons.version>6.0.x-SNAPSHOT</org.exoplatform.commons.version>
     <org.exoplatform.social.version>6.0.x-SNAPSHOT</org.exoplatform.social.version>
-    <org.exoplatform.platform-ui.version>6.0.x-SNAPSHOT</org.exoplatform.platform-ui.version>
-    <!-- Platform Project 3rd party Dependencies -->
+    <org.exoplatform.gamification.version>2.0.x-SNAPSHOT</org.exoplatform.gamification.version>
   </properties>
   <dependencyManagement>
     <!-- ### NEVER CHANGE THIS ORDER OF DEPMGT ### -->
@@ -62,11 +50,18 @@
     <!-- * Your own modules -->
     <!-- * And projects below you -->
     <dependencies>
-      <!-- Import versions of external dependencies to use -->
+      <!-- Import versions from social project -->
       <dependency>
-        <groupId>org.exoplatform</groupId>
-        <artifactId>maven-depmgt-pom</artifactId>
-        <version>${org.exoplatform.depmgt.version}</version>
+        <groupId>org.exoplatform.social</groupId>
+        <artifactId>social</artifactId>
+        <version>${org.exoplatform.social.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.addons.gamification</groupId>
+        <artifactId>gamification</artifactId>
+        <version>${org.exoplatform.gamification.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -95,22 +90,12 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-upgrade-plugins</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-jpa</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-jpa-migration</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-webui</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-social-integration</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -125,117 +110,11 @@
         <version>${project.version}</version>
         <type>pom</type>
       </dependency>
-      <!-- Import versions from social project -->
       <dependency>
-        <groupId>org.exoplatform.social</groupId>
-        <artifactId>social</artifactId>
-        <version>${org.exoplatform.social.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from commons project -->
-      <dependency>
-        <groupId>org.exoplatform.commons</groupId>
-        <artifactId>commons</artifactId>
-        <version>${org.exoplatform.commons.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from platform-ui project -->
-      <dependency>
-        <groupId>org.exoplatform.platform-ui</groupId>
-        <artifactId>platform-ui</artifactId>
-        <version>${org.exoplatform.platform-ui.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- To be replaced by an import of GateIn Portal parent POM -->
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.common</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.portal</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.controller</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.resources</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.component.web.server</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.eXo</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.framework</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.portal</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.core</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.portal</groupId>
-        <artifactId>exo.portal.webui.portlet</artifactId>
-        <version>${org.exoplatform.gatein.portal.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.gatein.wci</groupId>
-        <artifactId>wci-wci</artifactId>
-        <version>${org.exoplatform.gatein.wci.version}</version>
-      </dependency>
-      <!-- Import versions from jcr project -->
-      <dependency>
-        <groupId>org.exoplatform.jcr</groupId>
-        <artifactId>jcr-parent</artifactId>
-        <version>${org.exoplatform.jcr.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from ws project -->
-      <dependency>
-        <groupId>org.exoplatform.ws</groupId>
-        <artifactId>ws-parent</artifactId>
-        <version>${org.exoplatform.ws.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from core project -->
-      <dependency>
-        <groupId>org.exoplatform.core</groupId>
-        <artifactId>core-parent</artifactId>
-        <version>${org.exoplatform.core.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>
-      <!-- Import versions from kernel project -->
-      <dependency>
-        <groupId>org.exoplatform.kernel</groupId>
-        <artifactId>kernel-parent</artifactId>
-        <version>${org.exoplatform.kernel.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
+        <groupId>org.exoplatform.wiki</groupId>
+        <artifactId>wiki-packaging</artifactId>
+        <version>${project.version}</version>
+        <type>zip</type>
       </dependency>
     </dependencies>
   </dependencyManagement>

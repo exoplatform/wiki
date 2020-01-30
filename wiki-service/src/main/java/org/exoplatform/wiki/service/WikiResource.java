@@ -16,16 +16,22 @@
  */
 package org.exoplatform.wiki.service;
 
-import org.chromattic.ext.ntdef.Resource;
-
-public class WikiResource extends Resource {
+public class WikiResource {
 
   private String name;
-  
-  private String resourceId ;
-  
+
+  private String resourceId;
+
+  private String mimeType;
+
+  private String encoding;
+
+  private byte[] data;
+
   public WikiResource(String mimeType, String encoding, byte[] data) {
-    super(mimeType, encoding, data);
+    this.mimeType = mimeType;
+    this.encoding = encoding;
+    this.data = data;
   }
 
   public String getName() {
@@ -43,6 +49,17 @@ public class WikiResource extends Resource {
   public void setResourceId(String resourceId) {
     this.resourceId = resourceId;
   }
-  
-  
+
+  public String getMimeType() {
+    return mimeType;
+  }
+
+  public String getEncoding() {
+    return encoding;
+  }
+
+  public byte[] getData() {
+    return data;
+  }
+
 }

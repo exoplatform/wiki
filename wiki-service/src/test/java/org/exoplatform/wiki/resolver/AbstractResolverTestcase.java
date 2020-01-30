@@ -16,14 +16,15 @@
  */
 package org.exoplatform.wiki.resolver;
 
+import org.mockito.Mockito;
+
 import org.exoplatform.portal.config.model.Page;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.user.UserNode;
+import org.exoplatform.wiki.jpa.BaseTest;
 import org.exoplatform.wiki.mock.MockDataStorage;
-import org.exoplatform.wiki.mow.core.api.AbstractMOWTestcase;
-import org.mockito.Mockito;
 
-public class AbstractResolverTestcase extends AbstractMOWTestcase {
+public class AbstractResolverTestcase extends BaseTest {
 
   protected UserNode createUserNode(String pageRef, String URI) {
   	UserNode userNode = Mockito.mock(UserNode.class);

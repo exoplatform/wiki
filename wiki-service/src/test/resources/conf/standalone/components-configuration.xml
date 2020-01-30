@@ -1,0 +1,84 @@
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+               xsi:schemaLocation="http://www.exoplaform.org/xml/ns/kernel_1_2.xsd http://www.exoplaform.org/xml/ns/kernel_1_2.xsd"
+               xmlns="http://www.exoplaform.org/xml/ns/kernel_1_2.xsd">
+
+  <component>
+    <type>org.exoplatform.wiki.jpa.mock.DummyDependantComponent</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.wiki.service.DataStorage</key>
+    <type>org.exoplatform.wiki.jpa.JPADataStorage</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.WikiDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageAttachmentDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.DraftPageAttachmentDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageVersionDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.PageMoveDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.TemplateDAO</type>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.dao.EmotionIconDAO</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.wiki.rendering.RenderingService</key>
+    <type>org.exoplatform.wiki.rendering.impl.RenderingServiceImpl</type>
+  </component>
+
+  <component>
+    <key>org.exoplatform.wiki.service.WikiService</key>
+    <type>org.exoplatform.wiki.service.impl.WikiServiceImpl</type>
+    <init-params>
+      <value-param>
+        <name>wiki.editPage.livingTime</name>
+        <value>${wiki.editPage.livingTime:1800000}</value>
+        <!-- 30m * 60s * 1000ms -->
+      </value-param>
+      <value-param>
+        <name>attachment.upload.limit</name>
+        <value>10</value>
+      </value-param>
+      <values-param>
+        <name>xwiki/2.0</name>
+        <value>jar:/wikisyntax/help/xWiki2.0_Short.txt</value>
+        <value>jar:/wikisyntax/help/xWiki2.0_Full.txt</value>
+      </values-param>
+      <properties-param>
+        <name>preferences</name>
+        <property name="defaultSyntax" value="xwiki/2.0"/>
+      </properties-param>
+    </init-params>
+  </component>
+  <component>
+    <type>org.exoplatform.wiki.jpa.search.WikiElasticUnifiedSearchServiceConnector</type>
+    <init-params>
+      <properties-param>
+        <name>constructor.params</name>
+        <property name="searchType" value="wiki"/>
+        <property name="displayName" value="Wiki"/>
+        <property name="index" value="wiki_alias"/>
+        <property name="type" value="wiki-page,wiki-attachment"/>
+        <property name="enable" value="${exo.unified-search.connector.wiki.enable:true}"/>
+        <property name="titleField" value="title"/>
+        <property name="updatedDateField" value="updatedDate"/>
+        <property name="searchFields" value="name,title,content,comment,attachment.content"/>
+      </properties-param>
+    </init-params>
+  </component>
+
+</configuration>

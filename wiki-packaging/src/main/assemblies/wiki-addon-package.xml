@@ -1,0 +1,75 @@
+<!--
+
+    Copyright (C) 2003-2019 eXo Platform SAS.
+
+    This is free software; you can redistribute it and/or modify it
+    under the terms of the GNU Lesser General Public License as
+    published by the Free Software Foundation; either version 3 of
+    the License, or (at your option) any later version.
+
+    This software is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this software; if not, write to the Free
+    Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
+    02110-1301 USA, or see the FSF site: http://www.fsf.org.
+
+-->
+<assembly xmlns="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/plugins/maven-assembly-plugin/assembly/1.1.2 http://maven.apache.org/xsd/assembly-1.1.2.xsd">
+  <id>wiki-addon</id>
+  <formats>
+    <format>zip</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <dependencySets>
+    <!-- Calendar wars -->
+    <dependencySet>
+      <outputDirectory>/webapps</outputDirectory>
+      <includes>
+        <include>org.exoplatform.wiki:*:war</include>
+      </includes>
+      <scope>provided</scope>
+      <outputFileNameMapping>${artifact.build.finalName}.${artifact.extension}</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+    </dependencySet>
+    <!-- Calendar libs and its dependencies -->
+    <dependencySet>
+      <outputDirectory>/lib</outputDirectory>
+      <includes>
+        <include>org.exoplatform.wiki:*:jar</include>
+        <include>org.xwiki.commons:*:jar</include>
+        <include>org.xwiki.platform:*:jar</include>
+        <include>org.xwiki.rendering:*:jar</include>
+        <include>commons-configuration:commons-configuration:jar</include>
+        <include>org.bouncycastle:bctsp-jdk15:jar</include>
+        <include>net.sourceforge.cssparser:cssparser:jar</include>
+        <include>net.sf.ezmorph:ezmorph:jar</include>
+        <include>org.xhtmlrenderer:flying-saucer-core:jar</include>
+        <include>org.xhtmlrenderer:flying-saucer-pdf:jar</include>
+        <include>com.google.gwt:gwt-servlet:jar</include>
+        <include>net.sourceforge.htmlcleaner:htmlcleaner:jar</include>
+        <include>com.lowagie:itext:jar</include>
+        <include>org.jfree:jcommon:jar</include>
+        <include>org.jdom:jdom2:jar</include>
+        <include>org.jdom:jdom:jar</include>
+        <include>org.jfree:jfreechart:jar</include>
+        <include>org.suigeneris:jrcs.rcs:jar</include>
+        <include>net.sf.json-lib:jar</include>
+        <include>org.python:jython-standalone:jar</include>
+        <include>org.pygments:pygments:jar</include>
+        <include>org.w3c.css:sac:jar</include>
+        <include>net.java.dev.stax-utils:stax-utils:jar</include>
+        <include>com.lowagie:itext:jar</include>
+        <include>org.apache.velocity:velocity:jar</include>
+        <include>org.apache.velocity:velocity-tools:jar</include>
+      </includes>
+      <outputFileNameMapping>${artifact.artifactId}.${artifact.extension}</outputFileNameMapping>
+      <useProjectArtifact>false</useProjectArtifact>
+      <scope>provided</scope>
+    </dependencySet>
+  </dependencySets>
+</assembly>
