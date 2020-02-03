@@ -51,7 +51,6 @@
         <include>org.xhtmlrenderer:flying-saucer-core:jar</include>
         <include>org.xhtmlrenderer:flying-saucer-pdf:jar</include>
         <include>com.google.gwt:gwt-servlet:jar</include>
-        <include>net.sourceforge.htmlcleaner:htmlcleaner:jar</include>
         <include>com.lowagie:itext:jar</include>
         <include>org.jfree:jcommon:jar</include>
         <include>org.jdom:jdom2:jar</include>
