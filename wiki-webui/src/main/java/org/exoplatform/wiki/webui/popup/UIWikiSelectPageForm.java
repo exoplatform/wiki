@@ -41,7 +41,7 @@ import org.exoplatform.wiki.webui.tree.UITreeExplorer;
         @EventConfig(listeners = UIWikiSelectPageForm.SetCurrentPageActionListener.class),
         @EventConfig(listeners = UIWikiSelectPageForm.SelectPageActionListener.class),
         @EventConfig(listeners = UIWikiSelectPageForm.CancelActionListener.class),
-        @EventConfig(listeners = UIWikiSelectPageForm.SwitchSpaceActionListener.class)
+        @EventConfig(listeners = UIWikiSelectPageForm.SwitchSpaceActionListener.class, csrfCheck = false)
     }
 )
 public class UIWikiSelectPageForm extends UIForm implements UIPopupComponent {
