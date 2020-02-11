@@ -10,98 +10,30 @@ import java.util.regex.Pattern;
  * This class will be used to encode data wiki input.
  */
 public class WikiHTMLSanitizer extends HTMLSanitizer {
-  private static final String  LINK_START_TAG   = "startwikilink:";
-
-  private static final String  IMAGE_START_TAG  = "startimage:";
-
-  private static final String  MACRO_START_TAG  = "startmacro:";
-
-  private static final String  LINK_END_TAG     = "stopwikilink";
-
-  private static final String  IMAGE_END_TAG    = "stopimage";
-
-  private static final String  MACRO_END_TAG    = "stopmacro";
-
-  private static final Pattern LINK_REGEX       =
-                                          Pattern.compile("<!--" + LINK_START_TAG + "(.*)-->(.*)<!--" + LINK_END_TAG + "-->");
-
-  private static final Pattern IMAGE_REGEX      =
-                                           Pattern.compile("<!--" + IMAGE_START_TAG + "(.*)-->(.*)<!--" + IMAGE_END_TAG + "-->");
-
-  private static final Pattern MACRO_REGEX      =
-                                           Pattern.compile("<!--" + MACRO_START_TAG + "(.*)-->(.*)<!--" + MACRO_END_TAG + "-->");
-
-  private static final Pattern REDO_IMAGE_REGEX = Pattern.compile("<wikiimage wikiparam=\"(.*)\"> (.*)</wikiimage>");
-
-  private static final Pattern REDO_LINK_REGEX  = Pattern.compile("<wikilink wikiparam=\"(.*)\"> (.*)</wikilink>");
-
-  private static final Pattern REDO_MACRO_REGEX = Pattern.compile("<wikimacro wikiparam=\"(.*)\"> (.*)</wikimacro>");
-
   public static String markupSanitize(String html) throws Exception {
-    // Replace xwiki comment with specific tags
-    Matcher matcher = LINK_REGEX.matcher(html);
-    while (matcher.find()) {
-      html =
-           html.replace(matcher.group(0), "<wikilink wikiparam='" + matcher.group(1) + "'> " + matcher.group(2) + "</wikilink>");
+    String htmlSanitized = "";
+    if (html.contains("<!--")) {
+      String[] splittedHTML = html.replaceAll("\n", "").split("(?=<!?--)");
+      String[] commentSplitted = new String[splittedHTML.length];
+      String[] contentSplitted = new String[splittedHTML.length];
+      Pattern p = Pattern.compile("(<!--.*-->)(.*)");
+      for (int i = 0; i < splittedHTML.length; i++) {
+        if (splittedHTML[i].startsWith("<!--")) {
+          Matcher matcher = p.matcher(splittedHTML[i]);
+          while (matcher.find()) {
+            commentSplitted[i] = matcher.group(1);
+            contentSplitted[i] = HTMLSanitizer.sanitize(matcher.group(2));
+          }
+        } else {
+          contentSplitted[i] = splittedHTML[i];
+          commentSplitted[i] = "";
+        }
+        htmlSanitized = htmlSanitized.concat(commentSplitted[i]).concat(contentSplitted[i]);
+      }
+    } else {
+      htmlSanitized = sanitize(html);
     }
 
-    matcher = IMAGE_REGEX.matcher(html);
-
-    while (matcher.find()) {
-      html = html.replace(matcher.group(0),
-                          "<wikiimage wikiparam='" + matcher.group(1) + "'> " + matcher.group(2) + "</wikiimage>");
-    }
-
-    matcher = MACRO_REGEX.matcher(html);
-
-    while (matcher.find()) {
-      html = html.replace(matcher.group(0),
-                          "<wikimacro wikiparam='" + matcher.group(1) + "'> " + matcher.group(2) + "</wikimacro>");
-    }
-
-    // Sanitizes the given HTML by applying the given policy to it.
-    html = sanitize(html);
-
-    // Replace specific tags by xwiki comments
-    matcher = REDO_IMAGE_REGEX.matcher(html);
-
-    while (matcher.find()) {
-      html = html.replace(matcher.group(0),
-                          "<!--" + IMAGE_START_TAG + decode(matcher.group(1)) + "-->" + decode(matcher.group(2)) + "<!--"
-                              + IMAGE_END_TAG + "-->");
-    }
-
-    matcher = REDO_LINK_REGEX.matcher(html);
-
-    while (matcher.find()) {
-      html = html.replace(matcher.group(0),
-                          "<!--" + LINK_START_TAG + decode(matcher.group(1)) + "-->" + decode(matcher.group(2)) + "<!--"
-                              + LINK_END_TAG + "-->");
-    }
-
-    matcher = REDO_MACRO_REGEX.matcher(html);
-
-    while (matcher.find()) {
-      html = html.replace(matcher.group(0),
-                          "<!--" + MACRO_START_TAG + decode(matcher.group(1)) + "-->" + decode(matcher.group(2)) + "<!--"
-                              + MACRO_END_TAG + "-->");
-    }
-
-    return html;
-  }
-
-  private static String decode(String input) {
-    if (input != null) {
-      input = input.replace("&#" + ((int) '"') + ";", "\"")
-                   .replaceAll("&amp;", "&")
-                   .replaceAll("&#" + ((int) '\'') + ";", "'")
-                   .replaceAll("&#" + ((int) '+') + ";", "+")
-                   .replaceAll("&lt;", "<")
-                   .replaceAll("&#" + ((int) '=') + ";", "=")
-                   .replaceAll("&gt;", ">")
-                   .replaceAll("&#" + ((int) '@') + ";", "@")
-                   .replaceAll("&#" + ((int) '`') + ";", "`");
-    }
-    return input;
+    return htmlSanitized;
   }
 }
