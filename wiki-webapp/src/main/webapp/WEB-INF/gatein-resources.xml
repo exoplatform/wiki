@@ -14,7 +14,13 @@
 <gatein-resources xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.exoplatform.org/xml/ns/gatein_resources_1_4 http://www.exoplatform.org/xml/ns/gatein_resources_1_4"
    xmlns="http://www.exoplatform.org/xml/ns/gatein_resources_1_4">
 
-
+  <portlet-skin>
+    <application-name>wiki</application-name>
+    <portlet-name>WikiPortlet</portlet-name>
+    <skin-name>Enterprise</skin-name>
+    <css-path>/skin/css/wiki/wiki.css</css-path>
+    <css-priority>1</css-priority>
+  </portlet-skin>
 
   <portlet>
     <name>WikiPortlet</name>
