@@ -26,32 +26,15 @@
     <title>Wiki</title>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>*:/platform/administrators</edit-permission>
-    <container id="UIUserNavigationPortlet" template="war:/groovy/portal/webui/container/UIUserWikiContainer.gtmpl">
+    <container id="top-wiki-container" template="system:/groovy/portal/webui/container/UIAddOnContainer.gtmpl">
+      <name>top-wiki-container</name>
       <access-permissions>*:/platform/users</access-permissions>
-      <portlet-application>
-        <portlet>
-          <application-ref>social-portlet</application-ref>
-          <portlet-ref>UIUserNavigationPortlet</portlet-ref>
-        </portlet>
-        <title>User Navigation Portlet</title>
-        <access-permissions>*:/platform/users</access-permissions>
-        <show-info-bar>false</show-info-bar>
-        <show-application-state>true</show-application-state>
-      </portlet-application>
+      <factory-id>addonContainer</factory-id>
     </container>
-    <container id="myWikiPortlet" template="system:/groovy/portal/webui/container/UIContainer.gtmpl">
+    <container id="wiki-container" template="system:/groovy/portal/webui/container/UIAddOnContainer.gtmpl">
+      <name>wiki-container</name>
       <access-permissions>*:/platform/users</access-permissions>
-      <portlet-application>
-        <portlet>
-          <application-ref>wiki</application-ref>
-          <portlet-ref>WikiPortlet</portlet-ref>
-        </portlet>
-        <title>Wiki Portlet</title>
-        <access-permissions>Everyone</access-permissions>
-        <show-info-bar>false</show-info-bar>
-        <show-application-state>false</show-application-state>
-        <show-application-mode>false</show-application-mode>
-      </portlet-application>
+      <factory-id>addonContainer</factory-id>
     </container>
     <container id="bottom-wiki-container" template="system:/groovy/portal/webui/container/UIAddOnContainer.gtmpl">
       <name>bottom-wiki-container</name>
