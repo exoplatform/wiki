@@ -227,7 +227,7 @@
     def viewerId = Utils.getViewerIdentity().getId();
 %>
 
-<div class="activityStream uiWikiActivity" id="activityContainer${activity.id}">
+<div class="activityStream uiActivityStreamWrapper uiWikiActivity" id="activityContainer${activity.id}">
   <% uiform.begin() %>
       <div class="boxContainer" id="boxContainer">
         <div id="ContextBox${activity.id}" class="uiBox contentBox">
@@ -485,15 +485,15 @@
                             <img alt="$commenterFullName" src="$commenterAvatarImgSrc" />
                           </a>
                         </div><!--end commentLeft-->
-                        <div class="authorCommentContainer clearfix">
                           <div class="commentRight">
-                              <div class="author">
-                                  <a href="$commenterProfileUri">$commenterFullName</a>
-                              </div>
-                              <div class="contentComment">
-                                  $commentMessage
-                              </div>
-                        </div>
+                            <div class="authorCommentContainer clearfix">
+                                <div class="author">
+                                    <a href="$commenterProfileUri">$commenterFullName</a>
+                                </div>
+                                <div class="contentComment">
+                                    $commentMessage
+                                </div>
+                            </div>
                             <div class="desktop-input clearfix">
                               <div class="blastInputPeople hideEffect">
                                   <div>
