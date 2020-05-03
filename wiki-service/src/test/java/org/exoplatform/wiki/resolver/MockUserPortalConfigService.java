@@ -19,6 +19,7 @@ package org.exoplatform.wiki.resolver;
 import java.util.Arrays;
 import java.util.List;
 
+import org.exoplatform.commons.api.settings.SettingService;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.*;
 import org.exoplatform.portal.config.model.Page;
@@ -52,8 +53,9 @@ public class MockUserPortalConfigService extends UserPortalConfigService {
                                      OrganizationService orgService,
                                      NavigationService navService,
                                      DescriptionService descriptionService,
+                                     SettingService settingService,
                                      InitParams params) throws Exception {
-    super(userACL, storage, orgService, navService, descriptionService, null, params);
+    super(userACL, storage, orgService, navService, descriptionService, null, settingService, params);
   }
 
   /* (non-Javadoc)
