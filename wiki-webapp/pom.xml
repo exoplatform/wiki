@@ -35,14 +35,10 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-jpa</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-jpa-migration</artifactId>
-      <scope>runtime</scope>
+      <groupId>org.exoplatform.platform-ui</groupId>
+      <artifactId>platform-ui-skin</artifactId>
+      <classifier>sources</classifier>
+      <scope>provided</scope>
     </dependency>
   </dependencies>
   <build>
@@ -94,6 +90,65 @@
           -->
           <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
         </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>a-copy-resources</id>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>copy-resources</goal>
+            </goals>
+            <configuration>
+              <outputDirectory>${project.build.directory}/src/main/webapp/skin/less</outputDirectory>
+              <resources>
+                <resource>
+                  <directory>src/main/webapp/skin/less</directory>
+                </resource>
+              </resources>
+              <overwrite>true</overwrite>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>platform-ui-src</id>
+            <phase>initialize</phase>
+            <goals>
+              <goal>unpack-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>platform-ui-skin</includeArtifactIds>
+              <outputDirectory>${project.build.directory}/src/main/webapp</outputDirectory>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+          <groupId>org.lesscss</groupId>
+          <artifactId>lesscss-maven-plugin</artifactId>
+          <executions>
+            <execution>
+              <id>core</id>
+              <configuration>
+                <!-- SourceDirectory shouldn't exist and we should have as default the lesss folder in /src/main/less     -->
+                <sourceDirectory>${project.build.directory}/src/main/webapp/skin/less</sourceDirectory>
+                <outputDirectory>${project.build.directory}/${project.build.finalName}/skin/css</outputDirectory>
+                <compress>false</compress>
+                <includes>
+                  <include>wiki/wiki.less</include>
+                </includes>
+              </configuration>
+              <goals>
+                <goal>compile</goal>
+              </goals>
+            </execution>
+          </executions>
       </plugin>
     </plugins>
   </build>
