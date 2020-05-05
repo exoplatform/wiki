@@ -164,6 +164,7 @@ public class WikiRestServiceImpl implements ResourceContainer {
                 currentSyntax,
                 Syntax.XHTML_1_0.toIdString(),
                 false);
+        outputText = WikiHTMLSanitizer.markupSanitize(outputText);
       }
 
       return Response.ok(outputText, MediaType.TEXT_HTML).cacheControl(cc).build();

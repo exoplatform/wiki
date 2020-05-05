@@ -210,7 +210,7 @@ public class TestWikiRestService {
     wikiHomePage.setWikiType(wikiType);
     wikiHomePage.setWikiOwner(wikiOwner);
     wikiHomePage.setUpdatedDate(Calendar.getInstance().getTime());
-    wikiHomePage.setContent("my<script>alert();</script> page");
+    wikiHomePage.setContent("<div>my<script>alert();</script> page</div>");
     String pageId = wikiHomePage.getId();
 
     when(wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner)).thenReturn(wiki);
@@ -219,7 +219,7 @@ public class TestWikiRestService {
     when(uriInfo.getBaseUri()).thenReturn(new URI("/"));
 
     // When
-    Response response = wikiRestService.getWikiPageContent(servletContext, null, null, true, wikiHomePage.getContent());
+    Response response = wikiRestService.getWikiPageContent(false, true, wikiHomePage.getContent());
 
     // Then
     assertNotNull(response);
