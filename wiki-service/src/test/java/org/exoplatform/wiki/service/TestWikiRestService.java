@@ -219,7 +219,7 @@ public class TestWikiRestService {
     when(uriInfo.getBaseUri()).thenReturn(new URI("/"));
 
     // When
-    Response response = wikiRestService.getWikiPageContent(false, true, wikiHomePage.getContent());
+    Response response = wikiRestService.getWikiPageContent(wikiHomePage.getContent());
 
     // Then
     assertNotNull(response);

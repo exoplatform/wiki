@@ -139,7 +139,7 @@ public class WikiSpaceActivityPublisher extends PageWikiListener {
     // Create page excerpt
     StringBuilder excerpt = new StringBuilder();
     try {
-      excerpt.append(renderingService.render(page.getContent(), page.getSyntax(), Syntax.PLAIN_1_0.toIdString(), false));
+      excerpt.append(wikiService.getPageRenderedContent(page, Syntax.XHTML_1_0.toIdString()));
     } catch (Exception e) {
       throw new WikiException("Cannot render page " + page.getWikiType() + ":" + page.getWikiOwner() + page.getName(), e);
     }

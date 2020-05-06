@@ -141,5 +141,7 @@ public class WikiSpaceActivityPublisherTest {
                                              anyBoolean())).thenReturn(mock(org.exoplatform.social.core.identity.model.Identity.class));
 
     when(renderingService.render(anyString(), anyString(), anyString(), anyBoolean())).thenReturn(page.getContent());
+
+    when(wikiService.getPageRenderedContent(any(Page.class), anyString())).thenReturn(page.getContent());
   }
 }

@@ -44,35 +44,83 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     wikiService = getContainer().getComponentInstanceOfType(WikiService.class);
   }
 
-  public void testRenderingCache() throws Exception {
-    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "cladic");
-    Page cladicHome = wiki.getWikiHome();
-    cladicHome.setContent("Sample content");
-    wikiService.updatePage(cladicHome, null);
-    wikiService.getPageRenderedContent(cladicHome, Syntax.XHTML_1_0.toIdString());
-    assertEquals(1, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheSize());
-    assertEquals(0, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheHit());
+  public void testShouldCacheSizeIncreaseWhenPagesRendered() throws Exception {
+    // Given
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "rendering1");
+    Page homePage = wiki.getWikiHome();
+    homePage.setContent("Sample content");
+    homePage.setSyntax(Syntax.XHTML_1_0.toIdString());
+    wikiService.updatePage(homePage, null);
+    Page childrenPage = new Page("Page1", "Page 1");
+    childrenPage.setContent("Sample content");
+    childrenPage.setSyntax(Syntax.XHTML_1_0.toIdString());
+    childrenPage = wikiService.createPage(wiki, "WikiHome", childrenPage);
+    int initialCacheHit = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
 
-    Wiki wikiAme = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "ame");
-    Page ameHome = wikiAme.getWikiHome();
-    ameHome.setContent("Sample content");
-    wikiService.updatePage(ameHome, null);
-    wikiService.getPageRenderedContent(ameHome, Syntax.XHTML_1_0.toIdString());
-    assertEquals(2, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheSize());
-    assertEquals(0, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheHit());
+    // When
+    wikiService.getPageRenderedContent(homePage, Syntax.XHTML_1_0.toIdString());
+    int cacheSize1 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheSize();
+    int cacheHit1 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
+    wikiService.getPageRenderedContent(childrenPage, Syntax.XHTML_1_0.toIdString());
+    int cacheSize2 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheSize();
+    int cacheHit2 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
 
-    wikiService.getPageRenderedContent(cladicHome, Syntax.XHTML_1_0.toIdString());
-    assertEquals(1, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheHit());
+    // Then
+    assertEquals(1, cacheSize1);
+    assertEquals(0, cacheHit1 - initialCacheHit);
+    assertEquals(2, cacheSize2);
+    assertEquals(0, cacheHit2 - initialCacheHit);
+  }
 
-    wikiService.getPageRenderedContent(ameHome, Syntax.XHTML_1_0.toIdString());
-    assertEquals(2, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheHit());
 
-    // Change the content of page
-    cladicHome.setContent("Another text");
-    wikiService.updatePage(cladicHome, null);
-    assertEquals(1, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheSize());
-    wikiService.getPageRenderedContent(cladicHome, Syntax.XHTML_1_0.toIdString());
-    assertEquals(2, ((WikiServiceImpl)wikiService).getRenderingCache().getCacheHit());
+  public void testShouldHitCacheWhenSamePageRenderedTwice() throws Exception {
+    // Given
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "rendering2");
+    Page homePage = wiki.getWikiHome();
+    homePage.setContent("Sample content");
+    homePage.setSyntax(Syntax.XHTML_1_0.toIdString());
+    wikiService.updatePage(homePage, null);
+    int initialCacheHit = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
+
+    // When
+    wikiService.getPageRenderedContent(homePage, Syntax.XHTML_1_0.toIdString());
+    int cacheSize1 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheSize();
+    int cacheHit1 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
+    wikiService.getPageRenderedContent(homePage, Syntax.XHTML_1_0.toIdString());
+    int cacheSize2 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheSize();
+    int cacheHit2 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
+
+    // Then
+    assertEquals(1, cacheSize1);
+    assertEquals(0, cacheHit1 - initialCacheHit);
+    assertEquals(1, cacheSize2);
+    assertEquals(1, cacheHit2 - initialCacheHit);
+  }
+
+  public void testShouldNotHitCacheWhenPageUpdated() throws Exception {
+    // Given
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "rendering3");
+    Page homePage = wiki.getWikiHome();
+    homePage.setContent("Sample content");
+    homePage.setSyntax(Syntax.XHTML_1_0.toIdString());
+    wikiService.updatePage(homePage, null);
+    int initialCacheHit = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
+
+    // When
+    wikiService.getPageRenderedContent(homePage, Syntax.XHTML_1_0.toIdString());
+    int cacheSize1 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheSize();
+    int cacheHit1 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
+    homePage.setContent("Another text");
+    wikiService.updatePage(homePage, null);
+    wikiService.getPageRenderedContent(homePage, Syntax.XHTML_1_0.toIdString());
+    int cacheSize2 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheSize();
+    int cacheHit2 = ((WikiServiceImpl) wikiService).getRenderingCache().getCacheHit();
+
+    // Then
+    assertEquals(1, cacheSize1);
+    assertEquals(0, cacheHit1 - initialCacheHit);
+    assertEquals(1, cacheSize2);
+    assertEquals(0, cacheHit2 - initialCacheHit);
   }
 
   public void testRenderingWithUncachedMacro() throws Exception {
