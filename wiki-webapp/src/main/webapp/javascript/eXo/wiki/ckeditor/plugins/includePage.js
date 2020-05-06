@@ -7,9 +7,6 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextualballoon';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
-import { upcastAttributeToAttribute } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * CKEditor plugin which displays the list of children pages of the current page
@@ -36,7 +33,7 @@ export default class IncludePage extends Plugin {
     });
 
     // Build converter from model to view for data and editing pipelines.
-    editor.conversion.for('upcast').add(upcastElementToElement({
+    editor.conversion.for('upcast').elementToElement({
       view: {
         name: 'exo-wiki-include-page',
         attributes: {
@@ -44,15 +41,15 @@ export default class IncludePage extends Plugin {
         }
       },
       model: 'includePage'
-    })).add( upcastAttributeToAttribute( {
+    }).attributeToAttribute({
       view: {
         name: 'exo-wiki-include-page',
         key: 'pageName'
       },
       model: 'pageName'
-    } ) );
+    });
 
-    editor.conversion.for('downcast').add(downcastElementToElement({
+    editor.conversion.for('downcast').elementToElement({
       model: 'includePage',
       view: (modelElement, viewWriter) => {
         const pageContainer = viewWriter.createContainerElement('div');
@@ -61,7 +58,7 @@ export default class IncludePage extends Plugin {
 
         return toWidget(pageContainer, viewWriter);
       }
-    }));
+    });
   }
 
 
