@@ -56,16 +56,12 @@ import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
-import org.xwiki.context.Execution;
-import org.xwiki.context.ExecutionContext;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.resources.ResourceBundleService;
@@ -79,7 +75,6 @@ import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.Relations;
-import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.image.ResizeImageService;
@@ -138,8 +133,6 @@ public class WikiRestServiceImpl implements ResourceContainer {
 
   /**
    * Return the wiki page content as html or wiki syntax.
-   * @param fromHTML true if the given text must be converted from HTML to wiki syntax
-   * @param toHTML true if the given text must be converted from wiki syntax to HTML
    * @param text contain the data as html
    * @return the instance of javax.ws.rs.core.Response
    *
@@ -147,25 +140,9 @@ public class WikiRestServiceImpl implements ResourceContainer {
    */
   @POST
   @Path("/content/")
-  public Response getWikiPageContent(@FormParam("fromHTML") boolean fromHTML,
-                                     @FormParam("toHTML") boolean toHTML,
-                                     @FormParam("text") String text) {
-    EnvironmentContext env = EnvironmentContext.getCurrent();
-    String currentSyntax = wikiService.getDefaultWikiSyntaxId();
+  public Response getWikiPageContent(@FormParam("text") String text) {
     try {
-      String outputText;
-      if(fromHTML) {
-        outputText = renderingService.render(text,
-                Syntax.XHTML_1_0.toIdString(),
-                currentSyntax,
-                false);
-      } else {
-        outputText = renderingService.render(text,
-                currentSyntax,
-                Syntax.XHTML_1_0.toIdString(),
-                false);
-        outputText = WikiHTMLSanitizer.markupSanitize(outputText);
-      }
+      String outputText = WikiHTMLSanitizer.markupSanitize(text);
 
       return Response.ok(outputText, MediaType.TEXT_HTML).cacheControl(cc).build();
     } catch (Exception e) {

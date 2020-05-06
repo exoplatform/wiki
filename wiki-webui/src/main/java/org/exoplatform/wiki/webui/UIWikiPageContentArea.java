@@ -17,14 +17,12 @@
 package org.exoplatform.wiki.webui;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
 import org.xwiki.rendering.syntax.Syntax;
@@ -60,7 +58,6 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     String currentVersionName= this.getChild(UIWikiVersionSelect.class).getVersionName();
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     WikiMode currentMode= wikiPortlet.getWikiMode();
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
     UIWikiContentDisplay contentDisplay = this.getChildById(VIEW_DISPLAY);
 
     Page wikipage = Utils.getCurrentWikiPage();
@@ -76,8 +73,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
         PageVersion version = wikiService.getVersionOfPageByName(currentVersionName, wikipage);
         if (version != null) {
-          String pageContent = version.getContent();
-          contentDisplay.setHtmlOutput(pageContent);
+          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(version, Syntax.XHTML_1_0.toIdString()));
         }
       }
     } catch(Exception e) {

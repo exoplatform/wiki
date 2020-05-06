@@ -126,6 +126,10 @@
     </init-params>
   </component>
 
+  <component>
+    <type>org.exoplatform.wiki.upgrade.PageContentMigrationService</type>
+  </component>
+
   <!-- SEARCH - Override default wiki search connector (use same type 'wiki') -->
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.search.SearchService</target-component>

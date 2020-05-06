@@ -25,6 +25,7 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserStatus;
+import org.exoplatform.wiki.upgrade.PageContentMigrationService;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -127,8 +128,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private UserACL userACL;
 
-  private RenderingService renderingService;
-
   private DataStorage dataStorage;
 
   private List<ValuesParam> syntaxHelpParams;
@@ -174,7 +173,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     this.configManager = configManager;
     this.userACL = userACL;
-    this.renderingService = renderingService;
     this.dataStorage = dataStorage;
     this.orgService = orgService;
 
@@ -689,19 +687,22 @@ public class WikiServiceImpl implements WikiService, Startable {
   public String getPageRenderedContent(Page page, String targetSyntax) {
     String renderedContent = StringUtils.EMPTY;
     try {
-      boolean supportSectionEdit = hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
       String markup = page.getContent();
 
       boolean isUseCache = isCachePage(markup);
       MarkupKey key = null;
       if (isUseCache) {
-        key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, supportSectionEdit);
+        key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, false);
         //get content from cache only when page is not uncached mixin
         MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
         if (cachedData != null) {
           return cachedData.build();
         }
       }
+
+      // migrate page from XWiki syntax to HTML on the fly
+      ExoContainerContext.getService(PageContentMigrationService.class).migratePage(page);
+
       renderedContent = markup;
       if (isUseCache) {
         renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
@@ -744,6 +745,11 @@ public class WikiServiceImpl implements WikiService, Startable {
         renderingCache.remove(new Integer(key.hashCode()));
 
         key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        renderingCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        renderingCache.remove(new Integer(key.hashCode()));
+
+        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
         renderingCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         renderingCache.remove(new Integer(key.hashCode()));
