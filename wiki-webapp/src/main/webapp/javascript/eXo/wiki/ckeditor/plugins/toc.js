@@ -1,11 +1,8 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 export default class Toc extends Plugin {
   init() {
@@ -21,27 +18,27 @@ export default class Toc extends Plugin {
     });
 
     // Build converter from model to view for data and editing pipelines.
-    editor.conversion.for('upcast').add(upcastElementToElement({
+    editor.conversion.for('upcast').elementToElement({
       view: {
         name: 'div',
         classes: 'toc'
       },
       model: 'toc'
-    }));
-    editor.conversion.for('dataDowncast').add(downcastElementToElement({
+    });
+    editor.conversion.for('dataDowncast').elementToElement({
       model: 'toc',
       view: (modelElement, viewWriter) => {
         return buildToc(editor.model, viewWriter);
       }
-    }));
-    editor.conversion.for('editingDowncast').add(downcastElementToElement({
+    });
+    editor.conversion.for('editingDowncast').elementToElement({
       model: 'toc',
       view: (modelElement, viewWriter) => {
         const div = buildToc(editor.model, viewWriter);
 
         return toWidget( div, viewWriter, { label: 'widget label' } );
       }
-    }))
+    })
       .add(dispatcher => dispatcher.on('insert:heading1', (evt, data, conversionApi) => {
         if(conversionApi.consumable) {
           conversionApi.consumable.consume(data.item, evt.name);
@@ -138,7 +135,7 @@ function buildToc(model, viewWriter) {
     if(headingLevel > currentLevel) {
       for(let i=currentLevel; i<headingLevel; i++) {
         const ulEntry = viewWriter.createContainerElement('ul');
-        viewWriter.insert(ViewPosition.createAt(entryStack[entryStack.length - 1], 'end'), ulEntry);
+        viewWriter.insert(viewWriter.createPositionAt(entryStack[entryStack.length - 1], 'end'), ulEntry);
         entryStack.push(ulEntry);
       }
     } else if(headingLevel < currentLevel) {
@@ -150,12 +147,13 @@ function buildToc(model, viewWriter) {
     currentLevel = headingLevel;
 
     const tocEntry = viewWriter.createContainerElement('li');
-    viewWriter.insert(ViewPosition.createAt(entryStack[entryStack.length-1], 'end'), tocEntry);
+    viewWriter.insert(viewWriter.createPositionAt(entryStack[entryStack.length-1], 'end'), tocEntry);
     entryStack.push(tocEntry);
 
-    const entryText = heading.getChildren().next().value.data;
+    const children = heading.getChildren().next();
+    const entryText = children.value ? children.value.data : '';
     const entry = viewWriter.createText(entryText);
-    viewWriter.insert(ViewPosition.createAt(tocEntry, 'end'), entry);
+    viewWriter.insert(viewWriter.createPositionAt(tocEntry, 'end'), entry);
   }
 
   return toc;

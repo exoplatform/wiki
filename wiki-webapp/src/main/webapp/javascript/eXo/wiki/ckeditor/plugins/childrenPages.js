@@ -4,8 +4,6 @@ import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
-import { downcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/downcast-converters';
-import { upcastElementToElement } from '@ckeditor/ckeditor5-engine/src/conversion/upcast-converters';
 
 /**
  * CKEditor plugin which displays the list of children pages of the current page
@@ -24,12 +22,12 @@ export default class ChildrenPages extends Plugin {
     });
 
     // Build converter from model to view for data and editing pipelines.
-    editor.conversion.for('upcast').add(upcastElementToElement({
+    editor.conversion.for('upcast').elementToElement({
       view: 'exo-wiki-children-pages',
       model: 'childrenPages'
-    }));
+    });
     
-    editor.conversion.for('downcast').add(downcastElementToElement({
+    editor.conversion.for('downcast').elementToElement({
       model: 'childrenPages',
       view: (modelElement, viewWriter) => {
         const childrenContainer = viewWriter.createContainerElement('p', { 'class': 'wiki-children-pages' });
@@ -38,7 +36,7 @@ export default class ChildrenPages extends Plugin {
 
         return toWidget( childrenContainer, viewWriter );
       }
-    }));
+    });
 
     editor.ui.componentFactory.add('insertChildren', locale => {
       const childrenButtonView = new ButtonView(locale);

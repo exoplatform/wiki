@@ -18,7 +18,7 @@ import Image from '@ckeditor/ckeditor5-image/src/image';
 import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
-import SelfUpload from 'ckeditor5-self-image/src/selfupload';
+import SelfUpload from 'ckeditor5-self-image/src/selfimage';
 import ChildrenPages from './plugins/childrenPages';
 import Toc from './plugins/toc';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
