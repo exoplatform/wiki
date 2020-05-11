@@ -130,6 +130,10 @@
     <type>org.exoplatform.wiki.upgrade.PageContentMigrationService</type>
   </component>
 
+  <component>
+    <type>org.exoplatform.wiki.upgrade.WikiPageContentMigrationUpgradePlugin</type>
+  </component>
+
   <!-- SEARCH - Override default wiki search connector (use same type 'wiki') -->
   <external-component-plugins>
     <target-component>org.exoplatform.commons.api.search.SearchService</target-component>
@@ -266,7 +270,41 @@
       <type>org.exoplatform.wiki.resolver.URLResolver</type>      
     </component-plugin>    
   </external-component-plugins>
-  
+
+  <!--
+  <external-component-plugins>
+    <target-component>org.exoplatform.commons.upgrade.UpgradeProductService</target-component>
+    <component-plugin profiles="all">
+      <name>WikiPageContentMigrationUpgradePlugin</name>
+      <set-method>addUpgradePlugin</set-method>
+      <type>org.exoplatform.wiki.upgrade.WikiPageContentMigrationUpgradePlugin</type>
+      <description>Upgrade plugin for migrating wiki pages from XWiki 2.0 Syntax to HTML</description>
+      <init-params>
+        <value-param>
+          <name>product.group.id</name>
+          <description>The groupId of the product</description>
+          <value>org.exoplatform.wiki</value>
+        </value-param>
+        <value-param>
+          <name>plugin.execution.order</name>
+          <description>The plugin execution order</description>
+          <value>1</value>
+        </value-param>
+        <value-param>
+          <name>plugin.upgrade.target.version</name>
+          <description>Target version of the plugin</description>
+          <value>6.0.0</value>
+        </value-param>
+        <value-param>
+          <name>plugin.upgrade.async.execution</name>
+          <description>Execute the upgrade plugin asynchronously</description>
+          <value>true</value>
+        </value-param>
+      </init-params>
+    </component-plugin>
+  </external-component-plugins>
+  -->
+
   <import>jar:/conf/portal/cache-configuration.xml</import>
   
 </configuration>
