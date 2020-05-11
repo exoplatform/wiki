@@ -278,20 +278,9 @@ public class Utils {
     return TreeUtils.getPathFromPageParams(getCurrentWikiPageParams());
   }
 
-  public static String getDefaultSyntax() throws Exception {
-    WikiPreferences currentPreferences = Utils.getCurrentPreferences();
-    String currentDefaultSyntax;
-    if (currentPreferences != null) {
-      currentDefaultSyntax = currentPreferences.getWikiPreferencesSyntax().getDefaultSyntax();
-      if (currentDefaultSyntax == null) {
-        WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-        currentDefaultSyntax = wservice.getDefaultWikiSyntaxId();
-      }
-    } else {
-      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-      currentDefaultSyntax = wikiService.getDefaultWikiSyntaxId();
-    }
-    return currentDefaultSyntax;
+  public static String getDefaultSyntax() {
+    WikiService wservice = ExoContainerContext.getService(WikiService.class);
+    return wservice.getDefaultWikiSyntaxId();
   }
 
   public static WikiPreferences getCurrentPreferences() throws Exception {

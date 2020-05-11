@@ -274,7 +274,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (preferencesParams != null) {
       return preferencesParams.getProperty(DEFAULT_SYNTAX);
     }
-    return Syntax.XWIKI_2_0.toIdString();
+    return Syntax.XHTML_1_0.toIdString();
   }
 
   @Override
@@ -847,7 +847,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Page getHelpSyntaxPage(String syntaxId, boolean fullContent) throws WikiException {
-    return dataStorage.getHelpSyntaxPage(syntaxId, fullContent, syntaxHelpParams, configManager);
+    return null;
   }
 
   @Override
