@@ -28,6 +28,15 @@ function WikiCkeditor() {
 }
 
 WikiCkeditor.prototype.createEditor = function() {
+
+  let uploadUrl = `/${eXo.env.portal.containerName}/${eXo.env.portal.rest}/wiki/upload`;
+  if(eXo.env.portal.spaceId) {
+    uploadUrl += `/group//spaces/${eXo.env.portal.spaceGroup}`;
+  } else {
+    uploadUrl += `/portal/${eXo.env.portal.portalName}`;
+  }
+  uploadUrl += `/${eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))}`;
+
   ClassicEditor
     .create( document.querySelector( '#UIWikiRichTextArea_TextArea' ), {
       plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, BlockQuote, Heading, Font, Highlight, Alignment, List, Link,
@@ -128,8 +137,7 @@ WikiCkeditor.prototype.createEditor = function() {
         contentToolbar: [ 'tableColumn', 'tableRow', 'mergeTableCells' ]
       },
       selfUpload: {
-        // TODO make it work in all cases (group and user navigation)
-        uploadUrl: `/portal/rest/wiki/upload/${eXo.env.portal.containerName}/${eXo.env.portal.portalName}${eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))}`
+        uploadUrl: uploadUrl
       },
       image: {
         toolbar: [ 'imageStyle:alignLeft', 'imageStyle:full', 'imageStyle:alignRight', '|', 'imageTextAlternative' ],
