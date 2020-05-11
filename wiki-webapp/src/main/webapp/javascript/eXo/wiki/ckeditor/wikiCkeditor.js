@@ -73,7 +73,7 @@ WikiCkeditor.prototype.createEditor = function() {
           {
             model: 'note',
             view: {
-              name: 'span',
+              name: 'div',
               classes: ['box', 'notemessage']
             },
             title: 'Note',
@@ -82,7 +82,7 @@ WikiCkeditor.prototype.createEditor = function() {
           {
             model: 'info',
             view: {
-              name: 'span',
+              name: 'div',
               classes: ['box', 'infomessage']
             },
             title: 'Info',
@@ -91,7 +91,7 @@ WikiCkeditor.prototype.createEditor = function() {
           {
             model: 'success',
             view: {
-              name: 'span',
+              name: 'div',
               classes: ['box', 'successmessage']
             },
             title: 'Success',
@@ -100,7 +100,7 @@ WikiCkeditor.prototype.createEditor = function() {
           {
             model: 'tip',
             view: {
-              name: 'span',
+              name: 'div',
               classes: ['box', 'tipmessage']
             },
             title: 'Tip',
@@ -109,7 +109,7 @@ WikiCkeditor.prototype.createEditor = function() {
           {
             model: 'warning',
             view: {
-              name: 'span',
+              name: 'div',
               classes: ['box', 'warningmessage']
             },
             title: 'Warning',
@@ -118,7 +118,7 @@ WikiCkeditor.prototype.createEditor = function() {
           {
             model: 'error',
             view: {
-              name: 'span',
+              name: 'div',
               classes: ['box', 'errormessage']
             },
             title: 'Error',
