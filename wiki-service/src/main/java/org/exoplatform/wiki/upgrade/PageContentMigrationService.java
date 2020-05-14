@@ -2,6 +2,7 @@ package org.exoplatform.wiki.upgrade;
 
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
 import org.exoplatform.container.ExoContainerContext;
+import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.WikiException;
@@ -10,9 +11,15 @@ import org.exoplatform.wiki.jpa.dao.PageDAO;
 import org.exoplatform.wiki.jpa.entity.PageEntity;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.rendering.RenderingService;
+import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.service.PageUpdateType;
+import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.utils.Utils;
 import org.xwiki.component.manager.ComponentLookupException;
+import org.xwiki.component.manager.ComponentRepositoryException;
+import org.xwiki.context.Execution;
+import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
 
@@ -48,12 +55,55 @@ public class PageContentMigrationService {
   public void migratePage(Page page) throws Exception {
     if(Syntax.XWIKI_2_0.toIdString().equals(page.getSyntax())) {
       LOG.info("Convert wiki page " + page.getId() + " to HTML");
+
+      setWikiContext(page);
+
       String markup = page.getContent();
       markup = renderingService.render(markup, page.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
       page.setContent(markup);
       page.setSyntax(Syntax.XHTML_1_0.toIdString());
+
       wikiService.updatePage(page, null);
     }
+  }
+
+  /**
+   * Set the wiki context in the execution environment to let know XWiki the context (wiki type, wiki owner, ...)
+   * @param page
+   * @throws ComponentLookupException
+   * @throws ComponentRepositoryException
+   */
+  protected void setWikiContext(Page page) throws ComponentLookupException, ComponentRepositoryException {
+    RenderingService renderingService = ExoContainerContext.getService(RenderingService.class);
+    Execution ec = renderingService.getExecution();
+
+    if (ec.getContext() == null) {
+      ec.setContext(new ExecutionContext());
+    }
+
+    WikiContext wikiContext = new WikiContext();
+    wikiContext.setType(page.getWikiType());
+    wikiContext.setOwner(page.getWikiOwner());
+    wikiContext.setPageName(page.getName());
+    wikiContext.setPageTitle(page.getTitle());
+    String portalURL = page.getUrl();
+    if(portalURL == null) {
+      portalURL = PortalContainer.getInstance().getPortalContext().getContextPath();
+      if("group".equals(page.getWikiType())) {
+        // FIXME does not handle renamed spaces
+        portalURL += "/g/" + page.getWikiOwner().replaceAll("/", ":") + "/" + page.getWikiOwner().substring(page.getWikiOwner().lastIndexOf("/") + 1);
+      } else {
+        portalURL += "/" + page.getWikiOwner();
+      }
+    } else {
+      portalURL = page.getUrl().substring(0, page.getUrl().lastIndexOf("/wiki/"));
+    }
+    wikiContext.setPortalURL(portalURL);
+    wikiContext.setPortletURI("/wiki");
+    wikiContext.setRestURI("/" + PortalContainer.getCurrentPortalContainerName() + "/" + PortalContainer.getCurrentRestContextName() + "/wiki/tree/children/");
+    wikiContext.setSyntax(Syntax.XWIKI_2_0.toIdString());
+
+    ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
   }
 
   /**

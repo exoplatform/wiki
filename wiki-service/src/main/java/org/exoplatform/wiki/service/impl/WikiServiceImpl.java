@@ -538,9 +538,12 @@ public class WikiServiceImpl implements WikiService, Startable {
     page = dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageName);
 
     if(page != null) {
-      Identity user = ConversationState.getCurrent().getIdentity();
-      if (!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
-        page = null;
+      ConversationState state = ConversationState.getCurrent();
+      if(state != null) {
+        Identity user = state.getIdentity();
+        if (!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
+          page = null;
+        }
       }
     }
 
