@@ -5,6 +5,8 @@ import org.exoplatform.commons.upgrade.UpgradeProductPlugin;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.xml.InitParams;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 import org.picocontainer.Startable;
 
 import java.util.concurrent.ExecutorService;
@@ -13,6 +15,8 @@ import java.util.concurrent.ThreadFactory;
 
 public class WikiPageContentMigrationUpgradePlugin implements Startable {
 //public class WikiPageContentMigrationUpgradePlugin extends UpgradeProductPlugin {
+
+  private static final Log LOG = ExoLogger.getLogger(WikiPageContentMigrationUpgradePlugin.class);
 
   private PageContentMigrationService migrationService;
 
@@ -34,7 +38,13 @@ public class WikiPageContentMigrationUpgradePlugin implements Startable {
     ExecutorService executorService = Executors.newSingleThreadExecutor(r -> new Thread(r, "Wiki-PageSyntaxMigration"));
     executorService.execute(() -> {
       ExoContainerContext.setCurrentContainer(container);
+
+      LOG.info("== Starting Wiki page syntax migration");
+
       migrationService.migrateAllPages();
+      migrationService.migrateAllPagesVersions();
+
+      LOG.info("== Wiki pages syntax migration - Migration finished");
     });
   }
 
