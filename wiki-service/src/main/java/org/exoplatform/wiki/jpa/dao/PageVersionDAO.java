@@ -48,4 +48,18 @@ public class PageVersionDAO extends WikiBaseDAO<PageVersionEntity, Long> {
       return null;
     }
   }
+
+  public List<PageVersionEntity> findAllVersionsBySyntax(String syntax, int offset, int limit) {
+    return getEntityManager().createNamedQuery("wikiPageVersion.getAllPagesVersionsBySyntax")
+            .setParameter("syntax", syntax)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
+  }
+
+  public Long countPagesVersionsBySyntax(String syntax) {
+    return (Long) getEntityManager().createNamedQuery("wikiPageVersion.countAllPagesVersionsBySyntax")
+            .setParameter("syntax", syntax)
+            .getSingleResult();
+  }
 }

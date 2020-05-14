@@ -42,8 +42,8 @@ import java.util.Set;
     @NamedQuery(name = "wikiPage.getAllPagesOfWiki", query = "SELECT p FROM WikiPageEntity p JOIN p.wiki w WHERE w.type = :type AND w.owner = :owner"),
     @NamedQuery(name = "wikiPage.getPagesOfWiki", query = "SELECT p FROM WikiPageEntity p JOIN p.wiki w WHERE w.type = :type AND w.owner = :owner AND p.deleted = :deleted"),
     @NamedQuery(name = "wikiPage.getChildrenPages", query = "SELECT p FROM WikiPageEntity p WHERE p.parentPage.id = :id AND p.deleted = false ORDER BY p.name"),
-    @NamedQuery(name = "wikiPage.getAllPagesBySyntax", query = "SELECT p FROM WikiPageEntity p WHERE p.syntax = :syntax ORDER BY p.updatedDate DESC"),
-    @NamedQuery(name = "wikiPage.countAllPagesBySyntax", query = "SELECT COUNT(p) FROM WikiPageEntity p WHERE p.syntax = :syntax")
+    @NamedQuery(name = "wikiPage.getAllPagesBySyntax", query = "SELECT p FROM WikiPageEntity p WHERE p.syntax = :syntax OR p.syntax IS NULL ORDER BY p.updatedDate DESC"),
+    @NamedQuery(name = "wikiPage.countAllPagesBySyntax", query = "SELECT COUNT(p) FROM WikiPageEntity p WHERE p.syntax = :syntax OR p.syntax IS NULL")
 })
 public class PageEntity extends BasePageEntity {
 
