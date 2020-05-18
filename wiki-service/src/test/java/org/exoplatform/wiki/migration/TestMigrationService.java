@@ -191,4 +191,35 @@ public class TestMigrationService extends BaseTest {
     assertEquals(page2.getTitle(), migratedPage2.getTitle());
     assertEquals("<p><span class=\"wikilink\"><a rel=\"nofollow\" href=\"/portal/g/:spaces:otherspace2/otherspace2/wiki/group/spaces/otherspace1/testMigrationOtherSpacePageLink-001\">link</a></span></p>", migratedPage2.getContent());
   }
+
+  public void testShouldMigratePortalPageWithChildrenPageMacro() throws Exception {
+    Wiki wikiClassic = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
+
+    Page page1 = new Page("testMigrationPageMacroChildren-001", "testMigrationPageMacroChildren-001");
+    page1.setId("testMigrationPageMacroChildren-001");
+    page1.setWikiType("portal");
+    page1.setWikiOwner("classic");
+    page1.setSyntax(Syntax.XWIKI_2_0.toIdString());
+    page1.setContent("Page 1\n\n{{children depth=\"1\"/}}");
+    page1.setUrl("/portal/classic/wiki/testMigrationPageMacroChildren-001");
+    wikiService.createPage(wikiClassic, "WikiHome", page1);
+
+    Page page2 = new Page("testMigrationPageMacroChildren-002", "testMigrationPageMacroChildren-002");
+    page2.setId("testMigrationPageMacroChildren-002");
+    page2.setWikiType("portal");
+    page2.setWikiOwner("classic");
+    page2.setSyntax(Syntax.XWIKI_2_0.toIdString());
+    page2.setContent("Page 2");
+    page2.setUrl("/portal/classic/wiki/testMigrationPageMacroChildren-002");
+    wikiService.createPage(wikiClassic, "testMigrationPageMacroChildren-001", page2);
+
+    migrationService.migratePage(page1);
+    migrationService.migratePage(page2);
+
+    Page migratedPage1 = wikiService.getPageOfWikiByName("portal", "classic", "testMigrationPageMacroChildren-001");
+    assertNotNull(migratedPage1);
+    assertEquals(Syntax.XHTML_1_0.toIdString(), migratedPage1.getSyntax());
+    assertEquals(page1.getTitle(), migratedPage1.getTitle());
+    assertEquals("<p>Page 1</p><exo-wiki-children-pages depth=\"1\"></exo-wiki-children-pages>", migratedPage1.getContent());
+  }
 }
