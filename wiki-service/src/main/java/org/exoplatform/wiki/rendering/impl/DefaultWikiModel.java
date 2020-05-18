@@ -40,6 +40,7 @@ import javax.inject.Inject;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.Map;
@@ -113,9 +114,13 @@ public class DefaultWikiModel implements WikiModel {
       ResourceType resourceType = ResourceType.ICON.equals(imageReference.getType()) ? ResourceType.ICON : ResourceType.ATTACHMENT;
       WikiContext wikiMarkupContext = markupContextManager.getMarkupContext(imageName, resourceType);
       String portalURL = wikiMarkupContext.getPortalURL();
-      URL requestURL = new URL(portalURL);
-      String domainURL = requestURL.getProtocol() + "://" + requestURL.getAuthority();
-      sb.append(domainURL);
+      try {
+        URL requestURL = new URL(portalURL);
+        String domainURL = requestURL.getProtocol() + "://" + requestURL.getAuthority();
+        sb.append(domainURL);
+      } catch(MalformedURLException e) {
+        LOG.debug("Image URL {} is not a valid URL", portalURL);
+      }
       WikiContext context = getWikiContext();
       wikiService.addPageLink(new WikiPageParams(context.getType(), context.getOwner(), context.getPageName()),
                                         new WikiPageParams(wikiMarkupContext.getType(),
