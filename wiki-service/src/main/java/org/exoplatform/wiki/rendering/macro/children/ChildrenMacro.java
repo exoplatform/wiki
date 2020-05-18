@@ -126,13 +126,7 @@ public class ChildrenMacro extends AbstractMacro<ChildrenMacroParameters> {
   }
 
   private Block generateTree(WikiPageParams params, boolean descendant, String childrenNum, String depth, MacroTransformationContext context) throws Exception {
-    Block block = new GroupBlock();
-    HashMap<String, Object> treeContext = new HashMap<String, Object>();
-    treeContext.put(TreeNode.SHOW_DESCENDANT, descendant);
-    treeContext.put(TreeNode.CHILDREN_NUMBER, childrenNum);
-    treeContext.put(TreeNode.DEPTH, depth);
-    TreeNode node = TreeUtils.getDescendants(params, treeContext);
-    addBlock(block, node,context);
+    Block block = new RawBlock("<exo-wiki-children-pages depth=\"" + depth + "\"></exo-wiki-children-pages>", Syntax.XHTML_1_0);
     return block;
   }
 

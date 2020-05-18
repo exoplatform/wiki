@@ -1,5 +1,4 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
@@ -30,9 +29,9 @@ export default class ChildrenPages extends Plugin {
     editor.conversion.for('downcast').elementToElement({
       model: 'childrenPages',
       view: (modelElement, viewWriter) => {
-        const childrenContainer = viewWriter.createContainerElement('p', { 'class': 'wiki-children-pages' });
+        const childrenContainer = viewWriter.createContainerElement('div', { 'class': 'wiki-children-pages' });
         const childrenComponent = viewWriter.createContainerElement('exo-wiki-children-pages');
-        viewWriter.insert(ViewPosition.createAt(childrenContainer, 'end'), childrenComponent);
+        viewWriter.insert(viewWriter.createPositionAt(childrenContainer, 'end'), childrenComponent);
 
         return toWidget( childrenContainer, viewWriter );
       }

@@ -1092,7 +1092,6 @@ public class WikiRestServiceImpl implements ResourceContainer {
     }
 
     for (JsonNodeData data : responseData) {
-      data.setName(StringCommonUtils.encodeSpecialCharForSimpleInput(data.getName()));
       if (StringUtils.isBlank(data.getName())) {
         data.setName(untitledLabel);
       }
