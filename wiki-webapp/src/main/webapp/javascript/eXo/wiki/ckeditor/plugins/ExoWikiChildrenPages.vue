@@ -27,7 +27,11 @@ export default {
   },
   methods: {
     getChildrenPages() {
-      const pageName = eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/') + 1);
+      let pageName = 'WikiHome';
+      if(!eXo.env.server.portalBaseURL.endsWith(`/${eXo.env.portal.selectedNodeUri}`)) {
+        pageName = eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/') + 1);
+      }
+
       let url = '';
       if(eXo.env.portal.spaceName) {
         url = `/rest/wiki/tree/CHILDREN?path=group/spaces/${eXo.env.portal.spaceGroup}/${pageName}&depth=${this.depth}`;

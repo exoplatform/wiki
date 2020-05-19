@@ -18,6 +18,7 @@ package org.exoplatform.wiki.tree.utils;
 
 import org.apache.commons.lang.BooleanUtils;
 
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.organization.OrganizationService;
@@ -167,7 +168,11 @@ public class TreeUtils {
           if (oService.getGroupHandler().findGroupById(groupId) != null) {
             result.setOwner(groupId);
           } else {
-            result.setPageName(path.substring(path.lastIndexOf("/") + 1));
+            String pageName = path.substring(path.lastIndexOf("/") + 1);
+            if(StringUtils.isBlank(pageName)) {
+              pageName = WikiPageParams.WIKI_HOME;
+            }
+            result.setPageName(pageName);
             String owner = path.substring(path.indexOf("/"), path.lastIndexOf("/"));
             while (oService.getGroupHandler().findGroupById(owner) == null) {
               owner = owner.substring(0,owner.lastIndexOf("/"));
