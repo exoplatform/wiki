@@ -348,7 +348,7 @@
     <dependency>
       <groupId>org.xwiki.rendering</groupId>
       <artifactId>xwiki-rendering-macro-toc</artifactId>
-      <scope>test</scope>
+      <scope>provided</scope>
       <exclusions>
         <exclusion>
           <artifactId>commons-beanutils</artifactId>
