@@ -222,4 +222,25 @@ public class TestMigrationService extends BaseTest {
     assertEquals(page1.getTitle(), migratedPage1.getTitle());
     assertEquals("<p>Page 1</p><exo-wiki-children-pages depth=\"1\"></exo-wiki-children-pages>", migratedPage1.getContent());
   }
+
+  public void testShouldMigratePortalPageWithToCMacro() throws Exception {
+    Wiki wikiClassic = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
+
+    Page page1 = new Page("testMigrationPageMacroToC-001", "testMigrationPageMacroToC-001");
+    page1.setId("testMigrationPageMacroToC-001");
+    page1.setWikiType("portal");
+    page1.setWikiOwner("classic");
+    page1.setSyntax(Syntax.XWIKI_2_0.toIdString());
+    page1.setContent("{{toc /}}\n\n== Page 1 ==\n\n");
+    page1.setUrl("/portal/classic/wiki/testMigrationPageMacroToC-001");
+    wikiService.createPage(wikiClassic, "WikiHome", page1);
+
+    migrationService.migratePage(page1);
+
+    Page migratedPage1 = wikiService.getPageOfWikiByName("portal", "classic", "testMigrationPageMacroToC-001");
+    assertNotNull(migratedPage1);
+    assertEquals(Syntax.XHTML_1_0.toIdString(), migratedPage1.getSyntax());
+    assertEquals(page1.getTitle(), migratedPage1.getTitle());
+    assertEquals("<div class=\"toc\"><ul><li><ul><li><span class=\"wikilink\"><a href=\"#HPage1\">Page 1</a></span></li></ul></li></ul></div><h2 id=\"HPage1\"><span>Page 1</span></h2>", migratedPage1.getContent());
+  }
 }
