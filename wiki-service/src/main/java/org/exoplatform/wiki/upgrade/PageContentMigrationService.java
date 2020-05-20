@@ -1,18 +1,21 @@
 package org.exoplatform.wiki.upgrade;
 
+import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.persistence.impl.EntityManagerService;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.jpa.EntityConverter;
 import org.exoplatform.wiki.jpa.dao.PageDAO;
 import org.exoplatform.wiki.jpa.dao.PageVersionDAO;
+import org.exoplatform.wiki.jpa.dao.TemplateDAO;
 import org.exoplatform.wiki.jpa.entity.PageEntity;
 import org.exoplatform.wiki.jpa.entity.PageVersionEntity;
+import org.exoplatform.wiki.jpa.entity.TemplateEntity;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiService;
@@ -23,6 +26,7 @@ import org.xwiki.context.ExecutionContext;
 import org.xwiki.rendering.converter.ConversionException;
 import org.xwiki.rendering.syntax.Syntax;
 
+import java.io.InputStream;
 import java.util.*;
 
 public class PageContentMigrationService {
@@ -35,26 +39,24 @@ public class PageContentMigrationService {
 
   private EntityManagerService entityManagerService;
 
+  private ConfigurationManager configurationManager;
+
   private PageDAO pageDAO;
 
   private PageVersionDAO pageVersionDAO;
 
-  private int nbMigratedPages = 0;
-
-  private int nbMigratedPagesVersions = 0;
-
-  private List<Page> pagesInError = new ArrayList<>();
-
-  private List<Page> pagesVersionsInError = new ArrayList<>();
+  private TemplateDAO templateDAO;
 
   public PageContentMigrationService(RenderingService renderingService, WikiService wikiService,
-                                     EntityManagerService entityManagerService, PageDAO pageDAO,
-                                     PageVersionDAO pageVersionDAO) {
+                                     EntityManagerService entityManagerService, ConfigurationManager configurationManager,
+                                     PageDAO pageDAO, PageVersionDAO pageVersionDAO, TemplateDAO templateDAO) {
     this.renderingService = renderingService;
     this.wikiService = wikiService;
     this.entityManagerService = entityManagerService;
+    this.configurationManager = configurationManager;
     this.pageDAO = pageDAO;
     this.pageVersionDAO = pageVersionDAO;
+    this.templateDAO = templateDAO;
   }
 
   /**
@@ -87,6 +89,8 @@ public class PageContentMigrationService {
      */
   public void migrateAllPages() {
     int batchSize = 10;
+    int nbMigratedPages = 0;
+    List<Page> pagesInError = new ArrayList<>();
 
     try {
       entityManagerService.startRequest(ExoContainerContext.getCurrentContainer());
@@ -137,6 +141,8 @@ public class PageContentMigrationService {
    */
   public void migrateAllPagesVersions() {
     int batchSize = 10;
+    int nbMigratedPagesVersions = 0;
+    List<Page> pagesVersionsInError = new ArrayList<>();
 
     try {
       entityManagerService.startRequest(ExoContainerContext.getCurrentContainer());
@@ -185,6 +191,64 @@ public class PageContentMigrationService {
   }
 
   /**
+   * Migrate all pages templates from XWiki 2.0 syntax to HTML
+   */
+  public void migrateAllPagesTemplates() {
+    int batchSize = 10;
+    int nbMigratedTemplates = 0;
+    List<Page> templatesInError = new ArrayList<>();
+    Map<String, String> configuredTemplates = loadConfiguredTemplates();
+
+    try {
+      entityManagerService.startRequest(ExoContainerContext.getCurrentContainer());
+
+      Long nbTemplatesToMigrate = templateDAO.countTemplatesBySyntax(Syntax.XWIKI_2_0.toIdString());
+      if (nbTemplatesToMigrate == null || nbTemplatesToMigrate == 0) {
+        LOG.info("Wiki pages templates syntax migration - No Wiki page template to migrate from XWiki syntax to HTML");
+        return;
+      }
+
+      LOG.info("==== Starting Wiki pages templates syntax migration");
+      LOG.info("Wiki pages templates syntax migration - Number of pages templates = " + nbTemplatesToMigrate);
+
+      List<TemplateEntity> templatesToMigrate;
+      do {
+        entityManagerService.endRequest(ExoContainerContext.getCurrentContainer());
+        entityManagerService.startRequest(ExoContainerContext.getCurrentContainer());
+
+        templatesToMigrate = templateDAO.findAllBySyntax(Syntax.XWIKI_2_0.toIdString(), 0, batchSize);
+        for (TemplateEntity templateEntity : templatesToMigrate) {
+          try {
+            LOG.info("Convert wiki page template " + templateEntity.getId() + " to HTML");
+            String markup = configuredTemplates.get(templateEntity.getName());
+            if(markup == null) {
+              markup = convertContent(templateEntity.getContent());
+            }
+            templateEntity.setContent(markup);
+            templateEntity.setSyntax(Syntax.XHTML_1_0.toIdString());
+            templateDAO.update(templateEntity);
+            nbMigratedTemplates++;
+          } catch (Exception e) {
+            LOG.error("Error while migrating wiki page template " + (templateEntity != null ? templateEntity.getId() : "") + " to HTML", e);
+            templatesInError.add(EntityConverter.convertTemplateEntityToTemplate(templateEntity));
+
+            templateEntity.setSyntax("ERROR");
+            templateDAO.update(templateEntity);
+          }
+        }
+
+        LOG.info("Wiki pages templates syntax migration - Progress : " + nbMigratedTemplates + "/" + nbTemplatesToMigrate);
+      } while (templatesToMigrate != null && templatesToMigrate.size() == batchSize);
+
+      LOG.info("==== Wiki pages templates syntax migration - Migration finished - Number of migrated pages = " + nbMigratedTemplates + ", number of errors = " + templatesInError.size());
+    } catch (Exception e) {
+      LOG.error("Error while migrating wiki pages versions fom XWiki syntax to HTML", e);
+    } finally {
+      entityManagerService.endRequest(ExoContainerContext.getCurrentContainer());
+    }
+  }
+
+  /**
    * Set the wiki context in the execution environment to let know XWiki the context (wiki type, wiki owner, ...)
    * @param page
    * @throws ComponentLookupException
@@ -221,5 +285,33 @@ public class PageContentMigrationService {
     wikiContext.setSyntax(Syntax.XWIKI_2_0.toIdString());
 
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
+  }
+
+  /**
+   * Load configured templates.
+   * This allows to use these native templates instead of the conversion since native templates are cleaner.
+   * @return Configured templates (name, content)
+   */
+  private Map<String, String> loadConfiguredTemplates() {
+    Map<String, String> templates = new HashMap<>();
+
+    Map<String, String> configuredTemplates = new HashMap<>();
+    configuredTemplates.put("Status_Meeting", "war:/conf/wiki/data/templates/Status_Meeting.tmpl");
+    configuredTemplates.put("HOW-TO_Guide", "war:/conf/wiki/data/templates/HOW-TO_Guide.tmpl");
+    configuredTemplates.put("Leave_Planning", "war:/conf/wiki/data/templates/Leave_Planning.tmpl");
+
+    configuredTemplates.forEach((name, templatePath) -> {
+      try {
+        InputStream templateInputStream = configurationManager.getInputStream(templatePath);
+        if (templateInputStream != null) {
+          String templateContent = IOUtils.toString(templateInputStream);
+          templates.put(name, templateContent);
+        }
+      } catch (Exception e) {
+        LOG.warn("Cannot load wiki page template " + name + " with path " + templatePath, e);
+      }
+    });
+
+    return templates;
   }
 }
