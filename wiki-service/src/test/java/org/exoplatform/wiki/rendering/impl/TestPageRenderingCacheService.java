@@ -16,8 +16,6 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -121,21 +119,6 @@ public final class TestPageRenderingCacheService extends AbstractRenderingTestCa
     assertEquals(0, cacheHit1 - initialCacheHit);
     assertEquals(1, cacheSize2);
     assertEquals(0, cacheHit2 - initialCacheHit);
-  }
-
-  public void testRenderingWithUncachedMacro() throws Exception {
-    WikiServiceImpl wikiServiceImpl = (WikiServiceImpl) wikiService;
-    wikiServiceImpl.getUncachedMacroes().add("warning");
-    try {
-      Wiki wiki = getOrCreateWiki(wikiServiceImpl, PortalConfig.PORTAL_TYPE, "testcache");
-      Page testcacheHome = wiki.getWikiHome();
-      testcacheHome.setContent("{{warning}}Sample content{{/warning}}");
-      wikiService.updatePage(testcacheHome, null);
-      wikiService.getPageRenderedContent(testcacheHome, Syntax.XHTML_1_0.toIdString());
-      assertEquals(0, wikiServiceImpl.getRenderingCache().getCacheSize());
-    } finally {
-      wikiServiceImpl.getUncachedMacroes().remove("warning");
-    }
   }
 
   @Override
