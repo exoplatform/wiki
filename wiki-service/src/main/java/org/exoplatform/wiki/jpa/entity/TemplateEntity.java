@@ -35,7 +35,9 @@ import javax.persistence.*;
 @NamedQueries({
         @NamedQuery(name = "template.getTemplatesOfWiki", query = "SELECT t FROM WikiTemplateEntity t JOIN t.wiki w WHERE w.type = :type AND w.owner = :owner"),
         @NamedQuery(name = "template.getTemplateOfWikiByName", query = "SELECT t FROM WikiTemplateEntity t JOIN t.wiki w WHERE t.name = :name AND w.type = :type AND w.owner = :owner"),
-        @NamedQuery(name = "template.searchTemplatesByTitle", query = "SELECT t FROM WikiTemplateEntity t JOIN t.wiki w WHERE w.type = :type AND w.owner = :owner AND t.title like :searchText")
+        @NamedQuery(name = "template.searchTemplatesByTitle", query = "SELECT t FROM WikiTemplateEntity t JOIN t.wiki w WHERE w.type = :type AND w.owner = :owner AND t.title like :searchText"),
+        @NamedQuery(name = "template.getAllTemplatesBySyntax", query = "SELECT t FROM WikiTemplateEntity t WHERE t.syntax = :syntax OR t.syntax IS NULL ORDER BY t.updatedDate DESC"),
+        @NamedQuery(name = "template.countAllTemplatesBySyntax", query = "SELECT COUNT(t) FROM WikiTemplateEntity t WHERE t.syntax = :syntax OR t.syntax IS NULL")
 })
 public class TemplateEntity extends BasePageEntity {
 

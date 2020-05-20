@@ -52,4 +52,18 @@ public class TemplateDAO extends WikiBaseDAO<TemplateEntity, Long> {
     return query.getResultList();
   }
 
+  public List<TemplateEntity> findAllBySyntax(String syntax, int offset, int limit) {
+    return getEntityManager().createNamedQuery("template.getAllTemplatesBySyntax")
+            .setParameter("syntax", syntax)
+            .setFirstResult(offset)
+            .setMaxResults(limit)
+            .getResultList();
+  }
+
+  public Long countTemplatesBySyntax(String syntax) {
+    return (Long) getEntityManager().createNamedQuery("template.countAllTemplatesBySyntax")
+            .setParameter("syntax", syntax)
+            .getSingleResult();
+  }
+
 }

@@ -52,6 +52,7 @@ public class WikiPageContentMigrationUpgradePlugin implements Startable {
 
       migrationService.migrateAllPages();
       migrationService.migrateAllPagesVersions();
+      migrationService.migrateAllPagesTemplates();
 
       LOG.info("== Wiki pages syntax migration - Migration finished");
     });
