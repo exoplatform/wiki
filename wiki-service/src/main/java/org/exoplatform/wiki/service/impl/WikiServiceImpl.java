@@ -538,14 +538,11 @@ public class WikiServiceImpl implements WikiService, Startable {
     page = dataStorage.getPageOfWikiByName(wikiType, wikiOwner, pageName);
 
     if(page != null) {
-      ConversationState state = ConversationState.getCurrent();
-      if(state != null) {
-        Identity user = state.getIdentity();
+      Identity user = ConversationState.getCurrent().getIdentity();
         if (!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
           page = null;
         }
       }
-    }
 
     // Check to remove the domain in page url
     checkToRemoveDomainInUrl(page);
