@@ -9,6 +9,7 @@ import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
+import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.services.security.MembershipEntry;
 import org.picocontainer.Startable;
 
@@ -43,18 +44,21 @@ public class WikiPageContentMigrationUpgradePlugin implements Startable {
     executorService.execute(() -> {
       ExoContainerContext.setCurrentContainer(container);
 
-      ConversationState.setCurrent(new ConversationState(new Identity("root", Arrays.asList(
-              new MembershipEntry("/platform/users", "*"),
-              new MembershipEntry("/platform/administrators", "*")
-      ))));
+      try {
+        ConversationState.setCurrent(new ConversationState(new Identity(IdentityConstants.SYSTEM)));
 
-      LOG.info("== Starting Wiki page syntax migration");
+        LOG.info("== Starting Wiki page syntax migration");
 
-      migrationService.migrateAllPages();
-      migrationService.migrateAllPagesVersions();
-      migrationService.migrateAllPagesTemplates();
+        migrationService.migrateAllPages();
+        migrationService.migrateAllPagesVersions();
+        migrationService.migrateAllPagesTemplates();
 
-      LOG.info("== Wiki pages syntax migration - Migration finished");
+        LOG.info("== Wiki pages syntax migration - Migration finished");
+      } catch (Exception e) {
+        LOG.error("Error while migrating wiki pages fom XWiki syntax to HTML", e);
+      } finally {
+        ConversationState.setCurrent(null);
+      }
     });
   }
 
