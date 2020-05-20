@@ -202,24 +202,6 @@
       <description>Template page initializer</description>
       <init-params>
         <object-param>
-          <name>Two-Column_Layout</name>
-          <object type="org.exoplatform.wiki.mow.api.Template">
-            <field name="name"><string>Two-Column_Layout</string></field>
-            <field name="title"><string>Two-Column Layout</string></field>
-            <field name="description"><string>Global</string></field>
-            <field name="sourceFilePath"><string>war:/conf/wiki/data/templates/Two-Column_Layout.tmpl</string></field>
-          </object>
-        </object-param>
-        <object-param>
-          <name>Three-Column_Layout</name>
-          <object type="org.exoplatform.wiki.mow.api.Template">
-            <field name="name"><string>Three-Column_Layout</string></field>
-            <field name="title"><string>Three-Column Layout</string></field>
-            <field name="description"><string>Global</string></field>
-            <field name="sourceFilePath"><string>war:/conf/wiki/data/templates/Three-Column_Layout.tmpl</string></field>
-          </object>
-        </object-param>
-        <object-param>
           <name>Status_Meeting</name>
           <object type="org.exoplatform.wiki.mow.api.Template">
             <field name="name"><string>Status_Meeting</string></field>
