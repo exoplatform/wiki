@@ -9,14 +9,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -80,7 +78,6 @@ import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
 import org.exoplatform.wiki.rendering.cache.MarkupKey;
-import org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin;
 import org.exoplatform.wiki.resolver.TitleResolver;
 import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.DataStorage;
@@ -152,8 +149,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   private ExoCache<Integer, AttachmentCountData> attachmentCountCache;
 
   private Map<WikiPageParams, List<WikiPageParams>> pageLinksMap = new ConcurrentHashMap<>();
-
-  private Set<String> uncachedMacroes = new HashSet<>();
 
   private int uploadLimit = 200;
 
@@ -539,20 +534,15 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     if(page != null) {
       Identity user = ConversationState.getCurrent().getIdentity();
-        if (!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
-          page = null;
-        }
+      if (!hasPermissionOnPage(page, PermissionType.VIEWPAGE, user)) {
+        page = null;
       }
+    }
 
     // Check to remove the domain in page url
     checkToRemoveDomainInUrl(page);
 
     return page;
-  }
-
-  @Override
-  public void addUnCachedMacro(UnCachedMacroPlugin plugin) {
-    uncachedMacroes.addAll(plugin.getUncachedMacroes());
   }
 
   @Override
@@ -689,24 +679,18 @@ public class WikiServiceImpl implements WikiService, Startable {
     try {
       String markup = page.getContent();
 
-      boolean isUseCache = isCachePage(markup);
-      MarkupKey key = null;
-      if (isUseCache) {
-        key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, false);
-        //get content from cache only when page is not uncached mixin
-        MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
-        if (cachedData != null) {
-          return cachedData.build();
-        }
+      MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, false);
+      MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
+      if (cachedData != null) {
+        return cachedData.build();
       }
 
       // migrate page from XWiki syntax to HTML on the fly
       ExoContainerContext.getService(PageContentMigrationService.class).migratePage(page);
 
       renderedContent = markup;
-      if (isUseCache) {
-        renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
-      }
+
+      renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
       LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", page.getWikiType(), page.getWikiOwner(), page.getName(), targetSyntax), e);
     }
@@ -721,10 +705,6 @@ public class WikiServiceImpl implements WikiService, Startable {
       this.pageLinksMap.put(entity, linkParams);
     }
     linkParams.add(param);
-  }
-
-  public Set<String> getUncachedMacroes() {
-    return uncachedMacroes;
   }
 
   protected void invalidateCache(Page page) {
@@ -1620,23 +1600,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     } catch(WikiException e) {
       log.error("Cannot init emotion icons - Cause : " + e.getMessage(), e);
     }
-  }
-
-  private boolean isCachePage(String renderedContent) {
-    if (uncachedMacroes == null || uncachedMacroes.isEmpty()) {
-      return true;
-    }
-    boolean useCachePage = true;
-    for (String macro : uncachedMacroes) {
-      String m1 = new StringBuilder().append("{{").append(macro).append("}}").toString();
-      String m2 = new StringBuilder().append("{{").append(macro).append("/}}").toString();
-      String m3 = new StringBuilder().append("{{").append(macro).append(" ").toString();
-      if (renderedContent.contains(m1) || renderedContent.contains(m2) || renderedContent.contains(m3)) {
-        useCachePage = false;
-        break;
-      }
-    }
-    return useCachePage;
   }
 
 

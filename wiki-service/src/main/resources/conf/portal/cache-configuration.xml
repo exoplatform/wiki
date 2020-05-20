@@ -55,21 +55,4 @@
       </init-params>
     </component-plugin>
   </external-component-plugins>
-
-  <external-component-plugins>
-    <target-component>org.exoplatform.wiki.service.WikiService</target-component>
-    <component-plugin>
-      <name>addUnCachedMacro</name>
-      <set-method>addUnCachedMacro</set-method>
-      <type>org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin</type>
-      <description>Add the uncached macro list</description>
-      <init-params>
-      <values-param>
-        <name>uncachedMacroes</name>
-        <value>rss</value>
-        <value>jira</value>
-      </values-param>
-      </init-params>
-    </component-plugin>
-  </external-component-plugins>
 </configuration>
