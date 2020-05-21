@@ -5,7 +5,7 @@
   <portlet>
     <description xml:lang="EN">Wiki Portlet</description>
     <portlet-name>WikiPortlet</portlet-name>
-    <display-name xml:lang="EN">Wiki Portlet</display-name>
+    <display-name xml:lang="EN">Wiki</display-name>
     <portlet-class>org.exoplatform.webui.application.portlet.PortletApplicationController</portlet-class>    
     
     <init-param>
