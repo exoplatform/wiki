@@ -23,7 +23,8 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserStatus;
-import org.exoplatform.wiki.upgrade.PageContentMigrationService;
+import org.exoplatform.wiki.service.*;
+import org.exoplatform.wiki.migration.PageContentMigrationService;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -79,12 +80,6 @@ import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
 import org.exoplatform.wiki.rendering.cache.MarkupKey;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.BreadcrumbData;
-import org.exoplatform.wiki.service.DataStorage;
-import org.exoplatform.wiki.service.IDType;
-import org.exoplatform.wiki.service.PageUpdateType;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.listener.AttachmentWikiListener;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
@@ -677,8 +672,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   public String getPageRenderedContent(Page page, String targetSyntax) {
     String renderedContent = StringUtils.EMPTY;
     try {
-      String markup = page.getContent();
-
       MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, false);
       MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
       if (cachedData != null) {
@@ -686,9 +679,12 @@ public class WikiServiceImpl implements WikiService, Startable {
       }
 
       // migrate page from XWiki syntax to HTML on the fly
-      ExoContainerContext.getService(PageContentMigrationService.class).migratePage(page);
+      PageContentMigrationService pageContentMigrationService = ExoContainerContext.getService(PageContentMigrationService.class);
+      if(pageContentMigrationService != null) {
+        pageContentMigrationService.migratePage(page);
+      }
 
-      renderedContent = markup;
+      renderedContent = page.getContent();
 
       renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
