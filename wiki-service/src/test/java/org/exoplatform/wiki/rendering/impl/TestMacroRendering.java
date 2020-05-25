@@ -16,12 +16,10 @@
  */
 package org.exoplatform.wiki.rendering.impl;
 
-import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiService;
 import org.xwiki.component.manager.ComponentLookupException;
@@ -92,23 +90,28 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     // FIXME
     //assertEquals(xwikiExpectedHtml, renderingService.render("{{toc numbered=\"true\"}} {{/toc}}\n= H1 = \n == H2 == \n === H3 ===", Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false));
   }
-  
-//FIXME Failing Test coming from JPA Impl bug comparing to JCR Impl
-//  public void testIncludePageMacro() throws Exception {
-//    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
-//    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
-//    Page home = wiki.getWikiHome();
-//    String content = "Test include contents of a page";
-//    home.setContent(content);
-//    wikiService.updatePage(home, PageUpdateType.EDIT_PAGE_CONTENT);
-//    String expectedHtml = "<div class=\"IncludePage \" ><p>" + content + "</p></div>";
-//    assertEquals(expectedHtml, renderingService.render("{{includepage page=\"Wiki Home\"/}}",
-//                                                       Syntax.XWIKI_2_0.toIdString(),
-//                                                       Syntax.XHTML_1_0.toIdString(),
-//                                                       false));
-//  }
+
+  public void testIncludePageMacro() throws Exception {
+    // Given
+    WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
+    Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
+    Page home = wiki.getWikiHome();
+    String content = "Test include contents of a page";
+    home.setContent(content);
+
+    // When
+    String renderedHtml = renderingService.render("{{includepage page=\"WikiHome\"/}}",
+            Syntax.XWIKI_2_0.toIdString(),
+            Syntax.XHTML_1_0.toIdString(),
+            false);
+
+    // Then
+    String expectedHtml = "<div class=\"wiki-include-page\"><exo-wiki-include-page page-name=\"WikiHome\"></exo-wiki-include-page></div>";
+    assertEquals(expectedHtml, renderedHtml);
+  }
 
   public void testChildrenMacro() throws Exception {
+    // Given
     WikiService wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
     Wiki wiki = getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
     wikiService.createPage(wiki, "WikiHome", new Page("samplePage", "samplePage"));
@@ -122,10 +125,14 @@ public class TestMacroRendering extends AbstractRenderingTestCase {
     ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
     String xwikiExpectedHtml = "<exo-wiki-children-pages depth=\"\"></exo-wiki-children-pages>";
 
-    assertEquals(xwikiExpectedHtml, renderingService.render("{{children descendant=\"true\"/}}",
-                                                            Syntax.XWIKI_2_0.toIdString(),
-                                                            Syntax.XHTML_1_0.toIdString(),
-                                                            false));
+    // When
+    String renderedHtml = renderingService.render("{{children descendant=\"true\"/}}",
+            Syntax.XWIKI_2_0.toIdString(),
+            Syntax.XHTML_1_0.toIdString(),
+            false);
+
+    // Then
+    assertEquals(xwikiExpectedHtml, renderedHtml);
   }
 
   public void testRenderPageTreeMacro() throws Exception {

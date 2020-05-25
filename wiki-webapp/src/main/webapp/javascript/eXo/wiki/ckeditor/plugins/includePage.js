@@ -1,5 +1,4 @@
 import Plugin from '@ckeditor/ckeditor5-core/src/plugin';
-import ViewPosition from '@ckeditor/ckeditor5-engine/src/view/position';
 import IncludePageFormView from './IncludePageView';
 
 import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
@@ -35,26 +34,20 @@ export default class IncludePage extends Plugin {
     // Build converter from model to view for data and editing pipelines.
     editor.conversion.for('upcast').elementToElement({
       view: {
-        name: 'exo-wiki-include-page',
-        attributes: {
-          pageName: true
-        }
+        name: 'div',
+        classes: 'wiki-include-page'
       },
-      model: 'includePage'
-    }).attributeToAttribute({
-      view: {
-        name: 'exo-wiki-include-page',
-        key: 'pageName'
-      },
-      model: 'pageName'
+      model: ( viewElement, modelWriter ) => {
+        return modelWriter.createElement( 'includePage', { pageName: viewElement.getChildren().next().value.getAttribute('page-name') } );
+      }
     });
 
     editor.conversion.for('downcast').elementToElement({
       model: 'includePage',
       view: (modelElement, viewWriter) => {
-        const pageContainer = viewWriter.createContainerElement('div');
+        const pageContainer = viewWriter.createContainerElement('div', { 'class' : 'wiki-include-page' });
         const pageComponent = viewWriter.createContainerElement('exo-wiki-include-page', { 'page-name': modelElement.getAttribute('pageName') });
-        viewWriter.insert(ViewPosition.createAt(pageContainer, 'end'), pageComponent);
+        viewWriter.insert(viewWriter.createPositionAt(pageContainer, 'end'), pageComponent);
 
         return toWidget(pageContainer, viewWriter);
       }
@@ -109,7 +102,7 @@ export default class IncludePage extends Plugin {
     this.listenTo( formView, 'submit', () => {
       editor.model.change( writer => {
         //const page = writer.createElement('includePage');
-        const page = writer.createElement('includePage', { 'pageName': 'titi' });
+        const page = writer.createElement('includePage', { 'pageName': formView.pageNameInputView.inputView.element.value });
         //page._setAttribute('pageName', formView.pageNameInputView.inputView.element.value);
         //writer.setAttribute('pageName', formView.pageNameInputView.inputView.element.value, page);
         editor.model.insertContent(page);
