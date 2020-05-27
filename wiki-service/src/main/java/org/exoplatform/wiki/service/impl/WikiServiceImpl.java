@@ -27,9 +27,6 @@ import org.exoplatform.wiki.service.*;
 import org.exoplatform.wiki.migration.PageContentMigrationService;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.rendering.converter.ConversionException;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.diff.DiffResult;
 import org.exoplatform.commons.diff.DiffService;
@@ -75,7 +72,6 @@ import org.exoplatform.wiki.mow.api.WikiPreferencesSyntax;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
 import org.exoplatform.wiki.rendering.cache.MarkupKey;
@@ -150,7 +146,6 @@ public class WikiServiceImpl implements WikiService, Startable {
   public WikiServiceImpl(ConfigurationManager configManager,
                          UserACL userACL,
                          DataStorage dataStorage,
-                         RenderingService renderingService,
                          CacheService cacheService,
                          OrganizationService orgService,
                          InitParams initParams) {
@@ -264,7 +259,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (preferencesParams != null) {
       return preferencesParams.getProperty(DEFAULT_SYNTAX);
     }
-    return Syntax.XHTML_1_0.toIdString();
+    return "xhtml/1.0";
   }
 
   @Override
@@ -669,10 +664,10 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public String getPageRenderedContent(Page page, String targetSyntax) {
+  public String getPageRenderedContent(Page page) {
     String renderedContent = StringUtils.EMPTY;
     try {
-      MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, false);
+      MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), false);
       MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
       if (cachedData != null) {
         return cachedData.build();
@@ -688,7 +683,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
       renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
-      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", page.getWikiType(), page.getWikiOwner(), page.getName(), targetSyntax), e);
+      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s]", page.getWikiType(), page.getWikiOwner(), page.getName()), e);
     }
     return renderedContent;
   }
@@ -715,17 +710,17 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     for (WikiPageParams wikiPageParams : linkedPages) {
       try {
-        MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        MarkupKey key = new MarkupKey(wikiPageParams, false);
         renderingCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         renderingCache.remove(new Integer(key.hashCode()));
 
-        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        key = new MarkupKey(wikiPageParams, false);
         renderingCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         renderingCache.remove(new Integer(key.hashCode()));
 
-        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        key = new MarkupKey(wikiPageParams, false);
         renderingCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         renderingCache.remove(new Integer(key.hashCode()));
@@ -748,12 +743,12 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     for (WikiPageParams linkedWikiPageParams : linkedPages) {
       try {
-        MarkupKey key = new MarkupKey(linkedWikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        MarkupKey key = new MarkupKey(linkedWikiPageParams, false);
         attachmentCountCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         attachmentCountCache.remove(new Integer(key.hashCode()));
 
-        key = new MarkupKey(linkedWikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        key = new MarkupKey(linkedWikiPageParams, false);
         attachmentCountCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         attachmentCountCache.remove(new Integer(key.hashCode()));
@@ -974,7 +969,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if(PageUpdateType.EDIT_PAGE_CONTENT.equals(updateType) || PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE.equals(updateType)) {
       try {
         Utils.sendMailOnChangeContent(page);
-      } catch (WikiException | DifferentiationFailedException | ComponentLookupException | ConversionException e) {
+      } catch (WikiException | DifferentiationFailedException e) {
         log.error("Cannot send notification email on page change - Cause : " + e.getMessage(), e);
       }
     }
@@ -1254,7 +1249,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     int nbOfAttachments = 0;
 
     WikiPageParams wikiPageParams = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
-    MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+    MarkupKey key = new MarkupKey(wikiPageParams, false);
     Integer cacheKey = new Integer(key.hashCode());
     AttachmentCountData cachedNbOfAttachments = attachmentCountCache.get(cacheKey);
     if(cachedNbOfAttachments != null) {

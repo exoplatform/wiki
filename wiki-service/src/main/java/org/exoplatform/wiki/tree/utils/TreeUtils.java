@@ -25,7 +25,6 @@ import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.rendering.macro.ExcerptUtils;
 import org.exoplatform.wiki.mow.api.PermissionType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -138,7 +137,9 @@ public class TreeUtils {
       String excerpt = null;
       if (showExcerpt != null && showExcerpt) {
         WikiPageParams params = getPageParamsFromPath(child.getPath());
-        excerpt = ExcerptUtils.getExcerpts(params);
+        // FIXME Migration - Remove excerpt support ?
+        //excerpt = ExcerptUtils.getExcerpts(params);
+        excerpt = "";
       }
       
       children.add(new JsonNodeData(child, isLastNode, isSelectable, currentPath, excerpt, context));

@@ -51,15 +51,13 @@ public class UIWikiEditPreferencesForm extends UIForm implements UIPopupComponen
     public void execute(Event<UIWikiEditPreferencesForm> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);     
       UIWikiSyntaxPreferences uiSyntaxPreferences = wikiPortlet.findComponentById(PREFERENCES_SYNTAX);
-      UIFormSelectBox defaultSyntaxSelect= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_SYNTAX);
       UIFormCheckBoxInput<Boolean> allowCheckBox= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_ALLOW);
       
       Wiki currentWiki = Utils.getCurrentWiki();
       WikiPreferences preferences = currentWiki.getPreferences();
       WikiPreferencesSyntax preferencesSyntax = preferences.getWikiPreferencesSyntax();
       preferencesSyntax.setAllowMultipleSyntaxes(allowCheckBox.isChecked());
-      preferencesSyntax.setDefaultSyntax(defaultSyntaxSelect.getValue());
-      UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);     
+      UIPopupContainer popupContainer = wikiPortlet.getPopupContainer(PopupLevel.L1);
       popupContainer.deActivate();
     }
   }

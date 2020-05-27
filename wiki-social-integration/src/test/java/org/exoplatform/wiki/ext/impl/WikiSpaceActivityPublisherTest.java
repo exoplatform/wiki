@@ -7,7 +7,6 @@ import org.exoplatform.social.core.manager.ActivityManager;
 import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.PageUpdateType;
 import org.exoplatform.wiki.service.WikiService;
 import org.junit.Assert;
@@ -32,9 +31,6 @@ public class WikiSpaceActivityPublisherTest {
   private IdentityManager  identityManager;
 
   @Mock
-  private RenderingService renderingService;
-
-  @Mock
   private ActivityManager  activityManager;
 
   @Mock
@@ -45,7 +41,6 @@ public class WikiSpaceActivityPublisherTest {
     // Given
     WikiSpaceActivityPublisher wikiSpaceActivityPublisher = new WikiSpaceActivityPublisher(wikiService,
                                                                                            identityManager,
-                                                                                           renderingService,
                                                                                            activityManager,
                                                                                            spaceService);
     WikiSpaceActivityPublisher wikiSpaceActivityPublisherSpy = spy(wikiSpaceActivityPublisher);
@@ -63,7 +58,6 @@ public class WikiSpaceActivityPublisherTest {
     // Given
     WikiSpaceActivityPublisher wikiSpaceActivityPublisher = new WikiSpaceActivityPublisher(wikiService,
                                                                                            identityManager,
-                                                                                           renderingService,
                                                                                            activityManager,
                                                                                            spaceService);
     WikiSpaceActivityPublisher wikiSpaceActivityPublisherSpy = spy(wikiSpaceActivityPublisher);
@@ -86,7 +80,6 @@ public class WikiSpaceActivityPublisherTest {
     // save activity
     WikiSpaceActivityPublisher wikiSpaceActivityPublisher = new WikiSpaceActivityPublisher(wikiService,
                                                                                            identityManager,
-                                                                                           renderingService,
                                                                                            activityManager,
                                                                                            spaceService);
     wikiSpaceActivityPublisher.saveActivity("portal", "root", "page1", page, PageUpdateType.ADD_PAGE);
@@ -112,7 +105,6 @@ public class WikiSpaceActivityPublisherTest {
     // save activity
     WikiSpaceActivityPublisher wikiSpaceActivityPublisher = new WikiSpaceActivityPublisher(wikiService,
                                                                                            identityManager,
-                                                                                           renderingService,
                                                                                            activityManager,
                                                                                            spaceService);
     // case 2: there are only 4 not empty lines, the ellipsis should not be added
@@ -140,8 +132,6 @@ public class WikiSpaceActivityPublisherTest {
                                              anyString(),
                                              anyBoolean())).thenReturn(mock(org.exoplatform.social.core.identity.model.Identity.class));
 
-    when(renderingService.render(anyString(), anyString(), anyString(), anyBoolean())).thenReturn(page.getContent());
-
-    when(wikiService.getPageRenderedContent(any(Page.class), anyString())).thenReturn(page.getContent());
+    when(wikiService.getPageRenderedContent(any(Page.class))).thenReturn(page.getContent());
   }
 }

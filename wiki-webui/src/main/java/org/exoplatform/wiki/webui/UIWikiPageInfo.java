@@ -9,7 +9,6 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
@@ -17,9 +16,7 @@ import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
 import org.exoplatform.wiki.webui.control.action.ShowHistoryActionListener;
 import org.exoplatform.wiki.webui.control.action.ViewRevisionActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
-import org.xwiki.rendering.syntax.Syntax;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -65,17 +62,6 @@ public class UIWikiPageInfo extends UIWikiContainer {
   protected String getPageLink(Page page) throws Exception {
     WikiPageParams params = org.exoplatform.wiki.utils.Utils.getWikiPageParams(page);
     return Utils.getURLFromParams(params);
-  }
-
-  protected String renderHierarchy() throws Exception {
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
-    Utils.setUpWikiContext(getAncestorOfType(UIWikiPortlet.class));
-    String content = renderingService.render("{{pagetree /}}",
-                                             Syntax.XWIKI_2_0.toIdString(),
-                                             Syntax.XHTML_1_0.toIdString(),
-                                             false);
-    Utils.removeWikiContext();
-    return content;
   }
   
   protected Page getCurrentPage() throws Exception {

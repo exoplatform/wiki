@@ -25,7 +25,6 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
-import org.xwiki.rendering.syntax.Syntax;
 
 import java.util.Arrays;
 
@@ -62,23 +61,20 @@ public class UIWikiPageContentArea extends UIWikiContainer {
 
     Page wikipage = Utils.getCurrentWikiPage();
 
-    //Setup wiki context
-    Utils.setUpWikiContext(wikiPortlet);
     try{
       // Render current content
       if (currentMode.equals(WikiMode.VIEW)) {
-          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
+          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(wikipage));
       }
       // Render select version content
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
         PageVersion version = wikiService.getVersionOfPageByName(currentVersionName, wikipage);
         if (version != null) {
-          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(version, Syntax.XHTML_1_0.toIdString()));
+          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(version));
         }
       }
     } catch(Exception e) {
       contentDisplay.setHtmlOutput("Bad syntax in content! Cannot generate HTML content!");
     }
-    Utils.removeWikiContext();
   }
 }

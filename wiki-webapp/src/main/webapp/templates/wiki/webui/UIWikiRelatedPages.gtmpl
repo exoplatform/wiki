@@ -20,7 +20,7 @@
 	<div class="wikiBox">
 	  <h6 class="titleWikiBox"><%= _ctx.appRes("UIWikiMiddleArea.label.related-pages") %></h6>
 	  <div class="relateContent">
-		<%= Utils.renderMacroToXHtml(uicomponent, "{{related}}", org.xwiki.rendering.syntax.Syntax.XWIKI_2_0.toIdString()); %>
+		<!-- FIXME Migration - Implement Related pages without macro -->
 	  </div>
 	</div>
 	<% } %>
