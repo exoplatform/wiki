@@ -102,7 +102,6 @@ public class SavePageActionComponent extends UIComponent {
         UIFormTextAreaInput markupInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);
         UIFormStringInput commentInput = pageEditForm.findComponentById(UIWikiPageEditForm.FIELD_COMMENT);
         String syntaxId = Utils.getDefaultSyntax();
-        Utils.setUpWikiContext(wikiPortlet);
         String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
         boolean isRenamedPage = false;
         boolean isContentChange = false;

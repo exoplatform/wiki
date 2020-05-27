@@ -31,7 +31,6 @@ import org.exoplatform.webui.form.UIFormStringInput;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.webui.EditMode;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
 import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
@@ -94,8 +93,6 @@ public class EditPageActionComponent extends AbstractEventActionComponent {
       String content = page.getContent();
       titleInput.setEditable(true);
       if (wikiPortlet.getEditMode() == EditMode.SECTION) {
-        RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
-        content = renderingService.getContentOfSection(content, page.getSyntax(), sectionIndex);
         titleInput.setEditable(false);
       }
       titleInput.setValue(title);

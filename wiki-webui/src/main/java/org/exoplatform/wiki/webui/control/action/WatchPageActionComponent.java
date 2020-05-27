@@ -36,7 +36,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
@@ -64,7 +63,6 @@ public class WatchPageActionComponent extends UIComponent {
   }
   
   public boolean detectWatched(boolean isChangeState) throws Exception {
-    RenderingService renderingService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(RenderingService.class);
     WikiService wikiService = ExoContainerContext.getCurrentContainer() .getComponentInstanceOfType(WikiService.class);
     ConversationState conversationState = ConversationState.getCurrent();
     String currentUserId = conversationState.getIdentity().getUserId();
@@ -84,31 +82,8 @@ public class WatchPageActionComponent extends UIComponent {
         // Begin watching
         wikiService.addWatcherToPage(currentUserId, currentPage);
       }
-      if (renderingService.getCssURL() == null) {
-        renderingService.setCssURL(getPortletCssLink());
-      }
     }
     return isWatched;
-  }
-
-  private String getPortletCssLink() {
-    SkinService skinService = (SkinService) PortalContainer.getComponent(SkinService.class);
-    PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    String requestURL = portalRequestContext.getRequest().getRequestURL().toString();
-    String portalURI = portalRequestContext.getPortalURI();
-    String domainURL = requestURL.substring(0, requestURL.indexOf(portalURI));
-    UIPortal uiPortal = Util.getUIPortal();
-    UIPortalApplication uiPortalApp = uiPortal.getAncestorOfType(UIPortalApplication.class);
-    String currentSkin = uiPortalApp.getSkin();
-    UIPageBody uiPageBody = uiPortal.findFirstComponentOfType(UIPageBody.class);
-    if (uiPageBody != null) {
-      UIPortlet currentPortlet = (UIPortlet) uiPageBody.findFirstComponentOfType(UIPortlet.class);
-      SkinConfig skinConfig = skinService.getSkin(currentPortlet.getSkinId(), currentSkin);
-      StringBuilder sb = new StringBuilder(domainURL);
-      sb.append(skinConfig.getCSSPath());
-      return sb.toString();
-    }
-    return null;
   }
 
   public static class WatchPageActionListener extends

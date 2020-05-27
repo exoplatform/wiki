@@ -199,10 +199,9 @@ public interface WikiService {
   /**
    * Get renderd content of a page
    * @param page The wiki page
-   * @param targetSyntax The syntax
    * @return The rendered content
    */
-  public String getPageRenderedContent(Page page, String targetSyntax);
+  public String getPageRenderedContent(Page page);
 
   /**
    * Add a link between 2 pages

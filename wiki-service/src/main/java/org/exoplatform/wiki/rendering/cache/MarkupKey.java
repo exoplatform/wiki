@@ -18,16 +18,11 @@ package org.exoplatform.wiki.rendering.cache;
 
 import java.io.Serializable;
 
-import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.wiki.service.WikiPageParams;
 
 public class MarkupKey implements Serializable {
 
   private WikiPageParams pageParams;
-
-  private String         sourceSyntax;
-
-  private String         targetSyntax;
 
   private boolean        supportSectionEdit;
   
@@ -35,14 +30,10 @@ public class MarkupKey implements Serializable {
    * Instance new markup key
    *
    * @param pageParams the identity params of page
-   * @param sourceSyntax the source syntax
-   * @param targetSyntax the target syntax
    * @param supportSectionEdit the content supports section editing or not
    */
-  public MarkupKey(WikiPageParams pageParams, String sourceSyntax, String targetSyntax, boolean supportSectionEdit) {
+  public MarkupKey(WikiPageParams pageParams, boolean supportSectionEdit) {
     this.pageParams = pageParams;
-    this.sourceSyntax = sourceSyntax;
-    this.targetSyntax = targetSyntax;
     this.supportSectionEdit = supportSectionEdit;
   }
 
@@ -54,9 +45,7 @@ public class MarkupKey implements Serializable {
     final int prime = 31;
     int result = 1;
     result = prime * result + ((pageParams == null) ? 0 : pageParams.hashCode());
-    result = prime * result + ((sourceSyntax == null) ? 0 : sourceSyntax.hashCode());
     result = prime * result + (supportSectionEdit ? 1231 : 1237);
-    result = prime * result + ((targetSyntax == null) ? 0 : targetSyntax.hashCode());
     return result;
   }
 
@@ -77,17 +66,7 @@ public class MarkupKey implements Serializable {
         return false;
     } else if (!pageParams.equals(other.pageParams))
       return false;
-    if (sourceSyntax == null) {
-      if (other.sourceSyntax != null)
-        return false;
-    } else if (!sourceSyntax.equals(other.sourceSyntax))
-      return false;
     if (supportSectionEdit != other.supportSectionEdit)
-      return false;
-    if (targetSyntax == null) {
-      if (other.targetSyntax != null)
-        return false;
-    } else if (!targetSyntax.equals(other.targetSyntax))
       return false;
     return true;
   }

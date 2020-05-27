@@ -52,19 +52,10 @@
   <component>
     <type>org.exoplatform.wiki.service.impl.WikiRestServiceImpl</type>
   </component>
-  
-  <component>
-  	<type>org.exoplatform.wiki.rendering.render.xwiki.image.BaseImageWriterImpl</type>
-  </component>
 
   <component>
     <key>org.exoplatform.wiki.resolver.PageResolver</key>
     <type>org.exoplatform.wiki.resolver.PageResolver</type>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.wiki.rendering.RenderingService</key>
-    <type>org.exoplatform.wiki.rendering.impl.RenderingServiceImpl</type>
   </component>
   
   <component>

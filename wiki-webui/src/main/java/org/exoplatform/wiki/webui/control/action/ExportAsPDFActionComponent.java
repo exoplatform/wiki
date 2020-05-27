@@ -14,7 +14,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
 import org.exoplatform.wiki.webui.control.action.core.AbstractEventActionComponent;
 import org.exoplatform.wiki.webui.control.filter.IsUserFilter;
@@ -23,7 +22,6 @@ import org.exoplatform.wiki.webui.control.listener.MoreContainerActionListener;
 import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.resource.FSEntityResolver;
-import org.xwiki.rendering.syntax.Syntax;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -62,10 +60,6 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
   
   public static class ExportAsPDFActionListener extends MoreContainerActionListener<ExportAsPDFActionComponent> {
     protected void processEvent(Event<ExportAsPDFActionComponent> event) throws Exception {    	
-      Utils.setUpWikiContext(event.getSource().getAncestorOfType(UIWikiPortlet.class));
-      RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
-          .getComponentInstanceOfType(RenderingService.class);  
-    	
       Page currentPage = Utils.getCurrentWikiPage();
       InputStream in = getClass().getResourceAsStream("/css/PDFStylesheet.css");
       DataInputStream dataIn = new DataInputStream(in);

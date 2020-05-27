@@ -54,7 +54,6 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
 
 import org.exoplatform.common.http.HTTPStatus;
@@ -73,7 +72,6 @@ import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.Relations;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
@@ -110,8 +108,6 @@ public class WikiRestServiceImpl implements ResourceContainer {
 
   private final WikiService      wikiService;
 
-  private final RenderingService renderingService;
-
   private final ResourceBundleService resourceBundleService;
 
   private static Log             log = ExoLogger.getLogger("wiki:WikiRestService");
@@ -122,9 +118,8 @@ public class WikiRestServiceImpl implements ResourceContainer {
   
   private ObjectFactory objectFactory = new ObjectFactory();
   
-  public WikiRestServiceImpl(WikiService wikiService, RenderingService renderingService, ResourceBundleService resourceBundleService) {
+  public WikiRestServiceImpl(WikiService wikiService, ResourceBundleService resourceBundleService) {
     this.wikiService = wikiService;
-    this.renderingService = renderingService;
     this.resourceBundleService = resourceBundleService;
     cc = new CacheControl();
     cc.setNoCache(true);

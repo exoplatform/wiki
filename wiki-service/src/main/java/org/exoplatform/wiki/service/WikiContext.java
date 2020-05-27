@@ -19,8 +19,6 @@ package org.exoplatform.wiki.service;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import org.xwiki.rendering.syntax.Syntax;
-
 public class WikiContext extends WikiPageParams implements Cloneable, Serializable {
   
   private static final long serialVersionUID = 1L;
@@ -49,7 +47,7 @@ public class WikiContext extends WikiPageParams implements Cloneable, Serializab
   
   private String             redirectURI;
   
-  private String             syntax           = Syntax.XWIKI_2_0.toIdString();
+  private String             syntax           = "xhtml/1.0";
   
   private String             restURI;
   

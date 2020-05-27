@@ -16,9 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.rendering.converter.ConversionException;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.diff.DiffResult;
 import org.exoplatform.commons.diff.DiffService;
@@ -49,7 +46,6 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -121,7 +117,7 @@ public class Utils {
   }
   
   public static String getPortalName() {
-    return org.exoplatform.wiki.rendering.util.Utils.getPortalName();
+    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**
@@ -447,10 +443,12 @@ public class Utils {
   }
   
   public static void sendMailOnChangeContent(Page page)
-          throws WikiException, DifferentiationFailedException, ComponentLookupException, ConversionException {
+          throws WikiException, DifferentiationFailedException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
     DiffService diffService = container.getComponentInstanceOfType(DiffService.class);
+    // FIXME Migration - How to render email notifications ?
+    /*
     RenderingService renderingService = container.getComponentInstanceOfType(RenderingService.class);
     Message message = new Message();
     ConversationState conversationState = ConversationState.getCurrent();
@@ -529,10 +527,11 @@ public class Utils {
         log_.error(String.format("Failed to send notification email to user: %s", address), e);
       }
     }
+    */
   }
   
   private static boolean isEnabledUser(String userName) throws WikiException {
-    OrganizationService orgService = org.exoplatform.wiki.rendering.util.Utils.getService(OrganizationService.class);
+    OrganizationService orgService = ExoContainerContext.getService(OrganizationService.class);
     try {
       return orgService.getUserHandler().findUserByName(userName) != null;
     } catch (Exception e) {
@@ -646,6 +645,6 @@ public class Utils {
    * @return rest context name
    */
   public static String getRestContextName() {
-    return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
+    return PortalContainer.getCurrentRestContextName();
   }
 }

@@ -44,10 +44,6 @@
     </dependency>
     <dependency>
       <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-renderer</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
       <artifactId>wiki-service</artifactId>
     </dependency>
     <dependency>
@@ -62,10 +58,6 @@
       <groupId>org.exoplatform.addons.gamification</groupId>
       <artifactId>gamification-services</artifactId>
       <scope>provided</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.commons</groupId>

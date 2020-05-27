@@ -14,8 +14,6 @@
   <name>eXo PLF:: Wiki</name>
   <description>eXo wiki</description>
   <modules>
-    <module>wiki-renderer</module>
-    <module>wiki-macros</module>
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-webui</module>
@@ -85,16 +83,6 @@
         <version>${project.version}</version>
         <classifier>source-release</classifier>
         <type>zip</type>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-macros-iframe</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-renderer</artifactId>
-        <version>${project.version}</version>
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>

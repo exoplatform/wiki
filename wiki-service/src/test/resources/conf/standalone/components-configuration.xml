@@ -36,11 +36,6 @@
   </component>
 
   <component>
-    <key>org.exoplatform.wiki.rendering.RenderingService</key>
-    <type>org.exoplatform.wiki.rendering.impl.RenderingServiceImpl</type>
-  </component>
-
-  <component>
     <key>org.exoplatform.wiki.service.WikiService</key>
     <type>org.exoplatform.wiki.service.impl.WikiServiceImpl</type>
     <init-params>
