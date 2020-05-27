@@ -184,7 +184,10 @@ UIUpload.prototype.initUploadEntry = function(uploadId, isDynamicMode, uploadTex
       if(percent == 100) {
           var postUploadActionNode = $(container).find('div.postUploadAction')[0];
           if(postUploadActionNode) {
-            eXo.wiki.UIUpload.listUpload.remove(id);
+            const index = eXo.wiki.UIUpload.listUpload.indexOf(id);
+            if (index > -1) {
+               eXo.wiki.UIUpload.listUpload.splice(index, 1);
+            }
             postUploadActionNode.onclick();
           } else {
             this.showUploaded(id, "");
