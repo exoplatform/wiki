@@ -262,8 +262,7 @@
                         <span class="dateTime"><i class="uiIconClock  uiIconLightGray"></i>&nbsp;<a id="EditActivityTime${activity.id}" rel="tooltip" data-placement="bottom" title="$absolutePostedTime" href="<%=uicomponent.getActivityPermalink(activity.id)%>" <% if(activity.postedTime != activity.updated.getTime() ){%>> $activityUpdatedTime <%} else {%> >$activityPostedTime <%}%></a></span>
                     </div>
                   </div><!--end activityAuthorAndDate-->
-                </div><!--end activityHeader-->
-                <!-- three dots activity menu -->
+                  <!-- three dots activity menu -->
                    <div id="dropDownEditActivity${activity.id}" class="btn-group uiDropdownWithIcon actLink">
                             <div class="dropdown-toggle" data-toggle="dropdown">
                                 <i class="uiIconActivityAction uiIconLightGray">
@@ -282,7 +281,8 @@
                         <%}%>
                             </ul>
                         </div>
-                  
+                </div><!--end activityHeader-->
+
                 </div><!--end heading-->
                 <div class="uiBox roundedBottom introBox wikiShare">
                   <div class="headingContainer clearfix">
