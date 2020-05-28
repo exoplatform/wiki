@@ -447,9 +447,6 @@ public class Utils {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
     DiffService diffService = container.getComponentInstanceOfType(DiffService.class);
-    // FIXME Migration - How to render email notifications ?
-    /*
-    RenderingService renderingService = container.getComponentInstanceOfType(RenderingService.class);
     Message message = new Message();
     ConversationState conversationState = ConversationState.getCurrent();
     // Get author
@@ -490,9 +487,6 @@ public class Utils {
     StringBuilder sbt = new StringBuilder();
     sbt.append("<html>")
         .append("  <head>")
-        .append("     <link rel=\"stylesheet\" href=\"")
-        .append(renderingService.getCssURL())
-        .append("\" type=\"text/css\">")
         .append("  </head>")
         .append("  <body>")
         .append("    Page <a href=\"")
@@ -527,7 +521,6 @@ public class Utils {
         log_.error(String.format("Failed to send notification email to user: %s", address), e);
       }
     }
-    */
   }
   
   private static boolean isEnabledUser(String userName) throws WikiException {
