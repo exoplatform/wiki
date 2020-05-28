@@ -643,16 +643,14 @@ public class TestWikiService extends BaseTest {
     assertNotNull(draftPage2);
     assertFalse(draftPage2.isNewPage());
     assertEquals(page.getId(), draftPage2.getTargetPageId());
-    // FIXME Migration - Failing test
-    //assertEquals("2", draftPage2.getTargetPageRevision());
+    assertEquals("2", draftPage2.getTargetPageRevision());
     
     // Test get draft for exist wiki page
     DraftPage draftPage3 = wService.getDraftOfPage(page);
     assertNotNull(draftPage3);
     assertFalse(draftPage3.isNewPage());
     assertEquals(page.getId(), draftPage3.getTargetPageId());
-    // FIXME Migration - Failing test
-    //assertEquals("2", draftPage3.getTargetPageRevision());
+    assertEquals("2", draftPage3.getTargetPageRevision());
     
     // Test list draft by user
     List<DraftPage> drafts = wService.getDraftsOfUser("mary");
