@@ -20,6 +20,7 @@ import ImageToolbar from '@ckeditor/ckeditor5-image/src/imagetoolbar';
 import ImageStyle from '@ckeditor/ckeditor5-image/src/imagestyle';
 import ImageUpload from '@ckeditor/ckeditor5-image/src/imageupload';
 import SelfUpload from 'ckeditor5-self-image/src/selfimage';
+import SpecialCharacters from '@ckeditor/ckeditor5-special-characters/src/specialcharacters';
 import ChildrenPages from './plugins/childrenPages';
 import Toc from './plugins/toc';
 import Widget from '@ckeditor/ckeditor5-widget/src/widget';
@@ -27,6 +28,28 @@ import IncludePage from './plugins/includePage';
 
 function WikiCkeditor() {
   // do nothing
+}
+
+function SpecialCharactersEmoji( editor ) {
+  editor.plugins.get( 'SpecialCharacters' ).addItems( 'Emoji', [
+    { title: 'Emoticon smile', character: '\u{1F642}' },
+    { title: 'Emoticon unhappy', character: '\u{1F641}' },
+    { title: 'Emoticon tongue', character: '\u{1F61B}' },
+    { title: 'Emoticon grin', character: '\u{1F600}' },
+    { title: 'Emoticon wink', character: '\u{1F609}' },
+    { title: 'Thumb up', character: '\u{1F44D}' },
+    { title: 'Thumb down', character: '\u{1F44E}' },
+    { title: 'Information', character: 'ℹ️' },
+    { title: 'Check mark', character: '✅️' },
+    { title: 'No entry', character: '⛔' },
+    { title: 'Warning', character: '⚠' },
+    { title: 'Plus', character: '➕' },
+    { title: 'Minus', character: '➖' },
+    { title: 'Help', character: '❓' },
+    { title: 'Light bulb', character: '\u{1F4A1}' },
+    { title: 'Chequered flag', character: '\u{1F3C1}' },
+    { title: 'Star', character: '⭐' }
+  ] );
 }
 
 WikiCkeditor.prototype.createEditor = function() {
@@ -42,8 +65,10 @@ WikiCkeditor.prototype.createEditor = function() {
   ClassicEditor
     .create( document.querySelector( '#UIWikiRichTextArea_TextArea' ), {
       plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, CodeBlock, BlockQuote, Heading, Font, Highlight, Alignment, List, Link,
-        Table, TableToolbar, Image, ImageToolbar, ImageStyle, ImageUpload, SelfUpload, ChildrenPages, Toc, Widget, IncludePage],
+        Table, TableToolbar, Image, ImageToolbar, ImageStyle, ImageUpload, SelfUpload, SpecialCharacters, SpecialCharactersEmoji,
+        ChildrenPages, Toc, Widget, IncludePage],
       toolbar: [ 'heading',
+        'specialCharacters',
         'fontFamily',
         'fontSize',
         'bold',
