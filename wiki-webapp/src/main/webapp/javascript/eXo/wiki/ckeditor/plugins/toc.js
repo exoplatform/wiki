@@ -4,9 +4,10 @@ import ButtonView from '@ckeditor/ckeditor5-ui/src/button/buttonview';
 
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
+const defaultModelElement = 'paragraph';
+
 export default class Toc extends Plugin {
   init() {
-    console.log('Toc was initialized');
 
     const editor = this.editor;
 
@@ -16,6 +17,20 @@ export default class Toc extends Plugin {
       isBlock: true,
       isObject: true
     });
+
+    const options = editor.config.get( 'heading.options' );
+    for ( const option of options ) {
+      if(option.model.startsWith('heading')) {
+        editor.model.schema.extend( option.model, {
+          inheritAllFrom: '$block',
+          allowAttributes: [ 'id' ]
+        } );
+
+        editor.conversion.elementToElement( option );
+      }
+    }
+
+    editor.conversion.attributeToAttribute( { model: 'id', view: 'id' } );
 
     // Build converter from model to view for data and editing pipelines.
     editor.conversion.for('upcast').elementToElement({
@@ -68,6 +83,37 @@ export default class Toc extends Plugin {
         updateTocs(editor.model, conversionApi);
       }));
 
+    editor.conversion.for( 'downcast' ).add( dispatcher => {
+      // Headings are represented in the model as a "heading1" element.
+      // Use the "low" listener priority to apply the changes after the headings feature.
+      dispatcher.on( 'insert:heading1', ( evt, data, conversionApi ) => {
+        const viewWriter = conversionApi.writer;
+
+        const headingElement = conversionApi.mapper.toViewElement( data.item );
+        if(headingElement && !headingElement.getAttribute('id')) {
+          viewWriter.setAttribute( 'id', generateToken(), conversionApi.mapper.toViewElement( data.item ) );
+        }
+      }, { priority: 'low' } );
+    } )
+      .add( dispatcher => {
+        // Headings are represented in the model as a "heading1" element.
+        // Use the "low" listener priority to apply the changes after the headings feature.
+        dispatcher.on( 'insert:heading2', ( evt, data, conversionApi ) => {
+          const viewWriter = conversionApi.writer;
+
+          const headingElement = conversionApi.mapper.toViewElement( data.item );
+          if(headingElement && !headingElement.getAttribute('id')) {
+            viewWriter.setAttribute( 'id', generateToken(), conversionApi.mapper.toViewElement( data.item ) );
+          }
+        }, { priority: 'low' } );
+      } );
+
+    function generateToken() {
+      const maxToken = 10000;
+      const tokenNumber = Math.round(Math.random(maxToken) * maxToken);
+      return `H${tokenNumber}`;
+    }
+
     editor.ui.componentFactory.add('insertToc', locale => {
       const tocButtonView = new ButtonView(locale);
 
@@ -90,6 +136,24 @@ export default class Toc extends Plugin {
     } );
   }
 
+  afterInit() {
+    // If the enter command is added to the editor, alter its behavior.
+    // Enter at the end of a heading element should create a paragraph.
+    const editor = this.editor;
+    const enterCommand = editor.commands.get( 'enter' );
+    const options = editor.config.get( 'heading.options' );
+
+    if ( enterCommand ) {
+      this.listenTo( enterCommand, 'afterExecute', ( evt, data ) => {
+        const positionParent = editor.model.document.selection.getFirstPosition().parent;
+        const isHeading = options.some( option => positionParent.is( option.model ) );
+
+        if ( isHeading && positionParent.is( defaultModelElement ) && positionParent.childCount === 0 ) {
+          data.writer.removeAttribute( 'id', positionParent);
+        }
+      } );
+    }
+  }
 
 }
 
@@ -150,10 +214,13 @@ function buildToc(model, viewWriter) {
     viewWriter.insert(viewWriter.createPositionAt(entryStack[entryStack.length-1], 'end'), tocEntry);
     entryStack.push(tocEntry);
 
+    const tocEntryLink = viewWriter.createContainerElement('a', { 'href': `#${heading.getAttribute('id')}` });
+    viewWriter.insert(viewWriter.createPositionAt(tocEntry, 'end'), tocEntryLink);
+
     const children = heading.getChildren().next();
     const entryText = children.value ? children.value.data : '';
     const entry = viewWriter.createText(entryText);
-    viewWriter.insert(viewWriter.createPositionAt(tocEntry, 'end'), entry);
+    viewWriter.insert(viewWriter.createPositionAt(tocEntryLink, 'end'), entry);
   }
 
   return toc;
