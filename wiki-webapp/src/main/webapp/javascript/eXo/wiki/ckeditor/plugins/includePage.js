@@ -42,7 +42,7 @@ export default class IncludePage extends Plugin {
       }
     });
 
-    editor.conversion.for('downcast').elementToElement({
+    editor.conversion.for('editingDowncast').elementToElement({
       model: 'includePage',
       view: (modelElement, viewWriter) => {
         const pageContainer = viewWriter.createContainerElement('div', { 'class' : 'wiki-include-page' });
@@ -50,6 +50,16 @@ export default class IncludePage extends Plugin {
         viewWriter.insert(viewWriter.createPositionAt(pageContainer, 'end'), pageComponent);
 
         return toWidget(pageContainer, viewWriter);
+      }
+    });
+    editor.conversion.for('dataDowncast').elementToElement({
+      model: 'includePage',
+      view: (modelElement, viewWriter) => {
+        const pageContainer = viewWriter.createContainerElement('div', { 'class' : 'wiki-include-page' });
+        const pageComponent = viewWriter.createContainerElement('exo-wiki-include-page', { 'page-name': modelElement.getAttribute('pageName') });
+        viewWriter.insert(viewWriter.createPositionAt(pageContainer, 'end'), pageComponent);
+
+        return pageContainer;
       }
     });
   }
