@@ -1,7 +1,7 @@
 <template>
   <ul>
     <li v-for="page in childrenPages" :key="page.name">
-      <a :href="getChildrenPagePath(page.name)">
+      <a :href="getChildrenPagePath(page)">
         {{ page.name }}
       </a>
     </li>
@@ -27,6 +27,11 @@ export default {
   },
   methods: {
     getChildrenPages() {
+      // no children pages when creating a page
+      if(window.location.hash === '#AddPage') {
+        return [];
+      }
+
       let pageName = 'WikiHome';
       if(!eXo.env.server.portalBaseURL.endsWith(`/${eXo.env.portal.selectedNodeUri}`)) {
         pageName = eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/') + 1);
@@ -44,9 +49,20 @@ export default {
         } 
       });
     },
-    getChildrenPagePath(pageName) {
-      if (pageName) {
-        return pageName.split(' ').join('_');
+    getChildrenPagePath(page) {
+      if(page && page.path) {
+        const index = page.path.lastIndexOf('%2F'); // Find the index of character "/"
+        const pageId = page.path.substring(index + '%2F'.length);
+        if (pageId) {
+          let urlPath = window.location.pathname;
+          const wikiIndex = urlPath.indexOf('/wiki/');
+          if(wikiIndex >= 0) {
+            urlPath = urlPath.substring(0, wikiIndex + '/wiki'.length);
+          } else if(!urlPath.endsWith('/wiki')) {
+            urlPath += '/wiki';
+          }
+          return urlPath += `/${pageId}`;
+        }
       }
       return '#';
     }
