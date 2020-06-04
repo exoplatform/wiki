@@ -1,5 +1,7 @@
 'use strict';
 
+const TerserPlugin = require('terser-webpack-plugin');
+
 const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 
 module.exports = {
@@ -58,6 +60,14 @@ module.exports = {
         ]
       }
     ]
+  },
+  optimization: {
+    minimize: true,
+    minimizer: [
+      new TerserPlugin({
+        terserOptions: { output: { ascii_only: true } }
+      })
+    ],
   },
 
   // By default webpack logs warnings if the bundle is bigger than 200kb.
