@@ -123,16 +123,3 @@ export default class IncludePageFormView extends View {
     return button;
   }
 }
-
-/**
- * Fired when the form view is submitted (when one of the children triggered the submit event),
- * e.g. click on {@link #saveButtonView}.
- *
- * @event submit
- */
-
-/**
- * Fired when the form view is canceled, e.g. click on {@link #cancelButtonView}.
- *
- * @event cancel
- */

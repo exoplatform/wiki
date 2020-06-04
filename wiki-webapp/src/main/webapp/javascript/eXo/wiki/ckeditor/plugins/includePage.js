@@ -8,7 +8,8 @@ import ContextualBalloon from '@ckeditor/ckeditor5-ui/src/panel/balloon/contextu
 import { toWidget } from '@ckeditor/ckeditor5-widget/src/utils';
 
 /**
- * CKEditor plugin which displays the list of children pages of the current page
+ * CKEditor plugin which displays the list of children pages of the current page.
+ * It uses a Vue component which fetches the page content and displays it.
  */
 export default class IncludePage extends Plugin {
   init() {
