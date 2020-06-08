@@ -13,6 +13,7 @@
   requireJs.addScripts("UIWikiRichTextArea.init('UIWikiRichTextArea_TextArea', '" + restUrlToViewCurrentPage + "', '" 
             + selectedSyntax + "', '" + wikiType + "', '" + wikiOwner + "', '" + pageId + "');");
 %>
-<div class="UIWikiRichTextEditor">
-  <% uicomponent.renderChild(uicomponent.RICHTEXT_AREA_INPUT); %>
-</div>
+<div class="UIWikiEditorToolbar"></div>
+<div class="UIWikiRichTextEditor"></div>
+<% uicomponent.renderChild(uicomponent.RICHTEXT_AREA_INPUT); %>
+

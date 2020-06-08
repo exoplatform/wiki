@@ -1,4 +1,4 @@
-import ClassicEditor from '@ckeditor/ckeditor5-editor-classic/src/classiceditor';
+import DecoupledEditor from '@ckeditor/ckeditor5-editor-decoupled/src/decouplededitor';
 import Essentials from '@ckeditor/ckeditor5-essentials/src/essentials';
 import Bold from '@ckeditor/ckeditor5-basic-styles/src/bold';
 import Italic from '@ckeditor/ckeditor5-basic-styles/src/italic';
@@ -62,8 +62,8 @@ WikiCkeditor.prototype.createEditor = function() {
   }
   uploadUrl += `/${eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))}`;
 
-  ClassicEditor
-    .create( document.querySelector( '#UIWikiRichTextArea_TextArea' ), {
+  DecoupledEditor
+    .create( document.querySelector( '.UIWikiRichTextEditor' ), {
       plugins: [ Essentials, Paragraph, Bold, Italic, Underline, Strikethrough, CodeBlock, BlockQuote, Heading, Font, Highlight, Alignment, List, Link,
         Table, TableToolbar, Image, ImageToolbar, ImageStyle, ImageUpload, SelfUpload, SpecialCharacters, SpecialCharactersEmoji,
         ChildrenPages, Toc, Widget, IncludePage],
@@ -176,7 +176,15 @@ WikiCkeditor.prototype.createEditor = function() {
       }
     } )
     .then(editor => {
+      // The toolbar needs to be explicitly appended.
+      document.querySelector( '.UIWikiEditorToolbar' ).appendChild( editor.ui.view.toolbar.element );
+
       window.editor = editor;
+
+      const textareaElement = document.querySelector('#UIWikiRichTextArea_TextArea');
+      if(textareaElement) {
+        editor.setData(textareaElement.value);
+      }
 
       editor.model.document.on('change:data', () => {
         document.querySelector('#UIWikiRichTextArea_TextArea').innerText = window.editor.getData();

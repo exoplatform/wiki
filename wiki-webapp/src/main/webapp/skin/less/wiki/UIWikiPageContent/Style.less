@@ -101,23 +101,3 @@
 		}
 	}
 }
-
-.UIWikiRichTextEditor {
-    // workaround for children-pages and include-page widgets selection
-    .wiki-children-pages.ck-widget, .wiki-include-page.ck-widget {
-      position: relative;
-      &:before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        display: block;
-        width: 100%;
-        height: 100%;
-      }
-    }
-    // custom icon on ckeditor buttons
-    .ck.ck-button[class*="uiIcon"] {
-      font-family: "PLF-FONT-ICONS";
-    }
-}

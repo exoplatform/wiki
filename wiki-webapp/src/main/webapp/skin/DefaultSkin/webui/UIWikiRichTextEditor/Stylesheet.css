@@ -1,91 +1,126 @@
 .UIWikiRichTextEditor {
-  margin-bottom: 20px;
-  margin-top: 4px;
-  width: 99.9%;
-  clear: both;
+  height: 500px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--ck-color-base-border);
+  border-radius: var(--ck-border-radius);
+  display: flex;
+  flex-flow: column nowrap;
+  margin-left: 1px;
+  margin-right: 1px;
 }
 
-.UIWikiRichTextEditor .textarea {
-  height: 450px;
-  visibility: hidden;
+.UIWikiRichTextEditor .wiki-children-pages.ck-widget, .wiki-include-page.ck-widget {
+  position: relative;
 }
 
-.UIWikiRichTextEditor .ck-editor__editable {
+/* workaround for children-pages and include-page widgets selection */
+.UIWikiRichTextEditor .wiki-children-pages.ck-widget, .wiki-include-page.ck-widget:before {
+  content: "";
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+#UIWikiRichTextArea_TextArea {
+  display: none;
+}
+
+.UIWikiEditorToolbar {
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+  border-bottom: 0;
+  box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
+}
+
+/* custom icon on ckeditor buttons */
+.UIWikiEditorToolbar .ck.ck-button[class*="uiIcon"] {
+  font-family: "PLF-FONT-ICONS";
+}
+
+.UIWikiEditorToolbar .document-editor__toolbar .ck-toolbar {
+  border: 0;
+  border-radius: 0;
+}
+
+.UIWikiRichTextEditor.ck-editor__editable {
   min-height: 380px;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item {
+.ck-toolbar .ck-heading-dropdown .ck-list__item {
   padding: 2px 4px;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .notemessage,
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.notemessage:hover {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .notemessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.notemessage:hover {
   background: #ffca7a;
   border: 1px solid #ffb441;
   color: #333;
   position: relative;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.notemessage::before {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.notemessage::before {
   content: none;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .infomessage,
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.infomessage:hover {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .infomessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.infomessage:hover {
   background: #89afd9;
   border: 1px solid #476a9c;
   color: #333;
   position: relative;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.infomessage::before {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.infomessage::before {
   content: none;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .successmessage,
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.successmessage:hover {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .successmessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.successmessage:hover {
   background: #6ccbae;
   border: 1px solid #2eb58c;;
   color: #333;
   position: relative;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.successmessage::before {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.successmessage::before {
   content: none;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .tipmessage,
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.tipmessage:hover {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .tipmessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.tipmessage:hover {
   background: #6ccbae;
   border: 1px solid #2eb58c;
   color: #333;
   position: relative;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.tipmessage::before {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.tipmessage::before {
   content: none;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .warningmessage,
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.warningmessage:hover {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .warningmessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.warningmessage:hover {
   background: #ffca7a;
   border: 1px solid #ffb441;
   color: #333;
   position: relative;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.warningmessage::before {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.warningmessage::before {
   content: none;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .errormessage,
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.errormessage:hover {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .errormessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.errormessage:hover {
   background: #d07b7b;
   border: 1px solid #bc4343;
   color: #333;
   position: relative;
 }
 
-.ck-editor .ck-heading-dropdown .ck-list__item .ck-button.errormessage::before {
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.errormessage::before {
   content: none;
 }
