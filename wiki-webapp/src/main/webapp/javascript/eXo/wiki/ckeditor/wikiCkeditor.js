@@ -183,11 +183,17 @@ WikiCkeditor.prototype.createEditor = function() {
 
       const textareaElement = document.querySelector('#UIWikiRichTextArea_TextArea');
       if(textareaElement) {
-        editor.setData(textareaElement.value);
+        let data = textareaElement.value;
+        // replace br by new line character to render new line correctly in textearea (used only for code blocks)
+        data = data.replace(/<br>/g, '\n');
+        editor.setData(data);
       }
 
       editor.model.document.on('change:data', () => {
-        document.querySelector('#UIWikiRichTextArea_TextArea').innerText = window.editor.getData();
+        let data = window.editor.getData();
+        // replace new line characters by br to render new lines correctly in editor (used only for code blocks)
+        data = data.replace(/\n/g, '<br>');
+        document.querySelector('#UIWikiRichTextArea_TextArea').innerText = data;
       });
     })
     .catch(error => {
