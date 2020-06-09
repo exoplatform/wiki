@@ -12,8 +12,6 @@ export default class ChildrenPages extends Plugin {
   init() {
     const editor = this.editor;
 
-    console.log('ChildrenPages initialized');
-
     // Allow children nodes.
     editor.model.schema.register('childrenPages', {
       allowIn: '$root',
@@ -50,7 +48,6 @@ export default class ChildrenPages extends Plugin {
       // Callback executed once the button is clicked.
       childrenButtonView.on('execute', () => {
         editor.model.change( writer => {
-          console.log('insert Children');
           const children = writer.createElement('childrenPages');
           editor.model.insertContent(children);
         });

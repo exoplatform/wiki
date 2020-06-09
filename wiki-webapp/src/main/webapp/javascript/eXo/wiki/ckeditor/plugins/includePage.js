@@ -15,8 +15,6 @@ export default class IncludePage extends Plugin {
   init() {
     const editor = this.editor;
 
-    console.log('IncludePage initialized');
-
     ///// UI
     this.formView = this._createFormView();
 

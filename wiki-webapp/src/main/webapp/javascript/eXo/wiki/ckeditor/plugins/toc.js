@@ -126,7 +126,6 @@ export default class Toc extends Plugin {
       // Callback executed once the button is clicked.
       tocButtonView.on('execute', () => {
         editor.model.change( writer => {
-          console.log('insert ToC');
           const toc = writer.createElement('toc');
           editor.model.insertContent(toc);
         });
@@ -168,10 +167,9 @@ function updateTocs(model, conversionApi) {
   const mainRoot = model.document.getRoot();
   for (const element of mainRoot.getChildren()) {
     if(element.name === 'toc') {
-      console.log('toc found');
       // TODO replace view element with the new toc
-      const viewElement = conversionApi.mapper.toViewElement(element);
-      console.log(`viewElement=${viewElement}`);
+      conversionApi.mapper.toViewElement(element);
+      //const viewElement = conversionApi.mapper.toViewElement(element);
       //let documentFragment = conversionApi.writer.remove(viewElement);
       //conversionApi.writer.insert(documentFragment, buildToc(model, conversionApi.writer));
     }
