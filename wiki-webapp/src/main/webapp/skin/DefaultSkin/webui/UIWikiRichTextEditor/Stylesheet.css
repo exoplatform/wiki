@@ -14,11 +14,10 @@
 }
 
 /* workaround for children-pages and include-page widgets selection */
-.UIWikiRichTextEditor .wiki-children-pages.ck-widget, .wiki-include-page.ck-widget:before {
+.UIWikiRichTextEditor .wiki-children-pages.ck-widget:before, .wiki-include-page.ck-widget:before {
   content: "";
   top: 0;
   left: 0;
-  display: block;
   width: 100%;
   height: 100%;
 }
@@ -123,4 +122,23 @@
 
 .ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.errormessage::before {
   content: none;
+}
+
+.wiki-include-page-label {
+  position: absolute;
+  right: -3px;
+  top: -30px;
+  color: #FFF;
+  padding: 5px 10px;
+  display: none;
+}
+
+.wiki-include-page.ck-widget:hover .wiki-include-page-label {
+  background-color: var(--ck-color-widget-hover-border);
+  display: block;
+}
+
+.wiki-include-page.ck-widget.ck-widget_selected .wiki-include-page-label {
+  background-color: var(--ck-color-focus-border);
+  display: block;
 }

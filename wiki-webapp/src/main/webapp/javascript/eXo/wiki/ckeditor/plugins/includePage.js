@@ -45,6 +45,10 @@ export default class IncludePage extends Plugin {
       model: 'includePage',
       view: (modelElement, viewWriter) => {
         const pageContainer = viewWriter.createContainerElement('div', { 'class' : 'wiki-include-page' });
+        const labelContainer = viewWriter.createContainerElement('span', { 'class' : 'wiki-include-page-label' });
+        const label = viewWriter.createText(`Included page : ${modelElement.getAttribute('pageName')}`);
+        viewWriter.insert(viewWriter.createPositionAt(labelContainer, 'end'), label);
+        viewWriter.insert(viewWriter.createPositionAt(pageContainer, 'end'), labelContainer);
         const pageComponent = viewWriter.createContainerElement('exo-wiki-include-page', { 'page-name': modelElement.getAttribute('pageName') });
         viewWriter.insert(viewWriter.createPositionAt(pageContainer, 'end'), pageComponent);
 
