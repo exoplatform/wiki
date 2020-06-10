@@ -38,8 +38,10 @@ import java.util.Set;
 @ExoEntity
 @Table(name = "WIKI_PAGE_VERSIONS")
 @NamedQueries({
-        @NamedQuery(name = "wikiPageVersion.getLastversionNumberOfPage", query = "SELECT max(p.versionNumber) FROM WikiPageVersionEntity p  WHERE p.page.id = :pageId"),
-        @NamedQuery(name = "wikiPageVersion.getPageversionByPageIdAndVersion", query = "SELECT p FROM WikiPageVersionEntity p  WHERE p.page.id = :pageId AND p.versionNumber = :versionNumber")
+        @NamedQuery(name = "wikiPageVersion.getLastversionNumberOfPage", query = "SELECT max(p.versionNumber) FROM WikiPageVersionEntity p WHERE p.page.id = :pageId"),
+        @NamedQuery(name = "wikiPageVersion.getPageversionByPageIdAndVersion", query = "SELECT p FROM WikiPageVersionEntity p WHERE p.page.id = :pageId AND p.versionNumber = :versionNumber"),
+        @NamedQuery(name = "wikiPageVersion.getAllPagesVersionsBySyntax", query = "SELECT p FROM WikiPageVersionEntity p WHERE p.syntax = :syntax OR p.syntax IS NULL ORDER BY p.updatedDate DESC"),
+        @NamedQuery(name = "wikiPageVersion.countAllPagesVersionsBySyntax", query = "SELECT COUNT(p) FROM WikiPageVersionEntity p WHERE p.syntax = :syntax OR p.syntax IS NULL")
 })
 public class PageVersionEntity extends BasePageEntity {
   @Id

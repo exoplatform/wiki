@@ -1,7 +1,6 @@
 package org.exoplatform.wiki.webui;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
@@ -9,17 +8,16 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.WikiService;
+import org.exoplatform.wiki.tree.TreeNode;
+import org.exoplatform.wiki.tree.utils.TreeUtils;
 import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
 import org.exoplatform.wiki.webui.control.UIRelatedPagesContainer;
 import org.exoplatform.wiki.webui.control.action.ShowHistoryActionListener;
 import org.exoplatform.wiki.webui.control.action.ViewRevisionActionListener;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
-import org.xwiki.rendering.syntax.Syntax;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -68,14 +66,35 @@ public class UIWikiPageInfo extends UIWikiContainer {
   }
 
   protected String renderHierarchy() throws Exception {
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
-    Utils.setUpWikiContext(getAncestorOfType(UIWikiPortlet.class));
-    String content = renderingService.render("{{pagetree /}}",
-                                             Syntax.XWIKI_2_0.toIdString(),
-                                             Syntax.XHTML_1_0.toIdString(),
-                                             false);
-    Utils.removeWikiContext();
-    return content;
+    StringBuilder treeSb = new StringBuilder();
+    StringBuilder initSb = new StringBuilder();
+    TreeNode node = TreeUtils.getTreeNode(Utils.getCurrentWikiPageParams());
+    String treeRestURI = Utils.getCurrentRestURL().concat("/wiki/tree/children/");
+    String redirectURI = getAncestorOfType(UIWikiPortlet.class).getRedirectURL();
+    String baseURL = getBaseUrl();
+
+    initSb.append("?")
+            .append(TreeNode.PATH)
+            .append("=")
+            .append(node.getPath())
+            .append("&")
+            .append(TreeNode.DEPTH)
+            .append("=1");
+    treeSb.append("<div class=\"uiTreeExplorer PageTreeMacro\">")
+            .append("  <div>")
+            .append("    <input class=\"ChildrenURL\" title=\"hidden\" type=\"hidden\" value=\"").append(treeRestURI).append("\" />")
+            .append("    <input class=\"InitParams\" title=\"hidden\" type=\"hidden\" value=\"").append(initSb.toString()).append("\" />")
+            .append("    <input class=\"BaseURL\" title=\"hidden\" type=\"hidden\" value=\"").append(baseURL).append("\" />")
+            .append("    <a class=\"SelectNode\" style=\"display:none\" href=\"").append(redirectURI).append("\" ></a>")
+            .append("  </div>")
+            .append("</div>");
+    return treeSb.toString();
+  }
+
+  protected String getBaseUrl() throws Exception {
+    WikiPageParams params = Utils.getCurrentWikiPageParams();
+    params.setPageName(null);
+    return Utils.getURLFromParams(params);
   }
   
   protected Page getCurrentPage() throws Exception {

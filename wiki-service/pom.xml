@@ -11,15 +11,11 @@
   <name>eXo PLF:: Wiki Service</name>
 
   <properties>
-    <exo.test.coverage.ratio>0.45</exo.test.coverage.ratio>
+    <exo.test.coverage.ratio>0.43</exo.test.coverage.ratio>
     <org.elasticsearch.version>5.6.11</org.elasticsearch.version>
   </properties>
 
   <dependencies>
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-servlet</artifactId>
-    </dependency>
     <dependency>
       <groupId>commons-chain</groupId>
       <artifactId>commons-chain</artifactId>
@@ -91,10 +87,6 @@
       <artifactId>exo.kernel.container</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.wiki</groupId>
-      <artifactId>wiki-renderer</artifactId>
-    </dependency>
-    <dependency>
       <groupId>org.exoplatform.ws</groupId>
       <artifactId>exo.ws.rest.core</artifactId>
     </dependency>
@@ -143,90 +135,12 @@
       </exclusions>
     </dependency>
     <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-component-api</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-context</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-properties</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>commons-logging</artifactId>
-          <groupId>commons-logging</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-component-service</artifactId>
     </dependency>
     <dependency>
       <groupId>org.exoplatform.social</groupId>
       <artifactId>social-search-service</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-model</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-wysiwyg-client</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>xwiki-platform-gwt-user</artifactId>
-          <groupId>org.xwiki.platform</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>xwiki-platform-wysiwyg-plugin-api</artifactId>
-          <groupId>org.xwiki.platform</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>smartgwt</artifactId>
-          <groupId>com.smartgwt</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-api</artifactId>
-      <exclusions>
-        <exclusion>          
-          <groupId>xml-apis</groupId>
-          <artifactId>xml-apis</artifactId>
-        </exclusion>
-        <exclusion>
-		  <groupId>xml-apis</groupId>
-          <artifactId>xml-apis-ext</artifactId>          
-        </exclusion>        
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-transformation-macro</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>picocontainer</groupId>
-      <artifactId>picocontainer</artifactId>
-      <exclusions>
-        <exclusion>
-          <artifactId>jmock</artifactId>
-          <groupId>jmock</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>xstream</artifactId>
-          <groupId>xstream</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <!-- Don't bundle gwt-user to avoid conflicts (javax.servlet, ...) -->
-    <dependency>
-      <groupId>com.google.gwt</groupId>
-      <artifactId>gwt-user</artifactId>
-      <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -262,11 +176,6 @@
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>net.sourceforge.cssparser</groupId>
-      <artifactId>cssparser</artifactId>
       <scope>runtime</scope>
     </dependency>
     <!-- To replace the transitive dep of com.lowagie:itext which is in conflict with exo.core.component.document dependencies -->
@@ -355,43 +264,6 @@
     <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-simple</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.commons</groupId>
-      <artifactId>xwiki-commons-text</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.platform</groupId>
-      <artifactId>xwiki-platform-rendering-macro-code</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>commons-io</artifactId>
-          <groupId>commons-io</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-macro-toc</artifactId>
-      <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>commons-beanutils</artifactId>
-          <groupId>commons-beanutils</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xhtml</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.xwiki.rendering</groupId>
-      <artifactId>xwiki-rendering-syntax-xwiki21</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>

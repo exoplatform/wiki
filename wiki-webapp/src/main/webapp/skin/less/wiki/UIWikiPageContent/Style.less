@@ -1,6 +1,6 @@
+.uiWikiContentDisplay, .uiWikiPagePreview, .UIWikiRichTextEditor {
+	overflow: auto;
 
-
-.uiWikiContentDisplay, .uiWikiPagePreview{
 	ul {
 		margin: 10px 18px;
 		padding: 0;
@@ -62,6 +62,42 @@
 		border-top: 1px solid @borderColor;
 		padding: 5px;
 	}
+	figure {
+		margin: 0 0 10px 0;
+		&.image {
+			text-align: center;
+
+			&.image-style-align-left img {
+				float: left;
+				margin-right: 1.5em;
+			}
+
+			&.image-style-align-right img {
+				float: right;
+				margin-left: 1.5em;
+			}
+		}
+	}
+	mark {
+		&.marker-yellow {
+			background-color: #fdfd77;
+		}
+		&.marker-green {
+			background-color: #63f963;
+		}
+		&.marker-pink {
+			background-color: #fc7999;
+		}
+		&.marker-blue {
+			background-color: #72cdfd;
+		}
+		&.pen-red {
+			color: #e91313;
+			background-color: transparent;
+		}
+		&.pen-green {
+			color: #118800;
+			background-color: transparent;
+		}
+	}
 }
-
-

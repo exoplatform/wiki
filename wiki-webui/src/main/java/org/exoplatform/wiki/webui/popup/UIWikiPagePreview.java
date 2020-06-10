@@ -16,7 +16,6 @@
  */
 package org.exoplatform.wiki.webui.popup;
 
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -24,12 +23,9 @@ import org.exoplatform.webui.core.UIContainer;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.event.EventListener;
-import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.webui.UIWikiContentDisplay;
 import org.exoplatform.wiki.webui.UIWikiMaskWorkspace;
 import org.exoplatform.wiki.webui.UIWikiPortlet;
-import org.xwiki.rendering.syntax.Syntax;
 
 @ComponentConfig(
   lifecycle = Lifecycle.class,
@@ -61,13 +57,7 @@ public class UIWikiPagePreview extends UIContainer {
 
   public void renderWikiMarkup(String markup, String syntaxId) throws Exception {
     UIWikiContentDisplay contentDisplay = this.getChildById(PREVIEW_DISPLAY);
-    if (Syntax.XHTML_1_0.toIdString().equals(syntaxId)) {
-      contentDisplay.setHtmlOutput(markup);
-    } else {
-      RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
-      Utils.setUpWikiContext(this.getAncestorOfType(UIWikiPortlet.class));
-      contentDisplay.setHtmlOutput(renderingService.render(markup, syntaxId, Syntax.XHTML_1_0.toIdString(), false));
-    }
+    contentDisplay.setHtmlOutput(markup);
   }
   
   static public class CloseActionListener extends EventListener<UIWikiPagePreview> {

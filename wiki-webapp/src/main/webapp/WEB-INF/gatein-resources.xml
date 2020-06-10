@@ -34,8 +34,33 @@
       <depends>
          <module>jquery</module>
       </depends>
+      <depends>
+         <module>wikiPageContent</module>
+      </depends>
     </module>
   </portlet>
+
+  <module>
+    <name>wikiCkeditor</name>
+    <script>
+      <minify>false</minify>
+      <path>/javascript/eXo/wiki/ckeditor/wikiCkeditor.bundle.js</path>
+    </script>
+  </module>
+
+  <module>
+    <name>wikiPageContent</name>
+    <script>
+      <minify>false</minify>
+      <path>/javascript/eXo/wiki/ckeditor/pageContent.bundle.js</path>
+    </script>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>vueCustomElement</module>
+    </depends>
+  </module>
   
   <!-- Javascripts used in View Mode -->
   <module>
@@ -110,7 +135,16 @@
       <module>bootstrap_wiki</module>
     </depends> 
   </module>
-  
+
+  <module>
+    <name>UIWikiWysiwygLoader</name>
+    <load-group>wikiView</load-group>
+    <script>
+      <minify>false</minify>
+      <path>/javascript/eXo/wiki/UIWikiWysiwygLoader.js</path>
+    </script>
+  </module>
+
   <module>
     <name>UIWikiPageVersionsList</name>
     <load-group>wikiView</load-group>

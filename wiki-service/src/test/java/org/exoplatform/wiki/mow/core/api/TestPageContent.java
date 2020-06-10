@@ -36,13 +36,13 @@ public class TestPageContent extends BaseTest {
   public void testGetPageContent() throws Exception {
     Wiki wiki = getOrCreateWiki(wikiService, WikiType.PORTAL.toString(), "classic");
     Page page = new Page("AddPageContent-001", "AddPageContent-001");
-    page.setSyntax("xwiki_2.0");
+    page.setSyntax("xhtml/1.0");
     page.setContent("This is a content of page");
     wikiService.createPage(wiki, "WikiHome", page);
 
     page = wikiService.getPageOfWikiByName(wiki.getType(), wiki.getOwner(), "AddPageContent-001");
     assertNotNull(page);
-    assertEquals("xwiki_2.0", page.getSyntax());
+    assertEquals("xhtml/1.0", page.getSyntax());
     assertEquals("This is a content of page", page.getContent());
   }
 

@@ -1,47 +1,144 @@
-@import url('RichTextArea.css');
-
-@import url('Wysiwyg.css');
-
-.gwt-RichTextArea {
-  width: 100%;
-  border: 1px solid #DDDDDD;
-  border-top: none;
-  padding: 10px!important;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-}
-
 .UIWikiRichTextEditor {
-  margin-bottom: 20px;
-  margin-top: 4px;
-  width: 99.9%;
-  clear: both;
+  height: 500px;
+  background-color: #FFFFFF;
+  border: 1px solid var(--ck-color-base-border);
+  border-radius: var(--ck-border-radius);
+  display: flex;
+  flex-flow: column nowrap;
+  margin-left: 1px;
+  margin-right: 1px;
 }
 
-.UIWikiRichTextEditor .xToolbar div.clearfloats {
-  background-color: transparent;
-  clear: left;
-  float: none;
-  height: 1px;
-  line-height: 1px;
-  font-size: 1px;
-  margin: 0;
+.UIWikiRichTextEditor .wiki-children-pages.ck-widget, .wiki-include-page.ck-widget {
+  position: relative;
 }
 
-.UIWikiRichTextEditor .textarea {
-  height: 450px;
-  visibility: hidden;
+/* workaround for children-pages and include-page widgets selection */
+.UIWikiRichTextEditor .wiki-children-pages.ck-widget:before, .wiki-include-page.ck-widget:before {
+  content: "";
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
 }
 
-.UIWikiRichTextEditor .gwt-MenuBar-horizontal table {
-  margin: 0;
-  width: 400px;
+#UIWikiRichTextArea_TextArea {
+  display: none;
 }
 
-.gwt-PopupPanel table {
-  width: auto;
+.UIWikiEditorToolbar {
+  position: relative;
+  z-index: 1;
+  margin-top: 10px;
+  border-bottom: 0;
+  box-shadow: 0 0 5px hsla( 0,0%,0%,.2 );
 }
 
-.gwt-PopupPanel .xPagesSelector .xSearchForm input {
-  width:350px;
+/* custom icon on ckeditor buttons */
+.UIWikiEditorToolbar .ck.ck-button[class*="uiIcon"] {
+  font-family: "PLF-FONT-ICONS";
+}
+
+.UIWikiEditorToolbar .document-editor__toolbar .ck-toolbar {
+  border: 0;
+  border-radius: 0;
+}
+
+.UIWikiRichTextEditor.ck-editor__editable {
+  min-height: 380px;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item {
+  padding: 2px 4px;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .notemessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.notemessage:hover {
+  background: #ffca7a;
+  border: 1px solid #ffb441;
+  color: #333;
+  position: relative;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.notemessage::before {
+  content: none;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .infomessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.infomessage:hover {
+  background: #89afd9;
+  border: 1px solid #476a9c;
+  color: #333;
+  position: relative;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.infomessage::before {
+  content: none;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .successmessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.successmessage:hover {
+  background: #6ccbae;
+  border: 1px solid #2eb58c;;
+  color: #333;
+  position: relative;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.successmessage::before {
+  content: none;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .tipmessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.tipmessage:hover {
+  background: #6ccbae;
+  border: 1px solid #2eb58c;
+  color: #333;
+  position: relative;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.tipmessage::before {
+  content: none;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .warningmessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.warningmessage:hover {
+  background: #ffca7a;
+  border: 1px solid #ffb441;
+  color: #333;
+  position: relative;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.warningmessage::before {
+  content: none;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .errormessage,
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.errormessage:hover {
+  background: #d07b7b;
+  border: 1px solid #bc4343;
+  color: #333;
+  position: relative;
+}
+
+.ck-toolbar .ck-heading-dropdown .ck-list__item .ck-button.errormessage::before {
+  content: none;
+}
+
+.wiki-include-page-label {
+  position: absolute;
+  right: -3px;
+  top: -30px;
+  color: #FFF;
+  padding: 5px 10px;
+  display: none;
+}
+
+.wiki-include-page.ck-widget:hover .wiki-include-page-label {
+  background-color: var(--ck-color-widget-hover-border);
+  display: block;
+}
+
+.wiki-include-page.ck-widget.ck-widget_selected .wiki-include-page-label {
+  background-color: var(--ck-color-focus-border);
+  display: block;
 }

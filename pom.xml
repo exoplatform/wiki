@@ -14,8 +14,6 @@
   <name>eXo PLF:: Wiki</name>
   <description>eXo wiki</description>
   <modules>
-    <module>wiki-renderer</module>
-    <module>wiki-macros</module>
     <module>wiki-service</module>
     <module>wiki-webapp</module>
     <module>wiki-webui</module>
@@ -43,6 +41,11 @@
     <org.exoplatform.social.version>6.0.x-SNAPSHOT</org.exoplatform.social.version>
     <org.exoplatform.platform-ui.version>6.0.x-SNAPSHOT</org.exoplatform.platform-ui.version>
     <addon.exo.gamification.version>2.0.x-SNAPSHOT</addon.exo.gamification.version>
+
+    <!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
+    <com.github.eirslett.frontend.version>1.6</com.github.eirslett.frontend.version>
+    <node.version>v10.4.1</node.version>
+    <npm.version>6.1.0</npm.version>
   </properties>
   <dependencyManagement>
     <!-- ### NEVER CHANGE THIS ORDER OF DEPMGT ### -->
@@ -83,16 +86,6 @@
       </dependency>
       <dependency>
         <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-macros-iframe</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
-        <artifactId>wiki-renderer</artifactId>
-        <version>${project.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.exoplatform.wiki</groupId>
         <artifactId>wiki-service</artifactId>
         <version>${project.version}</version>
       </dependency>
@@ -130,12 +123,9 @@
     <pluginManagement>
       <plugins>
         <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-war-plugin</artifactId>
-          <configuration>
-            <!-- Don't include libraries into Web Archives -->
-            <packagingExcludes>WEB-INF/lib/*.jar</packagingExcludes>
-          </configuration>
+          <groupId>com.github.eirslett</groupId>
+          <artifactId>frontend-maven-plugin</artifactId>
+          <version>${com.github.eirslett.frontend.version}</version>
         </plugin>
       </plugins>
     </pluginManagement>

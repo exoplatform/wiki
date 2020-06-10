@@ -21,7 +21,6 @@ import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.ext.impl.WikiUIActivity.CommentType;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.BreadcrumbData;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.PageUpdateType;
@@ -29,7 +28,6 @@ import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.utils.Utils;
 import org.exoplatform.wiki.utils.WikiConstants;
-import org.xwiki.rendering.syntax.Syntax;
 
 import java.util.*;
 import java.util.function.Function;
@@ -70,20 +68,16 @@ public class WikiSpaceActivityPublisher extends PageWikiListener {
 
   private IdentityManager    identityManager;
 
-  private RenderingService   renderingService;
-
   private ActivityManager    activityManager;
 
   private SpaceService       spaceService;
 
   public WikiSpaceActivityPublisher(WikiService wikiService,
                                     IdentityManager identityManager,
-                                    RenderingService renderingService,
                                     ActivityManager activityManager,
                                     SpaceService spaceService) {
     this.wikiService = wikiService;
     this.identityManager = identityManager;
-    this.renderingService = renderingService;
     this.activityManager = activityManager;
     this.spaceService = spaceService;
   }
@@ -139,7 +133,7 @@ public class WikiSpaceActivityPublisher extends PageWikiListener {
     // Create page excerpt
     StringBuilder excerpt = new StringBuilder();
     try {
-      excerpt.append(renderingService.render(page.getContent(), page.getSyntax(), Syntax.PLAIN_1_0.toIdString(), false));
+      excerpt.append(wikiService.getPageRenderedContent(page));
     } catch (Exception e) {
       throw new WikiException("Cannot render page " + page.getWikiType() + ":" + page.getWikiOwner() + page.getName(), e);
     }

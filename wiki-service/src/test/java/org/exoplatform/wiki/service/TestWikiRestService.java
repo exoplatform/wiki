@@ -4,7 +4,6 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -22,7 +21,6 @@ import javax.ws.rs.core.UriInfo;
 import org.apache.commons.compress.utils.IOUtils;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import com.ibm.icu.util.Calendar;
 
@@ -32,9 +30,7 @@ import org.exoplatform.wiki.mow.api.Attachment;
 import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.impl.WikiRestServiceImpl;
-import org.xwiki.context.internal.DefaultExecution;
 
 /**
  *
@@ -45,8 +41,7 @@ public class TestWikiRestService {
   public void shouldGetEmotionIcon() throws WikiException, IOException {
     // Given
     WikiService wikiService = mock(WikiService.class);
-    RenderingService renderingService = mock(RenderingService.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, new MockResourceBundleService());
 
     EmotionIcon emotionIcon = new EmotionIcon();
     emotionIcon.setName("test.gif");
@@ -69,8 +64,7 @@ public class TestWikiRestService {
   public void shouldGetNotFoundResponseWhenEmotionIconDoesNotExist() throws WikiException {
     // Given
     WikiService wikiService = mock(WikiService.class);
-    RenderingService renderingService = mock(RenderingService.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, new MockResourceBundleService());
 
     when(wikiService.getEmotionIconByName("test.gif")).thenReturn(null);
 
@@ -86,8 +80,7 @@ public class TestWikiRestService {
   public void testGetPageAttachmentResponseHeader() throws WikiException {
     //Given
     WikiService wikiService = mock(WikiService.class);
-    RenderingService renderingService = mock(RenderingService.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, new MockResourceBundleService());
     
     Wiki wiki = new Wiki("user", "root");
     when(wikiService.createWiki("portal", "wikiAttachement1")).thenReturn(wiki);
@@ -159,9 +152,8 @@ public class TestWikiRestService {
   public void testSanitizePageTitle() throws Exception {
     //Given
     WikiService wikiService = mock(WikiService.class);
-    RenderingService renderingService = mock(RenderingService.class);
     UriInfo uriInfo = mock(UriInfo.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, new MockResourceBundleService());
     
     Wiki wiki = new Wiki("user", "root");
     when(wikiService.createWiki("portal", "wikiAttachement1")).thenReturn(wiki);
@@ -191,11 +183,8 @@ public class TestWikiRestService {
   public void testSanitizePageContent() throws Exception {
     //Given
     WikiService wikiService = mock(WikiService.class);
-    RenderingService renderingService = mock(RenderingService.class);
-    when(renderingService.getExecution()).thenReturn(new DefaultExecution());
-    when(renderingService.render(anyString(), anyString(), anyString(), anyBoolean())).thenAnswer(i -> i.getArguments()[0]);
     UriInfo uriInfo = mock(UriInfo.class);
-    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, renderingService, new MockResourceBundleService());
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, new MockResourceBundleService());
     EnvironmentContext.setCurrent(new EnvironmentContext());
     ServletContext servletContext = mock(ServletContext.class);
     when(servletContext.getResourceAsStream(anyString())).thenReturn(new ByteArrayInputStream("<div>$content</div>".getBytes()));
@@ -210,7 +199,7 @@ public class TestWikiRestService {
     wikiHomePage.setWikiType(wikiType);
     wikiHomePage.setWikiOwner(wikiOwner);
     wikiHomePage.setUpdatedDate(Calendar.getInstance().getTime());
-    wikiHomePage.setContent("my<script>alert();</script> page");
+    wikiHomePage.setContent("<div>my<script>alert();</script> page</div>");
     String pageId = wikiHomePage.getId();
 
     when(wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner)).thenReturn(wiki);
@@ -219,7 +208,7 @@ public class TestWikiRestService {
     when(uriInfo.getBaseUri()).thenReturn(new URI("/"));
 
     // When
-    Response response = wikiRestService.getWikiPageContent(servletContext, null, null, true, wikiHomePage.getContent());
+    Response response = wikiRestService.getWikiPageContent(wikiHomePage.getContent());
 
     // Then
     assertNotNull(response);

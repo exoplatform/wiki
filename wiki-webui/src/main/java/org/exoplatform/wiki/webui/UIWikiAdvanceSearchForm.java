@@ -18,6 +18,7 @@ package org.exoplatform.wiki.webui;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.utils.ObjectPageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.webui.commons.EventUIComponent;
@@ -200,7 +201,7 @@ public class UIWikiAdvanceSearchForm extends UIForm {
       UIWikiAdvanceSearchForm uiSearch = event.getSource();
       UISpacesSwitcher spaceSwitcher = uiSearch.getChild(UISpacesSwitcher.class);
 
-      WikiService wikiService = org.exoplatform.wiki.rendering.util.Utils.getService(WikiService.class);
+      WikiService wikiService = ExoContainerContext.getService(WikiService.class);
       Wiki wiki = wikiService.getWikiById(wikiId);
       if (wiki != null) {
         String wikiType = wiki.getType();

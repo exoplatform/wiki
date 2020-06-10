@@ -16,9 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.rendering.converter.ConversionException;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.diff.DiffResult;
 import org.exoplatform.commons.diff.DiffService;
@@ -49,7 +46,6 @@ import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -121,7 +117,7 @@ public class Utils {
   }
   
   public static String getPortalName() {
-    return org.exoplatform.wiki.rendering.util.Utils.getPortalName();
+    return PortalContainer.getCurrentPortalContainerName();
   }
   
   /**
@@ -398,7 +394,7 @@ public class Utils {
         return expandPage;
       } else {
         // Object is a wiki home page
-        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType.toUpperCase(), wikiOwner);
+        Wiki wiki = wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner);
         if(wiki != null) {
           Page wikiHome = wiki.getWikiHome();
           return wikiHome;
@@ -447,11 +443,10 @@ public class Utils {
   }
   
   public static void sendMailOnChangeContent(Page page)
-          throws WikiException, DifferentiationFailedException, ComponentLookupException, ConversionException {
+          throws WikiException, DifferentiationFailedException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
     DiffService diffService = container.getComponentInstanceOfType(DiffService.class);
-    RenderingService renderingService = container.getComponentInstanceOfType(RenderingService.class);
     Message message = new Message();
     ConversationState conversationState = ConversationState.getCurrent();
     // Get author
@@ -482,10 +477,7 @@ public class Utils {
     DiffResult diffResult = diffService.getDifferencesAsHTML(previousVersionContent,
                                                              currentVersionContent,
                                                              false);
-    String fullContent = renderingService.render(currentVersionContent,
-                                                 page.getSyntax(),
-                                                 Syntax.XHTML_1_0.toIdString(),
-                                                 false);
+    String fullContent = currentVersionContent;
     
     if (diffResult.getChanges() == 0) {
       diffResult.setDiffHTML("No changes, new revision is created.");
@@ -495,9 +487,6 @@ public class Utils {
     StringBuilder sbt = new StringBuilder();
     sbt.append("<html>")
         .append("  <head>")
-        .append("     <link rel=\"stylesheet\" href=\"")
-        .append(renderingService.getCssURL())
-        .append("\" type=\"text/css\">")
         .append("  </head>")
         .append("  <body>")
         .append("    Page <a href=\"")
@@ -535,7 +524,7 @@ public class Utils {
   }
   
   private static boolean isEnabledUser(String userName) throws WikiException {
-    OrganizationService orgService = org.exoplatform.wiki.rendering.util.Utils.getService(OrganizationService.class);
+    OrganizationService orgService = ExoContainerContext.getService(OrganizationService.class);
     try {
       return orgService.getUserHandler().findUserByName(userName) != null;
     } catch (Exception e) {
@@ -649,6 +638,6 @@ public class Utils {
    * @return rest context name
    */
   public static String getRestContextName() {
-    return org.exoplatform.wiki.rendering.util.Utils.getRestContextName();
+    return PortalContainer.getCurrentRestContextName();
   }
 }

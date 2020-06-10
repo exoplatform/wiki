@@ -17,18 +17,14 @@
 package org.exoplatform.wiki.webui;
 
 import org.exoplatform.container.ExoContainerContext;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.core.lifecycle.Lifecycle;
 import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.mow.api.Page;
 import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.webui.core.UIWikiContainer;
-import org.xwiki.rendering.converter.ConversionException;
-import org.xwiki.rendering.syntax.Syntax;
 
 import java.util.Arrays;
 
@@ -45,7 +41,7 @@ public class UIWikiPageContentArea extends UIWikiContainer {
   public UIWikiPageContentArea() throws Exception{
     wikiService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(WikiService.class);
 
-    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.HELP, WikiMode.VIEWREVISION });
+    this.accept_Modes = Arrays.asList(new WikiMode[] { WikiMode.VIEW, WikiMode.VIEWREVISION });
     this.addChild(UIWikiPageControlArea.class, null, null);
     this.addChild(UIWikiVersionSelect.class, null, null);
     this.addChild(UIWikiContentDisplay.class, null, VIEW_DISPLAY);    
@@ -61,36 +57,24 @@ public class UIWikiPageContentArea extends UIWikiContainer {
     String currentVersionName= this.getChild(UIWikiVersionSelect.class).getVersionName();
     UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
     WikiMode currentMode= wikiPortlet.getWikiMode();
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
     UIWikiContentDisplay contentDisplay = this.getChildById(VIEW_DISPLAY);
 
     Page wikipage = Utils.getCurrentWikiPage();
 
-    //Setup wiki context
-    Utils.setUpWikiContext(wikiPortlet);
     try{
       // Render current content
       if (currentMode.equals(WikiMode.VIEW)) {
-          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(wikipage, Syntax.XHTML_1_0.toIdString()));
-      }
-      if (currentMode.equals(WikiMode.HELP)) {
-          contentDisplay.setHtmlOutput(renderingService.render(wikipage.getContent(),
-                                                               wikipage.getSyntax(),
-                                                               Syntax.XHTML_1_0.toIdString(),
-                                                               false));
+          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(wikipage));
       }
       // Render select version content
       if (currentMode.equals(WikiMode.VIEWREVISION) && currentVersionName != null) {
         PageVersion version = wikiService.getVersionOfPageByName(currentVersionName, wikipage);
         if (version != null) {
-          String pageContent = version.getContent();
-          String pageSyntax = wikipage.getSyntax();
-          contentDisplay.setHtmlOutput(renderingService.render(pageContent, pageSyntax, Syntax.XHTML_1_0.toIdString(), false));
+          contentDisplay.setHtmlOutput(wikiService.getPageRenderedContent(version));
         }
       }
-    }catch(ConversionException e){
+    } catch(Exception e) {
       contentDisplay.setHtmlOutput("Bad syntax in content! Cannot generate HTML content!");
     }
-    Utils.removeWikiContext();
   }
 }

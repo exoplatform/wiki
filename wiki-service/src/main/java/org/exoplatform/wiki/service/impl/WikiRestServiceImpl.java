@@ -31,7 +31,6 @@ import java.util.Stack;
 import java.util.StringTokenizer;
 
 import javax.annotation.security.RolesAllowed;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.FormParam;
 import javax.ws.rs.GET;
@@ -55,18 +54,13 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
-import org.exoplatform.commons.utils.StringCommonUtils;
 import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
-import org.xwiki.context.Execution;
-import org.xwiki.context.ExecutionContext;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.common.http.HTTPStatus;
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.MimeTypeResolver;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
-import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.resources.ResourceBundleService;
@@ -78,11 +72,8 @@ import org.exoplatform.wiki.mow.api.DraftPage;
 import org.exoplatform.wiki.mow.api.EmotionIcon;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.service.Relations;
-import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiRestService;
 import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.image.ResizeImageService;
 import org.exoplatform.wiki.service.related.JsonRelatedData;
@@ -109,15 +100,13 @@ import org.exoplatform.wiki.utils.WikiConstants;
 import org.exoplatform.wiki.utils.WikiNameValidator;
 
 /**
- * {@inheritDoc}
+ * Wiki REST service
  */
 @SuppressWarnings("deprecation")
 @Path("/wiki")
-public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
+public class WikiRestServiceImpl implements ResourceContainer {
 
   private final WikiService      wikiService;
-
-  private final RenderingService renderingService;
 
   private final ResourceBundleService resourceBundleService;
 
@@ -129,9 +118,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   
   private ObjectFactory objectFactory = new ObjectFactory();
   
-  public WikiRestServiceImpl(WikiService wikiService, RenderingService renderingService, ResourceBundleService resourceBundleService) {
+  public WikiRestServiceImpl(WikiService wikiService, ResourceBundleService resourceBundleService) {
     this.wikiService = wikiService;
-    this.renderingService = renderingService;
     this.resourceBundleService = resourceBundleService;
     cc = new CacheControl();
     cc.setNoCache(true);
@@ -139,61 +127,23 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
   }
 
   /**
-   * {@inheritDoc}
+   * Return the wiki page content as html or wiki syntax.
+   * @param text contain the data as html
+   * @return the instance of javax.ws.rs.core.Response
+   *
+   * @LevelAPI Experimental
    */
   @POST
   @Path("/content/")
-  @Produces(MediaType.TEXT_HTML)
-  @RolesAllowed("users")
-  public Response getWikiPageContent(@Context ServletContext servletContext,
-                                     @QueryParam("sessionKey") String sessionKey,
-                                     @QueryParam("wikiContext") String wikiContextKey,
-                                     @QueryParam("markup") boolean isMarkup,
-                                     @FormParam("html") String data) {
-    EnvironmentContext env = EnvironmentContext.getCurrent();
-    WikiContext wikiContext = new WikiContext();
-    String currentSyntax = wikiService.getDefaultWikiSyntaxId();
-    HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
+  public Response getWikiPageContent(@FormParam("text") String text) {
     try {
-      if (data == null) {
-        if (sessionKey != null && sessionKey.length() > 0) {
-          data = (String) request.getSession().getAttribute(sessionKey);
-        }
-      }
-      if (wikiContextKey != null && wikiContextKey.length() > 0) {
-        wikiContext = (WikiContext) request.getSession().getAttribute(wikiContextKey);
-        if (wikiContext != null && wikiContext.getSyntax() != null)
-          currentSyntax = wikiContext.getSyntax();
-      }
-      Execution ec = renderingService.getExecution();
-      if (ec.getContext() == null) {
-        ec.setContext(new ExecutionContext());
-      }
-      ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
+      String outputText = WikiHTMLSanitizer.markupSanitize(text);
 
-      InputStream is = servletContext.getResourceAsStream("/templates/wiki/webui/xwiki/wysiwyginput.html");
-      byte[] b = new byte[is.available()];
-      is.read(b);
-      is.close();
-     
-      data = renderingService.render(data,
-                                     Syntax.XHTML_1_0.toIdString(),
-                                     currentSyntax,
-                                     false);
-      data = renderingService.render(data,
-                                     currentSyntax,
-                                     Syntax.ANNOTATED_XHTML_1_0.toIdString(),
-                                     false);
-
-      data = WikiHTMLSanitizer.markupSanitize(data);
-
-      data = new String(b).replace("$content", data);
-
+      return Response.ok(outputText, MediaType.TEXT_HTML).cacheControl(cc).build();
     } catch (Exception e) {
-      log.error(e.getMessage(), e);
+      log.error("Error while converting wiki page content: " + e.getMessage(), e);
       return Response.serverError().entity(e.getMessage()).cacheControl(cc).build();
     }
-    return Response.ok(data, MediaType.TEXT_HTML).cacheControl(cc).build();
   }
 
   /**
@@ -216,6 +166,8 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       DiskFileUpload upload = new DiskFileUpload();
       // Parse the request
       try {
+        String attachmentName = null;
+
         List<FileItem> items = upload.parseRequest(req);
         for (FileItem fileItem : items) {
           InputStream inputStream = fileItem.getInputStream();
@@ -247,7 +199,27 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
             attachment.setCreator(conversationState.getIdentity().getUserId());
           }
           wikiService.addAttachmentToPage(attachment, page);
+
+          attachmentName = attachment.getName();
         }
+
+        StringBuilder responseBody = new StringBuilder("{\"default\":\"")
+                .append(Utils.getDefaultRestBaseURI())
+                .append("/wiki/attachments/")
+                .append(wikiType)
+                .append("/")
+                .append(Utils.SPACE)
+                .append("/")
+                .append(wikiOwner)
+                .append("/")
+                .append(Utils.PAGE)
+                .append("/")
+                .append(pageId)
+                .append("/")
+                .append(attachmentName)
+                .append("\"}");
+
+        return Response.ok(responseBody.toString()).build();
       } catch (IllegalArgumentException e) {
         log.error("Special characters are not allowed in the name of an attachment.");
         return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
@@ -255,8 +227,9 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
         log.error(e.getMessage());
         return Response.status(HTTPStatus.BAD_REQUEST).entity(e.getMessage()).build();
       }
+    } else {
+      return Response.status(Status.BAD_REQUEST).entity("The request must be a multipart request").build();
     }
-    return Response.ok().build();
   }
 
   /**
@@ -936,90 +909,7 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     pageLink.setRel(Relations.PAGE);
     attachment.getLinks().add(pageLink);
   }
-  
-  /**
-   * Return the help syntax page.
-   * The syntax id have to replaced all special characters: 
-   *  Character '/' have to replace to "SLASH"
-   *  Character '.' have to replace to "DOT"
-   *
-   * Sample:
-   * "confluence/1.0" will be replaced to "confluenceSLASH1DOT0"
-   *  
-   * @param syntaxId The id of syntax to show in help page
-   * @param portalUrl The current portal url
-   * @return The response that contains help page
-   */
-  @GET
-  @Path("/help/{syntaxId}")
-  @Produces(MediaType.TEXT_HTML)
-  @RolesAllowed("users")
-  public Response getHelpSyntaxPage(@PathParam("syntaxId") String syntaxId, @QueryParam("portalUrl") String portalUrl) {
-    CacheControl cacheControl = new CacheControl();
-    
-    syntaxId = syntaxId.replace(Utils.SLASH, "/").replace(Utils.DOT, ".");
-    try {
-      org.exoplatform.wiki.mow.api.Page fullHelpPage = wikiService.getHelpSyntaxPage(syntaxId, true);
-      if (fullHelpPage == null) {
-        return Response.status(HTTPStatus.NOT_FOUND).cacheControl(cc).build();
-      }
 
-      // Build wiki context
-      if (!StringUtils.isEmpty(portalUrl)) {
-        RenderingService renderingService = ExoContainerContext.getCurrentContainer()
-            .getComponentInstanceOfType(RenderingService.class);
-        Execution ec = renderingService.getExecution();
-        if (ec.getContext() == null) {
-          ec.setContext(new ExecutionContext());
-        }
-        WikiContext wikiContext = new WikiContext();
-        wikiContext.setPortalURL(portalUrl);
-        wikiContext.setType(PortalConfig.PORTAL_TYPE);
-        ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
-      }
-      
-      // Get help page body
-      String body = renderingService.render(fullHelpPage.getContent(), fullHelpPage.getSyntax(), Syntax.XHTML_1_0.toIdString(), false);
-      
-      // Create javascript to load css
-      StringBuilder script = new StringBuilder("<script type=\"text/javascript\">")
-      .append("var local = String(window.location);")
-      .append("var i = local.indexOf('/', local.indexOf('//') + 2);")
-      .append("local = (i <= 0) ? local : local.substring(0, i);")
-      .append("local = local + '/wiki/skin/DefaultSkin/webui/Stylesheet.css';")
-      .append("var link = document.createElement('link');")
-      .append("link.rel = 'stylesheet';")
-      .append("link.type = 'text/css';")
-      .append("link.href = local;")
-      .append("document.head = document.head || document.getElementsByTagName(\"head\")[0] || document.documentElement;")
-      .append("document.head.appendChild(link);")
-      .append("</script>");
-      
-      // Create help html page
-      StringBuilder htmlOutput = new StringBuilder();
-      htmlOutput.append("<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">")
-      .append("<html xmlns=\"http://www.w3.org/1999/xhtml\" xml:lang=\"en\" lang=\"en\" dir=\"ltr\">")
-      .append("<head id=\"head\">")
-      .append("<title>Wiki help page</title>")
-      .append("<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/>")
-      .append(script)
-      .append("</head>")
-      .append("<body>")
-      .append("<div class=\"UIWikiPageContentArea\">")
-      .append(body)
-      .append("</div>")
-      .append("</body>")
-      .append("</html>");
-      
-      return Response.ok(htmlOutput.toString(), MediaType.TEXT_HTML).cacheControl(cacheControl).build();
-    } catch (Exception e) {
-      if (log.isWarnEnabled()) {
-        log.warn("An exception happens when getHelpSyntaxPage", e);
-      }
-      return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
-    }
-  }
-  
   @GET
   @Path("/spaces/accessibleSpaces/")
   @Produces(MediaType.APPLICATION_JSON)
@@ -1077,11 +967,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
       }
 
       title = replaceSpecialCharacter(title);
-
-      // Convert conent to markup if need
-      if (StringUtils.isEmpty(isMarkup) || !isMarkup.toLowerCase().equals("true")) {
-        content = renderingService.render(content, Syntax.XHTML_1_0.toIdString(), wikiService.getDefaultWikiSyntaxId(), false);
-      }
 
       DraftPage draftPage = null;
       if (!isNewPage) {
@@ -1202,7 +1087,6 @@ public class WikiRestServiceImpl implements WikiRestService, ResourceContainer {
     }
 
     for (JsonNodeData data : responseData) {
-      data.setName(StringCommonUtils.encodeSpecialCharForSimpleInput(data.getName()));
       if (StringUtils.isBlank(data.getName())) {
         data.setName(untitledLabel);
       }

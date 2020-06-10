@@ -17,10 +17,8 @@ import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
   <div class="invalidChars" style="display:none">$msg</div>
   <%=WikiHTMLSanitizer.markupSanitize(uicomponent.getHtmlOutput())%>
 </div>
-<script type="text/javascript" src="/wiki/javascript/xwiki/xwiki.js"></script>
-<script type="text/javascript">
-  XWiki.contextaction = 'preview';
-  if(XWiki.fixLinksTargetAttribute){
-    XWiki.fixLinksTargetAttribute(undefined);  
-  }
+<script>
+  require(['SHARED/wikiPageContent'], function() {
+    new Vue({el: '#UIViewContentDisplay'});
+  });
 </script>

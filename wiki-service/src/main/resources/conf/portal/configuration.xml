@@ -42,35 +42,20 @@
         <name>attachment.upload.limit</name>
         <value>${wiki.attachment.uploadLimit:200}</value>
       </value-param>
-      <values-param>
-        <name>xwiki/2.0</name>
-        <value>jar:/wikisyntax/help/xWiki2.0_Short.txt</value>
-        <value>jar:/wikisyntax/help/xWiki2.0_Full.txt</value>
-      </values-param>
       <properties-param>
         <name>preferences</name>
-        <property name="defaultSyntax" value="xwiki/2.0"/>              
+        <property name="defaultSyntax" value="xhtml/1.0"/>
       </properties-param> 
     </init-params>
   </component>
     
   <component>
-    <key>org.exoplatform.wiki.service.WikiRestService</key>
     <type>org.exoplatform.wiki.service.impl.WikiRestServiceImpl</type>
-  </component>
-  
-  <component>
-  	<type>org.exoplatform.wiki.rendering.render.xwiki.image.BaseImageWriterImpl</type>
   </component>
 
   <component>
     <key>org.exoplatform.wiki.resolver.PageResolver</key>
     <type>org.exoplatform.wiki.resolver.PageResolver</type>
-  </component>
-  
-  <component>
-    <key>org.exoplatform.wiki.rendering.RenderingService</key>
-    <type>org.exoplatform.wiki.rendering.impl.RenderingServiceImpl</type>
   </component>
   
   <component>
@@ -263,7 +248,7 @@
       <type>org.exoplatform.wiki.resolver.URLResolver</type>      
     </component-plugin>    
   </external-component-plugins>
-  
+
   <import>jar:/conf/portal/cache-configuration.xml</import>
   
 </configuration>

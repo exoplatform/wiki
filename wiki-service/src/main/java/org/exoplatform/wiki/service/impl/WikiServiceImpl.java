@@ -9,14 +9,12 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.ResourceBundle;
-import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.apache.commons.collections.IteratorUtils;
@@ -25,11 +23,10 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserStatus;
+import org.exoplatform.wiki.service.*;
+import org.exoplatform.wiki.migration.PageContentMigrationService;
 import org.picocontainer.Startable;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
-import org.xwiki.component.manager.ComponentLookupException;
-import org.xwiki.rendering.converter.ConversionException;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.diff.DiffResult;
 import org.exoplatform.commons.diff.DiffService;
@@ -75,18 +72,10 @@ import org.exoplatform.wiki.mow.api.WikiPreferencesSyntax;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.plugin.WikiEmotionIconsPlugin;
 import org.exoplatform.wiki.plugin.WikiTemplatePagePlugin;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.rendering.cache.AttachmentCountData;
 import org.exoplatform.wiki.rendering.cache.MarkupData;
 import org.exoplatform.wiki.rendering.cache.MarkupKey;
-import org.exoplatform.wiki.rendering.cache.UnCachedMacroPlugin;
 import org.exoplatform.wiki.resolver.TitleResolver;
-import org.exoplatform.wiki.service.BreadcrumbData;
-import org.exoplatform.wiki.service.DataStorage;
-import org.exoplatform.wiki.service.IDType;
-import org.exoplatform.wiki.service.PageUpdateType;
-import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.WikiService;
 import org.exoplatform.wiki.service.listener.AttachmentWikiListener;
 import org.exoplatform.wiki.service.listener.PageWikiListener;
 import org.exoplatform.wiki.service.search.SearchResult;
@@ -127,8 +116,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private UserACL userACL;
 
-  private RenderingService renderingService;
-
   private DataStorage dataStorage;
 
   private List<ValuesParam> syntaxHelpParams;
@@ -154,14 +141,11 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   private Map<WikiPageParams, List<WikiPageParams>> pageLinksMap = new ConcurrentHashMap<>();
 
-  private Set<String> uncachedMacroes = new HashSet<>();
-
   private int uploadLimit = 200;
 
   public WikiServiceImpl(ConfigurationManager configManager,
                          UserACL userACL,
                          DataStorage dataStorage,
-                         RenderingService renderingService,
                          CacheService cacheService,
                          OrganizationService orgService,
                          InitParams initParams) {
@@ -174,7 +158,6 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     this.configManager = configManager;
     this.userACL = userACL;
-    this.renderingService = renderingService;
     this.dataStorage = dataStorage;
     this.orgService = orgService;
 
@@ -276,7 +259,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if (preferencesParams != null) {
       return preferencesParams.getProperty(DEFAULT_SYNTAX);
     }
-    return Syntax.XWIKI_2_0.toIdString();
+    return "xhtml/1.0";
   }
 
   @Override
@@ -430,7 +413,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     wiki.setPreferences(wikiPreferences);
 
     Wiki createdWiki = dataStorage.createWiki(wiki);
-    StringBuilder sb = new StringBuilder("= Welcome to ");
+    StringBuilder sb = new StringBuilder("<h1> Welcome to ");
     String wikiLabel = owner;
     if(wikiType.equals(PortalConfig.GROUP_TYPE)) {
       sb.append("Space ");
@@ -438,7 +421,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     } else if (wikiType.equals(PortalConfig.USER_TYPE)) {
       wikiLabel = this.getUserDisplayName(wiki.getOwner());
     }
-    sb.append(wikiLabel).append(" Wiki =");
+    sb.append(wikiLabel).append(" Wiki </h1>");
     createdWiki.getWikiHome().setContent(sb.toString());
     updatePage(createdWiki.getWikiHome(), null);
     // init templates
@@ -550,11 +533,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     checkToRemoveDomainInUrl(page);
 
     return page;
-  }
-
-  @Override
-  public void addUnCachedMacro(UnCachedMacroPlugin plugin) {
-    uncachedMacroes.addAll(plugin.getUncachedMacroes());
   }
 
   @Override
@@ -686,28 +664,26 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   @Override
-  public String getPageRenderedContent(Page page, String targetSyntax) {
+  public String getPageRenderedContent(Page page) {
     String renderedContent = StringUtils.EMPTY;
     try {
-      boolean supportSectionEdit = hasPermissionOnPage(page, PermissionType.EDITPAGE, ConversationState.getCurrent().getIdentity());
-      String markup = page.getContent();
+      MarkupKey key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), false);
+      MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
+      if (cachedData != null) {
+        return cachedData.build();
+      }
 
-      boolean isUseCache = isCachePage(markup);
-      MarkupKey key = null;
-      if (isUseCache) {
-        key = new MarkupKey(new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName()), page.getSyntax(), targetSyntax, supportSectionEdit);
-        //get content from cache only when page is not uncached mixin
-        MarkupData cachedData = renderingCache.get(new Integer(key.hashCode()));
-        if (cachedData != null) {
-          return cachedData.build();
-        }
+      // migrate page from XWiki syntax to HTML on the fly
+      PageContentMigrationService pageContentMigrationService = ExoContainerContext.getService(PageContentMigrationService.class);
+      if(pageContentMigrationService != null) {
+        pageContentMigrationService.migratePage(page);
       }
-      renderedContent = renderingService.render(markup, page.getSyntax(), targetSyntax, supportSectionEdit);
-      if (isUseCache) {
-        renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
-      }
+
+      renderedContent = page.getContent();
+
+      renderingCache.put(new Integer(key.hashCode()), new MarkupData(renderedContent));
     } catch (Exception e) {
-      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s] in syntax %s", page.getWikiType(), page.getWikiOwner(), page.getName(), targetSyntax), e);
+      LOG.error(String.format("Failed to get rendered content of page [%s:%s:%s]", page.getWikiType(), page.getWikiOwner(), page.getName()), e);
     }
     return renderedContent;
   }
@@ -722,10 +698,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     linkParams.add(param);
   }
 
-  public Set<String> getUncachedMacroes() {
-    return uncachedMacroes;
-  }
-
   protected void invalidateCache(Page page) {
     WikiPageParams params = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
     List<WikiPageParams> linkedPages = pageLinksMap.get(params);
@@ -738,12 +710,17 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     for (WikiPageParams wikiPageParams : linkedPages) {
       try {
-        MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        MarkupKey key = new MarkupKey(wikiPageParams, false);
         renderingCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         renderingCache.remove(new Integer(key.hashCode()));
 
-        key = new MarkupKey(wikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        key = new MarkupKey(wikiPageParams, false);
+        renderingCache.remove(new Integer(key.hashCode()));
+        key.setSupportSectionEdit(true);
+        renderingCache.remove(new Integer(key.hashCode()));
+
+        key = new MarkupKey(wikiPageParams, false);
         renderingCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         renderingCache.remove(new Integer(key.hashCode()));
@@ -766,12 +743,12 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     for (WikiPageParams linkedWikiPageParams : linkedPages) {
       try {
-        MarkupKey key = new MarkupKey(linkedWikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+        MarkupKey key = new MarkupKey(linkedWikiPageParams, false);
         attachmentCountCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         attachmentCountCache.remove(new Integer(key.hashCode()));
 
-        key = new MarkupKey(linkedWikiPageParams,Syntax.XHTML_1_0.toIdString(), Syntax.XWIKI_2_0.toIdString(), false);
+        key = new MarkupKey(linkedWikiPageParams, false);
         attachmentCountCache.remove(new Integer(key.hashCode()));
         key.setSupportSectionEdit(true);
         attachmentCountCache.remove(new Integer(key.hashCode()));
@@ -841,7 +818,7 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public Page getHelpSyntaxPage(String syntaxId, boolean fullContent) throws WikiException {
-    return dataStorage.getHelpSyntaxPage(syntaxId, fullContent, syntaxHelpParams, configManager);
+    return null;
   }
 
   @Override
@@ -992,7 +969,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     if(PageUpdateType.EDIT_PAGE_CONTENT.equals(updateType) || PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE.equals(updateType)) {
       try {
         Utils.sendMailOnChangeContent(page);
-      } catch (WikiException | DifferentiationFailedException | ComponentLookupException | ConversionException e) {
+      } catch (WikiException | DifferentiationFailedException e) {
         log.error("Cannot send notification email on page change - Cause : " + e.getMessage(), e);
       }
     }
@@ -1272,7 +1249,7 @@ public class WikiServiceImpl implements WikiService, Startable {
     int nbOfAttachments = 0;
 
     WikiPageParams wikiPageParams = new WikiPageParams(page.getWikiType(), page.getWikiOwner(), page.getName());
-    MarkupKey key = new MarkupKey(wikiPageParams, Syntax.XWIKI_2_0.toIdString(), Syntax.XHTML_1_0.toIdString(), false);
+    MarkupKey key = new MarkupKey(wikiPageParams, false);
     Integer cacheKey = new Integer(key.hashCode());
     AttachmentCountData cachedNbOfAttachments = attachmentCountCache.get(cacheKey);
     if(cachedNbOfAttachments != null) {
@@ -1614,23 +1591,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     } catch(WikiException e) {
       log.error("Cannot init emotion icons - Cause : " + e.getMessage(), e);
     }
-  }
-
-  private boolean isCachePage(String renderedContent) {
-    if (uncachedMacroes == null || uncachedMacroes.isEmpty()) {
-      return true;
-    }
-    boolean useCachePage = true;
-    for (String macro : uncachedMacroes) {
-      String m1 = new StringBuilder().append("{{").append(macro).append("}}").toString();
-      String m2 = new StringBuilder().append("{{").append(macro).append("/}}").toString();
-      String m3 = new StringBuilder().append("{{").append(macro).append(" ").toString();
-      if (renderedContent.contains(m1) || renderedContent.contains(m2) || renderedContent.contains(m3)) {
-        useCachePage = false;
-        break;
-      }
-    }
-    return useCachePage;
   }
 
 

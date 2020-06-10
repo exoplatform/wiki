@@ -41,9 +41,6 @@
       <outputDirectory>/lib</outputDirectory>
       <includes>
         <include>org.exoplatform.wiki:*:jar</include>
-        <include>org.xwiki.commons:*:jar</include>
-        <include>org.xwiki.platform:*:jar</include>
-        <include>org.xwiki.rendering:*:jar</include>
         <include>commons-configuration:commons-configuration:jar</include>
         <include>org.bouncycastle:bctsp-jdk15:jar</include>
         <include>net.sourceforge.cssparser:cssparser:jar</include>

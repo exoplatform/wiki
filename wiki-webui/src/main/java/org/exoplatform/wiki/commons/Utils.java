@@ -21,14 +21,10 @@ import java.net.URLEncoder;
 import java.util.*;
 import java.util.Map.Entry;
 
-import javax.portlet.PortletPreferences;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.apache.commons.lang.StringUtils;
-import org.xwiki.context.Execution;
-import org.xwiki.context.ExecutionContext;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.MimeTypeResolver;
@@ -54,8 +50,6 @@ import org.exoplatform.webui.event.Event;
 import org.exoplatform.webui.form.UIForm;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.mow.api.*;
-import org.exoplatform.wiki.rendering.RenderingService;
-import org.exoplatform.wiki.rendering.impl.RenderingServiceImpl;
 import org.exoplatform.wiki.resolver.PageResolver;
 import org.exoplatform.wiki.service.WikiContext;
 import org.exoplatform.wiki.service.WikiPageParams;
@@ -202,7 +196,7 @@ public class Utils {
   }
 
   private static String getWikiAppNameInSpace(String spaceId) {
-    SpaceService spaceService = org.exoplatform.wiki.rendering.util.Utils.getService(SpaceService.class);
+    SpaceService spaceService = ExoContainerContext.getService(SpaceService.class);
     Space space = spaceService.getSpaceByGroupId(spaceId);
     String apps = space.getApp();
     if (apps != null) {
@@ -236,33 +230,17 @@ public class Utils {
     return wikiService.getWikiByTypeAndOwner(params.getType(), params.getOwner());
   }
 
-  public static WikiContext setUpWikiContext(UIWikiPortlet wikiPortlet) throws Exception {
-    RenderingService renderingService = (RenderingService) ExoContainerContext.getCurrentContainer()
-                                                                              .getComponentInstanceOfType(RenderingService.class);
-    Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
-    if (ec.getContext() == null) {
-      ec.setContext(new ExecutionContext());
-    }
-    WikiContext wikiContext = createWikiContext(wikiPortlet);
-    ec.getContext().setProperty(WikiContext.WIKICONTEXT, wikiContext);
-    return wikiContext;
-  }
-
   public static void feedDataForWYSIWYGEditor(UIWikiPageEditForm pageEditForm, String markup) throws Exception {
     UIWikiPortlet wikiPortlet = pageEditForm.getAncestorOfType(UIWikiPortlet.class);
     UIWikiRichTextArea richTextArea = pageEditForm.getChild(UIWikiRichTextArea.class);
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
     HttpSession session = Util.getPortalRequestContext().getRequest().getSession(false);
     UIFormTextAreaInput markupInput = pageEditForm.getUIFormTextAreaInput(UIWikiPageEditForm.FIELD_CONTENT);
-    String markupSyntax = getDefaultSyntax();
-    WikiContext wikiContext = Utils.setUpWikiContext(wikiPortlet);
     if (markup == null) {
       markup = (markupInput.getValue() == null) ? "" : markupInput.getValue();
     }
-    String xhtmlContent = renderingService.render(markup, markupSyntax, Syntax.ANNOTATED_XHTML_1_0.toIdString(), false);
+    String xhtmlContent = markup;
     richTextArea.getUIFormTextAreaInput().setValue(xhtmlContent);
     session.setAttribute(UIWikiRichTextArea.SESSION_KEY, xhtmlContent);
-    session.setAttribute(UIWikiRichTextArea.WIKI_CONTEXT, wikiContext);
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     SessionManager sessionManager = (SessionManager) container.getComponentInstanceOfType(SessionManager.class);
     sessionManager.addSessionContext(session.getId(), Utils.createWikiContext(wikiPortlet));
@@ -280,20 +258,9 @@ public class Utils {
     return TreeUtils.getPathFromPageParams(getCurrentWikiPageParams());
   }
 
-  public static String getDefaultSyntax() throws Exception {
-    WikiPreferences currentPreferences = Utils.getCurrentPreferences();
-    String currentDefaultSyntax;
-    if (currentPreferences != null) {
-      currentDefaultSyntax = currentPreferences.getWikiPreferencesSyntax().getDefaultSyntax();
-      if (currentDefaultSyntax == null) {
-        WikiService wservice = (WikiService) PortalContainer.getComponent(WikiService.class);
-        currentDefaultSyntax = wservice.getDefaultWikiSyntaxId();
-      }
-    } else {
-      WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
-      currentDefaultSyntax = wikiService.getDefaultWikiSyntaxId();
-    }
-    return currentDefaultSyntax;
+  public static String getDefaultSyntax() {
+    WikiService wservice = ExoContainerContext.getService(WikiService.class);
+    return wservice.getDefaultWikiSyntaxId();
   }
 
   public static WikiPreferences getCurrentPreferences() throws Exception {
@@ -492,33 +459,6 @@ public class Utils {
       }
     }
     return null;
-  }
-
-  /**
-   * render macro to XHtml string.
-   * 
-   * @param uiComponent - component that contain the macro.
-   * @param macroName - name of macro
-   * @param wikiSyntax - wiki syntax referred from {@link Syntax}
-   * @return String in format {@link Syntax#XHTML_1_0}
-   */
-  public static String renderMacroToXHtml(UIComponent uiComponent, String macroName, String wikiSyntax) {
-    try {
-      RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
-      setUpWikiContext(uiComponent.getAncestorOfType(UIWikiPortlet.class));
-      String content = renderingService.render(macroName, wikiSyntax, Syntax.XHTML_1_0.toIdString(), false);
-      return content;
-    } catch (Exception e) {
-      return "";
-    }
-  }
-
-  public static void removeWikiContext() throws Exception {
-    RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
-    Execution ec = ((RenderingServiceImpl) renderingService).getExecution();
-    if (ec != null) {
-      ec.removeContext();
-    }
   }
 
   public static int getLimitUploadSize() {

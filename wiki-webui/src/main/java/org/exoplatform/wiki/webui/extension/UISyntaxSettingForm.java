@@ -63,12 +63,10 @@ public class UISyntaxSettingForm extends UIForm {
     public void execute(Event<UISyntaxSettingForm> event) throws Exception {
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);     
       UIWikiSyntaxPreferences uiSyntaxPreferences = wikiPortlet.findComponentById(PREFERENCES_SYNTAX);
-      UIFormSelectBox defaultSyntaxSelect= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_SYNTAX);
-      UIFormCheckBoxInput<Boolean> allowCheckBox= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_ALLOW);      
+      UIFormCheckBoxInput<Boolean> allowCheckBox= uiSyntaxPreferences.getChildById(UIWikiSyntaxPreferences.FIELD_ALLOW);
       WikiPreferences preferences= Utils.getCurrentPreferences();
       WikiPreferencesSyntax preferencesSyntax = preferences.getWikiPreferencesSyntax();
       preferencesSyntax.setAllowMultipleSyntaxes(allowCheckBox.isChecked());
-      preferencesSyntax.setDefaultSyntax(defaultSyntaxSelect.getValue());
       event.getRequestContext()
            .getUIApplication()
            .addMessage(new ApplicationMessage("UISyntaxSettingForm.msg.Save-syntax-setting-success",

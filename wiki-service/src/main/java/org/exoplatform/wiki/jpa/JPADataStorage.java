@@ -230,7 +230,7 @@ public class JPADataStorage implements DataStorage {
     Date now = Calendar.getInstance().getTime();
     wikiHomePage.setCreatedDate(now);
     wikiHomePage.setUpdatedDate(now);
-    wikiHomePage.setContent("= Welcome to " + wiki.getOwner() + " =");
+    wikiHomePage.setContent("<h1> Welcome to " + wiki.getOwner() + " </h1>");
     // inherit syntax from wiki
     wikiHomePage.setSyntax(createdWiki.getPreferences().getWikiPreferencesSyntax().getDefaultSyntax());
     // inherit home page permissions from wiki permissions
@@ -1058,43 +1058,10 @@ public class JPADataStorage implements DataStorage {
     return attachmentFound;
   }
 
+  @Deprecated
   @Override
   public Page getHelpSyntaxPage(String syntaxId, boolean fullContent, List<ValuesParam> syntaxHelpParams, ConfigurationManager configurationManager) throws WikiException {
-    Page helpPage = null;
-    if(syntaxHelpParams != null) {
-      for(ValuesParam syntaxHelpParam : syntaxHelpParams) {
-        String syntaxName = syntaxHelpParam.getName();
-        if(syntaxName.equals(syntaxId)) {
-          try {
-            List<String> syntaxValues = syntaxHelpParam.getValues();
-            String filePath;
-            if(fullContent) {
-              filePath = syntaxValues.get(1);
-            } else {
-              filePath = syntaxValues.get(0);
-            }
-            InputStream helpFile = configurationManager.getInputStream(filePath);
-            helpPage = new Page();
-            String realName = syntaxId.replace("/", "");
-            helpPage.setName(realName + " Help Page");
-            helpPage.setSyntax(syntaxId);
-
-            StringBuilder stringContent = new StringBuilder();
-            BufferedReader bufferReader;
-            bufferReader = new BufferedReader(new InputStreamReader(helpFile));
-            String tempLine;
-            while ((tempLine = bufferReader.readLine()) != null) {
-              stringContent.append(tempLine).append("\n");
-            }
-            helpPage.setContent(stringContent.toString());
-
-          } catch(Exception e) {
-            throw new WikiException("Cannot get help page " + syntaxId, e);
-          }
-        }
-      }
-    }
-    return helpPage;
+    return null;
   }
 
   @Override
@@ -1280,6 +1247,7 @@ public class JPADataStorage implements DataStorage {
       pageVersionEntity.setTitle(pageEntity.getTitle());
       pageVersionEntity.setAuthor(pageEntity.getAuthor());
       pageVersionEntity.setContent(pageEntity.getContent());
+      pageVersionEntity.setSyntax(pageEntity.getSyntax());
       pageVersionEntity.setMinorEdit(pageEntity.isMinorEdit());
       pageVersionEntity.setComment(pageEntity.getComment());
       Date now = Calendar.getInstance().getTime();

@@ -21,11 +21,9 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.apache.commons.lang3.StringUtils;
-import org.xwiki.rendering.syntax.Syntax;
 
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.StringCommonUtils;
-import org.exoplatform.container.PortalContainer;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
@@ -35,7 +33,6 @@ import org.exoplatform.webui.ext.filter.UIExtensionFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilters;
 import org.exoplatform.webui.form.UIFormTextAreaInput;
 import org.exoplatform.wiki.commons.Utils;
-import org.exoplatform.wiki.rendering.RenderingService;
 import org.exoplatform.wiki.webui.UIWikiMaskWorkspace;
 import org.exoplatform.wiki.webui.UIWikiPageEditForm;
 import org.exoplatform.wiki.webui.UIWikiPageTitleControlArea;
@@ -91,14 +88,10 @@ public class PreviewPageActionComponent extends AbstractFormActionComponent {
       UIWikiPageTitleControlArea wikiPageTitleArea = wikiPageEditForm.getChild(UIWikiPageTitleControlArea.class);
       String markupSyntax = Utils.getDefaultSyntax();
       boolean isRichTextRendered = wikiRichTextArea.isRendered();
-      RenderingService renderingService = (RenderingService) PortalContainer.getComponent(RenderingService.class);
       String markup;
       if (isRichTextRendered) {
         String htmlContent = wikiRichTextArea.getUIFormTextAreaInput().getValue();        
-        markup = renderingService.render(htmlContent,
-                                         Syntax.XHTML_1_0.toIdString(),
-                                         markupSyntax,
-                                         false);       
+        markup = htmlContent;
         Utils.feedDataForWYSIWYGEditor(wikiPageEditForm, markup);
       } else {
         UIFormTextAreaInput markupInput = wikiPageEditForm.findComponentById(UIWikiPageEditForm.FIELD_CONTENT);        
