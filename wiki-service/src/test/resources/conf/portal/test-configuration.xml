@@ -32,6 +32,5 @@
   <import>jar:/conf/exo.commons.component.core-configuration.xml</import>
   <import>jar:/conf/exo.social.component.core-configuration.xml</import>
 
-  <remove-configuration>org.exoplatform.commons.search.service.UnifiedSearchService</remove-configuration>
   <remove-configuration>org.exoplatform.commons.api.persistence.DataInitializer</remove-configuration>
 </configuration>
