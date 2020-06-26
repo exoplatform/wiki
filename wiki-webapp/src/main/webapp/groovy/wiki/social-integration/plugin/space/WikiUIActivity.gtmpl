@@ -173,7 +173,6 @@
                         </div>
                     </div>
                 </div>
-              <% _ctx.includeTemplates("UIActivityActionBar-actions-mobile") %>
                 <!-- View Changes -->
                 <% if ((versionNum > 1)||!(activityType.equals(PageUpdateType.ADD_PAGE.toString()))) { %>
                 <ul class="statusAction uiActivityActions">
