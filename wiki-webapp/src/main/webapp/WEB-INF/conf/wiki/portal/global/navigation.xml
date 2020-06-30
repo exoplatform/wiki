@@ -24,10 +24,10 @@
   <priority>2</priority>
   <page-nodes>
     <node>
-      <name>wiki</name>
+      <name>notes</name>
       <label>#{portal.global.wiki}</label>
       <visibility>SYSTEM</visibility>
-      <page-reference>portal::global::wiki</page-reference>
+      <page-reference>portal::global::notes</page-reference>
     </node>
   </page-nodes>
 </node-navigation>

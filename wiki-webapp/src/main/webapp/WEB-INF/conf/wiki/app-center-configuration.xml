@@ -40,13 +40,13 @@
           <description>description</description>
           <object type="org.exoplatform.appcenter.dto.Application">
             <field name="title">
-              <string>Wiki</string>
+              <string>Notes</string>
             </field>
             <field name="url">
-              <string>./wiki</string>
+              <string>./notes</string>
             </field>
             <field name="description">
-              <string>Wiki application</string>
+              <string>Wiki notes application</string>
             </field>
             <field name="active">
               <boolean>true</boolean>
