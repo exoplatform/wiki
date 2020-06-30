@@ -41,8 +41,11 @@ import org.exoplatform.services.organization.UserStatus;
 import org.exoplatform.services.security.ConversationState;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
+import org.exoplatform.social.core.space.SpaceApplication;
+import org.exoplatform.social.core.space.SpaceTemplate;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.application.portlet.PortletRequestContext;
 import org.exoplatform.webui.core.UIComponent;
@@ -169,7 +172,7 @@ public class Utils {
   }
 
   public static String getSpaceHomeURL(String spaceGroupId) {
-    SpaceService spaceService = ExoContainerContext.getCurrentContainer().getComponentInstanceOfType(SpaceService.class);
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceByGroupId(spaceGroupId);
     String spaceLink = org.exoplatform.social.webui.Utils.getSpaceHomeURL(space);
     return spaceLink;
@@ -185,7 +188,6 @@ public class Utils {
       if (!spaceUrl.toString().endsWith("/")) {
         spaceUrl.append("/");
       }
-      // spaceUrl.append("wiki/");
       spaceUrl.append(getWikiAppNameInSpace(params.getOwner())).append("/");
       if (!StringUtils.isEmpty(params.getPageName())) {
         spaceUrl.append(params.getPageName());
@@ -196,14 +198,15 @@ public class Utils {
   }
 
   private static String getWikiAppNameInSpace(String spaceId) {
-    SpaceService spaceService = ExoContainerContext.getService(SpaceService.class);
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
     Space space = spaceService.getSpaceByGroupId(spaceId);
-    String apps = space.getApp();
-    if (apps != null) {
-      for (String app : apps.split(",")) {
-        String[] appInfos = app.split(":");
-        if (appInfos.length > 1 && "WikiPortlet".equals(appInfos[0])) {
-          return appInfos[1];
+    SpaceTemplateService spaceTemplateService = CommonsUtils.getService(SpaceTemplateService.class);
+    SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(space.getTemplate());
+    List<SpaceApplication> spaceTemplateApplications = spaceTemplate.getSpaceApplicationList();
+    if (spaceTemplateApplications != null) {
+      for (SpaceApplication spaceApplication : spaceTemplateApplications) {
+        if("WikiPortlet".equals(spaceApplication.getPortletName())){
+          return spaceApplication.getUri();
         }
       }
     }
