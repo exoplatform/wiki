@@ -23,45 +23,6 @@
   <external-component-plugins>
     <target-component>org.exoplatform.appcenter.service.ApplicationCenterService</target-component>
     <component-plugin>
-      <name>Wiki</name>
-      <set-method>addApplicationPlugin</set-method>
-      <type>org.exoplatform.appcenter.plugin.ApplicationPlugin</type>
-      <init-params>
-        <value-param>
-          <name>imagePath</name>
-          <value>war:/../images/wiki.png</value>
-        </value-param>
-        <value-param>
-          <name>override</name>
-          <value>${exo.app-center.wiki.override:false}</value>
-        </value-param>
-        <object-param>
-          <name>application</name>
-          <description>description</description>
-          <object type="org.exoplatform.appcenter.dto.Application">
-            <field name="title">
-              <string>Wiki</string>
-            </field>
-            <field name="url">
-              <string>./wiki</string>
-            </field>
-            <field name="description">
-              <string>Wiki application</string>
-            </field>
-            <field name="active">
-              <boolean>true</boolean>
-            </field>
-            <field name="isMandatory">
-              <boolean>false</boolean>
-            </field>
-            <field name="isMobile">
-              <boolean>false</boolean>
-            </field>
-          </object>
-        </object-param>
-      </init-params>
-    </component-plugin>
-    <component-plugin>
       <name>Notes</name>
       <set-method>addApplicationPlugin</set-method>
       <type>org.exoplatform.appcenter.plugin.ApplicationPlugin</type>
@@ -82,7 +43,7 @@
               <string>Notes</string>
             </field>
             <field name="url">
-              <string>./wiki/user/@user@</string>
+              <string>./wiki</string>
             </field>
             <field name="description">
               <string>Wiki notes application</string>

@@ -23,7 +23,7 @@
         xmlns="http://www.gatein.org/xml/ns/gatein_objects_1_6">
   <page>
     <name>wiki</name>
-    <title>Wiki</title>
+    <title>Notes</title>
     <access-permissions>*:/platform/users</access-permissions>
     <edit-permission>*:/platform/administrators</edit-permission>
     <container id="top-wiki-container" template="system:/groovy/portal/webui/container/UIAddOnContainer.gtmpl">
