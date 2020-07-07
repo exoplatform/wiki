@@ -54,7 +54,7 @@ public class WikiElasticsearchIntegrationTest extends BaseWikiESIntegrationTest 
         assertEquals(1, searchResults.size());
         SearchResult foundPage = searchResults.iterator().next();
         assertEquals("My title", foundPage.getTitle());
-        assertEquals("... My <strong>title</strong>", foundPage.getExcerpt());
+        assertEquals("... My <span class='searchMatchExcerpt'>title</span>", foundPage.getExcerpt());
         assertEquals("/portal/intranet/wiki/My_name", foundPage.getUrl());
     }
 }
