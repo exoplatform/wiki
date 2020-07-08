@@ -24,7 +24,14 @@ export default {
     getPageContent() {
       if (this.pageName) {
         const self = this;
-        const url = `/portal/rest/wiki/group/spaces//spaces/${eXo.env.portal.spaceGroup}/pages/${this.pageName}`;
+        let url = `/${eXo.env.portal.containerName}/${eXo.env.portal.rest}/wiki`;
+        if (eXo.env.portal.spaceId) {
+          url += `/group/spaces/spaces/${eXo.env.portal.spaceGroup}/pages/${this.pageName}`;
+        } else if (eXo.env.server.portalBaseURL.includes('/wiki/user/')) {
+          url += `/user/spaces/${eXo.env.portal.userName}/pages/${this.pageName}`;
+        } else {
+          url += `/portal/spaces/global/pages/${this.pageName}`;
+        }
         fetch(url)
           .then(response => response.text())
           .then(text => (new window.DOMParser()).parseFromString(text, 'text/xml'))
