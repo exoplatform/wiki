@@ -57,10 +57,12 @@ WikiCkeditor.prototype.createEditor = function() {
   let uploadUrl = `/${eXo.env.portal.containerName}/${eXo.env.portal.rest}/wiki/upload`;
   if(eXo.env.portal.spaceId) {
     uploadUrl += `/group//spaces/${eXo.env.portal.spaceGroup}`;
+  } else if (eXo.env.server.portalBaseURL.includes('/wiki/user/')) {
+    uploadUrl += `/user/${eXo.env.portal.userName}`;
   } else {
-    uploadUrl += `/portal/${eXo.env.portal.portalName}`;
+    uploadUrl += '/portal/global';
   }
-  uploadUrl += `/${eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))}`;
+  uploadUrl += `${eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/'))}`;
 
   DecoupledEditor
     .create( document.querySelector( '.UIWikiRichTextEditor' ), {
