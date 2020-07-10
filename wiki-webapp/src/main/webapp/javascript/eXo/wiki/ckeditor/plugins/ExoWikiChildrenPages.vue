@@ -36,12 +36,13 @@ export default {
       if(!eXo.env.server.portalBaseURL.endsWith(`/${eXo.env.portal.selectedNodeUri}`)) {
         pageName = eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/') + 1);
       }
-
-      let url = '';
+      let url = `/${eXo.env.portal.containerName}/${eXo.env.portal.rest}/wiki/tree/CHILDREN?path=`;
       if(eXo.env.portal.spaceName) {
-        url = `/rest/wiki/tree/CHILDREN?path=group/spaces/${eXo.env.portal.spaceGroup}/${pageName}&depth=${this.depth}`;
+        url += `group/spaces/${eXo.env.portal.spaceGroup}/${pageName}&depth=${this.depth}`;
+      } else if (eXo.env.server.portalBaseURL.includes('/wiki/user/')) {
+        url += `user/${eXo.env.portal.userName}/${pageName}&depth=${this.depth}`;
       } else {
-        url = `/rest/wiki/tree/CHILDREN?path=portal/${eXo.env.portal.portalName}/${pageName}&depth=${this.depth}`;
+        url += `portal/global/${pageName}&depth=${this.depth}`;
       }
       fetch(url, {credentials: 'include'}).then(resp => resp.json()).then(data => {
         if (data && data.jsonList) {
