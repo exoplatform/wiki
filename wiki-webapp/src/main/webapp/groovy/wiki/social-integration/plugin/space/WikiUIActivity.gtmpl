@@ -130,15 +130,31 @@
                                 <i class="uiIconActivityAction uiIconLightGray">
                                 </i>
                             </div>
-                            <ul class="dropdown-menu pull-right" role="menu">
-                            <li>
-                              <a id="Permalink${activity.id}" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>">$viewActivityTip</a>
+                            <ul class="dropdown-menu actLink-items pull-right" role="menu">
+                            <li class="actLink-item">
+                              <a id="Permalink${activity.id}" rel="tooltip" data-placement="bottom" title="$viewActivityTip" href="<%=uicomponent.getActivityPermalink(activity.id)%>">
+                                  <i class="uiIcon uiIconOpenActivity actLink-icon"></i>
+                                  <span class="actLink-label">$viewActivityTip</span>
+                              </a>
                             </li>
-                        <%
+                            <!-- View Changes -->
+                            <% if ((versionNum > 1)||!(activityType.equals(PageUpdateType.ADD_PAGE.toString()))) { %>
+                            <li class="actLink-item">
+                                <a id="ViewChanges${activity.id}" href="<%=uicomponent.getViewChangeURL();%>" >
+                                    <i class="uiIcon actLink-icon uiIconViewChange"></i>&nbsp;
+                                    <span class="actLink-label"><%= _ctx.appRes("WikiUIActivity.label.view-change"); %></span>
+                                </a>
+                                </li>
+
+                                <% }
+
                            if (activityDeletable) {
                         %>
-                              <li>
-                                  <a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="controllDelete" id="DeleteActivityButton${activity.id}">${labelDelete}</a>
+                              <li class="actLink-item">
+                                  <a href="javascript:void(0)" data-confirm="$labelToDeleteThisActivity" data-caption="$captionConfirmation" data-close="$labelClosebutton" data-ok="$labelConfirmbutton"  data-delete="<%=uicomponent.event("DeleteActivity", uicomponent.getId(), "");%>" class="controllDelete" id="DeleteActivityButton${activity.id}">
+                                      <i class="uiIcon uiIconTrashActivity actLink-icon"></i>
+                                      <span class="actLink-label">${labelDelete}</span>
+                                  </a>
                               </li>
                         <%}%>
                             </ul>
@@ -173,16 +189,7 @@
                         </div>
                     </div>
                 </div>
-                <!-- View Changes -->
-                <% if ((versionNum > 1)||!(activityType.equals(PageUpdateType.ADD_PAGE.toString()))) { %>
-                <ul class="statusAction uiActivityActions">
-                <li>
-                <a id="ViewChanges${activity.id}" href="<%=uicomponent.getViewChangeURL();%>" >
-                <i class="uiIconViewChange uiIconLightGray"></i>&nbsp;<%= _ctx.appRes("WikiUIActivity.label.view-change"); %>
-                                           </a>
-                </li>
-                                       </ul>
-                <% } %>
+
               <div class="actionsDetailsWrapper">
             <% _ctx.includeTemplates("UIActivityListLiked") %>
             <% _ctx.includeTemplates("UIActivityActionBar-actions") %>
