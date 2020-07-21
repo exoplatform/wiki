@@ -23,6 +23,7 @@ export default {
   methods: {
     getPageContent() {
       if (this.pageName) {
+        this.pageName = this.pageName.replace(/[&/\\#[\]+%@|'`"^:;*?=<>{}]+/g, '_');
         const self = this;
         let url = `/${eXo.env.portal.containerName}/${eXo.env.portal.rest}/wiki`;
         if (eXo.env.portal.spaceId) {
