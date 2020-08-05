@@ -3,8 +3,6 @@
   background-color: #FFFFFF;
   border: 1px solid var(--ck-color-base-border);
   border-radius: var(--ck-border-radius);
-  display: flex;
-  flex-flow: column nowrap;
   margin-left: 1px;
   margin-right: 1px;
 }
