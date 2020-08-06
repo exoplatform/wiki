@@ -3,7 +3,7 @@ const merge = require('webpack-merge');
 const webpackCommonConfig = require('./webpack.common.js');
 
 // change the server path to your server location path
-const exoServerPath = "/home/thomas/exoplatform/bundles/plfent-5.3.x-wiki-editor-20190409.124152-7/platform-5.3.x-wiki-editor-SNAPSHOT/";
+const exoServerPath = "/exo-server/";
 
 let config = merge(webpackCommonConfig, {
   mode: 'development',
