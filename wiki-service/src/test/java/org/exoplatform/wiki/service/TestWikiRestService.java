@@ -4,7 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
@@ -20,16 +20,13 @@ import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
+import org.exoplatform.wiki.mow.api.*;
 import org.junit.Test;
 
 import com.ibm.icu.util.Calendar;
 
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mock.MockResourceBundleService;
-import org.exoplatform.wiki.mow.api.Attachment;
-import org.exoplatform.wiki.mow.api.EmotionIcon;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.service.impl.WikiRestServiceImpl;
 
 /**
@@ -214,5 +211,43 @@ public class TestWikiRestService {
     assertNotNull(response);
     assertEquals(200, response.getStatus());
     assertEquals("<div>my page</div>", response.getEntity());
+  }
+
+  @Test
+  public void testSaveDraftName() throws Exception {
+    //Given
+    WikiService wikiService = mock(WikiService.class);
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, new MockResourceBundleService());
+
+    DraftPage newDraftPage = new DraftPage();
+    newDraftPage.setTitle("newDraft");
+    newDraftPage.setName("new_Draft");
+    newDraftPage.setId("1");
+    newDraftPage.setNewPage(true);
+    newDraftPage.setTargetPageId("1");
+    newDraftPage.setTargetPageRevision("1");
+    newDraftPage.setContent("new content");
+
+    Wiki wiki = new Wiki("portal", "global");
+    String wikiType = wiki.getType();
+    String wikiOwner = wiki.getOwner();
+
+    Page wikiHomePage = new Page("WikiHome", "Wiki Home");
+    wikiHomePage.setId("1");
+    wikiHomePage.setWikiId("1");
+    wikiHomePage.setSyntax("xhtml/1.0");
+    wikiHomePage.setWikiType(wikiType);
+    wikiHomePage.setWikiOwner(wikiOwner);
+    String pageId = wikiHomePage.getId();
+
+
+    when(wikiService.getWikiByTypeAndOwner(wikiType, wikiOwner)).thenReturn(wiki);
+    when(wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageId)).thenReturn(wikiHomePage);
+    when(wikiService.createDraftForNewPage(any(DraftPage.class),any(Page.class),anyLong())).thenReturn(newDraftPage);
+
+    // When
+    Response response = wikiRestService.saveDraft(wikiType, wikiOwner, pageId,"undefined","",true, 1594394768847L,"newDraft","new content","false");
+    // Then
+    assertEquals(200, response.getStatus());
   }
 }
