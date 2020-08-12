@@ -58,18 +58,15 @@ UIWikiPageEditForm.prototype.init = function(pageEditFormId, restURL, isRunAutoS
   var titleInput = $(titleContainer).find('input')[0];
   
   // Find textarea
-  var textAreaContainer = $(pageEditForm).find('div.uiWikiPageContentInputContainer')[0];
-  if (!textAreaContainer) {
-    textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
-  }
-  
+  var textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
+
   // Bind event for text area and title input
   $(titleInput).keyup(func);
   $(titleInput).change(func);
   if (textAreaContainer) {
-    var textarea = $(textAreaContainer).find('textarea');
-    textarea.keyup(func);
-    textarea.change(func);
+    var textarea = $(textAreaContainer)[0];
+    $(textarea).keyup(func);
+    $(textarea).change(func);
     
     textarea = $(textAreaContainer).find('iframe')[0];
     if (textarea) {
