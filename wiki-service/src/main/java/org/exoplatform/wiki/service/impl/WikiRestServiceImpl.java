@@ -112,8 +112,6 @@ public class WikiRestServiceImpl implements ResourceContainer {
 
   private static Log             log = ExoLogger.getLogger("wiki:WikiRestService");
 
-  private static final String DASH = "-";
-
   private final CacheControl     cc;
   
   private ObjectFactory objectFactory = new ObjectFactory();
@@ -966,8 +964,6 @@ public class WikiRestServiceImpl implements ResourceContainer {
         throw new IllegalArgumentException("Can not find the target page");
       }
 
-      title = replaceSpecialCharacter(title);
-
       DraftPage draftPage = null;
       if (!isNewPage) {
         draftPage = wikiService.getDraftOfPage(page);
@@ -1016,14 +1012,6 @@ public class WikiRestServiceImpl implements ResourceContainer {
       log.warn(String.format("Failed to perform auto save wiki page %s:%s:%s", wikiType,wikiOwner,pageId), ex);
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
-  }
-  
-  private String replaceSpecialCharacter(String s) {
-    StringTokenizer tokens = new StringTokenizer(WikiNameValidator.INVALID_CHARACTERS);
-    while (tokens.hasMoreTokens()) {
-      s = s.replace(tokens.nextToken(), DASH);
-    }
-    return s;
   }
   
   /**
