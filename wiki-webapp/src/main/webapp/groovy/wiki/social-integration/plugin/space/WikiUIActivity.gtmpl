@@ -99,13 +99,6 @@
   uicomponent.setCommentFormFocused(false);
 
   def pageLink = uicomponent.getPageURL();
-  if (uicomponent.isUserActivity()) {
-    if (spaceGroupId.length() > 0) {
-      pageLink = uicomponent.getPageURLFromSpace();
-    }
-  } else {
-    pageLink = uicomponent.getPageURLFromSpace();
-  }
 
   def version = uicomponent.getPageVersion();
   def versionLabel = _ctx.appRes("WikiUIActivity.label.version") + version;
