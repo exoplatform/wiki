@@ -5,6 +5,7 @@ const webpackCommonConfig = require('./webpack.common.js');
 // change the server path to your server location path
 const exoServerPath = "/exo-server/";
 
+
 let config = merge(webpackCommonConfig, {
   mode: 'development',
   output: {
