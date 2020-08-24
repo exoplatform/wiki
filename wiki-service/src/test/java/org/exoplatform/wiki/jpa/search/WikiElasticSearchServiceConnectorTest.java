@@ -3,6 +3,7 @@ package org.exoplatform.wiki.jpa.search;
 import org.exoplatform.commons.search.es.client.ElasticSearchingClient;
 import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.container.xml.PropertiesParam;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -25,6 +26,9 @@ public class WikiElasticSearchServiceConnectorTest {
 
   @Mock
   private ElasticSearchingClient elasticSearchingClient;
+
+  @Mock
+  private IdentityManager identityManager;
 
   @Test
   public void shouldReturnResultsWithoutExcerptWhenNoHighlight() {
@@ -83,7 +87,7 @@ public class WikiElasticSearchServiceConnectorTest {
     properties.setProperty("searchFields", "name,title,content,comment,file");
     initParams.put("constructor.params", properties);
 
-    this.searchServiceConnector = new WikiElasticSearchServiceConnector(initParams, elasticSearchingClient) {
+    this.searchServiceConnector = new WikiElasticSearchServiceConnector(initParams, elasticSearchingClient, identityManager) {
       @Override
       protected String getPermissionFilter() {
         return "";

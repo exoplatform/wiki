@@ -7,7 +7,8 @@ const { styles } = require( '@ckeditor/ckeditor5-dev-utils' );
 module.exports = {
   entry: {
     wikiCkeditor: './src/main/webapp/javascript/eXo/wiki/ckeditor/wikiCkeditor.js',
-    pageContent: './src/main/webapp/javascript/eXo/wiki/pageContent.js'
+    pageContent: './src/main/webapp/javascript/eXo/wiki/pageContent.js',
+    wikiSearchCard: './src/main/webapp/vue-app/wikiSearch/main.js'
   },
   output: {
     filename: '[name].bundle.js',

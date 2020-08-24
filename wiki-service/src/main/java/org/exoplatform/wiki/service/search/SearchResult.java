@@ -5,6 +5,7 @@ import java.util.Calendar;
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
 
 public class SearchResult {
   private static Log         log = ExoLogger.getLogger(SearchResult.class);
@@ -12,6 +13,10 @@ public class SearchResult {
   protected String           wikiType;
 
   protected String           wikiOwner;
+
+  protected Identity         wikiOwnerIdentity;
+
+  protected Identity         poster;
 
   protected String           pageName;
 
@@ -45,6 +50,28 @@ public class SearchResult {
                       Calendar createdDate) {
     this.wikiType = wikiType;
     this.wikiOwner = wikiOwner;
+    this.pageName = pageName;
+    this.attachmentName = attachmentName;
+    this.excerpt = excerpt;
+    this.title = title;
+    this.type = type;
+    this.updatedDate = updatedDate;
+    this.createdDate = createdDate;
+  }
+
+  public SearchResult(String wikiType,
+                      Identity poster,
+                      Identity wikiOwnerIdentity,
+                      String pageName,
+                      String attachmentName,
+                      String excerpt,
+                      String title,
+                      SearchResultType type,
+                      Calendar updatedDate,
+                      Calendar createdDate) {
+    this.wikiType = wikiType;
+    this.poster = poster;
+    this.wikiOwnerIdentity = wikiOwnerIdentity;
     this.pageName = pageName;
     this.attachmentName = attachmentName;
     this.excerpt = excerpt;
@@ -153,5 +180,21 @@ public class SearchResult {
    */
   public void setCreatedDate(Calendar createdDate) {
     this.createdDate = createdDate;
+  }
+
+  public Identity getWikiOwnerIdentity() {
+    return wikiOwnerIdentity;
+  }
+
+  public void setWikiOwnerIdentity(Identity wikiOwnerIdentity) {
+    this.wikiOwnerIdentity = wikiOwnerIdentity;
+  }
+
+  public Identity getPoster() {
+    return poster;
+  }
+
+  public void setPoster(Identity poster) {
+    this.poster = poster;
   }
 }

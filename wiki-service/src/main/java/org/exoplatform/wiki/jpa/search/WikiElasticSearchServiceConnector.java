@@ -27,6 +27,10 @@ import org.exoplatform.container.xml.InitParams;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.identity.provider.SpaceIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.SearchResultType;
 import org.exoplatform.wiki.utils.Utils;
@@ -48,8 +52,11 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
 
   private static final Log LOG = ExoLogger.getLogger(WikiElasticSearchServiceConnector.class);
 
-  public WikiElasticSearchServiceConnector(InitParams initParams, ElasticSearchingClient client) {
+  private final IdentityManager identityManager;
+
+  public WikiElasticSearchServiceConnector(InitParams initParams, ElasticSearchingClient client, IdentityManager identityManager) {
     super(initParams, client);
+    this.identityManager = identityManager;
   }
 
   @Override
@@ -59,11 +66,13 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
     fields.add("title");
     fields.add("url");
     fields.add("wikiType");
+    fields.add("owner");
     fields.add("wikiOwner");
     fields.add("createdDate");
     fields.add("updatedDate");
     fields.add("name");
     fields.add("pageName");
+    fields.add("content");
 
     List<String> sourceFields = new ArrayList<>();
     for (String sourceField: fields) {
@@ -75,8 +84,12 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
 
   public List<SearchResult> searchWiki(String searchedText, String wikiType, String wikiOwner, int offset, int limit, String sort, String order) {
     List<ElasticSearchFilter> filters = new ArrayList<>();
-    filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiType", wikiType));
-    filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiOwner", wikiOwner));
+    if (StringUtils.isNotEmpty(wikiType)) {
+      filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiType", wikiType));
+    }
+    if (StringUtils.isNotEmpty(wikiOwner)) {
+      filters.add(new ElasticSearchFilter(ElasticSearchFilterType.FILTER_BY_TERM, "wikiOwner", wikiOwner));
+    }
     List<SearchResult> searchResults = filteredWikiSearch(null, searchedText, filters, null, offset, limit, sort, order);
     return searchResults;
   }
@@ -86,7 +99,6 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
     String esQuery = buildFilteredQuery(query, sites, filters, offset, limit, sort, order);
     String jsonResponse = getClient().sendRequest(esQuery, getIndex(), getType());
     return buildWikiResult(jsonResponse);
-
   }
 
   protected List<SearchResult> buildWikiResult(String jsonResponse) {
@@ -116,6 +128,7 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
 
       String wikiType = (String) hitSource.get("wikiType");
       String wikiOwner = (String) hitSource.get("wikiOwner");
+      String owner = (String) hitSource.get("owner");
 
       Calendar createdDate = Calendar.getInstance();
       createdDate.setTimeInMillis(Long.parseLong((String) hitSource.get("createdDate")));
@@ -146,7 +159,8 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
         }
       }
 
-      //Create the wiki serch result
+      //Create the wiki search result
+
       SearchResult wikiSearchResult = new SearchResult();
       wikiSearchResult.setWikiType(wikiType);
       wikiSearchResult.setWikiOwner(wikiOwner);
@@ -159,6 +173,17 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
       wikiSearchResult.setUpdatedDate(updatedDate);
       wikiSearchResult.setUrl(url);
       wikiSearchResult.setScore(score);
+
+      if (wikiOwner != null && wikiOwner.startsWith("/spaces/")) {
+        String wikiOwnerPrettyName = wikiOwner.split("/spaces/")[1];
+        Identity wikiOwnerIdentity = identityManager.getOrCreateIdentity(SpaceIdentityProvider.NAME, wikiOwnerPrettyName, true);
+        wikiSearchResult.setWikiOwnerIdentity(wikiOwnerIdentity);
+      }
+
+      if (owner != null) {
+        Identity posterIdentity = identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, owner);
+        wikiSearchResult.setPoster(posterIdentity);
+      }
 
       //Add the wiki search result to the list of search results
       wikiResults.add(wikiSearchResult);

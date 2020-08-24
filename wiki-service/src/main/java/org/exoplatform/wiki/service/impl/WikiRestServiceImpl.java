@@ -54,6 +54,8 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileUploadBase;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.social.rest.api.EntityBuilder;
+import org.exoplatform.social.rest.entity.IdentityEntity;
 import org.exoplatform.wiki.utils.WikiHTMLSanitizer;
 
 import org.exoplatform.common.http.HTTPStatus;
@@ -564,7 +566,8 @@ public class WikiRestServiceImpl implements ResourceContainer {
   @Path("contextsearch/")
   @Produces(MediaType.APPLICATION_JSON)
   @RolesAllowed("users")
-  public Response searchData(@QueryParam("keyword") String keyword,
+  public Response searchData(@Context UriInfo uriInfo,
+                             @QueryParam("keyword") String keyword,
                              @QueryParam("wikiType") String wikiType,
                              @QueryParam("wikiOwner") String wikiOwner) throws Exception {
     try {
@@ -580,7 +583,9 @@ public class WikiRestServiceImpl implements ResourceContainer {
             org.exoplatform.wiki.mow.api.Attachment attachment = wikiService.getAttachmentOfPageByName(searchResult.getAttachmentName(), page);
             titleSearchResults.add(new TitleSearchResult(attachment.getName(), searchResult.getType(), attachment.getDownloadURL()));
           } else {
-            titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), searchResult.getType(), page.getUrl()));
+            IdentityEntity posterIdentity = EntityBuilder.buildEntityIdentity(searchResult.getPoster(), uriInfo.getPath(), "all");
+            IdentityEntity wikiOwnerIdentity = searchResult.getWikiOwnerIdentity() != null ? EntityBuilder.buildEntityIdentity(searchResult.getWikiOwnerIdentity(), uriInfo.getPath(), "all") : null;
+            titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), posterIdentity, wikiOwnerIdentity, searchResult.getExcerpt(), searchResult.getCreatedDate().getTimeInMillis(), searchResult.getType(), page.getUrl()));
           }
         } else {
           log.warn("Cannot get page of search result " + searchResult.getWikiType() + ":" + searchResult.getWikiOwner() + ":" + searchResult.getPageName());
