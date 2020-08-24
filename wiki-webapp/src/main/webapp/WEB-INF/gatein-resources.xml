@@ -696,5 +696,32 @@
       <module>bootstrap_wiki</module>
     </depends>  
   </module>
+
+  <module>
+    <name>wikiSearchCard</name>
+    <script>
+      <minify>false</minify>
+      <path>/javascript/eXo/wiki/ckeditor/wikiSearchCard.bundle.js</path>
+    </script>
+    <depends>
+      <module>commonVueComponents</module>
+    </depends>
+    <depends>
+      <module>vue</module>
+    </depends>
+    <depends>
+      <module>eXoVueI18n</module>
+    </depends>
+    <depends>
+      <module>vuetify</module>
+    </depends>
+    <depends>
+      <module>jquery</module>
+      <as>$</as>
+    </depends>
+    <depends>
+      <module>extensionRegistry</module>
+    </depends>
+  </module>
   
 </gatein-resources>
