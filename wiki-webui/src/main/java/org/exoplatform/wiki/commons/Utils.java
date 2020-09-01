@@ -216,7 +216,7 @@ public class Utils {
         }
       }
     }
-    return "wiki";
+    return "WikiPortlet";
   }
 
   public static Page getCurrentNewDraftWikiPage() throws Exception {
