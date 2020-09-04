@@ -13,14 +13,21 @@ import static org.mockito.Mockito.times;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.servlet.ServletContext;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 
 import org.apache.commons.compress.utils.IOUtils;
+import org.exoplatform.commons.utils.ObjectPageList;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.services.rest.impl.EnvironmentContext;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.rest.api.EntityBuilder;
 import org.exoplatform.wiki.mow.api.*;
+import org.exoplatform.wiki.service.search.SearchResult;
 import org.junit.Test;
 
 import com.ibm.icu.util.Calendar;
@@ -28,10 +35,17 @@ import com.ibm.icu.util.Calendar;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mock.MockResourceBundleService;
 import org.exoplatform.wiki.service.impl.WikiRestServiceImpl;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  *
  */
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore("javax.management.*")
 public class TestWikiRestService {
 
   @Test
@@ -71,6 +85,59 @@ public class TestWikiRestService {
     // Then
     assertNotNull(emotionIconResponse);
     assertEquals(404, emotionIconResponse.getStatus());
+  }
+
+  @PrepareForTest({EntityBuilder.class})
+  @Test
+  public void testSearchData() throws Exception {
+    // Given
+    WikiService wikiService = mock(WikiService.class);
+    EntityBuilder entityBuilder = mock(EntityBuilder.class);
+    java.util.Calendar cDate1 = java.util.Calendar.getInstance();
+    UriInfo uriInfo = mock(UriInfo.class);
+    org.exoplatform.social.core.identity.model.Identity identityResult = new org.exoplatform.social.core.identity.model.Identity();
+    identityResult.setProviderId("organization");
+    identityResult.setRemoteId("root");
+    identityResult.setId("1");
+    Page page = new Page();
+    page.setWikiId("1");
+    page.setWikiType("Page");
+    page.setWikiOwner("alioua");
+    page.setName("Wiki_one");
+    page.setTitle("Wiki one");
+    page.setUrl("/exo/wiki");
+    org.exoplatform.wiki.service.search.SearchResult result1 = new SearchResult();
+    org.exoplatform.wiki.service.search.SearchResult result2 = new SearchResult();
+    result1.setPageName("wiki");
+    result1.setExcerpt("admin");
+    result1.setPoster(null);
+    result2.setExcerpt("admin");
+    result2.setPageName("wik");
+    result2.setPoster(identityResult);
+    result2.setTitle("wiki test");
+    result2.setCreatedDate(cDate1);
+    org.exoplatform.social.rest.entity.IdentityEntity entity = new org.exoplatform.social.rest.entity.IdentityEntity();
+    entity.setProviderId("organization");
+    entity.setRemoteId("root");
+    entity.setId("1");
+    entity.setDeleted(false);
+    when(wikiService.getPageOfWikiByName(any(), any(), any())).thenReturn(page);
+    List<org.exoplatform.wiki.service.search.SearchResult> results = new ArrayList<org.exoplatform.wiki.service.search.SearchResult>();
+    results.add(result1);
+    results.add(result2);
+    PowerMockito.mockStatic(EntityBuilder.class);
+    PageList<org.exoplatform.wiki.service.search.SearchResult> pageList = new ObjectPageList<>(results, 2);
+    when(wikiService.search(any())).thenReturn(pageList);
+    when(uriInfo.getPath()).thenReturn("/wiki/contextsearch");
+    when(EntityBuilder.buildEntityIdentity((Identity) any(), any(), any())).thenReturn(entity);
+    WikiRestServiceImpl wikiRestService = new WikiRestServiceImpl(wikiService, new MockResourceBundleService());
+
+    // When
+    Response response = wikiRestService.searchData(uriInfo, "wiki", "page", "alioua");
+
+    // Then
+    verify(entityBuilder, times(1)).buildEntityIdentity((Identity) any(), any(), any());
+    assertEquals(200, response.getStatus());
   }
   
   @Test
