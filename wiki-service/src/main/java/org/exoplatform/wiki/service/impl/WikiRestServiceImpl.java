@@ -582,7 +582,7 @@ public class WikiRestServiceImpl implements ResourceContainer {
           if (SearchResultType.ATTACHMENT.equals(searchResult.getType())) {
             org.exoplatform.wiki.mow.api.Attachment attachment = wikiService.getAttachmentOfPageByName(searchResult.getAttachmentName(), page);
             titleSearchResults.add(new TitleSearchResult(attachment.getName(), searchResult.getType(), attachment.getDownloadURL()));
-          } else {
+          } else if (searchResult.getPoster() != null){
             IdentityEntity posterIdentity = EntityBuilder.buildEntityIdentity(searchResult.getPoster(), uriInfo.getPath(), "all");
             IdentityEntity wikiOwnerIdentity = searchResult.getWikiOwnerIdentity() != null ? EntityBuilder.buildEntityIdentity(searchResult.getWikiOwnerIdentity(), uriInfo.getPath(), "all") : null;
             titleSearchResults.add(new TitleSearchResult(searchResult.getTitle(), posterIdentity, wikiOwnerIdentity, searchResult.getExcerpt(), searchResult.getCreatedDate().getTimeInMillis(), searchResult.getType(), page.getUrl()));
