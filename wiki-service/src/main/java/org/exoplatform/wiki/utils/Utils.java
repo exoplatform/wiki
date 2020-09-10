@@ -15,11 +15,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
+import org.exoplatform.social.core.identity.model.Identity;
+import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
+import org.exoplatform.social.core.manager.IdentityManager;
 import org.suigeneris.jrcs.diff.DifferentiationFailedException;
 
 import org.exoplatform.commons.diff.DiffResult;
 import org.exoplatform.commons.diff.DiffService;
-import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainer;
 import org.exoplatform.container.ExoContainerContext;
@@ -31,8 +33,6 @@ import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
-import org.exoplatform.services.mail.MailService;
-import org.exoplatform.services.mail.Message;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.security.ConversationState;
@@ -168,6 +168,16 @@ public class Utils {
     if (logByPage != null) {
       logByPage.remove(user);
     }
+  }
+
+  /**
+   * get user identity.
+   * @param userId
+   */
+  public static String getIdentityUser( String userId) {
+    IdentityManager identityManager = ExoContainerContext.getService(IdentityManager.class);
+    Identity userIdentity =  identityManager.getOrCreateIdentity(OrganizationIdentityProvider.NAME, userId, false);
+   return userIdentity.getProfile().getFullName();
   }
   
   /**
@@ -442,31 +452,13 @@ public class Utils {
     }
   }
   
-  public static void sendMailOnChangeContent(Page page)
+  public static String getWikiOnChangeContent(Page page)
           throws WikiException, DifferentiationFailedException {
     ExoContainer container = ExoContainerContext.getCurrentContainer();
     WikiService wikiService = container.getComponentInstanceOfType(WikiService.class);
     DiffService diffService = container.getComponentInstanceOfType(DiffService.class);
-    Message message = new Message();
-    ConversationState conversationState = ConversationState.getCurrent();
-    // Get author
-    String author = conversationState.getIdentity().getUserId();
-
-    // Get watchers' mails
-    List<String> list = wikiService.getWatchersOfPage(page);
-    List<String> emailList = new ArrayList<>();
-    for (int i = 0; i < list.size(); i++) {
-      try {
-        if (isEnabledUser(list.get(i))) {
-          emailList.add(getEmailUser(list.get(i)));
-        }
-      } catch (WikiException e) {
-        log_.error("Cannot get email address of user " + list.get(i) + " - Cause : " + e.getMessage(), e);
-      }
-    }   
     
     // Get differences
-    String pageTitle = page.getTitle();
     String currentVersionContent = page.getContent() != null ? new String(page.getContent()) : StringUtils.EMPTY;
     List<PageVersion> versions = wikiService.getVersionsOfPage(page);
     String previousVersionContent = StringUtils.EMPTY;
@@ -477,50 +469,18 @@ public class Utils {
     DiffResult diffResult = diffService.getDifferencesAsHTML(previousVersionContent,
                                                              currentVersionContent,
                                                              false);
-    String fullContent = currentVersionContent;
     
     if (diffResult.getChanges() == 0) {
       diffResult.setDiffHTML("No changes, new revision is created.");
     } 
-    
-    String currentDomain = CommonsUtils.getCurrentDomain();
+
     StringBuilder sbt = new StringBuilder();
     sbt.append("<html>")
-        .append("  <head>")
-        .append("  </head>")
         .append("  <body>")
-        .append("    Page <a href=\"")
-        .append(currentDomain)
-        .append(page.getUrl())
-        .append("\">")
-        .append(page.getTitle())
-        .append("</a> is modified by ")
-        .append(page.getAuthor())
-        .append("    <br/><br/>")
-        .append("    Changes(")
-            .append(diffResult.getChanges())
-            .append(")")
-            .append("    <br/><br/>")
             .append(insertStyle(diffResult.getDiffHTML()))
-            .append("    Full content: ")
-            .append("    <br/><br/>")
-            .append(     fullContent)
             .append("  </body>")
             .append("</html>");
-    // Create message
-    message.setFrom(makeNotificationSender(author));
-    message.setSubject("\"" + pageTitle + "\" page was modified");
-    message.setMimeType(MIMETYPE_TEXTHTML);
-    message.setBody(sbt.toString());
-    MailService mailService = container.getComponentInstanceOfType(MailService.class);
-    for (String address : emailList) {
-      message.setTo(address);
-      try {
-        mailService.sendMessage(message);
-      } catch (Exception e) {
-        log_.error(String.format("Failed to send notification email to user: %s", address), e);
-      }
-    }
+    return sbt.toString();
   }
   
   private static boolean isEnabledUser(String userName) throws WikiException {

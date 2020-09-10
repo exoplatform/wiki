@@ -1,0 +1,74 @@
+<table border="0" cellpadding="0" cellspacing="0" width="600" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 12px;color:#333333;line-height: 18px;font-family: HelveticaNeue, Helvetica, Arial, sans-serif;">
+        <tr>
+        <td align="center"  valign="middle" >
+        <table  cellpadding="0" cellspacing="0" width="100%" bgcolor="#ffffff" align="center" style="border:1px solid #d8d8d8;">
+        <tr>
+        <td  height="45" valign="middle" style="margin:0;height:45px;font-weight:bold;vertical-align:middle;;background-color: #efefef;font-family: 'HelveticaNeue Bold', Helvetica, Arial, sans-serif;color:#2f5e92;font-size:18px;text-align:center">
+        <%=_ctx.appRes("Notification.title.EditWikiReceiverNotificationPlugin")%>
+        </td>
+                </tr>
+        </table>
+        </td>
+        </tr><!--end header area-->
+    <tr>
+        <td bgcolor="#ffffff" style="background-color: #ffffff;">
+            <table cellpadding="0" cellspacing="0" width="100%"  bgcolor="#ffffff" style="background-color: #ffffff; border-bottom:1px solid #d8d8d8;border-left:1px solid #d8d8d8;border-right:1px solid #d8d8d8;">
+                <tr>
+                    <td bgcolor="#ffffff" style="background-color: #ffffff;">
+                        <table border="0" cellpadding="0" cellspacing="0" width="92%" bgcolor="#ffffff" align="center" style="background-color: #ffffff; font-size: 12px;color:#333333;line-height: 18px;">
+                            <tr>
+                                <td align="left" bgcolor="#ffffff" style="background-color: #ffffff;padding: 10px 0;">
+                                    <p style="margin: 10px 0;"><%=_ctx.appRes("Notification.label.SayHello")%> <B><%=_ctx.escapeHTML(USER)%></B>,</p>
+        <p style="margin: 10px 0 0;">
+        <%
+        String message = "";
+        String profileUrl = "<a class=\"user-name text-bold\" href=\"javascript:void(0)\">" + _ctx.escapeHTML(WIKI_EDITOR) + "</a>";
+        String wikiPageName = "<a class=\"user-name text-bold\"  href=\"$WIKI_URL\" target=\"_blank\">" + _ctx.escapeHTML(WIKI_PAGE_NAME) + "</a>";
+         message = _ctx.appRes("Notification.wiki.mail.editWikiNotification" ,wikiPageName, profileUrl)
+%>
+<%=message%>
+        </p>
+ <p style="font-size: 14px;font-weight: bold; "><%=_ctx.appRes("Notification.wiki.mail.wikiChangeNotification")%> : </p>
+  $CONTENT_CHANGE
+
+    <p style="margin: 20px 0 20px;">
+            <a target="_blank" style="
+    display: inline-block;
+    text-decoration: none;
+    font-size: 11px;
+    font-family: HelveticaNeue, Helvetica, Arial, sans-serif,serif;
+    color: #333333;
+    background-color: #f1f1f1;
+    background-image: -moz-linear-gradient(top, #ffffff, #f1f1f1);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#f1f1f1));
+    background-image: -webkit-linear-gradient(top, #ffffff, #f1f1f1);
+    background-image: -o-linear-gradient(top, #ffffff, #f1f1f1);
+    background-image: linear-gradient(to bottom, #ffffff, #f1f1f1);
+    background-repeat: repeat-x;
+    border-radius: 4px;
+    -moz-border-radius: 4px;
+    padding: 5px 8px;
+    height: 11px;
+    line-height: 12px;
+    max-height: 11px;
+    text-align: center;
+    border: 1px solid #c7c7c7;
+    -webkit-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+    -moz-box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,.2), 0 1px 2px rgba(0,0,0,.05);
+    vertical-align: middle;
+    margin-left: 3px;
+    " href="$WIKI_URL" target="_blank"><%=_ctx.appRes("Notification.label.ViewFullDiscussion")%></a>
+    </p>
+
+                                    <p style="margin: 0 0 10px; color: #999999">
+                                    </p>
+            </td>
+                            </tr>
+    </table>
+                    </td>
+            </tr>
+            </table>
+    </td>
+    </tr><!--end content area-->
+            </table>
