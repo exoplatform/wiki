@@ -20,6 +20,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.apache.commons.collections.IteratorUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
+import org.exoplatform.services.listener.ListenerService;
 import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.organization.User;
 import org.exoplatform.services.organization.UserStatus;
@@ -957,24 +958,23 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public void updatePage(Page page, PageUpdateType updateType) throws WikiException {
+    WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
+    ListenerService listenerService = (ListenerService) PortalContainer.getComponent(ListenerService.class);
     // update updated date if the page content has been updated
     if(PageUpdateType.EDIT_PAGE_CONTENT.equals(updateType) || PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE.equals(updateType)) {
       page.setUpdatedDate(Calendar.getInstance().getTime());
     }
 
     dataStorage.updatePage(page);
-
     invalidateCache(page);
 
     if(PageUpdateType.EDIT_PAGE_CONTENT.equals(updateType) || PageUpdateType.EDIT_PAGE_CONTENT_AND_TITLE.equals(updateType)) {
       try {
-        Utils.sendMailOnChangeContent(page);
-      } catch (WikiException | DifferentiationFailedException e) {
-        log.error("Cannot send notification email on page change - Cause : " + e.getMessage(), e);
+        listenerService.broadcast("exo.wiki.edit", wikiService, page);
+      } catch (Exception e) {
+        log.error("Error while broadcasting wiki edition event", e);
       }
     }
-
-
     postUpdatePage(page.getWikiType(), page.getWikiOwner(), page.getName(), page, updateType);
   }
 
