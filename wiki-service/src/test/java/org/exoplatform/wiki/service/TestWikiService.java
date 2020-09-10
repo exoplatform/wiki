@@ -606,6 +606,33 @@ public class TestWikiService extends BaseTest {
 //    assertNull(relatedPage);
 //  }
 
+  public void testUpdatePage() throws WikiException {
+    startSessionAs("mary");
+
+    // Get wiki home
+    getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "testPage").getWikiHome();
+
+    // Create a wiki page for test
+    Page page = new Page("new page", "new page");
+    page.setContent("Page content");
+    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "testPage"), "WikiHome", page);
+    assertNotNull(page);
+    assertEquals("Page content", page.getContent());
+    assertEquals("new page", page.getTitle());
+
+    // update content of page
+    page.setContent("Page content updated");
+    wService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
+    assertNotNull(page);
+    assertEquals("Page content updated", page.getContent());
+
+    // update title of page
+    page.setTitle("new page updated");
+    wService.updatePage(page, PageUpdateType.EDIT_PAGE_CONTENT);
+    assertNotNull(page);
+    assertEquals("new page updated", page.getTitle());
+  }
+
   public void testDraftPage() throws WikiException {
     startSessionAs("mary");
     
@@ -643,14 +670,14 @@ public class TestWikiService extends BaseTest {
     assertNotNull(draftPage2);
     assertFalse(draftPage2.isNewPage());
     assertEquals(page.getId(), draftPage2.getTargetPageId());
-    assertEquals("2", draftPage2.getTargetPageRevision());
+    assertEquals("1", draftPage2.getTargetPageRevision());
     
     // Test get draft for exist wiki page
     DraftPage draftPage3 = wService.getDraftOfPage(page);
     assertNotNull(draftPage3);
     assertFalse(draftPage3.isNewPage());
     assertEquals(page.getId(), draftPage3.getTargetPageId());
-    assertEquals("2", draftPage3.getTargetPageRevision());
+    assertEquals("1", draftPage3.getTargetPageRevision());
     
     // Test list draft by user
     List<DraftPage> drafts = wService.getDraftsOfUser("mary");
@@ -685,7 +712,7 @@ public class TestWikiService extends BaseTest {
     assertNotNull(watchersOfPage1);
     assertEquals(2, watchersOfPage1.size());
   }
-  
+
   public void testGetExsitedOrNewDraftPageById() throws WikiException, IOException {
     Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     Page page = new Page("pageName", "pageTitle");
