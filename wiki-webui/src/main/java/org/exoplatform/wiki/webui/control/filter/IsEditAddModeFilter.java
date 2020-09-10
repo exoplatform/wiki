@@ -20,6 +20,7 @@ import java.util.Map;
 
 import org.exoplatform.webui.ext.filter.UIExtensionAbstractFilter;
 import org.exoplatform.webui.ext.filter.UIExtensionFilterType;
+import org.exoplatform.wiki.commons.Utils;
 import org.exoplatform.wiki.commons.WikiConstants;
 import org.exoplatform.wiki.webui.WikiMode;
 
@@ -35,7 +36,7 @@ public class IsEditAddModeFilter extends UIExtensionAbstractFilter {
   
   @Override
   public boolean accept(Map<String, Object> context) throws Exception {
-    WikiMode wikiMode = (WikiMode) context.get(WikiConstants.WIKI_MODE);
+    WikiMode wikiMode = Utils.getWikiMode();
     return (wikiMode == WikiMode.EDITPAGE || wikiMode == WikiMode.ADDPAGE || wikiMode == WikiMode.EDITTEMPLATE || wikiMode == WikiMode.ADDTEMPLATE);
   }
 

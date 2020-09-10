@@ -72,6 +72,8 @@ public class Utils {
 
   public static final String DRAFT_ID                    = "draftId";
 
+  public static final String WIKI_MODE                    = "wikiMode";
+
   public static String upperFirstCharacter(String str) {
     if (StringUtils.isEmpty(str)) {
       return str;
@@ -273,9 +275,9 @@ public class Utils {
 
   public static WikiContext createWikiContext(UIWikiPortlet wikiPortlet) throws Exception {
     PortalRequestContext portalRequestContext = Util.getPortalRequestContext();
-    WikiMode currentMode = wikiPortlet.getWikiMode();
-    List<WikiMode> editModes = Arrays.asList(new WikiMode[] { WikiMode.EDITPAGE, WikiMode.ADDPAGE, WikiMode.EDITTEMPLATE,
-        WikiMode.ADDTEMPLATE });
+    WikiMode currentMode = getWikiMode();
+    List<WikiMode> editModes = Arrays.asList(WikiMode.EDITPAGE, WikiMode.ADDPAGE, WikiMode.EDITTEMPLATE,
+            WikiMode.ADDTEMPLATE);
     UIPortal uiPortal = Util.getUIPortal();
     String portalURI = portalRequestContext.getPortalURI();
     URL requestURL = new URL(portalRequestContext.getRequest().getRequestURL().toString());
@@ -302,7 +304,7 @@ public class Utils {
         wikiContext.setSyntax(currentPage.getSyntax());
       }
     }
-    if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
+    if (currentMode == WikiMode.ADDPAGE) {
       wikiContext.setPageName(org.exoplatform.wiki.utils.Utils.getPageNameForAddingPage());
     } else {
       wikiContext.setPageName(params.getPageName());
@@ -412,6 +414,7 @@ public class Utils {
       b.append(action).append("','");
       if (!isForm) {
         b.append("&amp;").append(UIForm.SUBCOMPONENT_ID).append("=").append(uiComponent.getId());
+        b.append("&amp;").append(WIKI_MODE).append("=").append(getWikiMode());
         if (beanId != null) {
           b.append("&amp;").append(UIComponent.OBJECTID).append("=").append(beanId);
         }
@@ -505,5 +508,10 @@ public class Utils {
       wikiId = wikiId.substring(wikiId.lastIndexOf('/') + 1);
     }
     return wikiId;
+  }
+
+  public static WikiMode getWikiMode() {
+    String wikiMode = Util.getPortalRequestContext().getRequestParameter(WIKI_MODE);
+    return StringUtils.isBlank(wikiMode) ? WikiMode.VIEW : WikiMode.valueOf(wikiMode.toUpperCase());
   }
 }
