@@ -31,6 +31,7 @@
   <import>war:/conf/wiki/wiki-configuration.xml</import>
   <import>war:/conf/wiki/resource-bundle-configuration.xml</import>
   <import>war:/conf/wiki/spaces-templates-configuration.xml</import>
+  <import>war:/conf/wiki/notification-configuration.xml</import>
   <import profiles="app-center">war:/conf/wiki/app-center-configuration.xml</import>
   <import>war:/conf/wiki/dynamic-container-configuration.xml</import>
 
