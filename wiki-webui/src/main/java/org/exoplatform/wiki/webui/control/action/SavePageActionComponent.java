@@ -24,6 +24,7 @@ import java.util.ResourceBundle;
 import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.container.PortalContainer;
+import org.exoplatform.portal.webui.util.Util;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.web.application.ApplicationMessage;
@@ -76,7 +77,7 @@ public class SavePageActionComponent extends UIComponent {
   }
 
   protected boolean isNewMode() {
-    return (WikiMode.ADDPAGE.equals(getAncestorOfType(UIWikiPortlet.class).getWikiMode()));
+    return WikiMode.ADDPAGE == Utils.getWikiMode();
   }
 
   protected String getPageTitleInputId() {
@@ -93,6 +94,7 @@ public class SavePageActionComponent extends UIComponent {
       WikiService wikiService = (WikiService) PortalContainer.getComponent(WikiService.class);
       UIWikiPortlet wikiPortlet = event.getSource().getAncestorOfType(UIWikiPortlet.class);
       WikiPageParams pageParams = Utils.getCurrentWikiPageParams();
+      WikiMode wikiMode = Utils.getWikiMode();
       Page page = Utils.getCurrentWikiPage();
       if (page != null) {
         UIWikiPageTitleControlArea pageTitleControlForm = wikiPortlet.findComponentById(UIWikiPageControlArea.TITLE_CONTROL);
@@ -106,7 +108,7 @@ public class SavePageActionComponent extends UIComponent {
         boolean isRenamedPage = false;
         boolean isContentChange = false;
 
-        if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE && (titleInput.getValue() == null || titleInput.getValue().isEmpty())) {
+        if (wikiMode == WikiMode.ADDPAGE && (titleInput.getValue() == null || titleInput.getValue().isEmpty())) {
           // Add a new page with empty title, set title value to Untitled
           WebuiRequestContext context = WebuiRequestContext.getCurrentInstance();
           ResourceBundle res = context.getApplicationResourceBundle();
@@ -140,11 +142,11 @@ public class SavePageActionComponent extends UIComponent {
         }
         String newPageName = TitleResolver.getId(title, false);
         if (org.exoplatform.wiki.utils.WikiConstants.WIKI_HOME_NAME.equals(page.getName())
-            && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
+            && wikiMode == WikiMode.EDITPAGE) {
           // as wiki home page has fixed name (never edited anymore), every
           // title changing is accepted.
           ;
-        } else if (newPageName.equals(page.getName()) && wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
+        } else if (newPageName.equals(page.getName()) && wikiMode == WikiMode.EDITPAGE) {
           // if page title is not changed in editing phase, do not need to check
           // its existence.
           ;
@@ -162,12 +164,12 @@ public class SavePageActionComponent extends UIComponent {
             UIWikiPageEditForm wikiPageEditForm = component.getAncestorOfType(UIWikiPageEditForm.class);
             Utils.feedDataForWYSIWYGEditor(wikiPageEditForm, null);
           }
-          Utils.redirect(pageParams, wikiPortlet.getWikiMode());
+          Utils.redirect(pageParams, Utils.getWikiMode());
           return;
         }
 
         try {
-          if (wikiPortlet.getWikiMode() == WikiMode.EDITPAGE) {
+          if (wikiMode == WikiMode.EDITPAGE) {
             // Check if publish activity on activity stream
             UICheckBoxInput publishActivityCheckBox = wikiPortlet.findComponentById(UIWikiPageEditForm.FIELD_PUBLISH_ACTIVITY_UPPER);
             page.setMinorEdit(!publishActivityCheckBox.isChecked());
@@ -217,7 +219,7 @@ public class SavePageActionComponent extends UIComponent {
               wikiService.removeDraftOfPage(pageParams);
             }
 
-          } else if (wikiPortlet.getWikiMode() == WikiMode.ADDPAGE) {
+          } else if (wikiMode == WikiMode.ADDPAGE) {
             Page draftPage = Utils.getCurrentNewDraftWikiPage();
 
             // Get attachments of the draft page

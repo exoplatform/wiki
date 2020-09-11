@@ -15,7 +15,9 @@
  * License along with this software; if not, write to the Free
  * Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA
  * 02110-1301 USA, or see the FSF site: http://www.fsf.org.
- */(function(base, uiForm, webuiExt, $) {
+ */
+
+ (function(base, uiForm, webuiExt, $) {
 
 function UIWikiAjaxRequest() {
   this.DEFAULT_TIMEOUT_CHECK = 100;
@@ -80,12 +82,13 @@ UIWikiAjaxRequest.prototype.checkAnchor = function() {
         // This is an anchor in the document, so skip.
         return;
       }
-      action = document.getElementById(this.actionPrefix + action);
-      var queryParams = '';
+      var queryParams = '&wikiMode=' + action;
+
       for ( var index = 1; index < splits.length; index++) {
         queryParams += '&';
         queryParams += splits[index];
       }
+      action = document.getElementById(this.actionPrefix + action);
       if (action) {
         var ajaxGetLink = action.getAttributeNode('onclick').value.replace('&ajaxRequest=true', queryParams + '&ajaxRequest=true');
         action.onclick = function() {
