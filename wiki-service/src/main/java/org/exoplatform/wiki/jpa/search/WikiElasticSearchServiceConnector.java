@@ -166,7 +166,9 @@ public class WikiElasticSearchServiceConnector extends ElasticSearchServiceConne
       wikiSearchResult.setWikiOwner(wikiOwner);
       wikiSearchResult.setPageName(pageName);
       wikiSearchResult.setAttachmentName(attachmentName);
-      wikiSearchResult.setExcerpt(excerpt.toString());
+      // replace HTML tag for indexing page
+      String content = excerpt.toString().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
+      wikiSearchResult.setExcerpt(content);
       wikiSearchResult.setTitle(title);
       wikiSearchResult.setType(type);
       wikiSearchResult.setCreatedDate(createdDate);
