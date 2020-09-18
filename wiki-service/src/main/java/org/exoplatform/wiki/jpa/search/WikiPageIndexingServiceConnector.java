@@ -111,7 +111,9 @@ public class WikiPageIndexingServiceConnector extends ElasticIndexingServiceConn
         Map<String,String> fields = new HashMap<>();
         fields.put("owner", page.getOwner());
         fields.put("name", page.getName());
-        fields.put("content", page.getContent());
+        //Remove HTML tag when indexing wiki page
+        String content = page.getContent().replaceAll("(?s)<[^>]*>(\\s*<[^>]*>)*", " ");
+        fields.put("content", content);
         fields.put("title", page.getTitle());
         fields.put("createdDate", String.valueOf(page.getCreatedDate().getTime()));
         fields.put("updatedDate", String.valueOf(page.getUpdatedDate().getTime()));

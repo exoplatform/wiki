@@ -16,7 +16,7 @@
         </template>
       </exo-user-avatar>
     </v-card-text>
-    <div class="mx-auto d-flex flex-grow-1 px-3 py-0">
+    <div class="mx-auto d-flex flex-grow-1 px-3 py-0 overflow-hidden">
       <div
         ref="excerptNode"
         :title="excerptText"
