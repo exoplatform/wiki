@@ -173,7 +173,7 @@ UIWikiPageEditForm.prototype.saveDraft = function() {
   var textAreaContainer = $(pageEditForm).find('div.UIWikiRichTextEditor')[0];
   if (textAreaContainer != null) {
     isMarkup = true;
-    pageContent = $(textAreaContainer)[0].innerText;
+    pageContent = $(textAreaContainer)[0].innerHTML;
   } else {
     isMarkup = false;
     var iFrameRichTextArea = $('#UIWikiPageEditForm iframe[class=gwt-RichTextArea]')[0];
