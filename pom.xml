@@ -9,7 +9,7 @@
   </parent>
   <groupId>org.exoplatform.wiki</groupId>
   <artifactId>wiki</artifactId>
-  <version>6.1.x-SNAPSHOT</version>
+  <version>6.1.0-M04</version>
   <packaging>pom</packaging>
   <name>eXo PLF:: Wiki</name>
   <description>eXo wiki</description>
@@ -23,7 +23,7 @@
   <scm>
     <connection>scm:git:git://github.com/exoplatform/wiki.git</connection>
     <developerConnection>scm:git:git@github.com:exoplatform/wiki.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>6.1.0-M04</tag>
     <url>https://fisheye.exoplatform.org/browse/wiki</url>
   </scm>
   <properties>
