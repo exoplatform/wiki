@@ -37,6 +37,20 @@ public abstract class UIWikiExtensionContainer extends UIExtensionContainer {
 
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
+    refreshUIExtensions(context);
+  }
+
+  @Override
+  public void processAction(WebuiRequestContext context) throws Exception {
+    super.processAction(context);
+  }
+
+  @Override
+  public void processDecode(WebuiRequestContext context) throws Exception {
+    refreshUIExtensions(context);
+  }
+
+  private void refreshUIExtensions(WebuiRequestContext context) {
     try {
       UIWikiPortlet wikiPortlet = getAncestorOfType(UIWikiPortlet.class);
       HashMap<String, Object> extContext = wikiPortlet.getUIExtContext();
@@ -44,14 +58,14 @@ public abstract class UIWikiExtensionContainer extends UIExtensionContainer {
         UIExtensionManager manager = getApplicationComponent(UIExtensionManager.class);
         List<UIExtension> extensions = manager.getUIExtensions(getExtensionType());
         extensionSize = 0;
-        
+
         // Add new children
         if (extensions != null && extensions.size() > 0) {
           // Remove old extension
           for (UIExtension extension : extensions) {
-             removeChild(extension.getComponent());
+            removeChild(extension.getComponent());
           }
-          
+
           // Add new extension
           for (UIExtension extension : extensions) {
             UIComponent uicomponent = manager.addUIExtension(extension, extContext, this);
