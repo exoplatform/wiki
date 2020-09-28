@@ -38,16 +38,15 @@ public abstract class UIWikiExtensionContainer extends UIExtensionContainer {
   @Override
   public void processRender(WebuiRequestContext context) throws Exception {
     refreshUIExtensions(context);
-  }
-
-  @Override
-  public void processAction(WebuiRequestContext context) throws Exception {
-    super.processAction(context);
+    if (this.getChildren().size() > 0) {
+      super.processRender(context);
+    }
   }
 
   @Override
   public void processDecode(WebuiRequestContext context) throws Exception {
     refreshUIExtensions(context);
+    super.processDecode(context);
   }
 
   private void refreshUIExtensions(WebuiRequestContext context) {
@@ -74,10 +73,6 @@ public abstract class UIWikiExtensionContainer extends UIExtensionContainer {
             }
           }
         }
-      }
-
-      if (this.getChildren().size() > 0) {
-        super.processRender(context);
       }
     } catch (Exception e) {
       if (log.isDebugEnabled()) {
