@@ -652,6 +652,12 @@ public class WikiRestServiceImpl implements ResourceContainer {
       if (attachment == null) {
         return Response.status(HTTPStatus.NOT_FOUND).entity("There is no resource matching to request path " + uriInfo.getPath()).type(MediaType.TEXT_PLAIN).build();
       }
+      
+      if (attachment.getContent()==null) {
+        return Response.status(HTTPStatus.NOT_FOUND).entity("The requested resource (" + attachment.getName()+") is no more "
+                                                                + "available. Please contact your administrator.").type(MediaType.TEXT_PLAIN).build();
+  
+      }
 
       ByteArrayInputStream bis = new ByteArrayInputStream(attachment.getContent());
       if (width != null) {
@@ -662,9 +668,7 @@ public class WikiRestServiceImpl implements ResourceContainer {
       }
       return Response.ok(result).header("Content-Disposition", "attachment; filename=" + attachment.getName()).cacheControl(cc).build();
     } catch (Exception e) {
-      if (log.isDebugEnabled()) {
-        log.debug(String.format("Can't get attachment name: %s of page %s", attachmentId, pageId), e);
-      }
+      log.error(String.format("Can't get attachment name: %s of page %s", attachmentId, pageId), e);
       return Response.status(HTTPStatus.INTERNAL_ERROR).cacheControl(cc).build();
     }
   }
