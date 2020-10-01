@@ -40,7 +40,19 @@
         <tr>
           <td>
             <i class="uiIcon16x16FileDefault uiIcon16x16File$extension"></i>&nbsp;
-          	<a rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.DownloadAttachment"); %>" href="$downloadLink" target="_blank"><%= attachment.getFullTitle() %></a>
+<%
+            if (attachment.getContent() != null) {
+%>
+              <a rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.DownloadAttachment"); %>" href="$downloadLink" target="_blank"><%= attachment.getFullTitle() %></a>
+<%
+            } else {
+%>
+              <span rel="tooltip" data-placement="bottom" title="<%= _ctx.appRes("UIAttachmentUploadListForm.label.attachmentNotAvailable.tooltip");%>">
+                  <%= attachment.getFullTitle() %> (<%= _ctx.appRes("UIAttachmentUploadListForm.label.attachmentNotAvailable");%>)
+              </span>
+<%
+            }
+%>
           </td>
           <td><%= creator %></td>
           <td><%= df.format(attachment.getUpdatedDate().getTime())%></td>
