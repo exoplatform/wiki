@@ -654,7 +654,7 @@ public class WikiRestServiceImpl implements ResourceContainer {
       }
       
       if (attachment.getContent()==null) {
-        return Response.status(HTTPStatus.NOT_FOUND).entity("The requested resource (" + attachment.getName()+") is no more "
+        return Response.status(HTTPStatus.NOT_FOUND).entity("The requested resource (" + attachment.getName()+") is no longer "
                                                                 + "available. Please contact your administrator.").type(MediaType.TEXT_PLAIN).build();
   
       }
