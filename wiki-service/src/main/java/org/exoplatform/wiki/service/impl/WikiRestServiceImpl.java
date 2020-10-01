@@ -654,8 +654,12 @@ public class WikiRestServiceImpl implements ResourceContainer {
       }
       
       if (attachment.getContent()==null) {
-        return Response.status(HTTPStatus.NOT_FOUND).entity("The requested resource (" + attachment.getName()+") is no longer "
-                                                                + "available. Please contact your administrator.").type(MediaType.TEXT_PLAIN).build();
+        EnvironmentContext env = EnvironmentContext.getCurrent();
+        HttpServletRequest request = (HttpServletRequest) env.get(HttpServletRequest.class);
+        ResourceBundle resourceBundle = resourceBundleService.getResourceBundle(Utils.WIKI_RESOUCE_BUNDLE_NAME, request.getLocale());
+        String message = resourceBundle.getString("WikiRestService.message.attachment.notAvailable");
+        message = message.replace("{0}", attachment.getName());
+        return Response.status(HTTPStatus.NOT_FOUND).entity(message).type(MediaType.TEXT_PLAIN).build();
   
       }
 

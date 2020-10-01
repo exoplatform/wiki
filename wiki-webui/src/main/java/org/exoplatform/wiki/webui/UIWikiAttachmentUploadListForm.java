@@ -59,7 +59,7 @@ public class UIWikiAttachmentUploadListForm extends UIForm {
     try {
       Page page = getCurrentWikiPage();
       if (page != null) {
-        attachments = wikiService.getAttachmentsOfPage(page);
+        attachments = wikiService.getAttachmentsOfPage(page,true);
       }
     } catch (Exception e) {
       log.warn("An error happened when get attachments list", e);
