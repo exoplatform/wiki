@@ -128,11 +128,11 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
 
     List<PermissionEntry> initialPermissions = new ArrayList<>();
     initialPermissions.add(new PermissionEntry("user", null, IDType.USER, new Permission[] {
-            new Permission(PermissionType.VIEWPAGE, true) }));
+            new Permission(PermissionType.ADMINPAGE, true) }));
     List<PermissionEntry> updatedPermissions = new ArrayList<>();
     updatedPermissions.add(new PermissionEntry("admin", null, IDType.USER, new Permission[]{
-            new Permission(PermissionType.VIEWPAGE, true),
-            new Permission(PermissionType.EDITPAGE, true)}));
+            new Permission(PermissionType.ADMINPAGE, true),
+            new Permission(PermissionType.ADMINSPACE, true)}));
 
     // When
     storage.createWiki(wiki);
@@ -144,12 +144,12 @@ public class JPADataStorageTest extends BaseWikiJPAIntegrationTest {
     // Then
     assertNotNull(fetchedInitialPermissions);
     assertEquals(1, fetchedInitialPermissions.size());
-    assertTrue(ArrayUtils.contains(fetchedInitialPermissions.get(0).getPermissions(), new Permission(PermissionType.VIEWPAGE, true)));
-    assertTrue(ArrayUtils.contains(fetchedInitialPermissions.get(0).getPermissions(), new Permission(PermissionType.EDITPAGE, false)));
+    assertTrue(ArrayUtils.contains(fetchedInitialPermissions.get(0).getPermissions(), new Permission(PermissionType.ADMINPAGE, true)));
+    assertTrue(ArrayUtils.contains(fetchedInitialPermissions.get(0).getPermissions(), new Permission(PermissionType.ADMINSPACE, false)));
     assertNotNull(fetchedUpdatedPermissions);
     assertEquals(1, fetchedUpdatedPermissions.size());
-    assertTrue(ArrayUtils.contains(fetchedUpdatedPermissions.get(0).getPermissions(), new Permission(PermissionType.VIEWPAGE, true)));
-    assertTrue(ArrayUtils.contains(fetchedUpdatedPermissions.get(0).getPermissions(), new Permission(PermissionType.EDITPAGE, true)));
+    assertTrue(ArrayUtils.contains(fetchedUpdatedPermissions.get(0).getPermissions(), new Permission(PermissionType.ADMINPAGE, true)));
+    assertTrue(ArrayUtils.contains(fetchedUpdatedPermissions.get(0).getPermissions(), new Permission(PermissionType.ADMINSPACE, true)));
   }
 
   @Test
