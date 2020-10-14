@@ -38,7 +38,7 @@ public class EntityConverter {
         wiki.setWikiHome(convertPageEntityToPage(wikiHomePageEntity));
       }
       wiki.setPermissions(convertPermissionEntitiesToPermissionEntries(wikiEntity.getPermissions(),
-              Arrays.asList(PermissionType.VIEWPAGE, PermissionType.EDITPAGE, PermissionType.ADMINPAGE, PermissionType.ADMINSPACE)));
+              Arrays.asList(PermissionType.ADMINPAGE, PermissionType.ADMINSPACE)));
       // wiki.setDefaultPermissionsInited();
       WikiPreferences wikiPreferences = new WikiPreferences();
       WikiPreferencesSyntax wikiPreferencesSyntax = new WikiPreferencesSyntax();

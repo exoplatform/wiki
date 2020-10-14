@@ -273,7 +273,7 @@ public class WikiServiceImpl implements WikiService, Startable {
   }
 
   /******* Wiki *******/
-
+  
   @Override
   public Wiki getWikiByTypeAndOwner(String wikiType, String owner) throws WikiException {
     return dataStorage.getWikiByTypeAndOwner(wikiType, owner);
@@ -301,27 +301,18 @@ public class WikiServiceImpl implements WikiService, Startable {
 
   @Override
   public List<PermissionEntry> getWikiDefaultPermissions(String wikiType, String wikiOwner) throws WikiException {
-    Permission[] viewPermissions = new Permission[] {
-            new Permission(PermissionType.VIEWPAGE, true)
-    };
-    Permission[] viewEditPermissions = new Permission[] {
-            new Permission(PermissionType.VIEWPAGE, true),
-            new Permission(PermissionType.EDITPAGE, true)
-    };
     Permission[] allPermissions = new Permission[] {
-            new Permission(PermissionType.VIEWPAGE, true),
-            new Permission(PermissionType.EDITPAGE, true),
             new Permission(PermissionType.ADMINPAGE, true),
             new Permission(PermissionType.ADMINSPACE, true)
     };
     List<PermissionEntry> permissions = new ArrayList<>();
-    Iterator<Map.Entry<String, IDType>> iter = Utils.getACLForAdmins().entrySet().iterator();
-    while (iter.hasNext()) {
-      Map.Entry<String, IDType> entry = iter.next();
-      PermissionEntry permissionEntry = new PermissionEntry(entry.getKey(), "", entry.getValue(), allPermissions);
-      permissions.add(permissionEntry);
-    }
     if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      Iterator<Map.Entry<String, IDType>> iter = Utils.getACLForAdmins().entrySet().iterator();
+      while (iter.hasNext()) {
+        Map.Entry<String, IDType> entry = iter.next();
+        PermissionEntry permissionEntry = new PermissionEntry(entry.getKey(), "", entry.getValue(), allPermissions);
+        permissions.add(permissionEntry);
+      }
       UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
               .getComponentInstanceOfType(UserPortalConfigService.class);
       try {
@@ -334,8 +325,6 @@ public class WikiServiceImpl implements WikiService, Startable {
             permissions.add(portalPermissionEntry);
           }
         }
-        PermissionEntry userPermissionEntry = new PermissionEntry("any", "", IDType.USER, viewPermissions);
-        permissions.add(userPermissionEntry);
       } catch (Exception e) {
         throw new WikiException("Cannot get user portal config for wiki " + wikiType + ":" + wikiOwner
                 + " - Cause : " + e.getMessage(), e);
@@ -343,8 +332,6 @@ public class WikiServiceImpl implements WikiService, Startable {
     } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
       PermissionEntry groupPermissionEntry = new PermissionEntry(userACL.getMakableMT() + ":" + wikiOwner, "", IDType.MEMBERSHIP, allPermissions);
       permissions.add(groupPermissionEntry);
-      PermissionEntry ownerPermissionEntry = new PermissionEntry("*:" + wikiOwner, "", IDType.MEMBERSHIP, viewEditPermissions);
-      permissions.add(ownerPermissionEntry);
     } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
       PermissionEntry ownerPermissionEntry = new PermissionEntry(wikiOwner, "", IDType.USER, allPermissions);
       permissions.add(ownerPermissionEntry);
@@ -466,45 +453,18 @@ public class WikiServiceImpl implements WikiService, Startable {
 
     Page parentPage = getPageOfWikiByName(wiki.getType(), wiki.getOwner(), parentPageName);
     List<PermissionEntry> permissions = page.getPermissions();
-    // if permissions are not set, init with default permissions
+    // if permissions are not set, init with parent page permissions
     if(permissions == null) {
-      permissions = this.getWikiDefaultPermissions(wiki.getType(), wiki.getOwner());
+      if (parentPage.getPermissions() != null) {
+        permissions = parentPage.getPermissions();
+      }
+      else {
+        Page wikiHomePage = wiki.getWikiHome();
+        permissions = wikiHomePage.getPermissions();
+      }
       page.setPermissions(permissions);
     }
-    // init permission for page's creator
-    String currentUser = org.exoplatform.wiki.utils.Utils.getCurrentUser();
-    PermissionEntry currentUserPermEnty = null;
-    for (PermissionEntry permEntry : page.getPermissions()) {
-      // get user permission entry  
-      if (permEntry.getId().equals(currentUser)) {
-        currentUserPermEnty = permEntry;
-        Boolean hasAdminPerm = false;
-        for (Permission permission : permEntry.getPermissions()) {
-          if (permission.getPermissionType().equals(PermissionType.ADMINPAGE)) {
-            if (!permission.isAllowed()) {
-              permission.setAllowed(true);
-            } 
-            hasAdminPerm = true;
-            break;
-          }
-        }
-        if (!hasAdminPerm) {
-          // if user has no ADMINPAGE permission, add and update user PermissionEntry
-          List<Permission> userPermissions = new ArrayList<Permission>(Arrays.asList(permEntry.getPermissions()));
-          userPermissions.add(new Permission(PermissionType.ADMINPAGE, true));
-          permEntry.setPermissions(userPermissions.toArray(new Permission[userPermissions.size()]));
-        }
-        break;
-      }
-    }
-    // if page has no permission entry for current user, init and add user permission entry
-    if (currentUserPermEnty == null) {
-      currentUserPermEnty = new PermissionEntry(currentUser, "", IDType.USER, new Permission[] {
-          new Permission(PermissionType.VIEWPAGE, true),
-          new Permission(PermissionType.EDITPAGE, true),
-          new Permission(PermissionType.ADMINPAGE, true) });
-      page.getPermissions().add(currentUserPermEnty);
-    }
+    
     Page createdPage = dataStorage.createPage(wiki, parentPage, page);
 
     invalidateCache(parentPage);
