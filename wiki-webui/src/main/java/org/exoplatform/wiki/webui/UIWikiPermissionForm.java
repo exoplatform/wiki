@@ -301,16 +301,11 @@ public class UIWikiPermissionForm extends UIWikiForm implements UIPopupComponent
               PermissionEntry permissionEntry = new PermissionEntry();
               Permission[] permissions = null;
               if (Scope.WIKI.equals(scope)) {
-                permissions = new Permission[4];
+                permissions = new Permission[2];
                 permissions[0] = new Permission();
-                permissions[0].setPermissionType(PermissionType.VIEWPAGE);
-                permissions[0].setAllowed(true);
+                permissions[0].setPermissionType(PermissionType.ADMINPAGE);
                 permissions[1] = new Permission();
-                permissions[1].setPermissionType(PermissionType.EDITPAGE);
-                permissions[2] = new Permission();
-                permissions[2].setPermissionType(PermissionType.ADMINPAGE);
-                permissions[3] = new Permission();
-                permissions[3].setPermissionType(PermissionType.ADMINSPACE);
+                permissions[1].setPermissionType(PermissionType.ADMINSPACE);
               } else if (Scope.PAGE.equals(scope)) {
                 permissions = new Permission[2];
                 permissions[0] = new Permission();

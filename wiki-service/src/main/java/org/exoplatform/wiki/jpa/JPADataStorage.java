@@ -47,21 +47,25 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.exoplatform.commons.utils.ObjectPageList;
+import org.exoplatform.commons.utils.PageList;
 
 import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.api.persistence.DataInitializer;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.file.services.FileService;
-import org.exoplatform.commons.utils.ObjectPageList;
-import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
 import org.exoplatform.portal.config.UserACL;
+import org.exoplatform.portal.config.UserPortalConfig;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
@@ -98,6 +102,7 @@ import org.exoplatform.wiki.mow.api.Template;
 import org.exoplatform.wiki.mow.api.Wiki;
 import org.exoplatform.wiki.mow.api.WikiType;
 import org.exoplatform.wiki.service.DataStorage;
+import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiPageParams;
 import org.exoplatform.wiki.service.search.SearchResult;
 import org.exoplatform.wiki.service.search.SearchResultType;
@@ -128,6 +133,8 @@ public class JPADataStorage implements DataStorage {
   private TemplateDAO    templateDAO;
   private EmotionIconDAO emotionIconDAO;
   private FileService fileService;
+  private UserACL userACL;
+  
 
   /**
    * JPADataStorage must depends on DataInitializer to make sure data structure is created before initializing it
@@ -142,7 +149,8 @@ public class JPADataStorage implements DataStorage {
                         TemplateDAO templateDAO,
                         EmotionIconDAO emotionIconDAO,
                         DataInitializer dataInitializer,
-                        FileService fileService) {
+                        FileService fileService,
+                        UserACL userACL) {
     this.wikiDAO = wikiDAO;
     this.pageDAO = pageDAO;
     this.pageAttachmentDAO = pageAttachmentDAO;
@@ -153,6 +161,7 @@ public class JPADataStorage implements DataStorage {
     this.templateDAO = templateDAO;
     this.emotionIconDAO = emotionIconDAO;
     this.fileService = fileService;
+    this.userACL = userACL;
   }
 
   @Override
@@ -200,7 +209,7 @@ public class JPADataStorage implements DataStorage {
     output.setUrl(input.getUrl());
     return output;
   }
-
+  
   @Override
   public Wiki getWikiByTypeAndOwner(String wikiType, String wikiOwner) throws WikiException {
     return convertWikiEntityToWiki(wikiDAO.getWikiByTypeAndOwner(wikiType, wikiOwner));
@@ -233,22 +242,10 @@ public class JPADataStorage implements DataStorage {
     wikiHomePage.setContent("<h1> Welcome to " + wiki.getOwner() + " </h1>");
     // inherit syntax from wiki
     wikiHomePage.setSyntax(createdWiki.getPreferences().getWikiPreferencesSyntax().getDefaultSyntax());
-    // inherit home page permissions from wiki permissions
-    List<PermissionEntry> homePagePermissions = new ArrayList<>();
-    List<PermissionEntry> wikiPermissions = createdWiki.getPermissions();
-    for(PermissionEntry wikiPermission : wikiPermissions) {
-      PermissionEntry homePagePermission = new PermissionEntry(wikiPermission.getId(), wikiPermission.getFullName(), wikiPermission.getIdType(), null);
-      List<Permission> newPermissions = new ArrayList<>();
-      for(Permission permission : wikiPermission.getPermissions()) {
-        if(permission.getPermissionType().equals(PermissionType.VIEWPAGE) || permission.getPermissionType().equals(PermissionType.EDITPAGE)) {
-          newPermissions.add(permission);
-        }
-      }
-      homePagePermission.setPermissions(newPermissions.toArray(new Permission[]{}));
-      homePagePermissions.add(homePagePermission);
-    }
+    // set default wiki home page permissions
+    List<PermissionEntry> homePagePermissions = getWikiHomePageDefaultPermissions(wiki.getType(), wiki.getOwner());
+    
     wikiHomePage.setPermissions(homePagePermissions);
-
     Page createdWikiHomePage = createPage(createdWiki, null, wikiHomePage);
     createdWiki.setWikiHome(createdWikiHomePage);
 
@@ -573,7 +570,7 @@ public class JPADataStorage implements DataStorage {
     }
 
     return convertPermissionEntitiesToPermissionEntries(wikiEntity.getPermissions(),
-        Arrays.asList(PermissionType.VIEWPAGE, PermissionType.EDITPAGE, PermissionType.ADMINPAGE, PermissionType.ADMINSPACE));
+        Arrays.asList(PermissionType.ADMINPAGE, PermissionType.ADMINSPACE));
   }
 
   @Override
@@ -1440,6 +1437,50 @@ public class JPADataStorage implements DataStorage {
       pageEntity = pageDAO.getPageOfWikiByName(page.getWikiType(), page.getWikiOwner(), page.getName());
     }
     return pageEntity;
+  }
+  
+  private List<PermissionEntry> getWikiHomePageDefaultPermissions(String wikiType, String wikiOwner) throws WikiException {
+    Permission[] permissions = new Permission[] {
+        new Permission(PermissionType.VIEWPAGE, true),
+        new Permission(PermissionType.EDITPAGE, true)
+    };
+    List<PermissionEntry> permissionEntries = new ArrayList<>();
+    if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
+      Iterator<Map.Entry<String, IDType>> iter = Utils.getACLForAdmins().entrySet().iterator();
+      while (iter.hasNext()) {
+        Map.Entry<String, IDType> entry = iter.next();
+        PermissionEntry permissionEntry = new PermissionEntry(entry.getKey(), "", entry.getValue(), permissions);
+        permissionEntries.add(permissionEntry);
+      }
+      UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
+              .getComponentInstanceOfType(UserPortalConfigService.class);
+      try {
+        if(userPortalConfigService != null) {
+          UserPortalConfig userPortalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null);
+          if (userPortalConfig != null) {
+            PortalConfig portalConfig = userPortalConfig.getPortalConfig();
+            PermissionEntry portalPermissionEntry = new PermissionEntry(portalConfig.getEditPermission(),
+                    "", IDType.MEMBERSHIP, permissions);
+            permissionEntries.add(portalPermissionEntry);
+          }
+        }
+      } catch (Exception e) {
+        throw new WikiException("Cannot get user portal config for wiki " + wikiType + ":" + wikiOwner
+                + " - Cause : " + e.getMessage(), e);
+      }
+      PermissionEntry anyPermissionEntry = new PermissionEntry(IdentityConstants.ANY, "", IDType.USER, new Permission[] {(
+          new Permission(PermissionType.VIEWPAGE, true)
+      )});
+      permissionEntries.add(anyPermissionEntry);
+    } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
+      PermissionEntry groupPermissionEntry = new PermissionEntry(wikiOwner, "", IDType.GROUP, permissions);
+      permissionEntries.add(groupPermissionEntry);
+    } else if (PortalConfig.USER_TYPE.equals(wikiType)) {
+      PermissionEntry ownerPermissionEntry = new PermissionEntry(wikiOwner, "", IDType.USER, permissions);
+      permissionEntries.add(ownerPermissionEntry);
+    }
+
+    return permissionEntries;
   }
 
   /**
