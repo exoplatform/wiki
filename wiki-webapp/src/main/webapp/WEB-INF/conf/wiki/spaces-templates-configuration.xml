@@ -52,7 +52,7 @@
                       <boolean>true</boolean>
                     </field>
                     <field name="order">
-                      <int>500</int>
+                      <int>300</int>
                     </field>
                     <field name="uri">
                       <string>wiki</string>
