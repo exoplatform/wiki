@@ -4,7 +4,7 @@
   <parent>
     <artifactId>wiki</artifactId>
     <groupId>org.exoplatform.wiki</groupId>
-    <version>6.0.x-SNAPSHOT</version>
+    <version>6.0.2</version>
   </parent>
   <artifactId>wiki-webui</artifactId>
   <packaging>jar</packaging>
