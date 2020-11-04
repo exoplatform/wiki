@@ -368,8 +368,8 @@ public class WikiSpaceActivityPublisher extends PageWikiListener {
 
   /**
    * Check If a page can be read by all users of a space
-   * 
-   * @param page Page
+   *
+   * @param page  Page
    * @param space Space
    * @return true : can, false : not can;
    * @throws Exception
@@ -380,7 +380,9 @@ public class WikiSpaceActivityPublisher extends PageWikiListener {
     boolean isPublic = false;
     if (pagePermissions != null) {
       for (PermissionEntry permissionEntry : pagePermissions) {
-        if (permissionEntry.getIdType().equals(IDType.MEMBERSHIP) && permissionEntry.getId().equals(groupMemberShip)) {
+        IDType permissionIDType = permissionEntry.getIdType();
+        String permissionId = permissionEntry.getId();
+        if ((permissionIDType.equals(IDType.MEMBERSHIP) && permissionId.equals(groupMemberShip)) || (permissionIDType.equals(IDType.GROUP) && permissionId.equals(space.getGroupId()))) {
           isPublic = true;
           break;
         }
