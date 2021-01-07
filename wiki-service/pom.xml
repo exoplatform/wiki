@@ -193,11 +193,6 @@
       <scope>runtime</scope>
     </dependency>
     <dependency>
-      <groupId>org.exoplatform.core</groupId>
-      <artifactId>exo.core.component.organization.jdbc</artifactId>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
       <groupId>org.suigeneris</groupId>
       <artifactId>jrcs.rcs</artifactId>
       <scope>runtime</scope>
