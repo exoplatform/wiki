@@ -38,9 +38,9 @@
     <!-- **************************************** -->
     <!-- Project Dependencies                     -->
     <!-- **************************************** -->
-    <org.exoplatform.social.version>6.2.x-SNAPSHOT</org.exoplatform.social.version>
-    <org.exoplatform.platform-ui.version>6.2.x-SNAPSHOT</org.exoplatform.platform-ui.version>
-    <addon.exo.gamification.version>2.2.x-SNAPSHOT</addon.exo.gamification.version>
+    <org.exoplatform.social.version>6.2.0-M04</org.exoplatform.social.version>
+    <org.exoplatform.platform-ui.version>6.2.0-M04</org.exoplatform.platform-ui.version>
+    <addon.exo.gamification.version>2.2.0-M04</addon.exo.gamification.version>
 
     <!-- Maven Plugin for JS and CSS bundling and Unit Test execution -->
     <com.github.eirslett.frontend.version>1.6</com.github.eirslett.frontend.version>
