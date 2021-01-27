@@ -18,6 +18,7 @@
 package org.exoplatform.wiki.jpa;
 import org.exoplatform.component.test.*;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.services.organization.OrganizationService;
 import org.exoplatform.services.security.*;
 import org.exoplatform.wiki.WikiException;
 import org.exoplatform.wiki.mow.api.Wiki;
@@ -51,8 +52,13 @@ public abstract class BaseTest extends AbstractKernelTest {
   }
 
   protected void startSessionAs(String user) {
-    Identity userIdentity = new Identity(user);
-    ConversationState.setCurrent(new ConversationState(userIdentity));
+    try {
+      Authenticator authenticator = getContainer().getComponentInstanceOfType(Authenticator.class);
+      Identity userIdentity = authenticator.createIdentity(user);
+      ConversationState.setCurrent(new ConversationState(userIdentity));
+    } catch (Exception e) {
+      throw new IllegalStateException(e);
+    }
   }
   public <T> T getService(Class<T> clazz) {
     return (T) getContainer().getComponentInstanceOfType(clazz);

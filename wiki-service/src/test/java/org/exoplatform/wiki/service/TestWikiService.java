@@ -17,8 +17,11 @@
 package org.exoplatform.wiki.service;
 
 
+import org.apache.commons.codec.binary.StringUtils;
 import org.apache.commons.io.IOUtils;
 import org.exoplatform.commons.utils.PageList;
+import org.exoplatform.portal.config.DataStorage;
+import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
@@ -56,6 +59,27 @@ public class TestWikiService extends BaseTest {
     wiki = wService.getWikiByTypeAndOwner(PortalConfig.PORTAL_TYPE, "wiki1");
     assertNotNull(wiki);
 
+  }
+
+  public void testCreateWikiPermissions() throws Exception {
+    UserPortalConfigService portalConfigService = getContainer().getComponentInstanceOfType(UserPortalConfigService.class);
+    String defaultPortal = portalConfigService.getDefaultPortal();
+    Wiki siteWiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, defaultPortal);
+    assertNotNull(siteWiki);
+    assertTrue(siteWiki.getPermissions()
+                       .stream()
+                       .noneMatch(permission -> StringUtils.equals(permission.getId(), IdentityConstants.ANY)));
+
+    Page wikiHome = siteWiki.getWikiHome();
+    assertNotNull(wikiHome);
+
+    DataStorage dataStorage = getContainer().getComponentInstanceOfType(DataStorage.class);
+    PortalConfig portalConfig = dataStorage.getPortalConfig(defaultPortal);
+    assertNotNull(portalConfig);
+
+    List<PermissionEntry> permissions = wikiHome.getPermissions();
+    assertNotNull(permissions);
+    assertTrue(permissions.stream().noneMatch(permission -> StringUtils.equals(permission.getId(), IdentityConstants.ANY)));
   }
 
   public void testGetPortalPageById() throws WikiException {
@@ -607,15 +631,15 @@ public class TestWikiService extends BaseTest {
 //  }
 
   public void testUpdatePage() throws WikiException {
-    startSessionAs("mary");
+    startSessionAs("john");
 
     // Get wiki home
-    getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "testPage").getWikiHome();
+    getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic").getWikiHome();
 
     // Create a wiki page for test
     Page page = new Page("new page", "new page");
     page.setContent("Page content");
-    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "testPage"), "WikiHome", page);
+    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", page);
     assertNotNull(page);
     assertEquals("Page content", page.getContent());
     assertEquals("new page", page.getTitle());
@@ -634,10 +658,10 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testDraftPage() throws WikiException {
-    startSessionAs("mary");
+    startSessionAs("john");
     
     // Get wiki home
-    Page wikiHome = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "testDraftPage").getWikiHome();
+    Page wikiHome = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic").getWikiHome();
 
     // Test create draft for new page
     DraftPage draftPage = wService.createDraftForNewPage(new DraftPage(), wikiHome, new Date().getTime());
@@ -655,9 +679,10 @@ public class TestWikiService extends BaseTest {
     assertEquals(draftPage.getTargetPageRevision(), draftPage1.getTargetPageRevision());
     
     // Create a wiki page for test
-    Page page = new Page("new page", "new page");
+    String pageName = "new page 10";
+    Page page = new Page(pageName, pageName);
     page.setContent("Page content");
-    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "testDraftPage"), "WikiHome", page);
+    page = wService.createPage(new Wiki(PortalConfig.PORTAL_TYPE, "classic"), "WikiHome", page);
 
     // update it and create a version
     page.setContent("Page content updated");
@@ -665,7 +690,7 @@ public class TestWikiService extends BaseTest {
     wService.createVersionOfPage(page);
 
     // Test create draft for exist wiki page
-    WikiPageParams param = new WikiPageParams(PortalConfig.PORTAL_TYPE, "testDraftPage", page.getName());
+    WikiPageParams param = new WikiPageParams(PortalConfig.PORTAL_TYPE, "classic", page.getName());
     DraftPage draftPage2 = wService.createDraftForExistPage(new DraftPage(), page, null, new Date().getTime());
     assertNotNull(draftPage2);
     assertFalse(draftPage2.isNewPage());
@@ -680,7 +705,7 @@ public class TestWikiService extends BaseTest {
     assertEquals("1", draftPage3.getTargetPageRevision());
     
     // Test list draft by user
-    List<DraftPage> drafts = wService.getDraftsOfUser("mary");
+    List<DraftPage> drafts = wService.getDraftsOfUser("john");
     assertNotNull(drafts);
     assertEquals(2, drafts.size());
     
@@ -693,7 +718,7 @@ public class TestWikiService extends BaseTest {
     assertNull(wService.getDraft(draftNameForNewPage));
     
     // Test list draft by user
-    drafts = wService.getDraftsOfUser("mary");
+    drafts = wService.getDraftsOfUser("john");
     assertNotNull(drafts);
     assertEquals(0, drafts.size());
   }
@@ -714,6 +739,8 @@ public class TestWikiService extends BaseTest {
   }
 
   public void testGetExsitedOrNewDraftPageById() throws WikiException, IOException {
+    startSessionAs("john");
+
     Wiki wiki = getOrCreateWiki(wService, PortalConfig.PORTAL_TYPE, "classic");
     Page page = new Page("pageName", "pageTitle");
     page = wService.createPage(wiki, "WikiHome", page);
@@ -734,7 +761,7 @@ public class TestWikiService extends BaseTest {
     assertNotNull(attachments);
     assertEquals(1, attachments.size());
   
-    startSessionAs("mary");
+    startSessionAs("john");
     
     page = wService.getExsitedOrNewDraftPageById(PortalConfig.PORTAL_TYPE, page.getWikiOwner(), page.getName());
     attachments = wService.getAttachmentsOfPage(page);
