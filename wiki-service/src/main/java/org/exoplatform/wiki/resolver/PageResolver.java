@@ -1,6 +1,7 @@
 package org.exoplatform.wiki.resolver;
 
 import org.exoplatform.container.component.ComponentPlugin;
+import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
@@ -22,11 +23,11 @@ public class PageResolver {
     resolver = (Resolver)plugin ;
   }
   
-  public WikiPageParams extractWikiPageParams(String requestURI, UserNode portalUserNode){
+  public WikiPageParams extractWikiPageParams(String requestURI, SiteKey siteKey, UserNode portalUserNode){
     try {
       WikiPageParams params;
       if (this.resolver != null) {
-        params = this.resolver.extractPageParams(requestURI, portalUserNode);
+        params = this.resolver.extractPageParams(requestURI, siteKey, portalUserNode);
         return params;
       } else {
         LOG.error("Couldn't extract WikiPageParams for URI: " + requestURI + ". ResolverPlugin is not set!");
@@ -38,8 +39,8 @@ public class PageResolver {
     }
   }
   
-  public Page resolve(String requestURI, UserNode portalUserNode) throws Exception {
-    WikiPageParams params = extractWikiPageParams(requestURI, portalUserNode);
+  public Page resolve(String requestURI, SiteKey siteKey, UserNode portalUserNode) throws Exception {
+    WikiPageParams params = extractWikiPageParams(requestURI, siteKey, portalUserNode);
     if (params.getType() == null) {
       LOG.warn("Couldn't resolve URI: " + requestURI);
       return null;
