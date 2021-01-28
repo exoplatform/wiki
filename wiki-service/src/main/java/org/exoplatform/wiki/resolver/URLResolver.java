@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.portal.config.UserPortalConfigService;
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.SiteKey;
+import org.exoplatform.portal.mop.SiteType;
 import org.exoplatform.portal.mop.page.PageContext;
 import org.exoplatform.portal.mop.page.PageKey;
 import org.exoplatform.portal.mop.user.UserNode;
@@ -15,7 +17,9 @@ public class URLResolver extends Resolver{
   public URLResolver(OrganizationService orgSerivce) throws Exception {
     this.orgSerivce = orgSerivce ;
   }
-  public WikiPageParams extractPageParams(String requestURL, UserNode portalUserNode) throws Exception {
+
+  @Override
+  public WikiPageParams extractPageParams(String requestURL, SiteKey siteKey, UserNode portalUserNode) throws Exception {
     UserPortalConfigService configService = (UserPortalConfigService) ExoContainerContext.getCurrentContainer()
                                                                                          .getComponentInstanceOfType(UserPortalConfigService.class);
     WikiPageParams params = new WikiPageParams() ;
@@ -70,21 +74,19 @@ public class URLResolver extends Resolver{
           params.setPageName(WikiPageParams.WIKI_HOME);
         }
       }
-    }else{
-      if (portalUserNode != null && portalUserNode.getPageRef() != null
-          && !portalUserNode.getPageRef().toString().startsWith(PortalConfig.PORTAL_TYPE)) {
-      	PageKey pageKey = portalUserNode.getPageRef();
-        params.setType(pageKey.getSite().getTypeName());
-        params.setOwner(pageKey.getSite().getName());
-      } else {
-        params.setType(PortalConfig.PORTAL_TYPE);
-        PageContext pageContext = configService.getPage(portalUserNode.getPageRef());
-        params.setOwner(pageContext.getKey().getSite().getName());
+    } else {
+      if (siteKey == null && portalUserNode != null) {
+        siteKey = portalUserNode.getPageRef().getSite();
       }
-      if (uri.length() > 0)
-        params.setPageName(uri);
-      else
-        params.setPageName(WikiPageParams.WIKI_HOME);
+      if (siteKey != null) {
+        params.setType(siteKey.getTypeName());
+        params.setOwner(siteKey.getName());
+        if (uri.length() > 0) {
+          params.setPageName(uri);
+        } else {
+          params.setPageName(WikiPageParams.WIKI_HOME);
+        }
+      }
     }
     params.setPageName(TitleResolver.getId(params.getPageName(), true));
     return params;

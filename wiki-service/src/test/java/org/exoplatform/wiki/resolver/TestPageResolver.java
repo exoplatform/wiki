@@ -18,6 +18,7 @@ package org.exoplatform.wiki.resolver;
 
 
 import org.exoplatform.portal.config.model.PortalConfig;
+import org.exoplatform.portal.mop.SiteKey;
 import org.exoplatform.portal.mop.user.UserNode;
 import org.exoplatform.wiki.mock.MockDataStorage;
 import org.exoplatform.wiki.mow.api.Page;
@@ -43,36 +44,36 @@ public class TestPageResolver extends AbstractResolverTestcase {
   
   public void testExtractParams() throws Exception {
     UserNode usernode = createUserNode(MockDataStorage.PORTAL_CLASSIC__WIKI[0], "wiki");
-    WikiPageParams params = resolver.extractWikiPageParams("http://hostname/$CONTAINER/$ACCESS/classic/wiki", usernode);
+    WikiPageParams params = resolver.extractWikiPageParams("http://hostname/$CONTAINER/$ACCESS/classic/wiki", SiteKey.portal("classic"), usernode);
     assertNotNull(params);
   }
   
   public void testGetPage() throws Exception{
     getOrCreateWiki(wikiService, PortalConfig.PORTAL_TYPE, "classic");
     UserNode usernode = createUserNode(MockDataStorage.PORTAL_CLASSIC__WIKI[0], "wiki");
-    Page page = resolver.resolve("http://hostname/$CONTAINER/$ACCESS/classic/wiki", usernode);
+    Page page = resolver.resolve("http://hostname/$CONTAINER/$ACCESS/classic/wiki", null, usernode);
     assertNotNull(page) ;
 
     // Resolve wiki pages on another portal which is specified in user node
     usernode = createUserNode(MockDataStorage.PORTAL_CLASSIC__WIKI[0], "wiki");
-    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/jeeneegrlobalportal", usernode);
+    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/jeeneegrlobalportal", null, usernode);
     assertNotNull(page);
     
     // Resolve wiki pages on a portal which is specified in URL
     usernode = createUserNode(MockDataStorage.SPACE_EXO_WIKI[0], "exo/wiki");
-    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:exo/exo/wiki/portal/classic", usernode);
+    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:exo/exo/wiki/portal/classic", null, usernode);
     assertNotNull(page);
 
     // Resolve wiki pages on another space
     getOrCreateWiki(wikiService, PortalConfig.GROUP_TYPE, "/platform/users");
     usernode = createUserNode(MockDataStorage.GROUP_USER_WIKI[0], "wiki");
-    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/platformuserspace", usernode);
+    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/platformuserspace", null, usernode);
     assertNotNull(page);
 
     // Resolve wiki pages on another user
     getOrCreateWiki(wikiService, PortalConfig.USER_TYPE, "mary");
     usernode = createUserNode(MockDataStorage.USER_MARY_WIKI[0], "wiki");
-    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/maryspace", usernode);
+    page = resolver.resolve("http://hostname/$CONTAINER/g/:spaces:cca_community_space/cca_community_space/maryspace", null, usernode);
     assertNotNull(page);    
   }
 }
