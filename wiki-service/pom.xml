@@ -163,12 +163,6 @@
         </exclusion>
       </exclusions>
     </dependency>
-    <!-- to replace the xstream:xstream artifact required by picocontainer -->
-    <dependency>
-      <groupId>com.thoughtworks.xstream</groupId>
-      <artifactId>xstream</artifactId>
-      <scope>runtime</scope>
-    </dependency>
     <dependency>
       <groupId>javax.validation</groupId>
       <artifactId>validation-api</artifactId>
