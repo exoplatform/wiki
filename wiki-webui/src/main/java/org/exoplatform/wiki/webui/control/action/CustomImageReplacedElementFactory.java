@@ -57,6 +57,8 @@ public class CustomImageReplacedElementFactory implements ReplacedElementFactory
             String base64 = srcAttr.substring(srcAttr.indexOf("base64,") + "base64,".length());
             byte[] decodedBytes = Base64.decodeBase64(base64);
             fsImage = new ITextFSImage(Image.getInstance(decodedBytes));
+        } else {
+            fsImage = userAgentCallback.getImageResource(srcAttr).getImage();
         }
         return fsImage;
     }
