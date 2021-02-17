@@ -137,8 +137,13 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
         if(element.tagName().equals("img")){
           String src = element.attr("src");
           String imgName = src.substring(src.lastIndexOf("/") + 1);
-          Attachment imageAttachment = wikiService.getAttachmentOfPageByName(imgName,page,true);
-          if(imageAttachment.getMimeType().startsWith("image")){
+          Attachment imageAttachment = wikiService.getAttachmentOfPageByName(imgName, page, true);
+          if(imageAttachment == null) {
+            Page parentPage = wikiService.getParentPageOf(page);
+            imageAttachment = wikiService.getAttachmentOfPageByName(imgName, parentPage, true);
+          }
+          String mimeType = imageAttachment.getMimeType();
+          if(imageAttachment != null && mimeType!=null && mimeType.startsWith("image")){
             byte[] bytes = imageAttachment.getContent();
             element.attr("src", "base64," + Base64.encodeBase64String(bytes));
             element.attr("style","width:100%;height:100%");
