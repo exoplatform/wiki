@@ -134,7 +134,7 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
       Elements elements = doc.getAllElements();
       for(Element element : elements){
-        if(element.tagName().equals("img")){
+        if(element.tagName().equals("img") && !element.attr("src").isEmpty()){
           String src = element.attr("src");
           String imgName = src.substring(src.lastIndexOf("/") + 1);
           Attachment imageAttachment = wikiService.getAttachmentOfPageByName(imgName, page, true);
@@ -142,7 +142,7 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
             Page parentPage = wikiService.getParentPageOf(page);
             imageAttachment = wikiService.getAttachmentOfPageByName(imgName, parentPage, true);
           }
-          if(imageAttachment != null && imageAttachment.getMimeType() != null && imageAttachment.getMimeType().startsWith("image/")){
+          if(imageAttachment != null && imageAttachment.getMimeType().startsWith("image/")){
             byte[] bytes = imageAttachment.getContent();
             element.attr("src", "base64," + Base64.encodeBase64String(bytes));
             element.attr("style","width:100%;height:100%");
