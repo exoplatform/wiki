@@ -225,3 +225,32 @@ ol, ul, li {
 div, table, tr, td, img, form, input, p {
 	font-size: 12px;
 }
+
+figure {
+	margin: 0 0 10px 0;
+}
+
+figure.image {
+	text-align: center;
+}
+
+figure.image img {
+	display: block;
+	margin-left: auto;
+	margin-right: auto;
+	-fs-fit-images-to-width: 100% !important;
+
+}
+
+figure.image.image-style-align-left img {
+	float: left;
+	margin-right: 1.5em;
+}
+
+figure.image.image-style-align-right img {
+	float: right;
+	margin-left: 1.5em;
+}
+@page {
+	size: A3;
+}
