@@ -30,8 +30,10 @@ import org.w3c.dom.Document;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 import org.xhtmlrenderer.resource.FSEntityResolver;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Arrays;
 import java.util.List;
@@ -145,7 +147,14 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
           if(imageAttachment != null && imageAttachment.getMimeType() != null && imageAttachment.getMimeType().startsWith("image/")){
             byte[] bytes = imageAttachment.getContent();
             element.attr("src", "base64," + Base64.encodeBase64String(bytes));
-            element.attr("style","width:100%;height:100%");
+            try {
+              ByteArrayInputStream buffArray = new ByteArrayInputStream(bytes);
+              BufferedImage buffImage = ImageIO.read(buffArray);
+              element.attr("style", "width:" + buffImage.getWidth() + "px;height:" + buffImage.getHeight() + "px;");
+            } catch (IOException e) {
+              LOG.debug("Error while trying to obtain the original image size", e);
+              element.attr("style", "width:100%;height:100%;");
+            }
           }
         }
       }
