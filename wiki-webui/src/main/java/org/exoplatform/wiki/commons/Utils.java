@@ -132,7 +132,8 @@ public class Utils {
   public static WikiPageParams getCurrentWikiPageParams() throws Exception {
     String requestURL = getCurrentRequestURL();
     PageResolver pageResolver = (PageResolver) PortalContainer.getComponent(PageResolver.class);
-    WikiPageParams params = pageResolver.extractWikiPageParams(requestURL, Util.getUIPortal().getSelectedUserNode());
+    UIPortal uiPortal = Util.getUIPortal();
+    WikiPageParams params = pageResolver.extractWikiPageParams(requestURL, uiPortal.getSiteKey(), uiPortal.getSelectedUserNode());
     HttpServletRequest request = Util.getPortalRequestContext().getRequest();
     Map<String, String[]> paramsMap = request.getParameterMap();
     params.setParameters(paramsMap);
@@ -148,8 +149,8 @@ public class Utils {
   public static Page getCurrentWikiPage() throws Exception {
     String requestURL = Utils.getCurrentRequestURL();
     PageResolver pageResolver = (PageResolver) PortalContainer.getComponent(PageResolver.class);
-    Page page = pageResolver.resolve(requestURL, Util.getUIPortal().getSelectedUserNode());
-    return page;
+    UIPortal uiPortal = Util.getUIPortal();
+    return pageResolver.resolve(requestURL, uiPortal.getSiteKey(), uiPortal.getSelectedUserNode());
   }
 
   public static boolean canModifyPagePermission() throws Exception {

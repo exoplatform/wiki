@@ -19,99 +19,37 @@
 
 package org.exoplatform.wiki.jpa;
 
-import static org.exoplatform.wiki.jpa.EntityConverter.convertAttachmentEntityToAttachment;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertAttachmentToDraftPageAttachmentEntity;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertAttachmentToPageAttachmentEntity;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertDraftPageEntityToDraftPage;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertDraftPageToDraftPageEntity;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertEmotionIconEntityToEmotionIcon;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertPageEntityToPage;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertPageToPageEntity;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertPageVersionEntityToPageVersion;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertPermissionEntitiesToPermissionEntries;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertPermissionEntriesToPermissionEntities;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertTemplateEntityToTemplate;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertTemplateToTemplateEntity;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertWikiEntityToWiki;
-import static org.exoplatform.wiki.jpa.EntityConverter.convertWikiToWikiEntity;
+import static org.exoplatform.wiki.jpa.EntityConverter.*;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import org.exoplatform.commons.utils.ObjectPageList;
-import org.exoplatform.commons.utils.PageList;
+import java.util.*;
 
 import org.apache.commons.lang.StringUtils;
 
 import org.exoplatform.commons.api.persistence.DataInitializer;
 import org.exoplatform.commons.api.persistence.ExoTransactional;
 import org.exoplatform.commons.file.services.FileService;
+import org.exoplatform.commons.utils.ObjectPageList;
+import org.exoplatform.commons.utils.PageList;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.container.PortalContainer;
 import org.exoplatform.container.configuration.ConfigurationManager;
 import org.exoplatform.container.xml.ValuesParam;
-import org.exoplatform.portal.config.UserACL;
-import org.exoplatform.portal.config.UserPortalConfig;
-import org.exoplatform.portal.config.UserPortalConfigService;
+import org.exoplatform.portal.config.*;
 import org.exoplatform.portal.config.model.PortalConfig;
 import org.exoplatform.services.security.Identity;
 import org.exoplatform.services.security.IdentityConstants;
 import org.exoplatform.wiki.WikiException;
-import org.exoplatform.wiki.jpa.dao.DraftPageAttachmentDAO;
-import org.exoplatform.wiki.jpa.dao.DraftPageDAO;
-import org.exoplatform.wiki.jpa.dao.EmotionIconDAO;
-import org.exoplatform.wiki.jpa.dao.PageAttachmentDAO;
-import org.exoplatform.wiki.jpa.dao.PageDAO;
-import org.exoplatform.wiki.jpa.dao.PageMoveDAO;
-import org.exoplatform.wiki.jpa.dao.PageVersionDAO;
-import org.exoplatform.wiki.jpa.dao.TemplateDAO;
-import org.exoplatform.wiki.jpa.dao.WikiDAO;
-import org.exoplatform.wiki.jpa.entity.AttachmentEntity;
-import org.exoplatform.wiki.jpa.entity.DraftPageAttachmentEntity;
-import org.exoplatform.wiki.jpa.entity.DraftPageEntity;
-import org.exoplatform.wiki.jpa.entity.EmotionIconEntity;
-import org.exoplatform.wiki.jpa.entity.PageAttachmentEntity;
-import org.exoplatform.wiki.jpa.entity.PageEntity;
-import org.exoplatform.wiki.jpa.entity.PageMoveEntity;
-import org.exoplatform.wiki.jpa.entity.PageVersionEntity;
-import org.exoplatform.wiki.jpa.entity.TemplateEntity;
-import org.exoplatform.wiki.jpa.entity.WikiEntity;
+import org.exoplatform.wiki.jpa.dao.*;
+import org.exoplatform.wiki.jpa.entity.*;
 import org.exoplatform.wiki.jpa.search.WikiElasticSearchServiceConnector;
-import org.exoplatform.wiki.mow.api.Attachment;
-import org.exoplatform.wiki.mow.api.DraftPage;
-import org.exoplatform.wiki.mow.api.EmotionIcon;
-import org.exoplatform.wiki.mow.api.Page;
-import org.exoplatform.wiki.mow.api.PageVersion;
-import org.exoplatform.wiki.mow.api.Permission;
-import org.exoplatform.wiki.mow.api.PermissionEntry;
-import org.exoplatform.wiki.mow.api.PermissionType;
-import org.exoplatform.wiki.mow.api.Template;
-import org.exoplatform.wiki.mow.api.Wiki;
-import org.exoplatform.wiki.mow.api.WikiType;
+import org.exoplatform.wiki.mow.api.*;
 import org.exoplatform.wiki.service.DataStorage;
 import org.exoplatform.wiki.service.IDType;
 import org.exoplatform.wiki.service.WikiPageParams;
-import org.exoplatform.wiki.service.search.SearchResult;
-import org.exoplatform.wiki.service.search.SearchResultType;
-import org.exoplatform.wiki.service.search.TemplateSearchData;
-import org.exoplatform.wiki.service.search.TemplateSearchResult;
-import org.exoplatform.wiki.service.search.WikiSearchData;
-import org.exoplatform.wiki.utils.Utils;
-import org.exoplatform.wiki.utils.VersionNameComparatorDesc;
-import org.exoplatform.wiki.utils.WikiConstants;
+import org.exoplatform.wiki.service.search.*;
+import org.exoplatform.wiki.utils.*;
 
 /**
  * Created by The eXo Platform SAS Author : eXoPlatform exo@exoplatform.com
@@ -1446,32 +1384,84 @@ public class JPADataStorage implements DataStorage {
     };
     List<PermissionEntry> permissionEntries = new ArrayList<>();
     if (PortalConfig.PORTAL_TYPE.equals(wikiType)) {
-      Iterator<Map.Entry<String, IDType>> iter = Utils.getACLForAdmins().entrySet().iterator();
+      HashMap<String, IDType> aclForAdmins = Utils.getACLForAdmins();
+      Iterator<Map.Entry<String, IDType>> iter = aclForAdmins.entrySet().iterator();
       while (iter.hasNext()) {
         Map.Entry<String, IDType> entry = iter.next();
         PermissionEntry permissionEntry = new PermissionEntry(entry.getKey(), "", entry.getValue(), permissions);
         permissionEntries.add(permissionEntry);
       }
       UserPortalConfigService userPortalConfigService = ExoContainerContext.getCurrentContainer()
-              .getComponentInstanceOfType(UserPortalConfigService.class);
+                                                                           .getComponentInstanceOfType(UserPortalConfigService.class);
       try {
-        if(userPortalConfigService != null) {
+        if (userPortalConfigService != null) {
           UserPortalConfig userPortalConfig = userPortalConfigService.getUserPortalConfig(wikiOwner, null);
           if (userPortalConfig != null) {
             PortalConfig portalConfig = userPortalConfig.getPortalConfig();
-            PermissionEntry portalPermissionEntry = new PermissionEntry(portalConfig.getEditPermission(),
-                    "", IDType.MEMBERSHIP, permissions);
-            permissionEntries.add(portalPermissionEntry);
+            String portalEditPermission = portalConfig.getEditPermission();
+            if (!aclForAdmins.containsKey(portalEditPermission)) {
+              PermissionEntry portalPermissionEntry = new PermissionEntry(portalEditPermission,
+                                                                          "",
+                                                                          IDType.MEMBERSHIP,
+                                                                          permissions);
+              permissionEntries.add(portalPermissionEntry);
+            }
+
+            String[] portalAccessPermissions = portalConfig.getAccessPermissions();
+            if (portalAccessPermissions != null && portalAccessPermissions.length > 0) {
+              Permission[] viewPermissions = new Permission[] {
+                  new Permission(PermissionType.VIEWPAGE, true),
+                  new Permission(PermissionType.EDITPAGE, false)
+              };
+
+              for (String portalAccessPermissionExpression : portalAccessPermissions) {
+                if (StringUtils.equals(portalAccessPermissionExpression, portalEditPermission)
+                    || aclForAdmins.containsKey(portalAccessPermissionExpression)) {
+                  continue;
+                }
+
+                IDType idType = null;
+                if (StringUtils.equals(UserACL.EVERYONE, portalAccessPermissionExpression)) {
+                  // Avoid adding wiki pages accessible to everyone, only
+                  // for loggedin users
+                  if (!StringUtils.equals("*:/platform/users", portalEditPermission)
+                      && !aclForAdmins.containsKey("*:/platform/users")) {
+                    PermissionEntry internalUsersPermissionEntry = new PermissionEntry("/platform/users",
+                                                                                       "",
+                                                                                       IDType.GROUP,
+                                                                                       viewPermissions);
+                    permissionEntries.add(internalUsersPermissionEntry);
+                  }
+                  if (!StringUtils.equals("*:/platform/externals", portalEditPermission)
+                      && !aclForAdmins.containsKey("*:/platform/externals")) {
+                    PermissionEntry externalUsersPermissionEntry = new PermissionEntry("/platform/externals",
+                                                                                       "",
+                                                                                       IDType.GROUP,
+                                                                                       viewPermissions);
+                    permissionEntries.add(externalUsersPermissionEntry);
+                  }
+                  continue;
+                } else if (StringUtils.contains(portalAccessPermissionExpression, "/")
+                    && StringUtils.contains(portalAccessPermissionExpression, ":")) {
+                  idType = IDType.MEMBERSHIP;
+                } else if (StringUtils.contains(portalAccessPermissionExpression, "/")) {
+                  idType = IDType.GROUP;
+                } else {
+                  idType = IDType.USER;
+                }
+                PermissionEntry accessPermissionEntry = new PermissionEntry(portalAccessPermissionExpression,
+                                                                            "",
+                                                                            idType,
+                                                                            viewPermissions);
+                permissionEntries.add(accessPermissionEntry);
+              }
+            }
           }
         }
       } catch (Exception e) {
         throw new WikiException("Cannot get user portal config for wiki " + wikiType + ":" + wikiOwner
-                + " - Cause : " + e.getMessage(), e);
+            + " - Cause : " + e.getMessage(), e);
       }
-      PermissionEntry anyPermissionEntry = new PermissionEntry(IdentityConstants.ANY, "", IDType.USER, new Permission[] {(
-          new Permission(PermissionType.VIEWPAGE, true)
-      )});
-      permissionEntries.add(anyPermissionEntry);
     } else if (PortalConfig.GROUP_TYPE.equals(wikiType)) {
       PermissionEntry groupPermissionEntry = new PermissionEntry(wikiOwner, "", IDType.GROUP, permissions);
       permissionEntries.add(groupPermissionEntry);
