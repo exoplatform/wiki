@@ -2,6 +2,7 @@ package org.exoplatform.wiki.webui.control.action;
 
 import com.lowagie.text.pdf.BaseFont;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
 import org.exoplatform.download.DownloadService;
@@ -143,6 +144,14 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
           if(imageAttachment == null) {
             Page parentPage = wikiService.getParentPageOf(page);
             imageAttachment = wikiService.getAttachmentOfPageByName(imgName, parentPage, true);
+          }
+          // get pasted image attachment by its source page
+          if (imageAttachment == null && src.matches("^(http|https)://.*$")) {
+            String pageName = StringUtils.substringBetween(src, "/page/", "/");
+            String wikiOwner = StringUtils.substringBetween(src, "/space/", "/page/");
+            String wikiType = (wikiOwner.startsWith("/spaces")) ? "group" : wikiOwner.equals("global") ? "portal" : "user";
+            Page sourcePage = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageName);
+            imageAttachment = wikiService.getAttachmentOfPageByName(imgName.substring(0, imgName.indexOf("?")), sourcePage, true);
           }
           if(imageAttachment != null && imageAttachment.getMimeType() != null && imageAttachment.getMimeType().startsWith("image/")){
             byte[] bytes = imageAttachment.getContent();
