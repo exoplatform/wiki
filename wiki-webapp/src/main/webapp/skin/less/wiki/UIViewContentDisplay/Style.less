@@ -12,19 +12,23 @@
 		span.EditSection {
 			visibility: hidden;
 			.square(18px);
-			 float: right;
-			 margin: 5px 5px 0 0;
+			 float: right ~'; /** orientation=lt */ ';
+			 float: left ~'; /** orientation=rt */ ';
+			 margin: 5px 5px 0 0 ~'; /** orientation=lt */ ';
+			 margin: 5px 0 0 5px ~'; /** orientation=rt */ ';
 			 display:block!important;
 			a{
 				position: absolute;
-				right: 0px;
+				right: 0px ~'; /** orientation=lt */ ';
+				left: 0px ~'; /** orientation=rt */ ';
 				display: block;
 				background: none;
 				line-height: 24px;
 				 text-decoration: none;
 				 font-size: 12px;
 				 outline: none!important;
-				  margin: 0px 12px 0 0;
+				  margin: 0px 12px 0 0 ~'; /** orientation=lt */ ';
+				  margin: 0px 0 0 12px ~'; /** orientation=rt */ ';
 				 .square(18px);
 			}
 		}

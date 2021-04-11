@@ -14,7 +14,8 @@
 }
 
 .uiWikiUpperArea{
-	padding: 14px 25px 14px 24px;
+	padding: 14px 25px 14px 24px ~'; /** orientation=lt */ ';
+	padding: 14px 24px 14px 25px ~'; /** orientation=rt */ ';
 }
 
 /*===========Relate page==========*/
@@ -26,7 +27,8 @@
 			padding: 4px 0;
 			color: @baseColorDark;
 			.uiIconFileMini{
-				margin: 0px 4px 0px 0px;
+				margin: 0px 4px 0px 0px ~'; /** orientation=lt */ ';
+				margin: 0px 0px 0px 4px ~'; /** orientation=rt */ ';
 			}
 		}
 		.relateItem:hover{
@@ -57,7 +59,8 @@
 	.wikiPreviewHeader{
 		background: @primaryBackground;
 		border-bottom: 1px solid @borderColor;
-		padding: 6px 6px 4px 25px;
+		padding: 6px 6px 4px 25px ~'; /** orientation=lt */ ';
+		padding: 6px 25px 4px 6px ~'; /** orientation=rt */ ';
 		.popupTitle {
 			color: @textColor;
 			font-size: 14px;
@@ -80,7 +83,7 @@
 			font-weight: bold;
 			color: @linkColor;
 			line-height: 28px;
-			padding: 0 0 12px 0;
+			padding: 0 0 12px;
 		}
 		.uiWikiContentDisplay{
 			padding: 18px 0 0;
@@ -105,12 +108,15 @@
 	}
 	.uiSpaceSwitcher_UIWikiSelectPageForm{
 		cursor: pointer;
-		float: left;
+		float: left ~'; /** orientation=lt */ ';
+		float: right ~'; /** orientation=rt */ ';
 		position: relative;
-		margin-left: 10px;
+		margin-left: 10px ~'; /** orientation=lt */ ';
+		margin-right: 10px ~'; /** orientation=rt */ ';
 		.spaceChooserPopup{
 			top: 28px;
-			left: 0px;
+			left: 0px ~'; /** orientation=lt */ ';
+			right: 0px ~'; /** orientation=rt */ ';
 			.uiIconWikiWiki:hover {
                 color: @colorIconSecondary;
 			}
@@ -124,7 +130,8 @@
         color: @colorIconSecondary;
     }
     a i{
-      margin-right: 4px;
+      margin-right: 4px ~'; /** orientation=lt */ ';
+      margin-left: 4px ~'; /** orientation=rt */ ';
     }
   }
 }
