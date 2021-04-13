@@ -17,7 +17,8 @@
 @import "/wiki/skin/DefaultSkin/webui/UIWikiRichTextEditor/Stylesheet.css";
 
 .UIWikiToolBar{
-	float: right;
+	float: right ~'; /** orientation=lt */ ';
+	float: left ~'; /** orientation=rt */ ';
 	width: 100px;
 }
 
@@ -28,7 +29,8 @@
     }
 	&.pull-right > .dropdown-menu
 	{
-		right: auto;
+		right: auto ~'; /** orientation=lt */ ';
+		left: auto ~'; /** orientation=rt */ ';
 	}
 }
 
@@ -77,7 +79,8 @@
 		height: 100%;
 		flex: 0 0 auto;
 		padding: 4px;
-		float:left;
+		float:left ~'; /** orientation=lt */ ';
+		float:right ~'; /** orientation=rt */ ';
 		overflow: auto;
 		&.collapsed {
 			display: none;
@@ -109,7 +112,7 @@
         width: 0;
 	}
 	.UIWikiNavigationContainer {
-		padding: 8px 2px 0 2px;
+		padding: 8px 2px 0;
 		visibility: '';
 		overflow: visible;
 	}
@@ -161,7 +164,8 @@
 	.btn-primary {
 		position: absolute;
 		z-index: 1;
-		left: 0;
+		left: 0 ~'; /** orientation=lt */ ';
+		right: 0 ~'; /** orientation=rt */ ';
 	}
 }
 .uiWikiBottomArea {
@@ -180,7 +184,8 @@
 
 .uiWikiMiddleArea {
 	.resizeBar {
-		float: left;
+		float: left ~'; /** orientation=lt */ ';
+		float: right ~'; /** orientation=rt */ ';
 		width: 26px;
 		margin-top: 5px;
 		flex: 0 0 auto;
@@ -190,9 +195,11 @@
 			height: 100%;
 			cursor:col-resize;
 			position: relative;
-			margin-left: 5px;
+			margin-left: 5px ~'; /** orientation=lt */ ';
+			margin-right: 5px ~'; /** orientation=rt */ ';
 			&:hover {
-				border-right: solid 1px @borderColor;
+				border-right: solid 1px @borderColor ~'; /** orientation=lt */ ';
+				border-left: solid 1px @borderColor ~'; /** orientation=rt */ ';
 				.resizeButton {
 					display: block;
 				}
@@ -203,17 +210,20 @@
 			#gradient .vertical(@baseBackground, @primaryBackground);
 			.border-radius(@borderRadiusSmall 0px 0px @borderRadiusSmall);
 			.size(24px,14px);
-			float:right;
+			float:right ~'; /** orientation=lt */ ';
+			float:left ~'; /** orientation=rt */ ';
 			margin : auto;
 			cursor : pointer;
 			border: 1px solid @borderColor;
-			border-right: none;
+			border-right: none ~'; /** orientation=lt */ ';
+			border-left: none ~'; /** orientation=rt */ ';
 			display: none;
 			margin-top: 7px;
 		  	padding-top: 2px; // to center the arrow
 				
 				[class^="uiIcon"] {
-					margin: 2px 0px 0px 2px;
+					margin: 2px 0px 0px 2px ~'; /** orientation=lt */ ';
+					margin: 2px 2px 0px 0px ~'; /** orientation=rt */ ';
 					width: 10px;
 				}
 		}
@@ -231,7 +241,8 @@
 		+ .resizeBar {
 			width: 20px;
 			.resizeBarContent {
-			  margin-left: 0;
+			  margin-left: 0 ~'; /** orientation=lt */ ';
+			  margin-right: 0 ~'; /** orientation=rt */ ';
 			}
 			&:hover {
 			cursor: default;
@@ -243,19 +254,19 @@
 			.resizeButton {
 				display: block;
 				border: 1px solid @borderColor;
-				border-left: none;
+				border-left: none ~'; /** orientation=lt */ ';
+				border-right: none ~'; /** orientation=rt */ ';
 				.border-radius(0px @borderRadiusSmall @borderRadiusSmall 0px);
-				float: left;
-				.uiIconMiniArrowLeft:before {
-					
-				}
+				float: left ~'; /** orientation=lt */ ';
+				float: right ~'; /** orientation=rt */ ';
 			}
 		}
 	}
 
 	.resizeBarDisplay {
 		.resizeBarContent {
-			border-right: solid 1px @borderColor;
+			border-right: solid 1px @borderColor ~'; /** orientation=lt */ ';
+			border-left: solid 1px @borderColor ~'; /** orientation=rt */ ';
 		}
 		.resizeButton {
 			display: block;
@@ -265,7 +276,8 @@
 }
 
 .nonePaddingLeft {
-	padding-left: 0px;
+	padding-left: 0px ~'; /** orientation=lt */ ';
+	padding-right: 0px ~'; /** orientation=rt */ ';
 }
 
 .uiWikiPortletNoSelect {
@@ -304,7 +316,8 @@
     	margin-bottom: 10px;
 	}
 	.uiPageToolBar {
-		margin-left: 20px;
+		margin-left: 20px ~'; /** orientation=lt */ ';
+		margin-right: 20px ~'; /** orientation=rt */ ';
 	}
 }
 
@@ -325,11 +338,12 @@
 .uiWikiMyDraftsForm {
 	padding: 0 15px;
 	.introduce {
-		margin: 0 0 15px 0;
+		margin: 0 0 15px;
 	}
 	.uiWikiDraftGrid{
 		th .uiIconArrowDown, .uiIconArrowUp{
-			margin: 3px -6px 0 0;
+			margin: 3px -6px 0 0 ~'; /** orientation=lt */ ';
+			margin: 3px 0 0 -6px ~'; /** orientation=rt */ ';
 		}
 	}
 }
@@ -348,22 +362,26 @@
 
 .uiWikiDeletePageConfirm{
 	.WikiDeleteContent{
-		padding: 0 0 20px 0;
+		padding: 0 0 20px;
 		ul{
-			margin: 0 0 0 75px;
+			margin: 0 0 0 75px ~'; /** orientation=lt */ ';
+			margin: 0 75px 0 0 ~'; /** orientation=rt */ ';
 		}
 		li{
 			list-style-type: inherit;
 			margin-bottom: 7px;
 		}
 		.uiIconQuestion{
-			margin-right: 14px;
+			margin-right: 14px ~'; /** orientation=lt */ ';
+			margin-left: 14px ~'; /** orientation=rt */ ';
 		}
 		h6{
-			margin-left: 30px;
+			margin-left: 30px ~'; /** orientation=lt */ ';
+			margin-right: 30px ~'; /** orientation=rt */ ';
 		}
 		.node{
-			margin-left: 30px;
+			margin-left: 30px ~'; /** orientation=lt */ ';
+			margin-right: 30px ~'; /** orientation=rt */ ';
 			font-style: italic;
 		}
 		.uiWikiBreadCrumb{
@@ -371,7 +389,8 @@
 			vertical-align: top;
 			padding-top: 0px;
 			.breadcrumb{
-				margin-left: 12px;
+				margin-left: 12px ~'; /** orientation=lt */ ';
+				margin-right: 12px ~'; /** orientation=rt */ ';
 				.active a{
 					font-weight: normal;
 					color: @textColor;
@@ -382,9 +401,11 @@
 }
 
 .confirmMessage{
-	padding: 10px 0 60px 10px;
+	padding: 10px 0 60px 10px ~'; /** orientation=lt */ ';
+	padding: 10px 10px 60px 0 ~'; /** orientation=rt */ ';
 	.uiIconQuestion{
-		margin-right: 10px;
+		margin-right: 10px ~'; /** orientation=lt */ ';
+		margin-left: 10px ~'; /** orientation=rt */ ';
 	}
 }
 
@@ -398,7 +419,8 @@
 
 .uiWikiPortlet {
 	.uiSpaceSwitcher_BreadCrumb {
-		float: left;
+		float: left ~'; /** orientation=lt */ ';
+		float: right ~'; /** orientation=rt */ ';
 		margin-top: -4px;
 		position: relative;
 		z-index: 2;
@@ -411,8 +433,10 @@
 
 	.uiSpaceSwitcher_UIWikiMovePageForm {
 	    cursor: pointer;
-		float: left;
-		margin-left: 10px;
+		float: left ~'; /** orientation=lt */ ';
+		float: right ~'; /** orientation=rt */ ';
+		margin-left: 10px ~'; /** orientation=lt */ ';
+		margin-right: 10px ~'; /** orientation=rt */ ';
 		position: relative;
 	}
 	
@@ -421,8 +445,9 @@
 			.btn{
 				span:first-child{
 					display: block;
-					float: left;
-					text-align: left;
+					float: left ~'; /** orientation=lt */ ';
+					float: right ~'; /** orientation=rt */ ';
+					text-align: start;
 					width: 341px;
 				}
 			}
@@ -441,7 +466,7 @@
 	}
 
 	.UISelectPageForm .SpaceSwitcher {
-	  padding: 15px 15px 0px 15px;
+	  padding: 15px 15px 0px;
 	}
 }
 .uiWikiSpaceSwitcher_CreateWiki{
@@ -457,7 +482,8 @@
 .uiWikiPageVersionsCompare .comparedForm .changeVersionForm {
 	padding: 12px;
 	background: @primaryBackground;
-	float: left;
+	float: left ~'; /** orientation=lt */ ';
+	float: right ~'; /** orientation=rt */ ';
 }
 
 .uiWikiPageVersionsCompare .comparedForm .changeVersionForm .changeVersionInfo {
@@ -481,8 +507,9 @@
 }
 
 .uiWikiPageVersionsCompare .comparedWith {
-	float: left;
-	padding: 30px 12px 0px 12px;
+	float: left ~'; /** orientation=lt */ ';
+	float: right ~'; /** orientation=rt */ ';
+	padding: 30px 12px 0px;
 	font-weight: bold;
 }
 
@@ -504,7 +531,8 @@
 		margin: 0;
 	}
 	.uiIconFileMini{
-		margin-left: -3px;
+		margin-left: -3px ~'; /** orientation=lt */ ';
+		margin-right: -3px ~'; /** orientation=rt */ ';
 	}
 	 h3 {
 		color: @baseColorLight;

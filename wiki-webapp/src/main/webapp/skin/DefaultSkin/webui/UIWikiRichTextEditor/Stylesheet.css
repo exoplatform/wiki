@@ -15,7 +15,8 @@
 .UIWikiRichTextEditor .wiki-children-pages.ck-widget:before, .wiki-include-page.ck-widget:before {
   content: "";
   top: 0;
-  left: 0;
+  left: 0; /** orientation=lt */
+  right: 0; /** orientation=rt */
   width: 100%;
   height: 100%;
 }
@@ -124,7 +125,8 @@
 
 .wiki-include-page-label {
   position: absolute;
-  right: -3px;
+  right: -3px; /** orientation=lt */
+  left: -3px; /** orientation=rt */
   top: -30px;
   color: #FFF;
   padding: 5px 10px;

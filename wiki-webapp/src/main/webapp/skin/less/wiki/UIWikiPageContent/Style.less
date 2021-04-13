@@ -32,12 +32,15 @@
 	dd {
 		background: url("@{images-path}/wiki/Icons/bullet-3.png") no-repeat scroll 0 0.3em transparent;
 		font-style: italic;
-		margin-left: 0;
-		padding-left: 1em;
+		margin-left: 0 ~'; /** orientation=lt */ ';
+		padding-left: 1em ~'; /** orientation=lt */ ';
+		margin-right: 0 ~'; /** orientation=rt */ ';
+		padding-right: 1em ~'; /** orientation=rt */ ';
 	}
 	blockquote {
 		background: @primaryBackgroundLight;
-		border-left: 2px solid @borderColor;
+		border-left: 2px solid @borderColor ~'; /** orientation=lt */ ';
+		border-right: 2px solid @borderColor ~'; /** orientation=rt */ ';
 		display: block;
 		margin: 0.3ex 1em;
 		padding: 0.3ex 1em;
@@ -45,36 +48,43 @@
 	}
 	table {
 		border: 1px solid @borderColor;
-		border-right: none;
+		border-right: none ~'; /** orientation=lt */ ';
+		border-left: none ~'; /** orientation=rt */ ';
 		border-top: none;
 		table-layout: fixed;
 		width: auto;
 	}
 	th {
 		background: @primaryBackground;
-		border-right: 1px solid @borderColor;
+		border-right: 1px solid @borderColor ~'; /** orientation=lt */ ';
+		border-left: 1px solid @borderColor ~'; /** orientation=rt */ ';
 		border-top: 1px solid @borderColor;
 		padding: 5px;
 		text-align: center;
 	}
 	td {
-		border-right: 1px solid @borderColor;
+		border-right: 1px solid @borderColor ~'; /** orientation=lt */ ';
+		border-left: 1px solid @borderColor ~'; /** orientation=rt */ ';
 		border-top: 1px solid @borderColor;
 		padding: 5px;
 	}
 	figure {
-		margin: 0 0 10px 0;
+		margin: 0 0 10px;
 		&.image {
 			text-align: center;
 
 			&.image-style-align-left img {
-				float: left;
-				margin-right: 1.5em;
+				float: left ~'; /** orientation=lt */ ';
+				float: right ~'; /** orientation=rt */ ';
+				margin-right: 1.5em ~'; /** orientation=lt */ ';
+				margin-left: 1.5em ~'; /** orientation=rt */ ';
 			}
 
 			&.image-style-align-right img {
-				float: right;
-				margin-left: 1.5em;
+				float: right ~'; /** orientation=lt */ ';
+				margin-left: 1.5em ~'; /** orientation=lt */ ';
+				float: left ~'; /** orientation=rt */ ';
+				margin-right: 1.5em ~'; /** orientation=rt */ ';
 			}
 		}
 	}

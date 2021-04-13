@@ -34,6 +34,7 @@
         <executions>
           <execution>
             <id>install node and npm</id>
+            <phase>prepare-package</phase>
             <goals>
               <goal>install-node-and-npm</goal>
             </goals>
@@ -47,6 +48,7 @@
             <goals>
               <goal>npm</goal>
             </goals>
+            <phase>prepare-package</phase>
             <configuration>
               <arguments>install</arguments>
             </configuration>
@@ -56,6 +58,7 @@
             <goals>
               <goal>npm</goal>
             </goals>
+            <phase>prepare-package</phase>
             <configuration>
               <arguments>run build</arguments>
             </configuration>

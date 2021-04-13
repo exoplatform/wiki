@@ -27,13 +27,13 @@
     <v-list class="light-grey-background flex-grow-0 border-top-color no-border-radius pa-0">
       <v-list-item class="px-0 pt-1 pb-2" :href="wikiUrl">
         <v-list-item-icon class="mx-0 my-auto">
-          <span class="uiIconWiki tertiary--text pl-1 pr-2 display-1"></span>
+          <span class="uiIconWiki tertiary--text ps-1 pe-2 display-1"></span>
         </v-list-item-icon>
         <v-list-item-content>
           <v-list-item-title :title="wikiTitle">
             <a
               :title="wikiTitle"
-              class="wikiTitle px-3 pt-2 pb-1 pl-0 text-left text-truncate"
+              class="wikiTitle px-3 pt-2 pb-1 ps-0 text-start text-truncate"
               v-html="wikiTitle"
             >
             </a>

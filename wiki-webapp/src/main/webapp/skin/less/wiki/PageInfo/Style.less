@@ -1,6 +1,6 @@
 .uiWikiPageInfo {
 	.uiPageInfoItem {
-		margin: 0px 0px 20px 0px;
+		margin: 0px 0px 20px;
 		h6.pageInfoTitle {
 			background: @primaryBackground;
 			border: 1px solid @borderColor;
@@ -40,8 +40,10 @@
 	.uiPageInfoChanges{
 			table{
 				th, td{
-					border-left: none;
-					border-right: 1px solid @borderColor;
+					border-left: none ~'; /** orientation=lt */ ';
+					border-right: 1px solid @borderColor ~'; /** orientation=lt */ ';
+					border-right: none ~'; /** orientation=rt */ ';
+					border-left: 1px solid @borderColor ~'; /** orientation=rt */ ';
 				}
 			}
 		}
