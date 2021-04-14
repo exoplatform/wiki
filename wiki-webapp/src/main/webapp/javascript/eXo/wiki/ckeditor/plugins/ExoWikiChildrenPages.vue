@@ -17,7 +17,7 @@ export default {
       default: 1
     }
   },
-  data : function() {
+  data: function() {
     return {
       childrenPages: []
     };
@@ -28,16 +28,16 @@ export default {
   methods: {
     getChildrenPages() {
       // no children pages when creating a page
-      if(window.location.hash === '#AddPage') {
+      if (window.location.hash === '#AddPage') {
         return [];
       }
 
       let pageName = 'WikiHome';
-      if(!eXo.env.server.portalBaseURL.endsWith(`/${eXo.env.portal.selectedNodeUri}`)) {
+      if (!eXo.env.server.portalBaseURL.endsWith(`/${eXo.env.portal.selectedNodeUri}`)) {
         pageName = eXo.env.server.portalBaseURL.substr(eXo.env.server.portalBaseURL.lastIndexOf('/') + 1);
       }
       let url = `/${eXo.env.portal.containerName}/${eXo.env.portal.rest}/wiki/tree/CHILDREN?path=`;
-      if(eXo.env.portal.spaceName) {
+      if (eXo.env.portal.spaceName) {
         url += `group/spaces/${eXo.env.portal.spaceGroup}/${pageName}&depth=${this.depth}`;
       } else if (eXo.env.server.portalBaseURL.includes('/wiki/user/')) {
         url += `user/${eXo.env.portal.userName}/${pageName}&depth=${this.depth}`;
@@ -51,15 +51,15 @@ export default {
       });
     },
     getChildrenPagePath(page) {
-      if(page && page.path) {
+      if (page && page.path) {
         const index = page.path.lastIndexOf('%2F'); // Find the index of character "/"
         const pageId = page.path.substring(index + '%2F'.length);
         if (pageId) {
           let urlPath = window.location.pathname;
           const wikiIndex = urlPath.indexOf('/wiki/');
-          if(wikiIndex >= 0) {
+          if (wikiIndex >= 0) {
             urlPath = urlPath.substring(0, wikiIndex + '/wiki'.length);
-          } else if(!urlPath.endsWith('/wiki')) {
+          } else if   (!urlPath.endsWith('/wiki')) {
             urlPath += '/wiki';
           }
           return urlPath += `/${pageId}`;

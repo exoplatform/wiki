@@ -44,8 +44,8 @@ export default class IncludePage extends Plugin {
     editor.conversion.for('editingDowncast').elementToElement({
       model: 'includePage',
       view: (modelElement, viewWriter) => {
-        const pageContainer = viewWriter.createContainerElement('div', { 'class' : 'wiki-include-page' });
-        const labelContainer = viewWriter.createContainerElement('span', { 'class' : 'wiki-include-page-label' });
+        const pageContainer = viewWriter.createContainerElement('div', { 'class': 'wiki-include-page' });
+        const labelContainer = viewWriter.createContainerElement('span', { 'class': 'wiki-include-page-label' });
         const label = viewWriter.createText(`Included page : ${modelElement.getAttribute('pageName')}`);
         viewWriter.insert(viewWriter.createPositionAt(labelContainer, 'end'), label);
         viewWriter.insert(viewWriter.createPositionAt(pageContainer, 'end'), labelContainer);
@@ -58,7 +58,7 @@ export default class IncludePage extends Plugin {
     editor.conversion.for('dataDowncast').elementToElement({
       model: 'includePage',
       view: (modelElement, viewWriter) => {
-        const pageContainer = viewWriter.createContainerElement('div', { 'class' : 'wiki-include-page' });
+        const pageContainer = viewWriter.createContainerElement('div', { 'class': 'wiki-include-page' });
         const pageComponent = viewWriter.createContainerElement('exo-wiki-include-page', { 'page-name': modelElement.getAttribute('pageName') });
         viewWriter.insert(viewWriter.createPositionAt(pageContainer, 'end'), pageComponent);
 
@@ -157,12 +157,12 @@ export default class IncludePage extends Plugin {
   }
 
   /**
-	 * Returns true when {@link #formView} is in the {@link #_balloon}.
-	 *
-	 * @readonly
-	 * @protected
-	 * @type {Boolean}
-	 */
+ * Returns true when {@link #formView} is in the {@link #_balloon}.
+ *
+ * @readonly
+ * @protected
+ * @type {Boolean}
+ */
   get _isFormInPanel() {
     return this._balloon.hasView( this.formView );
   }
@@ -177,7 +177,7 @@ export default class IncludePage extends Plugin {
   }
 
   _removeFormView() {
-    if(this._isFormInPanel) {
+    if (this._isFormInPanel) {
       this._balloon.remove(this.formView);
 
       // Because the form has an input which has focus, the focus must be brought back

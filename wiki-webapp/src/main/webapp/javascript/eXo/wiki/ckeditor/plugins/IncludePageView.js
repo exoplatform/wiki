@@ -16,33 +16,33 @@ import cancelIcon from '@ckeditor/ckeditor5-core/theme/icons/cancel.svg';
  */
 export default class IncludePageFormView extends View {
   /**
-	 * @inheritDoc
-	 */
+   * @inheritDoc
+   */
   constructor(locale) {
     super(locale);
 
     const t = locale.t;
 
     /**
-		 * The URL input view.
-		 *
-		 * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
-		 */
+     * The URL input view.
+     *
+     * @member {module:ui/labeledinput/labeledinputview~LabeledInputView}
+     */
     this.pageNameInputView = this._createPageNameInput();
 
     /**
-		 * The Save button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
+     * The Save button view.
+     *
+     * @member {module:ui/button/buttonview~ButtonView}
+     */
     this.saveButtonView = this._createButton(t('Save'), checkIcon, 'ck-button-save');
     this.saveButtonView.type = 'submit';
 
     /**
-		 * The Cancel button view.
-		 *
-		 * @member {module:ui/button/buttonview~ButtonView}
-		 */
+     * The Cancel button view.
+     *
+     * @member {module:ui/button/buttonview~ButtonView}
+     */
     this.cancelButtonView = this._createButton(t('Cancel'), cancelIcon, 'ck-button-cancel', 'cancel');
 
     this.setTemplate({
@@ -64,8 +64,8 @@ export default class IncludePageFormView extends View {
   }
 
   /**
-	 * @inheritDoc
-	 */
+   * @inheritDoc
+   */
   render() {
     super.render();
 
@@ -75,11 +75,11 @@ export default class IncludePageFormView extends View {
   }
 
   /**
-	 * Creates a labeled input view.
-	 *
-	 * @private
-	 * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
-	 */
+   * Creates a labeled input view.
+   *
+   * @private
+   * @returns {module:ui/labeledinput/labeledinputview~LabeledInputView} Labeled input view instance.
+   */
   _createPageNameInput() {
     const t = this.locale.t;
 
@@ -92,15 +92,15 @@ export default class IncludePageFormView extends View {
   }
 
   /**
-	 * Creates a button view.
-	 *
-	 * @private
-	 * @param {String} label The button label.
-	 * @param {String} icon The button's icon.
-	 * @param {String} className The additional button CSS class name.
-	 * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
-	 * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
-	 */
+   * Creates a button view.
+   *
+   * @private
+   * @param {String} label The button label.
+   * @param {String} icon The button's icon.
+   * @param {String} className The additional button CSS class name.
+   * @param {String} [eventName] An event name that the `ButtonView#execute` event will be delegated to.
+   * @returns {module:ui/button/buttonview~ButtonView} The button view instance.
+   */
   _createButton(label, icon, className, eventName) {
     const button = new ButtonView(this.locale);
 

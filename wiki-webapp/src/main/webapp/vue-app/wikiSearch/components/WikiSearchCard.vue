@@ -2,15 +2,13 @@
   <v-card
     class="wikiSearchCard d-flex flex-column border-radius box-shadow"
     flat
-    min-height="227"
-  >
+    min-height="227">
     <v-card-text v-if="poster" class="px-2 pt-2 pb-0">
       <exo-user-avatar
         :username="posterUsername"
         :fullname="posterFullname"
         :title="posterFullname"
-        avatar-class="border-color"
-      >
+        avatar-class="border-color">
         <template slot="subTitle">
           <date-format :value="createdDate" />
         </template>
@@ -20,8 +18,7 @@
       <div
         ref="excerptNode"
         :title="excerptText"
-        class="text-wrap text-break caption flex-grow-1"
-      >
+        class="text-wrap text-break caption flex-grow-1">
       </div>
     </div>
     <v-list class="light-grey-background flex-grow-0 border-top-color no-border-radius pa-0">
@@ -34,8 +31,7 @@
             <a
               :title="wikiTitle"
               class="wikiTitle px-3 pt-2 pb-1 ps-0 text-start text-truncate"
-              v-html="wikiTitle"
-            >
+              v-html="wikiTitle">
             </a>
           </v-list-item-title>
           <v-list-item-subtitle>

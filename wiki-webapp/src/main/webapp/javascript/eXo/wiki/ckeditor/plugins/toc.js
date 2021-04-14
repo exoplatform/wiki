@@ -20,7 +20,7 @@ export default class Toc extends Plugin {
 
     const options = editor.config.get( 'heading.options' );
     for ( const option of options ) {
-      if(option.model.startsWith('heading')) {
+      if (option.model.startsWith('heading')) {
         editor.model.schema.extend( option.model, {
           inheritAllFrom: '$block',
           allowAttributes: [ 'id' ]
@@ -55,28 +55,28 @@ export default class Toc extends Plugin {
       }
     })
       .add(dispatcher => dispatcher.on('insert:heading1', (evt, data, conversionApi) => {
-        if(conversionApi.consumable) {
+        if (conversionApi.consumable) {
           conversionApi.consumable.consume(data.item, evt.name);
         }
 
         updateTocs(editor.model, conversionApi);
       }))
       .add(dispatcher => dispatcher.on('insert:heading2', (evt, data, conversionApi) => {
-        if(conversionApi.consumable) {
+        if (conversionApi.consumable) {
           conversionApi.consumable.consume(data.item, evt.name);
         }
 
         updateTocs(editor.model, conversionApi);
       }))
       .add(dispatcher => dispatcher.on('remove:heading1', (evt, data, conversionApi) => {
-        if(conversionApi.consumable) {
+        if (conversionApi.consumable) {
           conversionApi.consumable.consume(data.item, evt.name);
         }
 
         updateTocs(editor.model, conversionApi);
       }))
       .add(dispatcher => dispatcher.on('remove:heading2', (evt, data, conversionApi) => {
-        if(conversionApi.consumable) {
+        if (conversionApi.consumable) {
           conversionApi.consumable.consume(data.item, evt.name);
         }
 
@@ -90,7 +90,7 @@ export default class Toc extends Plugin {
         const viewWriter = conversionApi.writer;
 
         const headingElement = conversionApi.mapper.toViewElement( data.item );
-        if(headingElement && !headingElement.getAttribute('id')) {
+        if (headingElement && !headingElement.getAttribute('id')) {
           viewWriter.setAttribute( 'id', generateToken(), conversionApi.mapper.toViewElement( data.item ) );
         }
       }, { priority: 'low' } );
@@ -102,7 +102,7 @@ export default class Toc extends Plugin {
           const viewWriter = conversionApi.writer;
 
           const headingElement = conversionApi.mapper.toViewElement( data.item );
-          if(headingElement && !headingElement.getAttribute('id')) {
+          if (headingElement && !headingElement.getAttribute('id')) {
             viewWriter.setAttribute( 'id', generateToken(), conversionApi.mapper.toViewElement( data.item ) );
           }
         }, { priority: 'low' } );
@@ -166,7 +166,7 @@ export default class Toc extends Plugin {
 function updateTocs(model, conversionApi) {
   const mainRoot = model.document.getRoot();
   for (const element of mainRoot.getChildren()) {
-    if(element.name === 'toc') {
+    if (element.name === 'toc') {
       // TODO replace view element with the new toc
       conversionApi.mapper.toViewElement(element);
       //const viewElement = conversionApi.mapper.toViewElement(element);
@@ -191,16 +191,16 @@ function buildToc(model, viewWriter) {
   let currentLevel = 0;
   const entryStack = new Array();
   entryStack.push(toc);
-  for(const heading of headings) {
+  for (const heading of headings) {
     const headingLevel = heading.name.substr('heading'.length);
 
-    if(headingLevel > currentLevel) {
-      for(let i=currentLevel; i<headingLevel; i++) {
+    if (headingLevel > currentLevel) {
+      for (let i=currentLevel; i<headingLevel; i++) {
         const ulEntry = viewWriter.createContainerElement('ul');
         viewWriter.insert(viewWriter.createPositionAt(entryStack[entryStack.length - 1], 'end'), ulEntry);
         entryStack.push(ulEntry);
       }
-    } else if(headingLevel < currentLevel) {
+    } else if (headingLevel < currentLevel) {
       entryStack.pop();
       entryStack.pop();
     } else {
@@ -235,7 +235,7 @@ function extractHeadings(model) {
 
   const mainRoot = model.document.getRoot();
   for (const element of mainRoot.getChildren()) {
-    if(element.name.startsWith('heading')) {
+    if (element.name.startsWith('heading')) {
       headings.push(element);
     }
   }
