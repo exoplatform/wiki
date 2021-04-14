@@ -55,7 +55,7 @@ function SpecialCharactersEmoji( editor ) {
 WikiCkeditor.prototype.createEditor = function() {
 
   let uploadUrl = `/${eXo.env.portal.containerName}/${eXo.env.portal.rest}/wiki/upload`;
-  if(eXo.env.portal.spaceId) {
+  if (eXo.env.portal.spaceId) {
     uploadUrl += `/group//spaces/${eXo.env.portal.spaceGroup}`;
   } else if (eXo.env.server.portalBaseURL.includes('/wiki/user/')) {
     uploadUrl += `/user/${eXo.env.portal.userName}`;
@@ -184,7 +184,7 @@ WikiCkeditor.prototype.createEditor = function() {
       window.editor = editor;
 
       const textareaElement = document.querySelector('#UIWikiRichTextArea_TextArea');
-      if(textareaElement) {
+      if (textareaElement) {
         let data = textareaElement.value;
         // replace br by new line character to render new line correctly in textearea (used only for code blocks)
         data = data.replace(/<br>/g, '\n');

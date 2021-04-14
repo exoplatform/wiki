@@ -8,8 +8,8 @@
   "scripts": {
     "start": "webpack --config webpack.dev.js --mode development",
     "watch": "webpack --config webpack.dev.js --progress --colors --watch -d",
-    "build": "webpack --config webpack.prod.js --mode production",
-    "lint": "eslint --fix ./src/main/webapp/vue-app/*.js ./src/main/webapp/vue-app/**/*.vue"
+    "lint": "eslint --fix src/main/webapp/vue-app/**/*.js src/main/webapp/vue-app/**/*.vue src/main/webapp/javascript/eXo/wiki/ckeditor/**/*.js src/main/webapp/javascript/eXo/wiki/ckeditor/**/*.vue",
+    "build": "webpack --config webpack.prod.js --mode production"
   },
   "author": "eXo",
   "license": "LGPL",
@@ -40,6 +40,7 @@
     "babel-loader": "^8.1.0",
     "ckeditor5-self-image": "0.0.3",
     "eslint": "^4.19.1",
+    "eslint-config-meedsio": "^1.0.1",
     "eslint-loader": "^2.0.0",
     "eslint-plugin-jest": "^21.17.0",
     "eslint-plugin-vue": "^5.0.0",
