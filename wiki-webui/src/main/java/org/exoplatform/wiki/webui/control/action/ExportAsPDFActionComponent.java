@@ -2,6 +2,7 @@ package org.exoplatform.wiki.webui.control.action;
 
 import com.lowagie.text.pdf.BaseFont;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.container.ExoContainerContext;
@@ -36,6 +37,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.util.Arrays;
 import java.util.List;
 
@@ -136,25 +139,43 @@ public class ExportAsPDFActionComponent extends AbstractEventActionComponent {
       org.jsoup.nodes.Document doc = Jsoup.parse(page.getContent());
       doc.outputSettings().syntax(org.jsoup.nodes.Document.OutputSettings.Syntax.xml);
       Elements elements = doc.getAllElements();
+      byte[] extImageBytes = new byte[0];
       for(Element element : elements){
         if(element.tagName().equals("img") && !element.attr("src").isEmpty()){
           String src = element.attr("src");
           String imgName = src.substring(src.lastIndexOf("/") + 1);
           Attachment imageAttachment = wikiService.getAttachmentOfPageByName(imgName, page, true);
-          if(imageAttachment == null) {
+          if (imageAttachment == null) {
             Page parentPage = wikiService.getParentPageOf(page);
             imageAttachment = wikiService.getAttachmentOfPageByName(imgName, parentPage, true);
           }
           // get pasted image attachment by its source page
-          if (imageAttachment == null && src.matches("^(http|https)://.*$")) {
+          if (imageAttachment == null && src.matches("^((http|https)://|/portal).*$")) {
             String pageName = StringUtils.substringBetween(src, "/page/", "/");
             String wikiOwner = StringUtils.substringBetween(src, "/space/", "/page/");
-            String wikiType = (wikiOwner.startsWith("/spaces")) ? "group" : wikiOwner.equals("global") ? "portal" : "user";
-            Page sourcePage = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageName);
-            imageAttachment = wikiService.getAttachmentOfPageByName(imgName.substring(0, imgName.indexOf("?")), sourcePage, true);
+            String wikiType = (wikiOwner != null) ? (wikiOwner.startsWith("/spaces")) ? "group" : wikiOwner.equals("global") ? "portal" : "user" : null;
+            if (pageName != null && wikiOwner != null && wikiType != null) {
+              Page sourcePage = wikiService.getPageOfWikiByName(wikiType, wikiOwner, pageName);
+              try {
+                imgName = imgName.contains("?lastUpdate") ? imgName.substring(0, imgName.indexOf("?")) : imgName;
+                imgName = URLDecoder.decode(imgName, "UTF-8");
+              } catch (UnsupportedEncodingException e) {
+                LOG.debug("Could not decode wiki pasted image name", e);
+              }
+              imageAttachment = wikiService.getAttachmentOfPageByName(imgName, sourcePage, true);
+            } else {
+              // At this stage, this is an external image URL
+              InputStream input;
+              try {
+                input = new URL(src).openStream();
+                extImageBytes = IOUtils.toByteArray(input);
+              } catch (IOException e) {
+                LOG.debug("Could not get an input stream from an external url", e);
+              }
+            }
           }
-          if(imageAttachment != null && imageAttachment.getMimeType() != null && imageAttachment.getMimeType().startsWith("image/")){
-            byte[] bytes = imageAttachment.getContent();
+          if (extImageBytes.length != 0 || imageAttachment != null && imageAttachment.getMimeType() != null && imageAttachment.getMimeType().startsWith("image/")) {
+            byte[] bytes = (imageAttachment != null) ? imageAttachment.getContent() : extImageBytes;
             element.attr("src", "base64," + Base64.encodeBase64String(bytes));
             try {
               ByteArrayInputStream buffArray = new ByteArrayInputStream(bytes);
