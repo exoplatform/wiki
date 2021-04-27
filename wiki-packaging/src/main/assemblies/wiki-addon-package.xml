@@ -51,8 +51,6 @@
         <include>com.google.gwt:gwt-servlet:jar</include>
         <include>com.lowagie:itext:jar</include>
         <include>org.jfree:jcommon:jar</include>
-        <include>org.jdom:jdom2:jar</include>
-        <include>org.jdom:jdom:jar</include>
         <include>org.jfree:jfreechart:jar</include>
         <include>org.suigeneris:jrcs.rcs:jar</include>
         <include>net.sf.json-lib:jar</include>
