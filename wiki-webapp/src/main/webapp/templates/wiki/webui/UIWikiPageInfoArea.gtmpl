@@ -6,6 +6,7 @@
   import org.exoplatform.wiki.commons.Utils;
   import org.exoplatform.container.ExoContainerContext;
   import org.apache.commons.lang.StringEscapeUtils;
+  import org.exoplatform.wiki.utils.Utils;
 
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
@@ -35,6 +36,8 @@
   String publicLinkTitle = _ctx.appRes("UIWikiPageInfoArea.label.public-link");
 
   boolean isCurrentPagePublic = uicomponent.isPagePublic(currentWikiPage);
+
+  boolean isDlpFeatureEnabled = org.exoplatform.wiki.utils.Utils.isDlpFeatureEnabled();
 %>
 <div id="$uicomponent.id" class="uiWikiPageInfoArea">
   <div class="txtFeed">
@@ -53,7 +56,9 @@
     <% } else { %>
       <a style="white-space:nowrap" rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" href="javascript:void(0);" onclick="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>"><i class='uiIconLockMini uiIconLightGray'></i>&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
     <% }%>
-    &nbsp;-&nbsp;	  
-    <a href="javascript:void(0);" onclick="$togglelink"><i class='uiIconAttach'></i>&nbsp;<%= totalAttachmentsLabel %></a>  
-	</div>
+    &nbsp;-&nbsp;
+    <% if (!isDlpFeatureEnabled) { %>
+    <a href="javascript:void(0);" onclick="$togglelink"><i class='uiIconAttach'></i>&nbsp;<%= totalAttachmentsLabel %></a>
+    <% }%>
+    </div>
 </div>
