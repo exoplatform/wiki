@@ -1,7 +1,7 @@
 <%
   import org.exoplatform.wiki.utils.Utils;
 
-  boolean isDlpFeatureEnabled = org.exoplatform.wiki.utils.Utils.isDlpFeatureEnabled();
+  boolean isDlpFeatureEnabled = Utils.isDlpFeatureEnabled();
 %>
 <div class="uiWikiBottomArea" id="$uicomponent.id">
 <%

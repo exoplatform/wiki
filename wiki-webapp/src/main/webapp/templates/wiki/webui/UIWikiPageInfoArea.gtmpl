@@ -6,7 +6,6 @@
   import org.exoplatform.wiki.commons.Utils;
   import org.exoplatform.container.ExoContainerContext;
   import org.apache.commons.lang.StringEscapeUtils;
-  import org.exoplatform.wiki.utils.Utils;
 
   Locale currentLocale = Util.getPortalRequestContext().getLocale();
   DateFormat df = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT, currentLocale);
@@ -57,8 +56,8 @@
       <a style="white-space:nowrap" rel="tooltip" data-placement="bottom" title="$restrictLinkTitle" href="javascript:void(0);" onclick="<%=uicomponent.event(uicomponent.PERMALINK_ACTION);%>"><i class='uiIconLockMini uiIconLightGray'></i>&nbsp;<%=_ctx.appRes("UIWikiPageInfoArea.label.Restrict")%></a>
     <% }%>
     &nbsp;-&nbsp;
-    <% if (!isDlpFeatureEnabled) { %>
-    <a href="javascript:void(0);" onclick="$togglelink"><i class='uiIconAttach'></i>&nbsp;<%= totalAttachmentsLabel %></a>
+    <% if(!isDlpFeatureEnabled) { %>
+      <a href="javascript:void(0);" onclick="$togglelink"><i class='uiIconAttach'></i>&nbsp;<%= totalAttachmentsLabel %></a>
     <% }%>
     </div>
 </div>
