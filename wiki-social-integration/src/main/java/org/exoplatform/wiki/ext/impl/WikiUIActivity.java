@@ -1,15 +1,7 @@
 package org.exoplatform.wiki.ext.impl;
 
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.text.MessageFormat;
-import java.util.Map;
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
-
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
-
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.StringCommonUtils;
@@ -17,8 +9,11 @@ import org.exoplatform.container.PortalContainer;
 import org.exoplatform.services.log.ExoLogger;
 import org.exoplatform.services.log.Log;
 import org.exoplatform.services.resources.ResourceBundleService;
+import org.exoplatform.social.core.space.SpaceApplication;
+import org.exoplatform.social.core.space.SpaceTemplate;
 import org.exoplatform.social.core.space.model.Space;
 import org.exoplatform.social.core.space.spi.SpaceService;
+import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
 import org.exoplatform.webui.application.WebuiRequestContext;
@@ -27,6 +22,14 @@ import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
 import org.exoplatform.wiki.utils.Utils;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.text.MessageFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.MissingResourceException;
+import java.util.ResourceBundle;
 
 @ComponentConfig (
     lifecycle = UIFormLifecycle.class,
@@ -142,6 +145,7 @@ public class WikiUIActivity extends BaseUIActivity {
 
   String getPageURL() {
     String pageUrl = getActivityParamValue(WikiSpaceActivityPublisher.URL_KEY);
+    pageUrl = pageUrl.contains(":spaces") ? getPageURLFromSpace() : pageUrl;
     if (pageUrl != null && pageUrl.contains("://")) {
     // pageURL might be a full URL, keeps only its path
       try {
@@ -153,7 +157,23 @@ public class WikiUIActivity extends BaseUIActivity {
     }
     return pageUrl;
   }
-  
+
+  private static String getWikiAppNameInSpace(String spaceId) {
+    SpaceService spaceService = CommonsUtils.getService(SpaceService.class);
+    Space space = spaceService.getSpaceByGroupId(spaceId);
+    SpaceTemplateService spaceTemplateService = CommonsUtils.getService(SpaceTemplateService.class);
+    SpaceTemplate spaceTemplate = spaceTemplateService.getSpaceTemplateByName(space.getTemplate());
+    List<SpaceApplication> spaceTemplateApplications = spaceTemplate.getSpaceApplicationList();
+    if (spaceTemplateApplications != null) {
+      for (SpaceApplication spaceApplication : spaceTemplateApplications) {
+        if ("WikiPortlet".equals(spaceApplication.getPortletName())) {
+          return spaceApplication.getUri();
+        }
+      }
+    }
+    return "WikiPortlet";
+  }
+
   private String getPageURLFromSpace(){
     String spaceGroupId = getActivityParamValue(WikiSpaceActivityPublisher.PAGE_OWNER_KEY);
     String pageId = getActivityParamValue(WikiSpaceActivityPublisher.PAGE_ID_KEY);
@@ -163,7 +183,7 @@ public class WikiUIActivity extends BaseUIActivity {
     StringBuffer sb = new StringBuffer("");
     if (space != null) {
       sb.append(org.exoplatform.social.webui.Utils.getSpaceHomeURL(space))
-        .append("/" + WikiSpaceActivityPublisher.WIKI_PAGE_NAME + "/")
+        .append("/" + getWikiAppNameInSpace(space.getGroupId()) + "/")
         .append(pageId);
     }
     
