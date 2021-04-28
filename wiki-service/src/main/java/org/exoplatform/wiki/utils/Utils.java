@@ -15,6 +15,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang.StringUtils;
 import org.exoplatform.commons.api.notification.plugin.NotificationPluginUtils;
+import org.exoplatform.commons.api.settings.ExoFeatureService;
+import org.exoplatform.commons.dlp.processor.DlpOperationProcessor;
+import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.social.core.identity.model.Identity;
 import org.exoplatform.social.core.identity.provider.OrganizationIdentityProvider;
 import org.exoplatform.social.core.manager.IdentityManager;
@@ -592,7 +595,12 @@ public class Utils {
     cssClass.append(((String)mimeType).replaceAll("/|\\.", ""));
     return cssClass.toString();
   }
-  
+
+  public static boolean isDlpFeatureEnabled() {
+    ExoFeatureService featureService = CommonsUtils.getService(ExoFeatureService.class);
+    return featureService.isActiveFeature(DlpOperationProcessor.DLP_FEATURE);
+  }
+
   /**
    * gets rest context name
    * @return rest context name
