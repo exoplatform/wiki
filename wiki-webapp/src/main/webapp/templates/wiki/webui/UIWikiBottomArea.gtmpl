@@ -1,10 +1,17 @@
+<%
+  import org.exoplatform.wiki.utils.Utils;
+
+  boolean isDlpFeatureEnabled = Utils.isDlpFeatureEnabled();
+%>
 <div class="uiWikiBottomArea" id="$uicomponent.id">
 <%
-  List children = uicomponent.getChildren() ;
-  for(component in children) {
-    if(component.isRendered()){
-      uicomponent.renderChild(component.getClass()) ;
-    }
+  if(!isDlpFeatureEnabled) {
+   List children = uicomponent.getChildren() ;
+   for(component in children) {
+     if(component.isRendered()){
+       uicomponent.renderChild(component.getClass()) ;
+     }
+   }
   }
 %>
 </div>
