@@ -47,7 +47,6 @@
         <include>net.sf.ezmorph:ezmorph:jar</include>
         <include>org.xhtmlrenderer:flying-saucer-core:jar</include>
         <include>org.xhtmlrenderer:flying-saucer-pdf:jar</include>
-        <include>org.jsoup:jsoup:jar</include>
         <include>com.google.gwt:gwt-servlet:jar</include>
         <include>com.lowagie:itext:jar</include>
         <include>org.jfree:jcommon:jar</include>
