@@ -61,8 +61,8 @@
     </component-plugin>
   </external-component-plugins>
 
-	<!-- configure activies plugin -->
-	<external-component-plugins>
+  <!-- configure activies plugin -->
+  <external-component-plugins>
     <target-component>org.exoplatform.webui.ext.UIExtensionManager</target-component>
     <component-plugin>
       <name>add.wiki.activity.plugin</name>
@@ -76,6 +76,31 @@
             <field name="name"><string>ks-wiki:spaces</string></field>
             <field name="component"><string>org.exoplatform.wiki.ext.impl.WikiUIActivity</string></field>
             <field name="activityBuiderClass"><string>org.exoplatform.wiki.ext.impl.WikiSpaceUIActivityBuilder</string></field>
+          </object>
+        </object-param>
+      </init-params>
+    </component-plugin>
+    <component-plugin>
+      <name>add.shared.wiki.activity.plugin</name>
+      <set-method>registerUIExtensionPlugin</set-method>
+      <type>org.exoplatform.webui.ext.UIExtensionPlugin</type>
+      <init-params>
+        <object-param>
+          <name>Shared Wiki Space Activity</name>
+          <object
+            type="org.exoplatform.social.webui.activity.UIActivityExtension">
+            <field name="type">
+              <string>org.exoplatform.social.webui.activity.BaseUIActivity</string>
+            </field>
+            <field name="name">
+              <string>SHARED_WIKI_ACTIVITY</string>
+            </field>
+            <field name="component">
+              <string>org.exoplatform.wiki.ext.impl.share.SharedWikiUIActivity</string>
+            </field>
+            <field name="activityBuiderClass">
+              <string>org.exoplatform.social.webui.activity.DefaultUIActivityBuilder</string>
+            </field>
           </object>
         </object-param>
       </init-params>
