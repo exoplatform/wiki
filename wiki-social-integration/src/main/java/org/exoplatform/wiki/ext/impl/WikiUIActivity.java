@@ -2,6 +2,7 @@ package org.exoplatform.wiki.ext.impl;
 
 import org.apache.commons.lang.StringEscapeUtils;
 import org.apache.commons.lang.StringUtils;
+
 import org.exoplatform.commons.utils.CommonsUtils;
 import org.exoplatform.commons.utils.HTMLSanitizer;
 import org.exoplatform.commons.utils.StringCommonUtils;
@@ -16,11 +17,13 @@ import org.exoplatform.social.core.space.spi.SpaceService;
 import org.exoplatform.social.core.space.spi.SpaceTemplateService;
 import org.exoplatform.social.core.storage.SpaceStorageException;
 import org.exoplatform.social.webui.activity.BaseUIActivity;
+import org.exoplatform.social.webui.activity.share.UISharedDefaultActivity;
 import org.exoplatform.webui.application.WebuiRequestContext;
 import org.exoplatform.webui.config.annotation.ComponentConfig;
 import org.exoplatform.webui.config.annotation.EventConfig;
 import org.exoplatform.webui.core.lifecycle.UIFormLifecycle;
 import org.exoplatform.webui.core.lifecycle.WebuiBindingContext;
+import org.exoplatform.wiki.ext.impl.share.SharedWikiUIActivity;
 import org.exoplatform.wiki.utils.Utils;
 
 import java.net.MalformedURLException;
@@ -322,5 +325,13 @@ public class WikiUIActivity extends BaseUIActivity {
   
   String getWikiActivityType(){
   	return getActivityParamValue(WikiSpaceActivityPublisher.ACTIVITY_TYPE_KEY);
+  }
+  
+  public boolean isActivityShareable() {
+    return true;
+  }
+  
+  public String getOriginalActivityType() {
+    return SharedWikiUIActivity.ACTIVITY_TYPE;
   }
 }
