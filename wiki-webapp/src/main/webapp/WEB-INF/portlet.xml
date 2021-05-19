@@ -39,5 +39,48 @@
         <read-only>false</read-only>
       </preference>
     </portlet-preferences>      
-  </portlet>  
+  </portlet>
+
+  <portlet>
+    <portlet-name>Notes</portlet-name>
+    <display-name xml:lang="EN">Notes Application</display-name>
+    <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
+    <init-param>
+    <name>portlet-view-dispatched-file-path</name>
+    <value>/html/notes.html</value>
+    </init-param>
+    <expiration-cache>-1</expiration-cache>
+    <cache-scope>PUBLIC</cache-scope>
+    <supports>
+    <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.WikiPortlet</resource-bundle>
+    <portlet-info>
+      <title>Notes Application</title>
+      <keywords>Notes Application</keywords>
+    </portlet-info>
+   </portlet>
+   
+   <portlet>
+    <portlet-name>NotesManagement</portlet-name>
+    <display-name xml:lang="EN">Notes Management Application</display-name>
+    <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
+    <init-param>
+    <name>portlet-view-dispatched-file-path</name>
+    <value>/html/notesManagement.html</value>
+    </init-param>
+    <expiration-cache>-1</expiration-cache>
+    <cache-scope>PUBLIC</cache-scope>
+    <supports>
+    <mime-type>text/html</mime-type>
+    </supports>
+    <supported-locale>en</supported-locale>
+    <resource-bundle>locale.portlet.WikiPortlet</resource-bundle>
+    <portlet-info>
+      <title>Notes Management Application</title>
+      <keywords>Notes Management Application</keywords>
+    </portlet-info>
+   </portlet>
+
 </portlet-app>

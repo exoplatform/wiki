@@ -40,6 +40,64 @@
     </module>
   </portlet>
 
+  <portlet>
+    <name>Notes</name>
+    <module>
+      <script>
+        <minify>false</minify>
+        <path>/js/notes.bundle.js</path>
+      </script>
+      <depends>
+        <module>commonVueComponents</module>
+      </depends>
+      <depends>
+        <module>extensionRegistry</module>
+      </depends>
+      <depends>
+        <module>vue</module>
+      </depends>
+      <depends>
+        <module>vuetify</module>
+      </depends>
+      <depends>
+        <module>eXoVueI18n</module>
+      </depends>
+      <depends>
+        <module>jquery</module>
+        <as>$</as>
+      </depends>
+    </module>
+  </portlet>
+
+  <portlet>
+    <name>NotesManagement</name>
+    <module>
+      <script>
+        <minify>false</minify>
+        <path>/js/notesManagement.bundle.js</path>
+      </script>
+      <depends>
+        <module>commonVueComponents</module>
+      </depends>
+      <depends>
+        <module>extensionRegistry</module>
+      </depends>
+      <depends>
+        <module>vue</module>
+      </depends>
+      <depends>
+        <module>vuetify</module>
+      </depends>
+      <depends>
+        <module>eXoVueI18n</module>
+      </depends>
+      <depends>
+        <module>jquery</module>
+        <as>$</as>
+      </depends>
+    </module>
+  </portlet>
+
   <module>
     <name>wikiCkeditor</name>
     <script>
