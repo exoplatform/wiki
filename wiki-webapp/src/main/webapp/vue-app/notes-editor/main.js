@@ -2,7 +2,7 @@ import './initComponents.js';
 
 // get overrided components if exists
 if (extensionRegistry) {
-  const components = extensionRegistry.loadComponents('notes');
+  const components = extensionRegistry.loadComponents('notesEditor');
   if (components && components.length > 0) {
     components.forEach(cmp => {
       Vue.component(cmp.componentName, cmp.componentOptions);
@@ -12,7 +12,8 @@ if (extensionRegistry) {
 
 Vue.use(Vuetify);
 const vuetify = new Vuetify(eXo.env.portal.vuetifyPreset);
-const appId = 'notesDisplayApplication';
+
+const appId = 'notesEditorApplication';
 
 //getting language of the PLF
 const lang = eXo && eXo.env.portal.language || 'en';
@@ -24,7 +25,7 @@ export function init() {
   exoi18n.loadLanguageAsync(lang, url).then(i18n => {
     // init Vue app when locale ressources are ready
     new Vue({
-      template: `<notes-display id="${appId}" />`,
+      template: `<notes-management id="${appId}" />`,
       vuetify,
       i18n
     }).$mount(`#${appId}`);

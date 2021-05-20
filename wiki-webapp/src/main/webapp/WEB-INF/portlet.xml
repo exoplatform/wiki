@@ -42,20 +42,20 @@
   </portlet>
 
   <portlet>
-    <portlet-name>Notes</portlet-name>
-    <display-name xml:lang="EN">Notes Application</display-name>
+    <portlet-name>notes</portlet-name>
+    <display-name xml:lang="EN">notes</display-name>
     <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
     <init-param>
-    <name>portlet-view-dispatched-file-path</name>
-    <value>/html/notes.html</value>
+      <name>portlet-view-dispatched-file-path</name>
+      <value>/html/notes.html</value>
     </init-param>
     <expiration-cache>-1</expiration-cache>
     <cache-scope>PUBLIC</cache-scope>
     <supports>
-    <mime-type>text/html</mime-type>
+      <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.WikiPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.wiki.WikiPortlet</resource-bundle>
     <portlet-info>
       <title>Notes Application</title>
       <keywords>Notes Application</keywords>
@@ -63,12 +63,12 @@
    </portlet>
    
    <portlet>
-    <portlet-name>NotesManagement</portlet-name>
-    <display-name xml:lang="EN">Notes Management Application</display-name>
+    <portlet-name>notesEditor</portlet-name>
+    <display-name xml:lang="EN">Notes Editor Application</display-name>
     <portlet-class>org.exoplatform.commons.api.portlet.GenericDispatchedViewPortlet</portlet-class>
     <init-param>
     <name>portlet-view-dispatched-file-path</name>
-    <value>/html/notesManagement.html</value>
+    <value>/html/notesEditor.html</value>
     </init-param>
     <expiration-cache>-1</expiration-cache>
     <cache-scope>PUBLIC</cache-scope>
@@ -76,10 +76,10 @@
     <mime-type>text/html</mime-type>
     </supports>
     <supported-locale>en</supported-locale>
-    <resource-bundle>locale.portlet.WikiPortlet</resource-bundle>
+    <resource-bundle>locale.portlet.wiki.WikiPortlet</resource-bundle>
     <portlet-info>
-      <title>Notes Management Application</title>
-      <keywords>Notes Management Application</keywords>
+      <title>Notes Editor Application</title>
+      <keywords>Notes Editor Application</keywords>
     </portlet-info>
    </portlet>
 

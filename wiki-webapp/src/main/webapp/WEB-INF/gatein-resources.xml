@@ -22,6 +22,20 @@
     <css-priority>1</css-priority>
   </portlet-skin>
 
+  <portlet-skin>
+    <application-name>wiki</application-name>
+    <portlet-name>notes</portlet-name>
+    <skin-name>Enterprise</skin-name>
+    <css-path>/skin/css/wiki/wiki.css</css-path>
+  </portlet-skin>
+
+  <portlet-skin>
+    <application-name>wiki</application-name>
+    <portlet-name>notesEditor</portlet-name>
+    <skin-name>Enterprise</skin-name>
+    <css-path>/skin/css/wiki/wiki.css</css-path>
+  </portlet-skin>
+
   <portlet>
     <name>WikiPortlet</name>
     <module>      
@@ -41,7 +55,7 @@
   </portlet>
 
   <portlet>
-    <name>Notes</name>
+    <name>notes</name>
     <module>
       <script>
         <minify>false</minify>
@@ -70,11 +84,11 @@
   </portlet>
 
   <portlet>
-    <name>NotesManagement</name>
+    <name>notesEditor</name>
     <module>
       <script>
         <minify>false</minify>
-        <path>/js/notesManagement.bundle.js</path>
+        <path>/js/notesEditor.bundle.js</path>
       </script>
       <depends>
         <module>commonVueComponents</module>

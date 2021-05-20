@@ -10,7 +10,7 @@ module.exports = {
     pageContent: './src/main/webapp/javascript/eXo/wiki/pageContent.js',
     wikiSearchCard: './src/main/webapp/vue-app/wikiSearch/main.js',
     notes: './src/main/webapp/vue-app/notes/main.js',
-    notesManagement: './src/main/webapp/vue-app/notes-management/main.js'
+    notesEditor: './src/main/webapp/vue-app/notes-editor/main.js'
   },
   output: {
     filename: '[name].bundle.js',
