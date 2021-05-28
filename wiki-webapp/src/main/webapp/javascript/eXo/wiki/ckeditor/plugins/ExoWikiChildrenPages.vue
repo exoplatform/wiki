@@ -57,10 +57,13 @@ export default {
         if (pageId) {
           let urlPath = window.location.pathname;
           const wikiIndex = urlPath.indexOf('/wiki/');
-          if (wikiIndex >= 0) {
+          const wikiPortletIndex = urlPath.indexOf('/WikiPortlet/');
+          if (wikiIndex !== -1) {
             urlPath = urlPath.substring(0, wikiIndex + '/wiki'.length);
-          } else if   (!urlPath.endsWith('/wiki')) {
-            urlPath += '/wiki';
+          } else if (wikiPortletIndex !== -1) {
+            urlPath = urlPath.substring(0, wikiPortletIndex + '/WikiPortlet'.length);
+          } else {
+            urlPath += '/WikiPortlet';
           }
           return urlPath += `/${pageId}`;
         }
