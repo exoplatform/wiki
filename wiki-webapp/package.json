@@ -36,7 +36,7 @@
     "@ckeditor/ckeditor5-table": "^19.0.0",
     "@ckeditor/ckeditor5-theme-lark": "^19.0.0",
     "@ckeditor/ckeditor5-ui": "^19.0.0",
-    "@ckeditor/ckeditor5-widget": "^19.0.0",
+    "@ckeditor/ckeditor5-widget": "^28.0.0",
     "babel-loader": "^8.1.0",
     "ckeditor5-self-image": "0.0.3",
     "eslint": "^4.19.1",
