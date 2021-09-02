@@ -23,7 +23,7 @@
     "@ckeditor/ckeditor5-core": "^19.0.0",
     "@ckeditor/ckeditor5-dev-utils": "^13.0.1",
     "@ckeditor/ckeditor5-editor-decoupled": "^19.0.1",
-    "@ckeditor/ckeditor5-engine": "^19.0.0",
+    "@ckeditor/ckeditor5-engine": "^28.0.0",
     "@ckeditor/ckeditor5-essentials": "^19.0.0",
     "@ckeditor/ckeditor5-font": "^19.0.0",
     "@ckeditor/ckeditor5-heading": "^19.0.0",
